@@ -138,11 +138,11 @@ func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
         }
     }
 
-    err = fw.Network.ManagementProfile.Set(o)
-    if err != nil {
-        d.SetId(o.Name)
+    if err = fw.Network.ManagementProfile.Set(o); err != nil {
+        return err
     }
 
+    d.SetId(o.Name)
     return err
 }
 

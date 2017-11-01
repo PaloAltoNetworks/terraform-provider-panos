@@ -321,6 +321,7 @@ func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
+    d.SetId(o.Name)
     return nil
 }
 

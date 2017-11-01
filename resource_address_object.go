@@ -91,9 +91,10 @@ func createAddressObject(d *schema.ResourceData, meta interface{}) error {
     }
 
     if err = fw.Objects.Address.Set(vsys, o); err != nil {
-        d.SetId(o.Name)
+        return err
     }
 
+    d.SetId(o.Name)
     return nil
 }
 
