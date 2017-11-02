@@ -28,6 +28,18 @@ func resourceGeneralSettings() *schema.Resource {
                 Computed: true,
                 Description: "Timezone",
             },
+            "domain": &schema.Schema{
+                Type: schema.TypeString,
+                Optional: true,
+                Computed: true,
+                Description: "Domain",
+            },
+            "update_server": &schema.Schema{
+                Type: schema.TypeString,
+                Optional: true,
+                Computed: true,
+                Description: "PANOS update server",
+            },
             "dns_primary": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
@@ -108,6 +120,8 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
     return general.Config{
         Hostname: d.Get("hostname").(string),
         Timezone: d.Get("timezone").(string),
+        Domain: d.Get("domain").(string),
+        UpdateServer: d.Get("update_server").(string),
         DnsPrimary: d.Get("dns_primary").(string),
         DnsSecondary: d.Get("dns_secondary").(string),
         NtpPrimaryAddress: d.Get("ntp_primary_address").(string),
@@ -127,6 +141,8 @@ func saveDataGeneralSettings(d *schema.ResourceData, o general.Config) {
     d.SetId(o.Hostname)
     d.Set("hostname", o.Hostname)
     d.Set("timezone", o.Timezone)
+    d.Set("domain", o.Domain)
+    d.Set("update_server", o.UpdateServer)
     d.Set("dns_primary", o.DnsPrimary)
     d.Set("dns_secondary", o.DnsSecondary)
     d.Set("ntp_primary_address", o.NtpPrimaryAddress)
