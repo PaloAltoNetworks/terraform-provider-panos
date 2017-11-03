@@ -131,7 +131,7 @@ func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
     }
 
     d.SetId(o.Name)
-    return err
+    return nil
 }
 
 func readManagementProfile(d *schema.ResourceData, meta interface{}) error {

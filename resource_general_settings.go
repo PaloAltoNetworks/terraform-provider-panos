@@ -171,7 +171,6 @@ func createGeneralSettings(d *schema.ResourceData, meta interface{}) error {
     }
 
     d.SetId(o.Hostname)
-
     return nil
 }
 
