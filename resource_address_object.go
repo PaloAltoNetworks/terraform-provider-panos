@@ -78,19 +78,7 @@ func createAddressObject(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
     vsys, o := parseAddressObject(d)
 
-    list, err := fw.Objects.Address.GetList(vsys)
-    if err != nil {
-        return err
-    }
-
-    for i := range list {
-        if list[i] == o.Name {
-            d.SetId(o.Name)
-            return nil
-        }
-    }
-
-    if err = fw.Objects.Address.Set(vsys, o); err != nil {
+    if err := fw.Objects.Address.Set(vsys, o); err != nil {
         return err
     }
 

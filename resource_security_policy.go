@@ -305,19 +305,7 @@ func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
     vsys, rb, o := parseSecurityPolicy(d)
     o.Defaults()
 
-    list, err := fw.Policies.Security.GetList(vsys, rb)
-    if err != nil {
-        return err
-    }
-
-    for i := range list {
-        if list[i] == o.Name {
-            d.SetId(o.Name)
-            return nil
-        }
-    }
-
-    if err = fw.Policies.Security.VerifiableSet(vsys, rb, o); err != nil {
+    if err := fw.Policies.Security.VerifiableSet(vsys, rb, o); err != nil {
         return err
     }
 

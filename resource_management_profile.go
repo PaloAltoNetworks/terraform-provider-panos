@@ -126,19 +126,7 @@ func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
     o := parseManagementProfile(d)
 
-    list, err := fw.Network.ManagementProfile.GetList()
-    if err != nil {
-        return err
-    }
-
-    for i := range list {
-        if list[i] == o.Name {
-            d.SetId(o.Name)
-            return nil
-        }
-    }
-
-    if err = fw.Network.ManagementProfile.Set(o); err != nil {
+    if err := fw.Network.ManagementProfile.Set(o); err != nil {
         return err
     }
 

@@ -184,19 +184,7 @@ func createEthernetInterface(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
     vsys, o := parseEthernetInterface(d)
 
-    list, err := fw.Network.EthernetInterface.GetList()
-    if err != nil {
-        return err
-    }
-
-    for i := range list {
-        if list[i] == o.Name {
-            d.SetId(o.Name)
-            return nil
-        }
-    }
-
-    if err = fw.Network.EthernetInterface.Set(vsys, o); err != nil {
+    if err := fw.Network.EthernetInterface.Set(vsys, o); err != nil {
         return err
     }
 
