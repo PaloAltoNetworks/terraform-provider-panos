@@ -37,8 +37,14 @@ func resourceGeneralSettings() *schema.Resource {
             "update_server": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
-                Computed: true,
+                Default: "updates.paloaltonetworks.com",
                 Description: "PANOS update server",
+            },
+            "verify_update_server": &schema.Schema{
+                Type: schema.TypeBool,
+                Optional: true,
+                Default: true,
+                Description: "Verify update server identity",
             },
             "dns_primary": &schema.Schema{
                 Type: schema.TypeString,
@@ -122,6 +128,7 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
         Timezone: d.Get("timezone").(string),
         Domain: d.Get("domain").(string),
         UpdateServer: d.Get("update_server").(string),
+        VerifyUpdateServer: d.Get("verify_update_server").(bool),
         DnsPrimary: d.Get("dns_primary").(string),
         DnsSecondary: d.Get("dns_secondary").(string),
         NtpPrimaryAddress: d.Get("ntp_primary_address").(string),
@@ -143,6 +150,7 @@ func saveDataGeneralSettings(d *schema.ResourceData, o general.Config) {
     d.Set("timezone", o.Timezone)
     d.Set("domain", o.Domain)
     d.Set("update_server", o.UpdateServer)
+    d.Set("verify_update_server", o.VerifyUpdateServer)
     d.Set("dns_primary", o.DnsPrimary)
     d.Set("dns_secondary", o.DnsSecondary)
     d.Set("ntp_primary_address", o.NtpPrimaryAddress)
