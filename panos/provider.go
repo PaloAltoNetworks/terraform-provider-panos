@@ -1,4 +1,4 @@
-package main
+package panos
 
 import (
     "fmt"
@@ -9,6 +9,7 @@ import (
 )
 
 
+// Provider returns a terraform.ResourceProvider.
 func Provider() terraform.ResourceProvider {
     return &schema.Provider{
         Schema: map[string] *schema.Schema{

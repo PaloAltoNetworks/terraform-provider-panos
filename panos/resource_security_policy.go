@@ -1,4 +1,4 @@
-package main
+package panos
 
 import (
     "github.com/PaloAltoNetworks/pango"
