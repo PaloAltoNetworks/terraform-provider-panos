@@ -16,21 +16,25 @@ func Provider() terraform.ResourceProvider {
             "hostname": &schema.Schema{
                 Type: schema.TypeString,
                 Required: true,
-                Description: "Hostname of the Palo Alto Networks firewall to connect to",
+                DefaultFunc: schema.EnvDefaultFunc("PANOS_HOSTNAME", nil),
+                Description: "Hostname/IP address of the Palo Alto Networks firewall to connect to",
             },
             "username": &schema.Schema{
                 Type: schema.TypeString,
-                Optional: true,
+                Required: true,
+                DefaultFunc: schema.EnvDefaultFunc("PANOS_USERNAME", nil),
                 Description: "The username (not used if the ApiKey is set)",
             },
             "password": &schema.Schema{
                 Type: schema.TypeString,
-                Optional: true,
+                Required: true,
+                DefaultFunc: schema.EnvDefaultFunc("PANOS_PASSWORD", nil),
                 Description: "The password (not used if the ApiKey is set)",
             },
-            "apikey": &schema.Schema{
+            "api_key": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
+                DefaultFunc: schema.EnvDefaultFunc("PANOS_API_KEY", nil),
                 Description: "The api key of the firewall",
             },
             "protocol": &schema.Schema{
@@ -42,13 +46,11 @@ func Provider() terraform.ResourceProvider {
             "port": &schema.Schema{
                 Type: schema.TypeInt,
                 Optional: true,
-                Default: 0,
                 Description: "If the port is non-standard for the protocol, the port number to use",
             },
             "timeout": &schema.Schema{
                 Type: schema.TypeInt,
                 Optional: true,
-                Default: 10,
                 Description: "The timeout for all communications with the firewall",
             },
             "logging": &schema.Schema{
@@ -108,7 +110,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
         Hostname: d.Get("hostname").(string),
         Username: d.Get("username").(string),
         Password: d.Get("password").(string),
-        ApiKey: d.Get("apikey").(string),
+        ApiKey: d.Get("api_key").(string),
         Protocol: d.Get("protocol").(string),
         Port: uint(d.Get("port").(int)),
         Timeout: d.Get("timeout").(int),
