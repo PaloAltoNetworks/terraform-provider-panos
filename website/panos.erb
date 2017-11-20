@@ -1,0 +1,38 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-panos-index") %>>
+          <a href="/docs/providers/panos/index.html">PANOS Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-panos-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-panos-resource-address-object") %>>
+              <a href="/docs/providers/panos/r/address_object.html">panos_address_object</a>
+            </li>
+            <li<%= sidebar_current("docs-panos-resource-ethernet-interface") %>>
+              <a href="/docs/providers/panos/r/ethernet_interface.html">panos_ethernet_interface</a>
+            </li>
+            <li<%= sidebar_current("docs-panos-resource-general-settings") %>>
+              <a href="/docs/providers/panos/r/general_settings.html">panos_general_settings</a>
+            </li>
+            <li<%= sidebar_current("docs-panos-resource-management-profile") %>>
+              <a href="/docs/providers/panos/r/management_profile.html">panos_management_profile</a>
+            </li>
+            <li<%= sidebar_current("docs-panos-resource-security-policy") %>>
+              <a href="/docs/providers/panos/r/security_policy.html">panos_security_policy</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+  <% end %>
