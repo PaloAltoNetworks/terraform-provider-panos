@@ -19,12 +19,14 @@ func resourceAddressObject() *schema.Resource {
             "name": &schema.Schema{
                 Type: schema.TypeString,
                 Required: true,
+                ForceNew: true,
                 Description: "The address object's name",
             },
             "vsys": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
                 Default: "vsys1",
+                ForceNew: true,
                 Description: "The vsys to put this address object in",
             },
             "type": &schema.Schema{

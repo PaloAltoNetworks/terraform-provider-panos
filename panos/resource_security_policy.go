@@ -19,17 +19,20 @@ func resourceSecurityPolicy() *schema.Resource {
             "name": &schema.Schema{
                 Type: schema.TypeString,
                 Required: true,
+                ForceNew: true,
             },
             "vsys": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
                 Computed: true,
+                ForceNew: true,
                 Description: "The vsys to put this object in",
             },
             "rulebase": &schema.Schema{
                 Type: schema.TypeString,
                 Optional: true,
                 Computed: true,
+                ForceNew: true,
                 Description: "The rulebase (default: rulebase, pre-rulebase, post-rulebase)",
             },
             "type": &schema.Schema{

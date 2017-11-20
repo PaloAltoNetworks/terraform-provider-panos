@@ -19,6 +19,7 @@ func resourceEthernetInterface() *schema.Resource {
             "name": &schema.Schema{
                 Type: schema.TypeString,
                 Required: true,
+                ForceNew: true,
                 Description: "The ethernet interface's name",
             },
             "vsys": &schema.Schema{
