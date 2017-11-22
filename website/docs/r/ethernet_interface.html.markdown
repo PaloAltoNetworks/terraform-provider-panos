@@ -8,7 +8,7 @@ description: |-
 
 # panos_ethernet_interface
 
-This resource allows you to add/update/delete PANOS ethernet interfaces.
+This resource allows you to add/update/delete ethernet interfaces.
 
 **Note** - Some parameters in this resource are applicable only for certain
 versions of PANOS.  Attempting to configure settings for a firewall that

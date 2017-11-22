@@ -8,7 +8,7 @@ description: |-
 
 # panos_address_object
 
-This resource allows you to add/update/delete PANOS address objects.
+This resource allows you to add/update/delete address objects.
 
 ## Example Usage
 
