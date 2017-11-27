@@ -82,6 +82,10 @@ func testAccCheckPanosManagementProfileAttributes(o *mngtprof.Entry, n string, h
             return fmt.Errorf("SSH is %t, expected %t", o.Ssh, ssh)
         }
 
+        if len(o.PermittedIp) != 2 {
+            return fmt.Errorf("len(PermittedIp) is %d, expected 2", len(o.PermittedIp))
+        }
+
         if o.PermittedIp[0] != pi1 {
             return fmt.Errorf("Permitted IP 0 is %s, expected %s", o.PermittedIp[0], pi1)
         }
