@@ -98,7 +98,7 @@ func createAddressObject(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
-    d.SetId(buildAddressObjectId(vsys, o.Name))
+    saveDataAddressObject(d, vsys, o)
     return nil
 }
 
@@ -122,12 +122,19 @@ func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
     vsys, o := parseAddressObject(d)
 
     lo, err := fw.Objects.Address.Get(vsys, o.Name)
+    if err != nil {
+        return err
+    }
+    lo.Copy(o)
+    err = fw.Objects.Address.Edit(vsys, lo)
+    /*
     if err == nil {
         lo.Copy(o)
         err = fw.Objects.Address.Edit(vsys, lo)
     } else {
         err = fw.Objects.Address.Set(vsys, o)
     }
+    */
 
     if err == nil {
         saveDataAddressObject(d, vsys, o)
