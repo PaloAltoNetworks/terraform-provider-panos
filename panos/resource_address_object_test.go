@@ -52,8 +52,8 @@ func testAccCheckPanosAddressObjectExists(n string, o *addr.Entry) resource.Test
         }
 
         fw := testAccProvider.Meta().(*pango.Firewall)
-        name := rs.Primary.ID
-        v, err := fw.Objects.Address.Get("", name)
+        vsys, name := parseAddressObjectId(rs.Primary.ID)
+        v, err := fw.Objects.Address.Get(vsys, name)
         if err != nil {
             return fmt.Errorf("Error in get: %s", err)
         }
@@ -94,11 +94,11 @@ func testAccPanosAddressObjectDestroy(s *terraform.State) error {
             continue
         }
 
-        name := rs.Primary.ID
-        if name != "" {
-            _, err := fw.Objects.Address.Get("", name)
+        if rs.Primary.ID != "" {
+            vsys, name := parseAddressObjectId(rs.Primary.ID)
+            _, err := fw.Objects.Address.Get(vsys, name)
             if err == nil {
-                return fmt.Errorf("Address object %q still exists", name)
+                return fmt.Errorf("Address object %q still exists", rs.Primary.ID)
             }
         }
         return nil
@@ -111,6 +111,7 @@ func testAccAddressObjectConfig(n, v, t, d string) string {
     return fmt.Sprintf(`
 resource "panos_address_object" "test" {
     name = "%s"
+    vsys = "vsys1"
     value = "%s"
     type = "%s"
     description = "%s"

@@ -1,6 +1,9 @@
 package panos
 
 import (
+    "fmt"
+    "strings"
+
     "github.com/PaloAltoNetworks/pango"
     "github.com/PaloAltoNetworks/pango/objs/addr"
 
@@ -68,8 +71,19 @@ func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
     return vsys, o
 }
 
-func saveDataAddressObject(d *schema.ResourceData, o addr.Entry) {
-    d.SetId(o.Name)
+func parseAddressObjectId(v string) (string, string) {
+    t := strings.Split(v, IdSeparator)
+    return t[0], t[1]
+}
+
+func buildAddressObjectId(a, b string) (string) {
+    return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
+}
+
+func saveDataAddressObject(d *schema.ResourceData, vsys string, o addr.Entry) {
+    d.SetId(buildAddressObjectId(vsys, o.Name))
+    d.Set("name", o.Name)
+    d.Set("vsys", vsys)
     d.Set("value", o.Value)
     d.Set("type", o.Type)
     d.Set("description", o.Description)
@@ -84,14 +98,13 @@ func createAddressObject(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
-    d.SetId(o.Name)
+    d.SetId(buildAddressObjectId(vsys, o.Name))
     return nil
 }
 
 func readAddressObject(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
-    name := d.Get("name").(string)
-    vsys := d.Get("vsys").(string)
+    vsys, name := parseAddressObjectId(d.Id())
 
     o, err := fw.Objects.Address.Get(vsys, name)
     if err != nil {
@@ -99,7 +112,7 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
         return nil
     }
 
-    saveDataAddressObject(d, o)
+    saveDataAddressObject(d, vsys, o)
     return nil
 }
 
@@ -117,15 +130,14 @@ func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
     }
 
     if err == nil {
-        saveDataAddressObject(d, o)
+        saveDataAddressObject(d, vsys, o)
     }
     return err
 }
 
 func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
-    vsys := d.Get("vsys").(string)
-    name := d.Get("name").(string)
+    vsys, name := parseAddressObjectId(d.Id())
 
     _ = fw.Objects.Address.Delete(vsys, name)
     d.SetId("")

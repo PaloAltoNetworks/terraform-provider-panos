@@ -4,6 +4,7 @@ import (
     "github.com/hashicorp/terraform/helper/schema"
 )
 
+const IdSeparator string = ":"
 
 func asStringList(d *schema.ResourceData, key string) []string {
     if d.Get(key) == nil || len(d.Get(key).([]interface{})) == 0 {
