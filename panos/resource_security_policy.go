@@ -1,6 +1,9 @@
 package panos
 
 import (
+    "fmt"
+    "strings"
+
     "github.com/PaloAltoNetworks/pango"
     "github.com/PaloAltoNetworks/pango/poli/security"
 
@@ -26,7 +29,7 @@ func resourceSecurityPolicy() *schema.Resource {
                 Optional: true,
                 Computed: true,
                 ForceNew: true,
-                Description: "The vsys to put this object in",
+                Description: "The vsys to put this object in (default: vsys1)",
             },
             "rulebase": &schema.Schema{
                 Type: schema.TypeString,
@@ -269,8 +272,11 @@ func parseSecurityPolicy(d *schema.ResourceData) (string, string, security.Entry
     return vsys, rb, o
 }
 
-func saveDataSecurityPolicy(d *schema.ResourceData, o security.Entry) {
-    d.SetId(o.Name)
+func saveDataSecurityPolicy(d *schema.ResourceData, vsys, rb string, o security.Entry) {
+    d.SetId(buildSecurityPolicyId(vsys, rb, o.Name))
+    d.Set("name", o.Name)
+    d.Set("vsys", vsys)
+    d.Set("rulebase", rb)
     d.Set("type", o.Type)
     d.Set("description", o.Description)
     d.Set("tags", o.Tags)
@@ -303,6 +309,15 @@ func saveDataSecurityPolicy(d *schema.ResourceData, o security.Entry) {
     d.Set("data_filtering", o.DataFiltering)
 }
 
+func parseSecurityPolicyId(v string) (string, string, string) {
+    t := strings.Split(v, IdSeparator)
+    return t[0], t[1], t[2]
+}
+
+func buildSecurityPolicyId(a, b, c string) (string) {
+    return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
+}
+
 func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
     vsys, rb, o := parseSecurityPolicy(d)
@@ -312,15 +327,13 @@ func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
-    d.SetId(o.Name)
+    saveDataSecurityPolicy(d, vsys, rb, o)
     return nil
 }
 
 func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
-    name := d.Get("name").(string)
-    vsys := d.Get("vsys").(string)
-    rb := d.Get("rulebase").(string)
+    vsys, rb, name := parseSecurityPolicyId(d.Id())
 
     o, err := fw.Policies.Security.Get(vsys, rb, name)
     if err != nil {
@@ -328,7 +341,7 @@ func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
         return nil
     }
 
-    saveDataSecurityPolicy(d, o)
+    saveDataSecurityPolicy(d, vsys, rb, o)
     return nil
 }
 
@@ -337,26 +350,35 @@ func updateSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
     vsys, rb, o := parseSecurityPolicy(d)
     o.Defaults()
+    /* Defaults() sets LogEnd to true if it is false, but if the user
+       actually wants it as false, we need to reset it to what we were
+       passed from the plan file. */
+    o.LogEnd = d.Get("log_end").(bool)
 
     lo, err := fw.Policies.Security.Get(vsys, rb, o.Name)
+    if err != nil {
+        return err
+    }
+    lo.Copy(o)
+    err = fw.Policies.Security.Edit(vsys, rb, lo)
+    /*
     if err == nil {
         lo.Copy(o)
         err = fw.Policies.Security.Edit(vsys, rb, lo)
     } else {
         err = fw.Policies.Security.Set(vsys, rb, o)
     }
+    */
 
     if err == nil {
-        saveDataSecurityPolicy(d, o)
+        saveDataSecurityPolicy(d, vsys, rb, o)
     }
     return err
 }
 
 func deleteSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
-    vsys := d.Get("vsys").(string)
-    rb := d.Get("rulebase").(string)
-    name := d.Get("name").(string)
+    vsys, rb, name := parseSecurityPolicyId(d.Id())
 
     _ = fw.Policies.Security.Delete(vsys, rb, name)
     d.SetId("")
