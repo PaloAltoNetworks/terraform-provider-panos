@@ -1,6 +1,9 @@
 package panos
 
 import (
+    "fmt"
+    "strings"
+
     "github.com/PaloAltoNetworks/pango"
     "github.com/PaloAltoNetworks/pango/netw/eth"
 
@@ -25,6 +28,7 @@ func resourceEthernetInterface() *schema.Resource {
             "vsys": &schema.Schema{
                 Type: schema.TypeString,
                 Required: true,
+                ForceNew: true,
                 Description: "The vsys to import this ethernet interface into",
             },
             "mode": &schema.Schema{
@@ -130,6 +134,15 @@ func resourceEthernetInterface() *schema.Resource {
     }
 }
 
+func parseEthernetInterfaceId(v string) (string, string) {
+    t := strings.Split(v, IdSeparator)
+    return t[0], t[1]
+}
+
+func buildEthernetInterfaceId(a, b string) (string) {
+    return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
+}
+
 func parseEthernetInterface(d *schema.ResourceData) (string, eth.Entry) {
     vsys := d.Get("vsys").(string)
     o := eth.Entry{
@@ -158,8 +171,10 @@ func parseEthernetInterface(d *schema.ResourceData) (string, eth.Entry) {
     return vsys, o
 }
 
-func saveDataEthernetInterface(d *schema.ResourceData, o eth.Entry) {
-    d.SetId(o.Name)
+func saveDataEthernetInterface(d *schema.ResourceData, vsys string, o eth.Entry) {
+    d.SetId(buildEthernetInterfaceId(vsys, o.Name))
+    d.Set("name", o.Name)
+    d.Set("vsys", vsys)
     d.Set("mode", o.Mode)
     d.Set("static_ips", o.StaticIps)
     d.Set("enable_dhcp", o.EnableDhcp)
@@ -189,13 +204,13 @@ func createEthernetInterface(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
-    d.SetId(o.Name)
+    saveDataEthernetInterface(d, vsys, o)
     return nil
 }
 
 func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
     fw := meta.(*pango.Firewall)
-    name := d.Get("name").(string)
+    vsys, name := parseEthernetInterfaceId(d.Id())
 
     o, err := fw.Network.EthernetInterface.Get(name)
     if err != nil {
@@ -203,7 +218,7 @@ func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
         return nil
     }
 
-    saveDataEthernetInterface(d, o)
+    saveDataEthernetInterface(d, vsys, o)
     return nil
 }
 
@@ -213,15 +228,22 @@ func updateEthernetInterface(d *schema.ResourceData, meta interface{}) error {
     vsys, o := parseEthernetInterface(d)
 
     lo, err := fw.Network.EthernetInterface.Get(o.Name)
+    if err != nil {
+        return err
+    }
+    lo.Copy(o)
+    err = fw.Network.EthernetInterface.Edit(vsys, lo)
+    /*
     if err == nil {
         lo.Copy(o)
         err = fw.Network.EthernetInterface.Edit(vsys, lo)
     } else {
         err = fw.Network.EthernetInterface.Set(vsys, o)
     }
+    */
 
     if err == nil {
-        saveDataEthernetInterface(d, o)
+        saveDataEthernetInterface(d, vsys, o)
     }
     return err
 }
