@@ -131,7 +131,7 @@ func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
         return err
     }
 
-    d.SetId(o.Name)
+    saveDataManagementProfile(d, o)
     return nil
 }
 
@@ -155,12 +155,19 @@ func updateManagementProfile(d *schema.ResourceData, meta interface{}) error {
     o := parseManagementProfile(d)
 
     lo, err := fw.Network.ManagementProfile.Get(o.Name)
+    if err != nil {
+        return err
+    }
+    lo.Copy(o)
+    err = fw.Network.ManagementProfile.Edit(lo)
+    /*
     if err == nil {
         lo.Copy(o)
         err = fw.Network.ManagementProfile.Edit(lo)
     } else {
         err = fw.Network.ManagementProfile.Set(o)
     }
+    */
 
     if err == nil {
         saveDataManagementProfile(d, o)
