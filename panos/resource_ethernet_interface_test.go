@@ -48,7 +48,7 @@ func testAccCheckPanosEthernetInterfaceExists(n string, o *eth.Entry) resource.T
 		}
 
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("Ethernet interface label ID is not set")
+			return fmt.Errorf("Object label ID is not set")
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)

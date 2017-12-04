@@ -44,7 +44,7 @@ func testAccCheckPanosGeneralSettingsExists(n string, o *general.Config) resourc
 		}
 
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("General settings label ID is not set")
+			return fmt.Errorf("Object label ID is not set")
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)

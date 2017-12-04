@@ -47,7 +47,7 @@ func testAccCheckPanosAddressObjectExists(n string, o *addr.Entry) resource.Test
 		}
 
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("Management profile label ID is not set")
+			return fmt.Errorf("Object label ID is not set")
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
