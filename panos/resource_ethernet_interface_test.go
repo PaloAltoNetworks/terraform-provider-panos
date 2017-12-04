@@ -106,7 +106,7 @@ func testAccPanosEthernetInterfaceDestroy(s *terraform.State) error {
 			_, name := parseEthernetInterfaceId(rs.Primary.ID)
 			_, err := fw.Network.EthernetInterface.Get(name)
 			if err == nil {
-				return fmt.Errorf("Ethernet interface %q still exists", rs.Primary.ID)
+				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
 		}
 		return nil

@@ -109,7 +109,7 @@ func testAccPanosSecurityPolicyDestroy(s *terraform.State) error {
 			vsys, rb, name := parseSecurityPolicyId(rs.Primary.ID)
 			_, err := fw.Policies.Security.Get(vsys, rb, name)
 			if err == nil {
-				return fmt.Errorf("Security policy %q still exists", rs.Primary.ID)
+				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
 		}
 		return nil

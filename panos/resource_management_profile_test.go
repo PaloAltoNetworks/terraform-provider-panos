@@ -105,14 +105,13 @@ func testAccPanosManagementProfileDestroy(s *terraform.State) error {
 			continue
 		}
 
-		name := rs.Primary.ID
-		if name != "" {
-			info, err := fw.Network.ManagementProfile.Get(name)
+		if rs.Primary.ID != "" {
+			_, err := fw.Network.ManagementProfile.Get(rs.Primary.ID)
 			if err == nil {
-				return fmt.Errorf("Management profile %q still exists: %v %#v", name, err, info)
+				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
 		}
-		//return nil
+		return nil
 	}
 
 	return nil

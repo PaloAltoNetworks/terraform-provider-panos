@@ -97,7 +97,7 @@ func testAccPanosAddressObjectDestroy(s *terraform.State) error {
 			vsys, name := parseAddressObjectId(rs.Primary.ID)
 			_, err := fw.Objects.Address.Get(vsys, name)
 			if err == nil {
-				return fmt.Errorf("Address object %q still exists", rs.Primary.ID)
+				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
 		}
 		return nil
