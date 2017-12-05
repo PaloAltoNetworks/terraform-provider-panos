@@ -51,7 +51,9 @@ The following arguments are supported:
 * `name` - (Required) The security policy's name.
 * `vsys` - (Optional) The vsys to put the security policy into (default:
   `vsys1`).
-* `rulebase` - (Optional) The rulebase.  This can be `rulebase` (default),
+* `rulebase` - (Optional) The rulebase.  For firewalls, there is only the
+  `rulebase` value (default), but on Panorama, there is also `pre-rulebase`
+  and `post-rulebase`.
 * `type` - (Optional) Rule type.  This can be `universal` (default),
   `interzone`, or `intrazone`.
 * `description` - (Optional) The description.
