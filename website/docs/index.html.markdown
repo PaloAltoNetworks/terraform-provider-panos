@@ -38,10 +38,10 @@ The following arguments are supported:
   must be provided, but can also be defined via the `PANOS_HOSTNAME`
   environment variable.
 * `username` - (Optional) The username to authenticate to the firewall as.  It
-  must be provided, but can also be defined via the `PANOS_HOSTNAME`
+  must be provided, but can also be defined via the `PANOS_USERNAME`
   environment variable.
 * `password` - (Optional) The password for the given username. It must be
-  provided, but can also be defined via the `PANOS_HOSTNAME` environment
+  provided, but can also be defined via the `PANOS_PASSWORD` environment
   variable.
 * `api_key` - (Optional) The API key for the firewall.  If this is given, then
   the `username` and `password` settings are ignored.  This can also be defined
