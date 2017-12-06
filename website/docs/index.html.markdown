@@ -17,7 +17,7 @@ Use the navigation to the left to read about the available resources.
 # Commits
 
 As of right now, Terraform does not provide native support for commits, so
-commits are handled out-of-band.  Please use the following script for commits:
+commits are handled out-of-band.  Please use the following for commits:
 
 ```go
 package main
@@ -74,13 +74,13 @@ func main() {
 }
 ```
 
-Compile the above, put it somewhere in your `$PATH` (such as $HOME/bin), then
-invoke it after `terraform apply` / `terraform destroy`:
+Compile the above, put it somewhere in your `$PATH` (such as `$HOME/bin`),
+then invoke it after `terraform apply` and `terraform destroy`:
 
 ```bash
 $ go build commit.go
 $ mv commit ~/bin
-$ terraform apply && commit -c 'My commit message'
+$ terraform apply && commit -c 'My commit comment'
 ```
 
 ## Example Usage
