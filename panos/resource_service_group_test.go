@@ -15,8 +15,8 @@ import (
 func TestPanosServiceGroup_basic(t *testing.T) {
 	var o srvcgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
-    so1 := fmt.Sprintf("so%s", acctest.RandString(6))
-    so2 := fmt.Sprintf("so%s", acctest.RandString(6))
+	so1 := fmt.Sprintf("so%s", acctest.RandString(6))
+	so2 := fmt.Sprintf("so%s", acctest.RandString(6))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -71,9 +71,9 @@ func testAccCheckPanosServiceGroupAttributes(o *srvcgrp.Entry, name, so string) 
 			return fmt.Errorf("Name is %s, expected %s", o.Name, name)
 		}
 
-        if len(o.Services) != 1 || o.Services[0] != so {
-            return fmt.Errorf("Services is %#v, expected [%s]", o.Services, so)
-        }
+		if len(o.Services) != 1 || o.Services[0] != so {
+			return fmt.Errorf("Services is %#v, expected [%s]", o.Services, so)
+		}
 
 		return nil
 	}

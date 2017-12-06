@@ -31,13 +31,13 @@ func resourceServiceGroup() *schema.Resource {
 				ForceNew:    true,
 				Description: "The vsys to put this service group in",
 			},
-            "services": &schema.Schema{
-                Type: schema.TypeList,
-                Required: true,
-                Elem: &schema.Schema{
-                    Type: schema.TypeString,
-                },
-            },
+			"services": &schema.Schema{
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"tag": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
@@ -53,9 +53,9 @@ func resourceServiceGroup() *schema.Resource {
 func parseServiceGroup(d *schema.ResourceData) (string, srvcgrp.Entry) {
 	vsys := d.Get("vsys").(string)
 	o := srvcgrp.Entry{
-		Name:        d.Get("name").(string),
-        Services: asStringList(d, "services"),
-		Tag:         asStringList(d, "tag"),
+		Name:     d.Get("name").(string),
+		Services: asStringList(d, "services"),
+		Tag:      asStringList(d, "tag"),
 	}
 
 	return vsys, o
@@ -73,7 +73,7 @@ func buildServiceGroupId(a, b string) string {
 func saveDataServiceGroup(d *schema.ResourceData, vsys string, o srvcgrp.Entry) {
 	d.SetId(buildServiceGroupId(vsys, o.Name))
 	d.Set("name", o.Name)
-    d.Set("services", o.Services)
+	d.Set("services", o.Services)
 	d.Set("tag", o.Tag)
 }
 
