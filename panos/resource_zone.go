@@ -32,9 +32,10 @@ func resourceZone() *schema.Resource {
 				Description: "The vsys to put this zone in",
 			},
 			"mode": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The zone's mode",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "The zone's mode",
+				ValidateFunc: validateStringIn("layer3", "layer2", "virtual-wire", "tap", "tunnel"),
 			},
 			"zone_profile": &schema.Schema{
 				Type:        schema.TypeString,

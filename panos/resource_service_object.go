@@ -37,9 +37,10 @@ func resourceServiceObject() *schema.Resource {
 				Description: "Object's description",
 			},
 			"protocol": &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The protocol (tcp or udp)",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "The protocol (tcp or udp)",
+				ValidateFunc: validateStringIn("tcp", "udp"),
 			},
 			"source_port": &schema.Schema{
 				Type:        schema.TypeString,

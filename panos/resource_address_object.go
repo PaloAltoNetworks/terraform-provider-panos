@@ -32,10 +32,11 @@ func resourceAddressObject() *schema.Resource {
 				Description: "The vsys to put this address object in",
 			},
 			"type": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "ip-netmask",
-				Description: "The type of address object (ip-netmask, ip-range, fqdn)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      "ip-netmask",
+				Description:  "The type of address object (ip-netmask, ip-range, fqdn)",
+				ValidateFunc: validateStringIn("ip-netmask", "ip-range", "fqdn"),
 			},
 			"value": &schema.Schema{
 				Type:     schema.TypeString,

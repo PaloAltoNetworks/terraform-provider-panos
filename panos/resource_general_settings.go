@@ -64,10 +64,11 @@ func resourceGeneralSettings() *schema.Resource {
 				Description: "Primary NTP server",
 			},
 			"ntp_primary_auth_type": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "NTP auth type (none, autokey, symmetric-key)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "NTP auth type (none, autokey, symmetric-key)",
+				ValidateFunc: validateStringIn("none", "autokey", "symmetric-key"),
 			},
 			"ntp_primary_key_id": &schema.Schema{
 				Type:        schema.TypeInt,
@@ -76,10 +77,11 @@ func resourceGeneralSettings() *schema.Resource {
 				Description: "NTP symmetric-key key ID",
 			},
 			"ntp_primary_algorithm": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "NTP symmetric-key algorithm (sha1 or md5)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "NTP symmetric-key algorithm (sha1 or md5)",
+				ValidateFunc: validateStringIn("sha1", "md5"),
 			},
 			"ntp_primary_auth_key": &schema.Schema{
 				Type:        schema.TypeString,
@@ -94,10 +96,11 @@ func resourceGeneralSettings() *schema.Resource {
 				Description: "Secondary NTP server",
 			},
 			"ntp_secondary_auth_type": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "NTP auth type (none, autokey, symmetric-key)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "NTP auth type (none, autokey, symmetric-key)",
+				ValidateFunc: validateStringIn("none", "autokey", "symmetric-key"),
 			},
 			"ntp_secondary_key_id": &schema.Schema{
 				Type:        schema.TypeInt,
@@ -106,10 +109,11 @@ func resourceGeneralSettings() *schema.Resource {
 				Description: "NTP symmetric-key key ID",
 			},
 			"ntp_secondary_algorithm": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "NTP symmetric-key algorithm (sha1 or md5)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "NTP symmetric-key algorithm (sha1 or md5)",
+				ValidateFunc: validateStringIn("sha1", "md5"),
 			},
 			"ntp_secondary_auth_key": &schema.Schema{
 				Type:        schema.TypeString,
