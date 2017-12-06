@@ -63,6 +63,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"panos_address_group":      resourceAddressGroup(),
 			"panos_address_object":     resourceAddressObject(),
 			"panos_ethernet_interface": resourceEthernetInterface(),
 			"panos_general_settings":   resourceGeneralSettings(),

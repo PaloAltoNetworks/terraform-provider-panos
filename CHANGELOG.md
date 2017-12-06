@@ -2,6 +2,7 @@
 
 FEATURES:
 
+* **New Resource:** `panos_address_group`
 * **New Resource:** `panos_address_object`
 * **New Resource:** `panos_ethernet_interface`
 * **New Resource:** `panos_general_settings`
