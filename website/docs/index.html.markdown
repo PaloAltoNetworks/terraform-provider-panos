@@ -59,7 +59,7 @@ func main() {
         Password: password,
         Logging: pango.LogOp | pango.LogAction,
     }}
-    if err := fw.Initialize(); err != nil {
+    if err = fw.Initialize(); err != nil {
         log.Fatalf("Failed: %s", err)
     }
 
