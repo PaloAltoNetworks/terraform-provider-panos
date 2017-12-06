@@ -32,7 +32,7 @@ import (
 
 func main() {
     var (
-        hostname, username, password, apiKey, comment string
+        hostname, username, password, comment string
         ok bool
         err error
         job uint
@@ -57,7 +57,6 @@ func main() {
         Hostname: hostname,
         Username: username,
         Password: password,
-        ApiKey: apiKey,
         Logging: pango.LogOp | pango.LogAction,
     }}
     if err := fw.Initialize(); err != nil {
