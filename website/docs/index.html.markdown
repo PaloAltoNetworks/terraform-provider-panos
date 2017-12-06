@@ -14,6 +14,76 @@ firewall's config, such as data interfaces or security policies.
 
 Use the navigation to the left to read about the available resources.
 
+# Commits
+
+As of right now, Terraform does not provide native support for commits, so
+commits are handled out-of-band.  Please use the following script for commits:
+
+```go
+package main
+
+import (
+    "flag"
+    "log"
+    "os"
+
+    "github.com/PaloAltoNetworks/pango"
+)
+
+func main() {
+    var (
+        hostname, username, password, apiKey, comment string
+        ok bool
+        err error
+        job uint
+    )
+
+    log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds)
+
+    if hostname, ok = os.LookupEnv("PANOS_HOSTNAME"); !ok {
+        log.Fatalf("PANOS_HOSTNAME must be set")
+    }
+    if username, ok = os.LookupEnv("PANOS_USERNAME"); !ok {
+        log.Fatalf("PANOS_USERNAME must be set")
+    }
+    if password, ok = os.LookupEnv("PANOS_PASSWORD"); !ok {
+        log.Fatalf("PANOS_PASSWORD must be set")
+    }
+
+    flag.StringVar(&comment, "c", "", "Commit comment")
+    flag.Parse()
+
+    fw := &pango.Firewall{Client: pango.Client{
+        Hostname: hostname,
+        Username: username,
+        Password: password,
+        ApiKey: apiKey,
+        Logging: pango.LogOp | pango.LogAction,
+    }}
+    if err := fw.Initialize(); err != nil {
+        log.Fatalf("Failed: %s", err)
+    }
+
+    job, err = fw.Commit(comment, true, true, false, true)
+    if err != nil {
+        log.Fatalf("Error in commit: %s", err)
+    } else if job == 0 {
+        log.Printf("No commit needed")
+    } else {
+        log.Printf("Committed config successfully")
+    }
+}
+```
+
+Compile the above, put it somewhere in your `$PATH` (such as $HOME/bin), then
+invoke it after `terraform apply` / `terraform destroy`:
+
+```bash
+$ go build commit.go
+$ mv commit ~/bin
+$ terraform apply && commit -c 'My commit message'
+```
+
 ## Example Usage
 
 ```hcl
