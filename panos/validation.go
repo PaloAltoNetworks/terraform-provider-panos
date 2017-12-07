@@ -24,3 +24,14 @@ func validateStringIn(vals ...string) schema.SchemaValidateFunc {
 		return
 	}
 }
+
+func validateIntInRange(low, high int) schema.SchemaValidateFunc {
+	return func(v interface{}, k string) (ws []string, errors []error) {
+		value := v.(int)
+		if value < low || value > high {
+			errors = append(errors, fmt.Errorf("%q (%d) not in range [%d, %d]", k, value, low, high))
+		}
+
+		return
+	}
+}
