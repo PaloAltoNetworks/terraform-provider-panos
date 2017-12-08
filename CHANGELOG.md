@@ -11,4 +11,5 @@ FEATURES:
 * **New Resource:** `panos_security_policy`
 * **New Resource:** `panos_service_group`
 * **New Resource:** `panos_service_object`
+* **New Resource:** `panos_virtual_router`
 * **New Resource:** `panos_zone`
