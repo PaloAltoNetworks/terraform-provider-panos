@@ -35,3 +35,23 @@ func validateIntInRange(low, high int) schema.SchemaValidateFunc {
 		return
 	}
 }
+
+func validateSetKeyIsUnique(key string) schema.SchemaValidateFunc {
+	return func(v interface{}, k string) (ws []string, errors []error) {
+		counts := make(map[string]int)
+		list := v.(*schema.Set).List()
+		for i := range list {
+			group := list[i].(map[string]interface{})
+			val := group[key].(string)
+			counts[val] = counts[val] + 1
+		}
+
+		for ck, cv := range counts {
+			if cv > 1 {
+				errors = append(errors, fmt.Errorf("%q (%s) is not unique - repeated %d times", k, ck, cv))
+			}
+		}
+
+		return
+	}
+}
