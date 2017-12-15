@@ -1,13 +1,12 @@
 package main
 
 import (
-    "github.com/hashicorp/terraform/plugin"
-    "github.com/PaloAltoNetworks/terraform-provider-panos/panos"
+	"github.com/PaloAltoNetworks/terraform-provider-panos/panos"
+	"github.com/hashicorp/terraform/plugin"
 )
 
-
 func main() {
-    plugin.Serve(&plugin.ServeOpts{
-        ProviderFunc: panos.Provider,
-    })
+	plugin.Serve(&plugin.ServeOpts{
+		ProviderFunc: panos.Provider,
+	})
 }
