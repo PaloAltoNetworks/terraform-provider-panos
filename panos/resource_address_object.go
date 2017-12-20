@@ -46,8 +46,8 @@ func resourceAddressObject() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"tag": &schema.Schema{
-				Type:     schema.TypeList,
+			"tags": &schema.Schema{
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -65,7 +65,7 @@ func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 		Value:       d.Get("value").(string),
 		Type:        d.Get("type").(string),
 		Description: d.Get("description").(string),
-		Tag:         asStringList(d, "tag"),
+		Tag:         setAsList(d, "tags"),
 	}
 
 	return vsys, o
@@ -87,7 +87,7 @@ func saveDataAddressObject(d *schema.ResourceData, vsys string, o addr.Entry) {
 	d.Set("value", o.Value)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	d.Set("tag", o.Tag)
+	d.Set("tags", listAsSet(o.Tag))
 }
 
 func createAddressObject(d *schema.ResourceData, meta interface{}) error {

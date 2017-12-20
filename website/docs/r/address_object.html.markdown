@@ -17,7 +17,7 @@ resource "panos_address_object" "example" {
     name = "localnet"
     value = "192.168.80.0/24"
     description = "The 192.168.80 network"
-    tag = ["internal", "dmz"]
+    tags = ["internal", "dmz"]
 }
 ```
 
@@ -34,4 +34,4 @@ The following arguments are supported:
   forms depending on what type of address object this is, but can be something
   like `192.168.80.150` or `192.168.80.0/24`.
 * `description` - (Optional) The address object's description.
-* `tag` - (Optional) List of administrative tags.
+* `tags` - (Optional) List of administrative tags.

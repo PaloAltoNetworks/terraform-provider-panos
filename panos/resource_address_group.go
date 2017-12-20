@@ -48,8 +48,8 @@ func resourceAddressGroup() *schema.Resource {
 				Optional:    true,
 				Description: "Dynamic address group definition",
 			},
-			"tag": &schema.Schema{
-				Type:     schema.TypeList,
+			"tags": &schema.Schema{
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -67,7 +67,7 @@ func parseAddressGroup(d *schema.ResourceData) (string, addrgrp.Entry) {
 		Description: d.Get("description").(string),
 		Static:      asStringList(d, "static"),
 		Dynamic:     d.Get("dynamic").(string),
-		Tag:         asStringList(d, "tag"),
+		Tag:         setAsList(d, "tags"),
 	}
 
 	return vsys, o
@@ -88,7 +88,7 @@ func saveDataAddressGroup(d *schema.ResourceData, vsys string, o addrgrp.Entry) 
 	d.Set("description", o.Description)
 	d.Set("static", o.Static)
 	d.Set("dynamic", o.Dynamic)
-	d.Set("tag", o.Tag)
+	d.Set("tags", listAsSet(o.Tag))
 }
 
 func createAddressGroup(d *schema.ResourceData, meta interface{}) error {

@@ -52,9 +52,10 @@ func resourceServiceObject() *schema.Resource {
 				Required:    true,
 				Description: "The destination port definition",
 			},
-			"tag": &schema.Schema{
-				Type:     schema.TypeList,
+			"tags": &schema.Schema{
+				Type:     schema.TypeSet,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -72,7 +73,7 @@ func parseServiceObject(d *schema.ResourceData) (string, srvc.Entry) {
 		Protocol:        d.Get("protocol").(string),
 		SourcePort:      d.Get("source_port").(string),
 		DestinationPort: d.Get("destination_port").(string),
-		Tag:             asStringList(d, "tag"),
+		Tag:             setAsList(d, "tags"),
 	}
 
 	return vsys, o
@@ -95,7 +96,7 @@ func saveDataServiceObject(d *schema.ResourceData, vsys string, o srvc.Entry) {
 	d.Set("protocol", o.Protocol)
 	d.Set("source_port", o.SourcePort)
 	d.Set("destination_port", o.DestinationPort)
-	d.Set("tag", o.Tag)
+	d.Set("tags", listAsSet(o.Tag))
 }
 
 func createServiceObject(d *schema.ResourceData, meta interface{}) error {

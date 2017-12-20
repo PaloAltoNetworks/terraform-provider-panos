@@ -42,4 +42,4 @@ The following arguments are supported:
   defined address group.
 * `dynamic` - (Optional) The IP tags to include in this DAG.
 * `description` - (Optional) The address group's description.
-* `tag` - (Optional) List of administrative tags.
+* `tags` - (Optional) List of administrative tags.

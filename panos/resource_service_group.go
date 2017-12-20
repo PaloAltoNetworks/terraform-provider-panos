@@ -38,9 +38,10 @@ func resourceServiceGroup() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"tag": &schema.Schema{
-				Type:     schema.TypeList,
+			"tags": &schema.Schema{
+				Type:     schema.TypeSet,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -55,7 +56,7 @@ func parseServiceGroup(d *schema.ResourceData) (string, srvcgrp.Entry) {
 	o := srvcgrp.Entry{
 		Name:     d.Get("name").(string),
 		Services: asStringList(d, "services"),
-		Tag:      asStringList(d, "tag"),
+		Tag:      setAsList(d, "tags"),
 	}
 
 	return vsys, o
@@ -74,7 +75,7 @@ func saveDataServiceGroup(d *schema.ResourceData, vsys string, o srvcgrp.Entry) 
 	d.SetId(buildServiceGroupId(vsys, o.Name))
 	d.Set("name", o.Name)
 	d.Set("services", o.Services)
-	d.Set("tag", o.Tag)
+	d.Set("tags", listAsSet(o.Tag))
 }
 
 func createServiceGroup(d *schema.ResourceData, meta interface{}) error {

@@ -50,7 +50,7 @@ func resourceSecurityPolicy() *schema.Resource {
 				Optional: true,
 			},
 			"tags": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -176,6 +176,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"group": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -183,6 +184,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"virus": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -190,6 +192,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"spyware": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -197,6 +200,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"vulnerability": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -204,6 +208,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"url_filtering": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -211,6 +216,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"file_blocking": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -218,6 +224,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"wildfire_analysis": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -225,6 +232,7 @@ func resourceSecurityPolicy() *schema.Resource {
 			"data_filtering": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -241,7 +249,7 @@ func parseSecurityPolicy(d *schema.ResourceData) (string, string, security.Entry
 		Name:                            d.Get("name").(string),
 		Type:                            d.Get("type").(string),
 		Description:                     d.Get("description").(string),
-		Tags:                            asStringList(d, "tags"),
+		Tags:                            setAsList(d, "tags"),
 		SourceZone:                      asStringList(d, "source_zone"),
 		SourceAddress:                   asStringList(d, "source_address"),
 		NegateSource:                    d.Get("negate_source").(bool),
@@ -281,7 +289,7 @@ func saveDataSecurityPolicy(d *schema.ResourceData, vsys, rb string, o security.
 	d.Set("rulebase", rb)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	d.Set("tags", o.Tags)
+	d.Set("tags", listAsSet(o.Tags))
 	d.Set("source_zone", o.SourceZone)
 	d.Set("source_address", o.SourceAddress)
 	d.Set("negate_source", o.NegateSource)

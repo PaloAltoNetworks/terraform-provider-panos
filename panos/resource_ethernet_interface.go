@@ -43,7 +43,7 @@ func resourceEthernetInterface() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Description: "Administrative tags for the address object",
+				Description: "List of static IP addresses",
 			},
 			"enable_dhcp": &schema.Schema{
 				Type:     schema.TypeBool,

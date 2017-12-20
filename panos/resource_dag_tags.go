@@ -33,8 +33,9 @@ func resourceDagTags() *schema.Resource {
 							Required: true,
 						},
 						"tags": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Required: true,
+							MinItems: 1,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
@@ -62,9 +63,8 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 			return nil, nil, nil, nil, fmt.Errorf("IP %q already defined, please merge these groups", key)
 		}
 		info := cur[key]
-		tl := group["tags"].([]interface{})
+		tl := group["tags"].(*schema.Set).List()
 		otags := make([]string, 0, len(tl))
-		otagi := make([]interface{}, 0, len(tl))
 		mtags := make([]string, 0, len(tl))
 		for j := range tl {
 			tag := tl[j].(string)
@@ -77,7 +77,6 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 			}
 			if found {
 				otags = append(otags, tag)
-				otagi = append(otagi, tag)
 			} else {
 				mtags = append(mtags, tag)
 			}
@@ -85,7 +84,7 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 		if len(otags) > 0 {
 			ogroup := make(map[string]interface{})
 			ogroup["ip"] = key
-			ogroup["tags"] = otagi
+			ogroup["tags"] = listAsSet(otags)
 			overlapSet.Add(ogroup)
 			overlapMap[key] = otags
 		}

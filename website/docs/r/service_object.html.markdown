@@ -19,7 +19,7 @@ resource "panos_service_object" "example" {
     protocol = "tcp"
     description = "My service object"
     destination_port = "32123"
-    tag = ["internal", "dmz"]
+    tags = ["internal", "dmz"]
 }
 ```
 
@@ -37,4 +37,4 @@ The following arguments are supported:
   number, range (1-65535), or comma separated (80,8080,443).
 * `destination_port` - (Required) The destination port.  This can be a single
   port number, range (1-65535), or comma separated (80,8080,443).
-* `tag` - (Optional) List of administrative tags.
+* `tags` - (Optional) List of administrative tags.

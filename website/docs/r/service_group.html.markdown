@@ -27,4 +27,4 @@ The following arguments are supported:
 * `vsys` - (Optional) The vsys to put the service group into (default:
   `vsys1`).
 * `services` - (Required) List of services to put in this service group.
-* `tag` - (Optional) List of administrative tags.
+* `tags` - (Optional) List of administrative tags.
