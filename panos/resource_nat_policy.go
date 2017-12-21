@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -159,7 +160,7 @@ func resourceNatPolicy() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"tag": &schema.Schema{
+			"tags": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -199,32 +200,43 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		DatAddress:                   d.Get("dat_address").(string),
 		DatPort:                      d.Get("dat_port").(int),
 		Disabled:                     d.Get("disabled").(bool),
-		Tag:                          asStringList(d, "tag"),
+		Tag:                          asStringList(d, "tags"),
 	}
 
 	return vsys, rb, o
 }
 
 func saveDataNatPolicy(d *schema.ResourceData, vsys, rb string, o nat.Entry) {
+	var err error
 	d.SetId(buildNatPolicyId(vsys, rb, o.Name))
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("rulebase", rb)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	d.Set("source_zone", o.SourceZone)
+	if err = d.Set("source_zone", o.SourceZone); err != nil {
+		log.Printf("[WARN] Error setting 'source_zone' param for %q: %s", d.Id(), err)
+	}
 	d.Set("destination_zone", o.DestinationZone)
 	d.Set("to_interface", o.ToInterface)
 	d.Set("service", o.Service)
-	d.Set("source_address", o.SourceAddress)
-	d.Set("destination_address", o.DestinationAddress)
+	if err = d.Set("source_address", o.SourceAddress); err != nil {
+		log.Printf("[WARN] Error setting 'source_address' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("destination_address", o.DestinationAddress); err != nil {
+		log.Printf("[WARN] Error setting 'destination_address' param for %q: %s", d.Id(), err)
+	}
 	d.Set("sat_type", o.SatType)
 	d.Set("sat_address_type", o.SatAddressType)
-	d.Set("sat_translated_address", o.SatTranslatedAddress)
+	if err = d.Set("sat_translated_address", o.SatTranslatedAddress); err != nil {
+		log.Printf("[WARN] Error setting 'sat_translated_address' param for %q: %s", d.Id(), err)
+	}
 	d.Set("sat_interface", o.SatInterface)
 	d.Set("sat_ip_address", o.SatIpAddress)
 	d.Set("sat_fallback_type", o.SatFallbackType)
-	d.Set("sat_fallback_translated_address", o.SatFallbackTranslatedAddress)
+	if err = d.Set("sat_fallback_translated_address", o.SatFallbackTranslatedAddress); err != nil {
+		log.Printf("[WARN] Error setting 'sat_fallback_translated_address' param for %q: %s", d.Id(), err)
+	}
 	d.Set("sat_fallback_interface", o.SatFallbackInterface)
 	d.Set("sat_fallback_ip_type", o.SatFallbackIpType)
 	d.Set("sat_fallback_ip_address", o.SatFallbackIpAddress)
@@ -233,7 +245,9 @@ func saveDataNatPolicy(d *schema.ResourceData, vsys, rb string, o nat.Entry) {
 	d.Set("dat_address", o.DatAddress)
 	d.Set("dat_port", o.DatPort)
 	d.Set("disabled", o.Disabled)
-	d.Set("tag", o.Tag)
+	if err = d.Set("tags", o.Tag); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
 }
 
 func parseNatPolicyId(v string) (string, string, string) {
@@ -264,8 +278,12 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Policies.Nat.Get(vsys, rb, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataNatPolicy(d, vsys, rb, o)
@@ -295,7 +313,14 @@ func deleteNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, rb, name := parseNatPolicyId(d.Id())
 
-	_ = fw.Policies.Nat.Delete(vsys, rb, name)
+	err := fw.Policies.Nat.Delete(vsys, rb, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
+
 	d.SetId("")
 	return nil
 }

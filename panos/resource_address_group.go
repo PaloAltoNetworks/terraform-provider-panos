@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -83,12 +84,18 @@ func buildAddressGroupId(a, b string) string {
 }
 
 func saveDataAddressGroup(d *schema.ResourceData, vsys string, o addrgrp.Entry) {
+	var err error
 	d.SetId(buildAddressGroupId(vsys, o.Name))
 	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
 	d.Set("description", o.Description)
-	d.Set("static", o.Static)
+	if err = d.Set("static", o.Static); err != nil {
+		log.Printf("[WARN] Error setting 'static' field for %q: %s", d.Id(), err)
+	}
 	d.Set("dynamic", o.Dynamic)
-	d.Set("tags", listAsSet(o.Tag))
+	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' field for %q: %s", d.Id(), err)
+	}
 }
 
 func createAddressGroup(d *schema.ResourceData, meta interface{}) error {
@@ -109,8 +116,12 @@ func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.AddressGroup.Get(vsys, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataAddressGroup(d, vsys, o)
@@ -139,7 +150,13 @@ func deleteAddressGroup(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseAddressGroupId(d.Id())
 
-	_ = fw.Objects.AddressGroup.Delete(vsys, name)
+	err := fw.Objects.AddressGroup.Delete(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

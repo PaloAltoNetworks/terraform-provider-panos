@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -179,7 +180,9 @@ func saveDataEthernetInterface(d *schema.ResourceData, vsys string, o eth.Entry)
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("mode", o.Mode)
-	d.Set("static_ips", o.StaticIps)
+	if err := d.Set("static_ips", o.StaticIps); err != nil {
+		log.Printf("[WARN] Error setting 'static_ips' for %q: %s", d.Id(), err)
+	}
 	d.Set("enable_dhcp", o.EnableDhcp)
 	d.Set("create_dhcp_default_route", o.CreateDhcpDefaultRoute)
 	d.Set("dhcp_default_route_metric", o.DhcpDefaultRouteMetric)
@@ -217,8 +220,12 @@ func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.EthernetInterface.Get(name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataEthernetInterface(d, vsys, o)
@@ -236,14 +243,6 @@ func updateEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 	}
 	lo.Copy(o)
 	err = fw.Network.EthernetInterface.Edit(vsys, lo)
-	/*
-	   if err == nil {
-	       lo.Copy(o)
-	       err = fw.Network.EthernetInterface.Edit(vsys, lo)
-	   } else {
-	       err = fw.Network.EthernetInterface.Set(vsys, o)
-	   }
-	*/
 
 	if err == nil {
 		saveDataEthernetInterface(d, vsys, o)
@@ -256,7 +255,13 @@ func deleteEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 	vsys := d.Get("vsys").(string)
 	name := d.Get("name").(string)
 
-	_ = fw.Network.EthernetInterface.Delete(vsys, name)
+	err := fw.Network.EthernetInterface.Delete(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

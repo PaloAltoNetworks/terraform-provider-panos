@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -87,7 +88,9 @@ func saveDataAddressObject(d *schema.ResourceData, vsys string, o addr.Entry) {
 	d.Set("value", o.Value)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	d.Set("tags", listAsSet(o.Tag))
+	if err := d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
 }
 
 func createAddressObject(d *schema.ResourceData, meta interface{}) error {
@@ -108,8 +111,12 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.Address.Get(vsys, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataAddressObject(d, vsys, o)
@@ -127,14 +134,6 @@ func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
 	}
 	lo.Copy(o)
 	err = fw.Objects.Address.Edit(vsys, lo)
-	/*
-	   if err == nil {
-	       lo.Copy(o)
-	       err = fw.Objects.Address.Edit(vsys, lo)
-	   } else {
-	       err = fw.Objects.Address.Set(vsys, o)
-	   }
-	*/
 
 	if err == nil {
 		saveDataAddressObject(d, vsys, o)
@@ -146,7 +145,13 @@ func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseAddressObjectId(d.Id())
 
-	_ = fw.Objects.Address.Delete(vsys, name)
+	err := fw.Objects.Address.Delete(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

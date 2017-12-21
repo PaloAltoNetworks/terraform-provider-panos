@@ -1,6 +1,8 @@
 package panos
 
 import (
+	"log"
+
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/netw/mngtprof"
 
@@ -119,7 +121,9 @@ func saveDataManagementProfile(d *schema.ResourceData, o mngtprof.Entry) {
 	d.Set("userid_service", o.UseridService)
 	d.Set("userid_syslog_listener_ssl", o.UseridSyslogListenerSsl)
 	d.Set("userid_syslog_listener_udp", o.UseridSyslogListenerUdp)
-	d.Set("permitted_ip", o.PermittedIp)
+	if err := d.Set("permitted_ip", o.PermittedIp); err != nil {
+		log.Printf("[WARN] Error setting 'permitted_ip' for %q: %s", d.Id(), err)
+	}
 }
 
 func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
@@ -140,8 +144,12 @@ func readManagementProfile(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.ManagementProfile.Get(name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataManagementProfile(d, o)
@@ -159,19 +167,10 @@ func updateManagementProfile(d *schema.ResourceData, meta interface{}) error {
 	}
 	lo.Copy(o)
 	err = fw.Network.ManagementProfile.Edit(lo)
-	/*
-	   if err == nil {
-	       lo.Copy(o)
-	       err = fw.Network.ManagementProfile.Edit(lo)
-	   } else {
-	       err = fw.Network.ManagementProfile.Set(o)
-	   }
-	*/
 
 	if err == nil {
 		saveDataManagementProfile(d, o)
 	}
-
 	return err
 }
 
@@ -179,7 +178,13 @@ func deleteManagementProfile(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	name := d.Get("name").(string)
 
-	_ = fw.Network.ManagementProfile.Delete(name)
+	err := fw.Network.ManagementProfile.Delete(name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

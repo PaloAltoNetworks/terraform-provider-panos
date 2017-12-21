@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -174,68 +175,36 @@ func resourceSecurityPolicy() *schema.Resource {
 				Optional: true,
 			},
 			"group": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"virus": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"spyware": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"vulnerability": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"url_filtering": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"file_blocking": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"wildfire_analysis": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 			"data_filtering": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeString,
 				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
 			},
 		},
 	}
@@ -269,38 +238,59 @@ func parseSecurityPolicy(d *schema.ResourceData) (string, string, security.Entry
 		Schedule:                        d.Get("schedule").(string),
 		IcmpUnreachable:                 d.Get("icmp_unreachable").(bool),
 		DisableServerResponseInspection: d.Get("disable_server_response_inspection").(bool),
-		Group:            asStringList(d, "group"),
-		Virus:            asStringList(d, "virus"),
-		Spyware:          asStringList(d, "spyware"),
-		Vulnerability:    asStringList(d, "vulnerability"),
-		UrlFiltering:     asStringList(d, "url_filtering"),
-		FileBlocking:     asStringList(d, "file_blocking"),
-		WildFireAnalysis: asStringList(d, "wildfire_analysis"),
-		DataFiltering:    asStringList(d, "data_filtering"),
+		Group:            d.Get("group").(string),
+		Virus:            d.Get("virus").(string),
+		Spyware:          d.Get("spyware").(string),
+		Vulnerability:    d.Get("vulnerability").(string),
+		UrlFiltering:     d.Get("url_filtering").(string),
+		FileBlocking:     d.Get("file_blocking").(string),
+		WildFireAnalysis: d.Get("wildfire_analysis").(string),
+		DataFiltering:    d.Get("data_filtering").(string),
 	}
 
 	return vsys, rb, o
 }
 
 func saveDataSecurityPolicy(d *schema.ResourceData, vsys, rb string, o security.Entry) {
+	var err error
 	d.SetId(buildSecurityPolicyId(vsys, rb, o.Name))
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("rulebase", rb)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	d.Set("tags", listAsSet(o.Tags))
-	d.Set("source_zone", o.SourceZone)
-	d.Set("source_address", o.SourceAddress)
+	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("source_zone", o.SourceZone); err != nil {
+		log.Printf("[WARN] Error setting 'source_zone' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("source_address", o.SourceAddress); err != nil {
+		log.Printf("[WARN] Error setting 'source_address' param for %q: %s", d.Id(), err)
+	}
 	d.Set("negate_source", o.NegateSource)
-	d.Set("source_user", o.SourceUser)
-	d.Set("hip_profile", o.HipProfile)
-	d.Set("destination_zone", o.DestinationZone)
-	d.Set("destination_address", o.DestinationAddress)
+	if err = d.Set("source_user", o.SourceUser); err != nil {
+		log.Printf("[WARN] Error setting 'source_user' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("hip_profile", o.HipProfile); err != nil {
+		log.Printf("[WARN] Error setting 'hip_profile' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("destination_zone", o.DestinationZone); err != nil {
+		log.Printf("[WARN] Error setting 'destination_zone' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("destination_address", o.DestinationAddress); err != nil {
+		log.Printf("[WARN] Error setting 'destination_address' param for %q: %s", d.Id(), err)
+	}
 	d.Set("negate_destination", o.NegateDestination)
-	d.Set("application", o.Application)
-	d.Set("service", o.Service)
-	d.Set("category", o.Category)
+	if err = d.Set("application", o.Application); err != nil {
+		log.Printf("[WARN] Error setting 'application' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("service", o.Service); err != nil {
+		log.Printf("[WARN] Error setting 'service' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("category", o.Category); err != nil {
+		log.Printf("[WARN] Error setting 'category' param for %q: %s", d.Id(), err)
+	}
 	d.Set("action", o.Action)
 	d.Set("log_setting", o.LogSetting)
 	d.Set("log_start", o.LogStart)
@@ -332,6 +322,10 @@ func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, rb, o := parseSecurityPolicy(d)
 	o.Defaults()
+	/* Defaults() sets LogEnd to true if it is false, but if the user
+	   actually wants it as false, we need to reset it to what we were
+	   passed from the plan file. */
+	o.LogEnd = d.Get("log_end").(bool)
 
 	if err := fw.Policies.Security.VerifiableSet(vsys, rb, o); err != nil {
 		return err
@@ -347,8 +341,12 @@ func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Policies.Security.Get(vsys, rb, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataSecurityPolicy(d, vsys, rb, o)
@@ -371,14 +369,6 @@ func updateSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 	}
 	lo.Copy(o)
 	err = fw.Policies.Security.Edit(vsys, rb, lo)
-	/*
-	   if err == nil {
-	       lo.Copy(o)
-	       err = fw.Policies.Security.Edit(vsys, rb, lo)
-	   } else {
-	       err = fw.Policies.Security.Set(vsys, rb, o)
-	   }
-	*/
 
 	if err == nil {
 		saveDataSecurityPolicy(d, vsys, rb, o)
@@ -390,7 +380,13 @@ func deleteSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, rb, name := parseSecurityPolicyId(d.Id())
 
-	_ = fw.Policies.Security.Delete(vsys, rb, name)
+	err := fw.Policies.Security.Delete(vsys, rb, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

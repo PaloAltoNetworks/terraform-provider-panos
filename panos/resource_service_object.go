@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -96,7 +97,9 @@ func saveDataServiceObject(d *schema.ResourceData, vsys string, o srvc.Entry) {
 	d.Set("protocol", o.Protocol)
 	d.Set("source_port", o.SourcePort)
 	d.Set("destination_port", o.DestinationPort)
-	d.Set("tags", listAsSet(o.Tag))
+	if err := d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
 }
 
 func createServiceObject(d *schema.ResourceData, meta interface{}) error {
@@ -117,8 +120,12 @@ func readServiceObject(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.Services.Get(vsys, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataServiceObject(d, vsys, o)
@@ -147,7 +154,13 @@ func deleteServiceObject(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseServiceObjectId(d.Id())
 
-	_ = fw.Objects.Services.Delete(vsys, name)
+	err := fw.Objects.Services.Delete(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }

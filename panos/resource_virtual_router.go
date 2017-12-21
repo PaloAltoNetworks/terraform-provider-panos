@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -128,7 +129,9 @@ func saveDataVirtualRouter(d *schema.ResourceData, vsys string, o router.Entry) 
 	d.SetId(buildVirtualRouterId(vsys, o.Name))
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
-	d.Set("interfaces", o.Interfaces)
+	if err := d.Set("interfaces", o.Interfaces); err != nil {
+		log.Printf("[WARN] Error setting 'interfaces' for %q: %s", d.Id(), err)
+	}
 	d.Set("static_dist", o.StaticDist)
 	d.Set("static_ipv6_dist", o.StaticIpv6Dist)
 	d.Set("ospf_int_dist", o.OspfIntDist)
@@ -158,8 +161,12 @@ func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.VirtualRouter.Get(name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataVirtualRouter(d, vsys, o)
@@ -185,14 +192,21 @@ func updateVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteVirtualRouter(d *schema.ResourceData, meta interface{}) error {
+	var err error
 	fw := meta.(*pango.Firewall)
 	vsys := d.Get("vsys").(string)
 	name := d.Get("name").(string)
 
 	if name == "default" {
-		_ = fw.Network.VirtualRouter.CleanupDefault(vsys)
+		err = fw.Network.VirtualRouter.CleanupDefault(vsys)
 	} else {
-		_ = fw.Network.VirtualRouter.Delete(vsys, name)
+		err = fw.Network.VirtualRouter.Delete(vsys, name)
+	}
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
 	}
 	d.SetId("")
 	return nil

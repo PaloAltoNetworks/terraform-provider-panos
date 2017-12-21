@@ -189,12 +189,12 @@ func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	o, err := fw.Device.GeneralSettings.Get()
 	if err != nil {
-		d.SetId("")
-		return nil
+		// I don't think you can delete the general settings from a firewall,
+		// so any error is a real error.
+		return err
 	}
 
 	saveDataGeneralSettings(d, o)
-
 	return nil
 }
 

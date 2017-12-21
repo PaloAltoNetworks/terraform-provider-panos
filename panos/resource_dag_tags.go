@@ -3,6 +3,7 @@ package panos
 import (
 	"fmt"
 	"github.com/PaloAltoNetworks/pango"
+	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -99,7 +100,9 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 func saveDataDagTags(d *schema.ResourceData, vsys string, reg *schema.Set) {
 	d.SetId(vsys)
 	d.Set("vsys", vsys)
-	d.Set("register", reg)
+	if err := d.Set("register", reg); err != nil {
+		log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
+	}
 }
 
 func createUpdateDagTags(d *schema.ResourceData, meta interface{}) error {
@@ -157,7 +160,13 @@ func deleteDagTags(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	_ = fw.UserId.Run(nil, nil, nil, overlapMap, vsys)
+	// The UserId subsystem doesn't return ObjectNotFound, so we don't need
+	// to check for that at this point.
+	err = fw.UserId.Run(nil, nil, nil, overlapMap, vsys)
+	if err != nil {
+		return err
+	}
+
 	d.SetId("")
 	return nil
 }

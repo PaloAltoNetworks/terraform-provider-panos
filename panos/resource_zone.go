@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -107,6 +108,7 @@ func buildZoneId(a, b string) string {
 }
 
 func saveDataZone(d *schema.ResourceData, vsys string, o zone.Entry) {
+	var err error
 	d.SetId(buildZoneId(vsys, o.Name))
 	d.Set("vsys", vsys)
 	d.Set("name", o.Name)
@@ -114,9 +116,15 @@ func saveDataZone(d *schema.ResourceData, vsys string, o zone.Entry) {
 	d.Set("zone_profile", o.ZoneProfile)
 	d.Set("log_setting", o.LogSetting)
 	d.Set("enable_user_id", o.EnableUserId)
-	d.Set("interfaces", o.Interfaces)
-	d.Set("include_acl", o.IncludeAcl)
-	d.Set("exclude_acl", o.ExcludeAcl)
+	if err = d.Set("interfaces", o.Interfaces); err != nil {
+		log.Printf("[WARN] Error setting 'interfaces' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("include_acl", o.IncludeAcl); err != nil {
+		log.Printf("[WARN] Error setting 'include_acl' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("exclude_acl", o.ExcludeAcl); err != nil {
+		log.Printf("[WARN] Error setting 'exclude_acl' param for %q: %s", d.Id(), err)
+	}
 }
 
 func createZone(d *schema.ResourceData, meta interface{}) error {
@@ -137,8 +145,12 @@ func readZone(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.Zone.Get(vsys, name)
 	if err != nil {
-		d.SetId("")
-		return nil
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	saveDataZone(d, vsys, o)
@@ -167,7 +179,13 @@ func deleteZone(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseZoneId(d.Id())
 
-	_ = fw.Network.Zone.Delete(vsys, name)
+	err := fw.Network.Zone.Delete(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
 	d.SetId("")
 	return nil
 }
