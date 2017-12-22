@@ -4,6 +4,7 @@ FEATURES:
 
 * **New Resource:** `panos_address_group`
 * **New Resource:** `panos_address_object`
+* **New Resource:** `panos_administrative_tag`
 * **New Resource:** `panos_dag_tags`
 * **New Resource:** `panos_ethernet_interface`
 * **New Resource:** `panos_general_settings`
