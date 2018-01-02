@@ -89,6 +89,23 @@ func StrToMem(e []string) *Member {
     return &Member{e}
 }
 
+// MemToOneStr returns a string from a max_items=1 Member.
+func MemToOneStr(e *Member) string {
+    v := MemToStr(e)
+    if len(v) != 0 {
+        return v[0]
+    }
+    return ""
+}
+
+// OneStrToMem returns a Member definition for a max_items=1 string.
+func OneStrToMem(e string) *Member {
+    if e != "" {
+        return StrToMem([]string{e})
+    }
+    return StrToMem(nil)
+}
+
 // Entry defines an entry config node used for sending and receiving XML
 // from PANOS.
 type Entry struct {

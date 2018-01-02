@@ -3,10 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "c/wV4hwF/LTjTmcytEESu4ypa1w=",
+			"checksumSHA1": "0PY/WfDgb4cwfzyZvHZgHQicZC8=",
 			"path": "github.com/PaloAltoNetworks/pango",
-			"revision": "ede82a66eafd7cf4534e54d3026fac574161f3e0",
-			"revisionTime": "2017-12-14T00:11:34Z"
+			"revision": "cd37f239ac073adb1b13e0f3649bd7eba601fb31",
+			"revisionTime": "2017-12-21T22:10:00Z"
 		},
 		{
 			"checksumSHA1": "Ac+RRzbgMfrtoMWT/fdyNS5Rvk4=",
@@ -63,10 +63,10 @@
 			"revisionTime": "2017-12-14T00:11:34Z"
 		},
 		{
-			"checksumSHA1": "vsDMkdx7vaaa5m9yTJoaq8OA8GQ=",
+			"checksumSHA1": "3W7iYb+QnPIZfV9IwFyYrkFPqdY=",
 			"path": "github.com/PaloAltoNetworks/pango/objs",
-			"revision": "ede82a66eafd7cf4534e54d3026fac574161f3e0",
-			"revisionTime": "2017-12-14T00:11:34Z"
+			"revision": "cd37f239ac073adb1b13e0f3649bd7eba601fb31",
+			"revisionTime": "2017-12-21T22:10:00Z"
 		},
 		{
 			"checksumSHA1": "+AFgcTQOyKxDTgH6PSQFXToLcK0=",
@@ -93,6 +93,12 @@
 			"revisionTime": "2017-12-14T00:11:34Z"
 		},
 		{
+			"checksumSHA1": "0Q2dzk4uu8wD8ZwdwiHs0JiKa24=",
+			"path": "github.com/PaloAltoNetworks/pango/objs/tags",
+			"revision": "cd37f239ac073adb1b13e0f3649bd7eba601fb31",
+			"revisionTime": "2017-12-21T22:10:00Z"
+		},
+		{
 			"checksumSHA1": "yy0UzNsLVzNqZwZBB1axDA7Lzf8=",
 			"path": "github.com/PaloAltoNetworks/pango/poli",
 			"revision": "ede82a66eafd7cf4534e54d3026fac574161f3e0",
@@ -117,10 +123,10 @@
 			"revisionTime": "2017-12-14T00:11:34Z"
 		},
 		{
-			"checksumSHA1": "8+QO9jNMrvsaNx1EOMC06qZc/W8=",
+			"checksumSHA1": "FncPRZSRDN/56gSaZtyGV1wa0pE=",
 			"path": "github.com/PaloAltoNetworks/pango/util",
-			"revision": "ede82a66eafd7cf4534e54d3026fac574161f3e0",
-			"revisionTime": "2017-12-14T00:11:34Z"
+			"revision": "cd37f239ac073adb1b13e0f3649bd7eba601fb31",
+			"revisionTime": "2017-12-21T22:10:00Z"
 		},
 		{
 			"checksumSHA1": "Xx1hkTldTuS4btLi8w0iK/johd4=",

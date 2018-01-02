@@ -9,6 +9,7 @@ import (
     "github.com/PaloAltoNetworks/pango/objs/addrgrp"
     "github.com/PaloAltoNetworks/pango/objs/srvc"
     "github.com/PaloAltoNetworks/pango/objs/srvcgrp"
+    "github.com/PaloAltoNetworks/pango/objs/tags"
 )
 
 
@@ -18,6 +19,7 @@ type Objs struct {
     AddressGroup *addrgrp.AddrGrp
     Services *srvc.Srvc
     ServiceGroup *srvcgrp.SrvcGrp
+    Tags *tags.Tags
 }
 
 // Initialize is invoked on client.Initialize().
@@ -33,4 +35,7 @@ func (c *Objs) Initialize(i util.XapiClient) {
 
     c.ServiceGroup = &srvcgrp.SrvcGrp{}
     c.ServiceGroup.Initialize(i)
+
+    c.Tags = &tags.Tags{}
+    c.Tags.Initialize(i)
 }

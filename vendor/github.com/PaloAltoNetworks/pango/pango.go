@@ -840,12 +840,12 @@ func (c *Client) Communicate(data url.Values, ans interface{}) ([]byte, error) {
     // a result.
     if errType1.Failed() {
         if err == nil && errType1.Error() != "" {
-            return body, errType1
+            return body, PanosError{errType1.Error(), errType1.ResponseCode}
         }
         errType2 := panosErrorResponseWithLine{}
         err = xml.Unmarshal(body, &errType2)
         if err == nil && errType2.Error() != "" {
-            return body, errType2
+            return body, PanosError{errType2.Error(), errType2.ResponseCode}
         }
         // Still an error, but some unknown format.
         return body, fmt.Errorf("Unknown error format: %s", body)
@@ -1377,6 +1377,29 @@ func asString(i interface{}, attemptMarshal bool) (string, error) {
     }
 }
 
+// PanosError is the error struct returned from the Communicate method.
+type PanosError struct {
+    Msg string
+    Code int
+}
+
+// Error returns the error message.
+func (e PanosError) Error() string {
+    return e.Msg
+}
+
+// ObjectNotFound returns true on missing object error.
+func (e PanosError) ObjectNotFound() bool {
+    return e.Code == 7
+}
+
+/*
+// Code returns the error code.
+func (e PanosError) Code() int {
+    return e.ErrCode
+}
+*/
+
 type panosStatus struct {
     ResponseStatus string `xml:"status,attr"`
     ResponseCode int `xml:"code,attr"`
@@ -1402,7 +1425,7 @@ func (e panosStatus) codeError() string {
     case 6:
         return "Bad Xpath"
     case 7:
-        return "Object not present"
+        return "Object not found"
     case 8:
         return "Object not unique"
     case 10:
