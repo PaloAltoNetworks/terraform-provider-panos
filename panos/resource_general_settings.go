@@ -9,9 +9,9 @@ import (
 
 func resourceGeneralSettings() *schema.Resource {
 	return &schema.Resource{
-		Create: createGeneralSettings,
+		Create: createUpdateGeneralSettings,
 		Read:   readGeneralSettings,
-		Update: updateGeneralSettings,
+		Update: createUpdateGeneralSettings,
 		Delete: deleteGeneralSettings,
 
 		Schema: map[string]*schema.Schema{
@@ -147,8 +147,32 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
 	}
 }
 
-func saveDataGeneralSettings(d *schema.ResourceData, o general.Config) {
+func createUpdateGeneralSettings(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+
+	o, err := fw.Device.GeneralSettings.Get()
+	if err != nil {
+		return err
+	}
+
+	o.Merge(parseGeneralSettings(d))
+	if err = fw.Device.GeneralSettings.Edit(o); err != nil {
+		return err
+	}
+
 	d.SetId(o.Hostname)
+	return readGeneralSettings(d, meta)
+}
+
+func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+	o, err := fw.Device.GeneralSettings.Get()
+	if err != nil {
+		// I don't think you can delete the general settings from a firewall,
+		// so any error is a real error.
+		return err
+	}
+
 	d.Set("hostname", o.Hostname)
 	d.Set("timezone", o.Timezone)
 	d.Set("domain", o.Domain)
@@ -166,52 +190,6 @@ func saveDataGeneralSettings(d *schema.ResourceData, o general.Config) {
 	d.Set("ntp_secondary_key_id", o.NtpSecondaryKeyId)
 	d.Set("ntp_secondary_algorithm", o.NtpSecondaryAlgorithm)
 	d.Set("ntp_secondary_auth_key", o.NtpSecondaryAuthKey)
-}
-
-func createGeneralSettings(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-
-	o, err := fw.Device.GeneralSettings.Get()
-	if err != nil {
-		return err
-	}
-
-	o.Merge(parseGeneralSettings(d))
-	if err = fw.Device.GeneralSettings.Edit(o); err != nil {
-		return err
-	}
-
-	d.SetId(o.Hostname)
-	return nil
-}
-
-func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	o, err := fw.Device.GeneralSettings.Get()
-	if err != nil {
-		// I don't think you can delete the general settings from a firewall,
-		// so any error is a real error.
-		return err
-	}
-
-	saveDataGeneralSettings(d, o)
-	return nil
-}
-
-func updateGeneralSettings(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-
-	o, err := fw.Device.GeneralSettings.Get()
-	if err != nil {
-		return err
-	}
-
-	o.Merge(parseGeneralSettings(d))
-	if err = fw.Device.GeneralSettings.Edit(o); err != nil {
-		return err
-	}
-
-	saveDataGeneralSettings(d, o)
 
 	return nil
 }

@@ -72,19 +72,6 @@ func buildServiceGroupId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
-func saveDataServiceGroup(d *schema.ResourceData, vsys string, o srvcgrp.Entry) {
-	var err error
-	d.SetId(buildServiceGroupId(vsys, o.Name))
-	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	if err = d.Set("services", o.Services); err != nil {
-		log.Printf("[WARN] Error setting 'services' param for %q: %s", d.Id(), err)
-	}
-	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
-}
-
 func createServiceGroup(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseServiceGroup(d)
@@ -93,11 +80,13 @@ func createServiceGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataServiceGroup(d, vsys, o)
-	return nil
+	d.SetId(buildServiceGroupId(vsys, o.Name))
+	return readServiceGroup(d, meta)
 }
 
 func readServiceGroup(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseServiceGroupId(d.Id())
 
@@ -111,12 +100,21 @@ func readServiceGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataServiceGroup(d, vsys, o)
+	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
+	if err = d.Set("services", o.Services); err != nil {
+		log.Printf("[WARN] Error setting 'services' param for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
+
 	return nil
 }
 
 func updateServiceGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseServiceGroup(d)
 
@@ -125,12 +123,11 @@ func updateServiceGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Objects.ServiceGroup.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataServiceGroup(d, vsys, o)
+	if err = fw.Objects.ServiceGroup.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readServiceGroup(d, meta)
 }
 
 func deleteServiceGroup(d *schema.ResourceData, meta interface{}) error {

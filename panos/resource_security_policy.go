@@ -251,9 +251,48 @@ func parseSecurityPolicy(d *schema.ResourceData) (string, string, security.Entry
 	return vsys, rb, o
 }
 
-func saveDataSecurityPolicy(d *schema.ResourceData, vsys, rb string, o security.Entry) {
-	var err error
+func parseSecurityPolicyId(v string) (string, string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1], t[2]
+}
+
+func buildSecurityPolicyId(a, b, c string) string {
+	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
+}
+
+func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+	vsys, rb, o := parseSecurityPolicy(d)
+	o.Defaults()
+	/* Defaults() sets LogEnd to true if it is false, but if the user
+	   actually wants it as false, we need to reset it to what we were
+	   passed from the plan file. */
+	o.LogEnd = d.Get("log_end").(bool)
+
+	if err := fw.Policies.Security.VerifiableSet(vsys, rb, o); err != nil {
+		return err
+	}
+
 	d.SetId(buildSecurityPolicyId(vsys, rb, o.Name))
+	return readSecurityPolicy(d, meta)
+}
+
+func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	fw := meta.(*pango.Firewall)
+	vsys, rb, name := parseSecurityPolicyId(d.Id())
+
+	o, err := fw.Policies.Security.Get(vsys, rb, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("rulebase", rb)
@@ -307,54 +346,13 @@ func saveDataSecurityPolicy(d *schema.ResourceData, vsys, rb string, o security.
 	d.Set("file_blocking", o.FileBlocking)
 	d.Set("wildfire_analysis", o.WildFireAnalysis)
 	d.Set("data_filtering", o.DataFiltering)
-}
 
-func parseSecurityPolicyId(v string) (string, string, string) {
-	t := strings.Split(v, IdSeparator)
-	return t[0], t[1], t[2]
-}
-
-func buildSecurityPolicyId(a, b, c string) string {
-	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
-}
-
-func createSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, rb, o := parseSecurityPolicy(d)
-	o.Defaults()
-	/* Defaults() sets LogEnd to true if it is false, but if the user
-	   actually wants it as false, we need to reset it to what we were
-	   passed from the plan file. */
-	o.LogEnd = d.Get("log_end").(bool)
-
-	if err := fw.Policies.Security.VerifiableSet(vsys, rb, o); err != nil {
-		return err
-	}
-
-	saveDataSecurityPolicy(d, vsys, rb, o)
-	return nil
-}
-
-func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, rb, name := parseSecurityPolicyId(d.Id())
-
-	o, err := fw.Policies.Security.Get(vsys, rb, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
-		}
-		return err
-	}
-
-	saveDataSecurityPolicy(d, vsys, rb, o)
 	return nil
 }
 
 func updateSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, rb, o := parseSecurityPolicy(d)
 	o.Defaults()
@@ -368,12 +366,11 @@ func updateSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Policies.Security.Edit(vsys, rb, lo)
-
-	if err == nil {
-		saveDataSecurityPolicy(d, vsys, rb, o)
+	if err = fw.Policies.Security.Edit(vsys, rb, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readSecurityPolicy(d, meta)
 }
 
 func deleteSecurityPolicy(d *schema.ResourceData, meta interface{}) error {

@@ -108,8 +108,34 @@ func parseManagementProfile(d *schema.ResourceData) mngtprof.Entry {
 	return o
 }
 
-func saveDataManagementProfile(d *schema.ResourceData, o mngtprof.Entry) {
+func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+	o := parseManagementProfile(d)
+
+	if err := fw.Network.ManagementProfile.Set(o); err != nil {
+		return err
+	}
+
 	d.SetId(o.Name)
+	return readManagementProfile(d, meta)
+}
+
+func readManagementProfile(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	fw := meta.(*pango.Firewall)
+	name := d.Get("name").(string)
+
+	o, err := fw.Network.ManagementProfile.Get(name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
 	d.Set("ping", o.Ping)
 	d.Set("telnet", o.Telnet)
 	d.Set("ssh", o.Ssh)
@@ -124,40 +150,13 @@ func saveDataManagementProfile(d *schema.ResourceData, o mngtprof.Entry) {
 	if err := d.Set("permitted_ip", o.PermittedIp); err != nil {
 		log.Printf("[WARN] Error setting 'permitted_ip' for %q: %s", d.Id(), err)
 	}
-}
 
-func createManagementProfile(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	o := parseManagementProfile(d)
-
-	if err := fw.Network.ManagementProfile.Set(o); err != nil {
-		return err
-	}
-
-	saveDataManagementProfile(d, o)
-	return nil
-}
-
-func readManagementProfile(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	name := d.Get("name").(string)
-
-	o, err := fw.Network.ManagementProfile.Get(name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
-		}
-		return err
-	}
-
-	saveDataManagementProfile(d, o)
 	return nil
 }
 
 func updateManagementProfile(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	o := parseManagementProfile(d)
 
@@ -166,12 +165,11 @@ func updateManagementProfile(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Network.ManagementProfile.Edit(lo)
-
-	if err == nil {
-		saveDataManagementProfile(d, o)
+	if err = fw.Network.ManagementProfile.Edit(lo); err != nil {
+		return err
 	}
-	return err
+
+	return readManagementProfile(d, meta)
 }
 
 func deleteManagementProfile(d *schema.ResourceData, meta interface{}) error {

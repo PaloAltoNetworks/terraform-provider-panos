@@ -97,14 +97,6 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 	return dag, missingMap, overlapMap, overlapSet, nil
 }
 
-func saveDataDagTags(d *schema.ResourceData, vsys string, reg *schema.Set) {
-	d.SetId(vsys)
-	d.Set("vsys", vsys)
-	if err := d.Set("register", reg); err != nil {
-		log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
-	}
-}
-
 func createUpdateDagTags(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys := d.Get("vsys").(string)
@@ -114,17 +106,17 @@ func createUpdateDagTags(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	dag, missingMap, _, _, err := parseDagTags(cur, d)
+	_, missingMap, _, _, err := parseDagTags(cur, d)
 	if err != nil {
 		return err
 	}
 
-	err = fw.UserId.Run(nil, nil, missingMap, nil, vsys)
-	if err == nil {
-		saveDataDagTags(d, vsys, dag)
+	if err = fw.UserId.Run(nil, nil, missingMap, nil, vsys); err != nil {
+		return err
 	}
 
-	return err
+	d.SetId(vsys)
+	return readDagTags(d, meta)
 }
 
 func readDagTags(d *schema.ResourceData, meta interface{}) error {
@@ -141,7 +133,12 @@ func readDagTags(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	saveDataDagTags(d, vsys, overlapSet)
+
+	d.Set("vsys", vsys)
+	if err := d.Set("register", overlapSet); err != nil {
+		log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
+	}
+
 	return nil
 }
 

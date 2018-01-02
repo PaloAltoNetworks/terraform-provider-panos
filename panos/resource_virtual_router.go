@@ -125,24 +125,6 @@ func parseVirtualRouter(d *schema.ResourceData) (string, router.Entry) {
 	return vsys, o
 }
 
-func saveDataVirtualRouter(d *schema.ResourceData, vsys string, o router.Entry) {
-	d.SetId(buildVirtualRouterId(vsys, o.Name))
-	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	if err := d.Set("interfaces", o.Interfaces); err != nil {
-		log.Printf("[WARN] Error setting 'interfaces' for %q: %s", d.Id(), err)
-	}
-	d.Set("static_dist", o.StaticDist)
-	d.Set("static_ipv6_dist", o.StaticIpv6Dist)
-	d.Set("ospf_int_dist", o.OspfIntDist)
-	d.Set("ospf_ext_dist", o.OspfExtDist)
-	d.Set("ospfv3_int_dist", o.Ospfv3IntDist)
-	d.Set("ospfv3_ext_dist", o.Ospfv3ExtDist)
-	d.Set("ibgp_dist", o.IbgpDist)
-	d.Set("ebgp_dist", o.EbgpDist)
-	d.Set("rip_dist", o.RipDist)
-}
-
 func createVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseVirtualRouter(d)
@@ -151,8 +133,8 @@ func createVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataVirtualRouter(d, vsys, o)
-	return nil
+	d.SetId(buildVirtualRouterId(vsys, o.Name))
+	return readVirtualRouter(d, meta)
 }
 
 func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
@@ -169,12 +151,27 @@ func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataVirtualRouter(d, vsys, o)
+	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
+	if err := d.Set("interfaces", o.Interfaces); err != nil {
+		log.Printf("[WARN] Error setting 'interfaces' for %q: %s", d.Id(), err)
+	}
+	d.Set("static_dist", o.StaticDist)
+	d.Set("static_ipv6_dist", o.StaticIpv6Dist)
+	d.Set("ospf_int_dist", o.OspfIntDist)
+	d.Set("ospf_ext_dist", o.OspfExtDist)
+	d.Set("ospfv3_int_dist", o.Ospfv3IntDist)
+	d.Set("ospfv3_ext_dist", o.Ospfv3ExtDist)
+	d.Set("ibgp_dist", o.IbgpDist)
+	d.Set("ebgp_dist", o.EbgpDist)
+	d.Set("rip_dist", o.RipDist)
+
 	return nil
 }
 
 func updateVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseVirtualRouter(d)
 
@@ -183,12 +180,11 @@ func updateVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Network.VirtualRouter.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataVirtualRouter(d, vsys, o)
+	if err = fw.Network.VirtualRouter.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readVirtualRouter(d, meta)
 }
 
 func deleteVirtualRouter(d *schema.ResourceData, meta interface{}) error {

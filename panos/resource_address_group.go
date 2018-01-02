@@ -83,21 +83,6 @@ func buildAddressGroupId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
-func saveDataAddressGroup(d *schema.ResourceData, vsys string, o addrgrp.Entry) {
-	var err error
-	d.SetId(buildAddressGroupId(vsys, o.Name))
-	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	d.Set("description", o.Description)
-	if err = d.Set("static", o.Static); err != nil {
-		log.Printf("[WARN] Error setting 'static' field for %q: %s", d.Id(), err)
-	}
-	d.Set("dynamic", o.Dynamic)
-	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' field for %q: %s", d.Id(), err)
-	}
-}
-
 func createAddressGroup(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseAddressGroup(d)
@@ -106,11 +91,13 @@ func createAddressGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAddressGroup(d, vsys, o)
-	return nil
+	d.SetId(buildAddressGroupId(vsys, o.Name))
+	return readAddressGroup(d, meta)
 }
 
 func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseAddressGroupId(d.Id())
 
@@ -124,12 +111,23 @@ func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAddressGroup(d, vsys, o)
+	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
+	d.Set("description", o.Description)
+	if err = d.Set("static", o.Static); err != nil {
+		log.Printf("[WARN] Error setting 'static' field for %q: %s", d.Id(), err)
+	}
+	d.Set("dynamic", o.Dynamic)
+	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' field for %q: %s", d.Id(), err)
+	}
+
 	return nil
 }
 
 func updateAddressGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseAddressGroup(d)
 
@@ -138,12 +136,11 @@ func updateAddressGroup(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Objects.AddressGroup.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataAddressGroup(d, vsys, o)
+	if err = fw.Objects.AddressGroup.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readAddressGroup(d, meta)
 }
 
 func deleteAddressGroup(d *schema.ResourceData, meta interface{}) error {

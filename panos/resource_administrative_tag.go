@@ -63,14 +63,6 @@ func buildAdministrativeTagId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
-func saveDataAdministrativeTag(d *schema.ResourceData, vsys string, o tags.Entry) {
-	d.SetId(buildAdministrativeTagId(vsys, o.Name))
-	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	d.Set("color", o.Color)
-	d.Set("comment", o.Comment)
-}
-
 func createAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseAdministrativeTag(d)
@@ -79,8 +71,8 @@ func createAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAdministrativeTag(d, vsys, o)
-	return nil
+	d.SetId(buildAdministrativeTagId(vsys, o.Name))
+	return readAdministrativeTag(d, meta)
 }
 
 func readAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
@@ -97,7 +89,11 @@ func readAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAdministrativeTag(d, vsys, o)
+	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
+	d.Set("color", o.Color)
+	d.Set("comment", o.Comment)
+
 	return nil
 }
 
@@ -111,12 +107,11 @@ func updateAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Objects.Tags.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataAdministrativeTag(d, vsys, o)
+	if err = fw.Objects.Tags.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readAdministrativeTag(d, meta)
 }
 
 func deleteAdministrativeTag(d *schema.ResourceData, meta interface{}) error {

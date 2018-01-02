@@ -206,9 +206,44 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 	return vsys, rb, o
 }
 
-func saveDataNatPolicy(d *schema.ResourceData, vsys, rb string, o nat.Entry) {
-	var err error
+func parseNatPolicyId(v string) (string, string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1], t[2]
+}
+
+func buildNatPolicyId(a, b, c string) string {
+	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
+}
+
+func createNatPolicy(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+	vsys, rb, o := parseNatPolicy(d)
+	o.Defaults()
+
+	if err := fw.Policies.Nat.Set(vsys, rb, o); err != nil {
+		return err
+	}
+
 	d.SetId(buildNatPolicyId(vsys, rb, o.Name))
+	return readNatPolicy(d, meta)
+}
+
+func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	fw := meta.(*pango.Firewall)
+	vsys, rb, name := parseNatPolicyId(d.Id())
+
+	o, err := fw.Policies.Nat.Get(vsys, rb, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("rulebase", rb)
@@ -248,50 +283,13 @@ func saveDataNatPolicy(d *schema.ResourceData, vsys, rb string, o nat.Entry) {
 	if err = d.Set("tags", o.Tag); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
-}
 
-func parseNatPolicyId(v string) (string, string, string) {
-	t := strings.Split(v, IdSeparator)
-	return t[0], t[1], t[2]
-}
-
-func buildNatPolicyId(a, b, c string) string {
-	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
-}
-
-func createNatPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, rb, o := parseNatPolicy(d)
-	o.Defaults()
-
-	if err := fw.Policies.Nat.Set(vsys, rb, o); err != nil {
-		return err
-	}
-
-	saveDataNatPolicy(d, vsys, rb, o)
-	return nil
-}
-
-func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, rb, name := parseNatPolicyId(d.Id())
-
-	o, err := fw.Policies.Nat.Get(vsys, rb, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
-		}
-		return err
-	}
-
-	saveDataNatPolicy(d, vsys, rb, o)
 	return nil
 }
 
 func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, rb, o := parseNatPolicy(d)
 	o.Defaults()
@@ -301,12 +299,11 @@ func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Policies.Nat.Edit(vsys, rb, lo)
-
-	if err == nil {
-		saveDataNatPolicy(d, vsys, rb, o)
+	if err = fw.Policies.Nat.Edit(vsys, rb, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readNatPolicy(d, meta)
 }
 
 func deleteNatPolicy(d *schema.ResourceData, meta interface{}) error {

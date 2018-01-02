@@ -107,9 +107,34 @@ func buildZoneId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
-func saveDataZone(d *schema.ResourceData, vsys string, o zone.Entry) {
-	var err error
+func createZone(d *schema.ResourceData, meta interface{}) error {
+	fw := meta.(*pango.Firewall)
+	vsys, o := parseZone(d)
+
+	if err := fw.Network.Zone.Set(vsys, o); err != nil {
+		return err
+	}
+
 	d.SetId(buildZoneId(vsys, o.Name))
+	return readZone(d, meta)
+}
+
+func readZone(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	fw := meta.(*pango.Firewall)
+	vsys, name := parseZoneId(d.Id())
+
+	o, err := fw.Network.Zone.Get(vsys, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
 	d.Set("vsys", vsys)
 	d.Set("name", o.Name)
 	d.Set("mode", o.Mode)
@@ -125,40 +150,13 @@ func saveDataZone(d *schema.ResourceData, vsys string, o zone.Entry) {
 	if err = d.Set("exclude_acl", o.ExcludeAcl); err != nil {
 		log.Printf("[WARN] Error setting 'exclude_acl' param for %q: %s", d.Id(), err)
 	}
-}
 
-func createZone(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, o := parseZone(d)
-
-	if err := fw.Network.Zone.Set(vsys, o); err != nil {
-		return err
-	}
-
-	saveDataZone(d, vsys, o)
-	return nil
-}
-
-func readZone(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseZoneId(d.Id())
-
-	o, err := fw.Network.Zone.Get(vsys, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
-		}
-		return err
-	}
-
-	saveDataZone(d, vsys, o)
 	return nil
 }
 
 func updateZone(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseZone(d)
 
@@ -167,12 +165,11 @@ func updateZone(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Network.Zone.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataZone(d, vsys, o)
+	if err = fw.Network.Zone.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readZone(d, meta)
 }
 
 func deleteZone(d *schema.ResourceData, meta interface{}) error {

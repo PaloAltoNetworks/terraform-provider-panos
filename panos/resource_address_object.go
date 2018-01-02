@@ -81,18 +81,6 @@ func buildAddressObjectId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
-func saveDataAddressObject(d *schema.ResourceData, vsys string, o addr.Entry) {
-	d.SetId(buildAddressObjectId(vsys, o.Name))
-	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	d.Set("value", o.Value)
-	d.Set("type", o.Type)
-	d.Set("description", o.Description)
-	if err := d.Set("tags", listAsSet(o.Tag)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
-}
-
 func createAddressObject(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseAddressObject(d)
@@ -101,11 +89,13 @@ func createAddressObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAddressObject(d, vsys, o)
-	return nil
+	d.SetId(buildAddressObjectId(vsys, o.Name))
+	return readAddressObject(d, meta)
 }
 
 func readAddressObject(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseAddressObjectId(d.Id())
 
@@ -119,12 +109,21 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	saveDataAddressObject(d, vsys, o)
+	d.Set("name", o.Name)
+	d.Set("vsys", vsys)
+	d.Set("value", o.Value)
+	d.Set("type", o.Type)
+	d.Set("description", o.Description)
+	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
+
 	return nil
 }
 
 func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
 	var err error
+
 	fw := meta.(*pango.Firewall)
 	vsys, o := parseAddressObject(d)
 
@@ -133,12 +132,11 @@ func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	lo.Copy(o)
-	err = fw.Objects.Address.Edit(vsys, lo)
-
-	if err == nil {
-		saveDataAddressObject(d, vsys, o)
+	if err = fw.Objects.Address.Edit(vsys, lo); err != nil {
+		return err
 	}
-	return err
+
+	return readAddressObject(d, meta)
 }
 
 func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
