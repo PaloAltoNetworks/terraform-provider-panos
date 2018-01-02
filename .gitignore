@@ -13,5 +13,9 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
-# Ignore vim swap files
+# Misc ignores
 *.swp
+.DS_Store
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
