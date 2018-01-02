@@ -37,16 +37,16 @@ type Entry struct {
     Schedule string
     IcmpUnreachable bool
     DisableServerResponseInspection bool
-    Group []string
+    Group string
     Target []string
     NegateTarget bool
-    Virus []string
-    Spyware []string
-    Vulnerability []string
-    UrlFiltering []string
-    FileBlocking []string
-    WildFireAnalysis []string
-    DataFiltering []string
+    Virus string
+    Spyware string
+    Vulnerability string
+    UrlFiltering string
+    FileBlocking string
+    WildFireAnalysis string
+    DataFiltering string
 }
 
 // Defaults sets params with uninitialized values to their GUI default setting.
@@ -364,15 +364,15 @@ func (o *container_v1) Normalize() Entry {
         ans.Target = util.EntToStr(o.Answer.TargetInfo.Target)
     }
     if o.Answer.ProfileSettings != nil {
-        ans.Group = util.MemToStr(o.Answer.ProfileSettings.Group)
+        ans.Group = util.MemToOneStr(o.Answer.ProfileSettings.Group)
         if o.Answer.ProfileSettings.Profiles != nil {
-            ans.Virus = util.MemToStr(o.Answer.ProfileSettings.Profiles.Virus)
-            ans.Spyware = util.MemToStr(o.Answer.ProfileSettings.Profiles.Spyware)
-            ans.Vulnerability = util.MemToStr(o.Answer.ProfileSettings.Profiles.Vulnerability)
-            ans.UrlFiltering = util.MemToStr(o.Answer.ProfileSettings.Profiles.UrlFiltering)
-            ans.FileBlocking = util.MemToStr(o.Answer.ProfileSettings.Profiles.FileBlocking)
-            ans.WildFireAnalysis = util.MemToStr(o.Answer.ProfileSettings.Profiles.WildFireAnalysis)
-            ans.DataFiltering = util.MemToStr(o.Answer.ProfileSettings.Profiles.DataFiltering)
+            ans.Virus = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.Virus)
+            ans.Spyware = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.Spyware)
+            ans.Vulnerability = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.Vulnerability)
+            ans.UrlFiltering = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.UrlFiltering)
+            ans.FileBlocking = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.FileBlocking)
+            ans.WildFireAnalysis = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.WildFireAnalysis)
+            ans.DataFiltering = util.MemToOneStr(o.Answer.ProfileSettings.Profiles.DataFiltering)
         }
     }
 
@@ -465,20 +465,20 @@ func specify_v1(e Entry) interface{} {
         }
         ans.TargetInfo = nfo
     }
-    gs := e.Virus != nil || e.Spyware != nil || e.Vulnerability != nil || e.UrlFiltering != nil || e.FileBlocking != nil || e.WildFireAnalysis != nil || e.DataFiltering != nil
-    if e.Group != nil || gs {
+    gs := e.Virus != "" || e.Spyware != "" || e.Vulnerability != "" || e.UrlFiltering != "" || e.FileBlocking != "" || e.WildFireAnalysis != "" || e.DataFiltering != ""
+    if e.Group != "" || gs {
         ps := &profileSettings{
-            Group: util.StrToMem(e.Group),
+            Group: util.OneStrToMem(e.Group),
         }
         if gs {
             ps.Profiles = &profileSettingsProfile{
-                util.StrToMem(e.Virus),
-                util.StrToMem(e.Spyware),
-                util.StrToMem(e.Vulnerability),
-                util.StrToMem(e.UrlFiltering),
-                util.StrToMem(e.FileBlocking),
-                util.StrToMem(e.WildFireAnalysis),
-                util.StrToMem(e.DataFiltering),
+                util.OneStrToMem(e.Virus),
+                util.OneStrToMem(e.Spyware),
+                util.OneStrToMem(e.Vulnerability),
+                util.OneStrToMem(e.UrlFiltering),
+                util.OneStrToMem(e.FileBlocking),
+                util.OneStrToMem(e.WildFireAnalysis),
+                util.OneStrToMem(e.DataFiltering),
             }
         }
         ans.ProfileSettings = ps
