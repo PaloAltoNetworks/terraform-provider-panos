@@ -56,8 +56,8 @@ func parseServiceGroup(d *schema.ResourceData) (string, srvcgrp.Entry) {
 	vsys := d.Get("vsys").(string)
 	o := srvcgrp.Entry{
 		Name:     d.Get("name").(string),
-		Services: asStringList(d, "services"),
-		Tag:      setAsList(d, "tags"),
+		Services: asStringList(d.Get("services").([]interface{})),
+		Tag:      setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o

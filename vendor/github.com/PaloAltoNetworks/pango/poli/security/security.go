@@ -227,16 +227,26 @@ func (c *Security) Set(vsys, base string, e ...Entry) error {
 // which will be interpreted as false, when in fact it is true.  We can
 // get around this by setting the value to a non-standard value, then back
 // again, in which case it will properly show up in the returned XML.
-func (c *Security) VerifiableSet(vsys, base string, e Entry) error {
-    again := e.LogEnd
-    e.LogEnd = false
+func (c *Security) VerifiableSet(vsys, base string, e ...Entry) error {
+    c.con.LogAction("(set) performing verifiable set")
+    again := make([]Entry, 0, len(e))
 
-    if err := c.Set(vsys, base, e); err != nil || !again {
+    for i := range e {
+        if e[i].LogEnd {
+            again = append(again, e[i])
+            e[i].LogEnd = false
+        }
+    }
+
+    if err := c.Set(vsys, base, e...); err != nil {
         return err
     }
 
-    e.LogEnd = true
-    return c.Set(vsys, base, e)
+    if len(again) == 0 {
+        return nil
+    }
+
+    return c.Set(vsys, base, again...)
 }
 
 // Edit performs EDIT to create / update a security policy.
@@ -281,6 +291,20 @@ func (c *Security) Delete(vsys, base string, e ...interface{}) error {
     path := c.xpath(vsys, base, names)
     _, err = c.con.Delete(path, nil, nil)
     return err
+}
+
+// DeleteAll removes all security policies from the specified vsys / rulebase.
+func (c *Security) DeleteAll(vsys, base string) error {
+    c.con.LogAction("(delete) all security policies")
+    list, err := c.GetList(vsys, base)
+    if err != nil || len(list) == 0 {
+        return err
+    }
+    li := make([]interface{}, len(list))
+    for i := range list {
+        li[i] = list[i]
+    }
+    return c.Delete(vsys, base, li...)
 }
 
 /** Internal functions for the Zone struct **/

@@ -10,7 +10,7 @@ description: |-
 
 This resource allows you to add/update/delete NAT policies.
 
-The prefix `Sat` stands for "Source Address Translation" while the prefix "Dat"
+The prefix `sat` stands for "Source Address Translation" while the prefix "dat"
 stands for "Destination Address Translation".  The order of the params in
 this resource and their naming matches how the params are presented in
 the GUI.  Thus, having a GUI window open while creating your resource
@@ -28,6 +28,8 @@ resource "panos_nat_policy" "example" {
     source_zone = ["zone1"]
     destination_zone = "zone2"
     to_interface = "ethernet1/3"
+    source_address = ["any"]
+    destination_address = ["any"]
     sat_type = "none"
     dat_address = "my dat address object"
 }
@@ -46,15 +48,13 @@ The following arguments are supported:
 * `description` - (Optional) The description.
 * `type` - (Optional). NAT type.  This can be `ipv4` (default), `nat64`, or
   `nptv6`.
-* `source_zone` - (Optional) The list of source zone(s) (default: `["any"]`).
+* `source_zone` - (Required) The list of source zone(s).
 * `destination_zone` - (Required) The destination zone.
 * `to_interface` - (Optional) Egress interface from route lookup (default:
   `any`).
 * `service` - (Optional) Service (default: `any`).
-* `source_address` - (Optional) List of source address(es) (default:
-  `["any"]`).
-* `destination_address` - (Optional) List of destination address(es) (default:
-  `["any"]`).
+* `source_address` - (Required) List of source address(es).
+* `destination_address` - (Required) List of destination address(es).
 * `sat_type` - (Optional) Type of source address translation.  This can be
   `none` (default), `dynamic-ip-and-port`, `dynamic-ip`, or `static-ip`.
 * `sat_address_type` - (Optional) Source address translation address type.
@@ -79,4 +79,4 @@ The following arguments are supported:
 * `dat_address` - (Optional) Destination address translation's address.
 * `dat_port` - (Optional) Destination address translation's port number.
 * `disabled` - (Optional) Set to `true` to disable this rule.
-* `tags` - (Optional) List of tags for this security rule.
+* `tags` - (Optional) List of administrative tags.

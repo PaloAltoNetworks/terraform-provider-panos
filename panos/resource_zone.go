@@ -90,9 +90,9 @@ func parseZone(d *schema.ResourceData) (string, zone.Entry) {
 		ZoneProfile:  d.Get("zone_profile").(string),
 		LogSetting:   d.Get("log_setting").(string),
 		EnableUserId: d.Get("enable_user_id").(bool),
-		Interfaces:   asStringList(d, "interfaces"),
-		IncludeAcl:   asStringList(d, "include_acl"),
-		ExcludeAcl:   asStringList(d, "exclude_acl"),
+		Interfaces:   asStringList(d.Get("interfaces").([]interface{})),
+		IncludeAcl:   asStringList(d.Get("include_acl").([]interface{})),
+		ExcludeAcl:   asStringList(d.Get("exclude_acl").([]interface{})),
 	}
 
 	return vsys, o

@@ -417,6 +417,10 @@ func (c *Client) EntryListUsing(fn util.Retriever, path []string) ([]string, err
 
     _, err = fn(path, nil, &resp)
     if err != nil {
+        e2, ok := err.(PanosError)
+        if ok && e2.ObjectNotFound() {
+            return nil, nil
+        }
         return nil, err
     }
 
@@ -443,6 +447,10 @@ func (c *Client) MemberListUsing(fn util.Retriever, path []string) ([]string, er
 
     _, err := fn(path, nil, &resp)
     if err != nil {
+        e2, ok := err.(PanosError)
+        if ok && e2.ObjectNotFound() {
+            return nil, nil
+        }
         return nil, err
     }
 

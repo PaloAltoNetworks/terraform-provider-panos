@@ -66,9 +66,9 @@ func parseAddressGroup(d *schema.ResourceData) (string, addrgrp.Entry) {
 	o := addrgrp.Entry{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
-		Static:      asStringList(d, "static"),
+		Static:      asStringList(d.Get("static").([]interface{})),
 		Dynamic:     d.Get("dynamic").(string),
-		Tag:         setAsList(d, "tags"),
+		Tag:         setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o

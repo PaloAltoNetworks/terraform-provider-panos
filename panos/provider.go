@@ -71,7 +71,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_general_settings":   resourceGeneralSettings(),
 			"panos_management_profile": resourceManagementProfile(),
 			"panos_nat_policy":         resourceNatPolicy(),
-			"panos_security_policy":    resourceSecurityPolicy(),
+			"panos_security_policies":  resourceSecurityPolicies(),
 			"panos_service_group":      resourceServiceGroup(),
 			"panos_service_object":     resourceServiceObject(),
 			"panos_virtual_router":     resourceVirtualRouter(),

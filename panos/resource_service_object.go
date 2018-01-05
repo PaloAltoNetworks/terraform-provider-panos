@@ -74,7 +74,7 @@ func parseServiceObject(d *schema.ResourceData) (string, srvc.Entry) {
 		Protocol:        d.Get("protocol").(string),
 		SourcePort:      d.Get("source_port").(string),
 		DestinationPort: d.Get("destination_port").(string),
-		Tag:             setAsList(d, "tags"),
+		Tag:             setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o

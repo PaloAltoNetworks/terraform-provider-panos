@@ -6,22 +6,21 @@ import (
 
 const IdSeparator string = ":"
 
-func asStringList(d *schema.ResourceData, key string) []string {
-	if d.Get(key) == nil || len(d.Get(key).([]interface{})) == 0 {
+func asStringList(v []interface{}) []string {
+	if len(v) == 0 {
 		return nil
 	}
 
-	list := d.Get(key).([]interface{})
-	ans := make([]string, len(list))
-	for i := range list {
-		ans[i] = list[i].(string)
+	ans := make([]string, len(v))
+	for i := range v {
+		ans[i] = v[i].(string)
 	}
 
 	return ans
 }
 
-func setAsList(d *schema.ResourceData, key string) []string {
-	list := d.Get(key).(*schema.Set).List()
+func setAsList(d *schema.Set) []string {
+	list := d.List()
 	ans := make([]string, len(list))
 	for i := range list {
 		ans[i] = list[i].(string)

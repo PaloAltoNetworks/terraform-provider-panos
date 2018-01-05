@@ -46,13 +46,14 @@ func resourceNatPolicy() *schema.Resource {
 			"type": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
+				Default:      "ipv4",
 				Description:  "NAT type (ipv4 default, nat64, or nptv6)",
 				ValidateFunc: validateStringIn("ipv4", "nat64", "nptv6"),
 			},
 			"source_zone": &schema.Schema{
 				Type:     schema.TypeList,
 				Required: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -69,20 +70,20 @@ func resourceNatPolicy() *schema.Resource {
 			"service": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
+				Default:  "any",
 			},
 			"source_address": &schema.Schema{
 				Type:     schema.TypeList,
-				Optional: true,
-				Computed: true,
+				Required: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"destination_address": &schema.Schema{
 				Type:     schema.TypeList,
-				Optional: true,
-				Computed: true,
+				Required: true,
+				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -90,7 +91,7 @@ func resourceNatPolicy() *schema.Resource {
 			"sat_type": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
+				Default:      "none",
 				Description:  "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
 				ValidateFunc: validateStringIn("none", "dynamic-ip-and-port", "dynamic-ip", "static-ip"),
 			},
@@ -179,19 +180,19 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		Name:                         d.Get("name").(string),
 		Type:                         d.Get("type").(string),
 		Description:                  d.Get("description").(string),
-		SourceZone:                   asStringList(d, "source_zone"),
+		SourceZone:                   asStringList(d.Get("source_zone").([]interface{})),
 		DestinationZone:              d.Get("destination_zone").(string),
 		ToInterface:                  d.Get("to_interface").(string),
 		Service:                      d.Get("service").(string),
-		SourceAddress:                asStringList(d, "source_address"),
-		DestinationAddress:           asStringList(d, "destination_address"),
+		SourceAddress:                asStringList(d.Get("source_address").([]interface{})),
+		DestinationAddress:           asStringList(d.Get("destination_address").([]interface{})),
 		SatType:                      d.Get("sat_type").(string),
 		SatAddressType:               d.Get("sat_address_type").(string),
-		SatTranslatedAddress:         asStringList(d, "sat_translated_address"),
+		SatTranslatedAddress:         asStringList(d.Get("sat_translated_address").([]interface{})),
 		SatInterface:                 d.Get("sat_interface").(string),
 		SatIpAddress:                 d.Get("sat_ip_address").(string),
 		SatFallbackType:              d.Get("sat_fallback_type").(string),
-		SatFallbackTranslatedAddress: asStringList(d, "sat_fallback_translated_address"),
+		SatFallbackTranslatedAddress: asStringList(d.Get("sat_fallback_translated_address").([]interface{})),
 		SatFallbackInterface:         d.Get("sat_fallback_interface").(string),
 		SatFallbackIpType:            d.Get("sat_fallback_ip_type").(string),
 		SatFallbackIpAddress:         d.Get("sat_fallback_ip_address").(string),
@@ -200,7 +201,7 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		DatAddress:                   d.Get("dat_address").(string),
 		DatPort:                      d.Get("dat_port").(int),
 		Disabled:                     d.Get("disabled").(bool),
-		Tag:                          asStringList(d, "tags"),
+		Tag:                          asStringList(d.Get("tags").([]interface{})),
 	}
 
 	return vsys, rb, o
@@ -218,7 +219,6 @@ func buildNatPolicyId(a, b, c string) string {
 func createNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, rb, o := parseNatPolicy(d)
-	o.Defaults()
 
 	if err := fw.Policies.Nat.Set(vsys, rb, o); err != nil {
 		return err
@@ -292,7 +292,6 @@ func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
 
 	fw := meta.(*pango.Firewall)
 	vsys, rb, o := parseNatPolicy(d)
-	o.Defaults()
 
 	lo, err := fw.Policies.Nat.Get(vsys, rb, o.Name)
 	if err != nil {

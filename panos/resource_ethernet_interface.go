@@ -40,7 +40,6 @@ func resourceEthernetInterface() *schema.Resource {
 			"static_ips": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
-				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -49,90 +48,73 @@ func resourceEthernetInterface() *schema.Resource {
 			"enable_dhcp": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
 			},
 			"create_dhcp_default_route": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
 			},
 			"dhcp_default_route_metric": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
-				Computed: true,
 			},
 			"ipv6_enabled": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
 			},
 			"management_profile": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
 			},
 			"mtu": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
-				Computed: true,
 			},
 			"adjust_tcp_mss": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
 			},
 			"netflow_profile": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
 			},
 			"lldp_enabled": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
 			},
 			"lldp_profile": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
 			},
 			"link_speed": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
 				ValidateFunc: validateStringIn("10", "100", "1000", "auto"),
 			},
 			"link_duplex": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
 				ValidateFunc: validateStringIn("full", "half", "auto"),
 			},
 			"link_state": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
 				ValidateFunc: validateStringIn("up", "down", "auto"),
 			},
 			"aggregate_group": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
 			},
 			"comment": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,
 			},
 			"ipv4_mss_adjust": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
-				Computed: true,
 			},
 			"ipv6_mss_adjust": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
-				Computed: true,
 			},
 		},
 	}
@@ -152,7 +134,7 @@ func parseEthernetInterface(d *schema.ResourceData) (string, eth.Entry) {
 	o := eth.Entry{
 		Name:                   d.Get("name").(string),
 		Mode:                   d.Get("mode").(string),
-		StaticIps:              asStringList(d, "static_ips"),
+		StaticIps:              asStringList(d.Get("static_ips").([]interface{})),
 		EnableDhcp:             d.Get("enable_dhcp").(bool),
 		CreateDhcpDefaultRoute: d.Get("create_dhcp_default_route").(bool),
 		DhcpDefaultRouteMetric: d.Get("dhcp_default_route_metric").(int),

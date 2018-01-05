@@ -130,6 +130,8 @@ resource "panos_zone" "z2" {
 
 resource "panos_nat_policy" "test" {
     name = "%s"
+    source_address = ["any"]
+    destination_address = ["any"]
     source_zone = ["${panos_zone.z%d.name}"]
     destination_zone = "${panos_zone.z%d.name}"
     sat_type = "dynamic-ip-and-port"

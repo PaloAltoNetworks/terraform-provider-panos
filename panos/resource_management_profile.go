@@ -102,7 +102,7 @@ func parseManagementProfile(d *schema.ResourceData) mngtprof.Entry {
 		UseridService:           d.Get("userid_service").(bool),
 		UseridSyslogListenerSsl: d.Get("userid_syslog_listener_ssl").(bool),
 		UseridSyslogListenerUdp: d.Get("userid_syslog_listener_udp").(bool),
-		PermittedIp:             asStringList(d, "permitted_ip"),
+		PermittedIp:             asStringList(d.Get("permitted_ip").([]interface{})),
 	}
 
 	return o
