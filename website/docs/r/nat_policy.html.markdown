@@ -25,11 +25,11 @@ params may become necessary for PANOS to correctly configure the NAT policy.
 ```hcl
 resource "panos_nat_policy" "example" {
     name = "my nat policy"
-    source_zone = ["zone1"]
+    source_zones = ["zone1"]
     destination_zone = "zone2"
     to_interface = "ethernet1/3"
-    source_address = ["any"]
-    destination_address = ["any"]
+    source_addresses = ["any"]
+    destination_addresses = ["any"]
     sat_type = "none"
     dat_address = "my dat address object"
 }
@@ -48,23 +48,23 @@ The following arguments are supported:
 * `description` - (Optional) The description.
 * `type` - (Optional). NAT type.  This can be `ipv4` (default), `nat64`, or
   `nptv6`.
-* `source_zone` - (Required) The list of source zone(s).
+* `source_zones` - (Required) The list of source zone(s).
 * `destination_zone` - (Required) The destination zone.
 * `to_interface` - (Optional) Egress interface from route lookup (default:
   `any`).
 * `service` - (Optional) Service (default: `any`).
-* `source_address` - (Required) List of source address(es).
-* `destination_address` - (Required) List of destination address(es).
+* `source_addresses` - (Required) List of source address(es).
+* `destination_addresses` - (Required) List of destination address(es).
 * `sat_type` - (Optional) Type of source address translation.  This can be
   `none` (default), `dynamic-ip-and-port`, `dynamic-ip`, or `static-ip`.
 * `sat_address_type` - (Optional) Source address translation address type.
-* `sat_translated_address` - (Optional) Source address translation list of
+* `sat_translated_addresses` - (Optional) Source address translation list of
   translated addresses.
 * `sat_interface` - (Optional) Source address translation interface.
 * `sat_ip_address` - (Optional) Source address translation IP address.
 * `sat_fallback_type` - (Optional) Source address translation fallback type.
   This can be `none`, `interface-address`, or `translated-address`.
-* `sat_fallback_translated_address` - (Optional) Source address translation
+* `sat_fallback_translated_addresses` - (Optional) Source address translation
   list of fallback translated addresses.
 * `sat_fallback_interface` - (Optional) Source address translation fallback
   interface.

@@ -43,28 +43,28 @@ the Profile Setting is set to `None`.
 resource "panos_security_policies" "example" {
     rule {
         name = "allow bizdev to dmz"
-        source_zone = ["bizdev"]
-        source_address = ["any"]
-        source_user = ["any"]
-        hip_profile = ["any"]
-        destination_zone = ["dmz"]
-        destination_address = ["any"]
-        application = ["any"]
-        service = ["application-default"]
-        category = ["any"]
+        source_zones = ["bizdev"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["dmz"]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
         action = "allow"
     }
     rule {
         name = "deny sales to eng"
-        source_zone = ["sales"]
-        source_address = ["any"]
-        source_user = ["any"]
-        hip_profile = ["any"]
-        destination_zone = ["eng"]
-        destination_address = ["any"]
-        application = ["any"]
-        service = ["application-default"]
-        category = ["any"]
+        source_zones = ["sales"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["eng"]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
         action = "deny"
     }
 }
@@ -89,17 +89,17 @@ The following arguments are valid for each `rule` section:
   `interzone`, or `intrazone`.
 * `description` - (Optional) The description.
 * `tags` - (Optional) List of tags for this security rule.
-* `source_zone` - (Required) List of source zones.
-* `source_address` - (Required) List of source addresses.
+* `source_zones` - (Required) List of source zones.
+* `source_addresses` - (Required) List of source addresses.
 * `negate_source` - (Optional, bool) If the source should be negated.
-* `source_user` - (Required) List of source users.
-* `hip_profile` - (Required) List of HIP profiles.
-* `destination_zone` - (Required) List of destination zones.
-* `destination_address` - (Required) List of destination addresses.
+* `source_users` - (Required) List of source users.
+* `hip_profiles` - (Required) List of HIP profiles.
+* `destination_zones` - (Required) List of destination zones.
+* `destination_addresses` - (Required) List of destination addresses.
 * `negate_destination` - (Optional, bool) If the destination should be negated.
-* `application` - (Required) List of applications.
-* `service` - (Required) List of services.
-* `category` - (Required) List of categories.
+* `applications` - (Required) List of applications.
+* `services` - (Required) List of services.
+* `categories` - (Required) List of categories.
 * `action` - (Optional) Action for the matched traffic.  This can be `allow`
   (default), `deny`, `drop`, `reset-client`, `reset-server`, or `reset-both`.
 * `log_setting` - (Optional) Log forwarding profile.

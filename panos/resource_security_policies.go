@@ -61,7 +61,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"source_zone": &schema.Schema{
+						"source_zones": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -69,7 +69,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"source_address": &schema.Schema{
+						"source_addresses": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -81,7 +81,7 @@ func resourceSecurityPolicies() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"source_user": &schema.Schema{
+						"source_users": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -89,7 +89,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"hip_profile": &schema.Schema{
+						"hip_profiles": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -97,7 +97,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"destination_zone": &schema.Schema{
+						"destination_zones": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -105,7 +105,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"destination_address": &schema.Schema{
+						"destination_addresses": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -117,7 +117,7 @@ func resourceSecurityPolicies() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"application": &schema.Schema{
+						"applications": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -125,7 +125,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"service": &schema.Schema{
+						"services": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -133,7 +133,7 @@ func resourceSecurityPolicies() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"category": &schema.Schema{
+						"categories": &schema.Schema{
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -230,17 +230,17 @@ func parseSecurityPolicies(d *schema.ResourceData) (string, string, []security.E
 			Type:                            elm["type"].(string),
 			Description:                     elm["description"].(string),
 			Tags:                            setAsList(elm["tags"].(*schema.Set)),
-			SourceZone:                      asStringList(elm["source_zone"].([]interface{})),
-			SourceAddress:                   asStringList(elm["source_address"].([]interface{})),
+			SourceZones:                      asStringList(elm["source_zones"].([]interface{})),
+			SourceAddresses:                   asStringList(elm["source_addresses"].([]interface{})),
 			NegateSource:                    elm["negate_source"].(bool),
-			SourceUser:                      asStringList(elm["source_user"].([]interface{})),
-			HipProfile:                      asStringList(elm["hip_profile"].([]interface{})),
-			DestinationZone:                 asStringList(elm["destination_zone"].([]interface{})),
-			DestinationAddress:              asStringList(elm["destination_address"].([]interface{})),
+			SourceUsers:                      asStringList(elm["source_users"].([]interface{})),
+			HipProfiles:                      asStringList(elm["hip_profiles"].([]interface{})),
+			DestinationZones:                 asStringList(elm["destination_zones"].([]interface{})),
+			DestinationAddresses:              asStringList(elm["destination_addresses"].([]interface{})),
 			NegateDestination:               elm["negate_destination"].(bool),
-			Application:                     asStringList(elm["application"].([]interface{})),
-			Service:                         asStringList(elm["service"].([]interface{})),
-			Category:                        asStringList(elm["category"].([]interface{})),
+			Applications:                     asStringList(elm["applications"].([]interface{})),
+			Services:                         asStringList(elm["services"].([]interface{})),
+			Categories:                        asStringList(elm["categories"].([]interface{})),
 			Action:                          elm["action"].(string),
 			LogSetting:                      elm["log_setting"].(string),
 			LogStart:                        elm["log_start"].(bool),
@@ -312,17 +312,17 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 		m["type"] = o.Type
 		m["description"] = o.Description
 		m["tags"] = listAsSet(o.Tags)
-		m["source_zone"] = o.SourceZone
-		m["source_address"] = o.SourceAddress
+		m["source_zones"] = o.SourceZones
+		m["source_addresses"] = o.SourceAddresses
 		m["negate_source"] = o.NegateSource
-		m["source_user"] = o.SourceUser
-		m["hip_profile"] = o.HipProfile
-		m["destination_zone"] = o.DestinationZone
-		m["destination_address"] = o.DestinationAddress
+		m["source_users"] = o.SourceUsers
+		m["hip_profiles"] = o.HipProfiles
+		m["destination_zones"] = o.DestinationZones
+		m["destination_addresses"] = o.DestinationAddresses
 		m["negate_destination"] = o.NegateDestination
-		m["application"] = o.Application
-		m["service"] = o.Service
-		m["category"] = o.Category
+		m["applications"] = o.Applications
+		m["services"] = o.Services
+		m["categories"] = o.Categories
 		m["action"] = o.Action
 		m["log_setting"] = o.LogSetting
 		m["log_start"] = o.LogStart

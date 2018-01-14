@@ -77,7 +77,7 @@ func resourceManagementProfile() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
-			"permitted_ip": &schema.Schema{
+			"permitted_ips": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -102,7 +102,7 @@ func parseManagementProfile(d *schema.ResourceData) mngtprof.Entry {
 		UseridService:           d.Get("userid_service").(bool),
 		UseridSyslogListenerSsl: d.Get("userid_syslog_listener_ssl").(bool),
 		UseridSyslogListenerUdp: d.Get("userid_syslog_listener_udp").(bool),
-		PermittedIp:             asStringList(d.Get("permitted_ip").([]interface{})),
+		PermittedIps:             asStringList(d.Get("permitted_ips").([]interface{})),
 	}
 
 	return o
@@ -147,8 +147,8 @@ func readManagementProfile(d *schema.ResourceData, meta interface{}) error {
 	d.Set("userid_service", o.UseridService)
 	d.Set("userid_syslog_listener_ssl", o.UseridSyslogListenerSsl)
 	d.Set("userid_syslog_listener_udp", o.UseridSyslogListenerUdp)
-	if err := d.Set("permitted_ip", o.PermittedIp); err != nil {
-		log.Printf("[WARN] Error setting 'permitted_ip' for %q: %s", d.Id(), err)
+	if err := d.Set("permitted_ips", o.PermittedIps); err != nil {
+		log.Printf("[WARN] Error setting 'permitted_ips' for %q: %s", d.Id(), err)
 	}
 
 	return nil

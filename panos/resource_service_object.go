@@ -74,7 +74,7 @@ func parseServiceObject(d *schema.ResourceData) (string, srvc.Entry) {
 		Protocol:        d.Get("protocol").(string),
 		SourcePort:      d.Get("source_port").(string),
 		DestinationPort: d.Get("destination_port").(string),
-		Tag:             setAsList(d.Get("tags").(*schema.Set)),
+		Tags:             setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o
@@ -123,7 +123,7 @@ func readServiceObject(d *schema.ResourceData, meta interface{}) error {
 	d.Set("protocol", o.Protocol)
 	d.Set("source_port", o.SourcePort)
 	d.Set("destination_port", o.DestinationPort)
-	if err := d.Set("tags", listAsSet(o.Tag)); err != nil {
+	if err := d.Set("tags", listAsSet(o.Tags)); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
 

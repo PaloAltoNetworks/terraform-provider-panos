@@ -62,7 +62,7 @@ func resourceZone() *schema.Resource {
 				},
 				Description: "User Identification include ACL list",
 			},
-			"include_acl": &schema.Schema{
+			"include_acls": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -70,7 +70,7 @@ func resourceZone() *schema.Resource {
 				},
 				Description: "User Identification include ACL list",
 			},
-			"exclude_acl": &schema.Schema{
+			"exclude_acls": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -91,8 +91,8 @@ func parseZone(d *schema.ResourceData) (string, zone.Entry) {
 		LogSetting:   d.Get("log_setting").(string),
 		EnableUserId: d.Get("enable_user_id").(bool),
 		Interfaces:   asStringList(d.Get("interfaces").([]interface{})),
-		IncludeAcl:   asStringList(d.Get("include_acl").([]interface{})),
-		ExcludeAcl:   asStringList(d.Get("exclude_acl").([]interface{})),
+		IncludeAcls:   asStringList(d.Get("include_acls").([]interface{})),
+		ExcludeAcls:   asStringList(d.Get("exclude_acls").([]interface{})),
 	}
 
 	return vsys, o
@@ -144,11 +144,11 @@ func readZone(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("interfaces", o.Interfaces); err != nil {
 		log.Printf("[WARN] Error setting 'interfaces' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("include_acl", o.IncludeAcl); err != nil {
-		log.Printf("[WARN] Error setting 'include_acl' param for %q: %s", d.Id(), err)
+	if err = d.Set("include_acls", o.IncludeAcls); err != nil {
+		log.Printf("[WARN] Error setting 'include_acls' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("exclude_acl", o.ExcludeAcl); err != nil {
-		log.Printf("[WARN] Error setting 'exclude_acl' param for %q: %s", d.Id(), err)
+	if err = d.Set("exclude_acls", o.ExcludeAcls); err != nil {
+		log.Printf("[WARN] Error setting 'exclude_acls' param for %q: %s", d.Id(), err)
 	}
 
 	return nil

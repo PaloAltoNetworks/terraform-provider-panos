@@ -73,12 +73,12 @@ func testAccCheckPanosZoneAttributes(o *zone.Entry, n, mode, ia1, ia2, ea1, ea2 
 			return fmt.Errorf("Mode is %s, expected %s", o.Mode, mode)
 		}
 
-		if len(o.IncludeAcl) != 2 || o.IncludeAcl[0] != ia1 || o.IncludeAcl[1] != ia2 {
-			return fmt.Errorf("Include ACL is %v, expected [%s, %s]", o.IncludeAcl, ia1, ia2)
+		if len(o.IncludeAcls) != 2 || o.IncludeAcls[0] != ia1 || o.IncludeAcls[1] != ia2 {
+			return fmt.Errorf("Include ACLs is %v, expected [%s, %s]", o.IncludeAcls, ia1, ia2)
 		}
 
-		if len(o.ExcludeAcl) != 2 || o.ExcludeAcl[0] != ea1 || o.ExcludeAcl[1] != ea2 {
-			return fmt.Errorf("Exclude ACL is %v, expected [%s, %s]", o.ExcludeAcl, ea1, ea2)
+		if len(o.ExcludeAcls) != 2 || o.ExcludeAcls[0] != ea1 || o.ExcludeAcls[1] != ea2 {
+			return fmt.Errorf("Exclude ACLs is %v, expected [%s, %s]", o.ExcludeAcls, ea1, ea2)
 		}
 
 		if o.EnableUserId != eui {
@@ -116,8 +116,8 @@ resource "panos_zone" "test" {
     name = "%s"
     vsys = "vsys1"
     mode = "%s"
-    include_acl = ["%s", "%s"]
-    exclude_acl = ["%s", "%s"]
+    include_acls = ["%s", "%s"]
+    exclude_acls = ["%s", "%s"]
     enable_user_id = %t
 }
 `, n, mode, ia1, ia2, ea1, ea2, eui)

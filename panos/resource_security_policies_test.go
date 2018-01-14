@@ -86,12 +86,12 @@ func testAccCheckPanosSecurityPoliciesAttributes(o1, o2 *security.Entry, name1, 
 			return fmt.Errorf("Description is %q, expected %q", o1.Description, desc1)
 		}
 
-		if len(o1.SourceAddress) != 1 || o1.SourceAddress[0] != src1 {
-			return fmt.Errorf("Source address is %#v, expected %#v", o1.SourceAddress, []string{src1})
+		if len(o1.SourceAddresses) != 1 || o1.SourceAddresses[0] != src1 {
+			return fmt.Errorf("Source address is %#v, expected %#v", o1.SourceAddresses, []string{src1})
 		}
 
-		if len(o1.DestinationAddress) != 1 || o1.DestinationAddress[0] != dst1 {
-			return fmt.Errorf("Destination address is %#v, expected %#v", o1.DestinationAddress, []string{dst1})
+		if len(o1.DestinationAddresses) != 1 || o1.DestinationAddresses[0] != dst1 {
+			return fmt.Errorf("Destination address is %#v, expected %#v", o1.DestinationAddresses, []string{dst1})
 		}
 
 		if o1.Action != action1 {
@@ -114,12 +114,12 @@ func testAccCheckPanosSecurityPoliciesAttributes(o1, o2 *security.Entry, name1, 
 			return fmt.Errorf("Description is %q, expected %q", o2.Description, desc2)
 		}
 
-		if len(o2.SourceAddress) != 1 || o2.SourceAddress[0] != src2 {
-			return fmt.Errorf("Source address is %#v, expected %#v", o2.SourceAddress, []string{src2})
+		if len(o2.SourceAddresses) != 1 || o2.SourceAddresses[0] != src2 {
+			return fmt.Errorf("Source address is %#v, expected %#v", o2.SourceAddresses, []string{src2})
 		}
 
-		if len(o2.DestinationAddress) != 1 || o2.DestinationAddress[0] != dst2 {
-			return fmt.Errorf("Destination address is %#v, expected %#v", o2.DestinationAddress, []string{dst2})
+		if len(o2.DestinationAddresses) != 1 || o2.DestinationAddresses[0] != dst2 {
+			return fmt.Errorf("Destination address is %#v, expected %#v", o2.DestinationAddresses, []string{dst2})
 		}
 
 		if o2.Action != action2 {
@@ -166,34 +166,34 @@ resource "panos_security_policies" "test" {
     rule {
         name = "%s"
         description = "%s"
-        source_address = ["%s"]
-        destination_address = ["%s"]
+        source_addresses = ["%s"]
+        destination_addresses = ["%s"]
         action = "%s"
         log_end = %t
         disabled = %t
-        source_zone = ["any"]
-        destination_zone = ["any"]
-        source_user = ["any"]
-        hip_profile = ["any"]
-        application = ["any"]
-        service = ["application-default"]
-        category = ["any"]
+        source_zones = ["any"]
+        destination_zones = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
     }
     rule {
         name = "%s"
         description = "%s"
-        source_address = ["%s"]
-        destination_address = ["%s"]
+        source_addresses = ["%s"]
+        destination_addresses = ["%s"]
         action = "%s"
         log_end = %t
         disabled = %t
-        source_zone = ["any"]
-        destination_zone = ["any"]
-        source_user = ["any"]
-        hip_profile = ["any"]
-        application = ["any"]
-        service = ["application-default"]
-        category = ["any"]
+        source_zones = ["any"]
+        destination_zones = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
     }
 }
 `, name1, desc1, src1, dst1, action1, le1, dis1, name2, desc2, src2, dst2, action2, le2, dis2)

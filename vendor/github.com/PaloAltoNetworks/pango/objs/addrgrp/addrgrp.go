@@ -12,28 +12,28 @@ import (
 
 
 // Entry is a normalized, version independent representation of an address
-// group.  The value set in Dynamic should be something like the following:
+// group.  The value set in DynamicMatch should be something like the following:
 //
 //  * 'tag1'
 //  * 'tag1' or 'tag2' and 'tag3'
 //
-// The tags param is for administrative tags for this address object
+// The Tags param is for administrative tags for this address object
 // group itself.
 type Entry struct {
     Name string
     Description string
-    Static []string
-    Dynamic string
-    Tag []string
+    StaticAddresses []string
+    DynamicMatch string
+    Tags []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
     o.Description = s.Description
-    o.Static = s.Static
-    o.Dynamic = s.Dynamic
-    o.Tag = s.Tag
+    o.StaticAddresses = s.StaticAddresses
+    o.DynamicMatch = s.DynamicMatch
+    o.Tags = s.Tags
 }
 
 // AddrGrp is a namespace struct, included as part of pango.Client.
@@ -196,11 +196,11 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Description: o.Answer.Description,
-        Static: util.MemToStr(o.Answer.Static),
-        Tag: util.MemToStr(o.Answer.Tag),
+        StaticAddresses: util.MemToStr(o.Answer.StaticAddresses),
+        Tags: util.MemToStr(o.Answer.Tags),
     }
-    if o.Answer.Dynamic != nil {
-        ans.Dynamic = *o.Answer.Dynamic
+    if o.Answer.DynamicMatch != nil {
+        ans.DynamicMatch = *o.Answer.DynamicMatch
     }
 
     return ans
@@ -210,20 +210,20 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     Description string `xml:"description"`
-    Static *util.Member `xml:"static"`
-    Dynamic *string `xml:"dynamic>filter"`
-    Tag *util.Member `xml:"tag"`
+    StaticAddresses *util.Member `xml:"static"`
+    DynamicMatch *string `xml:"dynamic>filter"`
+    Tags *util.Member `xml:"tag"`
 }
 
 func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Description: e.Description,
-        Static: util.StrToMem(e.Static),
-        Tag: util.StrToMem(e.Tag),
+        StaticAddresses: util.StrToMem(e.StaticAddresses),
+        Tags: util.StrToMem(e.Tags),
     }
-    if e.Dynamic != "" {
-        ans.Dynamic = &e.Dynamic
+    if e.DynamicMatch != "" {
+        ans.DynamicMatch = &e.DynamicMatch
     }
 
     return ans

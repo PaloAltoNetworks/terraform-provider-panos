@@ -36,7 +36,7 @@ func resourceAddressGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"static": &schema.Schema{
+			"static_addresses": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -44,7 +44,7 @@ func resourceAddressGroup() *schema.Resource {
 				},
 				Description: "Static address group entries",
 			},
-			"dynamic": &schema.Schema{
+			"dynamic_match": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Dynamic address group definition",
@@ -66,9 +66,9 @@ func parseAddressGroup(d *schema.ResourceData) (string, addrgrp.Entry) {
 	o := addrgrp.Entry{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
-		Static:      asStringList(d.Get("static").([]interface{})),
-		Dynamic:     d.Get("dynamic").(string),
-		Tag:         setAsList(d.Get("tags").(*schema.Set)),
+		StaticAddresses:      asStringList(d.Get("static_addresses").([]interface{})),
+		DynamicMatch:     d.Get("dynamic_match").(string),
+		Tags:         setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o
@@ -114,11 +114,11 @@ func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
 	d.Set("description", o.Description)
-	if err = d.Set("static", o.Static); err != nil {
-		log.Printf("[WARN] Error setting 'static' field for %q: %s", d.Id(), err)
+	if err = d.Set("static_addresses", o.StaticAddresses); err != nil {
+		log.Printf("[WARN] Error setting 'static_addresses' field for %q: %s", d.Id(), err)
 	}
-	d.Set("dynamic", o.Dynamic)
-	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+	d.Set("dynamic_match", o.DynamicMatch)
+	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
 		log.Printf("[WARN] Error setting 'tags' field for %q: %s", d.Id(), err)
 	}
 

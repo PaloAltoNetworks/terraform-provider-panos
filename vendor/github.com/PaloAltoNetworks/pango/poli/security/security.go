@@ -18,17 +18,17 @@ type Entry struct {
     Type string
     Description string
     Tags []string
-    SourceZone []string
-    SourceAddress []string
+    SourceZones []string
+    SourceAddresses []string
     NegateSource bool
-    SourceUser []string
-    HipProfile []string
-    DestinationZone []string
-    DestinationAddress []string
+    SourceUsers []string
+    HipProfiles []string
+    DestinationZones []string
+    DestinationAddresses []string
     NegateDestination bool
-    Application []string
-    Service []string
-    Category []string
+    Applications []string
+    Services []string
+    Categories []string
     Action string
     LogSetting string
     LogStart bool
@@ -38,7 +38,7 @@ type Entry struct {
     IcmpUnreachable bool
     DisableServerResponseInspection bool
     Group string
-    Target []string
+    Targets []string
     NegateTarget bool
     Virus string
     Spyware string
@@ -53,15 +53,15 @@ type Entry struct {
 //
 // The defaults are as follows:
 //      * Type: "universal"
-//      * SourceZone: ["any"]
-//      * SourceAddress: ["any"]
-//      * SourceUser: ["any"]
-//      * HipProfile: ["any"]
-//      * DestinationZone: ["any"]
-//      * DestinationAddress: ["any"]
-//      * Application: ["any"]
-//      * Service: ["application-default"]
-//      * Category: ["any"]
+//      * SourceZones: ["any"]
+//      * SourceAddresses: ["any"]
+//      * SourceUsers: ["any"]
+//      * HipProfiles: ["any"]
+//      * DestinationZones: ["any"]
+//      * DestinationAddresses: ["any"]
+//      * Applications: ["any"]
+//      * Services: ["application-default"]
+//      * Categories: ["any"]
 //      * Action: "allow"
 //      * LogEnd: true
 func (o *Entry) Defaults() {
@@ -69,40 +69,40 @@ func (o *Entry) Defaults() {
         o.Type = "universal"
     }
 
-    if len(o.SourceZone) == 0 {
-        o.SourceZone = []string{"any"}
+    if len(o.SourceZones) == 0 {
+        o.SourceZones = []string{"any"}
     }
 
-    if len(o.DestinationZone) == 0 {
-        o.DestinationZone = []string{"any"}
+    if len(o.DestinationZones) == 0 {
+        o.DestinationZones = []string{"any"}
     }
 
-    if len(o.SourceAddress) == 0 {
-        o.SourceAddress = []string{"any"}
+    if len(o.SourceAddresses) == 0 {
+        o.SourceAddresses = []string{"any"}
     }
 
-    if len(o.SourceUser) == 0 {
-        o.SourceUser = []string{"any"}
+    if len(o.SourceUsers) == 0 {
+        o.SourceUsers = []string{"any"}
     }
 
-    if len(o.HipProfile) == 0 {
-        o.HipProfile = []string{"any"}
+    if len(o.HipProfiles) == 0 {
+        o.HipProfiles = []string{"any"}
     }
 
-    if len(o.DestinationAddress) == 0 {
-        o.DestinationAddress = []string{"any"}
+    if len(o.DestinationAddresses) == 0 {
+        o.DestinationAddresses = []string{"any"}
     }
 
-    if len(o.Application) == 0 {
-        o.Application = []string{"any"}
+    if len(o.Applications) == 0 {
+        o.Applications = []string{"any"}
     }
 
-    if len(o.Service) == 0 {
-        o.Service = []string{"application-default"}
+    if len(o.Services) == 0 {
+        o.Services = []string{"application-default"}
     }
 
-    if len(o.Category) == 0 {
-        o.Category = []string{"any"}
+    if len(o.Categories) == 0 {
+        o.Categories = []string{"any"}
     }
 
     if o.Action == "" {
@@ -120,17 +120,17 @@ func (o *Entry) Copy(s Entry) {
     o.Type = s.Type
     o.Description = s.Description
     o.Tags = s.Tags
-    o.SourceZone = s.SourceZone
-    o.SourceAddress = s.SourceAddress
+    o.SourceZones = s.SourceZones
+    o.SourceAddresses = s.SourceAddresses
     o.NegateSource = s.NegateSource
-    o.SourceUser = s.SourceUser
-    o.HipProfile = s.HipProfile
-    o.DestinationZone = s.DestinationZone
-    o.DestinationAddress = s.DestinationAddress
+    o.SourceUsers = s.SourceUsers
+    o.HipProfiles = s.HipProfiles
+    o.DestinationZones = s.DestinationZones
+    o.DestinationAddresses = s.DestinationAddresses
     o.NegateDestination = s.NegateDestination
-    o.Application = s.Application
-    o.Service = s.Service
-    o.Category = s.Category
+    o.Applications = s.Applications
+    o.Services = s.Services
+    o.Categories = s.Categories
     o.Action = s.Action
     o.LogSetting = s.LogSetting
     o.LogStart = s.LogStart
@@ -140,7 +140,7 @@ func (o *Entry) Copy(s Entry) {
     o.IcmpUnreachable = s.IcmpUnreachable
     o.DisableServerResponseInspection = s.DisableServerResponseInspection
     o.Group = s.Group
-    o.Target = s.Target
+    o.Targets = s.Targets
     o.NegateTarget = s.NegateTarget
     o.Virus = s.Virus
     o.Spyware = s.Spyware
@@ -361,17 +361,17 @@ func (o *container_v1) Normalize() Entry {
         Type: o.Answer.Type,
         Description: o.Answer.Description,
         Tags: util.MemToStr(o.Answer.Tags),
-        SourceZone: util.MemToStr(o.Answer.SourceZone),
-        DestinationZone: util.MemToStr(o.Answer.DestinationZone),
-        SourceAddress: util.MemToStr(o.Answer.SourceAddress),
+        SourceZones: util.MemToStr(o.Answer.SourceZones),
+        DestinationZones: util.MemToStr(o.Answer.DestinationZones),
+        SourceAddresses: util.MemToStr(o.Answer.SourceAddresses),
         NegateSource: util.AsBool(o.Answer.NegateSource),
-        SourceUser: util.MemToStr(o.Answer.SourceUser),
-        HipProfile: util.MemToStr(o.Answer.HipProfile),
-        DestinationAddress: util.MemToStr(o.Answer.DestinationAddress),
+        SourceUsers: util.MemToStr(o.Answer.SourceUsers),
+        HipProfiles: util.MemToStr(o.Answer.HipProfiles),
+        DestinationAddresses: util.MemToStr(o.Answer.DestinationAddresses),
         NegateDestination: util.AsBool(o.Answer.NegateDestination),
-        Application: util.MemToStr(o.Answer.Application),
-        Service: util.MemToStr(o.Answer.Service),
-        Category: util.MemToStr(o.Answer.Category),
+        Applications: util.MemToStr(o.Answer.Applications),
+        Services: util.MemToStr(o.Answer.Services),
+        Categories: util.MemToStr(o.Answer.Categories),
         Action: o.Answer.Action,
         LogSetting: o.Answer.LogSetting,
         LogStart: util.AsBool(o.Answer.LogStart),
@@ -385,7 +385,7 @@ func (o *container_v1) Normalize() Entry {
     }
     if o.Answer.TargetInfo != nil {
         ans.NegateTarget = util.AsBool(o.Answer.TargetInfo.NegateTarget)
-        ans.Target = util.EntToStr(o.Answer.TargetInfo.Target)
+        ans.Targets = util.EntToStr(o.Answer.TargetInfo.Targets)
     }
     if o.Answer.ProfileSettings != nil {
         ans.Group = util.MemToOneStr(o.Answer.ProfileSettings.Group)
@@ -409,17 +409,17 @@ type entry_v1 struct {
     Type string `xml:"rule-type"`
     Description string `xml:"description"`
     Tags *util.Member `xml:"tag"`
-    SourceZone *util.Member `xml:"from"`
-    DestinationZone *util.Member `xml:"to"`
-    SourceAddress *util.Member `xml:"source"`
+    SourceZones *util.Member `xml:"from"`
+    DestinationZones *util.Member `xml:"to"`
+    SourceAddresses *util.Member `xml:"source"`
     NegateSource string `xml:"negate-source"`
-    SourceUser *util.Member `xml:"source-user"`
-    HipProfile *util.Member `xml:"hip-profiles"`
-    DestinationAddress *util.Member `xml:"destination"`
+    SourceUsers *util.Member `xml:"source-user"`
+    HipProfiles *util.Member `xml:"hip-profiles"`
+    DestinationAddresses *util.Member `xml:"destination"`
     NegateDestination string `xml:"negate-destination"`
-    Application *util.Member `xml:"application"`
-    Service *util.Member `xml:"service"`
-    Category *util.Member `xml:"category"`
+    Applications *util.Member `xml:"application"`
+    Services *util.Member `xml:"service"`
+    Categories *util.Member `xml:"category"`
     Action string `xml:"action"`
     LogSetting string `xml:"log-setting,omitempty"`
     LogStart string `xml:"log-start"`
@@ -437,7 +437,7 @@ type secOptions struct {
 }
 
 type targetInfo struct {
-    Target *util.Entry `xml:"devices"`
+    Targets *util.Entry `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 
@@ -462,17 +462,17 @@ func specify_v1(e Entry) interface{} {
         Type: e.Type,
         Description: e.Description,
         Tags: util.StrToMem(e.Tags),
-        SourceZone: util.StrToMem(e.SourceZone),
-        DestinationZone: util.StrToMem(e.DestinationZone),
-        SourceAddress: util.StrToMem(e.SourceAddress),
+        SourceZones: util.StrToMem(e.SourceZones),
+        DestinationZones: util.StrToMem(e.DestinationZones),
+        SourceAddresses: util.StrToMem(e.SourceAddresses),
         NegateSource: util.YesNo(e.NegateSource),
-        SourceUser: util.StrToMem(e.SourceUser),
-        HipProfile: util.StrToMem(e.HipProfile),
-        DestinationAddress: util.StrToMem(e.DestinationAddress),
+        SourceUsers: util.StrToMem(e.SourceUsers),
+        HipProfiles: util.StrToMem(e.HipProfiles),
+        DestinationAddresses: util.StrToMem(e.DestinationAddresses),
         NegateDestination: util.YesNo(e.NegateDestination),
-        Application: util.StrToMem(e.Application),
-        Service: util.StrToMem(e.Service),
-        Category: util.StrToMem(e.Category),
+        Applications: util.StrToMem(e.Applications),
+        Services: util.StrToMem(e.Services),
+        Categories: util.StrToMem(e.Categories),
         Action: e.Action,
         LogSetting: e.LogSetting,
         LogStart: util.YesNo(e.LogStart),
@@ -482,9 +482,9 @@ func specify_v1(e Entry) interface{} {
         IcmpUnreachable: util.YesNo(e.IcmpUnreachable),
         Options: &secOptions{util.YesNo(e.DisableServerResponseInspection)},
     }
-    if e.Target != nil || e.NegateTarget {
+    if e.Targets != nil || e.NegateTarget {
         nfo := &targetInfo{
-            Target: util.StrToEnt(e.Target),
+            Targets: util.StrToEnt(e.Targets),
             NegateTarget: util.YesNo(e.NegateTarget),
         }
         ans.TargetInfo = nfo

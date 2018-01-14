@@ -21,7 +21,7 @@ type Entry struct {
     Protocol string
     SourcePort string
     DestinationPort string
-    Tag []string
+    Tags []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -31,7 +31,7 @@ func (o *Entry) Copy(s Entry) {
     o.Protocol = s.Protocol
     o.SourcePort = s.SourcePort
     o.DestinationPort = s.DestinationPort
-    o.Tag = s.Tag
+    o.Tags = s.Tags
 }
 
 // Srvc is a namespace struct, included as part of pango.Client.
@@ -194,7 +194,7 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Description: o.Answer.Description,
-        Tag: util.MemToStr(o.Answer.Tag),
+        Tags: util.MemToStr(o.Answer.Tags),
     }
     switch {
     case o.Answer.TcpProto != nil:
@@ -216,7 +216,7 @@ type entry_v1 struct {
     TcpProto *protoDef `xml:"protocol>tcp"`
     UdpProto *protoDef `xml:"protocol>udp"`
     Description string `xml:"description"`
-    Tag *util.Member `xml:"tag"`
+    Tags *util.Member `xml:"tag"`
 }
 
 type protoDef struct {
@@ -228,7 +228,7 @@ func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Description: e.Description,
-        Tag: util.StrToMem(e.Tag),
+        Tags: util.StrToMem(e.Tags),
     }
     switch e.Protocol {
     case "tcp":

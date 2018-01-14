@@ -19,8 +19,8 @@ type Entry struct {
     ZoneProfile string
     LogSetting string
     EnableUserId bool
-    IncludeAcl []string
-    ExcludeAcl []string
+    IncludeAcls []string
+    ExcludeAcls []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -31,8 +31,8 @@ func (o *Entry) Copy(s Entry) {
     o.ZoneProfile = s.ZoneProfile
     o.LogSetting = s.LogSetting
     o.EnableUserId = s.EnableUserId
-    o.IncludeAcl = s.IncludeAcl
-    o.ExcludeAcl = s.ExcludeAcl
+    o.IncludeAcls = s.IncludeAcls
+    o.ExcludeAcls = s.ExcludeAcls
 }
 
 // Zone is a namespace struct, included as part of pango.Client.
@@ -214,11 +214,11 @@ func (o *container_v1) Normalize() Entry {
         ans.Mode = "external"
         ans.Interfaces = o.Answer.External.Interfaces
     }
-    if o.Answer.IncludeAcl != nil {
-        ans.IncludeAcl = o.Answer.IncludeAcl.Acls
+    if o.Answer.IncludeAcls != nil {
+        ans.IncludeAcls = o.Answer.IncludeAcls.Acls
     }
-    if o.Answer.ExcludeAcl != nil {
-        ans.ExcludeAcl = o.Answer.ExcludeAcl.Acls
+    if o.Answer.ExcludeAcls != nil {
+        ans.ExcludeAcls = o.Answer.ExcludeAcls.Acls
     }
 
     return ans
@@ -235,8 +235,8 @@ type entry_v1 struct {
     Profile string `xml:"network>zone-protection-profile,omitempty"`
     LogSetting string `xml:"network>log-setting,omitempty"`
     EnableUserId string `xml:"enable-user-identification"`
-    IncludeAcl *aclList `xml:"user-acl>include-list"`
-    ExcludeAcl *aclList `xml:"user-acl>exclude-list"`
+    IncludeAcls *aclList `xml:"user-acl>include-list"`
+    ExcludeAcls *aclList `xml:"user-acl>exclude-list"`
 }
 
 type zoneInterfaceList struct {
@@ -267,13 +267,13 @@ func specify_v1(e Entry) interface{} {
     case "external":
         ans.External = il
     }
-    if len(e.IncludeAcl) > 0 {
-        inu := &aclList{e.IncludeAcl}
-        ans.IncludeAcl = inu
+    if len(e.IncludeAcls) > 0 {
+        inu := &aclList{e.IncludeAcls}
+        ans.IncludeAcls = inu
     }
-    if len(e.ExcludeAcl) > 0 {
-        exu := &aclList{e.ExcludeAcl}
-        ans.ExcludeAcl = exu
+    if len(e.ExcludeAcls) > 0 {
+        exu := &aclList{e.ExcludeAcls}
+        ans.ExcludeAcls = exu
     }
 
     return ans

@@ -103,17 +103,17 @@ func testAccCheckPanosAddressGroupAttributes(o *addrgrp.Entry, name, desc, sv, d
 		}
 
 		if sv == "" {
-			if o.Static != nil {
-				return fmt.Errorf("Static is %#v, expected nil", o.Static)
+			if o.StaticAddresses != nil {
+				return fmt.Errorf("StaticAddresses is %#v, expected nil", o.StaticAddresses)
 			}
 		} else {
-			if len(o.Static) != 1 || o.Static[0] != sv {
-				return fmt.Errorf("Static is %#v, expected [%s]", o.Static, sv)
+			if len(o.StaticAddresses) != 1 || o.StaticAddresses[0] != sv {
+				return fmt.Errorf("StaticAddresses is %#v, expected [%s]", o.StaticAddresses, sv)
 			}
 		}
 
-		if o.Dynamic != dv {
-			return fmt.Errorf("Dynamic is %q, expected %q", o.Dynamic, dv)
+		if o.DynamicMatch != dv {
+			return fmt.Errorf("DynamicMatch is %q, expected %q", o.DynamicMatch, dv)
 		}
 
 		return nil
@@ -160,7 +160,7 @@ resource "panos_address_object" "o2" {
 resource "panos_address_group" "test" {
     name = "%s"
     description = "%s"
-    static = ["${panos_address_object.o%d.name}"]
+    static_addresses = ["${panos_address_object.o%d.name}"]
 }
 `, o1, o2, name, desc, sv)
 }
@@ -170,7 +170,7 @@ func testAccAddressGroupDynamicConfig(name, desc, t1, op, t2 string) string {
 resource "panos_address_group" "test" {
     name = "%s"
     description = "%s"
-    dynamic = "%s"
+    dynamic_match = "%s"
 }
 `, name, desc, buildDagString(t1, op, t2))
 }

@@ -24,7 +24,7 @@ type Entry struct {
     Value string
     Type string
     Description string
-    Tag []string
+    Tags []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -33,7 +33,7 @@ func (o *Entry) Copy(s Entry) {
     o.Value = s.Value
     o.Type = s.Type
     o.Description = s.Description
-    o.Tag = s.Tag
+    o.Tags = s.Tags
 }
 
 // Addr is a namespace struct, included as part of pango.Client.
@@ -196,7 +196,7 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Description: o.Answer.Description,
-        Tag: util.MemToStr(o.Answer.Tag),
+        Tags: util.MemToStr(o.Answer.Tags),
     }
     switch {
     case o.Answer.IpNetmask != nil:
@@ -220,7 +220,7 @@ type entry_v1 struct {
     IpRange *valType `xml:"ip-range"`
     Fqdn *valType `xml:"fqdn"`
     Description string `xml:"description"`
-    Tag *util.Member `xml:"tag"`
+    Tags *util.Member `xml:"tag"`
 }
 
 type valType struct {
@@ -231,7 +231,7 @@ func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Description: e.Description,
-        Tag: util.StrToMem(e.Tag),
+        Tags: util.StrToMem(e.Tags),
     }
     vt := &valType{e.Value}
     switch e.Type {

@@ -50,7 +50,7 @@ func resourceNatPolicy() *schema.Resource {
 				Description:  "NAT type (ipv4 default, nat64, or nptv6)",
 				ValidateFunc: validateStringIn("ipv4", "nat64", "nptv6"),
 			},
-			"source_zone": &schema.Schema{
+			"source_zones": &schema.Schema{
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -72,7 +72,7 @@ func resourceNatPolicy() *schema.Resource {
 				Optional: true,
 				Default:  "any",
 			},
-			"source_address": &schema.Schema{
+			"source_addresses": &schema.Schema{
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -80,7 +80,7 @@ func resourceNatPolicy() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"destination_address": &schema.Schema{
+			"destination_addresses": &schema.Schema{
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -101,7 +101,7 @@ func resourceNatPolicy() *schema.Resource {
 				Description:  "interface-address or translated-address",
 				ValidateFunc: validateStringIn("interface-address", "translated-address"),
 			},
-			"sat_translated_address": &schema.Schema{
+			"sat_translated_addresses": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -121,7 +121,7 @@ func resourceNatPolicy() *schema.Resource {
 				Optional:     true,
 				ValidateFunc: validateStringIn("none", "interface-address", "translated-address"),
 			},
-			"sat_fallback_translated_address": &schema.Schema{
+			"sat_fallback_translated_addresses": &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -180,19 +180,19 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		Name:                         d.Get("name").(string),
 		Type:                         d.Get("type").(string),
 		Description:                  d.Get("description").(string),
-		SourceZone:                   asStringList(d.Get("source_zone").([]interface{})),
+		SourceZones:                   asStringList(d.Get("source_zones").([]interface{})),
 		DestinationZone:              d.Get("destination_zone").(string),
 		ToInterface:                  d.Get("to_interface").(string),
 		Service:                      d.Get("service").(string),
-		SourceAddress:                asStringList(d.Get("source_address").([]interface{})),
-		DestinationAddress:           asStringList(d.Get("destination_address").([]interface{})),
+		SourceAddresses:                asStringList(d.Get("source_addresses").([]interface{})),
+		DestinationAddresses:           asStringList(d.Get("destination_addresses").([]interface{})),
 		SatType:                      d.Get("sat_type").(string),
 		SatAddressType:               d.Get("sat_address_type").(string),
-		SatTranslatedAddress:         asStringList(d.Get("sat_translated_address").([]interface{})),
+		SatTranslatedAddresses:         asStringList(d.Get("sat_translated_addresses").([]interface{})),
 		SatInterface:                 d.Get("sat_interface").(string),
 		SatIpAddress:                 d.Get("sat_ip_address").(string),
 		SatFallbackType:              d.Get("sat_fallback_type").(string),
-		SatFallbackTranslatedAddress: asStringList(d.Get("sat_fallback_translated_address").([]interface{})),
+		SatFallbackTranslatedAddresses: asStringList(d.Get("sat_fallback_translated_addresses").([]interface{})),
 		SatFallbackInterface:         d.Get("sat_fallback_interface").(string),
 		SatFallbackIpType:            d.Get("sat_fallback_ip_type").(string),
 		SatFallbackIpAddress:         d.Get("sat_fallback_ip_address").(string),
@@ -201,7 +201,7 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		DatAddress:                   d.Get("dat_address").(string),
 		DatPort:                      d.Get("dat_port").(int),
 		Disabled:                     d.Get("disabled").(bool),
-		Tag:                          asStringList(d.Get("tags").([]interface{})),
+		Tags:                          asStringList(d.Get("tags").([]interface{})),
 	}
 
 	return vsys, rb, o
@@ -249,28 +249,28 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	d.Set("rulebase", rb)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	if err = d.Set("source_zone", o.SourceZone); err != nil {
-		log.Printf("[WARN] Error setting 'source_zone' param for %q: %s", d.Id(), err)
+	if err = d.Set("source_zones", o.SourceZones); err != nil {
+		log.Printf("[WARN] Error setting 'source_zones' param for %q: %s", d.Id(), err)
 	}
 	d.Set("destination_zone", o.DestinationZone)
 	d.Set("to_interface", o.ToInterface)
 	d.Set("service", o.Service)
-	if err = d.Set("source_address", o.SourceAddress); err != nil {
-		log.Printf("[WARN] Error setting 'source_address' param for %q: %s", d.Id(), err)
+	if err = d.Set("source_addresses", o.SourceAddresses); err != nil {
+		log.Printf("[WARN] Error setting 'source_addresses' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("destination_address", o.DestinationAddress); err != nil {
-		log.Printf("[WARN] Error setting 'destination_address' param for %q: %s", d.Id(), err)
+	if err = d.Set("destination_addresses", o.DestinationAddresses); err != nil {
+		log.Printf("[WARN] Error setting 'destination_addresses' param for %q: %s", d.Id(), err)
 	}
 	d.Set("sat_type", o.SatType)
 	d.Set("sat_address_type", o.SatAddressType)
-	if err = d.Set("sat_translated_address", o.SatTranslatedAddress); err != nil {
-		log.Printf("[WARN] Error setting 'sat_translated_address' param for %q: %s", d.Id(), err)
+	if err = d.Set("sat_translated_addresses", o.SatTranslatedAddresses); err != nil {
+		log.Printf("[WARN] Error setting 'sat_translated_addresses' param for %q: %s", d.Id(), err)
 	}
 	d.Set("sat_interface", o.SatInterface)
 	d.Set("sat_ip_address", o.SatIpAddress)
 	d.Set("sat_fallback_type", o.SatFallbackType)
-	if err = d.Set("sat_fallback_translated_address", o.SatFallbackTranslatedAddress); err != nil {
-		log.Printf("[WARN] Error setting 'sat_fallback_translated_address' param for %q: %s", d.Id(), err)
+	if err = d.Set("sat_fallback_translated_addresses", o.SatFallbackTranslatedAddresses); err != nil {
+		log.Printf("[WARN] Error setting 'sat_fallback_translated_addresses' param for %q: %s", d.Id(), err)
 	}
 	d.Set("sat_fallback_interface", o.SatFallbackInterface)
 	d.Set("sat_fallback_ip_type", o.SatFallbackIpType)
@@ -280,7 +280,7 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	d.Set("dat_address", o.DatAddress)
 	d.Set("dat_port", o.DatPort)
 	d.Set("disabled", o.Disabled)
-	if err = d.Set("tags", o.Tag); err != nil {
+	if err = d.Set("tags", o.Tags); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
 

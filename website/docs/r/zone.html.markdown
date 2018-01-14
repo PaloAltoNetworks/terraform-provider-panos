@@ -18,7 +18,7 @@ resource "panos_zone" "example" {
     mode = "layer3"
     interfaces = ["ethernet1/1", "ethernet1/2"]
     enable_user_id = true
-    exclude_acl = ["192.168.0.0/16"]
+    exclude_acls = ["192.168.0.0/16"]
 }
 ```
 
@@ -34,9 +34,9 @@ The following arguments are supported:
 * `log_setting` - (Optional) Log setting.
 * `enable_user_id` - (Optional) Boolean to enable user identification.
 * `interfaces` - (Optional) List of interfaces to associated with this zone.
-* `include_acl` - (Optional) Users from these addresses/subnets will
+* `include_acls` - (Optional) Users from these addresses/subnets will
   be identified.  This can be an address object, an address group, a single
   IP address, or an IP address subnet.
-* `exclude_acl` - (Optional) Users from these addresses/subnets will not
+* `exclude_acls` - (Optional) Users from these addresses/subnets will not
   be identified.  This can be an address object, an address group, a single
   IP address, or an IP address subnet.

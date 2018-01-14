@@ -66,7 +66,7 @@ func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 		Value:       d.Get("value").(string),
 		Type:        d.Get("type").(string),
 		Description: d.Get("description").(string),
-		Tag:         setAsList(d.Get("tags").(*schema.Set)),
+		Tags:         setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o
@@ -114,7 +114,7 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 	d.Set("value", o.Value)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
-	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
 

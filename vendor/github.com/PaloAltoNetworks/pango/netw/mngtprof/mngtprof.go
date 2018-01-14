@@ -26,7 +26,7 @@ type Entry struct {
     UseridService bool
     UseridSyslogListenerSsl bool
     UseridSyslogListenerUdp bool
-    PermittedIp []string
+    PermittedIps []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -43,7 +43,7 @@ func (o *Entry) Copy(s Entry) {
     o.UseridService = s.UseridService
     o.UseridSyslogListenerSsl = s.UseridSyslogListenerSsl
     o.UseridSyslogListenerUdp = s.UseridSyslogListenerUdp
-    o.PermittedIp = s.PermittedIp
+    o.PermittedIps = s.PermittedIps
 }
 
 // MngtProf is a namespace struct, included as part of pango.Client.
@@ -214,7 +214,7 @@ func (o *container_v1) Normalize() Entry {
         UseridService: util.AsBool(o.Answer.UseridService),
         UseridSyslogListenerSsl: util.AsBool(o.Answer.UseridSyslogListenerSsl),
         UseridSyslogListenerUdp: util.AsBool(o.Answer.UseridSyslogListenerUdp),
-        PermittedIp: util.EntToStr(o.Answer.PermittedIp),
+        PermittedIps: util.EntToStr(o.Answer.PermittedIps),
     }
 
     return ans
@@ -234,7 +234,7 @@ type entry_v1 struct {
     UseridService string `xml:"userid-service"`
     UseridSyslogListenerSsl string `xml:"userid-syslog-listener-ssl"`
     UseridSyslogListenerUdp string `xml:"userid-syslog-listener-udp"`
-    PermittedIp *util.Entry `xml:"permitted-ip"`
+    PermittedIps *util.Entry `xml:"permitted-ip"`
 }
 
 func specify_v1(e Entry) interface{} {
@@ -251,7 +251,7 @@ func specify_v1(e Entry) interface{} {
         UseridService: util.YesNo(e.UseridService),
         UseridSyslogListenerSsl: util.YesNo(e.UseridSyslogListenerSsl),
         UseridSyslogListenerUdp: util.YesNo(e.UseridSyslogListenerUdp),
-        PermittedIp: util.StrToEnt(e.PermittedIp),
+        PermittedIps: util.StrToEnt(e.PermittedIps),
     }
 
     return ans

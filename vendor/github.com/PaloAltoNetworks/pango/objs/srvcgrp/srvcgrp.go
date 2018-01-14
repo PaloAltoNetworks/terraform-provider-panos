@@ -16,14 +16,14 @@ import (
 type Entry struct {
     Name string
     Services []string
-    Tag []string
+    Tags []string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
     o.Services = s.Services
-    o.Tag = s.Tag
+    o.Tags = s.Tags
 }
 
 // SrvcGrp is a namespace struct, included as part of pango.Client.
@@ -186,7 +186,7 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Services: util.MemToStr(o.Answer.Services),
-        Tag: util.MemToStr(o.Answer.Tag),
+        Tags: util.MemToStr(o.Answer.Tags),
     }
 
     return ans
@@ -196,14 +196,14 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     Services *util.Member `xml:"members"`
-    Tag *util.Member `xml:"tag"`
+    Tags *util.Member `xml:"tag"`
 }
 
 func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Services: util.StrToMem(e.Services),
-        Tag: util.StrToMem(e.Tag),
+        Tags: util.StrToMem(e.Tags),
     }
 
     return ans

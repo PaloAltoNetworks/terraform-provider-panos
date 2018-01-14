@@ -16,7 +16,7 @@ This resource allows you to add/update/delete interface management profiles.
 resource "panos_management_profile" "example" {
     name = "allow ping"
     ping = true
-    permitted_ip = ["10.1.1.0/24", "192.168.80.0/24"]
+    permitted_ips = ["10.1.1.0/24", "192.168.80.0/24"]
 }
 ```
 
@@ -38,5 +38,5 @@ The following arguments are supported:
   for SSL.
 * `userid_syslog_listener_udp` - (Optional) Allow User ID syslog listener
   for UDP.
-* `permitted_ip` - (Optional) The list of permitted IP addresses or address
+* `permitted_ips` - (Optional) The list of permitted IP addresses or address
   ranges for this management profile.

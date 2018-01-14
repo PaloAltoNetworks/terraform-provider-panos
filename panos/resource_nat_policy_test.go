@@ -71,8 +71,8 @@ func testAccCheckPanosNatPolicyAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 st
 			return fmt.Errorf("Name is %q, expected %q", o.Name, n)
 		}
 
-		if len(o.SourceZone) != 1 || o.SourceZone[0] != sz {
-			return fmt.Errorf("Source zone is %#v, expected [%s]", o.SourceZone, sz)
+		if len(o.SourceZones) != 1 || o.SourceZones[0] != sz {
+			return fmt.Errorf("Source zones is %#v, expected [%s]", o.SourceZones, sz)
 		}
 
 		if o.DestinationZone != dz {
@@ -87,8 +87,8 @@ func testAccCheckPanosNatPolicyAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 st
 			return fmt.Errorf("SatAddressType is %s, expected translated-address", o.SatAddressType)
 		}
 
-		if len(o.SatTranslatedAddress) != 2 || o.SatTranslatedAddress[0] != sta1 || o.SatTranslatedAddress[1] != sta2 {
-			return fmt.Errorf("SatTranslatedAddress is %#v, expected [%s %s]", o.SatTranslatedAddress, sta1, sta2)
+		if len(o.SatTranslatedAddresses) != 2 || o.SatTranslatedAddresses[0] != sta1 || o.SatTranslatedAddresses[1] != sta2 {
+			return fmt.Errorf("SatTranslatedAddresses is %#v, expected [%s %s]", o.SatTranslatedAddresses, sta1, sta2)
 		}
 
 		return nil
@@ -130,13 +130,13 @@ resource "panos_zone" "z2" {
 
 resource "panos_nat_policy" "test" {
     name = "%s"
-    source_address = ["any"]
-    destination_address = ["any"]
-    source_zone = ["${panos_zone.z%d.name}"]
+    source_addresses = ["any"]
+    destination_addresses = ["any"]
+    source_zones = ["${panos_zone.z%d.name}"]
     destination_zone = "${panos_zone.z%d.name}"
     sat_type = "dynamic-ip-and-port"
     sat_address_type = "translated-address"
-    sat_translated_address = ["%s", "%s"]
+    sat_translated_addresses = ["%s", "%s"]
 }
 `, z1, z2, n, sz, dz, sta1, sta2)
 }

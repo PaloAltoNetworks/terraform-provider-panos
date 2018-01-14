@@ -18,6 +18,7 @@ resource "panos_service_object" "example" {
     vsys = "vsys1"
     protocol = "tcp"
     description = "My service object"
+    source_port = "2000-2049,2051-2099"
     destination_port = "32123"
     tags = ["internal", "dmz"]
 }

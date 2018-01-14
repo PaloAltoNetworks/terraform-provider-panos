@@ -41,7 +41,7 @@ const (
 //
 // SatType = nat.DynamicIpAndPort && SatAddressType = nat.TranslatedAddress:
 //
-//      * SatTranslatedAddress
+//      * SatTranslatedAddresses
 //
 // SatType = nat.DynamicIpAndPort && SatAddressType = nat.InterfaceAddress:
 //
@@ -50,7 +50,7 @@ const (
 //
 // For ALL SatType = nat.DynamicIp:
 //
-//      * SatTranslatedAddress
+//      * SatTranslatedAddresses
 //
 // For ALL SatType = nat.DynamicIp and SatFallbackType = nat.InterfaceAddress:
 //
@@ -66,7 +66,7 @@ const (
 //
 // SatType = nat.DynamicIp and SatFallbackType = nat.TranslatedAddress:
 //
-//      * SatFallbackTranslatedAddress
+//      * SatFallbackTranslatedAddresses
 //
 // SatType = nat.StaticIp:
 //
@@ -79,19 +79,19 @@ type Entry struct {
     Name string
     Description string
     Type string
-    SourceZone []string
+    SourceZones []string
     DestinationZone string
     ToInterface string
     Service string
-    SourceAddress []string
-    DestinationAddress []string
+    SourceAddresses []string
+    DestinationAddresses []string
     SatType string
     SatAddressType string
-    SatTranslatedAddress []string
+    SatTranslatedAddresses []string
     SatInterface string
     SatIpAddress string
     SatFallbackType string
-    SatFallbackTranslatedAddress []string
+    SatFallbackTranslatedAddresses []string
     SatFallbackInterface string
     SatFallbackIpType string
     SatFallbackIpAddress string
@@ -100,9 +100,9 @@ type Entry struct {
     DatAddress string
     DatPort int
     Disabled bool
-    Target []string
+    Targets []string
     NegateTarget bool
-    Tag []string
+    Tags []string
 }
 
 // Defaults sets params with uninitialized values to their GUI default setting.
@@ -111,8 +111,8 @@ type Entry struct {
 //      * Type: "ipv4"
 //      * ToInterface: "any"
 //      * Service: "any"
-//      * SourceAddress: ["any"]
-//      * DestinationAddress: ["any"]
+//      * SourceAddresses: ["any"]
+//      * DestinationAddresses: ["any"]
 //      * SatType: None
 func (o *Entry) Defaults() {
     if o.Type == "" {
@@ -127,12 +127,12 @@ func (o *Entry) Defaults() {
         o.Service = "any"
     }
 
-    if len(o.SourceAddress) == 0 {
-        o.SourceAddress = []string{"any"}
+    if len(o.SourceAddresses) == 0 {
+        o.SourceAddresses = []string{"any"}
     }
 
-    if len(o.DestinationAddress) == 0 {
-        o.DestinationAddress = []string{"any"}
+    if len(o.DestinationAddresses) == 0 {
+        o.DestinationAddresses = []string{"any"}
     }
 
     if o.SatType == "" {
@@ -145,19 +145,19 @@ func (o *Entry) Defaults() {
 func (o *Entry) Copy(s Entry) {
     o.Description = s.Description
     o.Type = s.Type
-    o.SourceZone = s.SourceZone
+    o.SourceZones = s.SourceZones
     o.DestinationZone = s.DestinationZone
     o.ToInterface = s.ToInterface
     o.Service = s.Service
-    o.SourceAddress = s.SourceAddress
-    o.DestinationAddress = s.DestinationAddress
+    o.SourceAddresses = s.SourceAddresses
+    o.DestinationAddresses = s.DestinationAddresses
     o.SatType = s.SatType
     o.SatAddressType = s.SatAddressType
-    o.SatTranslatedAddress = s.SatTranslatedAddress
+    o.SatTranslatedAddresses = s.SatTranslatedAddresses
     o.SatInterface = s.SatInterface
     o.SatIpAddress = s.SatIpAddress
     o.SatFallbackType = s.SatFallbackType
-    o.SatFallbackTranslatedAddress = s.SatFallbackTranslatedAddress
+    o.SatFallbackTranslatedAddresses = s.SatFallbackTranslatedAddresses
     o.SatFallbackInterface = s.SatFallbackInterface
     o.SatFallbackIpType = s.SatFallbackIpType
     o.SatFallbackIpAddress = s.SatFallbackIpAddress
@@ -166,9 +166,9 @@ func (o *Entry) Copy(s Entry) {
     o.DatAddress = s.DatAddress
     o.DatPort = s.DatPort
     o.Disabled = s.Disabled
-    o.Target = s.Target
+    o.Targets = s.Targets
     o.NegateTarget = s.NegateTarget
-    o.Tag = s.Tag
+    o.Tags = s.Tags
 }
 
 // Nat is the client.Policies.Nat namespace.
@@ -336,14 +336,14 @@ func (o *container_v1) Normalize() Entry {
         Name: o.Answer.Name,
         Description: o.Answer.Description,
         Type: o.Answer.Type,
-        SourceZone: util.MemToStr(o.Answer.SourceZone),
+        SourceZones: util.MemToStr(o.Answer.SourceZones),
         DestinationZone: o.Answer.DestinationZone,
         ToInterface: o.Answer.ToInterface,
         Service: o.Answer.Service,
-        SourceAddress: util.MemToStr(o.Answer.SourceAddress),
-        DestinationAddress: util.MemToStr(o.Answer.DestinationAddress),
+        SourceAddresses: util.MemToStr(o.Answer.SourceAddresses),
+        DestinationAddresses: util.MemToStr(o.Answer.DestinationAddresses),
         Disabled: util.AsBool(o.Answer.Disabled),
-        Tag: util.MemToStr(o.Answer.Tag),
+        Tags: util.MemToStr(o.Answer.Tags),
     }
 
     if o.Answer.Sat == nil {
@@ -358,16 +358,16 @@ func (o *container_v1) Normalize() Entry {
                 ans.SatIpAddress = o.Answer.Sat.Diap.InterfaceAddress.Ip
             } else {
                 ans.SatAddressType = TranslatedAddress
-                ans.SatTranslatedAddress = util.MemToStr(o.Answer.Sat.Diap.TranslatedAddress)
+                ans.SatTranslatedAddresses = util.MemToStr(o.Answer.Sat.Diap.TranslatedAddress)
             }
         case o.Answer.Sat.Di != nil:
             ans.SatType = DynamicIp
-            ans.SatTranslatedAddress = util.MemToStr(o.Answer.Sat.Di.TranslatedAddress)
+            ans.SatTranslatedAddresses = util.MemToStr(o.Answer.Sat.Di.TranslatedAddress)
             if o.Answer.Sat.Di.Fallback == nil {
                 ans.SatFallbackType = None
             } else if o.Answer.Sat.Di.Fallback.TranslatedAddress != nil {
                 ans.SatFallbackType = TranslatedAddress
-                ans.SatFallbackTranslatedAddress = util.MemToStr(o.Answer.Sat.Di.Fallback.TranslatedAddress)
+                ans.SatFallbackTranslatedAddresses = util.MemToStr(o.Answer.Sat.Di.Fallback.TranslatedAddress)
             } else if o.Answer.Sat.Di.Fallback.InterfaceAddress != nil {
                 ans.SatFallbackType = InterfaceAddress
                 ans.SatFallbackInterface = o.Answer.Sat.Di.Fallback.InterfaceAddress.Interface
@@ -392,7 +392,7 @@ func (o *container_v1) Normalize() Entry {
     }
 
     if o.Answer.Target != nil {
-        ans.Target = util.EntToStr(o.Answer.Target.Target)
+        ans.Targets = util.EntToStr(o.Answer.Target.Targets)
         ans.NegateTarget = util.AsBool(o.Answer.Target.NegateTarget)
     }
 
@@ -404,17 +404,17 @@ type entry_v1 struct {
     Name string `xml:"name,attr"`
     Description string `xml:"description"`
     Type string `xml:"nat-type"`
-    SourceZone *util.Member `xml:"from"`
+    SourceZones *util.Member `xml:"from"`
     DestinationZone string `xml:"to>member"`
     ToInterface string `xml:"to-interface"`
     Service string `xml:"service"`
-    SourceAddress *util.Member `xml:"source"`
-    DestinationAddress *util.Member `xml:"destination"`
+    SourceAddresses *util.Member `xml:"source"`
+    DestinationAddresses *util.Member `xml:"destination"`
     Sat *srcXlate `xml:"source-translation"`
     Dat *dstXlate `xml:"destination-translation"`
     Disabled string `xml:"disabled"`
     Target *targetInfo `xml:"target"`
-    Tag *util.Member `xml:"tag"`
+    Tags *util.Member `xml:"tag"`
 }
 
 type dstXlate struct {
@@ -460,7 +460,7 @@ type srcXlateStatic struct {
 }
 
 type targetInfo struct {
-    Target *util.Entry `xml:"devices"`
+    Targets *util.Entry `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 
@@ -469,14 +469,14 @@ func specify_v1(e Entry) interface{} {
         Name: e.Name,
         Description: e.Description,
         Type: e.Type,
-        SourceZone: util.StrToMem(e.SourceZone),
+        SourceZones: util.StrToMem(e.SourceZones),
         DestinationZone: e.DestinationZone,
         ToInterface: e.ToInterface,
         Service: e.Service,
-        SourceAddress: util.StrToMem(e.SourceAddress),
-        DestinationAddress: util.StrToMem(e.DestinationAddress),
+        SourceAddresses: util.StrToMem(e.SourceAddresses),
+        DestinationAddresses: util.StrToMem(e.DestinationAddresses),
         Disabled: util.YesNo(e.Disabled),
-        Tag: util.StrToMem(e.Tag),
+        Tags: util.StrToMem(e.Tags),
     }
 
     var sv *srcXlate
@@ -487,7 +487,7 @@ func specify_v1(e Entry) interface{} {
         }
         switch e.SatAddressType {
         case TranslatedAddress:
-            sv.Diap.TranslatedAddress = util.StrToMem(e.SatTranslatedAddress)
+            sv.Diap.TranslatedAddress = util.StrToMem(e.SatTranslatedAddresses)
         case InterfaceAddress:
             sv.Diap.InterfaceAddress = &srcXlateDiapIa{
                 Interface: e.SatInterface,
@@ -497,7 +497,7 @@ func specify_v1(e Entry) interface{} {
     case DynamicIp:
         sv = &srcXlate{
             Di: &srcXlateDi{
-                TranslatedAddress: util.StrToMem(e.SatTranslatedAddress),
+                TranslatedAddress: util.StrToMem(e.SatTranslatedAddresses),
             },
         }
         switch e.SatFallbackType {
@@ -514,7 +514,7 @@ func specify_v1(e Entry) interface{} {
                 sv.Di.Fallback.InterfaceAddress.FloatingIp = e.SatFallbackIpAddress
             }
         case TranslatedAddress:
-            sv.Di.Fallback = &fallback{TranslatedAddress: util.StrToMem(e.SatFallbackTranslatedAddress)}
+            sv.Di.Fallback = &fallback{TranslatedAddress: util.StrToMem(e.SatFallbackTranslatedAddresses)}
         }
     case StaticIp:
         sv = &srcXlate{
@@ -533,9 +533,9 @@ func specify_v1(e Entry) interface{} {
         }
     }
 
-    if len(e.Target) != 0 || e.NegateTarget {
+    if len(e.Targets) != 0 || e.NegateTarget {
         ans.Target = &targetInfo{
-            Target: util.StrToEnt(e.Target),
+            Targets: util.StrToEnt(e.Targets),
             NegateTarget: util.YesNo(e.NegateTarget),
         }
     }

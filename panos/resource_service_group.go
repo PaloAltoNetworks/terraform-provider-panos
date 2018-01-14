@@ -57,7 +57,7 @@ func parseServiceGroup(d *schema.ResourceData) (string, srvcgrp.Entry) {
 	o := srvcgrp.Entry{
 		Name:     d.Get("name").(string),
 		Services: asStringList(d.Get("services").([]interface{})),
-		Tag:      setAsList(d.Get("tags").(*schema.Set)),
+		Tags:      setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o
@@ -105,7 +105,7 @@ func readServiceGroup(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("services", o.Services); err != nil {
 		log.Printf("[WARN] Error setting 'services' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("tags", listAsSet(o.Tag)); err != nil {
+	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
 

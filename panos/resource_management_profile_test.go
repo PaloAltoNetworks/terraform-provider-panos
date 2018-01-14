@@ -81,16 +81,16 @@ func testAccCheckPanosManagementProfileAttributes(o *mngtprof.Entry, n string, h
 			return fmt.Errorf("SSH is %t, expected %t", o.Ssh, ssh)
 		}
 
-		if len(o.PermittedIp) != 2 {
-			return fmt.Errorf("len(PermittedIp) is %d, expected 2", len(o.PermittedIp))
+		if len(o.PermittedIps) != 2 {
+			return fmt.Errorf("len(PermittedIps) is %d, expected 2", len(o.PermittedIps))
 		}
 
-		if o.PermittedIp[0] != pi1 {
-			return fmt.Errorf("Permitted IP 0 is %s, expected %s", o.PermittedIp[0], pi1)
+		if o.PermittedIps[0] != pi1 {
+			return fmt.Errorf("Permitted IP 0 is %s, expected %s", o.PermittedIps[0], pi1)
 		}
 
-		if o.PermittedIp[1] != pi2 {
-			return fmt.Errorf("Permitted IP 1 is %s, expected %s", o.PermittedIp[1], pi2)
+		if o.PermittedIps[1] != pi2 {
+			return fmt.Errorf("Permitted IP 1 is %s, expected %s", o.PermittedIps[1], pi2)
 		}
 
 		return nil
@@ -124,7 +124,7 @@ resource "panos_management_profile" "test" {
     https = %t
     ping = %t
     ssh = %t
-    permitted_ip = ["%s", "%s"]
+    permitted_ips = ["%s", "%s"]
 }
 `, n, h, p, s, pi1, pi2)
 }
