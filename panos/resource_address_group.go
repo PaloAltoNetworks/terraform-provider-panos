@@ -64,11 +64,11 @@ func resourceAddressGroup() *schema.Resource {
 func parseAddressGroup(d *schema.ResourceData) (string, addrgrp.Entry) {
 	vsys := d.Get("vsys").(string)
 	o := addrgrp.Entry{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		StaticAddresses:      asStringList(d.Get("static_addresses").([]interface{})),
-		DynamicMatch:     d.Get("dynamic_match").(string),
-		Tags:         setAsList(d.Get("tags").(*schema.Set)),
+		Name:            d.Get("name").(string),
+		Description:     d.Get("description").(string),
+		StaticAddresses: asStringList(d.Get("static_addresses").([]interface{})),
+		DynamicMatch:    d.Get("dynamic_match").(string),
+		Tags:            setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o

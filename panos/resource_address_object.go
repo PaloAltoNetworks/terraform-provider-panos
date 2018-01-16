@@ -66,7 +66,7 @@ func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 		Value:       d.Get("value").(string),
 		Type:        d.Get("type").(string),
 		Description: d.Get("description").(string),
-		Tags:         setAsList(d.Get("tags").(*schema.Set)),
+		Tags:        setAsList(d.Get("tags").(*schema.Set)),
 	}
 
 	return vsys, o
