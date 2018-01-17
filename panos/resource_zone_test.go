@@ -22,17 +22,17 @@ func TestPanosZone_basic(t *testing.T) {
 		CheckDestroy: testAccPanosZoneDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccZoneConfig(name, "layer3", "10.1.1.0/24", "10.1.2.0/24", "192.168.1.0/24", "192.168.2.0/24", true),
+				Config: testAccZoneConfig(name, "10.1.1.0/24", "10.1.2.0/24", "192.168.1.0/24", "192.168.2.0/24", true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosZoneExists("panos_zone.test", &o),
-					testAccCheckPanosZoneAttributes(&o, name, "layer3", "10.1.1.0/24", "10.1.2.0/24", "192.168.1.0/24", "192.168.2.0/24", true),
+					testAccCheckPanosZoneAttributes(&o, name, "10.1.1.0/24", "10.1.2.0/24", "192.168.1.0/24", "192.168.2.0/24", true),
 				),
 			},
 			{
-				Config: testAccZoneConfig(name, "layer2", "192.168.3.0/24", "192.168.4.0/24", "10.1.3.0/24", "10.1.4.0/24", false),
+				Config: testAccZoneConfig(name, "192.168.3.0/24", "192.168.4.0/24", "10.1.3.0/24", "10.1.4.0/24", false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosZoneExists("panos_zone.test", &o),
-					testAccCheckPanosZoneAttributes(&o, name, "layer2", "192.168.3.0/24", "192.168.4.0/24", "10.1.3.0/24", "10.1.4.0/24", false),
+					testAccCheckPanosZoneAttributes(&o, name, "192.168.3.0/24", "192.168.4.0/24", "10.1.3.0/24", "10.1.4.0/24", false),
 				),
 			},
 		},
@@ -63,14 +63,10 @@ func testAccCheckPanosZoneExists(n string, o *zone.Entry) resource.TestCheckFunc
 	}
 }
 
-func testAccCheckPanosZoneAttributes(o *zone.Entry, n, mode, ia1, ia2, ea1, ea2 string, eui bool) resource.TestCheckFunc {
+func testAccCheckPanosZoneAttributes(o *zone.Entry, n, ia1, ia2, ea1, ea2 string, eui bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Name != n {
 			return fmt.Errorf("Name is %s, expected %s", o.Name, n)
-		}
-
-		if o.Mode != mode {
-			return fmt.Errorf("Mode is %s, expected %s", o.Mode, mode)
 		}
 
 		if len(o.IncludeAcls) != 2 || o.IncludeAcls[0] != ia1 || o.IncludeAcls[1] != ia2 {
@@ -110,15 +106,15 @@ func testAccPanosZoneDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccZoneConfig(n, mode, ia1, ia2, ea1, ea2 string, eui bool) string {
+func testAccZoneConfig(n, ia1, ia2, ea1, ea2 string, eui bool) string {
 	return fmt.Sprintf(`
 resource "panos_zone" "test" {
     name = "%s"
     vsys = "vsys1"
-    mode = "%s"
+    mode = "layer3"
     include_acls = ["%s", "%s"]
     exclude_acls = ["%s", "%s"]
     enable_user_id = %t
 }
-`, n, mode, ia1, ia2, ea1, ea2, eui)
+`, n, ia1, ia2, ea1, ea2, eui)
 }

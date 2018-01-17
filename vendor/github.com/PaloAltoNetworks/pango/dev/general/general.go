@@ -383,9 +383,9 @@ func (o *container_v1) Normalize() Config {
 type config_v1 struct {
     XMLName xml.Name `xml:"system"`
     Hostname string `xml:"hostname"`
-    IpAddress string `xml:"ip-address"`
-    Netmask string `xml:"netmask"`
-    Gateway string `xml:"default-gateway"`
+    IpAddress string `xml:"ip-address,omitempty"`
+    Netmask string `xml:"netmask,omitempty"`
+    Gateway string `xml:"default-gateway,omitempty"`
     Timezone string `xml:"timezone"`
     Domain string `xml:"domain,omitempty"`
     UpdateServer string `xml:"update-server,omitempty"`
@@ -427,8 +427,8 @@ type config_v1 struct {
 }
 
 type deviceDns struct {
-    Primary string `xml:"servers>primary"`
-    Secondary string `xml:"servers>secondary"`
+    Primary string `xml:"servers>primary,omitempty"`
+    Secondary string `xml:"servers>secondary,omitempty"`
 }
 
 type deviceNtp struct {
