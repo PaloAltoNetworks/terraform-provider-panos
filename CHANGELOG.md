@@ -2,6 +2,7 @@
 
 FEATURES:
 
+* **New Data Source:** `panos_system_info`
 * **New Resource:** `panos_address_group`
 * **New Resource:** `panos_address_object`
 * **New Resource:** `panos_administrative_tag`

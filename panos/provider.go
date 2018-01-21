@@ -62,6 +62,10 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 
+		DataSourcesMap: map[string]*schema.Resource{
+			"panos_system_info": dataSourceSystemInfo(),
+		},
+
 		ResourcesMap: map[string]*schema.Resource{
 			"panos_address_group":      resourceAddressGroup(),
 			"panos_address_object":     resourceAddressObject(),
