@@ -14,6 +14,33 @@ firewall's config, such as data interfaces or security policies.
 
 Use the navigation to the left to read about the available resources.
 
+## Versioning
+
+The PANOS provider has support for PANOS 6.1 - 8.0.
+
+Some resources may contain variables that are only applicable for newer
+versions of PANOS.  If this is the case, then make sure to use
+[conditionals](https://www.terraform.io/docs/configuration/interpolation.html)
+along with the `panos_system_info` data source to only set these variables
+when the version of PANOS is appropriate.
+
+One such resource is `panos_ethernet_interface` and the `ipv4_mss_adjust`
+parameter.  Doing the following is one way to correctly configure this
+parameter only when it's applicable:
+
+```hcl
+data "panos_system_info" "config" {}
+
+data "panos_ethernet_interface" "eth1" {
+    name = "ethernet1/1"
+    vsys = "vsys1"
+    mode = "layer3"
+    adjust_tcp_mss = true
+    ipv4_mss_adjust = "${data.panos_system_info.config.version_major >= 8 ? 42 : 0}"
+    # ...
+}
+```
+
 ## Commits
 
 As of right now, Terraform does not provide native support for commits, so

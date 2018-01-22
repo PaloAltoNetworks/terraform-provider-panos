@@ -10,13 +10,6 @@ description: |-
 
 This resource allows you to add/update/delete ethernet interfaces.
 
-**Note** - Some parameters in this resource are applicable only for certain
-versions of PANOS.  Attempting to configure settings for a firewall that
-doesn't yet support that param will ignore those future supported
-parameters, but read operations will always show that the setting is an
-empty value instead of the desired value, meaning `terraform plan` will
-always show that some action needs to be taken.
-
 ## Example Usage
 
 ```hcl
