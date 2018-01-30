@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/PaloAltoNetworks/terraform-provider-panos/panos"
 	"github.com/hashicorp/terraform/plugin"
+	"github.com/terraform-providers/terraform-provider-panos/panos"
 )
 
 func main() {

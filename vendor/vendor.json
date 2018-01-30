@@ -1179,5 +1179,5 @@
 			"revisionTime": "2017-12-14T00:09:49Z"
 		}
 	],
-	"rootPath": "github.com/PaloAltoNetworks/terraform-provider-panos"
+	"rootPath": "github.com/terraform-providers/terraform-provider-panos"
 }
