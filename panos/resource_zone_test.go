@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosZone_basic(t *testing.T) {
+func TestAccPanosZone_basic(t *testing.T) {
 	var o zone.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosNatPolicy_basic(t *testing.T) {
+func TestAccPanosNatPolicy_basic(t *testing.T) {
 	var o nat.Entry
 	z1 := fmt.Sprintf("z%s", acctest.RandString(7))
 	z2 := fmt.Sprintf("z%s", acctest.RandString(7))

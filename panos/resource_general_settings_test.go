@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosGeneralSettings_basic(t *testing.T) {
+func TestAccPanosGeneralSettings_basic(t *testing.T) {
 	var o general.Config
 
 	resource.Test(t, resource.TestCase{

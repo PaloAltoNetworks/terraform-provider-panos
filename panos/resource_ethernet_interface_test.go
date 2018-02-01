@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosEthernetInterface_basic(t *testing.T) {
+func TestAccPanosEthernetInterface_basic(t *testing.T) {
 	var o eth.Entry
 	num := (acctest.RandInt() % 9) + 1
 	name := fmt.Sprintf("ethernet1/%d", num)

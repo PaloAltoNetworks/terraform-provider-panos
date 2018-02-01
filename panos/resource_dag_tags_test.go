@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosDagTags_basic(t *testing.T) {
+func TestAccPanosDagTags_basic(t *testing.T) {
 	o := make(map[string][]string)
 
 	resource.Test(t, resource.TestCase{

@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosSecurityPolicies_basic(t *testing.T) {
+func TestAccPanosSecurityPolicies_basic(t *testing.T) {
 	var o1, o2 security.Entry
 	name1 := fmt.Sprintf("tf%s", acctest.RandString(6))
 	name2 := fmt.Sprintf("tf%s", acctest.RandString(6))
