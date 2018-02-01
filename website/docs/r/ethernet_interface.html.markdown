@@ -16,6 +16,7 @@ This resource allows you to add/update/delete ethernet interfaces.
 # Configure a bare-bones ethernet interface.
 resource "panos_ethernet_interface" "eth3" {
     name = "ethernet1/3"
+    vsys = "vsys1"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
