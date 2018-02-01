@@ -1,3 +1,7 @@
+variable "ssh_key" {
+  default = ".ssh/id_rsa.pub"
+}
+
 provider "aws" {
   region = "us-west-2"
 }
@@ -82,7 +86,7 @@ resource "aws_security_group" "tf_test_sg_ssh" {
 
 resource "aws_key_pair" "ssh_thing" {
   key_name   = "tf-testing-c"
-  public_key = "${file(".ssh/id_rsa.pub")}"
+  public_key = "${file("${var.ssh_key}")}"
 }
 
 resource "aws_instance" "tf_test" {
