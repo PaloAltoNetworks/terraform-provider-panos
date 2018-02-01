@@ -76,6 +76,14 @@ resource "aws_security_group" "tf_test_sg_ssh" {
     self        = true
   }
 
+  ingress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    ipv6_cidr_blocks = ["::/0"]
+    self             = true
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
