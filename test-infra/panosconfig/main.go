@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"ga lang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh"
 )
 
 // Various PANOS prompts.
