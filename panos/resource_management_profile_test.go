@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosManagementProfile_basic(t *testing.T) {
+func TestAccPanosManagementProfile_basic(t *testing.T) {
 	var mp mngtprof.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

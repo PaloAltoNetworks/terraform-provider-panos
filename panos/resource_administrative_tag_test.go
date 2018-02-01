@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosAdministrativeTag_basic(t *testing.T) {
+func TestAccPanosAdministrativeTag_basic(t *testing.T) {
 	var o tags.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

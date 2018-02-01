@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosAddressGroup_static(t *testing.T) {
+func TestAccPanosAddressGroup_static(t *testing.T) {
 	var o addrgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 	o1 := fmt.Sprintf("ao%s", acctest.RandString(6))
@@ -41,7 +41,7 @@ func TestPanosAddressGroup_static(t *testing.T) {
 	})
 }
 
-func TestPanosAddressGroup_dynamic(t *testing.T) {
+func TestAccPanosAddressGroup_dynamic(t *testing.T) {
 	var o addrgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

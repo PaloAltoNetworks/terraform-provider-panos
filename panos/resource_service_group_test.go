@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosServiceGroup_basic(t *testing.T) {
+func TestAccPanosServiceGroup_basic(t *testing.T) {
 	var o srvcgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 	so1 := fmt.Sprintf("so%s", acctest.RandString(6))

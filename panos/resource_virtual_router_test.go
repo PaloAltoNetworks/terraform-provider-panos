@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosVirtualRouter_basic(t *testing.T) {
+func TestAccPanosVirtualRouter_basic(t *testing.T) {
 	var o router.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

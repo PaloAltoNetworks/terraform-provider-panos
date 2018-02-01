@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestPanosAddressObject_basic(t *testing.T) {
+func TestAccPanosAddressObject_basic(t *testing.T) {
 	var o addr.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
