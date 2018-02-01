@@ -20,4 +20,3 @@
 terraform.tfstate
 terraform.tfstate.backup
 terraform-provider-panos
-*.tf
