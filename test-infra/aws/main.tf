@@ -1,3 +1,7 @@
+resource "random_string" "key_name" {
+  length = 16
+}
+
 variable "ssh_key" {
   default = ".ssh/id_rsa.pub"
 }
@@ -85,7 +89,7 @@ resource "aws_security_group" "tf_test_sg_ssh" {
 }
 
 resource "aws_key_pair" "ssh_thing" {
-  key_name   = "tf-testing-c"
+  key_name   = "${random_string.key_name.result}"
   public_key = "${file("${var.ssh_key}")}"
 }
 
