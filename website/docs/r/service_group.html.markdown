@@ -13,7 +13,7 @@ This resource allows you to add/update/delete service groups.
 ## Example Usage
 
 ```hcl
-resource "panos_service_group" "static1" {
+resource "panos_service_group" "example" {
     name = "static ntp grp"
     services = ["svc1", "svc2"]
 }

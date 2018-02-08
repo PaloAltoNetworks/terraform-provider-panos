@@ -18,14 +18,14 @@ group.
 
 ```hcl
 # Static group
-resource "panos_address_group" "static1" {
+resource "panos_address_group" "example1" {
     name = "static ntp grp"
     description = "My NTP servers"
     static_addresses = ["ntp1", "ntp2", "ntp3"]
 }
 
 # Dynamic group
-resource "panos_address_group" "dag1" {
+resource "panos_address_group" "example2" {
     name = "dynamic grp"
     description = "My internal NTP servers"
     dynamic_match = "'internal' and 'ntp'"
