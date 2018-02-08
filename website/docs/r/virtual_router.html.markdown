@@ -19,7 +19,7 @@ into the virtual router will be removed.
 
 ```hcl
 # Configure a bare-bones ethernet interface.
-resource "panos_virtual_router" "vr1" {
+resource "panos_virtual_router" "example" {
     name = "my virtual router"
     static_dist = 15
     interfaces = ["ethernet1/1", "ethernet1/2"]

@@ -20,7 +20,7 @@ old tags from the previously published plan(s).
 ## Example Usage
 
 ```hcl
-resource "panos_dag_tags" "eth3" {
+resource "panos_dag_tags" "example" {
     vsys = "vsys1"
     register {
         ip = "10.1.1.1"
