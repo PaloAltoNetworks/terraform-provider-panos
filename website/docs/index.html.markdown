@@ -1,28 +1,28 @@
 ---
 layout: "panos"
-page_title: "Provider: PANOS"
+page_title: "Provider: panos"
 sidebar_current: "docs-panos-index"
 description: |-
-  PANOS is used to interact with Palo Alto Networks NGFW.
+  Provider panos is used to interact with Palo Alto Networks NGFW.
 ---
 
-# PANOS Provider
+# Provider panos
 
-[PANOS](https://www.paloaltonetworks.com/) is used to interact with Palo Alto
-Networks' NGFW.  The provider allows you to manage various aspects of the
-firewall's config, such as data interfaces or security policies.
+PAN-OS&reg; is the operating system for Palo Alto Networks&reg; NGFWs and
+Panorama&trade;. The panos provider allows you to manage various aspects
+of the firewall's config, such as data interfaces and security policies.
 
 Use the navigation to the left to read about the available resources.
 
 ## Versioning
 
-The PANOS provider has support for PANOS 6.1 - 8.0.
+The panos provider has support for PAN-OS 6.1 - 8.0.
 
 Some resources may contain variables that are only applicable for newer
-versions of PANOS.  If this is the case, then make sure to use
+versions of PAN-OS.  If this is the case, then make sure to use
 [conditionals](https://www.terraform.io/docs/configuration/interpolation.html)
 along with the `panos_system_info` data source to only set these variables
-when the version of PANOS is appropriate.
+when the version of PAN-OS is appropriate.
 
 One such resource is `panos_ethernet_interface` and the `ipv4_mss_adjust`
 parameter.  Doing the following is one way to correctly configure this
@@ -121,13 +121,13 @@ variables:
 * `PANOS_USERNAME` - Required if `PANOS_API_KEY` is unset
 * `PANOS_PASSWORD` - Required if `PANOS_API_KEY` is unset
 
-## PANOS API Key
+## PAN-OS API Key
 
-API connections to Palo Alto Networks NGFW require a PANOS
+API connections to Palo Alto Networks NGFW require an
 [API key](https://www.paloaltonetworks.com/documentation/71/pan-os/xml-api/get-started-with-the-pan-os-xml-api/get-your-api-key).
-If you do not provide the API key to the PANOS provider, then the API key is
+If you do not provide the API key to the panos provider, then the API key is
 generated before every single API call.  Thus, some slight speed gains can be
-realized in the PANOS provider by specifying the API key instead of the
+realized in the panos provider by specifying the API key instead of the
 username/password combo.  The following may be used to generate the API key:
 
 ```go
@@ -193,12 +193,13 @@ variables:
 * `PANOS_USERNAME`
 * `PANOS_PASSWORD`
 
-## AWS Considerations
+## AWS / GCP Considerations
 
 There are [a few types](https://aws.amazon.com/marketplace/seller-profile?id=0ed48363-5064-4d47-b41b-a53f7c937314)
-of PANOS VMs available to bring up in AWS.  These VMs are different in that
+of PAN-OS VMs available to bring up in AWS.  Both these VMs as well as the ones
+that can be deployed in Google Cloud Platform are different in that
 the `admin` password is unset, but it has an SSH key associated with it.  As
-the PANOS Terraform provider package authenticates via username/password, an
+the panos Terraform provider package authenticates via username/password, an
 initialization step of configuring a password using the given SSH key is
 required.  Right now, this initialization step requires manual intervention;
 the user must download this SSH key, at which point the following may be used
@@ -219,7 +220,7 @@ import (
     "golang.org/x/crypto/ssh"
 )
 
-// Various PANOS prompts.
+// Various prompts.
 var (
     P1 *regexp.Regexp
     P2 *regexp.Regexp
@@ -232,7 +233,7 @@ func init() {
     P3 = regexp.MustCompile(`(Enter|Confirm) password\s+:\s+?`)
 }
 
-// Globals to handle PANOS I/O.
+// Globals to handle I/O.
 var (
     stdin io.Writer
     stdout io.Reader
@@ -258,7 +259,7 @@ func ReadTo(prompt *regexp.Regexp) (string, error) {
     }
 }
 
-// Perform user initialization of PANOS.
+// Perform user initialization.
 func panosInit() error {
     var err error
 
@@ -272,7 +273,7 @@ func panosInit() error {
         u := []string{
             fmt.Sprintf("Usage: %s <key_file>", os.Args[0]),
             "",
-            "This will connect to a PANOS NGFW and perform initial config:",
+            "This will connect to a PAN-OS NGFW and perform initial config:",
             "",
             " * Adds the user as a superuser (if not the admin user)",
             " * Sets the user's password",
@@ -410,7 +411,7 @@ func main() {
 ```
 
 Compile the above, put it somewhere in your `$PATH` (such as `$HOME/bin`),
-then invoke it after your PANOS firewall is accessible in AWS:
+then invoke it after the device is accessible in AWS:
 
 ```bash
 $ go build panos_init.go
@@ -435,7 +436,7 @@ creates the account, as the `admin` account already exists.
 ## Example Provider Usage
 
 ```hcl
-# Configure the PANOS provider
+# Configure the panos provider
 provider "panos" {
     hostname = "127.0.0.1"
     username = "admin"
@@ -471,7 +472,7 @@ The following arguments are supported:
 * `timeout` - (Optional) The timeout for all communications with the
   firewall.  If left unspecified, this will be set to 10 seconds.
 * `logging` - (Optional) List of logging options for the provider's connection
-  to the PANOS API.  If this is unspecified, then it defaults to
+  to the API.  If this is unspecified, then it defaults to
   `["action", "uid"]`.
 
 The list of strings supported for `logging` are as follows:
@@ -483,7 +484,23 @@ The list of strings supported for `logging` are as follows:
 * `op` - Log `op`.
 * `uid` - Log user-id envocations.
 * `xpath` - Log the XPATH associated with various actions.
-* `send` - Log the raw request sent to the PANOS firewall.  This is probably
-  only useful in development of the PANOS provider itself.
-* `receive` - Log the raw response sent back from PANOS.  This is probably
-  only useful in development of the PANOS provider itself.
+* `send` - Log the raw request sent to the device.  This is probably
+  only useful in development of the provider itself.
+* `receive` - Log the raw response sent back from the device.  This is probably
+  only useful in development of the provider itself.
+
+## Support
+
+This template/solution are released under an as-is, best effort, support
+policy. These scripts should be seen as community supported and Palo Alto
+Networks will contribute our expertise as and when possible. We do not
+provide technical support or help in using or troubleshooting the components
+of the project through our normal support options such as Palo Alto Networks
+support teams, or ASC (Authorized Support Centers) partners and backline
+support options. The underlying product used (the VM-Series firewall) by the
+scripts or templates are still supported, but the support is only for the
+product functionality and not for help in deploying or using the template or
+script itself. Unless explicitly tagged, all projects or work posted in our
+GitHub repository (at https://github.com/PaloAltoNetworks) or sites other
+than our official Downloads page on https://support.paloaltonetworks.com
+are provided under the best effort policy.

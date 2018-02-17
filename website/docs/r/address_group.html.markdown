@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_address_group"
+page_title: "panos: panos_address_group"
 sidebar_current: "docs-panos-resource-address-group"
 description: |-
   Manages address groups.

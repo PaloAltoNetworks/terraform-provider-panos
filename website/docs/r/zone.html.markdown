@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_zone"
+page_title: "panos: panos_zone"
 sidebar_current: "docs-panos-resource-zone"
 description: |-
   Manages Zone objects.

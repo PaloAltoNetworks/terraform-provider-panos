@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_security_policies"
+page_title: "panos: panos_security_policies"
 sidebar_current: "docs-panos-resource-security-policies"
 description: |-
   Manages security policies.

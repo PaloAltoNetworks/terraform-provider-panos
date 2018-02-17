@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_nat_policy"
+page_title: "panos: panos_nat_policy"
 sidebar_current: "docs-panos-resource-nat-policy"
 description: |-
   Manages NAT policies.
@@ -18,7 +18,7 @@ definition will simplify the process.
 
 Note that while many of the params for this resource are optional in an
 absolute sense, depending on what type of NAT you wish to configure, certain
-params may become necessary for PANOS to correctly configure the NAT policy.
+params may become necessary to correctly configure the NAT policy.
 
 ## Example Usage
 
