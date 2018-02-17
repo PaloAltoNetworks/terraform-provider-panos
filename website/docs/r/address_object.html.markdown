@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_address_object"
+page_title: "panos: panos_address_object"
 sidebar_current: "docs-panos-resource-address-object"
 description: |-
   Manages address objects.

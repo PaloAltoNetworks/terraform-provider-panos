@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_system_info"
+page_title: "panos: panos_system_info"
 sidebar_current: "docs-panos-datasource-system-info"
 description: |-
   Gets system info from the firewall.
@@ -11,7 +11,7 @@ description: |-
 Use this data source to retrieve "show system info" from the NGFW.
 
 All contents of "show system info" are saved to the `info` variable.  In
-addition, the version number of PANOS encountered is saved to multiple
+addition, the version number of PAN-OS encountered is saved to multiple
 fields for ease of access.
 
 ## Example Usage

@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_management_profile"
+page_title: "panos: panos_management_profile"
 sidebar_current: "docs-panos-resource-management-profile"
 description: |-
   Manages interface management profiles.

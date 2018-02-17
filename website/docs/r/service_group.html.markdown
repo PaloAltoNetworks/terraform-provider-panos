@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_service_group"
+page_title: "panos: panos_service_group"
 sidebar_current: "docs-panos-resource-service-group"
 description: |-
   Manages service groups.

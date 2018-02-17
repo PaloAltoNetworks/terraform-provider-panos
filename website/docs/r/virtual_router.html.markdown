@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_virtual_router"
+page_title: "panos: panos_virtual_router"
 sidebar_current: "docs-panos-resource-virtual-router"
 description: |-
   Manages virtual routers.

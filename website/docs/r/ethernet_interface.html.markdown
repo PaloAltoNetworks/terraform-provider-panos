@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_ethernet_interface"
+page_title: "panos: panos_ethernet_interface"
 sidebar_current: "docs-panos-resource-ethernet-interface"
 description: |-
   Manages ethernet interfaces.
@@ -67,5 +67,5 @@ The following arguments are supported:
 * `aggregate_group` - (Optional) The aggregate group (applicable for
   physical firewalls only).
 * `comment` - (Optional) The interface comment.
-* `ipv4_mss_adjust` - (Optional, PANOS 8.0+) The IPv4 MSS adjust value.
-* `ipv6_mss_adjust` - (Optional, PANOS 8.0+) The IPv6 MSS adjust value.
+* `ipv4_mss_adjust` - (Optional, PAN-OS 8.0+) The IPv4 MSS adjust value.
+* `ipv6_mss_adjust` - (Optional, PAN-OS 8.0+) The IPv6 MSS adjust value.

@@ -1,6 +1,6 @@
 ---
 layout: "panos"
-page_title: "PANOS: panos_general_settings"
+page_title: "panos: panos_general_settings"
 sidebar_current: "docs-panos-resource-general-settings"
 description: |-
   Manages general device settings.
