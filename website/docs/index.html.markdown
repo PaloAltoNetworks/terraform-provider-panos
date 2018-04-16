@@ -16,7 +16,7 @@ Use the navigation to the left to read about the available resources.
 
 ## Versioning
 
-The panos provider has support for PAN-OS 6.1 - 8.0.
+The panos provider has support for PAN-OS 6.1 - 8.1.
 
 Some resources may contain variables that are only applicable for newer
 versions of PAN-OS.  If this is the case, then make sure to use
