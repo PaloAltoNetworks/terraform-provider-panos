@@ -7,8 +7,10 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/poli/security"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/terraform"
 )
 
 func resourceSecurityPolicies() *schema.Resource {
@@ -17,6 +19,9 @@ func resourceSecurityPolicies() *schema.Resource {
 		Read:   readSecurityPolicies,
 		Update: createUpdateSecurityPolicies,
 		Delete: deleteSecurityPolicies,
+
+		SchemaVersion: 1,
+		MigrateState:  migrateResourceSecurityPolicies,
 
 		Schema: map[string]*schema.Schema{
 			"vsys": &schema.Schema{
@@ -29,10 +34,10 @@ func resourceSecurityPolicies() *schema.Resource {
 			"rulebase": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Default:      "rulebase",
+				Computed:     true,
 				ForceNew:     true,
-				Description:  "The rulebase (default: rulebase, pre-rulebase, post-rulebase)",
-				ValidateFunc: validateStringIn("rulebase", "pre-rulebase", "post-rulebase"),
+				Description:  "The Panorama rulebase",
+				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
 			"rule": &schema.Schema{
 				Type:     schema.TypeList,
@@ -217,6 +222,22 @@ func resourceSecurityPolicies() *schema.Resource {
 	}
 }
 
+func migrateResourceSecurityPolicies(ov int, s *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
+	if ov == 0 {
+		t := strings.Split(s.ID, IdSeparator)
+		if len(t) != 2 {
+			return nil, fmt.Errorf("ID is malformed")
+		} else if t[1] != util.Rulebase {
+			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1])
+		}
+		s.ID = t[0]
+
+		ov = 1
+	}
+
+	return s, nil
+}
+
 func parseSecurityPolicies(d *schema.ResourceData) (string, string, []security.Entry) {
 	vsys := d.Get("vsys").(string)
 	rb := d.Get("rulebase").(string)
@@ -264,29 +285,20 @@ func parseSecurityPolicies(d *schema.ResourceData) (string, string, []security.E
 	return vsys, rb, ans
 }
 
-func parseSecurityPoliciesId(v string) (string, string) {
-	t := strings.Split(v, IdSeparator)
-	return t[0], t[1]
-}
-
-func buildSecurityPoliciesId(a, b string) string {
-	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
-}
-
 func createUpdateSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, rb, list := parseSecurityPolicies(d)
+	vsys, _, list := parseSecurityPolicies(d)
 
-	if err = fw.Policies.Security.DeleteAll(vsys, rb); err != nil {
+	if err = fw.Policies.Security.DeleteAll(vsys); err != nil {
 		return err
 	}
-	if err = fw.Policies.Security.VerifiableSet(vsys, rb, list...); err != nil {
+	if err = fw.Policies.Security.VerifiableSet(vsys, list...); err != nil {
 		return err
 	}
 
-	d.SetId(buildSecurityPoliciesId(vsys, rb))
+	d.SetId(vsys)
 	return readSecurityPolicies(d, meta)
 }
 
@@ -294,16 +306,16 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, rb := parseSecurityPoliciesId(d.Id())
+	vsys := d.Id()
 
-	list, err := fw.Policies.Security.GetList(vsys, rb)
+	list, err := fw.Policies.Security.GetList(vsys)
 	if err != nil {
 		return err
 	}
 
 	ilist := make([]interface{}, 0, len(list))
 	for i := range list {
-		o, err := fw.Policies.Security.Get(vsys, rb, list[i])
+		o, err := fw.Policies.Security.Get(vsys, list[i])
 		if err != nil {
 			return err
 		}
@@ -343,7 +355,7 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	d.Set("vsys", vsys)
-	d.Set("rulebase", rb)
+	d.Set("rulebase", util.Rulebase)
 	if err = d.Set("rule", ilist); err != nil {
 		log.Printf("[WARN] Error setting 'rule' param for %q: %s", d.Id(), err)
 	}
@@ -353,9 +365,9 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 
 func deleteSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	vsys, rb := parseSecurityPoliciesId(d.Id())
+	vsys := d.Id()
 
-	if err := fw.Policies.Security.DeleteAll(vsys, rb); err != nil {
+	if err := fw.Policies.Security.DeleteAll(vsys); err != nil {
 		return err
 	}
 

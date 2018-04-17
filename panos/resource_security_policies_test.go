@@ -52,19 +52,19 @@ func testAccCheckPanosSecurityPoliciesExists(n string, o1, o2 *security.Entry) r
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, rb := parseSecurityPoliciesId(rs.Primary.ID)
-		list, err := fw.Policies.Security.GetList(vsys, rb)
+		vsys := rs.Primary.ID
+		list, err := fw.Policies.Security.GetList(vsys)
 		if err != nil {
 			return fmt.Errorf("Error getting list of policies: %s", err)
 		} else if len(list) != 2 {
 			return fmt.Errorf("Expecting 2 policies, got %d", len(list))
 		}
 
-		v1, err := fw.Policies.Security.Get(vsys, rb, list[0])
+		v1, err := fw.Policies.Security.Get(vsys, list[0])
 		if err != nil {
 			return fmt.Errorf("Error getting first policy %s: %s", list[0], err)
 		}
-		v2, err := fw.Policies.Security.Get(vsys, rb, list[1])
+		v2, err := fw.Policies.Security.Get(vsys, list[1])
 		if err != nil {
 			return fmt.Errorf("Error getting second policy %s: %s", list[1], err)
 		}
@@ -146,8 +146,8 @@ func testAccPanosSecurityPoliciesDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, rb := parseSecurityPoliciesId(rs.Primary.ID)
-			list, err := fw.Policies.Security.GetList(vsys, rb)
+			vsys := rs.Primary.ID
+			list, err := fw.Policies.Security.GetList(vsys)
 			if err != nil {
 				return fmt.Errorf("Error getting list: %s", err)
 			} else if len(list) != 0 {

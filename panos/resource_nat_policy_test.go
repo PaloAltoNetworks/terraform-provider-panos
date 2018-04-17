@@ -53,8 +53,8 @@ func testAccCheckPanosNatPolicyExists(n string, o *nat.Entry) resource.TestCheck
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, rb, name := parseNatPolicyId(rs.Primary.ID)
-		v, err := fw.Policies.Nat.Get(vsys, rb, name)
+		vsys, name := parseNatPolicyId(rs.Primary.ID)
+		v, err := fw.Policies.Nat.Get(vsys, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
 		}
@@ -104,8 +104,8 @@ func testAccPanosNatPolicyDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, rb, name := parseNatPolicyId(rs.Primary.ID)
-			_, err := fw.Policies.Nat.Get(vsys, rb, name)
+			vsys, name := parseNatPolicyId(rs.Primary.ID)
+			_, err := fw.Policies.Nat.Get(vsys, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}

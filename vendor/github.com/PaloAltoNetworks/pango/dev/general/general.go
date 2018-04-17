@@ -34,6 +34,9 @@ type Config struct {
     Domain string
     UpdateServer string
     VerifyUpdateServer bool
+    LoginBanner string
+    PanoramaPrimary string
+    PanoramaSecondary string
     DnsPrimary string
     DnsSecondary string
     NtpPrimaryAddress string
@@ -84,6 +87,18 @@ func (o *Config) Merge(s Config) {
     }
 
     o.VerifyUpdateServer = s.VerifyUpdateServer
+
+    if s.LoginBanner != "" {
+        o.LoginBanner = s.LoginBanner
+    }
+
+    if s.PanoramaPrimary != "" {
+        o.PanoramaPrimary = s.PanoramaPrimary
+    }
+
+    if s.PanoramaSecondary != "" {
+        o.PanoramaSecondary = s.PanoramaSecondary
+    }
 
     if s.DnsPrimary != "" {
         o.DnsPrimary = s.DnsPrimary
@@ -228,6 +243,9 @@ func (o *container_v1) Normalize() Config {
         Domain: o.Answer.Domain,
         UpdateServer: o.Answer.UpdateServer,
         VerifyUpdateServer: util.AsBool(o.Answer.VerifyUpdateServer),
+        LoginBanner: o.Answer.LoginBanner,
+        PanoramaPrimary: o.Answer.PanoramaPrimary,
+        PanoramaSecondary: o.Answer.PanoramaSecondary,
     }
     if o.Answer.Dns != nil {
         ans.DnsPrimary = o.Answer.Dns.Primary
@@ -319,20 +337,11 @@ func (o *container_v1) Normalize() Config {
     if o.Answer.LogLink != nil {
         ans.raw["ll"] = util.CleanRawXml(o.Answer.LogLink.Text)
     }
-    if o.Answer.LoginBanner != nil {
-        ans.raw["lb"] = util.CleanRawXml(o.Answer.LoginBanner.Text)
-    }
     if o.Answer.MotdAndBanner != nil {
         ans.raw["mab"] = util.CleanRawXml(o.Answer.MotdAndBanner.Text)
     }
     if o.Answer.Mtu != nil {
         ans.raw["mtu"] = util.CleanRawXml(o.Answer.Mtu.Text)
-    }
-    if o.Answer.PanoramaServer != nil {
-        ans.raw["ps"] = util.CleanRawXml(o.Answer.PanoramaServer.Text)
-    }
-    if o.Answer.PanoramaServer2 != nil {
-        ans.raw["ps2"] = util.CleanRawXml(o.Answer.PanoramaServer2.Text)
     }
     if o.Answer.PermittedIp != nil {
         ans.raw["pi"] = util.CleanRawXml(o.Answer.PermittedIp.Text)
@@ -390,6 +399,9 @@ type config_v1 struct {
     Domain string `xml:"domain,omitempty"`
     UpdateServer string `xml:"update-server,omitempty"`
     VerifyUpdateServer string `xml:"server-verification"`
+    LoginBanner string `xml:"login-banner,omitempty"`
+    PanoramaPrimary string `xml:"panorama-server,omitempty"`
+    PanoramaSecondary string `xml:"panorama-server-2,omitempty"`
     Dns *deviceDns `xml:"dns-setting"`
     Ntp *deviceNtp `xml:"ntp-servers"`
     AckLoginBanner *util.RawXml `xml:"ack-login-banner"`
@@ -406,11 +418,8 @@ type config_v1 struct {
     Locale *util.RawXml `xml:"locale"`
     LogExportSchedule *util.RawXml `xml:"log-export-schedule"`
     LogLink *util.RawXml `xml:"log-link"`
-    LoginBanner *util.RawXml `xml:"login-banner"`
     MotdAndBanner *util.RawXml `xml:"motd-and-banner"`
     Mtu *util.RawXml `xml:"mtu"`
-    PanoramaServer *util.RawXml `xml:"panorama-server"`
-    PanoramaServer2 *util.RawXml `xml:"panorama-server-2"`
     PermittedIp *util.RawXml `xml:"permitted-ip"`
     Route *util.RawXml `xml:"route"`
     SecureProxyPassword *util.RawXml `xml:"secure-proxy-password"`
@@ -471,6 +480,9 @@ func specify_v1(c Config) interface{} {
         Domain: c.Domain,
         UpdateServer: c.UpdateServer,
         VerifyUpdateServer: util.YesNo(c.VerifyUpdateServer),
+        LoginBanner: c.LoginBanner,
+        PanoramaPrimary: c.PanoramaPrimary,
+        PanoramaSecondary: c.PanoramaSecondary,
     }
     if c.DnsPrimary != "" || c.DnsSecondary != "" {
         ans.Dns = &deviceDns{
@@ -570,20 +582,11 @@ func specify_v1(c Config) interface{} {
     if text, present := c.raw["ll"]; present {
         ans.LogLink = &util.RawXml{text}
     }
-    if text, present := c.raw["lb"]; present {
-        ans.LoginBanner = &util.RawXml{text}
-    }
     if text, present := c.raw["mab"]; present {
         ans.MotdAndBanner = &util.RawXml{text}
     }
     if text, present := c.raw["mtu"]; present {
         ans.Mtu = &util.RawXml{text}
-    }
-    if text, present := c.raw["ps"]; present {
-        ans.PanoramaServer = &util.RawXml{text}
-    }
-    if text, present := c.raw["ps2"]; present {
-        ans.PanoramaServer2 = &util.RawXml{text}
     }
     if text, present := c.raw["pi"]; present {
         ans.PermittedIp = &util.RawXml{text}

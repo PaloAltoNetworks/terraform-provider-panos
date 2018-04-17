@@ -1,6 +1,3 @@
-// Package srvc is the client.Objects.Services namespace.
-//
-// Normalized object:  Entry
 package srvc
 
 import (
@@ -11,67 +8,44 @@ import (
 )
 
 
-// Entry is a normalized, version independent representation of a service
-// object.
-//
-// Protocol should be either "tcp" or "udp".
-type Entry struct {
-    Name string
-    Description string
-    Protocol string
-    SourcePort string
-    DestinationPort string
-    Tags []string
-}
-
-// Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
-func (o *Entry) Copy(s Entry) {
-    o.Description = s.Description
-    o.Protocol = s.Protocol
-    o.SourcePort = s.SourcePort
-    o.DestinationPort = s.DestinationPort
-    o.Tags = s.Tags
-}
-
-// Srvc is a namespace struct, included as part of pango.Client.
-type Srvc struct {
+// FwSrvc is a namespace struct, included as part of pango.Client.
+type FwSrvc struct {
     con util.XapiClient
 }
 
 // Initialize is invoked when Initialize on the pango.Client is called.
-func (c *Srvc) Initialize(con util.XapiClient) {
+func (c *FwSrvc) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // GetList performs GET to retrieve a list of service objects.
-func (c *Srvc) GetList(vsys string) ([]string, error) {
+func (c *FwSrvc) GetList(vsys string) ([]string, error) {
     c.con.LogQuery("(get) list of service objects")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // ShowList performs SHOW to retrieve a list of service objects.
-func (c *Srvc) ShowList(vsys string) ([]string, error) {
+func (c *FwSrvc) ShowList(vsys string) ([]string, error) {
     c.con.LogQuery("(show) list of service objects")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given service object.
-func (c *Srvc) Get(vsys, name string) (Entry, error) {
+func (c *FwSrvc) Get(vsys, name string) (Entry, error) {
     c.con.LogQuery("(get) service object %q", name)
     return c.details(c.con.Get, vsys, name)
 }
 
 // Get performs SHOW to retrieve information for the given service object.
-func (c *Srvc) Show(vsys, name string) (Entry, error) {
+func (c *FwSrvc) Show(vsys, name string) (Entry, error) {
     c.con.LogQuery("(show) service object %q", name)
     return c.details(c.con.Show, vsys, name)
 }
 
 // Set performs SET to create / update one or more service objects.
-func (c *Srvc) Set(vsys string, e ...Entry) error {
+func (c *FwSrvc) Set(vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -103,7 +77,7 @@ func (c *Srvc) Set(vsys string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update a service object.
-func (c *Srvc) Edit(vsys string, e Entry) error {
+func (c *FwSrvc) Edit(vsys string, e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -121,7 +95,7 @@ func (c *Srvc) Edit(vsys string, e Entry) error {
 // Delete removes the given service objects from the firewall.
 //
 // Service objects can be either a string or an Entry object.
-func (c *Srvc) Delete(vsys string, e ...interface{}) error {
+func (c *FwSrvc) Delete(vsys string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
@@ -146,13 +120,13 @@ func (c *Srvc) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
-/** Internal functions for the Srvc struct **/
+/** Internal functions for the FwSrvc struct **/
 
-func (c *Srvc) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *FwSrvc) versioning() (normalizer, func(Entry) (interface{})) {
     return &container_v1{}, specify_v1
 }
 
-func (c *Srvc) details(fn util.Retriever, vsys, name string) (Entry, error) {
+func (c *FwSrvc) details(fn util.Retriever, vsys, name string) (Entry, error) {
     path := c.xpath(vsys, []string{name})
     obj, _ := c.versioning()
     _, err := fn(path, nil, obj)
@@ -164,9 +138,18 @@ func (c *Srvc) details(fn util.Retriever, vsys, name string) (Entry, error) {
     return ans, nil
 }
 
-func (c *Srvc) xpath(vsys string, vals []string) []string {
+func (c *FwSrvc) xpath(vsys string, vals []string) []string {
     if vsys == "" {
         vsys = "vsys1"
+    }
+
+    if vsys == "shared" {
+        return []string {
+            "config",
+            "shared",
+            "service",
+            util.AsEntryXpath(vals),
+        }
     }
 
     return []string {
@@ -178,70 +161,4 @@ func (c *Srvc) xpath(vsys string, vals []string) []string {
         "service",
         util.AsEntryXpath(vals),
     }
-}
-
-/** Structs / functions for this namespace. **/
-
-type normalizer interface {
-    Normalize() Entry
-}
-
-type container_v1 struct {
-    Answer entry_v1 `xml:"result>entry"`
-}
-
-func (o *container_v1) Normalize() Entry {
-    ans := Entry{
-        Name: o.Answer.Name,
-        Description: o.Answer.Description,
-        Tags: util.MemToStr(o.Answer.Tags),
-    }
-    switch {
-    case o.Answer.TcpProto != nil:
-        ans.Protocol = "tcp"
-        ans.SourcePort = o.Answer.TcpProto.SourcePort
-        ans.DestinationPort = o.Answer.TcpProto.DestinationPort
-    case o.Answer.UdpProto != nil:
-        ans.Protocol = "udp"
-        ans.SourcePort = o.Answer.UdpProto.SourcePort
-        ans.DestinationPort = o.Answer.UdpProto.DestinationPort
-    }
-
-    return ans
-}
-
-type entry_v1 struct {
-    XMLName xml.Name `xml:"entry"`
-    Name string `xml:"name,attr"`
-    TcpProto *protoDef `xml:"protocol>tcp"`
-    UdpProto *protoDef `xml:"protocol>udp"`
-    Description string `xml:"description"`
-    Tags *util.Member `xml:"tag"`
-}
-
-type protoDef struct {
-    SourcePort string `xml:"source-port,omitempty"`
-    DestinationPort string `xml:"port"`
-}
-
-func specify_v1(e Entry) interface{} {
-    ans := entry_v1{
-        Name: e.Name,
-        Description: e.Description,
-        Tags: util.StrToMem(e.Tags),
-    }
-    switch e.Protocol {
-    case "tcp":
-        ans.TcpProto = &protoDef{
-            e.SourcePort,
-            e.DestinationPort,
-        }
-    case "udp":
-        ans.UdpProto = &protoDef{
-            e.SourcePort,
-            e.DestinationPort,
-        }
-    }
-
-    return ans
 }
