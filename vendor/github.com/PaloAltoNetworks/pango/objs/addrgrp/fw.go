@@ -1,6 +1,3 @@
-// Package addrgrp is the client.Objects.AddressGroup namespace.
-//
-// Normalized object:  Entry
 package addrgrp
 
 import (
@@ -11,69 +8,44 @@ import (
 )
 
 
-// Entry is a normalized, version independent representation of an address
-// group.  The value set in DynamicMatch should be something like the following:
-//
-//  * 'tag1'
-//  * 'tag1' or 'tag2' and 'tag3'
-//
-// The Tags param is for administrative tags for this address object
-// group itself.
-type Entry struct {
-    Name string
-    Description string
-    StaticAddresses []string
-    DynamicMatch string
-    Tags []string
-}
-
-// Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
-func (o *Entry) Copy(s Entry) {
-    o.Description = s.Description
-    o.StaticAddresses = s.StaticAddresses
-    o.DynamicMatch = s.DynamicMatch
-    o.Tags = s.Tags
-}
-
-// AddrGrp is a namespace struct, included as part of pango.Client.
-type AddrGrp struct {
+// FwAddrGrp is a namespace struct, included as part of pango.Client.
+type FwAddrGrp struct {
     con util.XapiClient
 }
 
 // Initialize is invoked when Initialize on the pango.Client is called.
-func (c *AddrGrp) Initialize(con util.XapiClient) {
+func (c *FwAddrGrp) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // GetList performs GET to retrieve a list of address groups.
-func (c *AddrGrp) GetList(vsys string) ([]string, error) {
+func (c *FwAddrGrp) GetList(vsys string) ([]string, error) {
     c.con.LogQuery("(get) list of address groups")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // ShowList performs SHOW to retrieve a list of address groups.
-func (c *AddrGrp) ShowList(vsys string) ([]string, error) {
+func (c *FwAddrGrp) ShowList(vsys string) ([]string, error) {
     c.con.LogQuery("(show) list of address groups")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given address group.
-func (c *AddrGrp) Get(vsys, name string) (Entry, error) {
+func (c *FwAddrGrp) Get(vsys, name string) (Entry, error) {
     c.con.LogQuery("(get) address group %q", name)
     return c.details(c.con.Get, vsys, name)
 }
 
 // Get performs SHOW to retrieve information for the given address group.
-func (c *AddrGrp) Show(vsys, name string) (Entry, error) {
+func (c *FwAddrGrp) Show(vsys, name string) (Entry, error) {
     c.con.LogQuery("(show) address group %q", name)
     return c.details(c.con.Show, vsys, name)
 }
 
 // Set performs SET to create / update one or more address groups.
-func (c *AddrGrp) Set(vsys string, e ...Entry) error {
+func (c *FwAddrGrp) Set(vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -105,7 +77,7 @@ func (c *AddrGrp) Set(vsys string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update an address group.
-func (c *AddrGrp) Edit(vsys string, e Entry) error {
+func (c *FwAddrGrp) Edit(vsys string, e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -123,7 +95,7 @@ func (c *AddrGrp) Edit(vsys string, e Entry) error {
 // Delete removes the given address groups from the firewall.
 //
 // Address groups can be either a string or an Entry object.
-func (c *AddrGrp) Delete(vsys string, e ...interface{}) error {
+func (c *FwAddrGrp) Delete(vsys string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
@@ -148,13 +120,13 @@ func (c *AddrGrp) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
-/** Internal functions for the AddrGrp struct **/
+/** Internal functions for the FwAddrGrp struct **/
 
-func (c *AddrGrp) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *FwAddrGrp) versioning() (normalizer, func(Entry) (interface{})) {
     return &container_v1{}, specify_v1
 }
 
-func (c *AddrGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
+func (c *FwAddrGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
     path := c.xpath(vsys, []string{name})
     obj, _ := c.versioning()
     _, err := fn(path, nil, obj)
@@ -166,9 +138,18 @@ func (c *AddrGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
     return ans, nil
 }
 
-func (c *AddrGrp) xpath(vsys string, vals []string) []string {
+func (c *FwAddrGrp) xpath(vsys string, vals []string) []string {
     if vsys == "" {
         vsys = "vsys1"
+    }
+
+    if vsys == "shared" {
+        return []string {
+            "config",
+            "shared",
+            "address-group",
+            util.AsEntryXpath(vals),
+        }
     }
 
     return []string {
@@ -180,51 +161,4 @@ func (c *AddrGrp) xpath(vsys string, vals []string) []string {
         "address-group",
         util.AsEntryXpath(vals),
     }
-}
-
-/** Structs / functions for this namespace. **/
-
-type normalizer interface {
-    Normalize() Entry
-}
-
-type container_v1 struct {
-    Answer entry_v1 `xml:"result>entry"`
-}
-
-func (o *container_v1) Normalize() Entry {
-    ans := Entry{
-        Name: o.Answer.Name,
-        Description: o.Answer.Description,
-        StaticAddresses: util.MemToStr(o.Answer.StaticAddresses),
-        Tags: util.MemToStr(o.Answer.Tags),
-    }
-    if o.Answer.DynamicMatch != nil {
-        ans.DynamicMatch = *o.Answer.DynamicMatch
-    }
-
-    return ans
-}
-
-type entry_v1 struct {
-    XMLName xml.Name `xml:"entry"`
-    Name string `xml:"name,attr"`
-    Description string `xml:"description"`
-    StaticAddresses *util.Member `xml:"static"`
-    DynamicMatch *string `xml:"dynamic>filter"`
-    Tags *util.Member `xml:"tag"`
-}
-
-func specify_v1(e Entry) interface{} {
-    ans := entry_v1{
-        Name: e.Name,
-        Description: e.Description,
-        StaticAddresses: util.StrToMem(e.StaticAddresses),
-        Tags: util.StrToMem(e.Tags),
-    }
-    if e.DynamicMatch != "" {
-        ans.DynamicMatch = &e.DynamicMatch
-    }
-
-    return ans
 }

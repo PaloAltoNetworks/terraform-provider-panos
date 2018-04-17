@@ -1,4 +1,3 @@
-// Package poli is the client.Policies namespace.
 package poli
 
 import (
@@ -10,16 +9,16 @@ import (
 
 
 // Poli is the client.Policies namespace.
-type Poli struct {
-    Security *security.Security
-    Nat *nat.Nat
+type FwPoli struct {
+    Security *security.FwSecurity
+    Nat *nat.FwNat
 }
 
 // Initialize is invoked on client.Initialize().
-func (c *Poli) Initialize(i util.XapiClient) {
-    c.Security = &security.Security{}
+func (c *FwPoli) Initialize(i util.XapiClient) {
+    c.Security = &security.FwSecurity{}
     c.Security.Initialize(i)
 
-    c.Nat = &nat.Nat{}
+    c.Nat = &nat.FwNat{}
     c.Nat.Initialize(i)
 }

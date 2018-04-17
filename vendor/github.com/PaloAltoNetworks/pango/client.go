@@ -1,134 +1,3 @@
-/*
-Package pango is a golang cross version mechanism for interacting with Palo Alto
-Networks devices (including physical and virtualized Next-generation Firewalls
-and Panorama).  Versioning support is in place for PANOS 6.1 to 8.0.
-
-To start, create a client connection with the desired parameters and then
-initialize the connection:
-
-    package main
-    
-    import (
-        "log"
-        "github.com/PaloAltoNetworks/pango"
-    )
-    
-    func main() {
-        var err error
-        c := pango.Firewall{Client: pango.Client{
-            Hostname: "127.0.0.1",
-            Username: "admin",
-            Password: "admin",
-            Logging: pango.LogAction | pango.LogOp,
-        }}
-        if err = c.Initialize(); err != nil {
-            log.Printf("Failed to initialize client: %s", err)
-            return
-        }
-        log.Printf("Initialize ok")
-    }
-
-Initializing the connection creates the API key (if it was not already
-specified), then performs "show system info" to get the PANOS version.  Once
-the firewall client is created, you can query and configure the Palo
-Alto Networks device from the functions inside the various namespaces of the
-client connection.  Namespaces correspond to the various configuration areas
-available in the GUI.  For example:
-
-    err = c.Network.EthernetInterface.Set(...)
-    myPolicies, err := c.Policies.Security.GetList(...)
-
-Generally speaking, there are the following functions inside each namespace:
-
-    * GetList
-    * ShowList
-    * Get
-    * Show
-    * Set
-    * Edit
-    * Delete
-
-These functions correspond with PANOS Get, Show, Set, Edit, and
-Delete API calls.  Get(), Set(), and Edit() take and return normalized,
-version independent objects.  These version safe objects are typically named
-Entry, which corresponds to how the object is placed in the PANOS XPATH.
-
-Some Entry objects have a special function, Defaults().  Invoking this
-function will initialize the object with some default values.  Each Entry
-that implements Defaults() calls out in its documentation what parameters
-are affected by this, and what the defaults are.
-
-For any version safe object, attempting to configure a parameter that your
-PANOS doesn't support will be safely ignored in the resultant XML sent to the
-firewall / Panorama.
-
-Using Edit Functions
-
-The PANOS XML API Edit command can be used to both create as well as update
-existing config, however it can also truncate config for the given XPATH.  Due
-to this, if you want to use Edit(), you need to make sure that you perform
-either a Get() or a Show() first, make your modification, then invoke
-Edit() using that object.  If you don't do this, you will truncate any sub
-config.
-
-To learn more about PANOS XML API, please refer to the Palo Alto Netowrks
-API documentation.
-
-Examples
-
-The following program will create ethernet1/7 as a DHCP interface and import
-it into vsys1 if it isn't already present:
-
-    package main
-    
-    import (
-        "log"
-        "github.com/PaloAltoNetworks/pango"
-        "github.com/PaloAltoNetworks/pango/netw/eth"
-    )
-    
-    func main() {
-        var err error
-    
-        c := &pango.Firewall{Client: pango.Client{
-            Hostname: "127.0.0.1",
-            Username: "admin",
-            Password: "admin",
-            Logging: pango.LogAction | pango.LogOp,
-        }}
-        if err = c.Initialize(); err != nil {
-            log.Printf("Failed to initialize client: %s", err)
-            return
-        }
-    
-        e := eth.Entry{
-            Name: "ethernet1/7",
-            Mode: "layer3",
-            EnableDhcp: true,
-            CreateDhcpDefaultRoute: true,
-        }
-    
-        interfaces, err := c.Network.EthernetInterface.GetList()
-        if err != nil {
-            log.Printf("Failed to get data interfaces: %s", err)
-            return
-        }
-        for i := range interfaces {
-            if e.Name == interfaces[i] {
-                log.Printf("%s already exists", e.Name)
-                return
-            }
-        }
-    
-        err = c.Network.EthernetInterface.Set("vsys1", e)
-        if err != nil {
-            log.Printf("Failed to create %s: %s", e.Name, err)
-            return
-        }
-        log.Printf("Created %s ok", e.Name)
-    }
-
-*/
 package pango
 
 import (
@@ -143,20 +12,12 @@ import (
 
     "github.com/PaloAltoNetworks/pango/version"
     "github.com/PaloAltoNetworks/pango/util"
-
-    // Various namespace imports.
-    "github.com/PaloAltoNetworks/pango/netw"
-    "github.com/PaloAltoNetworks/pango/dev"
-    "github.com/PaloAltoNetworks/pango/poli"
-    "github.com/PaloAltoNetworks/pango/objs"
-    "github.com/PaloAltoNetworks/pango/licen"
-    "github.com/PaloAltoNetworks/pango/userid"
 )
 
 
 // These bit flags control what is logged by client connections.  Of the flags
 // available for use, LogSend and LogReceive will log ALL communication between
-// the connection object and the PANOS XML API.  The API key being used for
+// the connection object and the PAN-OS XML API.  The API key being used for
 // communication will be blanked out, but no other sensitive data will be.  As
 // such, those two flags should be considered for debugging only.  To disable
 // all logging, set the logging level as LogQuiet.
@@ -183,7 +44,7 @@ const (
 )
 
 // Client is a generic connector struct.  It provides wrapper functions for
-// invoking the various PANOS XPath API methods.  After creating the client,
+// invoking the various PAN-OS XPath API methods.  After creating the client,
 // invoke Initialize() to prepare it for use.
 type Client struct {
     // Connection properties.
@@ -211,44 +72,6 @@ type Client struct {
     rp []url.Values
     rb [][]byte
     ri int
-}
-
-// Firewall is a firewall specific client, providing version safe functions
-// for the PANOS Xpath API methods.  After creating the object, invoke
-// Initialize() to prepare it for use.
-//
-// It has the following namespaces:
-//      * Network
-//      * Device
-//      * Policies
-//      * Objects
-//      * Licensing
-//      * UserId
-type Firewall struct {
-    Client
-
-    // Namespaces
-    Network *netw.Netw
-    Device *dev.Dev
-    Policies *poli.Poli
-    Objects *objs.Objs
-    Licensing *licen.Licen
-    UserId *userid.UserId
-}
-
-// Panorama is a panorama specific client, providing version safe functions
-// for the PANOS Xpath API methods.  After creating the object, invoke
-// Initialize() to prepare it for use.
-//
-// It has the following namespaces:
-//      * Licensing
-//      * UserId
-type Panorama struct {
-    Client
-
-    // Namespaces
-    Licensing *licen.Licen
-    UserId *userid.UserId
 }
 
 // String is the string representation of a client connection.  Both the
@@ -282,7 +105,7 @@ func (c *Client) Versioning() version.Number {
 
 // Initialize does some initial setup of the Client connection, retrieves
 // the API key if it was not already present, then performs "show system
-// info" to get the PANOS version.  The full results are saved into the
+// info" to get the PAN-OS version.  The full results are saved into the
 // client's SystemInfo map.
 //
 // If not specified, the following is assumed:
@@ -305,66 +128,6 @@ func (c *Client) Initialize() error {
         c.Hostname = "localhost"
         c.ApiKey = "password"
     }
-
-    return nil
-}
-
-// Initialize does some initial setup of the Firewall connection, retrieves
-// the API key if it was not already present, then performs "show system
-// info" to get the PANOS version.  The full results are saved into the
-// client's SystemInfo map.
-//
-// If not specified, the following is assumed:
-//  * Protocol: https
-//  * Port: (unspecified)
-//  * Timeout: 10
-//  * Logging: LogAction | LogUid
-func (c *Firewall) Initialize() error {
-    if len(c.rb) == 0 {
-        var e error
-
-        if e = c.initCon(); e != nil {
-            return e
-        } else if e = c.initApiKey(); e != nil {
-            return e
-        } else if e = c.initSystemInfo(); e != nil {
-            return e
-        }
-    } else {
-        c.Hostname = "localhost"
-        c.ApiKey = "password"
-    }
-    c.initNamespaces()
-
-    return nil
-}
-
-// Initialize does some initial setup of the Panorama connection, retrieves
-// the API key if it was not already present, then performs "show system
-// info" to get the PANOS version.  The full results are saved into the
-// client's SystemInfo map.
-//
-// If not specified, the following is assumed:
-//  * Protocol: https
-//  * Port: (unspecified)
-//  * Timeout: 10
-//  * Logging: LogAction | LogUid
-func (c *Panorama) Initialize() error {
-    if len(c.rb) == 0 {
-        var e error
-
-        if e = c.initCon(); e != nil {
-            return e
-        } else if e = c.initApiKey(); e != nil {
-            return e
-        } else if e = c.initSystemInfo(); e != nil {
-            return e
-        }
-    } else {
-        c.Hostname = "localhost"
-        c.ApiKey = "password"
-    }
-    c.initNamespaces()
 
     return nil
 }
@@ -682,57 +445,7 @@ func (c *Client) UnlockCommits(vsys, admin string) error {
     return err
 }
 
-// WaitForJob polls the device, waiting for the specified job to finish.
-//
-// If you want to unmarshal the response into a struct, then pass in a
-// pointer to the struct for the "resp" param.  If you just want to know if
-// the job completed with a status other than "FAIL", you only need to check
-// the returned error message.
-//
-// In the case that there are multiple errors returned from the job, the first
-// error is returned as the error string, and no unmarshaling is attempted.
-func (c *Client) WaitForJob(id uint, resp interface{}) error {
-    var err error
-    var prev uint
-    var data []byte
-
-    c.LogOp("(op) waiting for job %d", id)
-    type op_req struct {
-        XMLName xml.Name `xml:"show"`
-        Id uint `xml:"jobs>id"`
-    }
-    req := op_req{Id: id}
-
-    ans := util.BasicJob{}
-    for ans.Progress != 100 {
-        // Get current percent complete.
-        data, err = c.Op(req, "", nil, &ans)
-        if err != nil {
-            return err
-        }
-        // Output percent complete if it's new.
-        if ans.Progress != prev {
-            prev = ans.Progress
-            c.LogOp("(op) job %d: %d percent complete", id, prev)
-        }
-    }
-
-    if ans.Result == "FAIL" {
-        if len(ans.Details) > 0 {
-            return fmt.Errorf(ans.Details[0])
-        } else {
-            return fmt.Errorf("Job %d has failed to complete successfully", id)
-        }
-    }
-
-    if resp == nil {
-        return nil
-    }
-
-    return xml.Unmarshal(data, resp)
-}
-
-// Commit performs a Firewall commit.
+// Commit performs a standard commit on this PAN-OS device.
 //
 // Param desc is the optional commit description message you want associated
 // with the commit.
@@ -748,13 +461,14 @@ func (c *Client) WaitForJob(id uint, resp interface{}) error {
 // commit job completes.
 //
 // Commits result in a job being submitted to the backend.  The job ID and
-// if an error was encountered or not are returned from this function.
-func (c *Firewall) Commit(desc string, dan, pao, force, sync bool) (uint, error) {
+// if an error was encountered or not are returned from this function.  If
+// the job ID returned is 0, then no commit was needed.
+func (c *Client) Commit(desc string, dan, pao, force, sync bool) (uint, error) {
     c.LogAction("(commit) %q", desc)
 
-    req := fwCommit{Description: desc}
+    req := baseCommit{Description: desc}
     if !dan || !pao {
-        req.Partial = &fwCommitPartial{}
+        req.Partial = &baseCommitPartial{}
         if !dan {
             req.Partial.Dan = "excluded"
         }
@@ -772,6 +486,88 @@ func (c *Firewall) Commit(desc string, dan, pao, force, sync bool) (uint, error)
     }
 
     return job, c.WaitForJob(job, nil)
+}
+
+// WaitForJob polls the device, waiting for the specified job to finish.
+//
+// If you want to unmarshal the response into a struct, then pass in a
+// pointer to the struct for the "resp" param.  If you just want to know if
+// the job completed with a status other than "FAIL", you only need to check
+// the returned error message.
+//
+// In the case that there are multiple errors returned from the job, the first
+// error is returned as the error string, and no unmarshaling is attempted.
+func (c *Client) WaitForJob(id uint, resp interface{}) error {
+    var err error
+    var prev uint
+    var data []byte
+    dp := false
+    all_ok := true
+
+    c.LogOp("(op) waiting for job %d", id)
+    type op_req struct {
+        XMLName xml.Name `xml:"show"`
+        Id uint `xml:"jobs>id"`
+    }
+    req := op_req{Id: id}
+
+    var ans util.BasicJob
+    for {
+        // We need to zero out the response each iteration because the slices
+        // of strings append to each other instead of zeroing out.
+        ans = util.BasicJob{}
+
+        // Get current percent complete.
+        data, err = c.Op(req, "", nil, &ans)
+        if err != nil {
+            return err
+        }
+
+        // Output percent complete if it's new.
+        if ans.Progress != prev {
+            prev = ans.Progress
+            c.LogOp("(op) job %d: %d percent complete", id, prev)
+        }
+
+        // Check for device commits.
+        all_done := true
+        for _, d := range ans.Devices {
+            c.LogOp("%q result: %s", d.Serial, d.Result)
+            if d.Result == "PEND" {
+                all_done = false
+                break
+            } else if d.Result != "OK" && all_ok {
+                all_ok = false
+            }
+        }
+
+        // Check for end condition.
+        if ans.Progress == 100 {
+            if all_done {
+                break
+            } else if !dp {
+                c.LogOp("(op) Waiting for %d device commits ...", len(ans.Devices))
+                dp = true
+            }
+        }
+    }
+
+    // Check the results for a failed commit.
+    if ans.Result == "FAIL" {
+        if len(ans.Details) > 0 {
+            return fmt.Errorf(ans.Details[0])
+        } else {
+            return fmt.Errorf("Job %d has failed to complete successfully", id)
+        }
+    } else if !all_ok {
+        return fmt.Errorf("Commit failed on one or more devices")
+    }
+
+    if resp == nil {
+        return nil
+    }
+
+    return xml.Unmarshal(data, resp)
 }
 
 // LogAction writes a log message for SET/DELETE operations if LogAction is set.
@@ -802,7 +598,7 @@ func (c *Client) LogUid(msg string, i ...interface{}) {
     }
 }
 
-// Communicate sends the given data to PANOS.
+// Communicate sends the given data to PAN-OS.
 //
 // The ans param should be a pointer to a struct to unmarshal the response
 // into or nil.
@@ -1078,7 +874,7 @@ func (c *Client) Uid(cmd interface{}, vsys string, extras, ans interface{}) ([]b
     return c.Communicate(data, ans)
 }
 
-// CommitConfig performs PANOS commits.  This is the underlying function
+// CommitConfig performs PAN-OS commits.  This is the underlying function
 // invoked by Firewall.Commit() and Panorama.Commit().
 //
 // The cmd param can be either a properly formatted XML string or a struct
@@ -1219,34 +1015,6 @@ func (c *Client) initSystemInfo() error {
     }
 
     return nil
-}
-
-func (c *Firewall) initNamespaces() {
-    c.Network = &netw.Netw{}
-    c.Network.Initialize(c)
-
-    c.Device = &dev.Dev{}
-    c.Device.Initialize(c)
-
-    c.Policies = &poli.Poli{}
-    c.Policies.Initialize(c)
-
-    c.Objects = &objs.Objs{}
-    c.Objects.Initialize(c)
-
-    c.Licensing = &licen.Licen{}
-    c.Licensing.Initialize(c)
-
-    c.UserId = &userid.UserId{}
-    c.UserId.Initialize(c)
-}
-
-func (c *Panorama) initNamespaces() {
-    c.Licensing = &licen.Licen{}
-    c.Licensing.Initialize(c)
-
-    c.UserId = &userid.UserId{}
-    c.UserId.Initialize(c)
 }
 
 func (c *Client) typeConfig(action string, data url.Values, extras, ans interface{}) ([]byte, error) {
@@ -1459,7 +1227,7 @@ func (e panosStatus) codeError() string {
     }
 }
 
-// panosErrorResponseWithLine is one of a few known error formats that PANOS
+// panosErrorResponseWithLine is one of a few known error formats that PAN-OS
 // outputs.  This has to be split from the other error struct because the
 // the XML unmarshaler doesn't like a single struct to have overlapping
 // definitions (the msg>line part).
@@ -1479,7 +1247,7 @@ func (e panosErrorResponseWithLine) Error() string {
 }
 
 
-// panosErrorResponseWithoutLine is one of a few known error formats that PANOS
+// panosErrorResponseWithoutLine is one of a few known error formats that PAN-OS
 // outputs.  It checks two locations that the error could be, and returns the
 // one that was discovered in its Error().
 type panosErrorResponseWithoutLine struct {
@@ -1512,14 +1280,14 @@ type commitLocks struct {
     Locks []util.Lock `xml:"result>commit-locks>entry"`
 }
 
-type fwCommit struct {
+type baseCommit struct {
     XMLName xml.Name `xml:"commit"`
     Description string `xml:"description,omitempty"`
-    Partial *fwCommitPartial `xml:"partial"`
+    Partial *baseCommitPartial `xml:"partial"`
     Force interface{} `xml:"force"`
 }
 
-type fwCommitPartial struct {
+type baseCommitPartial struct {
     Dan string `xml:"device-and-network,omitempty"`
     Pao string `xml:"policy-and-objects,omitempty"`
 }

@@ -1,6 +1,3 @@
-// Package srvcgrp is the client.Objects.ServiceGroup namespace.
-//
-// Normalized object:  Entry
 package srvcgrp
 
 import (
@@ -11,59 +8,44 @@ import (
 )
 
 
-// Entry is a normalized, version independent representation of a service
-// group.
-type Entry struct {
-    Name string
-    Services []string
-    Tags []string
-}
-
-// Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
-func (o *Entry) Copy(s Entry) {
-    o.Services = s.Services
-    o.Tags = s.Tags
-}
-
-// SrvcGrp is a namespace struct, included as part of pango.Client.
-type SrvcGrp struct {
+// FwSrvcGrp is a namespace struct, included as part of pango.Client.
+type FwSrvcGrp struct {
     con util.XapiClient
 }
 
 // Initialize is invoked when Initialize on the pango.Client is called.
-func (c *SrvcGrp) Initialize(con util.XapiClient) {
+func (c *FwSrvcGrp) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // GetList performs GET to retrieve a list of service groups.
-func (c *SrvcGrp) GetList(vsys string) ([]string, error) {
+func (c *FwSrvcGrp) GetList(vsys string) ([]string, error) {
     c.con.LogQuery("(get) list of service groups")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // ShowList performs SHOW to retrieve a list of service groups.
-func (c *SrvcGrp) ShowList(vsys string) ([]string, error) {
+func (c *FwSrvcGrp) ShowList(vsys string) ([]string, error) {
     c.con.LogQuery("(show) list of service groups")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given service group.
-func (c *SrvcGrp) Get(vsys, name string) (Entry, error) {
+func (c *FwSrvcGrp) Get(vsys, name string) (Entry, error) {
     c.con.LogQuery("(get) service group %q", name)
     return c.details(c.con.Get, vsys, name)
 }
 
 // Get performs SHOW to retrieve information for the given service group.
-func (c *SrvcGrp) Show(vsys, name string) (Entry, error) {
+func (c *FwSrvcGrp) Show(vsys, name string) (Entry, error) {
     c.con.LogQuery("(show) service group %q", name)
     return c.details(c.con.Show, vsys, name)
 }
 
 // Set performs SET to create / update one or more service groups.
-func (c *SrvcGrp) Set(vsys string, e ...Entry) error {
+func (c *FwSrvcGrp) Set(vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -95,7 +77,7 @@ func (c *SrvcGrp) Set(vsys string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update a service group.
-func (c *SrvcGrp) Edit(vsys string, e Entry) error {
+func (c *FwSrvcGrp) Edit(vsys string, e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -113,7 +95,7 @@ func (c *SrvcGrp) Edit(vsys string, e Entry) error {
 // Delete removes the given service groups from the firewall.
 //
 // Service groups can be either a string or an Entry object.
-func (c *SrvcGrp) Delete(vsys string, e ...interface{}) error {
+func (c *FwSrvcGrp) Delete(vsys string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
@@ -138,13 +120,13 @@ func (c *SrvcGrp) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
-/** Internal functions for the SrvcGrp struct **/
+/** Internal functions for the FwSrvcGrp struct **/
 
-func (c *SrvcGrp) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *FwSrvcGrp) versioning() (normalizer, func(Entry) (interface{})) {
     return &container_v1{}, specify_v1
 }
 
-func (c *SrvcGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
+func (c *FwSrvcGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
     path := c.xpath(vsys, []string{name})
     obj, _ := c.versioning()
     _, err := fn(path, nil, obj)
@@ -156,9 +138,18 @@ func (c *SrvcGrp) details(fn util.Retriever, vsys, name string) (Entry, error) {
     return ans, nil
 }
 
-func (c *SrvcGrp) xpath(vsys string, vals []string) []string {
+func (c *FwSrvcGrp) xpath(vsys string, vals []string) []string {
     if vsys == "" {
         vsys = "vsys1"
+    }
+
+    if vsys == "shared" {
+        return []string{
+            "config",
+            "shared",
+            "service-group",
+            util.AsEntryXpath(vals),
+        }
     }
 
     return []string {
@@ -170,41 +161,4 @@ func (c *SrvcGrp) xpath(vsys string, vals []string) []string {
         "service-group",
         util.AsEntryXpath(vals),
     }
-}
-
-/** Structs / functions for this namespace. **/
-
-type normalizer interface {
-    Normalize() Entry
-}
-
-type container_v1 struct {
-    Answer entry_v1 `xml:"result>entry"`
-}
-
-func (o *container_v1) Normalize() Entry {
-    ans := Entry{
-        Name: o.Answer.Name,
-        Services: util.MemToStr(o.Answer.Services),
-        Tags: util.MemToStr(o.Answer.Tags),
-    }
-
-    return ans
-}
-
-type entry_v1 struct {
-    XMLName xml.Name `xml:"entry"`
-    Name string `xml:"name,attr"`
-    Services *util.Member `xml:"members"`
-    Tags *util.Member `xml:"tag"`
-}
-
-func specify_v1(e Entry) interface{} {
-    ans := entry_v1{
-        Name: e.Name,
-        Services: util.StrToMem(e.Services),
-        Tags: util.StrToMem(e.Tags),
-    }
-
-    return ans
 }

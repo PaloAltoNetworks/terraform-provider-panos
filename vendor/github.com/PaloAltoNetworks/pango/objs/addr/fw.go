@@ -1,6 +1,3 @@
-// Package addr is the client.Objects.Address namespace.
-//
-// Normalized object:  Entry
 package addr
 
 import (
@@ -10,70 +7,44 @@ import (
     "github.com/PaloAltoNetworks/pango/util"
 )
 
-// Constants for Entry.Type field.
-const (
-    IpNetmask string = "ip-netmask"
-    IpRange string = "ip-range"
-    Fqdn string = "fqdn"
-)
-
-// Entry is a normalized, version independent representation of an address
-// object.
-type Entry struct {
-    Name string
-    Value string
-    Type string
-    Description string
-    Tags []string
-}
-
-// Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
-func (o *Entry) Copy(s Entry) {
-    o.Value = s.Value
-    o.Type = s.Type
-    o.Description = s.Description
-    o.Tags = s.Tags
-}
-
-// Addr is a namespace struct, included as part of pango.Client.
-type Addr struct {
+// FwAddr is a namespace struct, included as part of pango.Firewall.
+type FwAddr struct {
     con util.XapiClient
 }
 
 // Initialize is invoked when Initialize on the pango.Client is called.
-func (c *Addr) Initialize(con util.XapiClient) {
+func (c *FwAddr) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // GetList performs GET to retrieve a list of address objects.
-func (c *Addr) GetList(vsys string) ([]string, error) {
+func (c *FwAddr) GetList(vsys string) ([]string, error) {
     c.con.LogQuery("(get) list of address objects")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // ShowList performs SHOW to retrieve a list of address objects.
-func (c *Addr) ShowList(vsys string) ([]string, error) {
+func (c *FwAddr) ShowList(vsys string) ([]string, error) {
     c.con.LogQuery("(show) list of address objects")
     path := c.xpath(vsys, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given address object.
-func (c *Addr) Get(vsys, name string) (Entry, error) {
+func (c *FwAddr) Get(vsys, name string) (Entry, error) {
     c.con.LogQuery("(get) address object %q", name)
     return c.details(c.con.Get, vsys, name)
 }
 
 // Get performs SHOW to retrieve information for the given address object.
-func (c *Addr) Show(vsys, name string) (Entry, error) {
+func (c *FwAddr) Show(vsys, name string) (Entry, error) {
     c.con.LogQuery("(show) address object %q", name)
     return c.details(c.con.Show, vsys, name)
 }
 
 // Set performs SET to create / update one or more address objects.
-func (c *Addr) Set(vsys string, e ...Entry) error {
+func (c *FwAddr) Set(vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -105,7 +76,7 @@ func (c *Addr) Set(vsys string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update an address object.
-func (c *Addr) Edit(vsys string, e Entry) error {
+func (c *FwAddr) Edit(vsys string, e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -123,7 +94,7 @@ func (c *Addr) Edit(vsys string, e Entry) error {
 // Delete removes the given address objects from the firewall.
 //
 // Address objects can be either a string or an Entry object.
-func (c *Addr) Delete(vsys string, e ...interface{}) error {
+func (c *FwAddr) Delete(vsys string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
@@ -148,13 +119,13 @@ func (c *Addr) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
-/** Internal functions for the Addr struct **/
+/** Internal functions for the FwAddr struct **/
 
-func (c *Addr) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *FwAddr) versioning() (normalizer, func(Entry) (interface{})) {
     return &container_v1{}, specify_v1
 }
 
-func (c *Addr) details(fn util.Retriever, vsys, name string) (Entry, error) {
+func (c *FwAddr) details(fn util.Retriever, vsys, name string) (Entry, error) {
     path := c.xpath(vsys, []string{name})
     obj, _ := c.versioning()
     _, err := fn(path, nil, obj)
@@ -166,9 +137,18 @@ func (c *Addr) details(fn util.Retriever, vsys, name string) (Entry, error) {
     return ans, nil
 }
 
-func (c *Addr) xpath(vsys string, vals []string) []string {
+func (c *FwAddr) xpath(vsys string, vals []string) []string {
     if vsys == "" {
         vsys = "vsys1"
+    }
+
+    if vsys == "shared" {
+        return []string {
+            "config",
+            "shared",
+            "address",
+            util.AsEntryXpath(vals),
+        }
     }
 
     return []string {
@@ -180,68 +160,4 @@ func (c *Addr) xpath(vsys string, vals []string) []string {
         "address",
         util.AsEntryXpath(vals),
     }
-}
-
-/** Structs / functions for this namespace. **/
-
-type normalizer interface {
-    Normalize() Entry
-}
-
-type container_v1 struct {
-    Answer entry_v1 `xml:"result>entry"`
-}
-
-func (o *container_v1) Normalize() Entry {
-    ans := Entry{
-        Name: o.Answer.Name,
-        Description: o.Answer.Description,
-        Tags: util.MemToStr(o.Answer.Tags),
-    }
-    switch {
-    case o.Answer.IpNetmask != nil:
-        ans.Type = IpNetmask
-        ans.Value = o.Answer.IpNetmask.Value
-    case o.Answer.IpRange != nil:
-        ans.Type = IpRange
-        ans.Value = o.Answer.IpRange.Value
-    case o.Answer.Fqdn != nil:
-        ans.Type = Fqdn
-        ans.Value = o.Answer.Fqdn.Value
-    }
-
-    return ans
-}
-
-type entry_v1 struct {
-    XMLName xml.Name `xml:"entry"`
-    Name string `xml:"name,attr"`
-    IpNetmask *valType `xml:"ip-netmask"`
-    IpRange *valType `xml:"ip-range"`
-    Fqdn *valType `xml:"fqdn"`
-    Description string `xml:"description"`
-    Tags *util.Member `xml:"tag"`
-}
-
-type valType struct {
-    Value string `xml:",chardata"`
-}
-
-func specify_v1(e Entry) interface{} {
-    ans := entry_v1{
-        Name: e.Name,
-        Description: e.Description,
-        Tags: util.StrToMem(e.Tags),
-    }
-    vt := &valType{e.Value}
-    switch e.Type {
-    case IpNetmask:
-        ans.IpNetmask = vt
-    case IpRange:
-        ans.IpRange = vt
-    case Fqdn:
-        ans.Fqdn = vt
-    }
-
-    return ans
 }

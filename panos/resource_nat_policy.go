@@ -7,8 +7,10 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/poli/nat"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/terraform"
 )
 
 func resourceNatPolicy() *schema.Resource {
@@ -17,6 +19,9 @@ func resourceNatPolicy() *schema.Resource {
 		Read:   readNatPolicy,
 		Update: updateNatPolicy,
 		Delete: deleteNatPolicy,
+
+		SchemaVersion: 1,
+		MigrateState:  migrateResourceNatPolicy,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
@@ -34,10 +39,10 @@ func resourceNatPolicy() *schema.Resource {
 			"rulebase": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Default:      "rulebase",
+				Computed:     true,
 				ForceNew:     true,
-				Description:  "The rulebase (default: rulebase, pre-rulebase, post-rulebase)",
-				ValidateFunc: validateStringIn("rulebase", "pre-rulebase", "post-rulebase"),
+				Description:  "The Panorama rulebase",
+				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
 			"description": &schema.Schema{
 				Type:     schema.TypeString,
@@ -172,6 +177,22 @@ func resourceNatPolicy() *schema.Resource {
 	}
 }
 
+func migrateResourceNatPolicy(ov int, s *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
+	if ov == 0 {
+		t := strings.Split(s.ID, IdSeparator)
+		if len(t) != 3 {
+			return nil, fmt.Errorf("ID is malformed")
+		} else if t[1] != util.Rulebase {
+			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1], util.Rulebase)
+		}
+		s.ID = buildNatPolicyId(t[0], t[2])
+
+		ov = 1
+	}
+
+	return s, nil
+}
+
 func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 	vsys := d.Get("vsys").(string)
 	rb := d.Get("rulebase").(string)
@@ -207,24 +228,24 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 	return vsys, rb, o
 }
 
-func parseNatPolicyId(v string) (string, string, string) {
+func parseNatPolicyId(v string) (string, string) {
 	t := strings.Split(v, IdSeparator)
-	return t[0], t[1], t[2]
+	return t[0], t[1]
 }
 
-func buildNatPolicyId(a, b, c string) string {
-	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
+func buildNatPolicyId(a, b string) string {
+	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
 }
 
 func createNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	vsys, rb, o := parseNatPolicy(d)
+	vsys, _, o := parseNatPolicy(d)
 
-	if err := fw.Policies.Nat.Set(vsys, rb, o); err != nil {
+	if err := fw.Policies.Nat.Set(vsys, o); err != nil {
 		return err
 	}
 
-	d.SetId(buildNatPolicyId(vsys, rb, o.Name))
+	d.SetId(buildNatPolicyId(vsys, o.Name))
 	return readNatPolicy(d, meta)
 }
 
@@ -232,9 +253,9 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, rb, name := parseNatPolicyId(d.Id())
+	vsys, name := parseNatPolicyId(d.Id())
 
-	o, err := fw.Policies.Nat.Get(vsys, rb, name)
+	o, err := fw.Policies.Nat.Get(vsys, name)
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if ok && e2.ObjectNotFound() {
@@ -246,7 +267,7 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
-	d.Set("rulebase", rb)
+	d.Set("rulebase", util.Rulebase)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
 	if err = d.Set("source_zones", o.SourceZones); err != nil {
@@ -291,14 +312,14 @@ func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, rb, o := parseNatPolicy(d)
+	vsys, _, o := parseNatPolicy(d)
 
-	lo, err := fw.Policies.Nat.Get(vsys, rb, o.Name)
+	lo, err := fw.Policies.Nat.Get(vsys, o.Name)
 	if err != nil {
 		return err
 	}
 	lo.Copy(o)
-	if err = fw.Policies.Nat.Edit(vsys, rb, lo); err != nil {
+	if err = fw.Policies.Nat.Edit(vsys, lo); err != nil {
 		return err
 	}
 
@@ -307,9 +328,9 @@ func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
 
 func deleteNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	vsys, rb, name := parseNatPolicyId(d.Id())
+	vsys, name := parseNatPolicyId(d.Id())
 
-	err := fw.Policies.Nat.Delete(vsys, rb, name)
+	err := fw.Policies.Nat.Delete(vsys, name)
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if !ok || !e2.ObjectNotFound() {

@@ -1,4 +1,3 @@
-// Package objs is the client.Objects namespace.
 package objs
 
 
@@ -13,29 +12,29 @@ import (
 )
 
 
-// Objs is the client.Objects namespace.
-type Objs struct {
-    Address *addr.Addr
-    AddressGroup *addrgrp.AddrGrp
-    Services *srvc.Srvc
-    ServiceGroup *srvcgrp.SrvcGrp
-    Tags *tags.Tags
+// FwObjs is the client.Objects namespace.
+type FwObjs struct {
+    Address *addr.FwAddr
+    AddressGroup *addrgrp.FwAddrGrp
+    Services *srvc.FwSrvc
+    ServiceGroup *srvcgrp.FwSrvcGrp
+    Tags *tags.FwTags
 }
 
 // Initialize is invoked on client.Initialize().
-func (c *Objs) Initialize(i util.XapiClient) {
-    c.Address = &addr.Addr{}
+func (c *FwObjs) Initialize(i util.XapiClient) {
+    c.Address = &addr.FwAddr{}
     c.Address.Initialize(i)
 
-    c.AddressGroup = &addrgrp.AddrGrp{}
+    c.AddressGroup = &addrgrp.FwAddrGrp{}
     c.AddressGroup.Initialize(i)
 
-    c.Services = &srvc.Srvc{}
+    c.Services = &srvc.FwSrvc{}
     c.Services.Initialize(i)
 
-    c.ServiceGroup = &srvcgrp.SrvcGrp{}
+    c.ServiceGroup = &srvcgrp.FwSrvcGrp{}
     c.ServiceGroup.Initialize(i)
 
-    c.Tags = &tags.Tags{}
+    c.Tags = &tags.FwTags{}
     c.Tags.Initialize(i)
 }
