@@ -67,6 +67,10 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			// Panorama resources.
+			"panos_panorama_address_object": resourcePanoramaAddressObject(),
+
+			// Firewall resources.
 			"panos_address_group":      resourceAddressGroup(),
 			"panos_address_object":     resourceAddressObject(),
 			"panos_administrative_tag": resourceAdministrativeTag(),
@@ -117,7 +121,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		}
 	}
 
-	fw := &pango.Firewall{Client: pango.Client{
+	con, err := pango.Connect(pango.Client{
 		Hostname: d.Get("hostname").(string),
 		Username: d.Get("username").(string),
 		Password: d.Get("password").(string),
@@ -126,10 +130,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		Port:     uint(d.Get("port").(int)),
 		Timeout:  d.Get("timeout").(int),
 		Logging:  logging,
-	}}
-	if err := fw.Initialize(); err != nil {
+	})
+	if err != nil {
 		return nil, err
 	}
 
-	return fw, nil
+	return con, nil
 }
