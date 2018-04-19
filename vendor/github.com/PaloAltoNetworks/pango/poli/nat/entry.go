@@ -250,17 +250,17 @@ type entry_v1 struct {
     Name string `xml:"name,attr"`
     Description string `xml:"description"`
     Type string `xml:"nat-type"`
-    SourceZones *util.Member `xml:"from"`
+    SourceZones *util.MemberType `xml:"from"`
     DestinationZone string `xml:"to>member"`
     ToInterface string `xml:"to-interface"`
     Service string `xml:"service"`
-    SourceAddresses *util.Member `xml:"source"`
-    DestinationAddresses *util.Member `xml:"destination"`
+    SourceAddresses *util.MemberType `xml:"source"`
+    DestinationAddresses *util.MemberType `xml:"destination"`
     Sat *srcXlate `xml:"source-translation"`
     Dat *dstXlate `xml:"destination-translation"`
     Disabled string `xml:"disabled"`
     Target *targetInfo `xml:"target"`
-    Tags *util.Member `xml:"tag"`
+    Tags *util.MemberType `xml:"tag"`
 }
 
 type dstXlate struct {
@@ -275,7 +275,7 @@ type srcXlate struct {
 }
 
 type srcXlateDiap struct {
-    TranslatedAddress *util.Member `xml:"translated-address"`
+    TranslatedAddress *util.MemberType `xml:"translated-address"`
     InterfaceAddress *srcXlateDiapIa `xml:"interface-address"`
 }
 
@@ -285,12 +285,12 @@ type srcXlateDiapIa struct {
 }
 
 type srcXlateDi struct {
-    TranslatedAddress *util.Member `xml:"translated-address"`
+    TranslatedAddress *util.MemberType `xml:"translated-address"`
     Fallback *fallback `xml:"fallback"`
 }
 
 type fallback struct {
-    TranslatedAddress *util.Member `xml:"translated-address"`
+    TranslatedAddress *util.MemberType `xml:"translated-address"`
     InterfaceAddress *fallbackIface `xml:"interface-address"`
 }
 
@@ -306,7 +306,7 @@ type srcXlateStatic struct {
 }
 
 type targetInfo struct {
-    Targets *util.Entry `xml:"devices"`
+    Targets *util.EntryType `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 

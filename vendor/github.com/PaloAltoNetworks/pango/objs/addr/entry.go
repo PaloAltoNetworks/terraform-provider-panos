@@ -70,7 +70,7 @@ type entry_v1 struct {
     IpRange *valType `xml:"ip-range"`
     Fqdn *valType `xml:"fqdn"`
     Description string `xml:"description"`
-    Tags *util.Member `xml:"tag"`
+    Tags *util.MemberType `xml:"tag"`
 }
 
 type valType struct {

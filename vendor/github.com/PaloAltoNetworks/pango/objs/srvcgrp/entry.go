@@ -45,8 +45,8 @@ func (o *container_v1) Normalize() Entry {
 type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
-    Services *util.Member `xml:"members"`
-    Tags *util.Member `xml:"tag"`
+    Services *util.MemberType `xml:"members"`
+    Tags *util.MemberType `xml:"tag"`
 }
 
 func specify_v1(e Entry) interface{} {

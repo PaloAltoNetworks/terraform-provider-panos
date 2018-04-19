@@ -232,7 +232,7 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     VlanInterface string `xml:"virtual-interface>interface"`
-    Interfaces *util.Member `xml:"interface"`
+    Interfaces *util.MemberType `xml:"interface"`
     Mac mac `xml:"mac"`
 }
 

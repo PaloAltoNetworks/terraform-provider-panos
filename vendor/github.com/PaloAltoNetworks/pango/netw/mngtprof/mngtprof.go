@@ -234,7 +234,7 @@ type entry_v1 struct {
     UseridService string `xml:"userid-service"`
     UseridSyslogListenerSsl string `xml:"userid-syslog-listener-ssl"`
     UseridSyslogListenerUdp string `xml:"userid-syslog-listener-udp"`
-    PermittedIps *util.Entry `xml:"permitted-ip"`
+    PermittedIps *util.EntryType `xml:"permitted-ip"`
 }
 
 func specify_v1(e Entry) interface{} {
