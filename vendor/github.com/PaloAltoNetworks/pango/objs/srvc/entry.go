@@ -66,7 +66,7 @@ type entry_v1 struct {
     TcpProto *protoDef `xml:"protocol>tcp"`
     UdpProto *protoDef `xml:"protocol>udp"`
     Description string `xml:"description"`
-    Tags *util.Member `xml:"tag"`
+    Tags *util.MemberType `xml:"tag"`
 }
 
 type protoDef struct {

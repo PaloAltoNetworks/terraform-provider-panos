@@ -45,7 +45,7 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     Description string `xml:"description"`
-    Devices *util.Entry `xml:"devices"`
+    Devices *util.EntryType `xml:"devices"`
 }
 
 func specify_v1(e Entry) interface{} {

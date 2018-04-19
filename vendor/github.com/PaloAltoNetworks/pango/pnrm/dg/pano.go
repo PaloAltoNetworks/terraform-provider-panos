@@ -17,6 +17,73 @@ func (c *Dg) Initialize(con util.XapiClient) {
     c.con = con
 }
 
+/*
+AddDevices performs a SET to add devices to device group g.
+
+The device group can be either a string or an Entry object.
+*/
+func (c *Dg) AddDevices(g interface{}, e ...string) error {
+    var name string
+
+    switch v := g.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to add devices: %s", v)
+    }
+
+    c.con.LogAction("(set) devices in device group: %s", name)
+
+    ent := util.StrToEnt(e)
+    if ent == nil {
+        return nil
+    }
+
+    // Set xpath.
+    path := c.xpath([]string{name})
+    if len(ent.Entries) == 1 {
+        path = append(path, "devices")
+    }
+
+    dv := make([]interface{}, len(ent.Entries))
+    for i := range ent.Entries {
+        dv[i] = ent.Entries[i]
+    }
+
+    d := util.BulkElement{XMLName: xml.Name{Local: "devices"}, Data: dv}
+
+    _, err := c.con.Set(path, d.Config(), nil, nil)
+    return err
+}
+
+/*
+DeleteDevices performs a DELETE to remove devices d from device group g.
+
+The device group can be either a string or an Entry object.
+*/
+func (c *Dg) DeleteDevices(g interface{}, d ...string) error {
+    var name string
+
+    switch v := g.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to remove devices: %s", v)
+    }
+
+    c.con.LogAction("(delete) devices in device group: %s", name)
+
+    path := c.xpath([]string{name})
+    path = append(path, "devices", util.AsEntryXpath(d))
+
+    _, err := c.con.Delete(path, nil, nil)
+    return err
+}
+
 // ShowList performs SHOW to retrieve a list of device groups.
 func (c *Dg) ShowList() ([]string, error) {
     c.con.LogQuery("(show) list of device groups")

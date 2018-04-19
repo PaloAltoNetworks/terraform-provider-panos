@@ -60,9 +60,9 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     Description string `xml:"description"`
-    StaticAddresses *util.Member `xml:"static"`
+    StaticAddresses *util.MemberType `xml:"static"`
     DynamicMatch *string `xml:"dynamic>filter"`
-    Tags *util.Member `xml:"tag"`
+    Tags *util.MemberType `xml:"tag"`
 }
 
 func specify_v1(e Entry) interface{} {

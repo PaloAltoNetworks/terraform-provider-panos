@@ -144,5 +144,5 @@ type deviceGroup struct {
 
 type deviceGroupEntry struct {
     Name string `xml:"name,attr"`
-    Devices *util.Entry `xml:"devices"`
+    Devices *util.EntryType `xml:"devices"`
 }

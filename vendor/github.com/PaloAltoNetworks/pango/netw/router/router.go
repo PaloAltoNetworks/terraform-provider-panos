@@ -335,7 +335,7 @@ func (o *container_v1) Normalize() Entry {
 type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
-    Interfaces *util.Member `xml:"interface"`
+    Interfaces *util.MemberType `xml:"interface"`
     Dist dist `xml:"admin-dists"`
     Ecmp *util.RawXml `xml:"ecmp"`
     Multicast *util.RawXml `xml:"multicast"`

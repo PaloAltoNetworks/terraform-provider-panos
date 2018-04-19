@@ -354,7 +354,7 @@ type l3Mode_v1 struct {
     Mtu int `xml:"mtu,omitempty"`
     NetflowProfile string `xml:"netflow-profile,omitempty"`
     AdjustTcpMss string `xml:"adjust-tcp-mss"`
-    StaticIps *util.Entry `xml:"ip"`
+    StaticIps *util.EntryType `xml:"ip"`
     Dhcp *dhcpSettings `xml:"dhcp-client"`
     Arp *util.RawXml `xml:"arp"`
     Subinterface *util.RawXml `xml:"units"`
@@ -462,7 +462,7 @@ type l3Mode_v2 struct {
     AdjustTcpMss string `xml:"adjust-tcp-mss>enable"`
     Ipv4MssAdjust int `xml:"adjust-tcp-mss>ipv4-mss-adjustment,omitempty"`
     Ipv6MssAdjust int `xml:"adjust-tcp-mss>ipv6-mss-adjustment,omitempty"`
-    StaticIps *util.Entry `xml:"ip"`
+    StaticIps *util.EntryType `xml:"ip"`
     Dhcp *dhcpSettings `xml:"dhcp-client"`
     Arp *util.RawXml `xml:"arp"`
     Subinterface *util.RawXml `xml:"units"`

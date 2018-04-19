@@ -4,6 +4,7 @@ package util
 
 
 import (
+    "bytes"
     "encoding/xml"
     "fmt"
     "regexp"
@@ -66,84 +67,107 @@ func (o BulkElement) Config() interface{} {
     return o
 }
 
+// MemberType defines a member config node used for sending and receiving XML
+// from PAN-OS.
+type MemberType struct {
+    Members []Member `xml:"member"`
+}
+
 // Member defines a member config node used for sending and receiving XML
 // from PANOS.
 type Member struct {
-    Member []string `xml:"member"`
+    XMLName xml.Name `xml:"member"`
+    Value string `xml:",chardata"`
 }
 
-// MemToStr takes a pointer of a Member object and returns a list of strings.
-func MemToStr(e *Member) []string {
+// MemToStr normalizes a MemberType pointer into a list of strings.
+func MemToStr(e *MemberType) []string {
     if e == nil {
         return nil
     }
 
-    return e.Member
+    ans := make([]string, len(e.Members))
+    for i := range e.Members {
+        ans[i] = e.Members[i].Value
+    }
+
+    return ans
 }
 
-// StrToMem takes a list of strings and returns a list of Member objects.
-func StrToMem(e []string) *Member {
+// StrToMem converts a list of strings into a MemberType pointer.
+func StrToMem(e []string) *MemberType {
     if e == nil {
         return nil
     }
 
-    return &Member{e}
-}
-
-// MemToOneStr returns a string from a max_items=1 Member.
-func MemToOneStr(e *Member) string {
-    v := MemToStr(e)
-    if len(v) != 0 {
-        return v[0]
-    }
-    return ""
-}
-
-// OneStrToMem returns a Member definition for a max_items=1 string.
-func OneStrToMem(e string) *Member {
-    if e != "" {
-        return StrToMem([]string{e})
-    }
-    return StrToMem(nil)
-}
-
-// Entry defines an entry config node used for sending and receiving XML
-// from PANOS.
-type Entry struct {
-    Entry []innerEntry `xml:"entry"`
-}
-
-// innerEntry is the inner struct for util.Entry, containing the name field.
-type innerEntry struct {
-    Name string `xml:"name,attr"`
-}
-
-// EntToStr takes a list of Entry objects and returns a list of strings.
-func EntToStr(e *Entry) []string {
-    if e == nil {
-        return nil
-    }
-
-    m := make([]string, len(e.Entry))
-    for i := range e.Entry {
-        m[i] = e.Entry[i].Name
-    }
-
-    return m
-}
-
-// StrToEnt takes a list of strings and returns a list of Entry objects.
-func StrToEnt(e []string) *Entry {
-    if e == nil {
-        return nil
-    }
-
-    m := make([]innerEntry, len(e))
+    ans := make([]Member, len(e))
     for i := range e {
-        m[i] = innerEntry{e[i]}
+        ans[i] = Member{Value: e[i]}
     }
 
-    return &Entry{m}
+    return &MemberType{ans}
+}
+
+// MemToOneStr normalizes a MemberType pointer for a max_items=1 XML node
+// into a string.
+func MemToOneStr(e *MemberType) string {
+    if e == nil || len(e.Members) == 0 {
+        return ""
+    }
+
+    return e.Members[0].Value
+}
+
+// OneStrToMem converts a string into a MemberType pointer for a max_items=1
+// XML node.
+func OneStrToMem(e string) *MemberType {
+    if e == "" {
+        return nil
+    }
+
+    return &MemberType{[]Member{
+        {Value: e},
+    }}
+}
+
+// EntryType defines an entry config node used for sending and receiving XML
+// from PAN-OS.
+type EntryType struct {
+    Entries []Entry `xml:"entry"`
+}
+
+// Entry is a standalone entry struct.
+type Entry struct {
+    XMLName xml.Name `xml:"entry"`
+    Value string `xml:"name,attr"`
+}
+
+// EntToStr normalizes an EntryType pointer into a list of strings.
+func EntToStr(e *EntryType) []string {
+    if e == nil {
+        return nil
+    }
+
+    ans := make([]string, len(e.Entries))
+    for i := range e.Entries {
+        ans[i] = e.Entries[i].Value
+    }
+
+    return ans
+}
+
+// StrToEnt converts a list of strings into an EntryType pointer.
+func StrToEnt(e []string) *EntryType {
+    if e == nil {
+        return nil
+    }
+
+    ans := make([]Entry, len(e))
+    for i := range e {
+        ans[i] = Entry{Value: e[i]}
+    }
+
+    return &EntryType{ans}
 }
 
 // YesNo returns "yes" on true, "no" on false.
@@ -176,22 +200,39 @@ func AsXpath(i interface{}) string {
 
 // AsEntryXpath returns the given values as an entry xpath segment.
 func AsEntryXpath(vals []string) string {
-    inner := make([]string, len(vals))
-    for i := range inner {
-        inner[i] = fmt.Sprintf("@name='%s'", vals[i])
-    }
+    var buf bytes.Buffer
 
-    return fmt.Sprintf("entry[%s]", strings.Join(inner, " or "))
+    buf.WriteString("entry[")
+    for i := range vals {
+        if i != 0 {
+            buf.WriteString(" or ")
+        }
+        buf.WriteString("@name='")
+        buf.WriteString(vals[i])
+        buf.WriteString("'")
+    }
+    buf.WriteString("]")
+
+    return buf.String()
 }
 
 // AsMemberXpath returns the given values as a member xpath segment.
 func AsMemberXpath(vals []string) string {
-    inner := make([]string, len(vals))
-    for i := range inner {
-        inner[i] = fmt.Sprintf("text()='%s'", vals[i])
+    var buf bytes.Buffer
+
+    buf.WriteString("member[")
+    for i := range vals {
+        if i != 0 {
+            buf.WriteString(" or ")
+        }
+        buf.WriteString("text()='")
+        buf.WriteString(vals[i])
+        buf.WriteString("'")
     }
 
-    return fmt.Sprintf("member[%s]", strings.Join(inner, " or "))
+    buf.WriteString("]")
+
+    return buf.String()
 }
 
 // License defines a license entry.

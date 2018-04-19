@@ -209,18 +209,18 @@ type entry_v1 struct {
     Name string `xml:"name,attr"`
     Type string `xml:"rule-type"`
     Description string `xml:"description"`
-    Tags *util.Member `xml:"tag"`
-    SourceZones *util.Member `xml:"from"`
-    DestinationZones *util.Member `xml:"to"`
-    SourceAddresses *util.Member `xml:"source"`
+    Tags *util.MemberType `xml:"tag"`
+    SourceZones *util.MemberType `xml:"from"`
+    DestinationZones *util.MemberType `xml:"to"`
+    SourceAddresses *util.MemberType `xml:"source"`
     NegateSource string `xml:"negate-source"`
-    SourceUsers *util.Member `xml:"source-user"`
-    HipProfiles *util.Member `xml:"hip-profiles"`
-    DestinationAddresses *util.Member `xml:"destination"`
+    SourceUsers *util.MemberType `xml:"source-user"`
+    HipProfiles *util.MemberType `xml:"hip-profiles"`
+    DestinationAddresses *util.MemberType `xml:"destination"`
     NegateDestination string `xml:"negate-destination"`
-    Applications *util.Member `xml:"application"`
-    Services *util.Member `xml:"service"`
-    Categories *util.Member `xml:"category"`
+    Applications *util.MemberType `xml:"application"`
+    Services *util.MemberType `xml:"service"`
+    Categories *util.MemberType `xml:"category"`
     Action string `xml:"action"`
     LogSetting string `xml:"log-setting,omitempty"`
     LogStart string `xml:"log-start"`
@@ -238,23 +238,23 @@ type secOptions struct {
 }
 
 type targetInfo struct {
-    Targets *util.Entry `xml:"devices"`
+    Targets *util.EntryType `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 
 type profileSettings struct {
-    Group *util.Member `xml:"group"`
+    Group *util.MemberType `xml:"group"`
     Profiles *profileSettingsProfile `xml:"profiles"`
 }
 
 type profileSettingsProfile struct {
-    Virus *util.Member `xml:"virus"`
-    Spyware *util.Member `xml:"spyware"`
-    Vulnerability *util.Member `xml:"vulnerability"`
-    UrlFiltering *util.Member `xml:"url-filtering"`
-    FileBlocking *util.Member `xml:"file-blocking"`
-    WildFireAnalysis *util.Member `xml:"wildfire-analysis"`
-    DataFiltering *util.Member `xml:"data-filtering"`
+    Virus *util.MemberType `xml:"virus"`
+    Spyware *util.MemberType `xml:"spyware"`
+    Vulnerability *util.MemberType `xml:"vulnerability"`
+    UrlFiltering *util.MemberType `xml:"url-filtering"`
+    FileBlocking *util.MemberType `xml:"file-blocking"`
+    WildFireAnalysis *util.MemberType `xml:"wildfire-analysis"`
+    DataFiltering *util.MemberType `xml:"data-filtering"`
 }
 
 func specify_v1(e Entry) interface{} {
