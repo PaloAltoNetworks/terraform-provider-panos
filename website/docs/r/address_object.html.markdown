@@ -10,11 +10,26 @@ description: |-
 
 This resource allows you to add/update/delete address objects.
 
+## PAN-OS Support
+
+* Firewall
+* Panorama
+
 ## Example Usage
 
 ```hcl
+# Firewall example.
 resource "panos_address_object" "example" {
     name = "localnet"
+    value = "192.168.80.0/24"
+    description = "The 192.168.80 network"
+    tags = ["internal", "dmz"]
+}
+
+# Panorama example.
+resource "panos_address_object" "example" {
+    name = "localnet"
+    device_group = "My Group"
     value = "192.168.80.0/24"
     description = "The 192.168.80 network"
     tags = ["internal", "dmz"]
@@ -26,8 +41,10 @@ resource "panos_address_object" "example" {
 The following arguments are supported:
 
 * `name` - (Required) The address object's name.
-* `vsys` - (Optional) The vsys to put the address object into (default:
-  `vsys1`).
+* `vsys` - (Optional) The firewall vsys to put the address object into
+  (default: `vsys1`).
+* `device_group` - (Optional) The Panorama device group to put the address
+  object into (default: `shared`)
 * `type` - (Optional) The type of address object.  This can be `ip-netmask`
   (default), `ip-range`, or `fqdn`.
 * `value` - (Required) The address object's value.  This can take various

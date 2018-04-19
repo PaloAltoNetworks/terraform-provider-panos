@@ -32,6 +32,12 @@ func resourceAddressObject() *schema.Resource {
 				ForceNew:    true,
 				Description: "The vsys to put this address object in",
 			},
+			"device_group": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "shared",
+				ForceNew: true,
+			},
 			"type": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
@@ -59,8 +65,9 @@ func resourceAddressObject() *schema.Resource {
 	}
 }
 
-func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
+func parseAddressObject(d *schema.ResourceData) (string, string, addr.Entry) {
 	vsys := d.Get("vsys").(string)
+	dg := d.Get("device_group").(string)
 	o := addr.Entry{
 		Name:        d.Get("name").(string),
 		Value:       d.Get("value").(string),
@@ -69,7 +76,7 @@ func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 		Tags:        setAsList(d.Get("tags").(*schema.Set)),
 	}
 
-	return vsys, o
+	return vsys, dg, o
 }
 
 func parseAddressObjectId(v string) (string, string) {
@@ -82,35 +89,69 @@ func buildAddressObjectId(a, b string) string {
 }
 
 func createAddressObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, o := parseAddressObject(d)
+	switch meta.(type) {
+	case *pango.Firewall:
+		fw := meta.(*pango.Firewall)
+		vsys, _, o := parseAddressObject(d)
 
-	if err := fw.Objects.Address.Set(vsys, o); err != nil {
-		return err
+		if err := fw.Objects.Address.Set(vsys, o); err != nil {
+			return err
+		}
+		d.SetId(buildAddressObjectId(vsys, o.Name))
+	case *pango.Panorama:
+		pano := meta.(*pango.Panorama)
+		_, dg, o := parseAddressObject(d)
+
+		if err := pano.Objects.Address.Set(dg, o); err != nil {
+			return err
+		}
+		d.SetId(buildAddressObjectId(dg, o.Name))
 	}
 
-	d.SetId(buildAddressObjectId(vsys, o.Name))
 	return readAddressObject(d, meta)
 }
 
 func readAddressObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	var (
+		err      error
+		o        addr.Entry
+		vsys, dg string
+	)
 
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseAddressObjectId(d.Id())
+	switch meta.(type) {
+	case *pango.Firewall:
+		fw := meta.(*pango.Firewall)
+		dg = d.Get("device_group").(string)
+		vsys, name := parseAddressObjectId(d.Id())
 
-	o, err := fw.Objects.Address.Get(vsys, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
+		o, err = fw.Objects.Address.Get(vsys, name)
+		if err != nil {
+			e2, ok := err.(pango.PanosError)
+			if ok && e2.ObjectNotFound() {
+				d.SetId("")
+				return nil
+			}
+			return err
 		}
-		return err
+	case *pango.Panorama:
+		pano := meta.(*pango.Panorama)
+		vsys = d.Get("vsys").(string)
+		dg, name := parseAddressObjectId(d.Id())
+
+		o, err = pano.Objects.Address.Get(dg, name)
+		if err != nil {
+			e2, ok := err.(pango.PanosError)
+			if ok && e2.ObjectNotFound() {
+				d.SetId("")
+				return nil
+			}
+			return err
+		}
 	}
 
 	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
+	d.Set("dg", dg)
 	d.Set("value", o.Value)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
@@ -122,28 +163,52 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updateAddressObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	switch meta.(type) {
+	case *pango.Firewall:
+		fw := meta.(*pango.Firewall)
+		vsys, _, o := parseAddressObject(d)
 
-	fw := meta.(*pango.Firewall)
-	vsys, o := parseAddressObject(d)
+		lo, err := fw.Objects.Address.Get(vsys, o.Name)
+		if err != nil {
+			return err
+		}
+		lo.Copy(o)
+		if err = fw.Objects.Address.Edit(vsys, lo); err != nil {
+			return err
+		}
+	case *pango.Panorama:
+		pano := meta.(*pango.Panorama)
+		_, dg, o := parseAddressObject(d)
 
-	lo, err := fw.Objects.Address.Get(vsys, o.Name)
-	if err != nil {
-		return err
-	}
-	lo.Copy(o)
-	if err = fw.Objects.Address.Edit(vsys, lo); err != nil {
-		return err
+		lo, err := pano.Objects.Address.Get(dg, o.Name)
+		if err != nil {
+			return err
+		}
+		lo.Copy(o)
+		if err = pano.Objects.Address.Edit(dg, lo); err != nil {
+			return err
+		}
 	}
 
 	return readAddressObject(d, meta)
 }
 
 func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseAddressObjectId(d.Id())
+	var err error
 
-	err := fw.Objects.Address.Delete(vsys, name)
+	switch meta.(type) {
+	case *pango.Firewall:
+		fw := meta.(*pango.Firewall)
+		vsys, name := parseAddressObjectId(d.Id())
+
+		err = fw.Objects.Address.Delete(vsys, name)
+	case *pango.Panorama:
+		pano := meta.(*pango.Panorama)
+		dg, name := parseAddressObjectId(d.Id())
+
+		err = pano.Objects.Address.Delete(dg, name)
+	}
+
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if !ok || !e2.ObjectNotFound() {
