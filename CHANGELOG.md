@@ -1,4 +1,10 @@
-## 1.0.1 (Unreleased)
+## 1.1.0 (Unreleased)
+
+FEATURES:
+
+* **New Feature:** Support for interacting with Panorama
+* **New Resource:** `panos_panorama_address_object`
+
 ## 1.0.0 (January 31, 2018)
 
 FEATURES:
