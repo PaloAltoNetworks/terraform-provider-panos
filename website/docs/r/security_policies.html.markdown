@@ -76,7 +76,7 @@ The following arguments are supported:
 
 * `vsys` - (Optional) The vsys to put the security policy into (default:
   `vsys1`).
-* `rulebase` - (Optional) The rulebase.  For firewalls, there is only the
+* `rulebase` - (Optional, Deprecated) The rulebase.  For firewalls, there is only the
   `rulebase` value (default), but on Panorama, there is also `pre-rulebase`
   and `post-rulebase`.
 * `rule` - The security policy definition (see below).  The security policy
