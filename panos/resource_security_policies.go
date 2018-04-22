@@ -37,6 +37,7 @@ func resourceSecurityPolicies() *schema.Resource {
 				Computed:     true,
 				ForceNew:     true,
 				Description:  "The Panorama rulebase",
+				Deprecated:   "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
 				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
 			"rule": &schema.Schema{
