@@ -42,7 +42,7 @@ The following arguments are supported:
 * `name` - (Required) The NAT policy's name.
 * `vsys` - (Optional) The vsys to put the NAT policy into (default:
   `vsys1`).
-* `rulebase` - (Optional) The rulebase.  For firewalls, there is only the
+* `rulebase` - (Optional, Deprecated) The rulebase.  For firewalls, there is only the
   `rulebase` value (default), but on Panorama, there is also `pre-rulebase`
   and `post-rulebase`.
 * `description` - (Optional) The description.
