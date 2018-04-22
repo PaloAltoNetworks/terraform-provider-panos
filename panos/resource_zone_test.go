@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosZone_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o zone.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

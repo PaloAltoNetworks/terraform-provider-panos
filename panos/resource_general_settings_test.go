@@ -12,6 +12,10 @@ import (
 )
 
 func TestAccPanosGeneralSettings_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o general.Config
 
 	resource.Test(t, resource.TestCase{

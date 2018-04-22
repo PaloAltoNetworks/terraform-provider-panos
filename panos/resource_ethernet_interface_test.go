@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosEthernetInterface_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o eth.Entry
 	num := (acctest.RandInt() % 9) + 1
 	name := fmt.Sprintf("ethernet1/%d", num)

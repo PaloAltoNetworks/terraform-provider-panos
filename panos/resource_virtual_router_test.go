@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosVirtualRouter_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o router.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

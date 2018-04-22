@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosAddressGroup_static(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o addrgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 	o1 := fmt.Sprintf("ao%s", acctest.RandString(6))
@@ -42,6 +46,10 @@ func TestAccPanosAddressGroup_static(t *testing.T) {
 }
 
 func TestAccPanosAddressGroup_dynamic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o addrgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

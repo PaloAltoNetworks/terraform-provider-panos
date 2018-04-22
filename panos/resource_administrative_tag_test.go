@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosAdministrativeTag_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o tags.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

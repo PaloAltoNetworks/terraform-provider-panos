@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosManagementProfile_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var mp mngtprof.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 

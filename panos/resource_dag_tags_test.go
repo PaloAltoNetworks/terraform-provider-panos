@@ -11,6 +11,10 @@ import (
 )
 
 func TestAccPanosDagTags_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	o := make(map[string][]string)
 
 	resource.Test(t, resource.TestCase{

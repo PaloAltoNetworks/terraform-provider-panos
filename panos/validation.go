@@ -6,6 +6,11 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
+const (
+	SkipPanoramaAccTest = "Skipping panorama test"
+	SkipFirewallAccTest = "Skipping firewall test"
+)
+
 func validateStringIn(vals ...string) schema.SchemaValidateFunc {
 	return func(v interface{}, k string) (ws []string, errors []error) {
 		value := v.(string)

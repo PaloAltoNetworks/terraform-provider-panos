@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosServiceGroup_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o srvcgrp.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 	so1 := fmt.Sprintf("so%s", acctest.RandString(6))
