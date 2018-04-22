@@ -37,14 +37,23 @@ func dataSourceSystemInfo() *schema.Resource {
 }
 
 func dataSourceSystemInfoRead(d *schema.ResourceData, meta interface{}) error {
-	c := meta.(*pango.Firewall)
-
-	d.SetId(c.Hostname)
-	d.Set("version_major", c.Version.Major)
-	d.Set("version_minor", c.Version.Minor)
-	d.Set("version_patch", c.Version.Patch)
-	if err := d.Set("info", c.SystemInfo); err != nil {
-		log.Printf("[WARN] Error setting 'info' field for %q: %s", d.Id(), err)
+	switch c := meta.(type) {
+	case *pango.Firewall:
+		d.SetId(c.Hostname)
+		d.Set("version_major", c.Version.Major)
+		d.Set("version_minor", c.Version.Minor)
+		d.Set("version_patch", c.Version.Patch)
+		if err := d.Set("info", c.SystemInfo); err != nil {
+			log.Printf("[WARN] Error setting 'info' field for %q: %s", d.Id(), err)
+		}
+	case *pango.Panorama:
+		d.SetId(c.Hostname)
+		d.Set("version_major", c.Version.Major)
+		d.Set("version_minor", c.Version.Minor)
+		d.Set("version_patch", c.Version.Patch)
+		if err := d.Set("info", c.SystemInfo); err != nil {
+			log.Printf("[WARN] Error setting 'info' field for %q: %s", d.Id(), err)
+		}
 	}
 
 	return nil

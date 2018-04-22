@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosSecurityPolicies_basic(t *testing.T) {
+	if !testAccIsFirewall {
+		t.Skip(SkipFirewallAccTest)
+	}
+
 	var o1, o2 security.Entry
 	name1 := fmt.Sprintf("tf%s", acctest.RandString(6))
 	name2 := fmt.Sprintf("tf%s", acctest.RandString(6))

@@ -12,9 +12,9 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosAddressObject_basic(t *testing.T) {
-	if !testAccIsFirewall {
-		t.Skip(SkipFirewallAccTest)
+func TestAccPanosPanoramaAddressObject_basic(t *testing.T) {
+	if !testAccIsPanorama {
+		t.Skip(SkipPanoramaAccTest)
 	}
 
 	var o addr.Entry
@@ -23,27 +23,27 @@ func TestAccPanosAddressObject_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosAddressObjectDestroy,
+		CheckDestroy: testAccPanosPanoramaAddressObjectDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccAddressObjectConfig(name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
+				Config: testAccPanoramaAddressObjectConfig(name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAddressObjectExists("panos_address_object.test", &o),
-					testAccCheckPanosAddressObjectAttributes(&o, name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
+					testAccCheckPanosPanoramaAddressObjectExists("panos_panorama_address_object.test", &o),
+					testAccCheckPanosPanoramaAddressObjectAttributes(&o, name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
 				),
 			},
 			{
-				Config: testAccAddressObjectConfig(name, "10.1.1.1", "ip-netmask", "foobar"),
+				Config: testAccPanoramaAddressObjectConfig(name, "10.1.1.1", "ip-netmask", "foobar"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAddressObjectExists("panos_address_object.test", &o),
-					testAccCheckPanosAddressObjectAttributes(&o, name, "10.1.1.1", "ip-netmask", "foobar"),
+					testAccCheckPanosPanoramaAddressObjectExists("panos_panorama_address_object.test", &o),
+					testAccCheckPanosPanoramaAddressObjectAttributes(&o, name, "10.1.1.1", "ip-netmask", "foobar"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosAddressObjectExists(n string, o *addr.Entry) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaAddressObjectExists(n string, o *addr.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -54,9 +54,9 @@ func testAccCheckPanosAddressObjectExists(n string, o *addr.Entry) resource.Test
 			return fmt.Errorf("Object label ID is not set")
 		}
 
-		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, name := parseAddressObjectId(rs.Primary.ID)
-		v, err := fw.Objects.Address.Get(vsys, name)
+		pano := testAccProvider.Meta().(*pango.Panorama)
+		dg, name := parsePanoramaAddressObjectId(rs.Primary.ID)
+		v, err := pano.Objects.Address.Get(dg, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
 		}
@@ -67,7 +67,7 @@ func testAccCheckPanosAddressObjectExists(n string, o *addr.Entry) resource.Test
 	}
 }
 
-func testAccCheckPanosAddressObjectAttributes(o *addr.Entry, n, v, t, d string) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaAddressObjectAttributes(o *addr.Entry, n, v, t, d string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Name != n {
 			return fmt.Errorf("Name is %s, expected %s", o.Name, n)
@@ -89,17 +89,17 @@ func testAccCheckPanosAddressObjectAttributes(o *addr.Entry, n, v, t, d string) 
 	}
 }
 
-func testAccPanosAddressObjectDestroy(s *terraform.State) error {
-	fw := testAccProvider.Meta().(*pango.Firewall)
+func testAccPanosPanoramaAddressObjectDestroy(s *terraform.State) error {
+	pano := testAccProvider.Meta().(*pango.Panorama)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_address_object" {
+		if rs.Type != "panos_panorama_address_object" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseAddressObjectId(rs.Primary.ID)
-			_, err := fw.Objects.Address.Get(vsys, name)
+			dg, name := parsePanoramaAddressObjectId(rs.Primary.ID)
+			_, err := pano.Objects.Address.Get(dg, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
@@ -110,11 +110,11 @@ func testAccPanosAddressObjectDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccAddressObjectConfig(n, v, t, d string) string {
+func testAccPanoramaAddressObjectConfig(n, v, t, d string) string {
 	return fmt.Sprintf(`
-resource "panos_address_object" "test" {
+resource "panos_panorama_address_object" "test" {
     name = "%s"
-    vsys = "vsys1"
+    device_group = "shared"
     value = "%s"
     type = "%s"
     description = "%s"
