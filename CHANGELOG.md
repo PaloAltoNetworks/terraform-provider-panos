@@ -2,8 +2,12 @@
 
 FEATURES:
 
-* **New Feature:** Support for interacting with Panorama
+* **New Feature:** Added Panorama support
+* **New Resource:** `panos_panorama_address_group`
 * **New Resource:** `panos_panorama_address_object`
+* **New Resource:** `panos_panorama_administrative_tag`
+* **New Resource:** `panos_panorama_service_group`
+* **New Resource:** `panos_panorama_service_object`
 
 ## 1.0.0 (January 31, 2018)
 

@@ -68,7 +68,11 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			// Panorama resources.
-			"panos_panorama_address_object": resourcePanoramaAddressObject(),
+			"panos_panorama_address_group":      resourcePanoramaAddressGroup(),
+			"panos_panorama_address_object":     resourcePanoramaAddressObject(),
+			"panos_panorama_administrative_tag": resourcePanoramaAdministrativeTag(),
+			"panos_panorama_service_group":      resourcePanoramaServiceGroup(),
+			"panos_panorama_service_object":     resourcePanoramaServiceObject(),
 
 			// Firewall resources.
 			"panos_address_group":      resourceAddressGroup(),

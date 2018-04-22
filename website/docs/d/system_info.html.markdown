@@ -8,7 +8,7 @@ description: |-
 
 # panos_system_info
 
-Use this data source to retrieve "show system info" from the NGFW.
+Use this data source to retrieve "show system info" from the NGFW or Panorama.
 
 All contents of "show system info" are saved to the `info` variable.  In
 addition, the version number of PAN-OS encountered is saved to multiple
