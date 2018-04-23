@@ -3,16 +3,18 @@ layout: "panos"
 page_title: "Provider: panos"
 sidebar_current: "docs-panos-index"
 description: |-
-  Provider panos is used to interact with Palo Alto Networks NGFW.
+  Provider panos is used to interact with Palo Alto Networks NGFW and Panorama.
 ---
 
 # Provider panos
 
 PAN-OS&reg; is the operating system for Palo Alto Networks&reg; NGFWs and
 Panorama&trade;. The panos provider allows you to manage various aspects
-of the firewall's config, such as data interfaces and security policies.
+of a firewall's or a Panorama's config, such as data interfaces and security
+policies.
 
-Use the navigation to the left to read about the available resources.
+Use the navigation to the left to read about the available Panorama and NGFW
+resources.
 
 ## Versioning
 
@@ -123,7 +125,7 @@ variables:
 
 ## PAN-OS API Key
 
-API connections to Palo Alto Networks NGFW require an
+API connections to PAN-OS require an
 [API key](https://www.paloaltonetworks.com/documentation/71/pan-os/xml-api/get-started-with-the-pan-os-xml-api/get-your-api-key).
 If you do not provide the API key to the panos provider, then the API key is
 generated before every single API call.  Thus, some slight speed gains can be

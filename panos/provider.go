@@ -71,6 +71,8 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_address_group":      resourcePanoramaAddressGroup(),
 			"panos_panorama_address_object":     resourcePanoramaAddressObject(),
 			"panos_panorama_administrative_tag": resourcePanoramaAdministrativeTag(),
+			"panos_panorama_nat_policy":         resourcePanoramaNatPolicy(),
+			"panos_panorama_security_policies":  resourcePanoramaSecurityPolicies(),
 			"panos_panorama_service_group":      resourcePanoramaServiceGroup(),
 			"panos_panorama_service_object":     resourcePanoramaServiceObject(),
 
