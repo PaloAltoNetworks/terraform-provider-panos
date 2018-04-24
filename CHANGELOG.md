@@ -2,7 +2,8 @@
 
 FEATURES:
 
-* **New Feature:** Added Panorama support
+* **New Feature:** Added Panorama support (GH-3)
+* **New Feature:** Added support for credentials file for provider config (GH-5)
 * **New Resource:** `panos_panorama_address_group`
 * **New Resource:** `panos_panorama_address_object`
 * **New Resource:** `panos_panorama_administrative_tag`
