@@ -1,7 +1,10 @@
 package panos
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+
 	"github.com/PaloAltoNetworks/pango"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -14,19 +17,19 @@ func Provider() terraform.ResourceProvider {
 		Schema: map[string]*schema.Schema{
 			"hostname": &schema.Schema{
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_HOSTNAME", nil),
 				Description: "Hostname/IP address of the Palo Alto Networks firewall to connect to",
 			},
 			"username": &schema.Schema{
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_USERNAME", nil),
 				Description: "The username (not used if the ApiKey is set)",
 			},
 			"password": &schema.Schema{
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_PASSWORD", nil),
 				Description: "The password (not used if the ApiKey is set)",
 			},
@@ -39,7 +42,6 @@ func Provider() terraform.ResourceProvider {
 			"protocol": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "https",
 				Description: "The protocol (https or http)",
 			},
 			"port": &schema.Schema{
@@ -59,6 +61,11 @@ func Provider() terraform.ResourceProvider {
 				},
 				Optional:    true,
 				Description: "Logging options for the API connection",
+			},
+			"json_config_file": &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Retrieve the provider configuration from this JSON file",
 			},
 		},
 
@@ -96,45 +103,111 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	var logging uint32
+type CredsSpec struct {
+	Hostname string   `json:"hostname"`
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	ApiKey   string   `json:"api_key"`
+	Protocol string   `json:"protocol"`
+	Port     uint     `json:"port"`
+	Timeout  int      `json:"timeout"`
+	Logging  []string `json"logging"`
+}
 
+func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+	var (
+		logging uint32
+		err     error
+	)
+
+	lm := map[string]uint32{
+		"quiet":   pango.LogQuiet,
+		"action":  pango.LogAction,
+		"query":   pango.LogQuery,
+		"op":      pango.LogOp,
+		"uid":     pango.LogUid,
+		"xpath":   pango.LogXpath,
+		"send":    pango.LogSend,
+		"receive": pango.LogReceive,
+	}
+
+	// Get connection settings from the plan file or environment variables.
+	hostname := d.Get("hostname").(string)
+	username := d.Get("username").(string)
+	password := d.Get("password").(string)
+	apiKey := d.Get("api_key").(string)
+	protocol := d.Get("protocol").(string)
+	port := uint(d.Get("port").(int))
+	timeout := d.Get("timeout").(int)
 	lc := d.Get("logging")
 	if lc != nil {
 		ll := lc.([]interface{})
 		for i := range ll {
-			v := ll[i].(string)
-			switch v {
-			case "quiet":
-				logging |= pango.LogQuiet
-			case "action":
-				logging |= pango.LogAction
-			case "query":
-				logging |= pango.LogQuery
-			case "op":
-				logging |= pango.LogOp
-			case "uid":
-				logging |= pango.LogUid
-			case "xpath":
-				logging |= pango.LogXpath
-			case "send":
-				logging |= pango.LogSend
-			case "receive":
-				logging |= pango.LogReceive
-			default:
-				return nil, fmt.Errorf("Unknown logging artifact requested: %s", v)
+			s := ll[i].(string)
+			if v, ok := lm[s]; !ok {
+				return nil, fmt.Errorf("Unknown logging artifact requested: %s", s)
+			} else {
+				logging |= v
 			}
 		}
 	}
 
+	// Pull config from the JSON credentials file.
+	filename := d.Get("json_config_file").(string)
+	if filename != "" {
+		b, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		cs := CredsSpec{}
+		if err = json.Unmarshal(b, &cs); err != nil {
+			return nil, err
+		}
+
+		// Spec file settings have the lowest priority, so only take params
+		// that have their zero values.
+		if hostname == "" && cs.Hostname != "" {
+			hostname = cs.Hostname
+		}
+		if username == "" && cs.Username != "" {
+			username = cs.Username
+		}
+		if password == "" && cs.Password != "" {
+			password = cs.Password
+		}
+		if apiKey == "" && cs.ApiKey != "" {
+			apiKey = cs.ApiKey
+		}
+		if protocol == "" && cs.Protocol != "" {
+			protocol = cs.Protocol
+		}
+		if port == 0 && cs.Port != 0 {
+			port = cs.Port
+		}
+		if timeout == 0 && cs.Timeout != 0 {
+			timeout = cs.Timeout
+		}
+		if logging == 0 && len(cs.Logging) > 0 {
+			for i := range cs.Logging {
+				if v, ok := lm[cs.Logging[i]]; !ok {
+					return nil, fmt.Errorf("Unknown logging artifact requested: %s", v)
+				} else {
+					logging |= v
+				}
+			}
+		}
+	}
+
+	// Create the client connection.
 	con, err := pango.Connect(pango.Client{
-		Hostname: d.Get("hostname").(string),
-		Username: d.Get("username").(string),
-		Password: d.Get("password").(string),
-		ApiKey:   d.Get("api_key").(string),
-		Protocol: d.Get("protocol").(string),
-		Port:     uint(d.Get("port").(int)),
-		Timeout:  d.Get("timeout").(int),
+		Hostname: hostname,
+		Username: username,
+		Password: password,
+		ApiKey:   apiKey,
+		Protocol: protocol,
+		Port:     port,
+		Timeout:  timeout,
 		Logging:  logging,
 	})
 	if err != nil {

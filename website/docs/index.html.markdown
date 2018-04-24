@@ -476,6 +476,10 @@ The following arguments are supported:
 * `logging` - (Optional) List of logging options for the provider's connection
   to the API.  If this is unspecified, then it defaults to
   `["action", "uid"]`.
+* `json_config_file` - (Optional) The path to a JSON configuration file that
+  contains any number of the provider's parameters.  If specified, the params
+  present act as a last resort for any other provider param that has not been
+  specified yet.
 
 The list of strings supported for `logging` are as follows:
 
