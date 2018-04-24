@@ -2,8 +2,8 @@
 
 FEATURES:
 
-* **New Feature:** Added Panorama support (GH-3)
-* **New Feature:** Added support for credentials file for provider config (GH-5)
+* **New Feature:** Added Panorama support [GH-3]
+* **New Feature:** Added support for credentials file for provider config [GH-5]
 * **New Resource:** `panos_panorama_address_group`
 * **New Resource:** `panos_panorama_address_object`
 * **New Resource:** `panos_panorama_administrative_tag`
@@ -11,6 +11,11 @@ FEATURES:
 * **New Resource:** `panos_panorama_security_policies`
 * **New Resource:** `panos_panorama_service_group`
 * **New Resource:** `panos_panorama_service_object`
+
+ENHANCEMENTS:
+
+* `panos_nat_policy`: The `rulebase` parameter has been deprecated.  You can safely remove this from your plan files.
+* `panos_security_policies`: The `rulebase` parameter has been deprecated.  You can safely remove this from your plan files.
 
 ## 1.0.0 (January 31, 2018)
 
