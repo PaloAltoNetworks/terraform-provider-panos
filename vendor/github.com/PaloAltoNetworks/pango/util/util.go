@@ -170,6 +170,54 @@ func StrToEnt(e []string) *EntryType {
     return &EntryType{ans}
 }
 
+// VsysEntryType defines an entry config node with vsys entries underneath.
+type VsysEntryType struct {
+    Entries []VsysEntry `xml:"entry"`
+}
+
+// VsysEntry defines the "vsys" xpath node under a VsysEntryType config node.
+type VsysEntry struct {
+    XMLName xml.Name `xml:"entry"`
+    Serial string `xml:"name,attr"`
+    Vsys *EntryType `xml:"vsys"`
+}
+
+// VsysEntToMap normalizes a VsysEntryType pointer into a map.
+func VsysEntToMap(ve *VsysEntryType) (map[string] []string) {
+    if ve == nil {
+        return nil
+    }
+
+    ans := make(map[string] []string)
+    for i := range ve.Entries {
+        ans[ve.Entries[i].Serial] = EntToStr(ve.Entries[i].Vsys)
+    }
+
+    return ans
+}
+
+// MapToVsysEnt converts a map into a VsysEntryType pointer.
+//
+// This struct is used for "Target" information on Panorama when dealing with
+// various policies.  Maps are unordered, but FWICT Panorama doesn't seem to
+// order anything anyways when doing things in the GUI, so hopefully this is
+// ok...?
+func MapToVsysEnt(e map[string] []string) *VsysEntryType {
+    if len(e) == 0 {
+        return nil
+    }
+
+    i := 0
+    ve := make([]VsysEntry, len(e))
+    for key := range e {
+        ve[i].Serial = key
+        ve[i].Vsys = StrToEnt(e[key])
+        i++
+    }
+
+    return &VsysEntryType{ve}
+}
+
 // YesNo returns "yes" on true, "no" on false.
 func YesNo(v bool) string {
     if v {

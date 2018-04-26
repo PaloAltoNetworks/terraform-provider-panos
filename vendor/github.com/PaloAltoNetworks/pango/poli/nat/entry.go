@@ -33,6 +33,11 @@ const (
 // policy.  The prefix "Sat" stands for "Source Address Translation" while
 // the prefix "Dat" stands for "Destination Address Translation".
 //
+// Targets is a map where the key is the serial number of the target device and
+// the value is a list of specific vsys on that device.  The list of vsys is
+// nil if all vsys on that device should be included or if the device is a
+// virtual firewall (and thus only has vsys1).
+//
 // The following Sat params are linked:
 //
 // SatType = nat.DynamicIpAndPort && SatAddressType = nat.TranslatedAddress:
@@ -96,7 +101,7 @@ type Entry struct {
     DatAddress string
     DatPort int
     Disabled bool
-    Targets []string
+    Targets map[string] []string
     NegateTarget bool
     Tags []string
 }
@@ -238,7 +243,7 @@ func (o *container_v1) Normalize() Entry {
     }
 
     if o.Answer.Target != nil {
-        ans.Targets = util.EntToStr(o.Answer.Target.Targets)
+        ans.Targets = util.VsysEntToMap(o.Answer.Target.Targets)
         ans.NegateTarget = util.AsBool(o.Answer.Target.NegateTarget)
     }
 
@@ -306,7 +311,7 @@ type srcXlateStatic struct {
 }
 
 type targetInfo struct {
-    Targets *util.EntryType `xml:"devices"`
+    Targets *util.VsysEntryType `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 
@@ -381,7 +386,7 @@ func specify_v1(e Entry) interface{} {
 
     if len(e.Targets) != 0 || e.NegateTarget {
         ans.Target = &targetInfo{
-            Targets: util.StrToEnt(e.Targets),
+            Targets: util.MapToVsysEnt(e.Targets),
             NegateTarget: util.YesNo(e.NegateTarget),
         }
     }

@@ -67,6 +67,13 @@ resource "panos_panorama_security_policies" "example" {
         services = ["application-default"]
         categories = ["any"]
         action = "deny"
+        target {
+            serial = "01234"
+        }
+        target {
+            serial = "56789"
+            vsys_list = ["vsys1", "vsys3"]
+        }
     }
 }
 ```
@@ -124,7 +131,15 @@ The following arguments are valid for each `rule` section:
   Analysis setting.
 * `data_filtering` - (Optional) Profile Setting: `Profiles` - The Data
   Filtering setting.
-* `targets` - (Optional) A subset of serial numbers in the `device_group` for
-  which this policy should apply.
+* `target` - (Optional) A target definition (see below).  If there are no
+  target sections, then the policy will apply to every vsys of every device
+  in the device group.
 * `negate_target` - (Optional, bool) Instead of applying the policy for the
   given serial numbers, apply it to everything except them.
+
+The following arguments are valid for each `target` section:
+
+* `serial` - (Required) The serial number of the firewall.
+* `vsys_list` - (Optional) A subset of all available vsys on the firewall
+  that should be in this device group.  If the firewall is a virtual firewall,
+  then this parameter should just be omitted.

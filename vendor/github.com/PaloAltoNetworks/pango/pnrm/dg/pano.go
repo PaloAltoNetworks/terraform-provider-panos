@@ -18,11 +18,15 @@ func (c *Dg) Initialize(con util.XapiClient) {
 }
 
 /*
-AddDevices performs a SET to add devices to device group g.
+SetDeviceVsys performs a SET to add specific vsys from a device to device
+group g.
+
+If you want all vsys to be included, or the device is a virtual firewall, then
+leave the vsys list empty.
 
 The device group can be either a string or an Entry object.
 */
-func (c *Dg) AddDevices(g interface{}, e ...string) error {
+func (c *Dg) SetDeviceVsys(g interface{}, d string, vsys []string) error {
     var name string
 
     switch v := g.(type) {
@@ -34,36 +38,26 @@ func (c *Dg) AddDevices(g interface{}, e ...string) error {
         return fmt.Errorf("Unknown type sent to add devices: %s", v)
     }
 
-    c.con.LogAction("(set) devices in device group: %s", name)
+    c.con.LogAction("(set) device vsys in device group: %s", name)
 
-    ent := util.StrToEnt(e)
-    if ent == nil {
-        return nil
-    }
-
-    // Set xpath.
+    m := util.MapToVsysEnt(map[string] []string{d: vsys})
     path := c.xpath([]string{name})
-    if len(ent.Entries) == 1 {
-        path = append(path, "devices")
-    }
+    path = append(path, "devices")
 
-    dv := make([]interface{}, len(ent.Entries))
-    for i := range ent.Entries {
-        dv[i] = ent.Entries[i]
-    }
-
-    d := util.BulkElement{XMLName: xml.Name{Local: "devices"}, Data: dv}
-
-    _, err := c.con.Set(path, d.Config(), nil, nil)
+    _, err := c.con.Set(path, m.Entries[0], nil, nil)
     return err
 }
 
 /*
-DeleteDevices performs a DELETE to remove devices d from device group g.
+DeleteDeviceVsys performs a DELETE to remove specific vsys from device d from
+device group g.
+
+If you want all vsys to be removed, or the device is a virtual firewall, then
+leave the vsys list empty.
 
 The device group can be either a string or an Entry object.
 */
-func (c *Dg) DeleteDevices(g interface{}, d ...string) error {
+func (c *Dg) DeleteDeviceVsys(g interface{}, d string, vsys []string) error {
     var name string
 
     switch v := g.(type) {
@@ -75,10 +69,14 @@ func (c *Dg) DeleteDevices(g interface{}, d ...string) error {
         return fmt.Errorf("Unknown type sent to remove devices: %s", v)
     }
 
-    c.con.LogAction("(delete) devices in device group: %s", name)
+    c.con.LogAction("(delete) device vsys from device group: %s", name)
 
-    path := c.xpath([]string{name})
-    path = append(path, "devices", util.AsEntryXpath(d))
+    path := make([]string, 0, 9)
+    path = append(path, c.xpath([]string{name})...)
+    path = append(path, "devices", util.AsEntryXpath([]string{d}))
+    if len(vsys) > 0 {
+        path = append(path, "vsys", util.AsEntryXpath(vsys))
+    }
 
     _, err := c.con.Delete(path, nil, nil)
     return err
