@@ -13,6 +13,10 @@ import (
 )
 
 func TestAccPanosDeviceGroup_basic(t *testing.T) {
+	if !testAccIsPanorama {
+		t.Skip(SkipPanoramaAccTest)
+	}
+
 	var o dg.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
