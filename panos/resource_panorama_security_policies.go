@@ -209,11 +209,25 @@ func resourcePanoramaSecurityPolicies() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"targets": &schema.Schema{
-							Type:     schema.TypeList,
+						"target": &schema.Schema{
+							Type:     schema.TypeSet,
 							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
+							// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
+							//ValidateFunc: validateSetKeyIsUnique("serial"),
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"serial": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"vsys_list": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+								},
 							},
 						},
 						"negate_target": &schema.Schema{
@@ -267,9 +281,19 @@ func parsePanoramaSecurityPolicies(d *schema.ResourceData) (string, string, []se
 			FileBlocking:     elm["file_blocking"].(string),
 			WildFireAnalysis: elm["wildfire_analysis"].(string),
 			DataFiltering:    elm["data_filtering"].(string),
-			Targets:          asStringList(elm["targets"].([]interface{})),
 			NegateTarget:     elm["negate_target"].(bool),
 		}
+
+		m := make(map[string][]string)
+		tl := elm["target"].(*schema.Set).List()
+		for i := range tl {
+			device := tl[i].(map[string]interface{})
+			key := device["serial"].(string)
+			value := asStringList(device["vsys_list"].(*schema.Set).List())
+			m[key] = value
+		}
+		o.Targets = m
+
 		ans = append(ans, o)
 	}
 
@@ -313,12 +337,25 @@ func readPanoramaSecurityPolicies(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 
+	ts2 := d.Get("rule").([]interface{})
+	elm := ts2[0].(map[string]interface{})
+	ts := elm["target"].(*schema.Set)
+
 	ilist := make([]interface{}, 0, len(list))
 	for i := range list {
 		o, err := pano.Policies.Security.Get(dg, rb, list[i])
 		if err != nil {
 			return err
 		}
+
+		s := &schema.Set{F: ts.F}
+		for key := range o.Targets {
+			sg := make(map[string]interface{})
+			sg["serial"] = key
+			sg["vsys_list"] = listAsSet(o.Targets[key])
+			s.Add(sg)
+		}
+
 		m := make(map[string]interface{})
 		m["name"] = o.Name
 		m["type"] = o.Type
@@ -351,7 +388,7 @@ func readPanoramaSecurityPolicies(d *schema.ResourceData, meta interface{}) erro
 		m["file_blocking"] = o.FileBlocking
 		m["wildfire_analysis"] = o.WildFireAnalysis
 		m["data_filtering"] = o.DataFiltering
-		m["targets"] = o.Targets
+		m["target"] = s
 		m["negate_target"] = o.NegateTarget
 		ilist = append(ilist, m)
 	}

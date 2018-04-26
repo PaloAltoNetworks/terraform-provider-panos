@@ -8,6 +8,11 @@ import (
 
 // Entry is a normalized, version independent representation of a security
 // rule.
+//
+// Targets is a map where the key is the serial number of the target device and
+// the value is a list of specific vsys on that device.  The list of vsys is
+// nil if all vsys on that device should be included or if the device is a
+// virtual firewall (and thus only has vsys1).
 type Entry struct {
     Name string
     Type string
@@ -33,7 +38,7 @@ type Entry struct {
     IcmpUnreachable bool
     DisableServerResponseInspection bool
     Group string
-    Targets []string
+    Targets map[string] []string
     NegateTarget bool
     Virus string
     Spyware string
@@ -186,7 +191,7 @@ func (o *container_v1) Normalize() Entry {
     }
     if o.Answer.TargetInfo != nil {
         ans.NegateTarget = util.AsBool(o.Answer.TargetInfo.NegateTarget)
-        ans.Targets = util.EntToStr(o.Answer.TargetInfo.Targets)
+        ans.Targets = util.VsysEntToMap(o.Answer.TargetInfo.Targets)
     }
     if o.Answer.ProfileSettings != nil {
         ans.Group = util.MemToOneStr(o.Answer.ProfileSettings.Group)
@@ -238,7 +243,7 @@ type secOptions struct {
 }
 
 type targetInfo struct {
-    Targets *util.EntryType `xml:"devices"`
+    Targets *util.VsysEntryType `xml:"devices"`
     NegateTarget string `xml:"negate,omitempty"`
 }
 
@@ -285,7 +290,7 @@ func specify_v1(e Entry) interface{} {
     }
     if e.Targets != nil || e.NegateTarget {
         nfo := &targetInfo{
-            Targets: util.StrToEnt(e.Targets),
+            Targets: util.MapToVsysEnt(e.Targets),
             NegateTarget: util.YesNo(e.NegateTarget),
         }
         ans.TargetInfo = nfo

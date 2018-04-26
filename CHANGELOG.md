@@ -7,6 +7,8 @@ FEATURES:
 * **New Resource:** `panos_panorama_address_group`
 * **New Resource:** `panos_panorama_address_object`
 * **New Resource:** `panos_panorama_administrative_tag`
+* **New Resource:** `panos_panorama_device_group`
+* **New Resource:** `panos_panorama_device_group_entry`
 * **New Resource:** `panos_panorama_nat_policy`
 * **New Resource:** `panos_panorama_security_policies`
 * **New Resource:** `panos_panorama_service_group`

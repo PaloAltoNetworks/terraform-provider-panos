@@ -167,11 +167,25 @@ func resourcePanoramaNatPolicy() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"targets": &schema.Schema{
-				Type:     schema.TypeList,
+			"target": &schema.Schema{
+				Type:     schema.TypeSet,
 				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
+				//ValidateFunc: validateSetKeyIsUnique("serial"),
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"serial": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"vsys_list": {
+							Type:     schema.TypeSet,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
 				},
 			},
 			"negate_target": &schema.Schema{
@@ -212,9 +226,18 @@ func parsePanoramaNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) 
 		DatPort:                        d.Get("dat_port").(int),
 		Disabled:                       d.Get("disabled").(bool),
 		Tags:                           asStringList(d.Get("tags").([]interface{})),
-		Targets:                        asStringList(d.Get("targets").([]interface{})),
 		NegateTarget:                   d.Get("negate_target").(bool),
 	}
+
+	m := make(map[string][]string)
+	tl := d.Get("target").(*schema.Set).List()
+	for i := range tl {
+		device := tl[i].(map[string]interface{})
+		key := device["serial"].(string)
+		value := asStringList(device["vsys_list"].(*schema.Set).List())
+		m[key] = value
+	}
+	o.Targets = m
 
 	return dg, rb, o
 }
@@ -256,6 +279,15 @@ func readPanoramaNatPolicy(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	ts := d.Get("target").(*schema.Set)
+	s := &schema.Set{F: ts.F}
+	for key := range o.Targets {
+		sg := make(map[string]interface{})
+		sg["serial"] = key
+		sg["vsys_list"] = listAsSet(o.Targets[key])
+		s.Add(sg)
+	}
+
 	d.Set("name", o.Name)
 	d.Set("device_group", dg)
 	d.Set("rulebase", rb)
@@ -295,7 +327,7 @@ func readPanoramaNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("tags", o.Tags); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("targets", o.Targets); err != nil {
+	if err = d.Set("targets", s); err != nil {
 		log.Printf("[WARN] Error setting 'targets' param for %q: %s", d.Id(), err)
 	}
 	d.Set("negate_target", o.NegateTarget)
