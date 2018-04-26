@@ -28,14 +28,14 @@ func TestAccPanosDeviceGroup_basic(t *testing.T) {
 			{
 				Config: testAccDeviceGroupConfig(name, "first description"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosDeviceGroupExists("panos_device_group.test", &o),
+					testAccCheckPanosDeviceGroupExists("panos_panorama_device_group.test", &o),
 					testAccCheckPanosDeviceGroupAttributes(&o, "first description"),
 				),
 			},
 			{
 				Config: testAccDeviceGroupConfig(name, "second description"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosDeviceGroupExists("panos_device_group.test", &o),
+					testAccCheckPanosDeviceGroupExists("panos_panorama_device_group.test", &o),
 					testAccCheckPanosDeviceGroupAttributes(&o, "second description"),
 				),
 			},
@@ -83,7 +83,7 @@ func testAccPanosDeviceGroupDestroy(s *terraform.State) error {
 	pano := testAccProvider.Meta().(*pango.Panorama)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_device_group" {
+		if rs.Type != "panos_panorama_device_group" {
 			continue
 		}
 

@@ -54,7 +54,7 @@ func createUpdatePanoramaDeviceGroupEntry(d *schema.ResourceData, meta interface
 	dev := d.Get("serial").(string)
 	vl := asStringList(d.Get("vsys_list").(*schema.Set).List())
 
-	if err := pano.Panorama.DeviceGroup.SetDeviceVsys(grp, dev, vl); err != nil {
+	if err := pano.Panorama.DeviceGroup.EditDeviceVsys(grp, dev, vl); err != nil {
 		return err
 	}
 

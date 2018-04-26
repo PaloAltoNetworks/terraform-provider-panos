@@ -49,6 +49,37 @@ func (c *Dg) SetDeviceVsys(g interface{}, d string, vsys []string) error {
 }
 
 /*
+EditDeviceVsys performs an EDIT to add specific vsys from a device to device
+group g.
+
+If you want all vsys to be included, or the device is a virtual firewall, then
+leave the vsys list empty.
+
+The device group can be either a string or an Entry object.
+*/
+func (c *Dg) EditDeviceVsys(g interface{}, d string, vsys []string) error {
+    var name string
+
+    switch v := g.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to add devices: %s", v)
+    }
+
+    c.con.LogAction("(set) device vsys in device group: %s", name)
+
+    m := util.MapToVsysEnt(map[string] []string{d: vsys})
+    path := c.xpath([]string{name})
+    path = append(path, "devices", util.AsEntryXpath([]string{d}))
+
+    _, err := c.con.Edit(path, m.Entries[0], nil, nil)
+    return err
+}
+
+/*
 DeleteDeviceVsys performs a DELETE to remove specific vsys from device d from
 device group g.
 
