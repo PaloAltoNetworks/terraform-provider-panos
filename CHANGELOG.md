@@ -1,9 +1,9 @@
-## 1.1.0 (Unreleased)
+## 1.1.0 (April 26, 2018)
 
 FEATURES:
 
-* **New Feature:** Added Panorama support [GH-3]
-* **New Feature:** Added support for credentials file for provider config [GH-5]
+* **New Feature:** Added Panorama support ([#3](https://github.com/terraform-providers/terraform-provider-panos/issues/3))
+* **New Feature:** Added support for credentials file for provider config ([#5](https://github.com/terraform-providers/terraform-provider-panos/issues/5))
 * **New Resource:** `panos_panorama_address_group`
 * **New Resource:** `panos_panorama_address_object`
 * **New Resource:** `panos_panorama_administrative_tag`
