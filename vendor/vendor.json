@@ -3,7 +3,7 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "Vubiodqp+gJtTludmQPqu3aJ4MY=",
+			"checksumSHA1": "4b7qW1BcFCKNCUCEDIE5ZXnoOac=",
 			"path": "github.com/PaloAltoNetworks/pango",
 			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
 			"revisionTime": "2018-04-26T17:33:09Z"

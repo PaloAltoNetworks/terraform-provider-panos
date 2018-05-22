@@ -113,7 +113,7 @@ type CredsSpec struct {
 	Protocol string   `json:"protocol"`
 	Port     uint     `json:"port"`
 	Timeout  int      `json:"timeout"`
-	Logging  []string `json"logging"`
+	Logging  []string `json:"logging"`
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -193,7 +193,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		if logging == 0 && len(cs.Logging) > 0 {
 			for i := range cs.Logging {
 				if v, ok := lm[cs.Logging[i]]; !ok {
-					return nil, fmt.Errorf("Unknown logging artifact requested: %s", v)
+					return nil, fmt.Errorf("Unknown logging artifact requested: %d", v)
 				} else {
 					logging |= v
 				}
