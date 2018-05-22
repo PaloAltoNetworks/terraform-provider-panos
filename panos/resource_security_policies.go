@@ -229,7 +229,7 @@ func migrateResourceSecurityPolicies(ov int, s *terraform.InstanceState, meta in
 		if len(t) != 2 {
 			return nil, fmt.Errorf("ID is malformed")
 		} else if t[1] != util.Rulebase {
-			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1])
+			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1], util.Rulebase)
 		}
 		s.ID = t[0]
 
