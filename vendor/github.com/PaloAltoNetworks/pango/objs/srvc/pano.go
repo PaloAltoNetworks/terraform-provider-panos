@@ -156,7 +156,7 @@ func (c *PanoSrvc) xpath(dg string, vals []string) []string {
         "config",
         "devices",
         util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "vsys",
+        "device-group",
         util.AsEntryXpath([]string{dg}),
         "service",
         util.AsEntryXpath(vals),

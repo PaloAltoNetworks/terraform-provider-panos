@@ -5,6 +5,7 @@ import (
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
+    "github.com/PaloAltoNetworks/pango/version"
 )
 
 // PanoNat is the client.Policies.Nat namespace.
@@ -122,7 +123,13 @@ func (c *PanoNat) Delete(dg, base string, e ...interface{}) error {
 /** Internal functions for the Zone struct **/
 
 func (c *PanoNat) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+    v := c.con.Versioning()
+
+    if v.Gte(version.Number{8, 1, 0, ""}) {
+        return &container_v2{}, specify_v2
+    } else {
+        return &container_v1{}, specify_v1
+    }
 }
 
 func (c *PanoNat) details(fn util.Retriever, dg, base, name string) (Entry, error) {

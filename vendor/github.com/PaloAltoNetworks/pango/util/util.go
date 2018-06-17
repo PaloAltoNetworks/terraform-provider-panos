@@ -344,3 +344,15 @@ type devJob struct {
     Serial string `xml:"serial-no"`
     Result string `xml:"result"`
 }
+
+// These constants are valid move locations to pass to various movement
+// functions (aka - policy management).
+const (
+    MoveSkip = iota
+    MoveBefore
+    MoveDirectlyBefore
+    MoveAfter
+    MoveDirectlyAfter
+    MoveTop
+    MoveBottom
+)
