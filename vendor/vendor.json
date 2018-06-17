@@ -3,148 +3,154 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "4b7qW1BcFCKNCUCEDIE5ZXnoOac=",
+			"checksumSHA1": "O/7u4TzECGXeY2puzZsRVIrkyF8=",
 			"path": "github.com/PaloAltoNetworks/pango",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
-			"checksumSHA1": "Ac+RRzbgMfrtoMWT/fdyNS5Rvk4=",
+			"checksumSHA1": "sSuvR9GkR2/WA51edfw6Bmy3giw=",
 			"path": "github.com/PaloAltoNetworks/pango/dev",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "6Fcg0Gg3ij4Qbs6ZPC7t4qz16Cs=",
 			"path": "github.com/PaloAltoNetworks/pango/dev/general",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
+		},
+		{
+			"checksumSHA1": "a51toHyqq3nJrCMsouPj7jcQg14=",
+			"path": "github.com/PaloAltoNetworks/pango/dev/telemetry",
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "/+AI6yeTlB+sWxyPW2SFsKHTjC8=",
 			"path": "github.com/PaloAltoNetworks/pango/licen",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "XMCFOJKCYUVTjc2lj7G30akjuyo=",
 			"path": "github.com/PaloAltoNetworks/pango/netw",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "t6G46C2KmbBnqhMcZqdvcl0kFJo=",
 			"path": "github.com/PaloAltoNetworks/pango/netw/eth",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "NN3J+2fPi0e4uhWsk8W43IsB6/E=",
 			"path": "github.com/PaloAltoNetworks/pango/netw/mngtprof",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "g50rFoXw/wx+RFW/a4MX1kwMeBI=",
 			"path": "github.com/PaloAltoNetworks/pango/netw/router",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "4YsTCGyJFS2h+tQYjeCZpGo1fnU=",
 			"path": "github.com/PaloAltoNetworks/pango/netw/vlan",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "y8fhCZShMp+vB/zyEyplLjlH5Hw=",
 			"path": "github.com/PaloAltoNetworks/pango/netw/zone",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "vEPy9KRScf/CSAMxUrBwIFCriP0=",
 			"path": "github.com/PaloAltoNetworks/pango/objs",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "4pBxy/MBfcS+xcjzXpdRMb62rv0=",
 			"path": "github.com/PaloAltoNetworks/pango/objs/addr",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "ldNpwnhLxCHBxsKMsShcCZ0z9gA=",
 			"path": "github.com/PaloAltoNetworks/pango/objs/addrgrp",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
-			"checksumSHA1": "BhWHxOFENM5l2NBqntzkokfB2nU=",
+			"checksumSHA1": "B0K+cdhnQWtiBgrDbgavh3AakHE=",
 			"path": "github.com/PaloAltoNetworks/pango/objs/srvc",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "6lpIAO/Rgu1+U6Q0E1zWC8ZHtFU=",
 			"path": "github.com/PaloAltoNetworks/pango/objs/srvcgrp",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "hJT/05+YJ0ajdlIfyScP2Ey+O2w=",
 			"path": "github.com/PaloAltoNetworks/pango/objs/tags",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "Yrb4ZRFxP29S37AAPcUKLCIKoTY=",
 			"path": "github.com/PaloAltoNetworks/pango/pnrm",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "jyai3PO9KdwNln6/9aIVHShjJ9c=",
 			"path": "github.com/PaloAltoNetworks/pango/pnrm/dg",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "iPC62YblJhqV6CfocXmRMp74mKE=",
 			"path": "github.com/PaloAltoNetworks/pango/poli",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
-			"checksumSHA1": "ZbBovbnXHv6ObK03AfC2PI8/IEU=",
+			"checksumSHA1": "bUf40ueZtdNyuSz5fnQofpPfdSQ=",
 			"path": "github.com/PaloAltoNetworks/pango/poli/nat",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
-			"checksumSHA1": "CDzGVWaH0T3yS3Ktaar/IbKaNTg=",
+			"checksumSHA1": "Ae5Yblshd1vQuAe9dZeKUWS+nMs=",
 			"path": "github.com/PaloAltoNetworks/pango/poli/security",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "xLXyLyVltkK9VYqAD/TGLmt7PdA=",
 			"path": "github.com/PaloAltoNetworks/pango/userid",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
-			"checksumSHA1": "TCKvgC005GnZ8iXB+PEAzq1rn+A=",
+			"checksumSHA1": "nYFoFy+byzOsm1l2vdfS5J/QNwA=",
 			"path": "github.com/PaloAltoNetworks/pango/util",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "Xx1hkTldTuS4btLi8w0iK/johd4=",
 			"path": "github.com/PaloAltoNetworks/pango/version",
-			"revision": "6ff66b54994d7fe73d53b9da079f8f31271632cc",
-			"revisionTime": "2018-04-26T17:33:09Z"
+			"revision": "1df62a2e53bc8b85bac97a2e10bac188d7e22631",
+			"revisionTime": "2018-06-17T21:52:52Z"
 		},
 		{
 			"checksumSHA1": "jQh1fnoKPKMURvKkpdRjN695nAQ=",

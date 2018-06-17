@@ -29,6 +29,12 @@ const (
     FloatingIp = "floating"
 )
 
+// These are valid settings for DatType.
+const (
+    DatTypeStatic = "destination-translation"
+    DatTypeDynamic = "dynamic-destination-translation"
+)
+
 // Entry is a normalized, version independent representation of a NAT
 // policy.  The prefix "Sat" stands for "Source Address Translation" while
 // the prefix "Dat" stands for "Destination Address Translation".
@@ -75,7 +81,8 @@ const (
 //      * SatStaticBiDirectional
 //
 // If both DatAddress and DatPort are unintialized, then no destination
-// address translation will be enabled.
+// address translation will be enabled; setting DatType by itself is not
+// good enough.
 type Entry struct {
     Name string
     Description string
@@ -98,8 +105,10 @@ type Entry struct {
     SatFallbackIpAddress string
     SatStaticTranslatedAddress string
     SatStaticBiDirectional bool
+    DatType string
     DatAddress string
     DatPort int
+    DatDynamicDistribution string
     Disabled bool
     Targets map[string] []string
     NegateTarget bool
@@ -115,6 +124,7 @@ type Entry struct {
 //      * SourceAddresses: ["any"]
 //      * DestinationAddresses: ["any"]
 //      * SatType: None
+//      * DatType: DatTypeStatic
 func (o *Entry) Defaults() {
     if o.Type == "" {
         o.Type = "ipv4"
@@ -138,6 +148,10 @@ func (o *Entry) Defaults() {
 
     if o.SatType == "" {
         o.SatType = None
+    }
+
+    if o.DatType == "" {
+        o.DatType = DatTypeStatic
     }
 }
 
@@ -170,6 +184,8 @@ func (o *Entry) Copy(s Entry) {
     o.Targets = s.Targets
     o.NegateTarget = s.NegateTarget
     o.Tags = s.Tags
+    o.DatType = s.DatType
+    o.DatDynamicDistribution = s.DatDynamicDistribution
 }
 
 /** Structs / functions for normalization. **/
@@ -238,6 +254,7 @@ func (o *container_v1) Normalize() Entry {
     }
 
     if o.Answer.Dat != nil {
+        ans.DatType = DatTypeStatic
         ans.DatAddress = o.Answer.Dat.Address
         ans.DatPort = o.Answer.Dat.Port
     }
@@ -271,6 +288,7 @@ type entry_v1 struct {
 type dstXlate struct {
     Address string `xml:"translated-address,omitempty"`
     Port int `xml:"translated-port,omitempty"`
+    Distribution string `xml:"distribution,omitempty"`
 }
 
 type srcXlate struct {
@@ -377,10 +395,202 @@ func specify_v1(e Entry) interface{} {
     }
     ans.Sat = sv
 
-    if e.DatAddress != "" || e.DatPort != 0 {
-        ans.Dat = &dstXlate{
-            e.DatAddress,
-            e.DatPort,
+    if e.DatType == DatTypeStatic {
+        if e.DatAddress != "" || e.DatPort != 0 {
+            ans.Dat = &dstXlate{
+                e.DatAddress,
+                e.DatPort,
+                "",
+            }
+        }
+    }
+
+    if len(e.Targets) != 0 || e.NegateTarget {
+        ans.Target = &targetInfo{
+            Targets: util.MapToVsysEnt(e.Targets),
+            NegateTarget: util.YesNo(e.NegateTarget),
+        }
+    }
+
+    return ans
+}
+
+type container_v2 struct {
+    Answer entry_v2 `xml:"result>entry"`
+}
+
+func (o *container_v2) Normalize() Entry {
+    ans := Entry{
+        Name: o.Answer.Name,
+        Description: o.Answer.Description,
+        Type: o.Answer.Type,
+        SourceZones: util.MemToStr(o.Answer.SourceZones),
+        DestinationZone: o.Answer.DestinationZone,
+        ToInterface: o.Answer.ToInterface,
+        Service: o.Answer.Service,
+        SourceAddresses: util.MemToStr(o.Answer.SourceAddresses),
+        DestinationAddresses: util.MemToStr(o.Answer.DestinationAddresses),
+        Disabled: util.AsBool(o.Answer.Disabled),
+        Tags: util.MemToStr(o.Answer.Tags),
+    }
+
+    if o.Answer.Sat == nil {
+        ans.SatType = None
+    } else {
+        switch {
+        case o.Answer.Sat.Diap != nil:
+            ans.SatType = DynamicIpAndPort
+            if o.Answer.Sat.Diap.InterfaceAddress != nil {
+                ans.SatAddressType = InterfaceAddress
+                ans.SatInterface = o.Answer.Sat.Diap.InterfaceAddress.Interface
+                ans.SatIpAddress = o.Answer.Sat.Diap.InterfaceAddress.Ip
+            } else {
+                ans.SatAddressType = TranslatedAddress
+                ans.SatTranslatedAddresses = util.MemToStr(o.Answer.Sat.Diap.TranslatedAddress)
+            }
+        case o.Answer.Sat.Di != nil:
+            ans.SatType = DynamicIp
+            ans.SatTranslatedAddresses = util.MemToStr(o.Answer.Sat.Di.TranslatedAddress)
+            if o.Answer.Sat.Di.Fallback == nil {
+                ans.SatFallbackType = None
+            } else if o.Answer.Sat.Di.Fallback.TranslatedAddress != nil {
+                ans.SatFallbackType = TranslatedAddress
+                ans.SatFallbackTranslatedAddresses = util.MemToStr(o.Answer.Sat.Di.Fallback.TranslatedAddress)
+            } else if o.Answer.Sat.Di.Fallback.InterfaceAddress != nil {
+                ans.SatFallbackType = InterfaceAddress
+                ans.SatFallbackInterface = o.Answer.Sat.Di.Fallback.InterfaceAddress.Interface
+                if o.Answer.Sat.Di.Fallback.InterfaceAddress.Ip != "" {
+                    ans.SatFallbackIpType = Ip
+                    ans.SatFallbackIpAddress = o.Answer.Sat.Di.Fallback.InterfaceAddress.Ip
+                } else if o.Answer.Sat.Di.Fallback.InterfaceAddress.FloatingIp != "" {
+                    ans.SatFallbackIpType = FloatingIp
+                    ans.SatFallbackIpAddress = o.Answer.Sat.Di.Fallback.InterfaceAddress.FloatingIp
+                }
+            }
+        case o.Answer.Sat.Static != nil:
+            ans.SatType = StaticIp
+            ans.SatStaticTranslatedAddress = o.Answer.Sat.Static.Address
+            ans.SatStaticBiDirectional = util.AsBool(o.Answer.Sat.Static.BiDirectional)
+        }
+    }
+
+    if o.Answer.Dat != nil {
+        ans.DatType = DatTypeStatic
+        ans.DatAddress = o.Answer.Dat.Address
+        ans.DatPort = o.Answer.Dat.Port
+    }
+
+    if o.Answer.DatDynamic != nil {
+        ans.DatType = DatTypeDynamic
+        ans.DatAddress = o.Answer.DatDynamic.Address
+        ans.DatPort = o.Answer.DatDynamic.Port
+        ans.DatDynamicDistribution = o.Answer.DatDynamic.Distribution
+    }
+
+    if o.Answer.Target != nil {
+        ans.Targets = util.VsysEntToMap(o.Answer.Target.Targets)
+        ans.NegateTarget = util.AsBool(o.Answer.Target.NegateTarget)
+    }
+
+    return ans
+}
+
+type entry_v2 struct {
+    XMLName xml.Name `xml:"entry"`
+    Name string `xml:"name,attr"`
+    Description string `xml:"description"`
+    Type string `xml:"nat-type"`
+    SourceZones *util.MemberType `xml:"from"`
+    DestinationZone string `xml:"to>member"`
+    ToInterface string `xml:"to-interface"`
+    Service string `xml:"service"`
+    SourceAddresses *util.MemberType `xml:"source"`
+    DestinationAddresses *util.MemberType `xml:"destination"`
+    Sat *srcXlate `xml:"source-translation"`
+    Dat *dstXlate `xml:"destination-translation"`
+    DatDynamic *dstXlate `xml:"dynamic-destination-translation"`
+    Disabled string `xml:"disabled"`
+    Target *targetInfo `xml:"target"`
+    Tags *util.MemberType `xml:"tag"`
+}
+
+func specify_v2(e Entry) interface{} {
+    ans := entry_v2{
+        Name: e.Name,
+        Description: e.Description,
+        Type: e.Type,
+        SourceZones: util.StrToMem(e.SourceZones),
+        DestinationZone: e.DestinationZone,
+        ToInterface: e.ToInterface,
+        Service: e.Service,
+        SourceAddresses: util.StrToMem(e.SourceAddresses),
+        DestinationAddresses: util.StrToMem(e.DestinationAddresses),
+        Disabled: util.YesNo(e.Disabled),
+        Tags: util.StrToMem(e.Tags),
+    }
+
+    var sv *srcXlate
+    switch e.SatType {
+    case DynamicIpAndPort:
+        sv = &srcXlate{
+            Diap: &srcXlateDiap{},
+        }
+        switch e.SatAddressType {
+        case TranslatedAddress:
+            sv.Diap.TranslatedAddress = util.StrToMem(e.SatTranslatedAddresses)
+        case InterfaceAddress:
+            sv.Diap.InterfaceAddress = &srcXlateDiapIa{
+                Interface: e.SatInterface,
+                Ip: e.SatIpAddress,
+            }
+        }
+    case DynamicIp:
+        sv = &srcXlate{
+            Di: &srcXlateDi{
+                TranslatedAddress: util.StrToMem(e.SatTranslatedAddresses),
+            },
+        }
+        switch e.SatFallbackType {
+        case InterfaceAddress:
+            sv.Di.Fallback = &fallback{
+                InterfaceAddress: &fallbackIface{
+                    Interface: e.SatFallbackInterface,
+                },
+            }
+            switch e.SatFallbackIpType {
+            case Ip:
+                sv.Di.Fallback.InterfaceAddress.Ip = e.SatFallbackIpAddress
+            case FloatingIp:
+                sv.Di.Fallback.InterfaceAddress.FloatingIp = e.SatFallbackIpAddress
+            }
+        case TranslatedAddress:
+            sv.Di.Fallback = &fallback{TranslatedAddress: util.StrToMem(e.SatFallbackTranslatedAddresses)}
+        }
+    case StaticIp:
+        sv = &srcXlate{
+            Static: &srcXlateStatic{
+                e.SatStaticTranslatedAddress,
+                util.YesNo(e.SatStaticBiDirectional),
+            },
+        }
+    }
+    ans.Sat = sv
+
+    if e.DatType == DatTypeStatic {
+        if e.DatAddress != "" || e.DatPort != 0 {
+            ans.Dat = &dstXlate{
+                e.DatAddress,
+                e.DatPort,
+                "",
+            }
+        }
+    } else if e.DatType == DatTypeDynamic {
+        if e.DatAddress != "" || e.DatPort != 0 {
+            ans.DatDynamic = &dstXlate{
+                e.DatAddress,
+                e.DatPort,
+                e.DatDynamicDistribution,
+            }
         }
     }
 

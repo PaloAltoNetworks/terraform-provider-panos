@@ -121,6 +121,40 @@ func (c *FwSecurity) Edit(vsys string, e Entry) error {
     return err
 }
 
+// VerifiableEdit behaves like Edit(), except policies with LogEnd as true
+// will first be created with LogEnd as false, and then a second Set() is
+// performed which will do LogEnd as true.  This is due to the unique
+// combination of being a boolean value that is true by default, the XML
+// returned from querying the rule details will omit the LogEnd setting,
+// which will be interpreted as false, when in fact it is true.  We can
+// get around this by setting the value to a non-standard value, then back
+// again, in which case it will properly show up in the returned XML.
+func (c *FwSecurity) VerifiableEdit(vsys string, e ...Entry) error {
+    var err error
+
+    c.con.LogAction("(edit) performing verifiable edit")
+    again := make([]Entry, 0, len(e))
+
+    for i := range e {
+        if e[i].LogEnd {
+            again = append(again, e[i])
+            e[i].LogEnd = false
+        }
+        if err = c.Edit(vsys, e[i]); err != nil {
+            return err
+        }
+    }
+
+    if len(again) == 0 {
+        return nil
+    }
+
+    // It's ok to do a SET following an EDIT because we are guaranteed
+    // to not have stray or conflicting config, so use SET since it
+    // supports bulk operations.
+    return c.Set(vsys, again...)
+}
+
 // Delete removes the given security policies.
 //
 // Security policies can be either a string or an Entry object.
@@ -149,7 +183,7 @@ func (c *FwSecurity) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
-// DeleteAll removes all security policies from the specified vsys / rulebase.
+// DeleteAll removes all security policies from the specified vsys.
 func (c *FwSecurity) DeleteAll(vsys string) error {
     c.con.LogAction("(delete) all security policies")
     list, err := c.GetList(vsys)
@@ -161,6 +195,105 @@ func (c *FwSecurity) DeleteAll(vsys string) error {
         li[i] = list[i]
     }
     return c.Delete(vsys, li...)
+}
+
+// MoveGroup moves a logical group of security policies somewhere in relation
+// to another security policy.
+//
+// The `movement` param should be one of the Move constants in the util
+// package.
+//
+// The `rule` param is the other rule the `movement` param is referencing.  If
+// this is an empty string, then the first policy in the group isn't moved
+// anywhere, but all other policies will still be moved to be grouped with the
+// first one.
+func (c *FwSecurity) MoveGroup(vsys string, movement int, rule string, e ...Entry) error {
+    var err error
+
+    fIdx := -1
+    oIdx := -1
+
+    c.con.LogAction("(move) security policy group")
+    if len(e) < 1 {
+        return fmt.Errorf("Requires at least one security policy")
+    } else if rule == e[0].Name {
+        return fmt.Errorf("Can't position %q in relation to itself", rule)
+    } else if movement != util.MoveSkip && movement != util.MoveBefore && movement != util.MoveDirectlyBefore && movement != util.MoveAfter && movement != util.MoveDirectlyAfter && movement != util.MoveTop && movement != util.MoveBottom {
+        return fmt.Errorf("Invalid position specified: %d", movement)
+    } else if (movement == util.MoveBefore || movement == util.MoveDirectlyBefore || movement == util.MoveAfter || movement == util.MoveDirectlyAfter) && rule == "" {
+        return fmt.Errorf("Specify 'rule' in order to perform relative group positioning")
+    }
+    path := c.xpath(vsys, []string{e[0].Name})
+
+    if movement != util.MoveSkip {
+        // Get the list of current security policies.
+        curList, err := c.GetList(vsys)
+        if err != nil {
+            return err
+        } else if len(curList) == 0 {
+            return fmt.Errorf("No policies found")
+        }
+
+        switch movement {
+        case util.MoveTop:
+            _, em := c.con.Move(path, "top", "", nil, nil)
+            if em != nil {
+                if em.Error() != "already at the top" {
+                    err = em
+                }
+            }
+        case util.MoveBottom:
+            _, em := c.con.Move(path, "bottom", "", nil, nil)
+            if em != nil {
+                if em.Error() != "already at the bottom" {
+                    err = em
+                }
+            }
+        default:
+            // Find the indexes of the first security policy and the ref policy.
+            for i, v := range curList {
+                if v == e[0].Name {
+                    fIdx = i
+                } else if v == rule {
+                    oIdx = i
+                }
+                if fIdx != -1 && oIdx != -1 {
+                    break
+                }
+            }
+
+            // Sanity check:  both rules should be present.
+            if fIdx == -1 {
+                return fmt.Errorf("First security policy in group %q does not exist", e[0].Name)
+            } else if oIdx == -1 {
+                return fmt.Errorf("Reference security policy %q does not exist", rule)
+            }
+
+            // Perform the move of the first security policy, if needed.
+            if (movement == util.MoveBefore && fIdx > oIdx) || (movement == util.MoveDirectlyBefore && fIdx + 1 != oIdx) {
+                _, err = c.con.Move(path, "before", rule, nil, nil)
+            } else if (movement == util.MoveAfter && fIdx < oIdx) || (movement == util.MoveDirectlyAfter && fIdx != oIdx + 1) {
+                _, err = c.con.Move(path, "after", rule, nil, nil)
+            }
+        }
+
+        // If we moved something, make sure it worked.
+        if err != nil {
+            return err
+        }
+    }
+
+    // Now move all other rules under the first.
+    li := len(path) - 1
+    for i := 1; i < len(e); i++ {
+        path[li] = util.AsEntryXpath([]string{e[i].Name})
+        _, err = c.con.Move(path, "after", e[i - 1].Name, nil, nil)
+        if err != nil {
+            return err
+        }
+    }
+
+    return nil
 }
 
 /** Internal functions for the FwSecurity struct **/
