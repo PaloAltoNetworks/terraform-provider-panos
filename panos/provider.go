@@ -97,6 +97,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_security_policies":  resourceSecurityPolicies(),
 			"panos_service_group":      resourceServiceGroup(),
 			"panos_service_object":     resourceServiceObject(),
+			"panos_telemetry":          resourceTelemetry(),
 			"panos_virtual_router":     resourceVirtualRouter(),
 			"panos_zone":               resourceZone(),
 		},
