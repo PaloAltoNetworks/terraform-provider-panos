@@ -148,12 +148,21 @@ func resourcePanoramaNatPolicy() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"dat_type": &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validateStringIn("static", "dynamic"),
+				Optional:     true,
+			},
 			"dat_address": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"dat_port": &schema.Schema{
 				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"dat_dynamic_distribution": &schema.Schema{
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"disabled": &schema.Schema{
@@ -224,9 +233,17 @@ func parsePanoramaNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) 
 		SatStaticBiDirectional:         d.Get("sat_static_bi_directional").(bool),
 		DatAddress:                     d.Get("dat_address").(string),
 		DatPort:                        d.Get("dat_port").(int),
+		DatDynamicDistribution:         d.Get("dat_dynamic_distribution").(string),
 		Disabled:                       d.Get("disabled").(bool),
 		Tags:                           asStringList(d.Get("tags").([]interface{})),
 		NegateTarget:                   d.Get("negate_target").(bool),
+	}
+
+	switch d.Get("dat_type").(string) {
+	case "static":
+		o.DatType = nat.DatTypeStatic
+	case "dynamic":
+		o.DatType = nat.DatTypeDynamic
 	}
 
 	m := make(map[string][]string)
@@ -321,8 +338,15 @@ func readPanoramaNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	d.Set("sat_fallback_ip_address", o.SatFallbackIpAddress)
 	d.Set("sat_static_translated_address", o.SatStaticTranslatedAddress)
 	d.Set("sat_static_bi_directional", o.SatStaticBiDirectional)
+	switch o.DatType {
+	case nat.DatTypeStatic:
+		d.Set("dat_type", "static")
+	case nat.DatTypeDynamic:
+		d.Set("dat_type", "dynamic")
+	}
 	d.Set("dat_address", o.DatAddress)
 	d.Set("dat_port", o.DatPort)
+	d.Set("dat_dynamic_distribution", o.DatDynamicDistribution)
 	d.Set("disabled", o.Disabled)
 	if err = d.Set("tags", o.Tags); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
