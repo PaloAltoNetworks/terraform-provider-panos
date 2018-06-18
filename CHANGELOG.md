@@ -1,4 +1,13 @@
-## 1.1.1 (Unreleased)
+## 1.2.0 (Unreleased)
+
+FEATURES:
+
+* **New Resource:** `panos_telemetry`
+
+FIXES:
+
+* Creating Panorama service objects in device groups [GH-26]
+
 ## 1.1.0 (April 26, 2018)
 
 FEATURES:
