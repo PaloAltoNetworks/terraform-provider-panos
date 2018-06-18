@@ -109,6 +109,7 @@ Compile the above, put it somewhere in your `$PATH` (such as `$HOME/bin`),
 then invoke it after `terraform apply` and `terraform destroy`:
 
 ```bash
+$ go get github.com/PaloAltoNetworks/pango
 $ go build commit.go
 $ mv commit ~/bin
 $ terraform apply && commit -c 'My commit comment'
@@ -178,6 +179,7 @@ func main() {
 Then execute it like this:
 
 ```bash
+$ go get github.com/PaloAltoNetworks/pango
 $ go run make_api_key.go
 ```
 
@@ -416,6 +418,7 @@ Compile the above, put it somewhere in your `$PATH` (such as `$HOME/bin`),
 then invoke it after the device is accessible in AWS:
 
 ```bash
+$ go get golang.org/x/crypto/ssh
 $ go build panos_init.go
 $ mv panos_init ~/bin
 $ panos_init my_ssh_key.pem
