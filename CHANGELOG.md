@@ -3,6 +3,8 @@
 FEATURES:
 
 * **New Resource:** `panos_telemetry`
+* **New Resource:** `panos_security_policy_group`
+* **New Resource:** `panos_panorama_security_policy_group` [GH-20]
 
 FIXES:
 
