@@ -122,6 +122,7 @@ resource "panos_panorama_nat_policy" "test" {
     source_addresses = ["any"]
     destination_addresses = ["any"]
     sat_type = "none"
+    dat_type = "static"
     dat_address = "%s"
     dat_port = "%d"
 }

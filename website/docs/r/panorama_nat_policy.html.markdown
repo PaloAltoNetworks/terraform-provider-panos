@@ -31,6 +31,7 @@ resource "panos_panorama_nat_policy" "example" {
     source_addresses = ["any"]
     destination_addresses = ["any"]
     sat_type = "none"
+    dat_type = "static"
     dat_address = "my dat address object"
     target {
         serial = "123456"
@@ -79,8 +80,17 @@ The following arguments are supported:
   address.
 * `sat_static_bi_directional` - (Optional) Set to `true` to enable
   bi-directional source address translation.
-* `dat_address` - (Optional) Destination address translation's address.
-* `dat_port` - (Optional) Destination address translation's port number.
+* `dat_type` - (Optional) Destination address translation type.  This should
+  be either `static` or `dynamic`.  The `dynamic` option is only available on
+  PAN-OS 8.1+.
+* `dat_address` - (Optional) Destination address translation's address.  Requires
+  `dat_type` be set to "static" or "dynamic".
+* `dat_port` - (Optional) Destination address translation's port number.  Requires
+  `dat_type` be set to "static" or "dynamic".
+* `dat_dynamic_distribution` - (Optional, PAN-OS 8.1+) Distribution algorithm
+  for destination address pool.  The PAN-OS 8.1 GUI doesn't seem to set this
+  anywhere, but this is added here for completeness' sake.  Requires `dat_type`
+  of "dynamic".
 * `disabled` - (Optional) Set to `true` to disable this rule.
 * `tags` - (Optional) List of administrative tags.
 * `target` - (Optional) A target definition (see below).  If there are no

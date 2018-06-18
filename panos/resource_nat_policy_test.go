@@ -95,6 +95,14 @@ func testAccCheckPanosNatPolicyAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 st
 			return fmt.Errorf("SatTranslatedAddresses is %#v, expected [%s %s]", o.SatTranslatedAddresses, sta1, sta2)
 		}
 
+		if o.DatType != nat.DatTypeStatic {
+			return fmt.Errorf("DatType is %q, not %q", o.DatType, nat.DatTypeStatic)
+		}
+
+		if o.DatAddress != "10.21.32.43" {
+			return fmt.Errorf("DatAddress is %q, not \"10.21.32.43\"", o.DatAddress)
+		}
+
 		return nil
 	}
 }
@@ -141,6 +149,8 @@ resource "panos_nat_policy" "test" {
     sat_type = "dynamic-ip-and-port"
     sat_address_type = "translated-address"
     sat_translated_addresses = ["%s", "%s"]
+    dat_type = "static"
+    dat_address = "10.21.32.43"
 }
 `, z1, z2, n, sz, dz, sta1, sta2)
 }
