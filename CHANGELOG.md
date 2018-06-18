@@ -6,6 +6,10 @@ FEATURES:
 * **New Resource:** `panos_security_policy_group`
 * **New Resource:** `panos_panorama_security_policy_group` [GH-20]
 
+ENHANCEMENTS:
+
+* `panos_nat_policy` and `panos_panorama_nat_policy` now support PAN-OS 8.1's dynamic destination NAT address type [GH-25]
+
 FIXES:
 
 * Creating Panorama service objects in device groups [GH-26]
