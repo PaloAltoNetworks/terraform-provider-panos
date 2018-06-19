@@ -1,10 +1,10 @@
-## 1.2.0 (Unreleased)
+## 1.2.0 (June 19, 2018)
 
 FEATURES:
 
-* **New Resource:** `panos_telemetry` [GH-31]
-* **New Resource:** `panos_security_policy_group` [GH-20] [GH-32]
-* **New Resource:** `panos_panorama_security_policy_group` [GH-20] [GH-32]
+* **New Resource:** `panos_telemetry` ([#31](https://github.com/terraform-providers/terraform-provider-panos/issues/31))
+* **New Resource:** `panos_security_policy_group` ([#20](https://github.com/terraform-providers/terraform-provider-panos/issues/20)] [[#32](https://github.com/terraform-providers/terraform-provider-panos/issues/32))
+* **New Resource:** `panos_panorama_security_policy_group` ([#20](https://github.com/terraform-providers/terraform-provider-panos/issues/20)] [[#32](https://github.com/terraform-providers/terraform-provider-panos/issues/32))
 
 NOTES:
 
@@ -12,11 +12,11 @@ NOTES:
 
 ENHANCEMENTS:
 
-* `panos_nat_policy` and `panos_panorama_nat_policy` now support PAN-OS 8.1's dynamic destination NAT address type [GH-25] [GH-33]
+* `panos_nat_policy` and `panos_panorama_nat_policy` now support PAN-OS 8.1's dynamic destination NAT address type ([#25](https://github.com/terraform-providers/terraform-provider-panos/issues/25)] [[#33](https://github.com/terraform-providers/terraform-provider-panos/issues/33))
 
 FIXES:
 
-* Creating Panorama service objects in device groups [GH-26] [GH-29]
+* Creating Panorama service objects in device groups ([#26](https://github.com/terraform-providers/terraform-provider-panos/issues/26)] [[#29](https://github.com/terraform-providers/terraform-provider-panos/issues/29))
 
 ## 1.1.0 (April 26, 2018)
 
