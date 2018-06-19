@@ -2,17 +2,21 @@
 
 FEATURES:
 
-* **New Resource:** `panos_telemetry`
-* **New Resource:** `panos_security_policy_group`
-* **New Resource:** `panos_panorama_security_policy_group` [GH-20]
+* **New Resource:** `panos_telemetry` [GH-31]
+* **New Resource:** `panos_security_policy_group` [GH-20] [GH-32]
+* **New Resource:** `panos_panorama_security_policy_group` [GH-20] [GH-32]
+
+NOTES:
+
+* The new `DatType` param is now required if you are doing destination address translation in your NAT policies.  This applies to both `panos_nat_policy` and `panos_panorama_nat_policy`.  Please update your plan files accordingly.
 
 ENHANCEMENTS:
 
-* `panos_nat_policy` and `panos_panorama_nat_policy` now support PAN-OS 8.1's dynamic destination NAT address type [GH-25]
+* `panos_nat_policy` and `panos_panorama_nat_policy` now support PAN-OS 8.1's dynamic destination NAT address type [GH-25] [GH-33]
 
 FIXES:
 
-* Creating Panorama service objects in device groups [GH-26]
+* Creating Panorama service objects in device groups [GH-26] [GH-29]
 
 ## 1.1.0 (April 26, 2018)
 
