@@ -1,40 +1,29 @@
 ---
 layout: "panos"
-page_title: "panos: panos_security_policy_group"
-sidebar_current: "docs-panos-resource-security-policy-group"
+page_title: "panos: panos_security_policy"
+sidebar_current: "docs-panos-resource-security-policy"
 description: |-
-  Manages security policy groups.
+  Manages the full security policy.
 ---
 
-# panos_security_policy_group
+# panos_security_policy
 
-This resource allows you to add/update/delete security policy groups.
+This resource allows you to manage the full security posture.
 
-This resource manages clusters of security policies in a single vsys,
-enforcing both the contents of individual rules as well as their
-ordering.  Rules are defined in a `rule` config block.
+~> **Note:** `panos_security_policies` is known as `panos_security_policy`.
 
-Because this resource only manages what it's told to, it will not manage
-any policies that may already exist on the firewall.  This has
-implications on the effective security posture of your firewall, but it
-will allow you to spread your security policies across multiple Terraform
-state files.  If you want to verify that the security policies are only
-what appears in the plan file, then you should probably be using the
-[panos_security_policies](security_policies.html) resource.
+This resource manages the full set of security rules in a vsys, enforcing both
+the contents of individual rules as well as their ordering.  Rules are defined
+in a `rule` config block.
 
-Although you cannot modify non-group security policies with this
-resource, the `position_keyword` and `position_reference` parameters allow you
-to reference some other security policy that already exists, using it as
-a means to ensure some rough placement within the ruleset as a whole.
-
-For each security policy, there are three styles of profile settings:
+For each security rule, there are three styles of profile settings:
 
 * `None` (the default)
 * `Group`
 * `Profiles`
 
 The Profile Setting is implicitly chosen based on what params are configured
-for the security policy.  If you want a Profile Setting of `Group`, then the
+for the security rule.  If you want a Profile Setting of `Group`, then the
 `group` param should be set to the desired Group Profile.  If you want a
 Profile Setting of `Profiles`, then you will need to specify one or more of
 the following params:
@@ -50,26 +39,10 @@ the following params:
 If the `group` param and none of the `Profiles` params are specified, then
 the Profile Setting is set to `None`.
 
-## Best Practices
-
-As is to be expected, if you are separating your deployment across
-multiple plan files, make sure that at most only one plan specifies any given
-absolute positioning keyword such as "top" or "directly below", otherwise
-they'll keep shoving each other out of the way indefinitely.
-
-Best practices are to specify one group as `top` (if you need it), one
-group as `bottom` (this is where you have your logging deny policies), then
-all other groups should be `above` the first policy of the bottom group.  You
-do it this way because rules will natually be added at the tail end of the
-rulebase, so they will always be `after` the first group, but what you want
-is for them to be `before` the last group's policies.
-
 ## Example Usage
 
 ```hcl
-resource "panos_security_policy_group" "example" {
-    position_keyword = "above"
-    position_reference = "deny everything else"
+resource "panos_security_policy" "example" {
     rule {
         name = "allow bizdev to dmz"
         source_zones = ["bizdev"]
@@ -105,19 +78,15 @@ The following arguments are supported:
 
 * `vsys` - (Optional) The vsys to put the security policy into (default:
   `vsys1`).
-* `position_keyword` - (Optional) A positioning keyword for this group.  This
-  can be `before`, `directly before`, `after`, `directly after`, `top`,
-  `bottom`, or left empty (the default) to have no particular placement.  This
-  param works in combination with the `position_reference` param.
-* `position_reference` - (Optional) Required if `position_keyword` is one of the
-  "above" or "below" variants, this is the name of a non-group policy to use
-  as a reference to place this group.
-* `rule` - The security policy definition (see below).  The security policy
+* `rulebase` - (Optional, Deprecated) The rulebase.  For firewalls, there is only the
+  `rulebase` value (default), but on Panorama, there is also `pre-rulebase`
+  and `post-rulebase`.
+* `rule` - A security rule definition (see below).  The security rule
   ordering will match how they appear in the terraform plan file.
 
 The following arguments are valid for each `rule` section:
 
-* `name` - (Required) The security policy name.
+* `name` - (Required) The security rule name.
 * `type` - (Optional) Rule type.  This can be `universal` (default),
   `interzone`, or `intrazone`.
 * `description` - (Optional) The description.

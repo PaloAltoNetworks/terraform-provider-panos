@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosPanoramaSecurityPolicies_basic(t *testing.T) {
+func TestAccPanosPanoramaSecurityPolicy_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -24,27 +24,27 @@ func TestAccPanosPanoramaSecurityPolicies_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosPanoramaSecurityPoliciesDestroy,
+		CheckDestroy: testAccPanosPanoramaSecurityPolicyDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaSecurityPoliciesConfig(name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
+				Config: testAccPanoramaSecurityPolicyConfig(name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaSecurityPoliciesExists("panos_panorama_security_policies.test", &o1, &o2),
-					testAccCheckPanosPanoramaSecurityPoliciesAttributes(&o1, &o2, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
+					testAccCheckPanosPanoramaSecurityPolicyExists("panos_panorama_security_policy.test", &o1, &o2),
+					testAccCheckPanosPanoramaSecurityPolicyAttributes(&o1, &o2, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				),
 			},
 			{
-				Config: testAccPanoramaSecurityPoliciesConfig(name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
+				Config: testAccPanoramaSecurityPolicyConfig(name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaSecurityPoliciesExists("panos_panorama_security_policies.test", &o1, &o2),
-					testAccCheckPanosPanoramaSecurityPoliciesAttributes(&o1, &o2, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
+					testAccCheckPanosPanoramaSecurityPolicyExists("panos_panorama_security_policy.test", &o1, &o2),
+					testAccCheckPanosPanoramaSecurityPolicyAttributes(&o1, &o2, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosPanoramaSecurityPoliciesExists(n string, o1, o2 *security.Entry) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaSecurityPolicyExists(n string, o1, o2 *security.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -56,7 +56,7 @@ func testAccCheckPanosPanoramaSecurityPoliciesExists(n string, o1, o2 *security.
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		dg, rb := parsePanoramaSecurityPoliciesId(rs.Primary.ID)
+		dg, rb := parsePanoramaSecurityPolicyId(rs.Primary.ID)
 		list, err := pano.Policies.Security.GetList(dg, rb)
 		if err != nil {
 			return fmt.Errorf("Error getting list of policies: %s", err)
@@ -80,7 +80,7 @@ func testAccCheckPanosPanoramaSecurityPoliciesExists(n string, o1, o2 *security.
 	}
 }
 
-func testAccCheckPanosPanoramaSecurityPoliciesAttributes(o1, o2 *security.Entry, name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaSecurityPolicyAttributes(o1, o2 *security.Entry, name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o1.Name != name1 {
 			return fmt.Errorf("Name is %q, expected %q", o1.Name, name1)
@@ -141,16 +141,16 @@ func testAccCheckPanosPanoramaSecurityPoliciesAttributes(o1, o2 *security.Entry,
 	}
 }
 
-func testAccPanosPanoramaSecurityPoliciesDestroy(s *terraform.State) error {
+func testAccPanosPanoramaSecurityPolicyDestroy(s *terraform.State) error {
 	pano := testAccProvider.Meta().(*pango.Panorama)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_panorama_security_policies" {
+		if rs.Type != "panos_panorama_security_policy" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			dg, rb := parsePanoramaSecurityPoliciesId(rs.Primary.ID)
+			dg, rb := parsePanoramaSecurityPolicyId(rs.Primary.ID)
 			list, err := pano.Policies.Security.GetList(dg, rb)
 			if err != nil {
 				return fmt.Errorf("Error getting list: %s", err)
@@ -164,9 +164,9 @@ func testAccPanosPanoramaSecurityPoliciesDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanoramaSecurityPoliciesConfig(name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
+func testAccPanoramaSecurityPolicyConfig(name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
 	return fmt.Sprintf(`
-resource "panos_panorama_security_policies" "test" {
+resource "panos_panorama_security_policy" "test" {
     rule {
         name = "%s"
         description = "%s"

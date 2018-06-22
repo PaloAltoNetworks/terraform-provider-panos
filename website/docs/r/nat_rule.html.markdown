@@ -1,14 +1,16 @@
 ---
 layout: "panos"
-page_title: "panos: panos_panorama_nat_policy"
-sidebar_current: "docs-panos-panorama-resource-nat-policy"
+page_title: "panos: panos_nat_rule"
+sidebar_current: "docs-panos-resource-nat-rule"
 description: |-
-  Manages Panorama NAT policies.
+  Manages NAT rules.
 ---
 
-# panos_panorama_nat_policy
+# panos_nat_rule
 
-This resource allows you to add/update/delete Panorama NAT policies.
+This resource allows you to add/update/delete NAT rules.
+
+~> **Note:** `panos_nat_policy` is known as `panos_nat_rule`.
 
 The prefix `sat` stands for "Source Address Translation" while the prefix "dat"
 stands for "Destination Address Translation".  The order of the params in
@@ -18,13 +20,13 @@ definition will simplify the process.
 
 Note that while many of the params for this resource are optional in an
 absolute sense, depending on what type of NAT you wish to configure, certain
-params may become necessary to correctly configure the NAT policy.
+params may become necessary to correctly configure the NAT rule.
 
 ## Example Usage
 
 ```hcl
-resource "panos_panorama_nat_policy" "example" {
-    name = "my nat policy"
+resource "panos_nat_rule" "example" {
+    name = "my nat rule"
     source_zones = ["zone1"]
     destination_zone = "zone2"
     to_interface = "ethernet1/3"
@@ -33,10 +35,6 @@ resource "panos_panorama_nat_policy" "example" {
     sat_type = "none"
     dat_type = "static"
     dat_address = "my dat address object"
-    target {
-        serial = "123456"
-        vsys_list = ["vsys1", "vsys2"]
-    }
 }
 ```
 
@@ -44,11 +42,12 @@ resource "panos_panorama_nat_policy" "example" {
 
 The following arguments are supported:
 
-* `name` - (Required) The NAT policy's name.
-* `device_group` - (Optional) The device group to put the NAT policy into
-  (default: `shared`).
-* `rulebase` - (Optional) The rulebase.  This can be `pre-rulebase` (default),
-  `post-rulebase`, or `rulebase`.
+* `name` - (Required) The NAT rule's name.
+* `vsys` - (Optional) The vsys to put the NAT rule into (default:
+  `vsys1`).
+* `rulebase` - (Optional, Deprecated) The rulebase.  For firewalls, there is only the
+  `rulebase` value (default), but on Panorama, there is also `pre-rulebase`
+  and `post-rulebase`.
 * `description` - (Optional) The description.
 * `type` - (Optional). NAT type.  This can be `ipv4` (default), `nat64`, or
   `nptv6`.
@@ -93,15 +92,3 @@ The following arguments are supported:
   of "dynamic".
 * `disabled` - (Optional) Set to `true` to disable this rule.
 * `tags` - (Optional) List of administrative tags.
-* `target` - (Optional) A target definition (see below).  If there are no
-  target sections, then the policy will apply to every vsys of every device
-  in the device group.
-* `negate_target` - (Optional, bool) Instead of applying the policy for the
-  given serial numbers, apply it to everything except them.
-
-The following arguments are valid for each `target` section:
-
-* `serial` - (Required) The serial number of the firewall.
-* `vsys_list` - (Optional) A subset of all available vsys on the firewall
-  that should be in this device group.  If the firewall is a virtual firewall,
-  then this parameter should just be omitted.

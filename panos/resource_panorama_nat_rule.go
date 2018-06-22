@@ -10,18 +10,14 @@ import (
 	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
 )
 
-func resourceNatPolicy() *schema.Resource {
+func resourcePanoramaNatRule() *schema.Resource {
 	return &schema.Resource{
-		Create: createNatPolicy,
-		Read:   readNatPolicy,
-		Update: updateNatPolicy,
-		Delete: deleteNatPolicy,
-
-		SchemaVersion: 1,
-		MigrateState:  migrateResourceNatPolicy,
+		Create: createPanoramaNatRule,
+		Read:   readPanoramaNatRule,
+		Update: updatePanoramaNatRule,
+		Delete: deletePanoramaNatRule,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
@@ -29,20 +25,17 @@ func resourceNatPolicy() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to put this object in (default: vsys1)",
+			"device_group": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "shared",
+				ForceNew: true,
 			},
 			"rulebase": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
 				ForceNew:     true,
-				Description:  "The Panorama rulebase",
-				Deprecated:   "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
+				Default:      util.PreRulebase,
 				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
 			"description": &schema.Schema{
@@ -183,28 +176,37 @@ func resourceNatPolicy() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"target": &schema.Schema{
+				Type:     schema.TypeSet,
+				Optional: true,
+				// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
+				//ValidateFunc: validateSetKeyIsUnique("serial"),
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"serial": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"vsys_list": {
+							Type:     schema.TypeSet,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"negate_target": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
 
-func migrateResourceNatPolicy(ov int, s *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
-	if ov == 0 {
-		t := strings.Split(s.ID, IdSeparator)
-		if len(t) != 3 {
-			return nil, fmt.Errorf("ID is malformed")
-		} else if t[1] != util.Rulebase {
-			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1], util.Rulebase)
-		}
-		s.ID = buildNatPolicyId(t[0], t[2])
-
-		ov = 1
-	}
-
-	return s, nil
-}
-
-func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
-	vsys := d.Get("vsys").(string)
+func parsePanoramaNatRule(d *schema.ResourceData) (string, string, nat.Entry) {
+	dg := d.Get("device_group").(string)
 	rb := d.Get("rulebase").(string)
 
 	o := nat.Entry{
@@ -234,6 +236,7 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		DatDynamicDistribution:         d.Get("dat_dynamic_distribution").(string),
 		Disabled:                       d.Get("disabled").(bool),
 		Tags:                           asStringList(d.Get("tags").([]interface{})),
+		NegateTarget:                   d.Get("negate_target").(bool),
 	}
 
 	switch d.Get("dat_type").(string) {
@@ -243,37 +246,47 @@ func parseNatPolicy(d *schema.ResourceData) (string, string, nat.Entry) {
 		o.DatType = nat.DatTypeDynamic
 	}
 
-	return vsys, rb, o
+	m := make(map[string][]string)
+	tl := d.Get("target").(*schema.Set).List()
+	for i := range tl {
+		device := tl[i].(map[string]interface{})
+		key := device["serial"].(string)
+		value := asStringList(device["vsys_list"].(*schema.Set).List())
+		m[key] = value
+	}
+	o.Targets = m
+
+	return dg, rb, o
 }
 
-func parseNatPolicyId(v string) (string, string) {
+func parsePanoramaNatRuleId(v string) (string, string, string) {
 	t := strings.Split(v, IdSeparator)
-	return t[0], t[1]
+	return t[0], t[1], t[2]
 }
 
-func buildNatPolicyId(a, b string) string {
-	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
+func buildPanoramaNatRuleId(a, b, c string) string {
+	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
 }
 
-func createNatPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, _, o := parseNatPolicy(d)
+func createPanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
+	pano := meta.(*pango.Panorama)
+	dg, rb, o := parsePanoramaNatRule(d)
 
-	if err := fw.Policies.Nat.Set(vsys, o); err != nil {
+	if err := pano.Policies.Nat.Set(dg, rb, o); err != nil {
 		return err
 	}
 
-	d.SetId(buildNatPolicyId(vsys, o.Name))
-	return readNatPolicy(d, meta)
+	d.SetId(buildPanoramaNatRuleId(dg, rb, o.Name))
+	return readPanoramaNatRule(d, meta)
 }
 
-func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
+func readPanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseNatPolicyId(d.Id())
+	pano := meta.(*pango.Panorama)
+	dg, rb, name := parsePanoramaNatRuleId(d.Id())
 
-	o, err := fw.Policies.Nat.Get(vsys, name)
+	o, err := pano.Policies.Nat.Get(dg, rb, name)
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if ok && e2.ObjectNotFound() {
@@ -283,9 +296,18 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	ts := d.Get("target").(*schema.Set)
+	s := &schema.Set{F: ts.F}
+	for key := range o.Targets {
+		sg := make(map[string]interface{})
+		sg["serial"] = key
+		sg["vsys_list"] = listAsSet(o.Targets[key])
+		s.Add(sg)
+	}
+
 	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
-	d.Set("rulebase", util.Rulebase)
+	d.Set("device_group", dg)
+	d.Set("rulebase", rb)
 	d.Set("type", o.Type)
 	d.Set("description", o.Description)
 	if err = d.Set("source_zones", o.SourceZones); err != nil {
@@ -329,33 +351,37 @@ func readNatPolicy(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("tags", o.Tags); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
+	if err = d.Set("targets", s); err != nil {
+		log.Printf("[WARN] Error setting 'targets' param for %q: %s", d.Id(), err)
+	}
+	d.Set("negate_target", o.NegateTarget)
 
 	return nil
 }
 
-func updateNatPolicy(d *schema.ResourceData, meta interface{}) error {
+func updatePanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
-	fw := meta.(*pango.Firewall)
-	vsys, _, o := parseNatPolicy(d)
+	pano := meta.(*pango.Panorama)
+	dg, rb, o := parsePanoramaNatRule(d)
 
-	lo, err := fw.Policies.Nat.Get(vsys, o.Name)
+	lo, err := pano.Policies.Nat.Get(dg, rb, o.Name)
 	if err != nil {
 		return err
 	}
 	lo.Copy(o)
-	if err = fw.Policies.Nat.Edit(vsys, lo); err != nil {
+	if err = pano.Policies.Nat.Edit(dg, rb, lo); err != nil {
 		return err
 	}
 
-	return readNatPolicy(d, meta)
+	return readPanoramaNatRule(d, meta)
 }
 
-func deleteNatPolicy(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseNatPolicyId(d.Id())
+func deletePanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
+	pano := meta.(*pango.Panorama)
+	dg, rb, name := parsePanoramaNatRuleId(d.Id())
 
-	err := fw.Policies.Nat.Delete(vsys, name)
+	err := pano.Policies.Nat.Delete(dg, rb, name)
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if !ok || !e2.ObjectNotFound() {

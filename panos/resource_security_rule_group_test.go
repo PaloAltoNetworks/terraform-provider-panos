@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosSecurityPolicyGroup_basic(t *testing.T) {
+func TestAccPanosSecurityRuleGroup_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -32,29 +32,29 @@ func TestAccPanosSecurityPolicyGroup_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosSecurityPolicyGroupDestroy,
+		CheckDestroy: testAccPanosSecurityRuleGroupDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSecurityPolicyGroupConfig(d1, d2, d3, d4, d5),
+				Config: testAccSecurityRuleGroupConfig(d1, d2, d3, d4, d5),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosSecurityPolicyGroupExists("panos_security_policy_group.top", "panos_security_policy_group.mid", "panos_security_policy_group.bot", &o1, &o2, &o3, &o4, &o5),
-					testAccCheckPanosSecurityPolicyGroupAttributes(&o1, &o2, &o3, &o4, &o5, d1, d2, d3, d4, d5),
-					testAccCheckPanosSecurityPolicyGroupOrdering(),
+					testAccCheckPanosSecurityRuleGroupExists("panos_security_rule_group.top", "panos_security_rule_group.mid", "panos_security_rule_group.bot", &o1, &o2, &o3, &o4, &o5),
+					testAccCheckPanosSecurityRuleGroupAttributes(&o1, &o2, &o3, &o4, &o5, d1, d2, d3, d4, d5),
+					testAccCheckPanosSecurityRuleGroupOrdering(),
 				),
 			},
 			{
-				Config: testAccSecurityPolicyGroupConfig(d6, d7, d8, d9, d10),
+				Config: testAccSecurityRuleGroupConfig(d6, d7, d8, d9, d10),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosSecurityPolicyGroupExists("panos_security_policy_group.top", "panos_security_policy_group.mid", "panos_security_policy_group.bot", &o1, &o2, &o3, &o4, &o5),
-					testAccCheckPanosSecurityPolicyGroupAttributes(&o1, &o2, &o3, &o4, &o5, d6, d7, d8, d9, d10),
-					testAccCheckPanosSecurityPolicyGroupOrdering(),
+					testAccCheckPanosSecurityRuleGroupExists("panos_security_rule_group.top", "panos_security_rule_group.mid", "panos_security_rule_group.bot", &o1, &o2, &o3, &o4, &o5),
+					testAccCheckPanosSecurityRuleGroupAttributes(&o1, &o2, &o3, &o4, &o5, d6, d7, d8, d9, d10),
+					testAccCheckPanosSecurityRuleGroupOrdering(),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3, o4, o5 *security.Entry) resource.TestCheckFunc {
+func testAccCheckPanosSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, o4, o5 *security.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		var vsys string
 		var err error
@@ -68,7 +68,7 @@ func testAccCheckPanosSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3
 		if rTop.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, topList := parseSecurityPolicyGroupId(rTop.Primary.ID)
+		vsys, _, _, topList := parseSecurityRuleGroupId(rTop.Primary.ID)
 		if len(topList) != 2 {
 			return fmt.Errorf("top is not len 2")
 		}
@@ -91,7 +91,7 @@ func testAccCheckPanosSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3
 		if rMid.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, midList := parseSecurityPolicyGroupId(rMid.Primary.ID)
+		vsys, _, _, midList := parseSecurityRuleGroupId(rMid.Primary.ID)
 		if len(midList) != 1 {
 			return fmt.Errorf("mid is not len 1")
 		}
@@ -109,7 +109,7 @@ func testAccCheckPanosSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3
 		if rBot.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, botList := parseSecurityPolicyGroupId(rBot.Primary.ID)
+		vsys, _, _, botList := parseSecurityRuleGroupId(rBot.Primary.ID)
 		if len(botList) != 2 {
 			return fmt.Errorf("bot is not len 2")
 		}
@@ -124,42 +124,11 @@ func testAccCheckPanosSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3
 		}
 		*o5 = v5
 
-		/*
-			rs, ok := s.RootModule().Resources[n]
-			if !ok {
-				return fmt.Errorf("Resource not found: %s", n)
-			}
-
-			if rs.Primary.ID == "" {
-				return fmt.Errorf("Object label ID is not set")
-			}
-
-			vsys := rs.Primary.ID
-			list, err := fw.Policies.Security.GetList(vsys)
-			if err != nil {
-				return fmt.Errorf("Error getting list of policies: %s", err)
-			} else if len(list) != 2 {
-				return fmt.Errorf("Expecting 2 policies, got %d", len(list))
-			}
-
-			v1, err := fw.Policies.Security.Get(vsys, list[0])
-			if err != nil {
-				return fmt.Errorf("Error getting first policy %s: %s", list[0], err)
-			}
-			v2, err := fw.Policies.Security.Get(vsys, list[1])
-			if err != nil {
-				return fmt.Errorf("Error getting second policy %s: %s", list[1], err)
-			}
-
-			*o1 = v1
-			*o2 = v2
-		*/
-
 		return nil
 	}
 }
 
-func testAccCheckPanosSecurityPolicyGroupAttributes(o1, o2, o3, o4, o5 *security.Entry, d1, d2, d3, d4, d5 string) resource.TestCheckFunc {
+func testAccCheckPanosSecurityRuleGroupAttributes(o1, o2, o3, o4, o5 *security.Entry, d1, d2, d3, d4, d5 string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o1.Name != "mary" {
 			return fmt.Errorf("Name 1 is %q, expected \"mary\"", o1.Name)
@@ -195,7 +164,7 @@ func testAccCheckPanosSecurityPolicyGroupAttributes(o1, o2, o3, o4, o5 *security
 	}
 }
 
-func testAccCheckPanosSecurityPolicyGroupOrdering() resource.TestCheckFunc {
+func testAccCheckPanosSecurityRuleGroupOrdering() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		fw := testAccProvider.Meta().(*pango.Firewall)
 		p3i := -1
@@ -231,16 +200,16 @@ func testAccCheckPanosSecurityPolicyGroupOrdering() resource.TestCheckFunc {
 	}
 }
 
-func testAccPanosSecurityPolicyGroupDestroy(s *terraform.State) error {
+func testAccPanosSecurityRuleGroupDestroy(s *terraform.State) error {
 	fw := testAccProvider.Meta().(*pango.Firewall)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_security_policy_group" {
+		if rs.Type != "panos_security_rule_group" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, _, _, list := parseSecurityPolicyGroupId(rs.Primary.ID)
+			vsys, _, _, list := parseSecurityRuleGroupId(rs.Primary.ID)
 			for _, rule := range list {
 				_, err := fw.Policies.Security.Get(vsys, rule)
 				if err == nil {
@@ -253,9 +222,9 @@ func testAccPanosSecurityPolicyGroupDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccSecurityPolicyGroupConfig(d1, d2, d3, d4, d5 string) string {
+func testAccSecurityRuleGroupConfig(d1, d2, d3, d4, d5 string) string {
 	return fmt.Sprintf(`
-resource "panos_security_policy_group" "top" {
+resource "panos_security_rule_group" "top" {
     position_keyword = "top"
     rule {
         name = "mary"
@@ -287,9 +256,9 @@ resource "panos_security_policy_group" "top" {
     }
 }
 
-resource "panos_security_policy_group" "mid" {
+resource "panos_security_rule_group" "mid" {
     position_keyword = "before"
-    position_reference = "${panos_security_policy_group.bot.rule.0.name}"
+    position_reference = "${panos_security_rule_group.bot.rule.0.name}"
     rule {
         name = "a"
         description = "%s"
@@ -306,7 +275,7 @@ resource "panos_security_policy_group" "mid" {
     }
 }
 
-resource "panos_security_policy_group" "bot" {
+resource "panos_security_rule_group" "bot" {
     position_keyword = "bottom"
     rule {
         name = "little"

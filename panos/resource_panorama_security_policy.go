@@ -10,34 +10,27 @@ import (
 	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
 )
 
-func resourceSecurityPolicies() *schema.Resource {
+func resourcePanoramaSecurityPolicy() *schema.Resource {
 	return &schema.Resource{
-		Create: createUpdateSecurityPolicies,
-		Read:   readSecurityPolicies,
-		Update: createUpdateSecurityPolicies,
-		Delete: deleteSecurityPolicies,
-
-		SchemaVersion: 1,
-		MigrateState:  migrateResourceSecurityPolicies,
+		Create: createUpdatePanoramaSecurityPolicy,
+		Read:   readPanoramaSecurityPolicy,
+		Update: createUpdatePanoramaSecurityPolicy,
+		Delete: deletePanoramaSecurityPolicy,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to put this object in (default: vsys1)",
+			"device_group": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "shared",
+				ForceNew: true,
 			},
 			"rulebase": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
-				Computed:     true,
+				Default:      util.PreRulebase,
 				ForceNew:     true,
-				Description:  "The Panorama rulebase",
-				Deprecated:   "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
 				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
 			"rule": &schema.Schema{
@@ -216,6 +209,31 @@ func resourceSecurityPolicies() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"target": &schema.Schema{
+							Type:     schema.TypeSet,
+							Optional: true,
+							// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
+							//ValidateFunc: validateSetKeyIsUnique("serial"),
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"serial": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"vsys_list": {
+										Type:     schema.TypeSet,
+										Optional: true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+								},
+							},
+						},
+						"negate_target": &schema.Schema{
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
 					},
 				},
 			},
@@ -223,24 +241,8 @@ func resourceSecurityPolicies() *schema.Resource {
 	}
 }
 
-func migrateResourceSecurityPolicies(ov int, s *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
-	if ov == 0 {
-		t := strings.Split(s.ID, IdSeparator)
-		if len(t) != 2 {
-			return nil, fmt.Errorf("ID is malformed")
-		} else if t[1] != util.Rulebase {
-			return nil, fmt.Errorf("Rulebase is %q, not %q", t[1], util.Rulebase)
-		}
-		s.ID = t[0]
-
-		ov = 1
-	}
-
-	return s, nil
-}
-
-func parseSecurityPolicies(d *schema.ResourceData) (string, string, []security.Entry) {
-	vsys := d.Get("vsys").(string)
+func parsePanoramaSecurityPolicy(d *schema.ResourceData) (string, string, []security.Entry) {
+	dg := d.Get("device_group").(string)
 	rb := d.Get("rulebase").(string)
 
 	rlist := d.Get("rule").([]interface{})
@@ -279,47 +281,81 @@ func parseSecurityPolicies(d *schema.ResourceData) (string, string, []security.E
 			FileBlocking:     elm["file_blocking"].(string),
 			WildFireAnalysis: elm["wildfire_analysis"].(string),
 			DataFiltering:    elm["data_filtering"].(string),
+			NegateTarget:     elm["negate_target"].(bool),
 		}
+
+		m := make(map[string][]string)
+		tl := elm["target"].(*schema.Set).List()
+		for i := range tl {
+			device := tl[i].(map[string]interface{})
+			key := device["serial"].(string)
+			value := asStringList(device["vsys_list"].(*schema.Set).List())
+			m[key] = value
+		}
+		o.Targets = m
+
 		ans = append(ans, o)
 	}
 
-	return vsys, rb, ans
+	return dg, rb, ans
 }
 
-func createUpdateSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
-	vsys, _, list := parseSecurityPolicies(d)
-
-	if err = fw.Policies.Security.DeleteAll(vsys); err != nil {
-		return err
-	}
-	if err = fw.Policies.Security.VerifiableSet(vsys, list...); err != nil {
-		return err
-	}
-
-	d.SetId(vsys)
-	return readSecurityPolicies(d, meta)
+func parsePanoramaSecurityPolicyId(v string) (string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1]
 }
 
-func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
+func buildPanoramaSecurityPolicyId(a, b string) string {
+	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
+}
+
+func createUpdatePanoramaSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
-	fw := meta.(*pango.Firewall)
-	vsys := d.Id()
+	pano := meta.(*pango.Panorama)
+	dg, rb, list := parsePanoramaSecurityPolicy(d)
 
-	list, err := fw.Policies.Security.GetList(vsys)
+	if err = pano.Policies.Security.DeleteAll(dg, rb); err != nil {
+		return err
+	}
+	if err = pano.Policies.Security.VerifiableSet(dg, rb, list...); err != nil {
+		return err
+	}
+
+	d.SetId(buildPanoramaSecurityPolicyId(dg, rb))
+	return readPanoramaSecurityPolicy(d, meta)
+}
+
+func readPanoramaSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	pano := meta.(*pango.Panorama)
+	dg, rb := parsePanoramaSecurityPolicyId(d.Id())
+
+	list, err := pano.Policies.Security.GetList(dg, rb)
 	if err != nil {
 		return err
 	}
 
+	ts2 := d.Get("rule").([]interface{})
+	elm := ts2[0].(map[string]interface{})
+	ts := elm["target"].(*schema.Set)
+
 	ilist := make([]interface{}, 0, len(list))
 	for i := range list {
-		o, err := fw.Policies.Security.Get(vsys, list[i])
+		o, err := pano.Policies.Security.Get(dg, rb, list[i])
 		if err != nil {
 			return err
 		}
+
+		s := &schema.Set{F: ts.F}
+		for key := range o.Targets {
+			sg := make(map[string]interface{})
+			sg["serial"] = key
+			sg["vsys_list"] = listAsSet(o.Targets[key])
+			s.Add(sg)
+		}
+
 		m := make(map[string]interface{})
 		m["name"] = o.Name
 		m["type"] = o.Type
@@ -352,11 +388,13 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 		m["file_blocking"] = o.FileBlocking
 		m["wildfire_analysis"] = o.WildFireAnalysis
 		m["data_filtering"] = o.DataFiltering
+		m["target"] = s
+		m["negate_target"] = o.NegateTarget
 		ilist = append(ilist, m)
 	}
 
-	d.Set("vsys", vsys)
-	d.Set("rulebase", util.Rulebase)
+	d.Set("device_group", dg)
+	d.Set("rulebase", rb)
 	if err = d.Set("rule", ilist); err != nil {
 		log.Printf("[WARN] Error setting 'rule' param for %q: %s", d.Id(), err)
 	}
@@ -364,11 +402,11 @@ func readSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func deleteSecurityPolicies(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys := d.Id()
+func deletePanoramaSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
+	pano := meta.(*pango.Panorama)
+	dg, rb := parsePanoramaSecurityPolicyId(d.Id())
 
-	if err := fw.Policies.Security.DeleteAll(vsys); err != nil {
+	if err := pano.Policies.Security.DeleteAll(dg, rb); err != nil {
 		return err
 	}
 

@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosPanoramaNatPolicy_basic(t *testing.T) {
+func TestAccPanosPanoramaNatRule_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -23,27 +23,27 @@ func TestAccPanosPanoramaNatPolicy_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosPanoramaNatPolicyDestroy,
+		CheckDestroy: testAccPanosPanoramaNatRuleDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaNatPolicyConfig(name, "first description", "192.168.1.1", 5555),
+				Config: testAccPanoramaNatRuleConfig(name, "first description", "192.168.1.1", 5555),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaNatPolicyExists("panos_panorama_nat_policy.test", &o),
-					testAccCheckPanosPanoramaNatPolicyAttributes(&o, name, "first description", "192.168.1.1", 5555),
+					testAccCheckPanosPanoramaNatRuleExists("panos_panorama_nat_rule.test", &o),
+					testAccCheckPanosPanoramaNatRuleAttributes(&o, name, "first description", "192.168.1.1", 5555),
 				),
 			},
 			{
-				Config: testAccPanoramaNatPolicyConfig(name, "second desc", "192.168.3.1", 6666),
+				Config: testAccPanoramaNatRuleConfig(name, "second desc", "192.168.3.1", 6666),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaNatPolicyExists("panos_panorama_nat_policy.test", &o),
-					testAccCheckPanosPanoramaNatPolicyAttributes(&o, name, "second desc", "192.168.3.1", 6666),
+					testAccCheckPanosPanoramaNatRuleExists("panos_panorama_nat_rule.test", &o),
+					testAccCheckPanosPanoramaNatRuleAttributes(&o, name, "second desc", "192.168.3.1", 6666),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosPanoramaNatPolicyExists(n string, o *nat.Entry) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaNatRuleExists(n string, o *nat.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -55,7 +55,7 @@ func testAccCheckPanosPanoramaNatPolicyExists(n string, o *nat.Entry) resource.T
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		dg, rb, name := parsePanoramaNatPolicyId(rs.Primary.ID)
+		dg, rb, name := parsePanoramaNatRuleId(rs.Primary.ID)
 		v, err := pano.Policies.Nat.Get(dg, rb, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -67,7 +67,7 @@ func testAccCheckPanosPanoramaNatPolicyExists(n string, o *nat.Entry) resource.T
 	}
 }
 
-func testAccCheckPanosPanoramaNatPolicyAttributes(o *nat.Entry, n, de, da string, dp int) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaNatRuleAttributes(o *nat.Entry, n, de, da string, dp int) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Name != n {
 			return fmt.Errorf("Name is %q, expected %q", o.Name, n)
@@ -89,16 +89,16 @@ func testAccCheckPanosPanoramaNatPolicyAttributes(o *nat.Entry, n, de, da string
 	}
 }
 
-func testAccPanosPanoramaNatPolicyDestroy(s *terraform.State) error {
+func testAccPanosPanoramaNatRuleDestroy(s *terraform.State) error {
 	pano := testAccProvider.Meta().(*pango.Panorama)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_panorama_nat_policy" {
+		if rs.Type != "panos_panorama_nat_rule" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			dg, rb, name := parsePanoramaNatPolicyId(rs.Primary.ID)
+			dg, rb, name := parsePanoramaNatRuleId(rs.Primary.ID)
 			_, err := pano.Policies.Nat.Get(dg, rb, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
@@ -110,9 +110,9 @@ func testAccPanosPanoramaNatPolicyDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanoramaNatPolicyConfig(n, de, da string, dp int) string {
+func testAccPanoramaNatRuleConfig(n, de, da string, dp int) string {
 	return fmt.Sprintf(`
-resource "panos_panorama_nat_policy" "test" {
+resource "panos_panorama_nat_rule" "test" {
     name = "%s"
     description = "%s"
     source_zones = ["any"]
