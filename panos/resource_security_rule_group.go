@@ -14,12 +14,12 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-func resourceSecurityPolicyGroup() *schema.Resource {
+func resourceSecurityRuleGroup() *schema.Resource {
 	return &schema.Resource{
-		Create: createUpdateSecurityPolicyGroup,
-		Read:   readSecurityPolicyGroup,
-		Update: createUpdateSecurityPolicyGroup,
-		Delete: deleteSecurityPolicyGroup,
+		Create: createUpdateSecurityRuleGroup,
+		Read:   readSecurityRuleGroup,
+		Update: createUpdateSecurityRuleGroup,
+		Delete: deleteSecurityRuleGroup,
 
 		Schema: map[string]*schema.Schema{
 			"vsys": &schema.Schema{
@@ -222,7 +222,7 @@ func resourceSecurityPolicyGroup() *schema.Resource {
 	}
 }
 
-func parseSecurityPolicyGroup(d *schema.ResourceData) (string, string, int, []security.Entry) {
+func parseSecurityRuleGroup(d *schema.ResourceData) (string, string, int, []security.Entry) {
 	vsys := d.Get("vsys").(string)
 	oRule := d.Get("position_reference").(string)
 	move := movementAtoi(d.Get("position_keyword").(string))
@@ -270,7 +270,7 @@ func parseSecurityPolicyGroup(d *schema.ResourceData) (string, string, int, []se
 	return vsys, oRule, move, ans
 }
 
-func parseSecurityPolicyGroupId(v string) (string, int, string, []string) {
+func parseSecurityRuleGroupId(v string) (string, int, string, []string) {
 	t := strings.Split(v, IdSeparator)
 	move, _ := strconv.Atoi(t[1])
 	joined, _ := base64.StdEncoding.DecodeString(t[3])
@@ -278,7 +278,7 @@ func parseSecurityPolicyGroupId(v string) (string, int, string, []string) {
 	return t[0], move, t[2], names
 }
 
-func buildSecurityPolicyGroupId(a string, b int, c string, d []security.Entry) string {
+func buildSecurityRuleGroupId(a string, b int, c string, d []security.Entry) string {
 	var buf bytes.Buffer
 	for i := range d {
 		if i != 0 {
@@ -291,11 +291,11 @@ func buildSecurityPolicyGroupId(a string, b int, c string, d []security.Entry) s
 	return fmt.Sprintf("%s%s%d%s%s%s%s", a, IdSeparator, b, IdSeparator, c, IdSeparator, enc)
 }
 
-func createUpdateSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func createUpdateSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, oRule, move, list := parseSecurityPolicyGroup(d)
+	vsys, oRule, move, list := parseSecurityRuleGroup(d)
 
 	if !movementIsRelative(move) && oRule != "" {
 		return fmt.Errorf("'position_reference' must be empty for non-relative movement")
@@ -307,15 +307,15 @@ func createUpdateSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) e
 		return err
 	}
 
-	d.SetId(buildSecurityPolicyGroupId(vsys, move, oRule, list))
-	return readSecurityPolicyGroup(d, meta)
+	d.SetId(buildSecurityRuleGroupId(vsys, move, oRule, list))
+	return readSecurityRuleGroup(d, meta)
 }
 
-func readSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func readSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	vsys, move, oRule, policies := parseSecurityPolicyGroupId(d.Id())
+	vsys, move, oRule, policies := parseSecurityRuleGroupId(d.Id())
 
 	list, err := fw.Policies.Security.GetList(vsys)
 	if err != nil {
@@ -403,9 +403,9 @@ func readSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func deleteSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func deleteSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	vsys, _, _, list := parseSecurityPolicyGroupId(d.Id())
+	vsys, _, _, list := parseSecurityRuleGroupId(d.Id())
 
 	ilist := make([]interface{}, len(list))
 	for i := range list {

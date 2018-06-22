@@ -15,12 +15,12 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-func resourcePanoramaSecurityPolicyGroup() *schema.Resource {
+func resourcePanoramaSecurityRuleGroup() *schema.Resource {
 	return &schema.Resource{
-		Create: createUpdatePanoramaSecurityPolicyGroup,
-		Read:   readPanoramaSecurityPolicyGroup,
-		Update: createUpdatePanoramaSecurityPolicyGroup,
-		Delete: deletePanoramaSecurityPolicyGroup,
+		Create: createUpdatePanoramaSecurityRuleGroup,
+		Read:   readPanoramaSecurityRuleGroup,
+		Update: createUpdatePanoramaSecurityRuleGroup,
+		Delete: deletePanoramaSecurityRuleGroup,
 
 		Schema: map[string]*schema.Schema{
 			"device_group": &schema.Schema{
@@ -255,7 +255,7 @@ func resourcePanoramaSecurityPolicyGroup() *schema.Resource {
 	}
 }
 
-func parsePanoramaSecurityPolicyGroup(d *schema.ResourceData) (string, string, string, int, []security.Entry) {
+func parsePanoramaSecurityRuleGroup(d *schema.ResourceData) (string, string, string, int, []security.Entry) {
 	dg := d.Get("device_group").(string)
 	rb := d.Get("rulebase").(string)
 	oRule := d.Get("position_reference").(string)
@@ -316,7 +316,7 @@ func parsePanoramaSecurityPolicyGroup(d *schema.ResourceData) (string, string, s
 	return dg, rb, oRule, move, ans
 }
 
-func parsePanoramaSecurityPolicyGroupId(v string) (string, string, int, string, []string) {
+func parsePanoramaSecurityRuleGroupId(v string) (string, string, int, string, []string) {
 	t := strings.Split(v, IdSeparator)
 	move, _ := strconv.Atoi(t[2])
 	joined, _ := base64.StdEncoding.DecodeString(t[4])
@@ -324,7 +324,7 @@ func parsePanoramaSecurityPolicyGroupId(v string) (string, string, int, string, 
 	return t[0], t[1], move, t[3], names
 }
 
-func buildPanoramaSecurityPolicyGroupId(a, b string, c int, d string, e []security.Entry) string {
+func buildPanoramaSecurityRuleGroupId(a, b string, c int, d string, e []security.Entry) string {
 	var buf bytes.Buffer
 	for i := range e {
 		if i != 0 {
@@ -337,11 +337,11 @@ func buildPanoramaSecurityPolicyGroupId(a, b string, c int, d string, e []securi
 	return fmt.Sprintf("%s%s%s%s%d%s%s%s%s", a, IdSeparator, b, IdSeparator, c, IdSeparator, d, IdSeparator, enc)
 }
 
-func createUpdatePanoramaSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func createUpdatePanoramaSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	pano := meta.(*pango.Panorama)
-	dg, rb, oRule, move, list := parsePanoramaSecurityPolicyGroup(d)
+	dg, rb, oRule, move, list := parsePanoramaSecurityRuleGroup(d)
 
 	if !movementIsRelative(move) && oRule != "" {
 		return fmt.Errorf("'position_reference' must be empty for non-relative movement")
@@ -353,15 +353,15 @@ func createUpdatePanoramaSecurityPolicyGroup(d *schema.ResourceData, meta interf
 		return err
 	}
 
-	d.SetId(buildPanoramaSecurityPolicyGroupId(dg, rb, move, oRule, list))
-	return readPanoramaSecurityPolicyGroup(d, meta)
+	d.SetId(buildPanoramaSecurityRuleGroupId(dg, rb, move, oRule, list))
+	return readPanoramaSecurityRuleGroup(d, meta)
 }
 
-func readPanoramaSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func readPanoramaSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	pano := meta.(*pango.Panorama)
-	dg, rb, move, oRule, policies := parsePanoramaSecurityPolicyGroupId(d.Id())
+	dg, rb, move, oRule, policies := parsePanoramaSecurityRuleGroupId(d.Id())
 
 	list, err := pano.Policies.Security.GetList(dg, rb)
 	if err != nil {
@@ -465,9 +465,9 @@ func readPanoramaSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) e
 	return nil
 }
 
-func deletePanoramaSecurityPolicyGroup(d *schema.ResourceData, meta interface{}) error {
+func deletePanoramaSecurityRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	pano := meta.(*pango.Panorama)
-	dg, rb, _, _, list := parsePanoramaSecurityPolicyGroupId(d.Id())
+	dg, rb, _, _, list := parsePanoramaSecurityRuleGroupId(d.Id())
 
 	ilist := make([]interface{}, len(list))
 	for i := range list {

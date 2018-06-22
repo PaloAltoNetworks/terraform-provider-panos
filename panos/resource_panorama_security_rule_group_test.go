@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosPanoramaSecurityPolicyGroup_basic(t *testing.T) {
+func TestAccPanosPanoramaSecurityRuleGroup_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -32,29 +32,29 @@ func TestAccPanosPanoramaSecurityPolicyGroup_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosPanoramaSecurityPolicyGroupDestroy,
+		CheckDestroy: testAccPanosPanoramaSecurityRuleGroupDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaSecurityPolicyGroupConfig(d1, d2, d3, d4, d5),
+				Config: testAccPanoramaSecurityRuleGroupConfig(d1, d2, d3, d4, d5),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaSecurityPolicyGroupExists("panos_panorama_security_policy_group.top", "panos_panorama_security_policy_group.mid", "panos_panorama_security_policy_group.bot", &o1, &o2, &o3, &o4, &o5),
-					testAccCheckPanosPanoramaSecurityPolicyGroupAttributes(&o1, &o2, &o3, &o4, &o5, d1, d2, d3, d4, d5),
-					testAccCheckPanosPanoramaSecurityPolicyGroupOrdering(),
+					testAccCheckPanosPanoramaSecurityRuleGroupExists("panos_panorama_security_rule_group.top", "panos_panorama_security_rule_group.mid", "panos_panorama_security_rule_group.bot", &o1, &o2, &o3, &o4, &o5),
+					testAccCheckPanosPanoramaSecurityRuleGroupAttributes(&o1, &o2, &o3, &o4, &o5, d1, d2, d3, d4, d5),
+					testAccCheckPanosPanoramaSecurityRuleGroupOrdering(),
 				),
 			},
 			{
-				Config: testAccPanoramaSecurityPolicyGroupConfig(d6, d7, d8, d9, d10),
+				Config: testAccPanoramaSecurityRuleGroupConfig(d6, d7, d8, d9, d10),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosPanoramaSecurityPolicyGroupExists("panos_panorama_security_policy_group.top", "panos_panorama_security_policy_group.mid", "panos_panorama_security_policy_group.bot", &o1, &o2, &o3, &o4, &o5),
-					testAccCheckPanosPanoramaSecurityPolicyGroupAttributes(&o1, &o2, &o3, &o4, &o5, d6, d7, d8, d9, d10),
-					testAccCheckPanosPanoramaSecurityPolicyGroupOrdering(),
+					testAccCheckPanosPanoramaSecurityRuleGroupExists("panos_panorama_security_rule_group.top", "panos_panorama_security_rule_group.mid", "panos_panorama_security_rule_group.bot", &o1, &o2, &o3, &o4, &o5),
+					testAccCheckPanosPanoramaSecurityRuleGroupAttributes(&o1, &o2, &o3, &o4, &o5, d6, d7, d8, d9, d10),
+					testAccCheckPanosPanoramaSecurityRuleGroupOrdering(),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosPanoramaSecurityPolicyGroupExists(top, mid, bot string, o1, o2, o3, o4, o5 *security.Entry) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, o4, o5 *security.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		var dg, rb string
 		var err error
@@ -68,7 +68,7 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupExists(top, mid, bot string, o1
 		if rTop.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		dg, rb, _, _, topList := parsePanoramaSecurityPolicyGroupId(rTop.Primary.ID)
+		dg, rb, _, _, topList := parsePanoramaSecurityRuleGroupId(rTop.Primary.ID)
 		if len(topList) != 2 {
 			return fmt.Errorf("top is not len 2")
 		}
@@ -91,7 +91,7 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupExists(top, mid, bot string, o1
 		if rMid.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		dg, rb, _, _, midList := parsePanoramaSecurityPolicyGroupId(rMid.Primary.ID)
+		dg, rb, _, _, midList := parsePanoramaSecurityRuleGroupId(rMid.Primary.ID)
 		if len(midList) != 1 {
 			return fmt.Errorf("mid is not len 1")
 		}
@@ -109,7 +109,7 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupExists(top, mid, bot string, o1
 		if rBot.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		dg, rb, _, _, botList := parsePanoramaSecurityPolicyGroupId(rBot.Primary.ID)
+		dg, rb, _, _, botList := parsePanoramaSecurityRuleGroupId(rBot.Primary.ID)
 		if len(botList) != 2 {
 			return fmt.Errorf("bot is not len 2")
 		}
@@ -128,7 +128,7 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupExists(top, mid, bot string, o1
 	}
 }
 
-func testAccCheckPanosPanoramaSecurityPolicyGroupAttributes(o1, o2, o3, o4, o5 *security.Entry, d1, d2, d3, d4, d5 string) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaSecurityRuleGroupAttributes(o1, o2, o3, o4, o5 *security.Entry, d1, d2, d3, d4, d5 string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o1.Name != "mary" {
 			return fmt.Errorf("Name 1 is %q, expected \"mary\"", o1.Name)
@@ -164,7 +164,7 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupAttributes(o1, o2, o3, o4, o5 *
 	}
 }
 
-func testAccCheckPanosPanoramaSecurityPolicyGroupOrdering() resource.TestCheckFunc {
+func testAccCheckPanosPanoramaSecurityRuleGroupOrdering() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		pano := testAccProvider.Meta().(*pango.Panorama)
 		p3i := -1
@@ -200,16 +200,16 @@ func testAccCheckPanosPanoramaSecurityPolicyGroupOrdering() resource.TestCheckFu
 	}
 }
 
-func testAccPanosPanoramaSecurityPolicyGroupDestroy(s *terraform.State) error {
+func testAccPanosPanoramaSecurityRuleGroupDestroy(s *terraform.State) error {
 	pano := testAccProvider.Meta().(*pango.Panorama)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_panorama_security_policy_group" {
+		if rs.Type != "panos_panorama_security_rule_group" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			dg, rb, _, _, list := parsePanoramaSecurityPolicyGroupId(rs.Primary.ID)
+			dg, rb, _, _, list := parsePanoramaSecurityRuleGroupId(rs.Primary.ID)
 			for _, rule := range list {
 				_, err := pano.Policies.Security.Get(dg, rb, rule)
 				if err == nil {
@@ -222,9 +222,9 @@ func testAccPanosPanoramaSecurityPolicyGroupDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanoramaSecurityPolicyGroupConfig(d1, d2, d3, d4, d5 string) string {
+func testAccPanoramaSecurityRuleGroupConfig(d1, d2, d3, d4, d5 string) string {
 	return fmt.Sprintf(`
-resource "panos_panorama_security_policy_group" "top" {
+resource "panos_panorama_security_rule_group" "top" {
     position_keyword = "top"
     rule {
         name = "mary"
@@ -256,9 +256,9 @@ resource "panos_panorama_security_policy_group" "top" {
     }
 }
 
-resource "panos_panorama_security_policy_group" "mid" {
+resource "panos_panorama_security_rule_group" "mid" {
     position_keyword = "before"
-    position_reference = "${panos_panorama_security_policy_group.bot.rule.0.name}"
+    position_reference = "${panos_panorama_security_rule_group.bot.rule.0.name}"
     rule {
         name = "a"
         description = "%s"
@@ -275,7 +275,7 @@ resource "panos_panorama_security_policy_group" "mid" {
     }
 }
 
-resource "panos_panorama_security_policy_group" "bot" {
+resource "panos_panorama_security_rule_group" "bot" {
     position_keyword = "bottom"
     rule {
         name = "little"

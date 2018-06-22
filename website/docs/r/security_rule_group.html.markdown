@@ -1,28 +1,42 @@
 ---
 layout: "panos"
-page_title: "panos: panos_panorama_security_policies"
-sidebar_current: "docs-panos-panorama-resource-security-policies"
+page_title: "panos: panos_security_rule_group"
+sidebar_current: "docs-panos-resource-security-rule-group"
 description: |-
-  Manages Panorama security policies.
+  Manages security rule groups.
 ---
 
-# panos_panorama_security_policies
+# panos_security_rule_group
 
-This resource allows you to add/update/delete Panorama security policies.
+This resource allows you to add/update/delete security rule groups.
 
-This resource manages the full set of security policies, enforcing both the
-contents of individual rules as well as their ordering.  Rules are defined in
-a `rule` config block.  As this manages the full set of security policies for
-a given rulebase, any extraneous rules are removed on `terraform apply`.
+~> **Note:** `panos_security_policy_group` is known as `panos_security_rule_group`.
 
-For each security policy, there are three styles of profile settings:
+This resource manages clusters of security rules in a single vsys,
+enforcing both the contents of individual rules as well as their
+ordering.  Rules are defined in a `rule` config block.
+
+Because this resource only manages what it's told to, it will not manage
+any rules that may already exist on the firewall.  This has
+implications on the effective security posture of your firewall, but it
+will allow you to spread your security rules across multiple Terraform
+state files.  If you want to verify that the security rules are only
+what appears in the plan file, then you should probably be using the
+[panos_security_policy](security_policy.html) resource.
+
+Although you cannot modify non-group security rules with this
+resource, the `position_keyword` and `position_reference` parameters allow you
+to reference some other security rule that already exists, using it as
+a means to ensure some rough placement within the ruleset as a whole.
+
+For each security rule, there are three styles of profile settings:
 
 * `None` (the default)
 * `Group`
 * `Profiles`
 
 The Profile Setting is implicitly chosen based on what params are configured
-for the security policy.  If you want a Profile Setting of `Group`, then the
+for the security rule.  If you want a Profile Setting of `Group`, then the
 `group` param should be set to the desired Group Profile.  If you want a
 Profile Setting of `Profiles`, then you will need to specify one or more of
 the following params:
@@ -38,10 +52,26 @@ the following params:
 If the `group` param and none of the `Profiles` params are specified, then
 the Profile Setting is set to `None`.
 
+## Best Practices
+
+As is to be expected, if you are separating your deployment across
+multiple plan files, make sure that at most only one plan specifies any given
+absolute positioning keyword such as "top" or "directly below", otherwise
+they'll keep shoving each other out of the way indefinitely.
+
+Best practices are to specify one group as `top` (if you need it), one
+group as `bottom` (this is where you have your logging deny rule), then
+all other groups should be `above` the first rule of the bottom group.  You
+do it this way because rules will natually be added at the tail end of the
+rulebase, so they will always be `after` the first group, but what you want
+is for them to be `before` the last group's rules.
+
 ## Example Usage
 
 ```hcl
-resource "panos_panorama_security_policies" "example" {
+resource "panos_security_rule_group" "example" {
+    position_keyword = "above"
+    position_reference = "deny everything else"
     rule {
         name = "allow bizdev to dmz"
         source_zones = ["bizdev"]
@@ -67,13 +97,6 @@ resource "panos_panorama_security_policies" "example" {
         services = ["application-default"]
         categories = ["any"]
         action = "deny"
-        target {
-            serial = "01234"
-        }
-        target {
-            serial = "56789"
-            vsys_list = ["vsys1", "vsys3"]
-        }
     }
 }
 ```
@@ -82,16 +105,21 @@ resource "panos_panorama_security_policies" "example" {
 
 The following arguments are supported:
 
-* `device_group` - (Optional) The device group to put the security policy into
-  (default: `shared`).
-* `rulebase` - (Optional) The rulebase.  This can be `pre-rulebase` (default),
-  `post-rulebase`, or `rulebase`.
-* `rule` - The security policy definition (see below).  The security policy
+* `vsys` - (Optional) The vsys to put the security rule into (default:
+  `vsys1`).
+* `position_keyword` - (Optional) A positioning keyword for this group.  This
+  can be `before`, `directly before`, `after`, `directly after`, `top`,
+  `bottom`, or left empty (the default) to have no particular placement.  This
+  param works in combination with the `position_reference` param.
+* `position_reference` - (Optional) Required if `position_keyword` is one of the
+  "above" or "below" variants, this is the name of a non-group rule to use
+  as a reference to place this group.
+* `rule` - The security rule definition (see below).  The security rule
   ordering will match how they appear in the terraform plan file.
 
 The following arguments are valid for each `rule` section:
 
-* `name` - (Required) The security policy name.
+* `name` - (Required) The security rule name.
 * `type` - (Optional) Rule type.  This can be `universal` (default),
   `interzone`, or `intrazone`.
 * `description` - (Optional) The description.
@@ -113,7 +141,7 @@ The following arguments are valid for each `rule` section:
 * `log_start` - (Optional, bool) Log the start of the traffic flow.
 * `log_end` - (Optional, bool) Log the end of the traffic flow (default: `true`).
 * `disabled` - (Optional, bool) Set to `true` to disable this rule.
-* `schedule` - (Optional) The security policy schedule.
+* `schedule` - (Optional) The security rule schedule.
 * `icmp_unreachable` - (Optional) Set to `true` to enable ICMP unreachable.
 * `disable_server_response_inspection` - (Optional) Set to `true` to disable
   server response inspection.
@@ -131,15 +159,3 @@ The following arguments are valid for each `rule` section:
   Analysis setting.
 * `data_filtering` - (Optional) Profile Setting: `Profiles` - The Data
   Filtering setting.
-* `target` - (Optional) A target definition (see below).  If there are no
-  target sections, then the policy will apply to every vsys of every device
-  in the device group.
-* `negate_target` - (Optional, bool) Instead of applying the policy for the
-  given serial numbers, apply it to everything except them.
-
-The following arguments are valid for each `target` section:
-
-* `serial` - (Required) The serial number of the firewall.
-* `vsys_list` - (Optional) A subset of all available vsys on the firewall
-  that should be in this device group.  If the firewall is a virtual firewall,
-  then this parameter should just be omitted.

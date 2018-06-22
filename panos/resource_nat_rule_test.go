@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosNatPolicy_basic(t *testing.T) {
+func TestAccPanosNatRule_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -25,27 +25,27 @@ func TestAccPanosNatPolicy_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosNatPolicyDestroy,
+		CheckDestroy: testAccPanosNatRuleDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccNatPolicyConfig(z1, z2, name, 1, 2, "192.168.1.1", "192.168.2.1"),
+				Config: testAccNatRuleConfig(z1, z2, name, 1, 2, "192.168.1.1", "192.168.2.1"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosNatPolicyExists("panos_nat_policy.test", &o),
-					testAccCheckPanosNatPolicyAttributes(&o, name, z1, z2, "192.168.1.1", "192.168.2.1"),
+					testAccCheckPanosNatRuleExists("panos_nat_rule.test", &o),
+					testAccCheckPanosNatRuleAttributes(&o, name, z1, z2, "192.168.1.1", "192.168.2.1"),
 				),
 			},
 			{
-				Config: testAccNatPolicyConfig(z1, z2, name, 2, 1, "192.168.3.1", "192.168.4.1"),
+				Config: testAccNatRuleConfig(z1, z2, name, 2, 1, "192.168.3.1", "192.168.4.1"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosNatPolicyExists("panos_nat_policy.test", &o),
-					testAccCheckPanosNatPolicyAttributes(&o, name, z2, z1, "192.168.3.1", "192.168.4.1"),
+					testAccCheckPanosNatRuleExists("panos_nat_rule.test", &o),
+					testAccCheckPanosNatRuleAttributes(&o, name, z2, z1, "192.168.3.1", "192.168.4.1"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosNatPolicyExists(n string, o *nat.Entry) resource.TestCheckFunc {
+func testAccCheckPanosNatRuleExists(n string, o *nat.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -57,7 +57,7 @@ func testAccCheckPanosNatPolicyExists(n string, o *nat.Entry) resource.TestCheck
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, name := parseNatPolicyId(rs.Primary.ID)
+		vsys, name := parseNatRuleId(rs.Primary.ID)
 		v, err := fw.Policies.Nat.Get(vsys, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -69,7 +69,7 @@ func testAccCheckPanosNatPolicyExists(n string, o *nat.Entry) resource.TestCheck
 	}
 }
 
-func testAccCheckPanosNatPolicyAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 string) resource.TestCheckFunc {
+func testAccCheckPanosNatRuleAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Name != n {
 			return fmt.Errorf("Name is %q, expected %q", o.Name, n)
@@ -107,16 +107,16 @@ func testAccCheckPanosNatPolicyAttributes(o *nat.Entry, n, sz, dz, sta1, sta2 st
 	}
 }
 
-func testAccPanosNatPolicyDestroy(s *terraform.State) error {
+func testAccPanosNatRuleDestroy(s *terraform.State) error {
 	fw := testAccProvider.Meta().(*pango.Firewall)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_nat_policy" {
+		if rs.Type != "panos_nat_rule" {
 			continue
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseNatPolicyId(rs.Primary.ID)
+			vsys, name := parseNatRuleId(rs.Primary.ID)
 			_, err := fw.Policies.Nat.Get(vsys, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
@@ -128,7 +128,7 @@ func testAccPanosNatPolicyDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccNatPolicyConfig(z1, z2, n string, sz, dz int, sta1, sta2 string) string {
+func testAccNatRuleConfig(z1, z2, n string, sz, dz int, sta1, sta2 string) string {
 	return fmt.Sprintf(`
 resource "panos_zone" "z1" {
     name = "%s"
@@ -140,7 +140,7 @@ resource "panos_zone" "z2" {
     mode = "layer3"
 }
 
-resource "panos_nat_policy" "test" {
+resource "panos_nat_rule" "test" {
     name = "%s"
     source_addresses = ["any"]
     destination_addresses = ["any"]

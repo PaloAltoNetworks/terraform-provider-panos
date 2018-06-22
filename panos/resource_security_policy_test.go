@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccPanosSecurityPolicies_basic(t *testing.T) {
+func TestAccPanosSecurityPolicy_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -24,27 +24,27 @@ func TestAccPanosSecurityPolicies_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosSecurityPoliciesDestroy,
+		CheckDestroy: testAccPanosSecurityPolicyDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSecurityPoliciesConfig(name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
+				Config: testAccSecurityPolicyConfig(name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosSecurityPoliciesExists("panos_security_policies.test", &o1, &o2),
-					testAccCheckPanosSecurityPoliciesAttributes(&o1, &o2, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
+					testAccCheckPanosSecurityPolicyExists("panos_security_policy.test", &o1, &o2),
+					testAccCheckPanosSecurityPolicyAttributes(&o1, &o2, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				),
 			},
 			{
-				Config: testAccSecurityPoliciesConfig(name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
+				Config: testAccSecurityPolicyConfig(name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosSecurityPoliciesExists("panos_security_policies.test", &o1, &o2),
-					testAccCheckPanosSecurityPoliciesAttributes(&o1, &o2, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
+					testAccCheckPanosSecurityPolicyExists("panos_security_policy.test", &o1, &o2),
+					testAccCheckPanosSecurityPolicyAttributes(&o1, &o2, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckPanosSecurityPoliciesExists(n string, o1, o2 *security.Entry) resource.TestCheckFunc {
+func testAccCheckPanosSecurityPolicyExists(n string, o1, o2 *security.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -80,7 +80,7 @@ func testAccCheckPanosSecurityPoliciesExists(n string, o1, o2 *security.Entry) r
 	}
 }
 
-func testAccCheckPanosSecurityPoliciesAttributes(o1, o2 *security.Entry, name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) resource.TestCheckFunc {
+func testAccCheckPanosSecurityPolicyAttributes(o1, o2 *security.Entry, name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o1.Name != name1 {
 			return fmt.Errorf("Name is %q, expected %q", o1.Name, name1)
@@ -141,11 +141,11 @@ func testAccCheckPanosSecurityPoliciesAttributes(o1, o2 *security.Entry, name1, 
 	}
 }
 
-func testAccPanosSecurityPoliciesDestroy(s *terraform.State) error {
+func testAccPanosSecurityPolicyDestroy(s *terraform.State) error {
 	fw := testAccProvider.Meta().(*pango.Firewall)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "panos_security_policies" {
+		if rs.Type != "panos_security_policy" {
 			continue
 		}
 
@@ -164,9 +164,9 @@ func testAccPanosSecurityPoliciesDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccSecurityPoliciesConfig(name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
+func testAccSecurityPolicyConfig(name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
 	return fmt.Sprintf(`
-resource "panos_security_policies" "test" {
+resource "panos_security_policy" "test" {
     rule {
         name = "%s"
         description = "%s"
