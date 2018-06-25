@@ -1,13 +1,15 @@
 ## 1.2.1 (Unreleased)
 
-ENHANCEMENTS:
+RENAMED RESOURCES:
 
-* **Renamed:** `panos_nat_policy` is now `panos_nat_rule` [GH-34]
-* **Renamed:** `panos_security_policies` is now `panos_security_policy` [GH-34]
-* **Renamed:** `panos_security_policy_group` is now `panos_security_rule_group` [GH-34]
-* **Renamed:** `panos_panorama_nat_policy` is now `panos_panorama_nat_rule` [GH-34]
-* **Renamed:** `panos_panorama_security_policies` is now `panos_panorama_security_policy` [GH-34]
-* **Renamed:** `panos_panorama_security_policy_group` is now `panos_panorama_security_rule_group` [GH-34]
+The following resources have been renamed for clarity from their original names.  Both the old name and the new name will work right now, but please update your plans to use the new names as the original names may be removed / repurposed in the future.
+
+* `panos_nat_policy` is now `panos_nat_rule` [GH-34]
+* `panos_security_policies` is now `panos_security_policy` [GH-34]
+* `panos_security_policy_group` is now `panos_security_rule_group` [GH-34]
+* `panos_panorama_nat_policy` is now `panos_panorama_nat_rule` [GH-34]
+* `panos_panorama_security_policies` is now `panos_panorama_security_policy` [GH-34]
+* `panos_panorama_security_policy_group` is now `panos_panorama_security_rule_group` [GH-34]
 
 ## 1.2.0 (June 19, 2018)
 
