@@ -29,10 +29,10 @@ func TestAccPanosTemplateEntry_basic(t *testing.T) {
 	serial := os.Getenv("PANOS_MANAGED_SERIAL_NUMBER")
 	vsys1 := os.Getenv("PANOS_MANAGED_VSYS1")
 	vsys2 := os.Getenv("PANOS_MANAGED_VSYS2")
-    versionRemoved := version.Number{
-        Major: 8,
-        Minor: 1,
-    }
+	versionRemoved := version.Number{
+		Major: 8,
+		Minor: 1,
+	}
 
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)

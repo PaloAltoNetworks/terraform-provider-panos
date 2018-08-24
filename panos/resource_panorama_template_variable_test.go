@@ -14,10 +14,10 @@ import (
 )
 
 func TestAccPanosPanoramaTemplateVariable_basic(t *testing.T) {
-    versionAdded := version.Number{
-        Major: 8,
-        Minor: 1,
-    }
+	versionAdded := version.Number{
+		Major: 8,
+		Minor: 1,
+	}
 
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
