@@ -70,7 +70,8 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"panos_system_info": dataSourceSystemInfo(),
+			"panos_system_info":         dataSourceSystemInfo(),
+			"panos_dhcp_interface_info": dataSourceDhcpInterfaceInfo(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
