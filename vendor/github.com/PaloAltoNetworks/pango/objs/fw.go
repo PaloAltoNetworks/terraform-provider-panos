@@ -6,6 +6,7 @@ import (
 
     "github.com/PaloAltoNetworks/pango/objs/addr"
     "github.com/PaloAltoNetworks/pango/objs/addrgrp"
+    "github.com/PaloAltoNetworks/pango/objs/edl"
     "github.com/PaloAltoNetworks/pango/objs/srvc"
     "github.com/PaloAltoNetworks/pango/objs/srvcgrp"
     "github.com/PaloAltoNetworks/pango/objs/tags"
@@ -16,6 +17,7 @@ import (
 type FwObjs struct {
     Address *addr.FwAddr
     AddressGroup *addrgrp.FwAddrGrp
+    Edl *edl.FwEdl
     Services *srvc.FwSrvc
     ServiceGroup *srvcgrp.FwSrvcGrp
     Tags *tags.FwTags
@@ -28,6 +30,9 @@ func (c *FwObjs) Initialize(i util.XapiClient) {
 
     c.AddressGroup = &addrgrp.FwAddrGrp{}
     c.AddressGroup.Initialize(i)
+
+    c.Edl = &edl.FwEdl{}
+    c.Edl.Initialize(i)
 
     c.Services = &srvc.FwSrvc{}
     c.Services.Initialize(i)

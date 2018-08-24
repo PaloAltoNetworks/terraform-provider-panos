@@ -24,6 +24,14 @@ const (
     PostRulebase = "post-rulebase"
 )
 
+// Valid values to use for VsysImport() or VsysUnimport().
+const (
+    InterfaceImport = "interface"
+    VirtualRouterImport = "virtual-router"
+    VirtualWireImport = "virtual-wire"
+    VlanImport = "vlan"
+)
+
 // XapiClient is the interface that describes an pango.Client.
 type XapiClient interface {
     String() string
@@ -43,12 +51,8 @@ type XapiClient interface {
     EntryListUsing(Retriever, []string) ([]string, error)
     MemberListUsing(Retriever, []string) ([]string, error)
     RequestPasswordHash(string) (string, error)
-    ImportInterfaces(string, []string) error
-    UnimportInterfaces(string, []string) error
-    ImportVlans(string, []string) error
-    UnimportVlans(string, []string) error
-    ImportVirtualRouters(string, []string) error
-    UnimportVirtualRouters(string, []string) error
+    VsysImport(string, string, string, string, []string) error
+    VsysUnimport(string, string, string, []string) error
     WaitForJob(uint, interface{}) error
     Commit(string, bool, bool, bool, bool) (uint, error)
 }
@@ -170,6 +174,28 @@ func StrToEnt(e []string) *EntryType {
     return &EntryType{ans}
 }
 
+// EntToOneStr normalizes an EntryType pointer for a max_items=1 XML node
+// into a string.
+func EntToOneStr(e *EntryType) string {
+    if e == nil || len(e.Entries) == 0 {
+        return ""
+    }
+
+    return e.Entries[0].Value
+}
+
+// OneStrToEnt converts a string into an EntryType pointer for a max_items=1
+// XML node.
+func OneStrToEnt(e string) *EntryType {
+    if e == "" {
+        return nil
+    }
+
+    return &EntryType{[]Entry{
+        {Value: e},
+    }}
+}
+
 // VsysEntryType defines an entry config node with vsys entries underneath.
 type VsysEntryType struct {
     Entries []VsysEntry `xml:"entry"`
@@ -248,6 +274,10 @@ func AsXpath(i interface{}) string {
 
 // AsEntryXpath returns the given values as an entry xpath segment.
 func AsEntryXpath(vals []string) string {
+    if len(vals) == 0 || (len(vals) == 1 && vals[0] == "") {
+        return "entry"
+    }
+
     var buf bytes.Buffer
 
     buf.WriteString("entry[")
@@ -281,6 +311,27 @@ func AsMemberXpath(vals []string) string {
     buf.WriteString("]")
 
     return buf.String()
+}
+
+// TemplateXpath returns the template xpath prefix of the given template name.
+func TemplateXpathPrefix(tmpl, ts string) []string {
+    if tmpl != "" {
+        return []string{
+            "config",
+            "devices",
+            AsEntryXpath([]string{"localhost.localdomain"}),
+            "template",
+            AsEntryXpath([]string{tmpl}),
+        }
+    }
+
+    return []string{
+        "config",
+        "devices",
+        AsEntryXpath([]string{"localhost.localdomain"}),
+        "template-stack",
+        AsEntryXpath([]string{ts}),
+    }
 }
 
 // License defines a license entry.

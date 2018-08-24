@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/eth"
+	"github.com/PaloAltoNetworks/pango/netw/interface/eth"
 
 	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"

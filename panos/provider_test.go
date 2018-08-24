@@ -5,18 +5,24 @@ import (
 	"testing"
 
 	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/netw/interface/vlan"
+	"github.com/PaloAltoNetworks/pango/pnrm/template"
+	"github.com/PaloAltoNetworks/pango/version"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
 )
 
 var (
-	testAccProviders                     map[string]terraform.ResourceProvider
-	testAccProvider                      *schema.Provider
-	testAccIsFirewall, testAccIsPanorama bool
+	testAccProviders                                        map[string]terraform.ResourceProvider
+	testAccProvider                                         *schema.Provider
+	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2 bool
+	testAccPanosVersion                                     version.Number
 )
 
 func init() {
+	var err error
+
 	testAccProvider = Provider().(*schema.Provider)
 	testAccProviders = map[string]terraform.ResourceProvider{
 		"panos": testAccProvider,
@@ -34,11 +40,34 @@ func init() {
 		Logging:  pango.LogQuiet,
 	})
 	if err == nil {
-		switch con.(type) {
+		vt := vlan.Entry{
+			Name:    "vlan.42",
+			Comment: "acctest l2 check",
+		}
+		pt := template.Entry{
+			Name:        "accL2Chk",
+			Description: "acctest l2 check",
+		}
+		switch c := con.(type) {
 		case *pango.Firewall:
 			testAccIsFirewall = true
+			testAccPanosVersion = c.Versioning()
+
+			if err = c.Network.VlanInterface.Set("", vt); err == nil {
+				c.Network.VlanInterface.Delete(vt)
+				testAccSupportsL2 = true
+			}
 		case *pango.Panorama:
 			testAccIsPanorama = true
+			testAccPanosVersion = c.Versioning()
+
+			if err = c.Panorama.Template.Set(pt); err == nil {
+				if err = c.Network.VlanInterface.Set(pt.Name, "", "vsys1", vt); err == nil {
+					c.Network.VlanInterface.Delete(pt.Name, "", vt)
+					testAccSupportsL2 = true
+				}
+				c.Panorama.Template.Delete(pt)
+			}
 		}
 	}
 }

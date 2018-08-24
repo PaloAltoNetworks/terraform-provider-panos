@@ -1,6 +1,8 @@
 package pango
 
 import (
+    "encoding/xml"
+
     // Various namespace imports.
     "github.com/PaloAltoNetworks/pango/netw"
     "github.com/PaloAltoNetworks/pango/dev"
@@ -26,7 +28,7 @@ type Firewall struct {
     Client
 
     // Namespaces
-    Network *netw.Netw
+    Network *netw.FwNetw
     Device *dev.FwDev
     Policies *poli.FwPoli
     Objects *objs.FwObjs
@@ -64,10 +66,67 @@ func (c *Firewall) Initialize() error {
     return nil
 }
 
+// GetDhcpInfo returns the DHCP client information about the given interface.
+func (c *Firewall) GetDhcpInfo(i string) (map[string] string, error) {
+    c.LogOp("(op) show dhcp client state %q", i)
+
+    type ireq struct {
+        XMLName xml.Name `xml:"show"`
+        Val string `xml:"dhcp>client>state"`
+    }
+
+    type ireq_ans struct {
+        Interface string `xml:"result>entry>interface"`
+        State string `xml:"result>entry>state"`
+        Ip string `xml:"result>entry>ip"`
+        Gateway string `xml:"result>entry>gw"`
+        Server string `xml:"result>entry>server"`
+        ServerId string `xml:"result>entry>server-id"`
+        Dns1 string `xml:"result>entry>dns1"`
+        Dns2 string `xml:"result>entry>dns2"`
+        Wins1 string `xml:"result>entry>wins1"`
+        Wins2 string `xml:"result>entry>wins2"`
+        Nis1 string `xml:"result>entry>nis1"`
+        Nis2 string `xml:"result>entry>nis2"`
+        Ntp1 string `xml:"result>entry>ntp1"`
+        Ntp2 string `xml:"result>entry>ntp2"`
+        Pop3Server string `xml:"result>entry>pop3"`
+        SmtpServer string `xml:"result>entry>smtp"`
+        DnsSuffix string `xml:"result>entry>dns-suffix"`
+    }
+
+    req := ireq{Val: i}
+    ans := ireq_ans{}
+
+    if _, err := c.Op(req, "", nil, &ans); err != nil {
+        return nil, err
+    }
+
+    return map[string] string{
+        "interface": ans.Interface,
+        "state": ans.State,
+        "ip": ans.Ip,
+        "gateway": ans.Gateway,
+        "server": ans.Server,
+        "server_id": ans.ServerId,
+        "primary_dns": ans.Dns1,
+        "secondary_dns": ans.Dns2,
+        "primary_wins": ans.Wins1,
+        "secondary_wins": ans.Wins2,
+        "primary_nis": ans.Nis1,
+        "secondary_nis": ans.Nis2,
+        "primary_ntp": ans.Ntp1,
+        "secondary_ntp": ans.Ntp2,
+        "pop3_server": ans.Pop3Server,
+        "smtp_server": ans.SmtpServer,
+        "dns_suffix": ans.DnsSuffix,
+    }, nil
+}
+
 /** Private functions **/
 
 func (c *Firewall) initNamespaces() {
-    c.Network = &netw.Netw{}
+    c.Network = &netw.FwNetw{}
     c.Network.Initialize(c)
 
     c.Device = &dev.FwDev{}
