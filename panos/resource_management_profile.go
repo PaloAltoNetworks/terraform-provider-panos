@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/mngtprof"
+	"github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )

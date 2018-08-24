@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -9,6 +10,7 @@ import (
 const (
 	SkipPanoramaAccTest = "Skipping panorama test"
 	SkipFirewallAccTest = "Skipping firewall test"
+	SkipL2AccTest       = "Skipping L2 test for PAN-OS model that does not have L2 support"
 )
 
 func validateStringIn(vals ...string) schema.SchemaValidateFunc {
@@ -55,6 +57,17 @@ func validateSetKeyIsUnique(key string) schema.SchemaValidateFunc {
 			if cv > 1 {
 				errors = append(errors, fmt.Errorf("%q (%s) is not unique - repeated %d times", k, ck, cv))
 			}
+		}
+
+		return
+	}
+}
+
+func validateStringHasPrefix(p string) schema.SchemaValidateFunc {
+	return func(v interface{}, k string) (ws []string, errors []error) {
+		val := v.(string)
+		if !strings.HasPrefix(val, p) {
+			errors = append(errors, fmt.Errorf("Param value must start with %q", p))
 		}
 
 		return

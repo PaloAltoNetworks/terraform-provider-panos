@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/eth"
+	"github.com/PaloAltoNetworks/pango/netw/interface/eth"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -20,16 +21,14 @@ func resourceEthernetInterface() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The ethernet interface's name",
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The vsys to import this ethernet interface into",
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "vsys1",
 			},
 			"mode": &schema.Schema{
 				Type:         schema.TypeString,
@@ -184,9 +183,17 @@ func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 		}
 		return err
 	}
+	rv, err := fw.IsImported(util.InterfaceImport, "", "", vsys, name)
+	if err != nil {
+		return err
+	}
 
 	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
+	if rv {
+		d.Set("vsys", vsys)
+	} else {
+		d.Set("vsys", fmt.Sprintf("(not %s)", vsys))
+	}
 	d.Set("mode", o.Mode)
 	if err = d.Set("static_ips", o.StaticIps); err != nil {
 		log.Printf("[WARN] Error setting 'static_ips' for %q: %s", d.Id(), err)
@@ -232,10 +239,9 @@ func updateEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 
 func deleteEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	vsys := d.Get("vsys").(string)
-	name := d.Get("name").(string)
+	_, name := parseEthernetInterfaceId(d.Id())
 
-	err := fw.Network.EthernetInterface.Delete(vsys, name)
+	err := fw.Network.EthernetInterface.Delete(name)
 	if err != nil {
 		e2, ok := err.(pango.PanosError)
 		if !ok || !e2.ObjectNotFound() {

@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/router"
+	"github.com/PaloAltoNetworks/pango/netw/routing/router"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -20,17 +21,13 @@ func resourceVirtualRouter() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The virtual router's name",
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to import this virtual router into",
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"interfaces": &schema.Schema{
 				Type:     schema.TypeList,
@@ -150,9 +147,17 @@ func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 		}
 		return err
 	}
+	rv, err := fw.IsImported(util.VirtualRouterImport, "", "", vsys, name)
+	if err != nil {
+		return err
+	}
 
 	d.Set("name", o.Name)
-	d.Set("vsys", vsys)
+	if rv {
+		d.Set("vsys", vsys)
+	} else {
+		d.Set("vsys", fmt.Sprintf("(not %s)", vsys))
+	}
 	if err := d.Set("interfaces", o.Interfaces); err != nil {
 		log.Printf("[WARN] Error setting 'interfaces' for %q: %s", d.Id(), err)
 	}
@@ -190,13 +195,12 @@ func updateVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 func deleteVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	var err error
 	fw := meta.(*pango.Firewall)
-	vsys := d.Get("vsys").(string)
-	name := d.Get("name").(string)
+	_, name := parseVirtualRouterId(d.Id())
 
 	if name == "default" {
-		err = fw.Network.VirtualRouter.CleanupDefault(vsys)
+		err = fw.Network.VirtualRouter.CleanupDefault()
 	} else {
-		err = fw.Network.VirtualRouter.Delete(vsys, name)
+		err = fw.Network.VirtualRouter.Delete(name)
 	}
 	if err != nil {
 		e2, ok := err.(pango.PanosError)

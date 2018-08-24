@@ -6,6 +6,7 @@ import (
 
     "github.com/PaloAltoNetworks/pango/objs/addr"
     "github.com/PaloAltoNetworks/pango/objs/addrgrp"
+    "github.com/PaloAltoNetworks/pango/objs/edl"
     "github.com/PaloAltoNetworks/pango/objs/srvc"
     "github.com/PaloAltoNetworks/pango/objs/srvcgrp"
     "github.com/PaloAltoNetworks/pango/objs/tags"
@@ -16,6 +17,7 @@ import (
 type PanoObjs struct {
     Address *addr.PanoAddr
     AddressGroup *addrgrp.PanoAddrGrp
+    Edl *edl.PanoEdl
     Services *srvc.PanoSrvc
     ServiceGroup *srvcgrp.PanoSrvcGrp
     Tags *tags.PanoTags
@@ -28,6 +30,9 @@ func (c *PanoObjs) Initialize(i util.XapiClient) {
 
     c.AddressGroup = &addrgrp.PanoAddrGrp{}
     c.AddressGroup.Initialize(i)
+
+    c.Edl = &edl.PanoEdl{}
+    c.Edl.Initialize(i)
 
     c.Services = &srvc.PanoSrvc{}
     c.Services.Initialize(i)

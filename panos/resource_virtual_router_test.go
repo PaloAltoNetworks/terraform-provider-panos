@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/router"
+	"github.com/PaloAltoNetworks/pango/netw/routing/router"
 
 	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"

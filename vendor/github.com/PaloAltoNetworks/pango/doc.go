@@ -84,7 +84,7 @@ it into vsys1 if it isn't already present:
     import (
         "log"
         "github.com/PaloAltoNetworks/pango"
-        "github.com/PaloAltoNetworks/pango/netw/eth"
+        "github.com/PaloAltoNetworks/pango/netw/interface/eth"
     )
     
     func main() {

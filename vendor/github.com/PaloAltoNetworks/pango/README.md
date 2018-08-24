@@ -71,7 +71,7 @@ package main
 import (
     "log"
     "github.com/PaloAltoNetworks/pango"
-    "github.com/PaloAltoNetworks/pango/netw/eth"
+    "github.com/PaloAltoNetworks/pango/netw/interface/eth"
 )
 
 func main() {
