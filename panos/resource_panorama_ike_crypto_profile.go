@@ -1,0 +1,187 @@
+package panos
+
+import (
+	"fmt"
+	"log"
+	"strings"
+
+	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/netw/profile/ike"
+
+	"github.com/hashicorp/terraform/helper/schema"
+)
+
+func resourcePanoramaIkeCryptoProfile() *schema.Resource {
+	return &schema.Resource{
+		Create: createPanoramaIkeCryptoProfile,
+		Read:   readPanoramaIkeCryptoProfile,
+		Update: updatePanoramaIkeCryptoProfile,
+		Delete: deletePanoramaIkeCryptoProfile,
+
+		Schema: map[string]*schema.Schema{
+			"name": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
+			},
+			"template": &schema.Schema{
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"template_stack"},
+			},
+			"template_stack": &schema.Schema{
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"template"},
+			},
+			"dh_groups": &schema.Schema{
+				Type:     schema.TypeList,
+				Required: true,
+				MinItems: 1,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validateStringHasPrefix("group"),
+				},
+			},
+			"authentications": &schema.Schema{
+				Type:     schema.TypeList,
+				Required: true,
+				MinItems: 1,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"encryptions": &schema.Schema{
+				Type:     schema.TypeList,
+				Required: true,
+				MinItems: 1,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validateStringIn(ike.EncryptionDes, ike.Encryption3des, ike.EncryptionAes128, ike.EncryptionAes192, ike.EncryptionAes256),
+				},
+			},
+			"lifetime_type": &schema.Schema{
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      ike.TimeHours,
+				ValidateFunc: validateStringIn(ike.TimeSeconds, ike.TimeMinutes, ike.TimeHours, ike.TimeDays),
+			},
+			"lifetime_value": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"authentication_multiple": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+		},
+	}
+}
+
+func parsePanoramaIkeCryptoProfile(d *schema.ResourceData) (string, string, ike.Entry) {
+	tmpl := d.Get("template").(string)
+	ts := d.Get("template_stack").(string)
+
+	o := ike.Entry{
+		Name:                   d.Get("name").(string),
+		DhGroup:                asStringList(d.Get("dh_groups").([]interface{})),
+		Authentication:         asStringList(d.Get("authentications").([]interface{})),
+		Encryption:             asStringList(d.Get("encryptions").([]interface{})),
+		LifetimeType:           d.Get("lifetime_type").(string),
+		LifetimeValue:          d.Get("lifetime_value").(int),
+		AuthenticationMultiple: d.Get("authentication_multiple").(int),
+	}
+
+	return tmpl, ts, o
+}
+
+func parsePanoramaIkeCryptoProfileId(v string) (string, string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1], t[2]
+}
+
+func buildPanoramaIkeCryptoProfileId(a, b, c string) string {
+	return fmt.Sprintf("%s%s%s%s%s", a, IdSeparator, b, IdSeparator, c)
+}
+
+func createPanoramaIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
+	pano := meta.(*pango.Panorama)
+	tmpl, ts, o := parsePanoramaIkeCryptoProfile(d)
+
+	if err := pano.Network.IkeCryptoProfile.Set(tmpl, ts, o); err != nil {
+		return err
+	}
+
+	d.SetId(buildPanoramaIkeCryptoProfileId(tmpl, ts, o.Name))
+	return readPanoramaIkeCryptoProfile(d, meta)
+}
+
+func readPanoramaIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	pano := meta.(*pango.Panorama)
+	tmpl, ts, name := parsePanoramaIkeCryptoProfileId(d.Id())
+
+	o, err := pano.Network.IkeCryptoProfile.Get(tmpl, ts, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if ok && e2.ObjectNotFound() {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	d.Set("name", name)
+	d.Set("template", tmpl)
+	d.Set("template_stack", ts)
+	if err = d.Set("dh_groups", o.DhGroup); err != nil {
+		log.Printf("[WARN] Error setting 'dh_groups' for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("authentications", o.Authentication); err != nil {
+		log.Printf("[WARN] Error setting 'authentications' for %q: %s", d.Id(), err)
+	}
+	if err = d.Set("encryptions", o.Encryption); err != nil {
+		log.Printf("[WARN] Error setting 'encryptions' for %q: %s", d.Id(), err)
+	}
+	d.Set("lifetime_type", o.LifetimeType)
+	d.Set("lifetime_value", o.LifetimeValue)
+	d.Set("authentication_multiple", o.AuthenticationMultiple)
+
+	return nil
+}
+
+func updatePanoramaIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	pano := meta.(*pango.Panorama)
+	tmpl, ts, o := parsePanoramaIkeCryptoProfile(d)
+
+	lo, err := pano.Network.IkeCryptoProfile.Get(tmpl, ts, o.Name)
+	if err != nil {
+		return err
+	}
+	lo.Copy(o)
+	if err = pano.Network.IkeCryptoProfile.Edit(tmpl, ts, lo); err != nil {
+		return err
+	}
+
+	return readPanoramaIkeCryptoProfile(d, meta)
+}
+
+func deletePanoramaIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
+	pano := meta.(*pango.Panorama)
+	tmpl, ts, name := parsePanoramaIkeCryptoProfileId(d.Id())
+
+	err := pano.Network.IkeCryptoProfile.Delete(tmpl, ts, name)
+	if err != nil {
+		e2, ok := err.(pango.PanosError)
+		if !ok || !e2.ObjectNotFound() {
+			return err
+		}
+	}
+	d.SetId("")
+	return nil
+}
