@@ -87,6 +87,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_security_rule_group":  resourcePanoramaSecurityRuleGroup(),
 			"panos_panorama_service_group":        resourcePanoramaServiceGroup(),
 			"panos_panorama_service_object":       resourcePanoramaServiceObject(),
+			"panos_panorama_tunnel_interface":     resourcePanoramaTunnelInterface(),
 
 			// Panorama aliases.
 			"panos_panorama_nat_policy":            resourcePanoramaNatRule(),
@@ -109,6 +110,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_service_group":        resourceServiceGroup(),
 			"panos_service_object":       resourceServiceObject(),
 			"panos_telemetry":            resourceTelemetry(),
+			"panos_tunnel_interface":     resourceTunnelInterface(),
 			"panos_virtual_router":       resourceVirtualRouter(),
 			"panos_zone":                 resourceZone(),
 
