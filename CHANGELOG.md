@@ -8,6 +8,7 @@ NEW RESOURCES:
 
 * `panos_ike_crypto_profile` and `panos_panorama_ike_crypto_profile` [GH-37]
 * `panos_ipsec_crypto_profile` and `panos_panorama_ipsec_crypto_profile` [GH-38]
+* `panos_tunnel_interface` and `panos_panorama_tunnel_interface` [GH-42]
 
 ## 1.3.0 (June 27, 2018)
 
