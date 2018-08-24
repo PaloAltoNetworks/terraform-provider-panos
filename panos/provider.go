@@ -90,6 +90,11 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_service_group":        resourcePanoramaServiceGroup(),
 			"panos_panorama_service_object":       resourcePanoramaServiceObject(),
 			"panos_panorama_static_route_ipv4":    resourcePanoramaStaticRouteIpv4(),
+			"panos_panorama_template":             resourcePanoramaTemplate(),
+			"panos_panorama_template_entry":       resourcePanoramaTemplateEntry(),
+			"panos_panorama_template_stack":       resourcePanoramaTemplateStack(),
+			"panos_panorama_template_stack_entry": resourcePanoramaTemplateStackEntry(),
+			"panos_panorama_template_variable":    resourcePanoramaTemplateVariable(),
 			"panos_panorama_tunnel_interface":     resourcePanoramaTunnelInterface(),
 			"panos_panorama_vlan_interface":       resourcePanoramaVlanInterface(),
 
