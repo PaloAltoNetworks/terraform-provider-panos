@@ -10,6 +10,7 @@ NEW RESOURCES:
 * `panos_ipsec_crypto_profile` and `panos_panorama_ipsec_crypto_profile` [GH-38]
 * `panos_tunnel_interface` and `panos_panorama_tunnel_interface` [GH-42]
 * `panos_edl` and `panos_panorama_edl` [GH-27]
+* `panos_loopback_interface` and `panos_panorama_loopback_interface` [GH-41]
 
 ## 1.3.0 (June 27, 2018)
 
