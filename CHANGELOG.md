@@ -11,6 +11,7 @@ NEW RESOURCES:
 * `panos_tunnel_interface` and `panos_panorama_tunnel_interface` [GH-42]
 * `panos_edl` and `panos_panorama_edl` [GH-27]
 * `panos_loopback_interface` and `panos_panorama_loopback_interface` [GH-41]
+* `panos_vlan_interface` and `panos_panorama_vlan_interface` [GH-40]
 
 ## 1.3.0 (June 27, 2018)
 
