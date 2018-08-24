@@ -29,10 +29,14 @@ func TestAccPanosTemplateEntry_basic(t *testing.T) {
 	serial := os.Getenv("PANOS_MANAGED_SERIAL_NUMBER")
 	vsys1 := os.Getenv("PANOS_MANAGED_VSYS1")
 	vsys2 := os.Getenv("PANOS_MANAGED_VSYS2")
+    versionRemoved := version.Number{
+        Major: 8,
+        Minor: 1,
+    }
 
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
-	} else if testAccPanosVersion.Gte(version.Number{8, 1, 0, ""}) {
+	} else if testAccPanosVersion.Gte(versionRemoved) {
 		t.Skip("This test is only valid for PAN-OS < 8.1.0.")
 	} else if serial == "" || vsys1 == "" || vsys2 == "" {
 		t.Skip("One or more required env variables are unset (PANOS_MANAGED_SERIAL_NUMBER, PANOS_MANAGED_VSYS1, PANOS_MANAGED_VSYS2")

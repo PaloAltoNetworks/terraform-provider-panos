@@ -14,9 +14,14 @@ import (
 )
 
 func TestAccPanosPanoramaTemplateVariable_basic(t *testing.T) {
+    versionAdded := version.Number{
+        Major: 8,
+        Minor: 1,
+    }
+
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
-	} else if !testAccPanosVersion.Gte(version.Number{8, 1, 0, ""}) {
+	} else if !testAccPanosVersion.Gte(versionAdded) {
 		t.Skip("Template variables are available in PAN-OS 8.1+")
 	}
 
