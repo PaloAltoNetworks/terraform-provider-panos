@@ -1,4 +1,13 @@
 ## 1.4.0 (Unreleased)
+
+NEW FEATURES:
+
+* Support for both templates and template stacks has been added to the provider.  When defining your resource, use either the `template` variable if you want to attach it to a template, or `template_stack` if you want to attach it to a template stack.
+
+NEW RESOURCES:
+
+* `panos_ike_crypto_profile` and `panos_panorama_ike_crypto_profile` [GH-37]
+
 ## 1.3.0 (June 27, 2018)
 
 RENAMED RESOURCES:
