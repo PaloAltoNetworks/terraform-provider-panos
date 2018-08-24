@@ -13,6 +13,7 @@ NEW RESOURCES:
 * `panos_loopback_interface` and `panos_panorama_loopback_interface` [GH-41]
 * `panos_vlan_interface` and `panos_panorama_vlan_interface` [GH-40]
 * `panos_static_route_ipv4` and `panos_panorama_static_route_ipv4` [GH-30]
+* `panos_panorama_template`, `panos_panorama_template_entry`, `panos_panorama_template_stack`, `panos_panorama_template_stack_entry`, and `panos_panorama_template_variable` [GH-43]
 
 ## 1.3.0 (June 27, 2018)
 
