@@ -80,8 +80,8 @@ func testAccCheckPanosPanoramaTemplateVariableExists(n string, o *variable.Entry
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		tmpl, name := parsePanoramaTemplateVariableId(rs.Primary.ID)
-		v, err := pano.Panorama.TemplateVariable.Get(tmpl, name)
+		tmpl, ts, name := parsePanoramaTemplateVariableId(rs.Primary.ID)
+		v, err := pano.Panorama.TemplateVariable.Get(tmpl, ts, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
 		}
@@ -119,8 +119,8 @@ func testAccPanosPanoramaTemplateVariableDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			tmpl, name := parsePanoramaTemplateVariableId(rs.Primary.ID)
-			if _, err := pano.Panorama.TemplateVariable.Get(tmpl, name); err == nil {
+			tmpl, ts, name := parsePanoramaTemplateVariableId(rs.Primary.ID)
+			if _, err := pano.Panorama.TemplateVariable.Get(tmpl, ts, name); err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
 		}
