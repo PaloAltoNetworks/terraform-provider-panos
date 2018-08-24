@@ -89,6 +89,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_security_rule_group":  resourcePanoramaSecurityRuleGroup(),
 			"panos_panorama_service_group":        resourcePanoramaServiceGroup(),
 			"panos_panorama_service_object":       resourcePanoramaServiceObject(),
+			"panos_panorama_static_route_ipv4":    resourcePanoramaStaticRouteIpv4(),
 			"panos_panorama_tunnel_interface":     resourcePanoramaTunnelInterface(),
 			"panos_panorama_vlan_interface":       resourcePanoramaVlanInterface(),
 
@@ -114,6 +115,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_security_rule_group":  resourceSecurityRuleGroup(),
 			"panos_service_group":        resourceServiceGroup(),
 			"panos_service_object":       resourceServiceObject(),
+			"panos_static_route_ipv4":    resourceStaticRouteIpv4(),
 			"panos_telemetry":            resourceTelemetry(),
 			"panos_tunnel_interface":     resourceTunnelInterface(),
 			"panos_virtual_router":       resourceVirtualRouter(),
