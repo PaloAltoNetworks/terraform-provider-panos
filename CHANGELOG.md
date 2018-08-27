@@ -22,6 +22,7 @@ NEW RESOURCES:
 * `panos_panorama_management_profile` [GH-58]
 * `panos_panorama_ethernet_interface` [GH-60]
 * `panos_panorama_zone` [GH-62]
+* `panos_panorama_virtual_router` [GH-64]
 
 ## 1.3.0 (June 27, 2018)
 
