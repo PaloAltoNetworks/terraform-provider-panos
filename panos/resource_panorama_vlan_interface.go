@@ -27,16 +27,9 @@ func resourcePanoramaVlanInterface() *schema.Resource {
 				ValidateFunc: validateStringHasPrefix("vlan."),
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
 				Type:     schema.TypeString,
@@ -106,7 +99,6 @@ func buildPanoramaVlanInterfaceId(a, b, c, d string) string {
 
 func parsePanoramaVlanInterface(d *schema.ResourceData) (string, string, string, vlan.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	vsys := d.Get("vsys").(string)
 
 	o := vlan.Entry{
@@ -124,7 +116,7 @@ func parsePanoramaVlanInterface(d *schema.ResourceData) (string, string, string,
 		Ipv6MssAdjust:          d.Get("ipv6_mss_adjust").(int),
 	}
 
-	return tmpl, ts, vsys, o
+	return tmpl, "", vsys, o
 }
 
 func createPanoramaVlanInterface(d *schema.ResourceData, meta interface{}) error {
@@ -159,6 +151,7 @@ func readPanoramaVlanInterface(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	d.Set("template", tmpl)
 	d.Set("name", o.Name)
 	if rv {
 		d.Set("vsys", vsys)
