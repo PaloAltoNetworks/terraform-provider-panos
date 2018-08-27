@@ -114,6 +114,8 @@ func Provider() terraform.ResourceProvider {
 			"panos_general_settings":     resourceGeneralSettings(),
 			"panos_ike_crypto_profile":   resourceIkeCryptoProfile(),
 			"panos_ipsec_crypto_profile": resourceIpsecCryptoProfile(),
+			"panos_license_api_key":      resourceLicenseApiKey(),
+			"panos_licensing":            resourceLicensing(),
 			"panos_loopback_interface":   resourceLoopbackInterface(),
 			"panos_management_profile":   resourceManagementProfile(),
 			"panos_nat_rule":             resourceNatRule(),
