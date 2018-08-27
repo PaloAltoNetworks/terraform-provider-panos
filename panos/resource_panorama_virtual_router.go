@@ -26,16 +26,9 @@ func resourcePanoramaVirtualRouter() *schema.Resource {
 				ForceNew: true,
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
 				Type:     schema.TypeString,
@@ -119,7 +112,6 @@ func buildPanoramaVirtualRouterId(a, b, c, d string) string {
 
 func parsePanoramaVirtualRouter(d *schema.ResourceData) (string, string, string, router.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	vsys := d.Get("vsys").(string)
 
 	o := router.Entry{
@@ -136,7 +128,7 @@ func parsePanoramaVirtualRouter(d *schema.ResourceData) (string, string, string,
 		RipDist:        d.Get("rip_dist").(int),
 	}
 
-	return tmpl, ts, vsys, o
+	return tmpl, "", vsys, o
 }
 
 func createPanoramaVirtualRouter(d *schema.ResourceData, meta interface{}) error {

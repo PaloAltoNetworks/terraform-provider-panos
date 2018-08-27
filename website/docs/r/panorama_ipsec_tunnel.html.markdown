@@ -9,7 +9,7 @@ description: |-
 # panos_panorama_ipsec_tunnel
 
 This resource allows you to add/update/delete Panorama IPSec tunnels
-for both templates and template stacks.
+for templates.
 
 A large number of params have prefixes:
 
@@ -32,14 +32,10 @@ resource "panos_panorama_ipsec_tunnel" "example" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
 * `name` - (Required) The object's name
+* `template` - (Required) The template name.
 * `tunnel_interface` - (Required) The tunnel interface.
 * `anti_replay` - (Optional, bool) Set to `true` to enable Anti-Replay check
   on this tunnel.

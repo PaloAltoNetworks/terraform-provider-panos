@@ -23,16 +23,9 @@ func resourcePanoramaIpsecTunnelProxyIdIpv4() *schema.Resource {
 				ForceNew: true,
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"ipsec_tunnel": &schema.Schema{
 				Type:     schema.TypeString,
@@ -77,7 +70,6 @@ func resourcePanoramaIpsecTunnelProxyIdIpv4() *schema.Resource {
 
 func parsePanoramaIpsecTunnelProxyIdIpv4(d *schema.ResourceData) (string, string, string, ipv4.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	tun := d.Get("ipsec_tunnel").(string)
 
 	o := ipv4.Entry{
@@ -92,7 +84,7 @@ func parsePanoramaIpsecTunnelProxyIdIpv4(d *schema.ResourceData) (string, string
 		ProtocolUdpRemote: d.Get("protocol_udp_remote").(int),
 	}
 
-	return tmpl, ts, tun, o
+	return tmpl, "", tun, o
 }
 
 func parsePanoramaIpsecTunnelProxyIdIpv4Id(v string) (string, string, string, string) {
@@ -133,7 +125,6 @@ func readPanoramaIpsecTunnelProxyIdIpv4(d *schema.ResourceData, meta interface{}
 	}
 
 	d.Set("template", tmpl)
-	d.Set("template_stack", ts)
 	d.Set("name", o.Name)
 	d.Set("ipsec_tunnel", tun)
 	d.Set("local", o.Local)

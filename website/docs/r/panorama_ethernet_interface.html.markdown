@@ -9,7 +9,7 @@ description: |-
 # panos_panorama_ethernet_interface
 
 This resource allows you to add/update/delete Panorama ethernet interfaces
-for both templates and template stacks.
+for templates.
 
 ## Example Usage
 
@@ -27,7 +27,7 @@ resource "panos_panorama_ethernet_interface" "example1" {
 # Configure a DHCP ethernet interface for vsys1 to use.
 resource "panos_panorama_ethernet_interface" "example2" {
     name = "ethernet1/4"
-    template_stack = "bar"
+    template = "bar"
     mode = "layer3"
     enable_dhcp = true
     create_dhcp_default_route = true
@@ -37,15 +37,11 @@ resource "panos_panorama_ethernet_interface" "example2" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
 * `name` - (Required) The ethernet interface's name.  This should be something
   like `ethernet1/X`.
+* `template` - (Required) The template name.
 * `vsys` - (Optional) The vsys that will use this interface (default:
   `vsys1`).  This should be something like `vsys1` or `vsys3`.
 * `mode` - (Required) The interface mode.  This can be any of the following

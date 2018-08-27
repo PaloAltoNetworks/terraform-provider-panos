@@ -24,16 +24,9 @@ func resourcePanoramaIpsecTunnel() *schema.Resource {
 				ForceNew: true,
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"tunnel_interface": &schema.Schema{
 				Type:     schema.TypeString,
@@ -205,7 +198,6 @@ func resourcePanoramaIpsecTunnel() *schema.Resource {
 
 func parsePanoramaIpsecTunnel(d *schema.ResourceData) (string, string, ipsectunnel.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 
 	o := ipsectunnel.Entry{
 		Name:                       d.Get("name").(string),
@@ -247,7 +239,7 @@ func parsePanoramaIpsecTunnel(d *schema.ResourceData) (string, string, ipsectunn
 		TunnelMonitorProxyId:       d.Get("tunnel_monitor_proxy_id").(string),
 	}
 
-	return tmpl, ts, o
+	return tmpl, "", o
 }
 
 func buildPanoramaIpsecTunnelId(a, b, c string) string {
@@ -297,7 +289,6 @@ func readPanoramaIpsecTunnel(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	d.Set("template", tmpl)
-	d.Set("template_stack", ts)
 	d.Set("tunnel_interface", o.TunnelInterface)
 	d.Set("anti_replay", o.AntiReplay)
 	d.Set("enable_ipv6", o.EnableIpv6)

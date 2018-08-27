@@ -9,7 +9,7 @@ description: |-
 # panos_panorama_ipsec_tunnel_proxy_id_ipv4
 
 This resource allows you to add/update/delete Panorama IPSec tunnel proxy IDs
-to a parent auto key IPSec tunnel for both templates and template stacks.
+to a parent auto key IPSec tunnel for templates.
 
 ## Example Usage
 
@@ -26,13 +26,9 @@ resource "panos_panorama_ipsec_tunnel_proxy_id_ipv4" "example" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
+* `template` - (Required) The template name.
 * `name` - (Required) The object's name
 * `ipsec_tunnel` - (Required) The auto key IPSec tunnel to attach this 
   proxy ID to.

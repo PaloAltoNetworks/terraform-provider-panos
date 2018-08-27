@@ -9,14 +9,14 @@ description: |-
 # panos_panorama_tunnel_interface
 
 This resource allows you to add/update/delete Panorama tunnel interfaces
-for templates and template stacks.
+for templates.
 
 ## Example Usage
 
 ```hcl
 resource "panos_panorama_tunnel_interface" "example1" {
     name = "tunnel.5"
-    template_stack = "foo"
+    template = "foo"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
 }
@@ -24,14 +24,10 @@ resource "panos_panorama_tunnel_interface" "example1" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
 * `name` - (Required) The interface's name.  This must start with `tunnel.`.
+* `template` - (Required) The template name.
 * `vsys` - (Optional) The vsys that will use this interface (default: `vsys1`).
 * `comment` - (Optional) The interface comment.
 * `netflow_profile` - (Optional) The netflow profile.

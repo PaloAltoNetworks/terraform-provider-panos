@@ -9,7 +9,7 @@ description: |-
 # panos_panorama_virtual_router
 
 This resource allows you to add/update/delete Panorama virtual routers
-for both templates and template statcks.
+for templates.
 
 **Note** - The `default` virtual router may be configured with this resource,
 however it will not be deleted from the firewall.  It will only be unexported
@@ -30,14 +30,10 @@ resource "panos_panorama_virtual_router" "example" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
 * `name` - (Required) The virtual router's name.
+* `template` - (Required) The template name.
 * `vsys` - (Required) The vsys that will use this virtual router.  This should
   be something like `vsys1` or `vsys3`.
 * `interfaces` - (Optional) List of interfaces that should use this virtual

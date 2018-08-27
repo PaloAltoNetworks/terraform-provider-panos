@@ -27,16 +27,9 @@ func resourcePanoramaTunnelInterface() *schema.Resource {
 				ValidateFunc: validateStringHasPrefix("tunnel."),
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
 				Type:     schema.TypeString,
@@ -82,7 +75,6 @@ func buildPanoramaTunnelInterfaceId(a, b, c, d string) string {
 
 func parsePanoramaTunnelInterface(d *schema.ResourceData) (string, string, string, tunnel.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	vsys := d.Get("vsys").(string)
 
 	o := tunnel.Entry{
@@ -94,7 +86,7 @@ func parsePanoramaTunnelInterface(d *schema.ResourceData) (string, string, strin
 		Mtu:               d.Get("mtu").(int),
 	}
 
-	return tmpl, ts, vsys, o
+	return tmpl, "", vsys, o
 }
 
 func createPanoramaTunnelInterface(d *schema.ResourceData, meta interface{}) error {
@@ -130,7 +122,6 @@ func readPanoramaTunnelInterface(d *schema.ResourceData, meta interface{}) error
 	}
 
 	d.Set("template", tmpl)
-	d.Set("template_stack", ts)
 	d.Set("name", o.Name)
 	if rv {
 		d.Set("vsys", vsys)

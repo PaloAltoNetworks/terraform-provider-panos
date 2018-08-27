@@ -27,16 +27,9 @@ func resourcePanoramaLoopbackInterface() *schema.Resource {
 				ValidateFunc: validateStringHasPrefix("loopback."),
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
 				Type:     schema.TypeString,
@@ -94,7 +87,6 @@ func buildPanoramaLoopbackInterfaceId(a, b, c, d string) string {
 
 func parsePanoramaLoopbackInterface(d *schema.ResourceData) (string, string, string, loopback.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	vsys := d.Get("vsys").(string)
 
 	o := loopback.Entry{
@@ -109,7 +101,7 @@ func parsePanoramaLoopbackInterface(d *schema.ResourceData) (string, string, str
 		Ipv6MssAdjust:     d.Get("ipv6_mss_adjust").(int),
 	}
 
-	return tmpl, ts, vsys, o
+	return tmpl, "", vsys, o
 }
 
 func createPanoramaLoopbackInterface(d *schema.ResourceData, meta interface{}) error {
@@ -146,7 +138,6 @@ func readPanoramaLoopbackInterface(d *schema.ResourceData, meta interface{}) err
 
 	d.Set("name", o.Name)
 	d.Set("template", tmpl)
-	d.Set("template_stack", ts)
 	if rv {
 		d.Set("vsys", vsys)
 	} else {

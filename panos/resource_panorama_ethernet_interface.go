@@ -26,16 +26,9 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 				ForceNew: true,
 			},
 			"template": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
-			},
-			"template_stack": &schema.Schema{
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
 			},
 			"vsys": &schema.Schema{
 				Type:     schema.TypeString,
@@ -142,7 +135,6 @@ func buildPanoramaEthernetInterfaceId(a, b, c, d string) string {
 
 func parsePanoramaEthernetInterface(d *schema.ResourceData) (string, string, string, eth.Entry) {
 	tmpl := d.Get("template").(string)
-	ts := d.Get("template_stack").(string)
 	vsys := d.Get("vsys").(string)
 
 	o := eth.Entry{
@@ -168,7 +160,7 @@ func parsePanoramaEthernetInterface(d *schema.ResourceData) (string, string, str
 		Ipv6MssAdjust:          d.Get("ipv6_mss_adjust").(int),
 	}
 
-	return tmpl, ts, vsys, o
+	return tmpl, "", vsys, o
 }
 
 func createPanoramaEthernetInterface(d *schema.ResourceData, meta interface{}) error {
@@ -204,7 +196,6 @@ func readPanoramaEthernetInterface(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.Set("template", tmpl)
-	d.Set("template_stack", ts)
 	d.Set("name", o.Name)
 	if rv {
 		d.Set("vsys", vsys)
