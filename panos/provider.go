@@ -82,6 +82,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_device_group":         resourcePanoramaDeviceGroup(),
 			"panos_panorama_device_group_entry":   resourcePanoramaDeviceGroupEntry(),
 			"panos_panorama_edl":                  resourcePanoramaEdl(),
+			"panos_panorama_ethernet_interface":   resourcePanoramaEthernetInterface(),
 			"panos_panorama_ike_crypto_profile":   resourcePanoramaIkeCryptoProfile(),
 			"panos_panorama_ipsec_crypto_profile": resourcePanoramaIpsecCryptoProfile(),
 			"panos_panorama_loopback_interface":   resourcePanoramaLoopbackInterface(),
