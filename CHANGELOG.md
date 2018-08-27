@@ -20,6 +20,7 @@ NEW RESOURCES:
 * `panos_panorama_template`, `panos_panorama_template_entry`, `panos_panorama_template_stack`, `panos_panorama_template_stack_entry`, and `panos_panorama_template_variable` [GH-43]
 * `panos_license_api_key` and `panos_licensing` [GH-24]
 * `panos_panorama_management_profile` [GH-58]
+* `panos_panorama_ethernet_interface` [GH-60]
 
 ## 1.3.0 (June 27, 2018)
 
