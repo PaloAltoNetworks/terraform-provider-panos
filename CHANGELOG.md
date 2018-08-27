@@ -1,3 +1,4 @@
+## 1.4.1 (Unreleased)
 ## 1.4.0 (August 27, 2018)
 
 NEW FEATURES:
