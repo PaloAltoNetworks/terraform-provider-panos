@@ -85,6 +85,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_ike_crypto_profile":   resourcePanoramaIkeCryptoProfile(),
 			"panos_panorama_ipsec_crypto_profile": resourcePanoramaIpsecCryptoProfile(),
 			"panos_panorama_loopback_interface":   resourcePanoramaLoopbackInterface(),
+			"panos_panorama_management_profile":   resourcePanoramaManagementProfile(),
 			"panos_panorama_nat_rule":             resourcePanoramaNatRule(),
 			"panos_panorama_security_policy":      resourcePanoramaSecurityPolicy(),
 			"panos_panorama_security_rule_group":  resourcePanoramaSecurityRuleGroup(),
