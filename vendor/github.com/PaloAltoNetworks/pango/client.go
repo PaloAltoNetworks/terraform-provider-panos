@@ -1032,12 +1032,20 @@ func (c *Client) IsImported(loc, tmpl, ts, vsys, name string) (bool, error) {
 
     _, err := c.Get(path, nil, nil)
     if err == nil {
-        return true, nil
+        if vsys != "" {
+            return true, nil
+        } else {
+            return false, nil
+        }
     }
 
     e2, ok := err.(PanosError)
     if ok && e2.ObjectNotFound() {
-        return false, nil
+        if vsys != "" {
+            return false, nil
+        } else {
+            return true, nil
+        }
     }
 
     return false, err
