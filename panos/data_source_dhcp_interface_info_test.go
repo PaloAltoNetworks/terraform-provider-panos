@@ -11,13 +11,12 @@ import (
 func TestAccPanosDhcpInterfaceInfo(t *testing.T) {
 	// This acctest requires that an interface already be configured as DHCP,
 	// as this requires a commit and Terraform does not yet support commits.
-	ev := "PANOS_DHCP_INTERFACE"
-	di := os.Getenv(ev)
+	di := os.Getenv("PANOS_DHCP_INTERFACE")
 
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	} else if di == "" {
-		t.Skip("Env %s must be specified to run this acc test", ev)
+		t.Skip("Env PANOS_DHCP_INTERFACE must be specified to run this acc test")
 	}
 
 	resource.Test(t, resource.TestCase{
