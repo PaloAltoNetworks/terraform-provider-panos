@@ -99,6 +99,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_template_stack_entry": resourcePanoramaTemplateStackEntry(),
 			"panos_panorama_template_variable":    resourcePanoramaTemplateVariable(),
 			"panos_panorama_tunnel_interface":     resourcePanoramaTunnelInterface(),
+			"panos_panorama_virtual_router":       resourcePanoramaVirtualRouter(),
 			"panos_panorama_vlan_interface":       resourcePanoramaVlanInterface(),
 			"panos_panorama_zone":                 resourcePanoramaZone(),
 
