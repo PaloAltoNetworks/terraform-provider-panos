@@ -13,6 +13,7 @@ NEW RESOURCES:
 * `panos_ike_crypto_profile` and `panos_panorama_ike_crypto_profile` [GH-37]
 * `panos_ipsec_crypto_profile` and `panos_panorama_ipsec_crypto_profile` [GH-38]
 * `panos_tunnel_interface` and `panos_panorama_tunnel_interface` [GH-42]
+* `panos_ike_gateway` and `panos_panorama_ike_gateway` [GH-39]
 * `panos_edl` and `panos_panorama_edl` [GH-27]
 * `panos_loopback_interface` and `panos_panorama_loopback_interface` [GH-41]
 * `panos_vlan_interface` and `panos_panorama_vlan_interface` [GH-40]
