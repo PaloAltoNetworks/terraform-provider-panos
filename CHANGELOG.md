@@ -3,6 +3,7 @@
 BUG FIXES:
 
 * Panorama device groups no longer require a description. [GH-81]
+* Panorama template stacks can now define a `default_vsys` [GH-85]
 
 ## 1.4.0 (August 27, 2018)
 
