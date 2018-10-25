@@ -154,6 +154,7 @@ func (c *Template) Set(e ...Entry) error {
     // Build up the struct with the given configs.
     d := util.BulkElement{XMLName: xml.Name{Local: "template"}}
     for i := range e {
+        e[i].SetConfTree()
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
     }
@@ -179,6 +180,7 @@ func (c *Template) Edit(e Entry) error {
     _, fn := c.versioning()
 
     c.con.LogAction("(edit) template %q", e.Name)
+    e.SetConfTree()
 
     // Set xpath.
     path := c.xpath([]string{e.Name})

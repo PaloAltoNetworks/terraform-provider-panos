@@ -49,19 +49,19 @@ func (o *container_v1) Normalize() Entry {
         EnableUserId: util.AsBool(o.Answer.EnableUserId),
     }
     if o.Answer.L3 != nil {
-        ans.Mode = "layer3"
+        ans.Mode = ModeL3
         ans.Interfaces = o.Answer.L3.Interfaces
     } else if o.Answer.L2 != nil {
-        ans.Mode = "layer2"
+        ans.Mode = ModeL2
         ans.Interfaces = o.Answer.L2.Interfaces
     } else if o.Answer.VWire != nil {
-        ans.Mode = "virtual-wire"
+        ans.Mode = ModeVirtualWire
         ans.Interfaces = o.Answer.VWire.Interfaces
     } else if o.Answer.Tap != nil {
-        ans.Mode = "tap"
+        ans.Mode = ModeTap
         ans.Interfaces = o.Answer.Tap.Interfaces
     } else if o.Answer.External != nil {
-        ans.Mode = "external"
+        ans.Mode = ModeExternal
         ans.Interfaces = o.Answer.External.Interfaces
     }
     if o.Answer.IncludeAcls != nil {
@@ -106,15 +106,15 @@ func specify_v1(e Entry) interface{} {
     }
     il := &zoneInterfaceList{e.Interfaces}
     switch e.Mode {
-    case "layer2":
+    case ModeL2:
         ans.L2 = il
-    case "layer3":
+    case ModeL3:
         ans.L3 = il
-    case "virtual-wire":
+    case ModeVirtualWire:
         ans.VWire = il
-    case "tap":
+    case ModeTap:
         ans.Tap = il
-    case "external":
+    case ModeExternal:
         ans.External = il
     }
     if len(e.IncludeAcls) > 0 {
