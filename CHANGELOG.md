@@ -1,4 +1,9 @@
 ## 1.4.1 (Unreleased)
+
+BUG FIXES:
+
+* Panorama device groups no longer require a description. [GH-81]
+
 ## 1.4.0 (August 27, 2018)
 
 NEW FEATURES:
