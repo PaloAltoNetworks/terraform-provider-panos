@@ -11,6 +11,11 @@ description: |-
 This resource allows you to add/update/delete zones on Panorama for both
 templates and template stacks.
 
+This resource has some overlap with the `panos_panorama_zone_entry`
+resource.  If you want to use this resource with the other one, then make
+sure that your `panos_panorama_zone` spec does not define the
+`interfaces` field.
+
 ## Example Usage
 
 ```hcl

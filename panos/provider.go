@@ -105,6 +105,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_virtual_router":             resourcePanoramaVirtualRouter(),
 			"panos_panorama_vlan_interface":             resourcePanoramaVlanInterface(),
 			"panos_panorama_zone":                       resourcePanoramaZone(),
+			"panos_panorama_zone_entry":                 resourcePanoramaZoneEntry(),
 
 			// Panorama aliases.
 			"panos_panorama_nat_policy":            resourcePanoramaNatRule(),
@@ -139,6 +140,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_virtual_router":             resourceVirtualRouter(),
 			"panos_vlan_interface":             resourceVlanInterface(),
 			"panos_zone":                       resourceZone(),
+			"panos_zone_entry":                 resourceZoneEntry(),
 
 			// Firewall aliases.
 			"panos_nat_policy":            resourceNatRule(),
