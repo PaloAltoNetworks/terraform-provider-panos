@@ -1,5 +1,9 @@
 ## 1.4.1 (Unreleased)
 
+NEW FEATURES:
+
+* `panos_zone_entry` and `panos_panorama_zone_entry` [GH-74]
+
 BUG FIXES:
 
 * Panorama device groups no longer require a description. [GH-81]
