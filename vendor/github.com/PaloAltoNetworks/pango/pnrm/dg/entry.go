@@ -138,7 +138,7 @@ func (o *container_v1) Normalize() Entry {
 type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
-    Description string `xml:"description"`
+    Description string `xml:"description,omitempty"`
     Devices *util.VsysEntryType `xml:"devices"`
 
     Ao *util.RawXml `xml:"address"`

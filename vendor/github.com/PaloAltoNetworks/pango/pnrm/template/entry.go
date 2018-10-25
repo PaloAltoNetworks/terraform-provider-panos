@@ -35,6 +35,20 @@ func (o *Entry) Copy(s Entry) {
     o.Devices = s.Devices
 }
 
+// SetConfTree sets the conf internal variable such that the XML contains
+// the mandatory "/config" subelement tree.
+//
+// If a template is missing this, then it does not behave properly when
+// referenced from a template stack.
+func (o *Entry) SetConfTree() {
+    if _, present := o.raw["conf"]; !present {
+        if o.raw == nil {
+            o.raw = make(map[string] string)
+        }
+        o.raw["conf"] = "<devices><entry name='localhost.localdomain'><vsys><entry name='vsys1' /></vsys></entry></devices>"
+    }
+}
+
 /** Structs / functions for normalization. **/
 
 type normalizer interface {

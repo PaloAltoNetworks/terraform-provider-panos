@@ -1,13 +1,17 @@
 package pango
 
 import (
+    "bytes"
     "crypto/tls"
     "encoding/xml"
     "fmt"
+    "io"
     "io/ioutil"
     "log"
+    "mime/multipart"
     "net/http"
     "net/url"
+    "strings"
     "time"
 
     "github.com/PaloAltoNetworks/pango/version"
@@ -577,42 +581,84 @@ func (c *Client) Communicate(data url.Values, ans interface{}) ([]byte, error) {
     if err != nil {
         return nil, err
     }
-    if c.Logging & LogReceive == LogReceive {
-        log.Printf("Response = %s", body)
+
+    return c.endCommunication(body, ans)
+}
+
+// CommunicateFile does a file upload to PAN-OS.
+//
+// The content param is the content of the file you want to upload.
+//
+// The filename param is the basename of the file you want to specify in the
+// multipart form upload.
+//
+// The fp param is the name of the param for the file upload.
+//
+// The ans param should be a pointer to a struct to unmarshal the response
+// into or nil.
+//
+// Any response received from the server is returned, along with any errors
+// encountered.
+//
+// Even if an answer struct is given, we first check for known error formats.  If
+// a known error format is detected, unmarshalling into the answer struct is not
+// performed.
+//
+// If the API key is set, but not present in the given data, then it is added in.
+func (c *Client) CommunicateFile(content, filename, fp string, data url.Values, ans interface{}) ([]byte, error) {
+    var err error
+
+    if c.ApiKey != "" && data.Get("key") == "" {
+        data.Set("key", c.ApiKey)
     }
 
-    // Check for errors first
-    errType1 := &panosErrorResponseWithoutLine{}
-    err = xml.Unmarshal(body, errType1)
-    // At this point, we make use of the shared error error checking that exists
-    // between response types.  If the first response is not an error type, we
-    // don't have to check the others.  We can get some modest speed gains as
-    // a result.
-    if errType1.Failed() {
-        if err == nil && errType1.Error() != "" {
-            return body, PanosError{errType1.Error(), errType1.ResponseCode}
+    if c.Logging & LogSend == LogSend {
+        old_key := data.Get("key")
+        if old_key != "" {
+            data.Set("key", "########")
         }
-        errType2 := panosErrorResponseWithLine{}
-        err = xml.Unmarshal(body, &errType2)
-        if err == nil && errType2.Error() != "" {
-            return body, PanosError{errType2.Error(), errType2.ResponseCode}
+        log.Printf("Sending data: %#v", data)
+        if old_key != "" {
+            data.Set("key", old_key)
         }
-        // Still an error, but some unknown format.
-        return body, fmt.Errorf("Unknown error format: %s", body)
     }
 
-    // Return the body string if we weren't given something to unmarshal into
-    if ans == nil {
-        return body, nil
+    buf := bytes.Buffer{}
+    w := multipart.NewWriter(&buf)
+
+    for k := range data {
+        w.WriteField(k, data.Get(k))
     }
 
-    // Unmarshal using the struct passed in
-    err = xml.Unmarshal(body, ans)
+    w2, err := w.CreateFormFile(fp, filename)
     if err != nil {
-        return body, fmt.Errorf("Error unmarshaling into provided interface: %s", err)
+        return nil, err
     }
 
-    return body, nil
+    if _, err = io.Copy(w2, strings.NewReader(content)); err != nil {
+        return nil, err
+    }
+
+    w.Close()
+
+    req, err := http.NewRequest("POST", c.api_url, &buf)
+    if err != nil {
+        return nil, err
+    }
+    req.Header.Set("Content-Type", w.FormDataContentType())
+
+    res, err := c.con.Do(req)
+    if err != nil {
+        return nil, err
+    }
+
+    defer res.Body.Close()
+    body, err := ioutil.ReadAll(res.Body)
+    if err != nil {
+        return nil, err
+    }
+
+    return c.endCommunication(body, ans)
 }
 
 // Op runs an operational or "op" type command.
@@ -818,6 +864,36 @@ func (c *Client) Uid(cmd interface{}, vsys string, extras, ans interface{}) ([]b
     }
 
     return c.Communicate(data, ans)
+}
+
+// Import performs an import type command.
+//
+// The cat param is the category.
+//
+// The content param is the content of the file you want to upload.
+//
+// The filename param is the basename of the file you want to specify in the
+// multipart form upload.
+//
+// The fp param is the name of the param for the file upload.
+//
+// The extras param is any additional key/value file upload params.
+//
+// The ans param should be a pointer to a struct to unmarshal the response
+// into or nil.
+//
+// Any response received from the server is returned, along with any errors
+// encountered.
+func (c *Client) Import(cat, content, filename, fp string, extras map[string] string, ans interface{}) ([]byte, error) {
+    data := url.Values{}
+    data.Set("type", "import")
+    data.Set("category", cat)
+
+    for k := range extras {
+        data.Set(k, extras[k])
+    }
+
+    return c.CommunicateFile(content, filename, fp, data, ans)
 }
 
 // CommitConfig performs PAN-OS commits.  This is the underlying function
@@ -1086,6 +1162,47 @@ func (c *Client) post(data url.Values) ([]byte, error) {
         c.ri++
         return body, nil
     }
+}
+
+func (c *Client) endCommunication(body []byte, ans interface{}) ([]byte, error) {
+    var err error
+
+    if c.Logging & LogReceive == LogReceive {
+        log.Printf("Response = %s", body)
+    }
+
+    // Check for errors first
+    errType1 := &panosErrorResponseWithoutLine{}
+    err = xml.Unmarshal(body, errType1)
+    // At this point, we make use of the shared error error checking that exists
+    // between response types.  If the first response is not an error type, we
+    // don't have to check the others.  We can get some modest speed gains as
+    // a result.
+    if errType1.Failed() {
+        if err == nil && errType1.Error() != "" {
+            return body, PanosError{errType1.Error(), errType1.ResponseCode}
+        }
+        errType2 := panosErrorResponseWithLine{}
+        err = xml.Unmarshal(body, &errType2)
+        if err == nil && errType2.Error() != "" {
+            return body, PanosError{errType2.Error(), errType2.ResponseCode}
+        }
+        // Still an error, but some unknown format.
+        return body, fmt.Errorf("Unknown error format: %s", body)
+    }
+
+    // Return the body string if we weren't given something to unmarshal into
+    if ans == nil {
+        return body, nil
+    }
+
+    // Unmarshal using the struct passed in
+    err = xml.Unmarshal(body, ans)
+    if err != nil {
+        return body, fmt.Errorf("Error unmarshaling into provided interface: %s", err)
+    }
+
+    return body, nil
 }
 
 /** Non-struct private functions **/

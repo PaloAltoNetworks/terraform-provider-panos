@@ -17,33 +17,93 @@ func (c *PanoZone) Initialize(con util.XapiClient) {
     c.con = con
 }
 
-// GetList performs GET to retrieve a list of zones.
+/*
+SetInterface performs a SET to add an interface to a zone.
+
+The zone can be either a string or an Entry object.
+*/
+func (c *PanoZone) SetInterface(tmpl, ts, vsys string, zone interface{}, mode, iface string) error {
+    var name string
+
+    if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
+    }
+
+    switch v := zone.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s set interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(set) %s interface: %s", singular, name)
+
+    path := c.xpath(tmpl, ts, vsys, []string{name})
+    path = append(path, "network", mode)
+
+    _, err := c.con.Set(path, util.Member{Value: iface}, nil, nil)
+    return err
+}
+
+/*
+DeleteInterface performs a DELETE to remove the interface from the zone.
+
+The zone can be either a string or an Entry object.
+*/
+func (c *PanoZone) DeleteInterface(tmpl, ts, vsys string, zone interface{}, mode, iface string) error {
+    var name string
+
+    if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
+    }
+
+    switch v := zone.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s delete interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(delete) %s interface: %s", singular, name)
+
+    path := c.xpath(tmpl, ts, vsys, []string{name})
+    path = append(path, "network", mode, util.AsMemberXpath([]string{iface}))
+
+    _, err := c.con.Delete(path, nil, nil)
+    return err
+}
+
+// GetList performs GET to retrieve a list of values.
 func (c *PanoZone) GetList(tmpl, ts, vsys string) ([]string, error) {
-    c.con.LogQuery("(get) list of zones")
+    c.con.LogQuery("(get) list of %s", plural)
     path := c.xpath(tmpl, ts, vsys, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
-// ShowList performs SHOW to retrieve a list of zones.
+// ShowList performs SHOW to retrieve a list of values.
 func (c *PanoZone) ShowList(tmpl, ts, vsys string) ([]string, error) {
-    c.con.LogQuery("(show) list of zones")
+    c.con.LogQuery("(show) list of %s", plural)
     path := c.xpath(tmpl, ts, vsys, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
-// Get performs GET to retrieve information for the given zone.
+// Get performs GET to retrieve information for the given uid.
 func (c *PanoZone) Get(tmpl, ts, vsys, name string) (Entry, error) {
-    c.con.LogQuery("(get) zone %q", name)
+    c.con.LogQuery("(get) %s %q", singular, name)
     return c.details(c.con.Get, tmpl, ts, vsys, name)
 }
 
-// Get performs SHOW to retrieve information for the given zone.
+// Get performs SHOW to retrieve information for the given uid.
 func (c *PanoZone) Show(tmpl, ts, vsys, name string) (Entry, error) {
-    c.con.LogQuery("(show) zone %q", name)
+    c.con.LogQuery("(show) %s %q", singular, name)
     return c.details(c.con.Show, tmpl, ts, vsys, name)
 }
 
-// Set performs SET to create / update one or more zones.
+// Set performs SET to create / update one or more objects.
 func (c *PanoZone) Set(tmpl, ts, vsys string, e ...Entry) error {
     var err error
 
@@ -56,13 +116,13 @@ func (c *PanoZone) Set(tmpl, ts, vsys string, e ...Entry) error {
     _, fn := c.versioning()
     names := make([]string, len(e))
 
-    // Build up the struct with the given zone configs.
+    // Build up the struct.
     d := util.BulkElement{XMLName: xml.Name{Local: "zone"}}
     for i := range e {
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
     }
-    c.con.LogAction("(set) zones: %v", names)
+    c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
     path := c.xpath(tmpl, ts, vsys, names)
@@ -72,12 +132,12 @@ func (c *PanoZone) Set(tmpl, ts, vsys string, e ...Entry) error {
         path = path[:len(path) - 2]
     }
 
-    // Create the zones.
+    // Create the objects.
     _, err = c.con.Set(path, d.Config(), nil, nil)
     return err
 }
 
-// Edit performs EDIT to creates / updates a zone.
+// Edit performs EDIT to create / update one object.
 func (c *PanoZone) Edit(tmpl, ts, vsys string, e Entry) error {
     var err error
 
@@ -87,19 +147,19 @@ func (c *PanoZone) Edit(tmpl, ts, vsys string, e Entry) error {
 
     _, fn := c.versioning()
 
-    c.con.LogAction("(edit) zone %q", e.Name)
+    c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
     path := c.xpath(tmpl, ts, vsys, []string{e.Name})
 
-    // Create the zones.
+    // Edit the object.
     _, err = c.con.Edit(path, fn(e), nil, nil)
     return err
 }
 
-// Delete removes the given zone(s) from the firewall.
+// Delete removes the given objects.
 //
-// Zones can be either a string or an Entry object.
+// Objects can be either a string or an Entry object.
 func (c *PanoZone) Delete(tmpl, ts, vsys string, e ...interface{}) error {
     var err error
 
@@ -120,7 +180,7 @@ func (c *PanoZone) Delete(tmpl, ts, vsys string, e ...interface{}) error {
             return fmt.Errorf("Unsupported type to delete: %s", v)
         }
     }
-    c.con.LogAction("(delete) zone(s): %v", names)
+    c.con.LogAction("(delete) %s: %v", plural, names)
 
     path := c.xpath(tmpl, ts, vsys, names)
     _, err = c.con.Delete(path, nil, nil)

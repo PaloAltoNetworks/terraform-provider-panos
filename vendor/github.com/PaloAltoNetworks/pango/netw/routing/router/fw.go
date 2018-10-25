@@ -18,6 +18,58 @@ func (c *FwRouter) Initialize(con util.XapiClient) {
     c.con = con
 }
 
+/*
+SetInterface performs a SET to add an interface to a virtual router.
+
+The virtual router can be either a string or an Entry object.
+*/
+func (c *FwRouter) SetInterface(vr interface{}, iface string) error {
+    var name string
+
+    switch v := vr.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s set interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(set) interface for %s %q: %s", singular, name, iface)
+
+    path := c.xpath([]string{name})
+    path = append(path, "interface")
+
+    _, err := c.con.Set(path, util.Member{Value: iface}, nil, nil)
+    return err
+}
+
+/*
+DeleteInterface performs a DELETE to remove an interface from a virtual router.
+
+The virtual router can be either a string or an Entry object.
+*/
+func (c *FwRouter) DeleteInterface(vr interface{}, iface string) error {
+    var name string
+
+    switch v := vr.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s delete interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(delete) interface for %s %q: %s", singular, name, iface)
+
+    path := c.xpath([]string{name})
+    path = append(path, "interface", util.AsMemberXpath([]string{iface}))
+
+    _, err := c.con.Delete(path, nil, nil)
+    return err
+}
+
 // ShowList performs SHOW to retrieve a list of virtual routers.
 func (c *FwRouter) ShowList() ([]string, error) {
     c.con.LogQuery("(show) list of virtual routeres")
