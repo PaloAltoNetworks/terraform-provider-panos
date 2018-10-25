@@ -35,9 +35,8 @@ The following arguments are supported:
 
 * `name` - (Required) The stack's name.
 * `description` - (Optional) The stack's description.
+* `default_vsys` - (Optional) The default virtual system template configuration
+  pushed to firewalls with a single virtual system.  **Note** - you can only
+  set this if there is at least one template in this stack.
 * `templates` - (Optional) List of templates in this stack.
 * `devices` - (Optional) List of serial numbers to include in this stack.
-
-The following attributes are present:
-
-* `default_vsys` - The default vsys for this template stack.

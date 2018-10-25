@@ -35,7 +35,7 @@ func resourcePanoramaTemplateStack() *schema.Resource {
 			},
 			"default_vsys": &schema.Schema{
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"devices": &schema.Schema{
 				Type:     schema.TypeList,
@@ -53,10 +53,9 @@ func parsePanoramaTemplateStack(d *schema.ResourceData) stack.Entry {
 	o := stack.Entry{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
-		// TODO(gfreeman) - why can't I set this when Computed=false / Optional=true..?
-		//DefaultVsys: d.Get("default_vsys").(string),
-		Templates: asStringList(d.Get("templates").([]interface{})),
-		Devices:   asStringList(d.Get("devices").([]interface{})),
+		DefaultVsys: d.Get("default_vsys").(string),
+		Templates:   asStringList(d.Get("templates").([]interface{})),
+		Devices:     asStringList(d.Get("devices").([]interface{})),
 	}
 
 	return o
@@ -112,15 +111,10 @@ func updatePanoramaTemplateStack(d *schema.ResourceData, meta interface{}) error
 	o := parsePanoramaTemplateStack(d)
 
 	lo, err := pano.Panorama.TemplateStack.Get(o.Name)
-	dv := lo.DefaultVsys
 	if err != nil {
 		return err
 	}
 	lo.Copy(o)
-	// TODO(gfreeman) - remove this when Computed=false/Optional=true is solved.
-	if dv != "" {
-		lo.DefaultVsys = dv
-	}
 	if err = pano.Panorama.TemplateStack.Edit(lo); err != nil {
 		return err
 	}
