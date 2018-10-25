@@ -7,6 +7,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/pnrm/template"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/terraform"
 )
 
 func resourcePanoramaTemplate() *schema.Resource {
@@ -15,6 +16,9 @@ func resourcePanoramaTemplate() *schema.Resource {
 		Read:   readPanoramaTemplate,
 		Update: updatePanoramaTemplate,
 		Delete: deletePanoramaTemplate,
+
+		SchemaVersion: 1,
+		MigrateState:  migrateResourcePanoramaTemplate,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
@@ -28,7 +32,6 @@ func resourcePanoramaTemplate() *schema.Resource {
 			},
 			"default_vsys": &schema.Schema{
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 			"devices": &schema.Schema{
@@ -57,11 +60,36 @@ func resourcePanoramaTemplate() *schema.Resource {
 	}
 }
 
+func migrateResourcePanoramaTemplate(ov int, s *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
+	pano := meta.(*pango.Panorama)
+
+	if ov == 0 {
+		// Previously missing ./config, so editing the template will fix this.
+		name := s.ID
+		info, err := pano.Panorama.Template.Get(name)
+		if err != nil {
+			return s, err
+		}
+		// Also, set the default vsys to vsys1 if it isn't already set.  This
+		// field was previously Optional/Computed, and is now Optional/Default.
+		if info.DefaultVsys == "" {
+			info.DefaultVsys = "vsys1"
+		}
+		if err = pano.Panorama.Template.Edit(info); err != nil {
+			return s, err
+		}
+
+		ov = 1
+	}
+
+	return s, nil
+}
+
 func parsePanoramaTemplate(d *schema.ResourceData) template.Entry {
 	o := template.Entry{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
-		DefaultVsys: d.Get("default_vsys").(string),
+		DefaultVsys: "vsys1",
 	}
 
 	m := make(map[string][]string)
