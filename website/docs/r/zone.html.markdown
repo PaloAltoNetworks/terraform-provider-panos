@@ -10,6 +10,11 @@ description: |-
 
 This resource allows you to add/update/delete zones.
 
+This resource has some overlap with the `panos_zone_entry`
+resource.  If you want to use this resource with the other one, then make
+sure that your `panos_zone` spec does not define the
+`interfaces` field.
+
 ## Example Usage
 
 ```hcl
