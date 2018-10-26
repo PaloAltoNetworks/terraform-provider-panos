@@ -19,11 +19,21 @@ sure that your `panos_zone` spec does not define the
 
 ```hcl
 resource "panos_zone" "example" {
-    name = "my_service"
+    name = "myZone"
     mode = "layer3"
-    interfaces = ["ethernet1/1", "ethernet1/2"]
+    interfaces = ["${panos_ethernet_interface.e1.name}", "${panos_ethernet_interface.e5.name}"]
     enable_user_id = true
     exclude_acls = ["192.168.0.0/16"]
+}
+
+resource "panos_ethernet_interface" "e1" {
+    name = "ethernet1/1"
+    mode = "layer3"
+}
+
+resource "panos_ethernet_interface" "e5" {
+    name = "ethernet1/5"
+    mode = "layer3"
 }
 ```
 

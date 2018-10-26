@@ -20,16 +20,28 @@ sure that your `panos_panorama_zone` spec does not define the
 
 ```hcl
 resource "panos_panorama_zone" "example" {
-    name = "my_service"
+    name = "myZone"
     template = "${panos_panorama_template.tmpl1.name}"
     mode = "layer3"
-    interfaces = ["ethernet1/1", "ethernet1/2"]
+    interfaces = ["${panos_panorama_ethernet_interface.e2.name", "${panos_panorama_ethernet_interface.e3.name}"]
     enable_user_id = true
     exclude_acls = ["192.168.0.0/16"]
 }
 
 resource "panos_panorama_template" "tmpl1" {
     name = "MyTemplate"
+}
+
+resource "panos_panorama_ethernet_interface" "e2" {
+    template = "${panos_panorama_template.tmpl1.name}"
+    name = "ethernet1/2"
+    mode = "layer3"
+}
+
+resource "panos_panorama_ethernet_interface" "e3" {
+    template = "${panos_panorama_template.tmpl1.name}"
+    name = "ethernet1/3"
+    mode = "layer3"
 }
 ```
 
