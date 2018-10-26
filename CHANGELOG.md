@@ -1,14 +1,14 @@
-## 1.4.1 (Unreleased)
+## 1.4.1 (October 26, 2018)
 
 NEW RESOURCES:
 
-* `panos_virtual_router_entry` and `panos_panorama_virtual_router_entry` [GH-71]
-* `panos_zone_entry` and `panos_panorama_zone_entry` [GH-74]
+* `panos_virtual_router_entry` and `panos_panorama_virtual_router_entry` ([#71](https://github.com/terraform-providers/terraform-provider-panos/issues/71))
+* `panos_zone_entry` and `panos_panorama_zone_entry` ([#74](https://github.com/terraform-providers/terraform-provider-panos/issues/74))
 
 BUG FIXES:
 
-* Panorama device groups no longer require a description. [GH-81]
-* Panorama template stacks can now define a `default_vsys` [GH-85]
+* Panorama device groups no longer require a description. ([#81](https://github.com/terraform-providers/terraform-provider-panos/issues/81))
+* Panorama template stacks can now define a `default_vsys` ([#85](https://github.com/terraform-providers/terraform-provider-panos/issues/85))
 
 ## 1.4.0 (August 27, 2018)
 
