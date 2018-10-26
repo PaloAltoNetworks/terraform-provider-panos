@@ -1,6 +1,6 @@
 ## 1.4.1 (Unreleased)
 
-NEW FEATURES:
+NEW RESOURCES:
 
 * `panos_virtual_router_entry` and `panos_panorama_virtual_router_entry` [GH-71]
 * `panos_zone_entry` and `panos_panorama_zone_entry` [GH-74]
