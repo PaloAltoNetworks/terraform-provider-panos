@@ -15,6 +15,11 @@ however it will not be deleted from the firewall.  It will only be unexported
 from the vsys that it is currently imported in, and any interfaces imported
 into the virtual router will be removed.
 
+This resource has some overlap with the `panos_virtual_router_entry`
+resource.  If you want to use this resource with the other one, then make
+sure that your `panos_virtual_router` spec does not define the
+`interfaces` field.
+
 ## Example Usage
 
 ```hcl
