@@ -30,7 +30,7 @@ resource "panos_virtual_router" "vr1" {
 
 The following arguments are supported:
 
-* `name` - (Required) The address object's name.
+* `name` - (Required) The static route's name.
 * `virtual_router` - (Required) The virtual router to add the static
   route to.
 * `destination` - (Required) Destination IP address / prefix.

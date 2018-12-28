@@ -37,7 +37,7 @@ One and only one of the following must be specified:
 
 The following arguments are supported:
 
-* `name` - (Required) The address object's name.
+* `name` - (Required) The static route's name.
 * `virtual_router` - (Required) The virtual router to add the static
   route to.
 * `destination` - (Required) Destination IP address / prefix.
