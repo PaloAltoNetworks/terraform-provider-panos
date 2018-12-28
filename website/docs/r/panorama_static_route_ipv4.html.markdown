@@ -30,14 +30,10 @@ resource "panos_panorama_virtual_router" "vr1" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
-
-* `template` - The template name.
-* `template_stack` - The template stack name.
-
 The following arguments are supported:
 
 * `name` - (Required) The static route's name.
+* `template` - The template name.
 * `virtual_router` - (Required) The virtual router to add the static
   route to.
 * `destination` - (Required) Destination IP address / prefix.
