@@ -271,14 +271,14 @@ func parseSecurityPolicy(d *schema.ResourceData) (string, string, []security.Ent
 			Schedule:                        elm["schedule"].(string),
 			IcmpUnreachable:                 elm["icmp_unreachable"].(bool),
 			DisableServerResponseInspection: elm["disable_server_response_inspection"].(bool),
-			Group:            elm["group"].(string),
-			Virus:            elm["virus"].(string),
-			Spyware:          elm["spyware"].(string),
-			Vulnerability:    elm["vulnerability"].(string),
-			UrlFiltering:     elm["url_filtering"].(string),
-			FileBlocking:     elm["file_blocking"].(string),
-			WildFireAnalysis: elm["wildfire_analysis"].(string),
-			DataFiltering:    elm["data_filtering"].(string),
+			Group:                           elm["group"].(string),
+			Virus:                           elm["virus"].(string),
+			Spyware:                         elm["spyware"].(string),
+			Vulnerability:                   elm["vulnerability"].(string),
+			UrlFiltering:                    elm["url_filtering"].(string),
+			FileBlocking:                    elm["file_blocking"].(string),
+			WildFireAnalysis:                elm["wildfire_analysis"].(string),
+			DataFiltering:                   elm["data_filtering"].(string),
 		}
 		ans = append(ans, o)
 	}

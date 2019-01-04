@@ -4,7 +4,8 @@ services:
   - docker
 language: go
 go:
-- 1.9.1
+- "1.11"
+- "tip"
 
 install:
 # This script is used by the Travis build to install a cookie for
