@@ -66,54 +66,51 @@ func testAccCheckPanosDagTagsAttributes(o map[string][]string, ip1 string, ip1t 
 		info, ok := o[ip1]
 		if !ok {
 			return fmt.Errorf("IP1 %q not in results: %#v", ip1, o)
-		} else {
-			for _, st := range ip1t {
-				found := false
-				for _, tag := range info {
-					if tag == st {
-						found = true
-						break
-					}
+		}
+		for _, st := range ip1t {
+			found := false
+			for _, tag := range info {
+				if tag == st {
+					found = true
+					break
 				}
-				if !found {
-					return fmt.Errorf("IP1 tags do not include %v", ip1t)
-				}
+			}
+			if !found {
+				return fmt.Errorf("IP1 tags do not include %v", ip1t)
 			}
 		}
 
 		info, ok = o[ip2]
 		if !ok {
 			return fmt.Errorf("IP2 %q not in results", ip2)
-		} else {
-			for _, st := range ip2t {
-				found := false
-				for _, tag := range info {
-					if tag == st {
-						found = true
-						break
-					}
+		}
+		for _, st := range ip2t {
+			found := false
+			for _, tag := range info {
+				if tag == st {
+					found = true
+					break
 				}
-				if !found {
-					return fmt.Errorf("IP2 tags do not include %v", ip2t)
-				}
+			}
+			if !found {
+				return fmt.Errorf("IP2 tags do not include %v", ip2t)
 			}
 		}
 
 		info, ok = o[ip3]
 		if !ok {
 			return fmt.Errorf("IP3 %q not in results", ip3)
-		} else {
-			for _, st := range ip3t {
-				found := false
-				for _, tag := range info {
-					if tag == st {
-						found = true
-						break
-					}
+		}
+		for _, st := range ip3t {
+			found := false
+			for _, tag := range info {
+				if tag == st {
+					found = true
+					break
 				}
-				if !found {
-					return fmt.Errorf("IP3 tags do not include %v", ip3t)
-				}
+			}
+			if !found {
+				return fmt.Errorf("IP3 tags do not include %v", ip3t)
 			}
 		}
 
