@@ -19,47 +19,47 @@ func resourcePanoramaZone() *schema.Resource {
 		Delete: deletePanoramaZone,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template_stack"},
 			},
-			"template_stack": &schema.Schema{
+			"template_stack": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template"},
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 				ForceNew: true,
 			},
-			"mode": &schema.Schema{
+			"mode": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("layer3", "layer2", "virtual-wire", "tap", "tunnel"),
 			},
-			"zone_profile": &schema.Schema{
+			"zone_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"log_setting": &schema.Schema{
+			"log_setting": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"enable_user_id": &schema.Schema{
+			"enable_user_id": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"interfaces": &schema.Schema{
+			"interfaces": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
@@ -67,14 +67,14 @@ func resourcePanoramaZone() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"include_acls": &schema.Schema{
+			"include_acls": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"exclude_acls": &schema.Schema{
+			"exclude_acls": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{

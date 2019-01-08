@@ -11,71 +11,71 @@ func dataSourceDhcpInterfaceInfo() *schema.Resource {
 		Read: dataSourceDhcpInterfaceInfoRead,
 
 		Schema: map[string]*schema.Schema{
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"state": &schema.Schema{
+			"state": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"ip": &schema.Schema{
+			"ip": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"gateway": &schema.Schema{
+			"gateway": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"server": &schema.Schema{
+			"server": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"server_id": &schema.Schema{
+			"server_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"primary_dns": &schema.Schema{
+			"primary_dns": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"secondary_dns": &schema.Schema{
+			"secondary_dns": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"primary_wins": &schema.Schema{
+			"primary_wins": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"secondary_wins": &schema.Schema{
+			"secondary_wins": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"primary_nis": &schema.Schema{
+			"primary_nis": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"secondary_nis": &schema.Schema{
+			"secondary_nis": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"primary_ntp": &schema.Schema{
+			"primary_ntp": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"secondary_ntp": &schema.Schema{
+			"secondary_ntp": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"pop3_server": &schema.Schema{
+			"pop3_server": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"smtp_server": &schema.Schema{
+			"smtp_server": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"dns_suffix": &schema.Schema{
+			"dns_suffix": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},

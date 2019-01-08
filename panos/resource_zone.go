@@ -19,42 +19,42 @@ func resourceZone() *schema.Resource {
 		Delete: deleteZone,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The zone's name",
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this zone in",
 			},
-			"mode": &schema.Schema{
+			"mode": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Description:  "The zone's mode",
 				ValidateFunc: validateStringIn("layer3", "layer2", "virtual-wire", "tap", "tunnel"),
 			},
-			"zone_profile": &schema.Schema{
+			"zone_profile": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The zone's mode",
 			},
-			"log_setting": &schema.Schema{
+			"log_setting": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The zone's mode",
 			},
-			"enable_user_id": &schema.Schema{
+			"enable_user_id": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
 				Description: "The zone's mode",
 			},
-			"interfaces": &schema.Schema{
+			"interfaces": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
@@ -63,7 +63,7 @@ func resourceZone() *schema.Resource {
 				},
 				Description: "User Identification include ACL list",
 			},
-			"include_acls": &schema.Schema{
+			"include_acls": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -71,7 +71,7 @@ func resourceZone() *schema.Resource {
 				},
 				Description: "User Identification include ACL list",
 			},
-			"exclude_acls": &schema.Schema{
+			"exclude_acls": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{

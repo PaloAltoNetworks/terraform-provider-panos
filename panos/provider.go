@@ -15,46 +15,46 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"hostname": &schema.Schema{
+			"hostname": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_HOSTNAME", nil),
 				Description: "Hostname/IP address of the Palo Alto Networks firewall to connect to",
 			},
-			"username": &schema.Schema{
+			"username": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_USERNAME", nil),
 				Description: "The username (not used if the ApiKey is set)",
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_PASSWORD", nil),
 				Description: "The password (not used if the ApiKey is set)",
 			},
-			"api_key": &schema.Schema{
+			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("PANOS_API_KEY", nil),
 				Description: "The api key of the firewall",
 			},
-			"protocol": &schema.Schema{
+			"protocol": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The protocol (https or http)",
 			},
-			"port": &schema.Schema{
+			"port": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Description: "If the port is non-standard for the protocol, the port number to use",
 			},
-			"timeout": &schema.Schema{
+			"timeout": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Description: "The timeout for all communications with the firewall",
 			},
-			"logging": &schema.Schema{
+			"logging": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -62,7 +62,7 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				Description: "Logging options for the API connection",
 			},
-			"json_config_file": &schema.Schema{
+			"json_config_file": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Retrieve the provider configuration from this JSON file",

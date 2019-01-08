@@ -18,37 +18,37 @@ func resourcePanoramaIpsecCryptoProfile() *schema.Resource {
 		Delete: deletePanoramaIpsecCryptoProfile,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template_stack"},
 			},
-			"template_stack": &schema.Schema{
+			"template_stack": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template"},
 			},
-			"protocol": &schema.Schema{
+			"protocol": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ipsec.ProtocolEsp,
 				ValidateFunc: validateStringIn(ipsec.ProtocolEsp, ipsec.ProtocolAh),
 			},
-			"authentications": &schema.Schema{
+			"authentications": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"encryptions": &schema.Schema{
+			"encryptions": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
@@ -56,27 +56,27 @@ func resourcePanoramaIpsecCryptoProfile() *schema.Resource {
 					ValidateFunc: validateStringIn(ipsec.EncryptionDes, ipsec.Encryption3des, ipsec.EncryptionAes128, ipsec.EncryptionAes192, ipsec.EncryptionAes256, ipsec.EncryptionAes128Gcm, ipsec.EncryptionAes256Gcm, ipsec.EncryptionNull),
 				},
 			},
-			"dh_group": &schema.Schema{
+			"dh_group": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringHasPrefix("group"),
 			},
-			"lifetime_type": &schema.Schema{
+			"lifetime_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ipsec.TimeHours,
 				ValidateFunc: validateStringIn(ipsec.TimeSeconds, ipsec.TimeMinutes, ipsec.TimeHours, ipsec.TimeDays),
 			},
-			"lifetime_value": &schema.Schema{
+			"lifetime_value": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"lifesize_type": &schema.Schema{
+			"lifesize_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ipsec.SizeKb, ipsec.SizeMb, ipsec.SizeGb, ipsec.SizeTb),
 			},
-			"lifesize_value": &schema.Schema{
+			"lifesize_value": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

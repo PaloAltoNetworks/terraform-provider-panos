@@ -20,31 +20,31 @@ func resourcePanoramaTunnelInterface() *schema.Resource {
 		Delete: deletePanoramaTunnelInterface,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
 				ValidateFunc: validateStringHasPrefix("tunnel."),
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 			},
-			"comment": &schema.Schema{
+			"comment": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"netflow_profile": &schema.Schema{
+			"netflow_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"static_ips": &schema.Schema{
+			"static_ips": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -52,11 +52,11 @@ func resourcePanoramaTunnelInterface() *schema.Resource {
 				},
 				Description: "List of static IP addresses",
 			},
-			"management_profile": &schema.Schema{
+			"management_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mtu": &schema.Schema{
+			"mtu": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

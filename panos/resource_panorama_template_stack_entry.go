@@ -16,12 +16,12 @@ func resourcePanoramaTemplateStackEntry() *schema.Resource {
 		Delete: deletePanoramaTemplateStackEntry,
 
 		Schema: map[string]*schema.Schema{
-			"template_stack": &schema.Schema{
+			"template_stack": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"device": &schema.Schema{
+			"device": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,

@@ -16,30 +16,30 @@ func resourcePanoramaZoneEntry() *schema.Resource {
 		Delete: deletePanoramaZoneEntry,
 
 		Schema: map[string]*schema.Schema{
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 				ForceNew: true,
 			},
-			"zone": &schema.Schema{
+			"zone": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"mode": &schema.Schema{
+			"mode": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      zone.ModeL3,
 				ValidateFunc: validateStringIn(zone.ModeL3, zone.ModeL2, zone.ModeVirtualWire, zone.ModeTap, zone.ModeExternal),
 				ForceNew:     true,
 			},
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,

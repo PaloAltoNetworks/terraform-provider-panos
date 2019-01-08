@@ -19,27 +19,27 @@ func resourceServiceGroup() *schema.Resource {
 		Delete: deleteServiceGroup,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The service group's name",
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this service group in",
 			},
-			"services": &schema.Schema{
+			"services": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				MinItems: 1,

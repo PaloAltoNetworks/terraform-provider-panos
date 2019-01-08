@@ -20,31 +20,31 @@ func resourcePanoramaVlanInterface() *schema.Resource {
 		Delete: deletePanoramaVlanInterface,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
 				ValidateFunc: validateStringHasPrefix("vlan."),
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 			},
-			"comment": &schema.Schema{
+			"comment": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"netflow_profile": &schema.Schema{
+			"netflow_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"static_ips": &schema.Schema{
+			"static_ips": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -52,35 +52,35 @@ func resourcePanoramaVlanInterface() *schema.Resource {
 				},
 				Description: "List of static IP addresses",
 			},
-			"enable_dhcp": &schema.Schema{
+			"enable_dhcp": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"create_dhcp_default_route": &schema.Schema{
+			"create_dhcp_default_route": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"dhcp_default_route_metric": &schema.Schema{
+			"dhcp_default_route_metric": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"management_profile": &schema.Schema{
+			"management_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mtu": &schema.Schema{
+			"mtu": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"adjust_tcp_mss": &schema.Schema{
+			"adjust_tcp_mss": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"ipv4_mss_adjust": &schema.Schema{
+			"ipv4_mss_adjust": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"ipv6_mss_adjust": &schema.Schema{
+			"ipv6_mss_adjust": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

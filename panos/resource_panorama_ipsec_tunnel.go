@@ -18,177 +18,177 @@ func resourcePanoramaIpsecTunnel() *schema.Resource {
 		Delete: deletePanoramaIpsecTunnel,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"tunnel_interface": &schema.Schema{
+			"tunnel_interface": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"anti_replay": &schema.Schema{
+			"anti_replay": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"enable_ipv6": &schema.Schema{
+			"enable_ipv6": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"copy_tos": &schema.Schema{
+			"copy_tos": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"copy_flow_label": &schema.Schema{
+			"copy_flow_label": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"disabled": &schema.Schema{
+			"disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ipsectunnel.TypeAutoKey,
 				ValidateFunc: validateStringIn(ipsectunnel.TypeAutoKey, ipsectunnel.TypeManualKey, ipsectunnel.TypeGlobalProtectSatellite),
 			},
-			"ak_ike_gateway": &schema.Schema{
+			"ak_ike_gateway": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"ak_ipsec_crypto_profile": &schema.Schema{
+			"ak_ipsec_crypto_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_local_spi": &schema.Schema{
+			"mk_local_spi": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_remote_spi": &schema.Schema{
+			"mk_remote_spi": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_interface": &schema.Schema{
+			"mk_interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_local_address_ip": &schema.Schema{
+			"mk_local_address_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_local_address_floating_ip": &schema.Schema{
+			"mk_local_address_floating_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_remote_address": &schema.Schema{
+			"mk_remote_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mk_protocol": &schema.Schema{
+			"mk_protocol": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ipsectunnel.MkProtocolEsp, ipsectunnel.MkProtocolAh),
 			},
-			"mk_auth_type": &schema.Schema{
+			"mk_auth_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ipsectunnel.MkAuthTypeMd5, ipsectunnel.MkAuthTypeSha1, ipsectunnel.MkAuthTypeSha256, ipsectunnel.MkAuthTypeSha384, ipsectunnel.MkAuthTypeSha512, ipsectunnel.MkAuthTypeNone),
 			},
-			"mk_auth_key": &schema.Schema{
+			"mk_auth_key": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
 			},
-			"mk_auth_key_enc": &schema.Schema{
+			"mk_auth_key_enc": {
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,
 			},
-			"mk_esp_encryption_type": &schema.Schema{
+			"mk_esp_encryption_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ipsectunnel.MkEspEncryptionDes, ipsectunnel.MkEspEncryption3des, ipsectunnel.MkEspEncryptionAes128, ipsectunnel.MkEspEncryptionAes192, ipsectunnel.MkEspEncryptionAes256, ipsectunnel.MkEspEncryptionNull),
 			},
-			"mk_esp_encryption_key": &schema.Schema{
+			"mk_esp_encryption_key": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
 			},
-			"mk_esp_encryption_key_enc": &schema.Schema{
+			"mk_esp_encryption_key_enc": {
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,
 			},
-			"gps_interface": &schema.Schema{
+			"gps_interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_portal_address": &schema.Schema{
+			"gps_portal_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_prefer_ipv6": &schema.Schema{
+			"gps_prefer_ipv6": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"gps_interface_ip_ipv4": &schema.Schema{
+			"gps_interface_ip_ipv4": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_interface_ip_ipv6": &schema.Schema{
+			"gps_interface_ip_ipv6": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_interface_floating_ip_ipv4": &schema.Schema{
+			"gps_interface_floating_ip_ipv4": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_interface_floating_ip_ipv6": &schema.Schema{
+			"gps_interface_floating_ip_ipv6": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_publish_routes": &schema.Schema{
+			"gps_publish_routes": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"gps_publish_connected_routes": &schema.Schema{
+			"gps_publish_connected_routes": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"gps_local_certificate": &schema.Schema{
+			"gps_local_certificate": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"gps_certificate_profile": &schema.Schema{
+			"gps_certificate_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"enable_tunnel_monitor": &schema.Schema{
+			"enable_tunnel_monitor": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"tunnel_monitor_destination_ip": &schema.Schema{
+			"tunnel_monitor_destination_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"tunnel_monitor_source_ip": &schema.Schema{
+			"tunnel_monitor_source_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"tunnel_monitor_profile": &schema.Schema{
+			"tunnel_monitor_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"tunnel_monitor_proxy_id": &schema.Schema{
+			"tunnel_monitor_proxy_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

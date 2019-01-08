@@ -18,17 +18,17 @@ func resourcePanoramaTemplateEntry() *schema.Resource {
 		Delete: deletePanoramaTemplateEntry,
 
 		Schema: map[string]*schema.Schema{
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"serial": &schema.Schema{
+			"serial": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys_list": &schema.Schema{
+			"vsys_list": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{

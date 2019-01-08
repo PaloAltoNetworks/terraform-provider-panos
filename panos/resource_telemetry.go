@@ -15,35 +15,35 @@ func resourceTelemetry() *schema.Resource {
 		Delete: deleteTelemetry,
 
 		Schema: map[string]*schema.Schema{
-			"application_reports": &schema.Schema{
+			"application_reports": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"threat_prevention_reports": &schema.Schema{
+			"threat_prevention_reports": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"url_reports": &schema.Schema{
+			"url_reports": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"file_type_identification_reports": &schema.Schema{
+			"file_type_identification_reports": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"threat_prevention_data": &schema.Schema{
+			"threat_prevention_data": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"threat_prevention_packet_captures": &schema.Schema{
+			"threat_prevention_packet_captures": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"product_usage_stats": &schema.Schema{
+			"product_usage_stats": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"passive_dns_monitoring": &schema.Schema{
+			"passive_dns_monitoring": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},

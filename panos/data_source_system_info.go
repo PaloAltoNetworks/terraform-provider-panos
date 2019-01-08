@@ -13,19 +13,19 @@ func dataSourceSystemInfo() *schema.Resource {
 		Read: dataSourceSystemInfoRead,
 
 		Schema: map[string]*schema.Schema{
-			"version_major": &schema.Schema{
+			"version_major": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"version_minor": &schema.Schema{
+			"version_minor": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"version_patch": &schema.Schema{
+			"version_patch": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"info": &schema.Schema{
+			"info": {
 				Type:     schema.TypeMap,
 				Computed: true,
 				Elem: &schema.Schema{

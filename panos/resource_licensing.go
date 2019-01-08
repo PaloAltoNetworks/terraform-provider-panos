@@ -18,7 +18,7 @@ func resourceLicensing() *schema.Resource {
 		Delete: deleteLicensing,
 
 		Schema: map[string]*schema.Schema{
-			"auth_codes": &schema.Schema{
+			"auth_codes": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -26,47 +26,47 @@ func resourceLicensing() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"delicense": &schema.Schema{
+			"delicense": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
 			},
-			"mode": &schema.Schema{
+			"mode": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "auto",
 				ValidateFunc: validateStringIn("auto"),
 			},
-			"licenses": &schema.Schema{
+			"licenses": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"feature": &schema.Schema{
+						"feature": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"description": &schema.Schema{
+						"description": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"serial": &schema.Schema{
+						"serial": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"issued": &schema.Schema{
+						"issued": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"expires": &schema.Schema{
+						"expires": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"expired": &schema.Schema{
+						"expired": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"auth_code": &schema.Schema{
+						"auth_code": {
 							Type:      schema.TypeString,
 							Computed:  true,
 							Sensitive: true,

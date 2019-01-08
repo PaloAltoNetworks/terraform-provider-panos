@@ -19,41 +19,41 @@ func resourceServiceObject() *schema.Resource {
 		Delete: deleteServiceObject,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The service object's name",
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this service object in",
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Object's description",
 			},
-			"protocol": &schema.Schema{
+			"protocol": {
 				Type:         schema.TypeString,
 				Required:     true,
 				Description:  "The protocol (tcp or udp)",
 				ValidateFunc: validateStringIn("tcp", "udp"),
 			},
-			"source_port": &schema.Schema{
+			"source_port": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The source port definition",
 			},
-			"destination_port": &schema.Schema{
+			"destination_port": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The destination port definition",
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				MinItems: 1,

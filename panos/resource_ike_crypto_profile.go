@@ -17,12 +17,12 @@ func resourceIkeCryptoProfile() *schema.Resource {
 		Delete: deleteIkeCryptoProfile,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"dh_groups": &schema.Schema{
+			"dh_groups": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -31,7 +31,7 @@ func resourceIkeCryptoProfile() *schema.Resource {
 					ValidateFunc: validateStringHasPrefix("group"),
 				},
 			},
-			"authentications": &schema.Schema{
+			"authentications": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -39,7 +39,7 @@ func resourceIkeCryptoProfile() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"encryptions": &schema.Schema{
+			"encryptions": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -48,17 +48,17 @@ func resourceIkeCryptoProfile() *schema.Resource {
 					ValidateFunc: validateStringIn(ike.EncryptionDes, ike.Encryption3des, ike.EncryptionAes128, ike.EncryptionAes192, ike.EncryptionAes256),
 				},
 			},
-			"lifetime_type": &schema.Schema{
+			"lifetime_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ike.TimeHours,
 				ValidateFunc: validateStringIn(ike.TimeSeconds, ike.TimeMinutes, ike.TimeHours, ike.TimeDays),
 			},
-			"lifetime_value": &schema.Schema{
+			"lifetime_value": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"authentication_multiple": &schema.Schema{
+			"authentication_multiple": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

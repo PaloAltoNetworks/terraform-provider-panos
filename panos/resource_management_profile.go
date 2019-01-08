@@ -17,67 +17,67 @@ func resourceManagementProfile() *schema.Resource {
 		Delete: deleteManagementProfile,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"ping": &schema.Schema{
+			"ping": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"telnet": &schema.Schema{
+			"telnet": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"ssh": &schema.Schema{
+			"ssh": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"http": &schema.Schema{
+			"http": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"http_ocsp": &schema.Schema{
+			"http_ocsp": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"https": &schema.Schema{
+			"https": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"snmp": &schema.Schema{
+			"snmp": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"response_pages": &schema.Schema{
+			"response_pages": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"userid_service": &schema.Schema{
+			"userid_service": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"userid_syslog_listener_ssl": &schema.Schema{
+			"userid_syslog_listener_ssl": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"userid_syslog_listener_udp": &schema.Schema{
+			"userid_syslog_listener_udp": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			"permitted_ips": &schema.Schema{
+			"permitted_ips": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{

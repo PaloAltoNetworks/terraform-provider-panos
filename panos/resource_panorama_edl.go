@@ -18,70 +18,70 @@ func resourcePanoramaEdl() *schema.Resource {
 		Delete: deletePanoramaEdl,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"device_group": &schema.Schema{
+			"device_group": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "shared",
 				ForceNew: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      edl.TypeIp,
 				ValidateFunc: validateStringIn(edl.TypeIp, edl.TypeDomain, edl.TypeUrl, edl.TypePredefined),
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"source": &schema.Schema{
+			"source": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"certificate_profile": &schema.Schema{
+			"certificate_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"username": &schema.Schema{
+			"username": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
 			},
-			"password_enc": &schema.Schema{
+			"password_enc": {
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,
 			},
-			"repeat": &schema.Schema{
+			"repeat": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      edl.RepeatHourly,
 				ValidateFunc: validateStringIn(edl.RepeatEveryFiveMinutes, edl.RepeatHourly, edl.RepeatDaily, edl.RepeatWeekly, edl.RepeatMonthly),
 			},
-			"repeat_at": &schema.Schema{
+			"repeat_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"repeat_day_of_week": &schema.Schema{
+			"repeat_day_of_week": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", ""),
 			},
-			"repeat_day_of_month": &schema.Schema{
+			"repeat_day_of_month": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ValidateFunc: validateIntInRange(0, 31),
 			},
-			"exceptions": &schema.Schema{
+			"exceptions": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{

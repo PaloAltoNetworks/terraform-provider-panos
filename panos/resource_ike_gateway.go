@@ -15,168 +15,168 @@ func resourceIkeGateway() *schema.Resource {
 		Delete: deleteIkeGateway,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"version": &schema.Schema{
+			"version": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ikegw.Ikev1,
 				ValidateFunc: validateStringIn(ikegw.Ikev1, ikegw.Ikev2, ikegw.Ikev2Preferred),
 			},
-			"enable_ipv6": &schema.Schema{
+			"enable_ipv6": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"disabled": &schema.Schema{
+			"disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"peer_ip_type": &schema.Schema{
+			"peer_ip_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ikegw.PeerTypeIp,
 				ValidateFunc: validateStringIn(ikegw.PeerTypeIp, ikegw.PeerTypeDynamic, ikegw.PeerTypeFqdn),
 			},
-			"peer_ip_value": &schema.Schema{
+			"peer_ip_value": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"local_ip_address_type": &schema.Schema{
+			"local_ip_address_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ikegw.PeerTypeIp, ""),
 			},
-			"local_ip_address_value": &schema.Schema{
+			"local_ip_address_value": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"auth_type": &schema.Schema{
+			"auth_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ikegw.AuthPreSharedKey,
 				ValidateFunc: validateStringIn(ikegw.AuthPreSharedKey, ikegw.AuthCertificate),
 			},
-			"pre_shared_key": &schema.Schema{
+			"pre_shared_key": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
 			},
-			"pre_shared_key_enc": &schema.Schema{
+			"pre_shared_key_enc": {
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,
 			},
-			"local_id_type": &schema.Schema{
+			"local_id_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ikegw.IdTypeIpAddress, ikegw.IdTypeFqdn, ikegw.IdTypeUfqdn, ikegw.IdTypeKeyId, ikegw.IdTypeDn, ""),
 			},
-			"local_id_value": &schema.Schema{
+			"local_id_value": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"peer_id_type": &schema.Schema{
+			"peer_id_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ikegw.IdTypeIpAddress, ikegw.IdTypeFqdn, ikegw.IdTypeUfqdn, ikegw.IdTypeKeyId, ikegw.IdTypeDn, ""),
 			},
-			"peer_id_value": &schema.Schema{
+			"peer_id_value": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"peer_id_check": &schema.Schema{
+			"peer_id_check": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn(ikegw.PeerIdCheckExact, ikegw.PeerIdCheckWildcard),
 			},
-			"local_cert": &schema.Schema{
+			"local_cert": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"cert_enable_hash_and_url": &schema.Schema{
+			"cert_enable_hash_and_url": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"cert_base_url": &schema.Schema{
+			"cert_base_url": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"cert_use_management_as_source": &schema.Schema{
+			"cert_use_management_as_source": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"cert_permit_payload_mismatch": &schema.Schema{
+			"cert_permit_payload_mismatch": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"cert_profile": &schema.Schema{
+			"cert_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"cert_enable_strict_validation": &schema.Schema{
+			"cert_enable_strict_validation": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"enable_passive_mode": &schema.Schema{
+			"enable_passive_mode": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"enable_nat_traversal": &schema.Schema{
+			"enable_nat_traversal": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"nat_traversal_keep_alive": &schema.Schema{
+			"nat_traversal_keep_alive": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"nat_traversal_enable_udp_checksum": &schema.Schema{
+			"nat_traversal_enable_udp_checksum": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"enable_fragmentation": &schema.Schema{
+			"enable_fragmentation": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"ikev1_exchange_mode": &schema.Schema{
+			"ikev1_exchange_mode": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"ikev1_crypto_profile": &schema.Schema{
+			"ikev1_crypto_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"enable_dead_peer_detection": &schema.Schema{
+			"enable_dead_peer_detection": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"dead_peer_detection_interval": &schema.Schema{
+			"dead_peer_detection_interval": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"dead_peer_detection_retry": &schema.Schema{
+			"dead_peer_detection_retry": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"ikev2_crypto_profile": &schema.Schema{
+			"ikev2_crypto_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"ikev2_cookie_validation": &schema.Schema{
+			"ikev2_cookie_validation": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"enable_liveness_check": &schema.Schema{
+			"enable_liveness_check": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"liveness_check_interval": &schema.Schema{
+			"liveness_check_interval": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

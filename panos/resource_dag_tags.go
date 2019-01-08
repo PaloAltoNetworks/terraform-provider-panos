@@ -16,13 +16,13 @@ func resourceDagTags() *schema.Resource {
 		Delete: deleteDagTags,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				Description: "The vsys to config DAG tags for",
 			},
-			"register": &schema.Schema{
+			"register": {
 				Type:     schema.TypeSet,
 				Required: true,
 				// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.

@@ -15,17 +15,17 @@ func resourcePanoramaVirtualRouterEntry() *schema.Resource {
 		Delete: deletePanoramaVirtualRouterEntry,
 
 		Schema: map[string]*schema.Schema{
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"virtual_router": &schema.Schema{
+			"virtual_router": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,

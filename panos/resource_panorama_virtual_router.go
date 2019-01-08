@@ -20,23 +20,23 @@ func resourcePanoramaVirtualRouter() *schema.Resource {
 		Delete: deletePanoramaVirtualRouter,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 				ForceNew: true,
 			},
-			"interfaces": &schema.Schema{
+			"interfaces": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
@@ -44,55 +44,55 @@ func resourcePanoramaVirtualRouter() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"static_dist": &schema.Schema{
+			"static_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      10,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"static_ipv6_dist": &schema.Schema{
+			"static_ipv6_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      10,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ospf_int_dist": &schema.Schema{
+			"ospf_int_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      30,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ospf_ext_dist": &schema.Schema{
+			"ospf_ext_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      110,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ospfv3_int_dist": &schema.Schema{
+			"ospfv3_int_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      30,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ospfv3_ext_dist": &schema.Schema{
+			"ospfv3_ext_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      110,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ibgp_dist": &schema.Schema{
+			"ibgp_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      200,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"ebgp_dist": &schema.Schema{
+			"ebgp_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      20,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
-			"rip_dist": &schema.Schema{
+			"rip_dist": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Default:      120,

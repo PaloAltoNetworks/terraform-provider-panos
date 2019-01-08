@@ -18,31 +18,31 @@ func resourcePanoramaTemplateVariable() *schema.Resource {
 		Delete: deletePanoramaTemplateVariable,
 
 		Schema: map[string]*schema.Schema{
-			"template": &schema.Schema{
+			"template": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template_stack"},
 			},
-			"template_stack": &schema.Schema{
+			"template_stack": {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
 				ConflictsWith: []string{"template"},
 			},
-			"name": &schema.Schema{
+			"name": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
 				ValidateFunc: validateStringHasPrefix("$"),
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      variable.TypeIpNetmask,
 				ValidateFunc: validateStringIn(variable.TypeIpNetmask, variable.TypeIpRange, variable.TypeFqdn, variable.TypeGroupId, variable.TypeInterface),
 			},
-			"value": &schema.Schema{
+			"value": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
