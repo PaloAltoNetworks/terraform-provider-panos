@@ -19,24 +19,24 @@ func resourceAddressGroup() *schema.Resource {
 		Delete: deleteAddressGroup,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The address object's name",
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this address object in",
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"static_addresses": &schema.Schema{
+			"static_addresses": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -44,12 +44,12 @@ func resourceAddressGroup() *schema.Resource {
 				},
 				Description: "Static address group entries",
 			},
-			"dynamic_match": &schema.Schema{
+			"dynamic_match": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Dynamic address group definition",
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{

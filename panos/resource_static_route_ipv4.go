@@ -18,50 +18,50 @@ func resourceStaticRouteIpv4() *schema.Resource {
 		Delete: deleteStaticRouteIpv4,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"virtual_router": &schema.Schema{
+			"virtual_router": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"destination": &schema.Schema{
+			"destination": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ipv4.NextHopIpAddress,
 				ValidateFunc: validateStringIn(ipv4.NextHopDiscard, ipv4.NextHopIpAddress, ipv4.NextHopNextVr, ""),
 			},
-			"next_hop": &schema.Schema{
+			"next_hop": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"admin_distance": &schema.Schema{
+			"admin_distance": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"metric": &schema.Schema{
+			"metric": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  10,
 			},
-			"route_table": &schema.Schema{
+			"route_table": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      ipv4.RouteTableUnicast,
 				ValidateFunc: validateStringIn(ipv4.RouteTableNoInstall, ipv4.RouteTableUnicast, ipv4.RouteTableMulticast, ipv4.RouteTableBoth),
 			},
-			"bfd_profile": &schema.Schema{
+			"bfd_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

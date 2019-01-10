@@ -15,12 +15,12 @@ func resourceVirtualRouterEntry() *schema.Resource {
 		Delete: deleteVirtualRouterEntry,
 
 		Schema: map[string]*schema.Schema{
-			"virtual_router": &schema.Schema{
+			"virtual_router": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"interface": &schema.Schema{
+			"interface": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,

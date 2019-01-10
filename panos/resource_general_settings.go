@@ -15,107 +15,107 @@ func resourceGeneralSettings() *schema.Resource {
 		Delete: deleteGeneralSettings,
 
 		Schema: map[string]*schema.Schema{
-			"hostname": &schema.Schema{
+			"hostname": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "The firewall hostname",
 			},
-			"timezone": &schema.Schema{
+			"timezone": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Timezone",
 			},
-			"domain": &schema.Schema{
+			"domain": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Domain",
 			},
-			"update_server": &schema.Schema{
+			"update_server": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "updates.paloaltonetworks.com",
 				Description: "PANOS update server",
 			},
-			"verify_update_server": &schema.Schema{
+			"verify_update_server": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
 				Description: "Verify update server identity",
 			},
-			"dns_primary": &schema.Schema{
+			"dns_primary": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Primary DNS IP address",
 			},
-			"dns_secondary": &schema.Schema{
+			"dns_secondary": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Secondary DNS IP address",
 			},
-			"ntp_primary_address": &schema.Schema{
+			"ntp_primary_address": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Primary NTP server",
 			},
-			"ntp_primary_auth_type": &schema.Schema{
+			"ntp_primary_auth_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				Description:  "NTP auth type (none, autokey, symmetric-key)",
 				ValidateFunc: validateStringIn("none", "autokey", "symmetric-key"),
 			},
-			"ntp_primary_key_id": &schema.Schema{
+			"ntp_primary_key_id": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Computed:    true,
 				Description: "NTP symmetric-key key ID",
 			},
-			"ntp_primary_algorithm": &schema.Schema{
+			"ntp_primary_algorithm": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				Description:  "NTP symmetric-key algorithm (sha1 or md5)",
 				ValidateFunc: validateStringIn("sha1", "md5"),
 			},
-			"ntp_primary_auth_key": &schema.Schema{
+			"ntp_primary_auth_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "NTP symmetric-key auth key",
 			},
-			"ntp_secondary_address": &schema.Schema{
+			"ntp_secondary_address": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "Secondary NTP server",
 			},
-			"ntp_secondary_auth_type": &schema.Schema{
+			"ntp_secondary_auth_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				Description:  "NTP auth type (none, autokey, symmetric-key)",
 				ValidateFunc: validateStringIn("none", "autokey", "symmetric-key"),
 			},
-			"ntp_secondary_key_id": &schema.Schema{
+			"ntp_secondary_key_id": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Computed:    true,
 				Description: "NTP symmetric-key key ID",
 			},
-			"ntp_secondary_algorithm": &schema.Schema{
+			"ntp_secondary_algorithm": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				Description:  "NTP symmetric-key algorithm (sha1 or md5)",
 				ValidateFunc: validateStringIn("sha1", "md5"),
 			},
-			"ntp_secondary_auth_key": &schema.Schema{
+			"ntp_secondary_auth_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,

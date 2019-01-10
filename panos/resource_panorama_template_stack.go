@@ -17,27 +17,27 @@ func resourcePanoramaTemplateStack() *schema.Resource {
 		Delete: deletePanoramaTemplateStack,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"templates": &schema.Schema{
+			"templates": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"default_vsys": &schema.Schema{
+			"default_vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"devices": &schema.Schema{
+			"devices": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,

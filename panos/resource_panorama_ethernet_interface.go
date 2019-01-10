@@ -20,28 +20,28 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 		Delete: deletePanoramaEthernetInterface,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"template": &schema.Schema{
+			"template": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 			},
-			"mode": &schema.Schema{
+			"mode": {
 				Type:         schema.TypeString,
 				Required:     true,
 				Description:  "The interface mode (layer3, layer2, virtual-wire, tap, ha, decrypt-mirror, aggregate-group)",
 				ValidateFunc: validateStringIn("layer3", "layer2", "virtual-wire", "tap", "ha", "decrypt-mirror", "aggregate-group"),
 			},
-			"static_ips": &schema.Schema{
+			"static_ips": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
@@ -49,74 +49,74 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 				},
 				Description: "List of static IP addresses",
 			},
-			"enable_dhcp": &schema.Schema{
+			"enable_dhcp": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"create_dhcp_default_route": &schema.Schema{
+			"create_dhcp_default_route": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"dhcp_default_route_metric": &schema.Schema{
+			"dhcp_default_route_metric": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"ipv6_enabled": &schema.Schema{
+			"ipv6_enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"management_profile": &schema.Schema{
+			"management_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"mtu": &schema.Schema{
+			"mtu": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"adjust_tcp_mss": &schema.Schema{
+			"adjust_tcp_mss": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"netflow_profile": &schema.Schema{
+			"netflow_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"lldp_enabled": &schema.Schema{
+			"lldp_enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"lldp_profile": &schema.Schema{
+			"lldp_profile": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"link_speed": &schema.Schema{
+			"link_speed": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("10", "100", "1000", "auto"),
 			},
-			"link_duplex": &schema.Schema{
+			"link_duplex": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("full", "half", "auto"),
 			},
-			"link_state": &schema.Schema{
+			"link_state": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("up", "down", "auto"),
 			},
-			"aggregate_group": &schema.Schema{
+			"aggregate_group": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"comment": &schema.Schema{
+			"comment": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"ipv4_mss_adjust": &schema.Schema{
+			"ipv4_mss_adjust": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"ipv6_mss_adjust": &schema.Schema{
+			"ipv6_mss_adjust": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

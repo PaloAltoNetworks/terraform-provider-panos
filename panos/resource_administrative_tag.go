@@ -18,24 +18,24 @@ func resourceAdministrativeTag() *schema.Resource {
 		Delete: deleteAdministrativeTag,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The administrative tag's name",
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this administrative tag object in",
 			},
-			"color": &schema.Schema{
+			"color": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"comment": &schema.Schema{
+			"comment": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

@@ -18,17 +18,17 @@ func resourcePanoramaDeviceGroupEntry() *schema.Resource {
 		Delete: deletePanoramaDeviceGroupEntry,
 
 		Schema: map[string]*schema.Schema{
-			"device_group": &schema.Schema{
+			"device_group": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"serial": &schema.Schema{
+			"serial": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys_list": &schema.Schema{
+			"vsys_list": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{

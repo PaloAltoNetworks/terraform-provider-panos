@@ -19,34 +19,34 @@ func resourcePanoramaAddressObject() *schema.Resource {
 		Delete: deletePanoramaAddressObject,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The address object's name",
 			},
-			"device_group": &schema.Schema{
+			"device_group": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "shared",
 				ForceNew: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "ip-netmask",
 				Description:  "The type of address object (ip-netmask, ip-range, fqdn)",
 				ValidateFunc: validateStringIn("ip-netmask", "ip-range", "fqdn"),
 			},
-			"value": &schema.Schema{
+			"value": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{

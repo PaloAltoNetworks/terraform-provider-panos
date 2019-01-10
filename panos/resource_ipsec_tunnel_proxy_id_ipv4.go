@@ -18,45 +18,45 @@ func resourceIpsecTunnelProxyIdIpv4() *schema.Resource {
 		Delete: deleteIpsecTunnelProxyIdIpv4,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"ipsec_tunnel": &schema.Schema{
+			"ipsec_tunnel": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"local": &schema.Schema{
+			"local": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"remote": &schema.Schema{
+			"remote": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"protocol_any": &schema.Schema{
+			"protocol_any": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"protocol_number": &schema.Schema{
+			"protocol_number": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"protocol_tcp_local": &schema.Schema{
+			"protocol_tcp_local": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"protocol_tcp_remote": &schema.Schema{
+			"protocol_tcp_remote": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"protocol_udp_local": &schema.Schema{
+			"protocol_udp_local": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"protocol_udp_remote": &schema.Schema{
+			"protocol_udp_remote": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},

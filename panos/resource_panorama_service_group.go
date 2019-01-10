@@ -19,27 +19,27 @@ func resourcePanoramaServiceGroup() *schema.Resource {
 		Delete: deletePanoramaServiceGroup,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The service group's name",
 			},
-			"device_group": &schema.Schema{
+			"device_group": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "shared",
 				ForceNew:    true,
 				Description: "The device group to put this service group in",
 			},
-			"services": &schema.Schema{
+			"services": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				MinItems: 1,

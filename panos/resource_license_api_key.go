@@ -16,11 +16,11 @@ func resourceLicenseApiKey() *schema.Resource {
 		Delete: deleteLicenseApiKey,
 
 		Schema: map[string]*schema.Schema{
-			"key": &schema.Schema{
+			"key": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"retain_key": &schema.Schema{
+			"retain_key": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},

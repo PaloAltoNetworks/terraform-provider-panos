@@ -21,20 +21,20 @@ func resourcePanoramaTemplate() *schema.Resource {
 		MigrateState:  migrateResourcePanoramaTemplate,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"default_vsys": &schema.Schema{
+			"default_vsys": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"devices": &schema.Schema{
+			"devices": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Computed: true,

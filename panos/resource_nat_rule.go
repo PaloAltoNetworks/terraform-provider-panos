@@ -24,19 +24,19 @@ func resourceNatRule() *schema.Resource {
 		MigrateState:  migrateResourceNatRule,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "vsys1",
 				ForceNew:    true,
 				Description: "The vsys to put this object in (default: vsys1)",
 			},
-			"rulebase": &schema.Schema{
+			"rulebase": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
@@ -45,18 +45,18 @@ func resourceNatRule() *schema.Resource {
 				Deprecated:   "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
 				ValidateFunc: validateStringIn(util.Rulebase, util.PreRulebase, util.PostRulebase),
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "ipv4",
 				Description:  "NAT type (ipv4 default, nat64, or nptv6)",
 				ValidateFunc: validateStringIn("ipv4", "nat64", "nptv6"),
 			},
-			"source_zones": &schema.Schema{
+			"source_zones": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -64,21 +64,21 @@ func resourceNatRule() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"destination_zone": &schema.Schema{
+			"destination_zone": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"to_interface": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "any",
-			},
-			"service": &schema.Schema{
+			"to_interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "any",
 			},
-			"source_addresses": &schema.Schema{
+			"service": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "any",
+			},
+			"source_addresses": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -86,7 +86,7 @@ func resourceNatRule() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"destination_addresses": &schema.Schema{
+			"destination_addresses": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -94,89 +94,89 @@ func resourceNatRule() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"sat_type": &schema.Schema{
+			"sat_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "none",
 				Description:  "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
 				ValidateFunc: validateStringIn("none", "dynamic-ip-and-port", "dynamic-ip", "static-ip"),
 			},
-			"sat_address_type": &schema.Schema{
+			"sat_address_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Description:  "interface-address or translated-address",
 				ValidateFunc: validateStringIn("interface-address", "translated-address"),
 			},
-			"sat_translated_addresses": &schema.Schema{
+			"sat_translated_addresses": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"sat_interface": &schema.Schema{
+			"sat_interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"sat_ip_address": &schema.Schema{
+			"sat_ip_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"sat_fallback_type": &schema.Schema{
+			"sat_fallback_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("none", "interface-address", "translated-address"),
 			},
-			"sat_fallback_translated_addresses": &schema.Schema{
+			"sat_fallback_translated_addresses": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"sat_fallback_interface": &schema.Schema{
+			"sat_fallback_interface": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"sat_fallback_ip_type": &schema.Schema{
+			"sat_fallback_ip_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateStringIn("ip", "floating"),
 			},
-			"sat_fallback_ip_address": &schema.Schema{
+			"sat_fallback_ip_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"sat_static_translated_address": &schema.Schema{
+			"sat_static_translated_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"sat_static_bi_directional": &schema.Schema{
+			"sat_static_bi_directional": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"dat_type": &schema.Schema{
+			"dat_type": {
 				Type:         schema.TypeString,
 				ValidateFunc: validateStringIn("static", "dynamic"),
 				Optional:     true,
 			},
-			"dat_address": &schema.Schema{
+			"dat_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"dat_port": &schema.Schema{
+			"dat_port": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"dat_dynamic_distribution": &schema.Schema{
+			"dat_dynamic_distribution": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"disabled": &schema.Schema{
+			"disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"tags": &schema.Schema{
+			"tags": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{

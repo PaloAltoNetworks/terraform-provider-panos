@@ -22,53 +22,53 @@ func resourceSecurityRuleGroup() *schema.Resource {
 		Delete: deleteSecurityRuleGroup,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": &schema.Schema{
+			"vsys": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "vsys1",
 				ForceNew: true,
 			},
-			"position_keyword": &schema.Schema{
+			"position_keyword": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "",
 				ValidateFunc: validateStringIn(movementKeywords()...),
 				ForceNew:     true,
 			},
-			"position_reference": &schema.Schema{
+			"position_reference": {
 				Type:     schema.TypeString,
 				ForceNew: true,
 				Optional: true,
 			},
-			"rule": &schema.Schema{
+			"rule": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Required: true,
 							ForceNew: true,
 						},
-						"type": &schema.Schema{
+						"type": {
 							Type:         schema.TypeString,
 							Optional:     true,
 							Default:      "universal",
 							ValidateFunc: validateStringIn("universal", "interzone", "intrazone"),
 						},
-						"description": &schema.Schema{
+						"description": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"tags": &schema.Schema{
+						"tags": {
 							Type:     schema.TypeSet,
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
-						"source_zones": &schema.Schema{
+						"source_zones": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -76,7 +76,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"source_addresses": &schema.Schema{
+						"source_addresses": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -84,11 +84,11 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"negate_source": &schema.Schema{
+						"negate_source": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"source_users": &schema.Schema{
+						"source_users": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -96,7 +96,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"hip_profiles": &schema.Schema{
+						"hip_profiles": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -104,7 +104,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"destination_zones": &schema.Schema{
+						"destination_zones": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -112,7 +112,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"destination_addresses": &schema.Schema{
+						"destination_addresses": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -120,11 +120,11 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"negate_destination": &schema.Schema{
+						"negate_destination": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"applications": &schema.Schema{
+						"applications": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -132,7 +132,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"services": &schema.Schema{
+						"services": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -140,7 +140,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"categories": &schema.Schema{
+						"categories": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -148,70 +148,70 @@ func resourceSecurityRuleGroup() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						"action": &schema.Schema{
+						"action": {
 							Type:         schema.TypeString,
 							Optional:     true,
 							Default:      "allow",
 							ValidateFunc: validateStringIn("allow", "deny", "drop", "reset-client", "reset-server", "reset-both"),
 						},
-						"log_setting": &schema.Schema{
+						"log_setting": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"log_start": &schema.Schema{
+						"log_start": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"log_end": &schema.Schema{
+						"log_end": {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  true,
 						},
-						"disabled": &schema.Schema{
+						"disabled": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"schedule": &schema.Schema{
+						"schedule": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"icmp_unreachable": &schema.Schema{
+						"icmp_unreachable": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"disable_server_response_inspection": &schema.Schema{
+						"disable_server_response_inspection": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"group": &schema.Schema{
+						"group": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"virus": &schema.Schema{
+						"virus": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"spyware": &schema.Schema{
+						"spyware": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"vulnerability": &schema.Schema{
+						"vulnerability": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"url_filtering": &schema.Schema{
+						"url_filtering": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"file_blocking": &schema.Schema{
+						"file_blocking": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"wildfire_analysis": &schema.Schema{
+						"wildfire_analysis": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"data_filtering": &schema.Schema{
+						"data_filtering": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -255,14 +255,14 @@ func parseSecurityRuleGroup(d *schema.ResourceData) (string, string, int, []secu
 			Schedule:                        elm["schedule"].(string),
 			IcmpUnreachable:                 elm["icmp_unreachable"].(bool),
 			DisableServerResponseInspection: elm["disable_server_response_inspection"].(bool),
-			Group:            elm["group"].(string),
-			Virus:            elm["virus"].(string),
-			Spyware:          elm["spyware"].(string),
-			Vulnerability:    elm["vulnerability"].(string),
-			UrlFiltering:     elm["url_filtering"].(string),
-			FileBlocking:     elm["file_blocking"].(string),
-			WildFireAnalysis: elm["wildfire_analysis"].(string),
-			DataFiltering:    elm["data_filtering"].(string),
+			Group:                           elm["group"].(string),
+			Virus:                           elm["virus"].(string),
+			Spyware:                         elm["spyware"].(string),
+			Vulnerability:                   elm["vulnerability"].(string),
+			UrlFiltering:                    elm["url_filtering"].(string),
+			FileBlocking:                    elm["file_blocking"].(string),
+			WildFireAnalysis:                elm["wildfire_analysis"].(string),
+			DataFiltering:                   elm["data_filtering"].(string),
 		}
 		ans = append(ans, o)
 	}
