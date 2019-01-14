@@ -64,6 +64,7 @@ The following arguments are supported:
 * `sat_type` - (Optional) Type of source address translation.  This can be
   `none` (default), `dynamic-ip-and-port`, `dynamic-ip`, or `static-ip`.
 * `sat_address_type` - (Optional) Source address translation address type.
+  This can be `interface-address` or `translated-address`.
 * `sat_translated_addresses` - (Optional) Source address translation list of
   translated addresses.
 * `sat_interface` - (Optional) Source address translation interface.
