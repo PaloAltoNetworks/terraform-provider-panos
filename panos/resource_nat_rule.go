@@ -20,6 +20,9 @@ func resourceNatRule() *schema.Resource {
 		Update: updateNatRule,
 		Delete: deleteNatRule,
 
+		// TODO(gfreeman): update hashicorp/terraform.
+		//DeprecationMessage: "Please use panos_nat_rule_group instead",
+
 		SchemaVersion: 1,
 		MigrateState:  migrateResourceNatRule,
 
