@@ -14,6 +14,20 @@ import (
     "github.com/PaloAltoNetworks/pango/netw/profile/ipsec"
     "github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
     redist4 "github.com/PaloAltoNetworks/pango/netw/routing/profile/redist/ipv4"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate"
+    agaf "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate/filter/advertise"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate/filter/suppress"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv/filter/advertise"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv/filter/nonexist"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/exp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/imp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/peer"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/peer/group"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/auth"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/dampening"
+    bgpredist "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist"
     "github.com/PaloAltoNetworks/pango/netw/routing/router"
     "github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4"
     "github.com/PaloAltoNetworks/pango/netw/vlan"
@@ -25,6 +39,20 @@ import (
 // Netw is the client.Network namespace.
 type FwNetw struct {
     BfdProfile *bfd.FwBfd
+    BgpAggregate *aggregate.FwAggregate
+    BgpAggAdvertiseFilter *agaf.FwAdvertise
+    BgpAggSuppressFilter *suppress.FwSuppress
+    BgpAuthProfile *auth.FwAuth
+    BgpConAdvAdvertiseFilter *advertise.FwAdvertise
+    BgpConAdvNonExistFilter *nonexist.FwNonExist
+    BgpConditionalAdv *conadv.FwConAdv
+    BgpConfig *bgp.FwBgp
+    BgpDampeningProfile *dampening.FwDampening
+    BgpExport *exp.FwExp
+    BgpImport *imp.FwImp
+    BgpPeer *peer.FwPeer
+    BgpPeerGroup *group.FwGroup
+    BgpRedistRule *bgpredist.FwRedist
     EthernetInterface *eth.FwEth
     IkeCryptoProfile *ike.FwIke
     IkeGateway *ikegw.FwIkeGw
@@ -46,6 +74,48 @@ type FwNetw struct {
 func (c *FwNetw) Initialize(i util.XapiClient) {
     c.BfdProfile = &bfd.FwBfd{}
     c.BfdProfile.Initialize(i)
+
+    c.BgpAggregate = &aggregate.FwAggregate{}
+    c.BgpAggregate.Initialize(i)
+
+    c.BgpAggAdvertiseFilter = &agaf.FwAdvertise{}
+    c.BgpAggAdvertiseFilter.Initialize(i)
+
+    c.BgpAggSuppressFilter = &suppress.FwSuppress{}
+    c.BgpAggSuppressFilter.Initialize(i)
+
+    c.BgpAuthProfile = &auth.FwAuth{}
+    c.BgpAuthProfile.Initialize(i)
+
+    c.BgpConAdvAdvertiseFilter = &advertise.FwAdvertise{}
+    c.BgpConAdvAdvertiseFilter.Initialize(i)
+
+    c.BgpConAdvNonExistFilter = &nonexist.FwNonExist{}
+    c.BgpConAdvNonExistFilter.Initialize(i)
+
+    c.BgpConditionalAdv = &conadv.FwConAdv{}
+    c.BgpConditionalAdv.Initialize(i)
+
+    c.BgpConfig = &bgp.FwBgp{}
+    c.BgpConfig.Initialize(i)
+
+    c.BgpDampeningProfile = &dampening.FwDampening{}
+    c.BgpDampeningProfile.Initialize(i)
+
+    c.BgpExport = &exp.FwExp{}
+    c.BgpExport.Initialize(i)
+
+    c.BgpImport = &imp.FwImp{}
+    c.BgpImport.Initialize(i)
+
+    c.BgpPeer = &peer.FwPeer{}
+    c.BgpPeer.Initialize(i)
+
+    c.BgpPeerGroup = &group.FwGroup{}
+    c.BgpPeerGroup.Initialize(i)
+
+    c.BgpRedistRule = &bgpredist.FwRedist{}
+    c.BgpRedistRule.Initialize(i)
 
     c.EthernetInterface = &eth.FwEth{}
     c.EthernetInterface.Initialize(i)

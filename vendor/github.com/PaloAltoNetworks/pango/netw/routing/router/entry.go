@@ -104,16 +104,20 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Interfaces: util.MemToStr(o.Answer.Interfaces),
-        StaticDist: o.Answer.Dist.StaticDist,
-        StaticIpv6Dist: o.Answer.Dist.StaticIpv6Dist,
-        OspfIntDist: o.Answer.Dist.OspfIntDist,
-        OspfExtDist: o.Answer.Dist.OspfExtDist,
-        Ospfv3IntDist: o.Answer.Dist.Ospfv3IntDist,
-        Ospfv3ExtDist: o.Answer.Dist.Ospfv3ExtDist,
-        IbgpDist: o.Answer.Dist.IbgpDist,
-        EbgpDist: o.Answer.Dist.EbgpDist,
-        RipDist: o.Answer.Dist.RipDist,
     }
+
+    if o.Answer.Dist != nil {
+        ans.StaticDist = o.Answer.Dist.StaticDist
+        ans.StaticIpv6Dist = o.Answer.Dist.StaticIpv6Dist
+        ans.OspfIntDist = o.Answer.Dist.OspfIntDist
+        ans.OspfExtDist = o.Answer.Dist.OspfExtDist
+        ans.Ospfv3IntDist = o.Answer.Dist.Ospfv3IntDist
+        ans.Ospfv3ExtDist = o.Answer.Dist.Ospfv3ExtDist
+        ans.IbgpDist = o.Answer.Dist.IbgpDist
+        ans.EbgpDist = o.Answer.Dist.EbgpDist
+        ans.RipDist = o.Answer.Dist.RipDist
+    }
+
     ans.raw = make(map[string] string)
     if o.Answer.Ecmp != nil {
         ans.raw["ecmp"] = util.CleanRawXml(o.Answer.Ecmp.Text)
@@ -138,7 +142,7 @@ type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
     Interfaces *util.MemberType `xml:"interface"`
-    Dist dist `xml:"admin-dists"`
+    Dist *dist `xml:"admin-dists"`
     Ecmp *util.RawXml `xml:"ecmp"`
     Multicast *util.RawXml `xml:"multicast"`
     Protocol *util.RawXml `xml:"protocol"`
@@ -161,7 +165,10 @@ func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Interfaces: util.StrToMem(e.Interfaces),
-        Dist: dist{
+    }
+
+    if e.StaticDist != 0 || e.StaticIpv6Dist != 0 || e.OspfIntDist != 0 || e.OspfExtDist != 0 || e.Ospfv3IntDist != 0 || e.Ospfv3ExtDist != 0 || e.IbgpDist != 0 || e.EbgpDist != 0 || e.RipDist != 0 {
+        ans.Dist = &dist{
             StaticDist: e.StaticDist,
             StaticIpv6Dist: e.StaticIpv6Dist,
             OspfIntDist: e.OspfIntDist,
@@ -171,8 +178,9 @@ func specify_v1(e Entry) interface{} {
             IbgpDist: e.IbgpDist,
             EbgpDist: e.EbgpDist,
             RipDist: e.RipDist,
-        },
+        }
     }
+
     if text, present := e.raw["ecmp"]; present {
         ans.Ecmp = &util.RawXml{text}
     }

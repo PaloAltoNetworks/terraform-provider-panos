@@ -55,6 +55,7 @@ type XapiClient interface {
     VsysUnimport(string, string, string, []string) error
     WaitForJob(uint, interface{}) error
     Commit(string, bool, bool, bool, bool) (uint, error)
+    PositionFirstEntity(int, string, string, []string, []string) error
 }
 
 // BulkElement is a generic bulk container for bulk operations.

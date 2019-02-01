@@ -7,34 +7,6 @@ import (
 )
 
 
-// Values for Entry.SatType.
-const (
-    DynamicIpAndPort = "dynamic-ip-and-port"
-    DynamicIp = "dynamic-ip"
-    StaticIp = "static-ip"
-)
-
-// Values for Entry.SatAddressType.
-const (
-    InterfaceAddress = "interface-address"
-    TranslatedAddress = "translated-address"
-)
-
-// None is a valid value for both Entry.SatType and Entry.SatAddressType.
-const None = "none"
-
-// These are the valid settings for Entry.SatFallbackIpType.
-const (
-    Ip = "ip"
-    FloatingIp = "floating"
-)
-
-// These are valid settings for DatType.
-const (
-    DatTypeStatic = "destination-translation"
-    DatTypeDynamic = "dynamic-destination-translation"
-)
-
 // Entry is a normalized, version independent representation of a NAT
 // policy.  The prefix "Sat" stands for "Source Address Translation" while
 // the prefix "Dat" stands for "Destination Address Translation".
@@ -108,7 +80,7 @@ type Entry struct {
     DatType string
     DatAddress string
     DatPort int
-    DatDynamicDistribution string
+    DatDynamicDistribution string // 8.1+
     Disabled bool
     Targets map[string] []string
     NegateTarget bool
@@ -585,7 +557,7 @@ func specify_v2(e Entry) interface{} {
             }
         }
     } else if e.DatType == DatTypeDynamic {
-        if e.DatAddress != "" || e.DatPort != 0 {
+        if e.DatAddress != "" || e.DatPort != 0 || e.DatDynamicDistribution != "" {
             ans.DatDynamic = &dstXlate{
                 e.DatAddress,
                 e.DatPort,

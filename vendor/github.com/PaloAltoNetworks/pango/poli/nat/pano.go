@@ -3,6 +3,7 @@ package nat
 import (
     "fmt"
     "encoding/xml"
+    "strings"
 
     "github.com/PaloAltoNetworks/pango/util"
     "github.com/PaloAltoNetworks/pango/version"
@@ -20,27 +21,27 @@ func (c *PanoNat) Initialize(con util.XapiClient) {
 
 // GetList performs GET to retrieve a list of NAT policies.
 func (c *PanoNat) GetList(dg, base string) ([]string, error) {
-    c.con.LogQuery("(get) list of NAT policies")
+    c.con.LogQuery("(get) list of %s", plural)
     path := c.xpath(dg, base, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // ShowList performs SHOW to retrieve a list of NAT policies.
 func (c *PanoNat) ShowList(dg, base string) ([]string, error) {
-    c.con.LogQuery("(show) list of NAT policies")
+    c.con.LogQuery("(show) list of %s", plural)
     path := c.xpath(dg, base, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given NAT policy.
 func (c *PanoNat) Get(dg, base, name string) (Entry, error) {
-    c.con.LogQuery("(get) NAT policy %q", name)
+    c.con.LogQuery("(get) %s %q", singular, name)
     return c.details(c.con.Get, dg, base, name)
 }
 
 // Get performs SHOW to retrieve information for the given NAT policy.
 func (c *PanoNat) Show(dg, base, name string) (Entry, error) {
-    c.con.LogQuery("(show) NAT policy %q", name)
+    c.con.LogQuery("(show) %s %q", singular, name)
     return c.details(c.con.Show, dg, base, name)
 }
 
@@ -50,6 +51,15 @@ func (c *PanoNat) Set(dg, base string, e ...Entry) error {
 
     if len(e) == 0 {
         return nil
+    } else {
+        // Make sure rule names are unique.
+        m := make(map[string] int)
+        for i := range e {
+            m[e[i].Name] = m[e[i].Name] + 1
+            if m[e[i].Name] > 1 {
+                return fmt.Errorf("NAT rule is defined multiple times: %s", e[i].Name)
+            }
+        }
     }
 
     _, fn := c.versioning()
@@ -61,7 +71,7 @@ func (c *PanoNat) Set(dg, base string, e ...Entry) error {
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
     }
-    c.con.LogAction("(set) NAT policies: %v", names)
+    c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
     path := c.xpath(dg, base, names)
@@ -73,6 +83,22 @@ func (c *PanoNat) Set(dg, base string, e ...Entry) error {
 
     // Create the NAT policies.
     _, err = c.con.Set(path, d.Config(), nil, nil)
+
+    // On error: find the rule that's causing the error if multiple rules
+    // were given.
+    if err != nil && strings.Contains(err.Error(), "rules is invalid") {
+        for i := 0; i < len(e); i++ {
+            if e2 := c.Set(dg, base, e[i]); e2 != nil {
+                return fmt.Errorf("Error with rule %d: %s", i + 1, e2)
+            } else {
+                _ = c.Delete(dg, base, e[i])
+            }
+        }
+
+        // Couldn't find it, just return the original error.
+        return err
+    }
+
     return err
 }
 
@@ -82,7 +108,7 @@ func (c *PanoNat) Edit(dg, base string, e Entry) error {
 
     _, fn := c.versioning()
 
-    c.con.LogAction("(edit) NAT policy %q", e.Name)
+    c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
     path := c.xpath(dg, base, []string{e.Name})
@@ -113,11 +139,45 @@ func (c *PanoNat) Delete(dg, base string, e ...interface{}) error {
             return fmt.Errorf("Unsupported type to delete: %s", v)
         }
     }
-    c.con.LogAction("(delete) NAT policies: %v", names)
+    c.con.LogAction("(delete) %s: %v", plural, names)
 
     path := c.xpath(dg, base, names)
     _, err = c.con.Delete(path, nil, nil)
     return err
+}
+
+// MoveGroup moves a logical group of NAT rules somewhere in relation
+// to another rule.
+func (c *PanoNat) MoveGroup(dg, base string, mvt int, rule string, e ...Entry) error {
+    var err error
+
+    c.con.LogAction("(move) %s group", singular)
+
+    if len(e) < 1 {
+        return fmt.Errorf("Requires at least one rule")
+    }
+
+    path := c.xpath(dg, base, []string{e[0].Name})
+    list, err := c.GetList(dg, base)
+    if err != nil {
+        return err
+    }
+
+    // Set the first entity's position.
+    if err = c.con.PositionFirstEntity(mvt, rule, e[0].Name, path, list); err != nil {
+        return err
+    }
+
+    // Move all the rest under it.
+    li := len(path) - 1
+    for i := 1; i < len(e); i++ {
+        path[li] = util.AsEntryXpath([]string{e[i].Name})
+        if _, err = c.con.Move(path, "after", e[i - 1].Name, nil, nil); err != nil {
+            return err
+        }
+    }
+
+    return nil
 }
 
 /** Internal functions for the Zone struct **/
