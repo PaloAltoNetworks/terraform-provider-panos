@@ -1,6 +1,7 @@
 package panos
 
 import (
+	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -124,4 +125,60 @@ func listAsSet(list []string) *schema.Set {
 	}
 
 	return schema.NewSet(schema.HashString, items)
+}
+
+func isObjectNotFound(e error) bool {
+	e2, ok := e.(pango.PanosError)
+	if ok && e2.ObjectNotFound() {
+		return true
+	}
+
+	return false
+}
+
+func asInterfaceMap(m map[string]interface{}, k string) map[string]interface{} {
+	if _, ok := m[k]; ok {
+		v1, ok := m[k].([]interface{})
+		if !ok || len(v1) == 0 {
+			return map[string]interface{}{}
+		}
+
+		v2, ok := v1[0].(map[string]interface{})
+		if !ok || v2 == nil {
+			return map[string]interface{}{}
+		}
+
+		return v2
+	}
+
+	return map[string]interface{}{}
+}
+
+func parseTarget(v interface{}) map[string][]string {
+	ans := make(map[string][]string)
+	sl := v.(*schema.Set).List()
+
+	for i := range sl {
+		dev := sl[i].(map[string]interface{})
+		key := dev["serial"].(string)
+		value := asStringList(dev["vsys_list"].(*schema.Set).List())
+		ans[key] = value
+	}
+
+	return ans
+}
+
+func buildTarget(m map[string][]string) *schema.Set {
+	ans := &schema.Set{
+		F: resourceTargetHash,
+	}
+
+	for k, v := range m {
+		ans.Add(map[string]interface{}{
+			"serial":    k,
+			"vsys_list": listAsSet(v),
+		})
+	}
+
+	return ans
 }

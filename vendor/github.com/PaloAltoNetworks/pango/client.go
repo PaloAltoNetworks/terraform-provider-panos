@@ -1205,6 +1205,79 @@ func (c *Client) endCommunication(body []byte, ans interface{}) ([]byte, error) 
     return body, nil
 }
 
+/*
+PositionFirstEntity moves an element before another one using the Move API command.
+
+Param `mvt` is a util.Move* constant.
+
+Param `rel` is the relative entity that `mvt` is in relation to.
+
+Param `ent` is the entity that is to be positioned.
+
+Param `path` is the XPATH of `ent`.
+
+Param `elms` is the ordered list of entities that should include both
+`rel` and `ent`.
+be found.
+*/
+func (c *Client) PositionFirstEntity(mvt int, rel, ent string, path, elms []string) error {
+    // Sanity checks.
+    if rel == ent {
+        return fmt.Errorf("Can't position %q in relation to itself", rel)
+    } else if mvt < util.MoveSkip && mvt > util.MoveBottom {
+        return fmt.Errorf("Invalid position int given: %d", mvt)
+    } else if (mvt == util.MoveBefore || mvt == util.MoveDirectlyBefore || mvt == util.MoveAfter || mvt == util.MoveDirectlyAfter) && rel == "" {
+        return fmt.Errorf("Specify 'ref' in order to perform relative group positioning")
+    }
+
+    var err error
+    fIdx := -1
+    oIdx := -1
+
+    switch mvt {
+    case util.MoveSkip:
+        return nil
+    case util.MoveTop:
+        _, em := c.Move(path, "top", "", nil, nil)
+        if em != nil && em.Error() != "already at the top" {
+            err = em
+        }
+    case util.MoveBottom:
+        _, em := c.Move(path, "bottom", "", nil, nil)
+        if em != nil && em.Error() != "already at the bottom" {
+            err = em
+        }
+    default:
+        // Find the indexes of the first rule and the ref rule.
+        for i, v := range elms {
+            if v == ent {
+                fIdx = i
+            } else if v == rel {
+                oIdx = i
+            }
+            if fIdx != -1 && oIdx != -1 {
+                break
+            }
+        }
+
+        // Sanity check: both rules should be present.
+        if fIdx == -1 {
+            return fmt.Errorf("Entity to be moved %q does not exist", ent)
+        } else if oIdx == -1 {
+            return fmt.Errorf("Reference entity %q does not exist", rel)
+        }
+
+        // Move the first element, if needed.
+        if (mvt == util.MoveBefore && fIdx > oIdx) || (mvt == util.MoveDirectlyBefore && fIdx + 1 != oIdx) {
+            _, err = c.Move(path, "before", rel, nil, nil)
+        } else if (mvt == util.MoveAfter && fIdx < oIdx) || (mvt == util.MoveDirectlyAfter && fIdx != oIdx + 1) {
+            _, err = c.Move(path, "after", rel, nil, nil)
+        }
+    }
+
+    return err
+}
+
 /** Non-struct private functions **/
 
 func mergeUrlValues(data *url.Values, extras interface{}) error {

@@ -14,6 +14,20 @@ import (
     "github.com/PaloAltoNetworks/pango/netw/profile/ipsec"
     "github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
     redist4 "github.com/PaloAltoNetworks/pango/netw/routing/profile/redist/ipv4"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate"
+    agaf "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate/filter/advertise"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate/filter/suppress"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv/filter/advertise"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/conadv/filter/nonexist"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/exp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/imp"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/peer"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/peer/group"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/auth"
+    "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/dampening"
+    bgpredist "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist"
     "github.com/PaloAltoNetworks/pango/netw/routing/router"
     "github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4"
     "github.com/PaloAltoNetworks/pango/netw/vlan"
@@ -25,6 +39,20 @@ import (
 // PanoNetw is the client.Network namespace.
 type PanoNetw struct {
     BfdProfile *bfd.PanoBfd
+    BgpAggregate *aggregate.PanoAggregate
+    BgpAggAdvertiseFilter *agaf.PanoAdvertise
+    BgpAggSuppressFilter *suppress.PanoSuppress
+    BgpAuthProfile *auth.PanoAuth
+    BgpConAdvAdvertiseFilter *advertise.PanoAdvertise
+    BgpConAdvNonExistFilter *nonexist.PanoNonExist
+    BgpConditionalAdv *conadv.PanoConAdv
+    BgpConfig *bgp.PanoBgp
+    BgpDampeningProfile *dampening.PanoDampening
+    BgpExport *exp.PanoExp
+    BgpImport *imp.PanoImp
+    BgpPeer *peer.PanoPeer
+    BgpPeerGroup *group.PanoGroup
+    BgpRedistRule *bgpredist.PanoRedist
     EthernetInterface *eth.PanoEth
     IkeCryptoProfile *ike.PanoIke
     IkeGateway *ikegw.PanoIkeGw
@@ -46,6 +74,48 @@ type PanoNetw struct {
 func (c *PanoNetw) Initialize(i util.XapiClient) {
     c.BfdProfile = &bfd.PanoBfd{}
     c.BfdProfile.Initialize(i)
+
+    c.BgpAggregate = &aggregate.PanoAggregate{}
+    c.BgpAggregate.Initialize(i)
+
+    c.BgpAggAdvertiseFilter = &agaf.PanoAdvertise{}
+    c.BgpAggAdvertiseFilter.Initialize(i)
+
+    c.BgpAggSuppressFilter = &suppress.PanoSuppress{}
+    c.BgpAggSuppressFilter.Initialize(i)
+
+    c.BgpAuthProfile = &auth.PanoAuth{}
+    c.BgpAuthProfile.Initialize(i)
+
+    c.BgpConAdvAdvertiseFilter = &advertise.PanoAdvertise{}
+    c.BgpConAdvAdvertiseFilter.Initialize(i)
+
+    c.BgpConAdvNonExistFilter = &nonexist.PanoNonExist{}
+    c.BgpConAdvNonExistFilter.Initialize(i)
+
+    c.BgpConditionalAdv = &conadv.PanoConAdv{}
+    c.BgpConditionalAdv.Initialize(i)
+
+    c.BgpConfig = &bgp.PanoBgp{}
+    c.BgpConfig.Initialize(i)
+
+    c.BgpDampeningProfile = &dampening.PanoDampening{}
+    c.BgpDampeningProfile.Initialize(i)
+
+    c.BgpExport = &exp.PanoExp{}
+    c.BgpExport.Initialize(i)
+
+    c.BgpImport = &imp.PanoImp{}
+    c.BgpImport.Initialize(i)
+
+    c.BgpPeer = &peer.PanoPeer{}
+    c.BgpPeer.Initialize(i)
+
+    c.BgpPeerGroup = &group.PanoGroup{}
+    c.BgpPeerGroup.Initialize(i)
+
+    c.BgpRedistRule = &bgpredist.PanoRedist{}
+    c.BgpRedistRule.Initialize(i)
 
     c.EthernetInterface = &eth.PanoEth{}
     c.EthernetInterface.Initialize(i)

@@ -10,13 +10,13 @@ import (
 
 // FwDev is the client.Device namespace.
 type FwDev struct {
-    GeneralSettings *general.General
+    GeneralSettings *general.FwGeneral
     Telemetry *telemetry.FwTelemetry
 }
 
 // Initialize is invoked on client.Initialize().
 func (c *FwDev) Initialize(i util.XapiClient) {
-    c.GeneralSettings = &general.General{}
+    c.GeneralSettings = &general.FwGeneral{}
     c.GeneralSettings.Initialize(i)
 
     c.Telemetry = &telemetry.FwTelemetry{}

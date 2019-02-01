@@ -1,6 +1,3 @@
-// Package general is the client.Device.GeneralSettings namespace.
-//
-// Normalized object: Config
 package general
 
 import (
@@ -9,19 +6,6 @@ import (
     "github.com/PaloAltoNetworks/pango/util"
 )
 
-
-// Constants for NTP auth types.
-const (
-    NoAuth = "none"
-    AutokeyAuth = "autokey"
-    SymmetricKeyAuth = "symmetric-key"
-)
-
-// Constants for NTP algorithms.
-const (
-    Sha1 = "sha1"
-    Md5 = "md5"
-)
 
 // Config is a normalized, version independent representation of a device's
 // general settings.
@@ -37,6 +21,10 @@ type Config struct {
     LoginBanner string
     PanoramaPrimary string
     PanoramaSecondary string
+    ProxyServer string
+    ProxyPort int
+    ProxyUser string
+    ProxyPassword string
     DnsPrimary string
     DnsSecondary string
     NtpPrimaryAddress string
@@ -147,79 +135,21 @@ func (o *Config) Merge(s Config) {
     if s.NtpSecondaryAuthKey != "" {
         o.NtpSecondaryAuthKey = s.NtpSecondaryAuthKey
     }
-}
 
-// General is a namespace struct, included as part of pango.Client.
-type General struct {
-    con util.XapiClient
-}
-
-// Initialize is invoked by client.Initialize().
-func (c *General) Initialize(con util.XapiClient) {
-    c.con = con
-}
-
-// Show performs SHOW to retrieve the device's general settings.
-func (c *General) Show() (Config, error) {
-    c.con.LogQuery("(show) general settings")
-    return c.details(c.con.Show)
-}
-
-// Get performs GET to retrieve the device's general settings.
-func (c *General) Get() (Config, error) {
-    c.con.LogQuery("(get) general settings")
-    return c.details(c.con.Get)
-}
-
-// Set performs SET to create / update the device's general settings.
-func (c *General) Set(e Config) error {
-    var err error
-    _, fn := c.versioning()
-    c.con.LogAction("(set) general settings")
-
-    path := c.xpath()
-    path = path[:len(path) - 1]
-
-    _, err = c.con.Set(path, fn(e), nil, nil)
-    return err
-}
-
-// Edit performs EDIT to update the device's general settings.
-func (c *General) Edit(e Config) error {
-    var err error
-    _, fn := c.versioning()
-    c.con.LogAction("(edit) general settings")
-
-    path := c.xpath()
-
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
-}
-
-/** Internal functions for the General struct **/
-
-func (c *General) versioning() (normalizer, func(Config) (interface{})) {
-    return &container_v1{}, specify_v1
-}
-
-func (c *General) details(fn util.Retriever) (Config, error) {
-    path := c.xpath()
-    obj, _ := c.versioning()
-    if _, err := fn(path, nil, obj); err != nil {
-        return Config{}, err
+    if s.ProxyServer != "" {
+        o.ProxyServer = s.ProxyServer
     }
-    ans := obj.Normalize()
 
-    return ans, nil
-}
+    if s.ProxyPort != 0 {
+        o.ProxyPort = s.ProxyPort
+    }
 
-func (c *General) xpath() []string {
-    return []string{
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "deviceconfig",
-        "system",
+    if s.ProxyUser != "" {
+        o.ProxyUser = s.ProxyUser
+    }
+
+    if s.ProxyPassword != "" {
+        o.ProxyPassword = s.ProxyPassword
     }
 }
 
@@ -246,6 +176,10 @@ func (o *container_v1) Normalize() Config {
         LoginBanner: o.Answer.LoginBanner,
         PanoramaPrimary: o.Answer.PanoramaPrimary,
         PanoramaSecondary: o.Answer.PanoramaSecondary,
+        ProxyServer: o.Answer.ProxyServer,
+        ProxyPort: o.Answer.ProxyPort,
+        ProxyUser: o.Answer.ProxyUser,
+        ProxyPassword: o.Answer.ProxyPassword,
     }
     if o.Answer.Dns != nil {
         ans.DnsPrimary = o.Answer.Dns.Primary
@@ -349,18 +283,6 @@ func (o *container_v1) Normalize() Config {
     if o.Answer.Route != nil {
         ans.raw["route"] = util.CleanRawXml(o.Answer.Route.Text)
     }
-    if o.Answer.SecureProxyPassword != nil {
-        ans.raw["sppassword"] = util.CleanRawXml(o.Answer.SecureProxyPassword.Text)
-    }
-    if o.Answer.SecureProxyPort != nil {
-        ans.raw["spport"] = util.CleanRawXml(o.Answer.SecureProxyPort.Text)
-    }
-    if o.Answer.SecureProxyServer != nil {
-        ans.raw["sps"] = util.CleanRawXml(o.Answer.SecureProxyServer.Text)
-    }
-    if o.Answer.SecureProxyUser != nil {
-        ans.raw["spu"] = util.CleanRawXml(o.Answer.SecureProxyUser.Text)
-    }
     if o.Answer.Service != nil {
         ans.raw["service"] = util.CleanRawXml(o.Answer.Service.Text)
     }
@@ -402,6 +324,10 @@ type config_v1 struct {
     LoginBanner string `xml:"login-banner,omitempty"`
     PanoramaPrimary string `xml:"panorama-server,omitempty"`
     PanoramaSecondary string `xml:"panorama-server-2,omitempty"`
+    ProxyServer string `xml:"secure-proxy-server,omitempty"`
+    ProxyPort int `xml:"secure-proxy-port,omitempty"`
+    ProxyUser string `xml:"secure-proxy-user,omitempty"`
+    ProxyPassword string `xml:"secure-proxy-password,omitempty"`
     Dns *deviceDns `xml:"dns-setting"`
     Ntp *deviceNtp `xml:"ntp-servers"`
     AckLoginBanner *util.RawXml `xml:"ack-login-banner"`
@@ -422,10 +348,6 @@ type config_v1 struct {
     Mtu *util.RawXml `xml:"mtu"`
     PermittedIp *util.RawXml `xml:"permitted-ip"`
     Route *util.RawXml `xml:"route"`
-    SecureProxyPassword *util.RawXml `xml:"secure-proxy-password"`
-    SecureProxyPort *util.RawXml `xml:"secure-proxy-port"`
-    SecureProxyServer *util.RawXml `xml:"secure-proxy-server"`
-    SecureProxyUser *util.RawXml `xml:"secure-proxy-user"`
     Service *util.RawXml `xml:"service"`
     SnmpSetting *util.RawXml `xml:"snmp-setting"`
     SpeedDuplex *util.RawXml `xml:"speed-duplex"`
@@ -483,6 +405,10 @@ func specify_v1(c Config) interface{} {
         LoginBanner: c.LoginBanner,
         PanoramaPrimary: c.PanoramaPrimary,
         PanoramaSecondary: c.PanoramaSecondary,
+        ProxyServer: c.ProxyServer,
+        ProxyPort: c.ProxyPort,
+        ProxyUser: c.ProxyUser,
+        ProxyPassword: c.ProxyPassword,
     }
     if c.DnsPrimary != "" || c.DnsSecondary != "" {
         ans.Dns = &deviceDns{
@@ -593,18 +519,6 @@ func specify_v1(c Config) interface{} {
     }
     if text, present := c.raw["route"]; present {
         ans.Route = &util.RawXml{text}
-    }
-    if text, present := c.raw["sppassword"]; present {
-        ans.SecureProxyPassword = &util.RawXml{text}
-    }
-    if text, present := c.raw["spport"]; present {
-        ans.SecureProxyPort = &util.RawXml{text}
-    }
-    if text, present := c.raw["sps"]; present {
-        ans.SecureProxyServer = &util.RawXml{text}
-    }
-    if text, present := c.raw["spu"]; present {
-        ans.SecureProxyUser = &util.RawXml{text}
     }
     if text, present := c.raw["service"]; present {
         ans.Service = &util.RawXml{text}
