@@ -10,6 +10,9 @@ description: |-
 
 This resource allows you to add/update/delete NAT rules.
 
+~> **Note:** This resource has been deprecated.  Please use
+`panos_nat_rule_group` instead.
+
 ~> **Note:** `panos_nat_policy` is known as `panos_nat_rule`.
 
 The prefix `sat` stands for "Source Address Translation" while the prefix "dat"
