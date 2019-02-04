@@ -1,4 +1,27 @@
 ## 1.5.0 (Unreleased)
+
+NEW RESOURCES:
+
+* `panos_bfd_profile` / `panos_panorama_bfd_profile` [GH-107]
+* `panos_bgp` / `panos_panorama_bgp` [GH-73]
+* `panos_bgp_aggregate` / `panos_panorama_bgp_aggregate` [GH-124]
+* `panos_bgp_aggregate_advertise_filter` / `panos_panorama_bgp_aggregate_advertise_filter` [GH-126]
+* `panos_bgp_aggregate_suppress_filter` / `panos_panorama_bgp_aggregate_suppress_filter` [GH-128]
+* `panos_bgp_auth_profile` / `panos_panorama_bgp_auth_profile` [GH-110]
+* `panos_bgp_conditional_adv` / `panos_panorama_bgp_conditional_adv`, `panos_bgp_conditional_adv_advertise_filter` / `panos_panorama_bgp_conditional_adv_advertise_filter`, and `panos_bgp_conditional_adv_non_exist_filter` / `panos_panorama_bgp_conditional_adv_non_exist_filter` [GH-122]
+* `panos_bgp_dampening_profile` / `panos_panorama_bgp_dampening_profile` [GH-111]
+* `panos_bgp_export_rule_group` / `panos_panorama_bgp_export_rule_group` [GH-120]
+* `panos_bgp_import_rule_group` / `panos_panorama_bgp_import_rule_group` [GH-118]
+* `panos_bgp_peer` / `panos_panorama_bgp_peer` [GH-116]
+* `panos_bgp_peer_group` / `panos_panorama_bgp_peer_group` [GH-114]
+* `panos_bgp_redist_rule` / `panos_panorama_bgp_redist_rule` [GH-130]
+* `panos_nat_rule_group` / `panos_panorama_nat_rule_group` [GH-78]
+* `panos_redistribution_profile_ivp4` / `panos_panorama_redistribution_profile_ipv4` [GH-92]
+
+DEPRECATED RESOURCES:
+
+* `panos_nat_rule` / `panos_panorama_nat_rule` are both deprecated.  Please use `panos_nat_rule_group` / `panos_panorama_nat_rule_group` instead.
+
 ## 1.4.1 (October 26, 2018)
 
 NEW RESOURCES:
