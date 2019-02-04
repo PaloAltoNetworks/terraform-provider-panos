@@ -19,6 +19,10 @@ func resourcePanoramaSecurityPolicy() *schema.Resource {
 		Update: createUpdatePanoramaSecurityPolicy,
 		Delete: deletePanoramaSecurityPolicy,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"device_group": {
 				Type:     schema.TypeString,

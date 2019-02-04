@@ -14,6 +14,10 @@ func resourceVirtualRouterEntry() *schema.Resource {
 		Read:   readVirtualRouterEntry,
 		Delete: deleteVirtualRouterEntry,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"virtual_router": {
 				Type:     schema.TypeString,

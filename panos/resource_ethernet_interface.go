@@ -19,6 +19,10 @@ func resourceEthernetInterface() *schema.Resource {
 		Update: updateEthernetInterface,
 		Delete: deleteEthernetInterface,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

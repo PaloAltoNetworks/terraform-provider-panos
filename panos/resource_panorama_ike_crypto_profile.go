@@ -18,6 +18,10 @@ func resourcePanoramaIkeCryptoProfile() *schema.Resource {
 		Update: updatePanoramaIkeCryptoProfile,
 		Delete: deletePanoramaIkeCryptoProfile,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

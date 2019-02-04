@@ -18,6 +18,10 @@ func resourceServiceObject() *schema.Resource {
 		Update: updateServiceObject,
 		Delete: deleteServiceObject,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,

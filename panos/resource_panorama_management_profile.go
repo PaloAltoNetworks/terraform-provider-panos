@@ -17,6 +17,10 @@ func resourcePanoramaManagementProfile() *schema.Resource {
 		Update: updatePanoramaManagementProfile,
 		Delete: deletePanoramaManagementProfile,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

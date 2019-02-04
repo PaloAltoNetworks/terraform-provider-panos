@@ -18,6 +18,10 @@ func resourcePanoramaAddressGroup() *schema.Resource {
 		Update: updatePanoramaAddressGroup,
 		Delete: deletePanoramaAddressGroup,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,

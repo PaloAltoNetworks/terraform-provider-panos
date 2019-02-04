@@ -16,6 +16,10 @@ func resourcePanoramaStaticRouteIpv4() *schema.Resource {
 		Update: updatePanoramaStaticRouteIpv4,
 		Delete: deletePanoramaStaticRouteIpv4,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

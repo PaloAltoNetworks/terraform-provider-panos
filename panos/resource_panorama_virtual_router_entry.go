@@ -14,6 +14,10 @@ func resourcePanoramaVirtualRouterEntry() *schema.Resource {
 		Read:   readPanoramaVirtualRouterEntry,
 		Delete: deletePanoramaVirtualRouterEntry,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"template": {
 				Type:     schema.TypeString,

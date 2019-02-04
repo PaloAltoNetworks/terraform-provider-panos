@@ -19,6 +19,10 @@ func resourcePanoramaTunnelInterface() *schema.Resource {
 		Update: updatePanoramaTunnelInterface,
 		Delete: deletePanoramaTunnelInterface,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:         schema.TypeString,
