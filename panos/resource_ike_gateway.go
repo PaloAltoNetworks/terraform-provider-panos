@@ -14,6 +14,10 @@ func resourceIkeGateway() *schema.Resource {
 		Update: updateIkeGateway,
 		Delete: deleteIkeGateway,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

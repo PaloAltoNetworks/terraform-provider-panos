@@ -19,6 +19,10 @@ func resourceLoopbackInterface() *schema.Resource {
 		Update: updateLoopbackInterface,
 		Delete: deleteLoopbackInterface,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:         schema.TypeString,

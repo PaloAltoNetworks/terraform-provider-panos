@@ -17,6 +17,10 @@ func resourcePanoramaDeviceGroupEntry() *schema.Resource {
 		Update: createUpdatePanoramaDeviceGroupEntry,
 		Delete: deletePanoramaDeviceGroupEntry,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"device_group": {
 				Type:     schema.TypeString,

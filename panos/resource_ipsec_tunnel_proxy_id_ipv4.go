@@ -17,6 +17,10 @@ func resourceIpsecTunnelProxyIdIpv4() *schema.Resource {
 		Update: updateIpsecTunnelProxyIdIpv4,
 		Delete: deleteIpsecTunnelProxyIdIpv4,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

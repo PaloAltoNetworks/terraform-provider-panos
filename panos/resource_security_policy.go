@@ -23,6 +23,10 @@ func resourceSecurityPolicy() *schema.Resource {
 		SchemaVersion: 1,
 		MigrateState:  migrateResourceSecurityPolicy,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"vsys": {
 				Type:        schema.TypeString,

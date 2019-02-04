@@ -17,6 +17,10 @@ func resourcePanoramaIpsecCryptoProfile() *schema.Resource {
 		Update: updatePanoramaIpsecCryptoProfile,
 		Delete: deletePanoramaIpsecCryptoProfile,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

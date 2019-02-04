@@ -18,6 +18,10 @@ func resourcePanoramaZone() *schema.Resource {
 		Update: updatePanoramaZone,
 		Delete: deletePanoramaZone,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

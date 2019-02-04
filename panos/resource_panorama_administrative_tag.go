@@ -17,6 +17,10 @@ func resourcePanoramaAdministrativeTag() *schema.Resource {
 		Update: updatePanoramaAdministrativeTag,
 		Delete: deletePanoramaAdministrativeTag,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,

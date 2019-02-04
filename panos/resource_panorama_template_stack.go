@@ -16,6 +16,10 @@ func resourcePanoramaTemplateStack() *schema.Resource {
 		Update: updatePanoramaTemplateStack,
 		Delete: deletePanoramaTemplateStack,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

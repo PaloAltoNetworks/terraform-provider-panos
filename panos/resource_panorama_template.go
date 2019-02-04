@@ -20,6 +20,10 @@ func resourcePanoramaTemplate() *schema.Resource {
 		SchemaVersion: 1,
 		MigrateState:  migrateResourcePanoramaTemplate,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

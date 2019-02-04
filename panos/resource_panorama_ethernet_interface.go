@@ -19,6 +19,10 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 		Update: updatePanoramaEthernetInterface,
 		Delete: deletePanoramaEthernetInterface,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
