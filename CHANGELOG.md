@@ -18,6 +18,11 @@ NEW RESOURCES:
 * `panos_nat_rule_group` / `panos_panorama_nat_rule_group` [GH-78]
 * `panos_redistribution_profile_ivp4` / `panos_panorama_redistribution_profile_ipv4` [GH-92]
 
+ENHANCEMENTS:
+
+* Almost every resource can now be imported [GH-86]
+* Added proxy params to `panos_general_settings` [GH-96]
+
 DEPRECATED RESOURCES:
 
 * `panos_nat_rule` / `panos_panorama_nat_rule` are both deprecated.  Please use `panos_nat_rule_group` / `panos_panorama_nat_rule_group` instead.
