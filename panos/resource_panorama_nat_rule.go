@@ -19,8 +19,7 @@ func resourcePanoramaNatRule() *schema.Resource {
 		Update: updatePanoramaNatRule,
 		Delete: deletePanoramaNatRule,
 
-		// TODO(gfreeman): update hashicorp/terraform.
-		//DeprecationMessage: "Please use panos_panorama_nat_rule_group instead",
+		DeprecationMessage: "Please use panos_panorama_nat_rule_group instead",
 
 		Schema: map[string]*schema.Schema{
 			"name": {
