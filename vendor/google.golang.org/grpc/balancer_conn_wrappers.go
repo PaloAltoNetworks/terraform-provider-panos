@@ -115,7 +115,7 @@ func newCCBalancerWrapper(cc *ClientConn, b balancer.Builder, bopts balancer.Bui
 	return ccb
 }
 
-// watcher balancer functions sequencially, so the balancer can be implemeneted
+// watcher balancer functions sequentially, so the balancer can be implemented
 // lock-free.
 func (ccb *ccBalancerWrapper) watcher() {
 	for {
@@ -231,6 +231,10 @@ func (ccb *ccBalancerWrapper) UpdateBalancerState(s connectivity.State, p balanc
 	}
 	ccb.cc.csMgr.updateState(s)
 	ccb.cc.blockingpicker.updatePicker(p)
+}
+
+func (ccb *ccBalancerWrapper) ResolveNow(o resolver.ResolveNowOption) {
+	ccb.cc.resolveNow(o)
 }
 
 func (ccb *ccBalancerWrapper) Target() string {
