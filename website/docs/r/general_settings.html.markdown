@@ -36,6 +36,10 @@ The following arguments are supported:
 * `domain` - The domain.
 * `update_server` - The update server (Default: `updates.paloaltonetworks.com`).
 * `verify_update_server` - Verify update server identity (Default: `true`).
+* `proxy_server` - (1.5+) Specify a proxy server.
+* `proxy_port` - (int, 1.5+) Proxy's port number.
+* `proxy_username` - (1.5+) Proxy's username.
+* `proxy_password` - (1.5+) Proxy's password.
 * `dns_primary` - Primary DNS server.
 * `dns_secondary` - Secondary DNS server.
 * `ntp_primary_address` - Primary NTP server.

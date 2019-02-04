@@ -45,6 +45,32 @@ func resourceGeneralSettings() *schema.Resource {
 				Default:     true,
 				Description: "Verify update server identity",
 			},
+			"proxy_server": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"proxy_port": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Computed: true,
+			},
+			"proxy_user": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"proxy_password": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"proxy_password_enc": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
 			"dns_primary": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -132,6 +158,10 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
 		Domain:                d.Get("domain").(string),
 		UpdateServer:          d.Get("update_server").(string),
 		VerifyUpdateServer:    d.Get("verify_update_server").(bool),
+		ProxyServer:           d.Get("proxy_server").(string),
+		ProxyPort:             d.Get("proxy_port").(int),
+		ProxyUser:             d.Get("proxy_user").(string),
+		ProxyPassword:         d.Get("proxy_password").(string),
 		DnsPrimary:            d.Get("dns_primary").(string),
 		DnsSecondary:          d.Get("dns_secondary").(string),
 		NtpPrimaryAddress:     d.Get("ntp_primary_address").(string),
@@ -160,7 +190,14 @@ func createUpdateGeneralSettings(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
+	lo, err := fw.Device.GeneralSettings.Get()
+	if err != nil {
+		return err
+	}
+
 	d.SetId(o.Hostname)
+	d.Set("proxy_password_enc", lo.ProxyPassword)
+
 	return readGeneralSettings(d, meta)
 }
 
@@ -178,6 +215,12 @@ func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
 	d.Set("domain", o.Domain)
 	d.Set("update_server", o.UpdateServer)
 	d.Set("verify_update_server", o.VerifyUpdateServer)
+	d.Set("proxy_server", o.ProxyServer)
+	d.Set("proxy_port", o.ProxyPort)
+	d.Set("proxy_user", o.ProxyUser)
+	if d.Get("proxy_password_enc").(string) != o.ProxyPassword {
+		d.Set("proxy_password", "(incorrect proxy password)")
+	}
 	d.Set("dns_primary", o.DnsPrimary)
 	d.Set("dns_secondary", o.DnsSecondary)
 	d.Set("ntp_primary_address", o.NtpPrimaryAddress)
