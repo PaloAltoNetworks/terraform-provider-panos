@@ -16,10 +16,6 @@ func resourceBgpAuthProfile() *schema.Resource {
 		Update: updateBgpAuthProfile,
 		Delete: deleteBgpAuthProfile,
 
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
-
 		Schema: bgpAuthProfileSchema(false),
 	}
 }
