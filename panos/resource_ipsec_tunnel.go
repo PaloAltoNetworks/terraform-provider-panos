@@ -16,10 +16,6 @@ func resourceIpsecTunnel() *schema.Resource {
 		Update: updateIpsecTunnel,
 		Delete: deleteIpsecTunnel,
 
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
-
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

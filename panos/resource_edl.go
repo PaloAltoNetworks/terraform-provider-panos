@@ -17,10 +17,6 @@ func resourceEdl() *schema.Resource {
 		Update: updateEdl,
 		Delete: deleteEdl,
 
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
-
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

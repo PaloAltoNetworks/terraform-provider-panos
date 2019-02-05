@@ -14,10 +14,6 @@ func resourceTelemetry() *schema.Resource {
 		Update: updateTelemetry,
 		Delete: deleteTelemetry,
 
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
-
 		Schema: map[string]*schema.Schema{
 			"application_reports": {
 				Type:     schema.TypeBool,
