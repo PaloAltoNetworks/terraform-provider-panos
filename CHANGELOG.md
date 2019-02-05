@@ -1,6 +1,6 @@
-## 1.5.1 (Unreleased)
+## 1.5.1 (February 05, 2019)
 
-The following resources can no longer be imported, as they have encrypted fields (thus there is no way to verify the plain text version of those fields) [GH-139]:
+The following resources can no longer be imported, as they have encrypted fields (thus there is no way to verify the plain text version of those fields) [[#139](https://github.com/terraform-providers/terraform-provider-panos/issues/139)]:
 
 * `panos_bgp_auth_profile` / `panos_panorama_bgp_auth_profile`
 * `panos_edl` / `panos_panorama_edl`
