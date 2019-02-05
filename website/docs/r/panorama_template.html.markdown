@@ -22,6 +22,14 @@ the template.
 been removed.  Creating a template stack and specifying devices in the template
 stack is still present in PAN-OS 8.1.
 
+
+## Import Name
+
+```
+<name>
+```
+
+
 ## Example Usage
 
 ```hcl

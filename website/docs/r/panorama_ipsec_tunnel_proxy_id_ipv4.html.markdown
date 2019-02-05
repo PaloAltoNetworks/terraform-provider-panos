@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama IPSec tunnel proxy IDs
 to a parent auto key IPSec tunnel for templates.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<ipsec_tunnel>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

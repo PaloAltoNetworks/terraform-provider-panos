@@ -18,6 +18,14 @@ sure that your `panos_panorama_device_group` spec does not define any
 This is the appropriate resource to use if `terraform destroy` should delete
 the device group.
 
+
+## Import Name
+
+```
+<name>
+```
+
+
 ## Example Usage
 
 ```hcl

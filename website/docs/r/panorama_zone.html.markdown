@@ -16,6 +16,14 @@ resource.  If you want to use this resource with the other one, then make
 sure that your `panos_panorama_zone` spec does not define the
 `interfaces` field.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

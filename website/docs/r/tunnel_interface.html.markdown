@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete tunnel interfaces.
 
+
+## Import Name
+
+```
+<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

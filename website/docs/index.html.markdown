@@ -438,6 +438,26 @@ variables:
 If `PANOS_USERNAME` is set to `admin`, then the above will skip the step that
 creates the account, as the `admin` account already exists.
 
+
+## Importing Resources
+
+Many resources support being imported.  Any resource that supports `terraform
+import` will have a "Import Name" section in the documentation.  The variables
+given in this section directly match up with the resource params you would
+specify in your plan file.  Thus if you were importing an ethernet interface
+whose import name is `<vsys>:<name>`, your import name would be something like
+`vsys1:ethernet1/1`.
+
+Of special note is the Panorama resources.  The templated resources often
+have both the template and the template stack in the resource name, however
+only one of these can ever be present.  Thus, the one that isn't being used
+should just be an empty string.  For example, if you were trying to import
+a Panorama IPv4 static route whose import name is
+`<template>:<template_stack>:<virtual_router>:<name>` that resides in a
+template, your import name would be something like
+`myTemplate::myVirtualRouter:myStaticRouteName`.
+
+
 ## Example Provider Usage
 
 ```hcl

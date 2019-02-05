@@ -24,6 +24,14 @@ not already exist, then this resource can actually create it.  However, since
 only the single entry for the specific serial number is deleted, then a
 `terraform destroy` would not remove the device group itself in this situation.
 
+
+## Import Name
+
+```
+<device_group>:<serial>
+```
+
+
 ## Example Usage
 
 ```hcl

@@ -19,6 +19,14 @@ sure that your `panos_panorama_template_stack` spec does not define the
 This is the appropriate resource to use if you have a pre-existing template stack
 in Panorama and don't want Terraform to delete it on `terraform destroy`.
 
+
+## Import Name
+
+```
+<template_stack>:<device>
+```
+
+
 ## Example Usage
 
 ```hcl
@@ -32,5 +40,5 @@ resource "panos_panorama_template_stack_entry" "example1" {
 
 The following arguments are supported:
 
-* `template` - (Required) The template name.
+* `template_stack` - (Required) The template name.
 * `device` - (Required) The serial number of the device to add.

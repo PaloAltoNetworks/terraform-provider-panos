@@ -13,6 +13,14 @@ templates and template stacks.
 
 Template variables are available in PAN-OS 8.1+.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

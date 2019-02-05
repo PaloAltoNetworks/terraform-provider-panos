@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama IKE crypto profiles
 to a template or template stack.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

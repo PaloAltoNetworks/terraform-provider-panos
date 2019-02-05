@@ -13,6 +13,13 @@ This resource allows you to add/update/delete BFD profiles.
 ~> **Note:** This resource is only applicable for PAN-OS 7.1+.
 
 
+## Import Name
+
+```
+<name>
+```
+
+
 ## Example Usage
 
 ```hcl

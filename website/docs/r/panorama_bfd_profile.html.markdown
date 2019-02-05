@@ -13,6 +13,13 @@ This resource allows you to add/update/delete BFD profiles on Panorama.
 ~> **Note:** This resource is only applicable for PAN-OS 7.1+.
 
 
+## Import Name
+
+```
+<template>:<template_stack>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

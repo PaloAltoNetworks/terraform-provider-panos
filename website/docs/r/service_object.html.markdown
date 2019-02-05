@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete service objects.
 
+
+## Import Name
+
+```
+<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

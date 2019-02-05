@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete administrative tags.
 
+
+## Import Name
+
+```
+<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

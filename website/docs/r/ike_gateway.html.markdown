@@ -10,6 +10,7 @@ description: |-
 
 This resource allows you to add/update/delete IKE gateways.
 
+
 ## Example Usage
 
 ```hcl

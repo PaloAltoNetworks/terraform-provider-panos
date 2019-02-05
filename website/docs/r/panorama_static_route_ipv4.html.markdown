@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama IPv4 static routes on a
 virtual router for either a template or a template stack.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

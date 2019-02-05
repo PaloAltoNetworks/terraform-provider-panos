@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama interface management profiles
 for both templates and template stacks.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

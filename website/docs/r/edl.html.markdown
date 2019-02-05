@@ -10,6 +10,7 @@ description: |-
 
 This resource allows you to add/update/delete external dynamic lists (EDL).
 
+
 ## Setting `repeat_at`
 
 The acceptable PAN-OS values for the `repeat_at` field is a combination of
@@ -32,6 +33,14 @@ and the version of PAN-OS you're running against:
 * PAN-OS 7.1+
   * `every five minutes`, `hourly` - N/A
   * `daily`, `weekly`, `monthly` - 24hr hour
+
+
+## Import Name
+
+```
+<vsys>:<name>
+```
+
 
 ## Example Usage
 

@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama tunnel interfaces
 for templates.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

@@ -15,6 +15,14 @@ resource.  If you want to use this resource with the other one, then make
 sure that your `panos_zone` spec does not define the
 `interfaces` field.
 
+
+## Import Name
+
+```
+<vsys>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

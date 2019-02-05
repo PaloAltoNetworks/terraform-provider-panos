@@ -18,6 +18,14 @@ least one non-exist filter and one advertise filter.  In order for a conditional
 advertisement to be valid, you must specify at least one non-exist and one
 advertise filter.
 
+
+## Import Name
+
+```
+<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

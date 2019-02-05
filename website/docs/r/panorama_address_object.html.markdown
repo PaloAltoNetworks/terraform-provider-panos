@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete address objects on Panorama.
 
+
+## Import Name
+
+```
+<device_group>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl
