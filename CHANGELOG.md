@@ -1,6 +1,6 @@
 ## 1.5.1 (Unreleased)
 
-The following resources can no longer be imported, as they have encrypted fields (thus there is no way to verify the plain text version of those fields):
+The following resources can no longer be imported, as they have encrypted fields (thus there is no way to verify the plain text version of those fields) [GH-139]:
 
 * `panos_bgp_auth_profile` / `panos_panorama_bgp_auth_profile`
 * `panos_edl` / `panos_panorama_edl`
