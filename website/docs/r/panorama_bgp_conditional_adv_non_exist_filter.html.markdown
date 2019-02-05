@@ -15,6 +15,14 @@ BGP conditional advertisement.
 one non-exist filter and one advertise filter attached.  This filter must be paired
 with the other in order for the configuration to be valid.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<bgp_conditional_adv>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

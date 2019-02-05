@@ -11,6 +11,13 @@ description: |-
 This resource allows you to add/update/delete a BGP dampening profile.
 
 
+## Import Name
+
+```
+<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

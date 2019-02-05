@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete Panorama service groups.
 
+
+## Import Name
+
+```
+<device_group>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

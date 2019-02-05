@@ -10,6 +10,14 @@ description: |-
 
 This resource allows you to add/update/delete interface management profiles.
 
+
+## Import Name
+
+```
+<name>
+```
+
+
 ## Example Usage
 
 ```hcl

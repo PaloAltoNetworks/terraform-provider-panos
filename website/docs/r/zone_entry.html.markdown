@@ -18,6 +18,14 @@ sure that your `panos_zone` spec does not define the
 This is the appropriate resource to use if you have a pre-existing zone
 and don't want Terraform to delete it on `terraform destroy`.
 
+
+## Import Name
+
+```
+<vsys>:<zone>:<mode>:<interface>
+```
+
+
 ## Example Usage
 
 ```hcl

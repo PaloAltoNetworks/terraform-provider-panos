@@ -11,6 +11,13 @@ description: |-
 This resource allows you to add/update/delete a Panorama BGP peer.
 
 
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<bgp_peer_group>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

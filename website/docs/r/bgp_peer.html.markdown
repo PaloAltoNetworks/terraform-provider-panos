@@ -11,6 +11,13 @@ description: |-
 This resource allows you to add/update/delete a BGP peer.
 
 
+## Import Name
+
+```
+<virtual_router>:<bgp_peer_group>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

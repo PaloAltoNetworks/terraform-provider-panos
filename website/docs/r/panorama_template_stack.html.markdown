@@ -18,6 +18,14 @@ sure that your `panos_panorama_template_stack` spec does not define any
 This is the appropriate resource to use if `terraform destroy` should delete
 the template stack.
 
+
+## Import Name
+
+```
+<name>
+```
+
+
 ## Example Usage
 
 ```hcl

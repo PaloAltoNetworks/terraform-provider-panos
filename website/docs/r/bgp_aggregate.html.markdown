@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete BGP address aggregation
 rules.
 
+
+## Import Name
+
+```
+<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

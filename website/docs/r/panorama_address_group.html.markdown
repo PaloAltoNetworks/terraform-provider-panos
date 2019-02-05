@@ -14,6 +14,14 @@ Address groups are either statically defined or dynamically defined, so only
 `static_addresses` or `dynamic_match` should be defined within a given address
 group.
 
+
+## Import Name
+
+```
+<device_group>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

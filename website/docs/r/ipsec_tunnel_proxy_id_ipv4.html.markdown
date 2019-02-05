@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete IPSec tunnel proxy IDs to
 a parent auto key IPSec tunnel.
 
+
+## Import Name
+
+```
+<ipsec_tunnel>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

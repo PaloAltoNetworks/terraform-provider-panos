@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete Panorama IPv4 redistribution
 profiles on a virtual router.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

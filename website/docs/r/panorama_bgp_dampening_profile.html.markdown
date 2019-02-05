@@ -11,6 +11,13 @@ description: |-
 This resource allows you to add/update/delete a Panorama BGP dampening profile.
 
 
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

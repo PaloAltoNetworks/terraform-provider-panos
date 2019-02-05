@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete a Panorama route suppression filter for a
 BGP address aggregation rule.
 
+
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>:<bgp_aggregate>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

@@ -40,6 +40,14 @@ the following params:
 If the `group` param and none of the `Profiles` params are specified, then
 the Profile Setting is set to `None`.
 
+
+## Import Name
+
+```
+<device_group>:<rulebase>
+```
+
+
 ## Example Usage
 
 ```hcl

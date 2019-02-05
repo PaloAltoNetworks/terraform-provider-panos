@@ -11,6 +11,14 @@ description: |-
 This resource allows you to add/update/delete IPv4 static routes on a
 virtual router.
 
+
+## Import Name
+
+```
+<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

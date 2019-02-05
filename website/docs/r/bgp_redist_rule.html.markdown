@@ -11,6 +11,13 @@ description: |-
 This resource allows you to add/update/delete a BGP redistribution rule.
 
 
+## Import Name
+
+```
+<virtual_router>:<name>
+```
+
+
 ## Example Usage
 
 ```hcl

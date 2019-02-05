@@ -11,6 +11,20 @@ description: |-
 This resource allows you to add/update/delete a Panorama virtual
 router BGP configuration.
 
+**Important Note:**  When it comes to BGP configuration, PAN-OS requires that
+BGP itself first be configured before you can add other BGP sub-config, such
+as dampening profiles or peer groups.  Since every BGP resource must reference a
+virtual router, the key to accomplishing this is by pointing the `virtual_router`
+param for each BGP sub-config to `panos_panorama_bgp.foo.virtual_router` instead
+of `panos_panorama_virtual_router.bar.name`.
+
+
+## Import Name
+
+```
+<template>:<template_stack>:<virtual_router>
+```
+
 
 ## Example Usage
 
