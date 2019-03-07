@@ -66,6 +66,12 @@ do it this way because rules will natually be added at the tail end of the
 rulebase, so they will always be `after` the first group, but what you want
 is for them to be `before` the last group's rules.
 
+## Import Name
+
+```
+<vsys>
+```
+
 ## Example Usage
 
 ```hcl

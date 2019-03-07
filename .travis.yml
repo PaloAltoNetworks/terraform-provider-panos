@@ -5,6 +5,9 @@ services:
 language: go
 go:
   - "1.11.x"
+
+go_import_path: github.com/terraform-providers/terraform-provider-panos
+
 env:
   - GOFLAGS=-mod=vendor
 

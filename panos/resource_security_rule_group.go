@@ -21,6 +21,10 @@ func resourceSecurityRuleGroup() *schema.Resource {
 		Update: createUpdateSecurityRuleGroup,
 		Delete: deleteSecurityRuleGroup,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"vsys": {
 				Type:     schema.TypeString,

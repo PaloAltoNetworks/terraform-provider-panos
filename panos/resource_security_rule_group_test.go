@@ -54,6 +54,29 @@ func TestAccPanosSecurityRuleGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccCheckPanosSecurityRuleGroup_importBasic(t *testing.T) {
+	d6 := fmt.Sprintf("desc %s", acctest.RandString(6))
+	d7 := fmt.Sprintf("desc %s", acctest.RandString(6))
+	d8 := fmt.Sprintf("desc %s", acctest.RandString(6))
+	d9 := fmt.Sprintf("desc %s", acctest.RandString(6))
+	d10 := fmt.Sprintf("desc %s", acctest.RandString(6))
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccPanosSecurityRuleGroupDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSecurityRuleGroupConfig(d6, d7, d8, d9, d10),
+			},
+			{
+				ResourceName:      "panos_security_rule_group.top",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckPanosSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, o4, o5 *security.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		var vsys string
