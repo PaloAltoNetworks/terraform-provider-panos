@@ -6,7 +6,6 @@ import (
     "github.com/PaloAltoNetworks/pango/util"
 )
 
-
 const (
     Ikev1 = "ikev1"
     Ikev2 = "ikev2"
@@ -25,6 +24,11 @@ const (
     PeerTypeIp = "ip"
     PeerTypeDynamic = "dynamic"
     PeerTypeFqdn = "fqdn"
+)
+
+const (
+	LocalTypeIp         = "ip"
+	LocalTypeFloatingIp = "floating"
 )
 
 const (
@@ -150,9 +154,14 @@ func (o *container_v1) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
+
+	if o.Answer.LocalIp.FloatingIp != "" {
+		ans.LocalIpAddressType = LocalTypeFloatingIp
+		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+	}
 
     if o.Answer.LocalId != nil {
         ans.LocalIdType = o.Answer.LocalId.LocalIdType
@@ -224,9 +233,14 @@ func (o *container_v2) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
+
+	if o.Answer.LocalIp.FloatingIp != "" {
+		ans.LocalIpAddressType = LocalTypeFloatingIp
+		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+	}
 
     if o.Answer.LocalId != nil {
         ans.LocalIdType = o.Answer.LocalId.LocalIdType
@@ -318,9 +332,14 @@ func (o *container_v3) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
+
+	if o.Answer.LocalIp.FloatingIp != "" {
+		ans.LocalIpAddressType = LocalTypeFloatingIp
+		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+	}
 
     if o.Answer.LocalId != nil {
         ans.LocalIdType = o.Answer.LocalId.LocalIdType
@@ -410,6 +429,7 @@ type peerId struct {
 type localIp struct {
     Interface string `xml:"interface,omitempty"`
     StaticIp string `xml:"ip,omitempty"`
+    FloatingIp string `xml:"floating-ip,omitempty"`
 }
 
 type localId struct {
@@ -465,9 +485,14 @@ func specify_v1(e Entry) interface{} {
         Name: e.Name,
         LocalIp: localIp{
             Interface: e.Interface,
-            StaticIp: e.LocalIpAddressValue,
         },
     }
+
+	if e.LocalIpAddressType == "floating" {
+		ans.LocalIp.FloatingIp = e.LocalIpAddressValue
+	} else {
+		ans.LocalIp.StaticIp = e.LocalIpAddressValue
+	}
 
     switch e.PeerIpType {
     case PeerTypeIp:
@@ -605,9 +630,14 @@ func specify_v2(e Entry) interface{} {
         EnableIpv6: util.YesNo(e.EnableIpv6),
         LocalIp: localIp{
             Interface: e.Interface,
-            StaticIp: e.LocalIpAddressValue,
         },
     }
+
+	if e.LocalIpAddressType == "floating" {
+		ans.LocalIp.FloatingIp = e.LocalIpAddressValue
+	} else {
+		ans.LocalIp.StaticIp = e.LocalIpAddressValue
+	}
 
     switch e.PeerIpType {
     case PeerTypeIp:
@@ -744,9 +774,14 @@ func specify_v3(e Entry) interface{} {
         EnableIpv6: util.YesNo(e.EnableIpv6),
         LocalIp: localIp{
             Interface: e.Interface,
-            StaticIp: e.LocalIpAddressValue,
         },
     }
+
+	if e.LocalIpAddressType == "floating" {
+		ans.LocalIp.FloatingIp = e.LocalIpAddressValue
+	} else {
+		ans.LocalIp.StaticIp = e.LocalIpAddressValue
+	}
 
     switch e.PeerIpType {
     case PeerTypeIp:
