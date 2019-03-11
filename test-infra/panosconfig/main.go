@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -14,56 +13,31 @@ import (
 
 // Various PANOS prompts.
 var (
-	P1 *regexp.Regexp
-	P2 *regexp.Regexp
-	P3 *regexp.Regexp
+	stdPrompt      = regexp.MustCompile(`[a-zA-Z][a-zA-Z0-9\._\-]+@[a-zA-Z][a-zA-Z0-9\._\-]+> `)
+	cfgPrompt      = regexp.MustCompile(`[a-zA-Z][a-zA-Z0-9\._\-]+@[a-zA-Z][a-zA-Z0-9\._\-]+# `)
+	passwordPrompt = regexp.MustCompile(`(Enter|Confirm) password\s+:\s+?`)
 )
 
-func init() {
-	P1 = regexp.MustCompile(`[a-zA-Z][a-zA-Z0-9\._\-]+@[a-zA-Z][a-zA-Z0-9\._\-]+> `)
-	P2 = regexp.MustCompile(`[a-zA-Z][a-zA-Z0-9\._\-]+@[a-zA-Z][a-zA-Z0-9\._\-]+# `)
-	P3 = regexp.MustCompile(`(Enter|Confirm) password\s+:\s+?`)
-}
-
-// Globals to handle PANOS I/O.
-var (
-	stdin  io.Writer
-	stdout io.Reader
-	buf    [65 * 1024]byte
-)
-
-// ReadTo reads from stdout until the desired prompt is encountered.
-func ReadTo(prompt *regexp.Regexp) (string, error) {
-	var i int
-
-	for {
-		n, err := stdout.Read(buf[i:])
-		if n > 0 {
-			os.Stdout.Write(buf[i : i+n])
-		}
-		if err != nil {
-			return "", err
-		}
-		i += n
-		if prompt.Find(buf[:i]) != nil {
-			return string(buf[:i]), nil
-		}
+func main() {
+	if err := panosInit(); err != nil {
+		fmt.Printf("\nFailed initial config: %s\n", err)
+		os.Exit(1)
 	}
+	fmt.Printf("\nConfig initialization successful\n")
 }
 
 // Perform user initialization of PANOS.
 func panosInit() error {
-	var err error
-
 	// Load environment variables.
 	hostname := os.Getenv("PANOS_HOSTNAME")
 	username := os.Getenv("PANOS_USERNAME")
 	password := os.Getenv("PANOS_PASSWORD")
+	privateKey := os.Getenv("PANOS_SSH_PRIVATE_KEY")
 
 	// Sanity check input.
-	if len(os.Args) == 1 || os.Args[1] == "-h" || os.Args[1] == "--help" || hostname == "" || username == "" || password == "" {
+	if (len(os.Args) > 1 && (os.Args[1] == "-h" || os.Args[1] == "--help")) || hostname == "" || username == "" || password == "" || privateKey == "" {
 		u := []string{
-			fmt.Sprintf("Usage: %s <key_file>", os.Args[0]),
+			fmt.Sprintf("Usage: %s", os.Args[0]),
 			"",
 			"This will connect to a PANOS NGFW and perform initial config:",
 			"",
@@ -76,6 +50,7 @@ func panosInit() error {
 			" * PANOS_HOSTNAME",
 			" * PANOS_USERNAME",
 			" * PANOS_PASSWORD",
+			" * PANOS_SSH_PRIVATE_KEY",
 		}
 		for i := range u {
 			fmt.Printf("%s\n", u[i])
@@ -83,12 +58,7 @@ func panosInit() error {
 		os.Exit(0)
 	}
 
-	// Read in the ssh key file.
-	data, err := ioutil.ReadFile(os.Args[1])
-	if err != nil {
-		return fmt.Errorf("Failed to read SSH key file %q: %s", os.Args[1], err)
-	}
-
+	data := []byte(privateKey)
 	signer, err := ssh.ParsePrivateKey(data)
 	if err != nil {
 		return fmt.Errorf("Failed to parse private key: %s", err)
@@ -105,11 +75,13 @@ func panosInit() error {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
+	fmt.Printf("Connecting to %q ...\n", hostname)
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", hostname), config)
 	if err != nil {
 		return fmt.Errorf("Failed dial: %s", err)
 	}
 	defer client.Close()
+	fmt.Println("Connected.")
 
 	session, err := client.NewSession()
 	if err != nil {
@@ -128,17 +100,18 @@ func panosInit() error {
 	}
 
 	// Get input/output pipes for the ssh connection.
-	stdin, err = session.StdinPipe()
+	stdin, err := session.StdinPipe()
 	if err != nil {
 		return fmt.Errorf("setup stdin err: %s", err)
 	}
 
-	stdout, err = session.StdoutPipe()
+	stdout, err := session.StdoutPipe()
 	if err != nil {
 		return fmt.Errorf("setup stdout err: %s", err)
 	}
 
 	// Invoke a shell on the remote host.
+	fmt.Println("Starting session ...")
 	if err = session.Start("/bin/sh"); err != nil {
 		return fmt.Errorf("failed session.Start: %s", err)
 	}
@@ -151,16 +124,16 @@ func panosInit() error {
 		Validation  string
 		OmitIfAdmin bool
 	}{
-		{"", P1, "", false},
-		{"set cli pager off", P1, "", false},
-		{"show system info", P1, "", false},
-		{"configure", P2, "", false},
-		{fmt.Sprintf("set mgt-config users %s permissions role-based superuser yes", username), P2, "", true},
-		{fmt.Sprintf("set mgt-config users %s password", username), P3, "", false},
-		{password, P3, "", false},
-		{password, P2, "", false},
-		{"commit description 'initial config'", P2, "Configuration committed successfully", false},
-		{"exit", P1, "", false},
+		{"", stdPrompt, "", false},
+		{"set cli pager off", stdPrompt, "", false},
+		{"show system info", stdPrompt, "", false},
+		{"configure", cfgPrompt, "", false},
+		{fmt.Sprintf("set mgt-config users %s permissions role-based superuser yes", username), cfgPrompt, "", true},
+		{fmt.Sprintf("set mgt-config users %s password", username), passwordPrompt, "", false},
+		{password, passwordPrompt, "", false},
+		{password, cfgPrompt, "", false},
+		{"commit description 'initial config'", cfgPrompt, "Configuration committed successfully", false},
+		{"exit", stdPrompt, "", false},
 		{"exit", nil, "", false},
 	}
 
@@ -172,7 +145,7 @@ func panosInit() error {
 			stdin.Write([]byte(cmd.Send + "\n"))
 		}
 		if cmd.Expect != nil {
-			out, err := ReadTo(cmd.Expect)
+			out, err := ReadTo(stdout, cmd.Expect)
 			if err != nil {
 				return fmt.Errorf("Error in %q: %s", cmd.Send, err)
 			}
@@ -180,7 +153,7 @@ func panosInit() error {
 				ok = ok && strings.Contains(out, cmd.Validation)
 			}
 			// Delay slightly before sending passwords.
-			if cmd.Expect == P3 {
+			if cmd.Expect == passwordPrompt {
 				time.Sleep(1 * time.Second)
 			}
 		} else {
@@ -193,10 +166,22 @@ func panosInit() error {
 	return nil
 }
 
-func main() {
-	if err := panosInit(); err != nil {
-		fmt.Printf("\nFailed initial config: %s\n", err)
-		os.Exit(1)
+// ReadTo reads from stdout until the desired prompt is encountered.
+func ReadTo(stdout io.Reader, prompt *regexp.Regexp) (string, error) {
+	var i int
+	var buf [65 * 1024]byte
+
+	for {
+		n, err := stdout.Read(buf[i:])
+		if n > 0 {
+			os.Stdout.Write(buf[i : i+n])
+		}
+		if err != nil {
+			return "", err
+		}
+		i += n
+		if prompt.Find(buf[:i]) != nil {
+			return string(buf[:i]), nil
+		}
 	}
-	fmt.Printf("\nConfig initialization successful")
 }
