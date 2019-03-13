@@ -22,7 +22,7 @@ The panos provider has support for PAN-OS 6.1 - 8.1.
 
 Some resources may contain variables that are only applicable for newer
 versions of PAN-OS.  If this is the case, then make sure to use
-[conditionals](https://www.terraform.io/docs/configuration/interpolation.html)
+[conditionals](https://www.terraform.io/docs/configuration/expressions.html#conditional-expressions)
 along with the `panos_system_info` data source to only set these variables
 when the version of PAN-OS is appropriate.
 
@@ -491,7 +491,7 @@ The following arguments are supported:
   the `username` and `password` settings are ignored.  This can also be defined
   via the `PANOS_API_KEY` environment variable.
 * `protocol` - (Optional) The communication protocol.  This can be set to
-  either `https` or `http`.  If left unspecified, this defaults to `https`.  
+  either `https` or `http`.  If left unspecified, this defaults to `https`.
 * `port` - (Optional) If the port number is non-standard for the desired
   protocol, then the port number to use.
 * `timeout` - (Optional) The timeout for all communications with the
