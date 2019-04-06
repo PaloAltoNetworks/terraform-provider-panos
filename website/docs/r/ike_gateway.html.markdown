@@ -42,7 +42,7 @@ The following arguments are supported:
 * `peer_ip_value` - (Optional) The peer IP value.
 * `interface` - (Required) The interface.
 * `local_ip_address_type` - (Optional) The local IP address type.  Valid
-  values for this are `ip`, `floating` (for HA Active-Active configurations only), or
+  values for this are `ip`, `floating` (for PAN-OS 7.1+ HA Active-Active configurations only), or
   an empty string (the default) which is `None`.
 * `local_ip_address_value` - (Optional) The IP address if `local_ip_address_type`
   is set to `ip` or `floating`.
