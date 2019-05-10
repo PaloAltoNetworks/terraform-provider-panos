@@ -26,17 +26,17 @@ func TestAccPanosIkeGateway_basic(t *testing.T) {
 		CheckDestroy: testAccPanosIkeGatewayDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosIkeGatewayExists("panos_ike_gateway.test", &mp),
-					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				),
 			},
 			{
-				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosIkeGatewayExists("panos_ike_gateway.test", &mp),
-					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				),
 			},
 		},

@@ -27,17 +27,17 @@ func TestAccPanosPanoramaIkeGateway_basic(t *testing.T) {
 		CheckDestroy: testAccPanosPanoramaIkeGatewayDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaIkeGatewayExists("panos_panorama_ike_gateway.test", &mp),
-					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				),
 			},
 			{
-				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaIkeGatewayExists("panos_panorama_ike_gateway.test", &mp),
-					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				),
 			},
 		},
