@@ -1,6 +1,8 @@
 Palo Alto Networks pango
 ========================
 
+[![Build Status](https://travis-ci.com/PaloAltoNetworks/pango.svg?branch=master)](https://travis-ci.com/PaloAltoNetworks/pango)
+
 Package pango is a golang cross version mechanism for interacting with Palo Alto Networks devices (including physical and virtualized Next-generation Firewalls and Panorama).  Versioning support is in place for PANOS 6.1 to 8.1.
 
 To start, create a client connection with the desired parameters and then initialize the connection:

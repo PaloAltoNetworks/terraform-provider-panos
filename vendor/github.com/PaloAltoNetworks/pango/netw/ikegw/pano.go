@@ -135,6 +135,8 @@ func (c *PanoIkeGw) versioning() (normalizer, func(Entry) (interface{})) {
     v := c.con.Versioning()
 
     if v.Gte(version.Number{8, 1, 0, ""}) {
+        return &container_v4{}, specify_v4
+    } else if v.Gte(version.Number{7, 1, 0, ""}) {
         return &container_v3{}, specify_v3
     } else if v.Gte(version.Number{7, 0, 0, ""}) {
         return &container_v2{}, specify_v2
