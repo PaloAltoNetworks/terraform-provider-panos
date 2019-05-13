@@ -133,7 +133,7 @@ resource "panos_ike_gateway" "x" {
     version = "ikev1"
     peer_ip_type = "ip"
     peer_ip_value = "10.2.4.6"
-    interface = "${panos_ethernet_interface.x.name}"
+    interface = panos_ethernet_interface.x.name
     auth_type = "pre-shared-key"
     pre_shared_key = "secret"
     local_id_type = "ipaddr"
@@ -144,13 +144,13 @@ resource "panos_ike_gateway" "x" {
 
 resource "panos_ipsec_tunnel" "x" {
     name = "tfAccProxy"
-    tunnel_interface = "${panos_tunnel_interface.x.name}"
+    tunnel_interface = panos_tunnel_interface.x.name
     type = %q
-    ak_ike_gateway = "${panos_ike_gateway.x.name}"
+    ak_ike_gateway = panos_ike_gateway.x.name
 }
 
 resource "panos_ipsec_tunnel_proxy_id_ipv4" "test" {
-    ipsec_tunnel = "${panos_ipsec_tunnel.x.name}"
+    ipsec_tunnel = panos_ipsec_tunnel.x.name
     name = %q
     local = %q
     remote = %q

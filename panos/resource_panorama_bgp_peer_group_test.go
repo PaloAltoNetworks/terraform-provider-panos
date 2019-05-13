@@ -138,29 +138,29 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_ethernet_interface" "e1" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "ethernet1/1"
     vsys = "vsys1"
     mode = "layer3"
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
-    interfaces = ["${panos_panorama_ethernet_interface.e1.name}"]
+    interfaces = [panos_panorama_ethernet_interface.e1.name]
 }
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "42"
     enable = false
 }
 
 resource "panos_panorama_bgp_peer_group" "test" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     name = %q
     type = %q
     export_next_hop = %q

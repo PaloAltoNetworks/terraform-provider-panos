@@ -109,18 +109,18 @@ resource "panos_ethernet_interface" "e1" {
 
 resource "panos_virtual_router" "vr" {
     name = %q
-    interfaces = ["${panos_ethernet_interface.e1.name}"]
+    interfaces = [panos_ethernet_interface.e1.name]
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "42"
     enable = false
 }
 
 resource "panos_bgp_auth_profile" "test" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = %q
     secret = %q
 }

@@ -132,12 +132,12 @@ resource "panos_loopback_interface" "l" {
 
 resource "panos_ipsec_tunnel" "test" {
     name = %q
-    tunnel_interface = "${panos_tunnel_interface.t.name}"
+    tunnel_interface = panos_tunnel_interface.t.name
     copy_tos = %t
     type = %q
     mk_local_spi = %q
     mk_remote_spi = %q
-    mk_interface = "${panos_loopback_interface.l.name}"
+    mk_interface = panos_loopback_interface.l.name
     mk_remote_address = %q
     mk_protocol = "ah"
     mk_auth_type = %q

@@ -144,8 +144,8 @@ resource "panos_nat_rule" "test" {
     name = "%s"
     source_addresses = ["any"]
     destination_addresses = ["any"]
-    source_zones = ["${panos_zone.z%d.name}"]
-    destination_zone = "${panos_zone.z%d.name}"
+    source_zones = [panos_zone.z%d.name]
+    destination_zone = panos_zone.z%d.name
     sat_type = "dynamic-ip-and-port"
     sat_address_type = "translated-address"
     sat_translated_addresses = ["%s", "%s"]

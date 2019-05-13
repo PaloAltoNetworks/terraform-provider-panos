@@ -232,55 +232,55 @@ resource "panos_virtual_router" "x" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.x.name}"
+    virtual_router = panos_virtual_router.x.name
     router_id = "1.2.3.4"
     as_number = "42"
     enable = false
 }
 
 resource "panos_bgp_import_rule_group" "top" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     position_keyword = "top"
     rule {
         name = "mary"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
     rule {
         name = "had"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 
 resource "panos_bgp_import_rule_group" "mid" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     position_keyword = "before"
-    position_reference = "${panos_bgp_import_rule_group.bot.rule.0.name}"
+    position_reference = panos_bgp_import_rule_group.bot.rule.0.name
     rule {
         name = "a"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 
 resource "panos_bgp_import_rule_group" "bot" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     position_keyword = "bottom"
     rule {
         name = "little"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
     rule {
         name = "lamb"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 `, vr, m1, m2, m3, m4, m5)

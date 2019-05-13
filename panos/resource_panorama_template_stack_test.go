@@ -120,7 +120,7 @@ resource "panos_panorama_template" "b" {
 resource "panos_panorama_template_stack" "test" {
     name = %q
     description = %q
-    templates = ["${panos_panorama_template.%s.name}"]
+    templates = [panos_panorama_template.%s.name]
 }
 `, name, desc, tmpl)
 }

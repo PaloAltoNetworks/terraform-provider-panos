@@ -126,20 +126,20 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_ethernet_interface" "e1" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "ethernet1/1"
     mode = "layer3"
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
-    interfaces = ["${panos_panorama_ethernet_interface.e1.name}"]
+    interfaces = [panos_panorama_ethernet_interface.e1.name]
 }
 
 resource "panos_panorama_bgp" "test" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     router_id = %q
     as_number = %q
     enable = %t

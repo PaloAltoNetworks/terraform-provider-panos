@@ -137,23 +137,23 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
 }
 
 resource "panos_panorama_bgp" "x" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_panorama_bgp_redist_rule" "test" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
     address_family = "ipv4"
-    route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+    route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     name = %q
     set_origin = %q
     set_med = %q

@@ -122,7 +122,7 @@ resource "panos_service_object" "so2" {
 
 resource "panos_service_group" "test" {
     name = "%s"
-    services = ["${panos_service_object.so%d.name}"]
+    services = [panos_service_object.so%d.name]
 }
 `, so1, so2, name, sn)
 }

@@ -123,25 +123,25 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_tunnel_interface" "x" {
+    template = panos_panorama_template.x.name
     name = "tunnel.7"
-    template = "${panos_panorama_template.x.name}"
     comment = "For ipsec tunnel proxyid test"
 }
 
 resource "panos_panorama_ethernet_interface" "x" {
+    template = panos_panorama_template.x.name
     name = "ethernet1/3"
-    template = "${panos_panorama_template.x.name}"
     static_ips = ["10.2.3.1/24"]
     mode = "layer3"
 }
 
 resource "panos_panorama_ike_gateway" "x" {
+    template = panos_panorama_template.x.name
     name = "accTestProxyIdGw"
-    template = "${panos_panorama_template.x.name}"
     version = "ikev1"
     peer_ip_type = "ip"
     peer_ip_value = "10.2.4.6"
-    interface = "${panos_panorama_ethernet_interface.x.name}"
+    interface = panos_panorama_ethernet_interface.x.name
     auth_type = "pre-shared-key"
     pre_shared_key = "secret"
     local_id_type = "ipaddr"
@@ -151,17 +151,17 @@ resource "panos_panorama_ike_gateway" "x" {
 }
 
 resource "panos_panorama_ipsec_tunnel" "x" {
+    template = panos_panorama_template.x.name
     name = "tfAccProxy"
-    template = "${panos_panorama_template.x.name}"
-    tunnel_interface = "${panos_panorama_tunnel_interface.x.name}"
+    tunnel_interface = panos_panorama_tunnel_interface.x.name
     type = %q
-    ak_ike_gateway = "${panos_panorama_ike_gateway.x.name}"
+    ak_ike_gateway = panos_panorama_ike_gateway.x.name
 }
 
 resource "panos_panorama_ipsec_tunnel_proxy_id_ipv4" "test" {
+    template = panos_panorama_template.x.name
     name = %q
-    template = "${panos_panorama_template.x.name}"
-    ipsec_tunnel = "${panos_panorama_ipsec_tunnel.x.name}"
+    ipsec_tunnel = panos_panorama_ipsec_tunnel.x.name
     local = %q
     remote = %q
     protocol_number = %d

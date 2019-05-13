@@ -121,8 +121,8 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_vlan_interface" "test" {
+    template = panos_panorama_template.x.name
     name = %q
-    template = "${panos_panorama_template.x.name}"
     comment = %q
     static_ips = [%q]
     mtu = %d

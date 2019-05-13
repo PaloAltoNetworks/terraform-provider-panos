@@ -120,7 +120,7 @@ resource "panos_panorama_template" "x" {
 
 resource "panos_panorama_tunnel_interface" "test" {
     name = %q
-    template = "${panos_panorama_template.x.name}"
+    template = panos_panorama_template.x.name
     comment = %q
     static_ips = [%q]
     mtu = %d

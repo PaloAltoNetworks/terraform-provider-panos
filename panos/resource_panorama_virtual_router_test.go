@@ -146,22 +146,22 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_ethernet_interface" "eth1_1" {
+    template = panos_panorama_template.x.name
     name = "ethernet1/1"
-    template = "${panos_panorama_template.x.name}"
     vsys = "vsys1"
     mode = "layer3"
 }
 
 resource "panos_panorama_ethernet_interface" "eth1_2" {
+    template = panos_panorama_template.x.name
     name = "ethernet1/2"
-    template = "${panos_panorama_template.x.name}"
     vsys = "vsys1"
     mode = "layer3"
 }
 
 resource "panos_panorama_virtual_router" "test" {
+    template = panos_panorama_template.x.name
     name = "%s"
-    template = "${panos_panorama_template.x.name}"
     interfaces = ["%s"]
     static_dist = %d
     static_ipv6_dist = %d

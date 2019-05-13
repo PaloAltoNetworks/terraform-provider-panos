@@ -251,14 +251,14 @@ resource "panos_ethernet_interface" "x" {
 
 resource "panos_nat_rule_group" "top" {
     position_keyword = "directly before"
-    position_reference = "${panos_nat_rule_group.bot.rule.0.name}"
+    position_reference = panos_nat_rule_group.bot.rule.0.name
     rule {
         name = %q
         description = "wu"
         original_packet {
-            source_zones = ["${panos_zone.z1.name}"]
-            destination_zone = "${panos_zone.z1.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z1.name]
+            destination_zone = panos_zone.z1.name
+            destination_interface = panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }
@@ -266,8 +266,8 @@ resource "panos_nat_rule_group" "top" {
             source {
                 dynamic_ip_and_port {
                     interface_address {
-                        interface = "${panos_ethernet_interface.x.name}"
-                        ip_address = "${panos_ethernet_interface.x.static_ips.0}"
+                        interface = panos_ethernet_interface.x.name
+                        ip_address = panos_ethernet_interface.x.static_ips.0
                     }
                 }
             }
@@ -286,9 +286,9 @@ resource "panos_nat_rule_group" "bot" {
         name = %q
         description = "tang"
         original_packet {
-            source_zones = ["${panos_zone.z2.name}"]
-            destination_zone = "${panos_zone.z3.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z2.name]
+            destination_zone = panos_zone.z3.name
+            destination_interface = panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }
@@ -306,9 +306,9 @@ resource "panos_nat_rule_group" "bot" {
         name = %q
         description = "clan"
         original_packet {
-            source_zones = ["${panos_zone.z3.name}"]
-            destination_zone = "${panos_zone.z2.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z3.name]
+            destination_zone = panos_zone.z2.name
+            destination_interface = panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }

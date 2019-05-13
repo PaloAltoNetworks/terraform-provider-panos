@@ -136,16 +136,16 @@ resource "panos_ethernet_interface" "eth6" {
 
 resource "panos_virtual_router" "vr" {
     name = %q
-    interfaces = ["${panos_ethernet_interface.eth6.name}"]
+    interfaces = [panos_ethernet_interface.eth6.name]
 }
 
 resource "panos_redistribution_profile_ipv4" "test" {
     name = %q
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     priority = %d
     action = %q
     types = [%q, %q]
-    interfaces = ["ethernet1/6"]
+    interfaces = [panos_ethernet_interface.eth6.name]
 }
 `, vr, name, pri, act, t1, t2)
 }

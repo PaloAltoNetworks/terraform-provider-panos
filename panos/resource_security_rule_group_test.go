@@ -258,7 +258,7 @@ resource "panos_security_rule_group" "top" {
 
 resource "panos_security_rule_group" "mid" {
     position_keyword = "before"
-    position_reference = "${panos_security_rule_group.bot.rule.0.name}"
+    position_reference = panos_security_rule_group.bot.rule.0.name
     rule {
         name = "a"
         description = "%s"

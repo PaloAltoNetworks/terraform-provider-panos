@@ -114,44 +114,44 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_bgp_peer_group" "jack" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = "jack"
     type = "ibgp"
     export_next_hop = "original"
 }
 
 resource "panos_bgp_peer_group" "wang" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = "wang"
     type = "ibgp"
     export_next_hop = "use-self"
 }
 
 resource "panos_bgp_conditional_adv" "test" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = %q
-    used_by = ["${panos_bgp_peer_group.%s.name}"]
+    used_by = [panos_bgp_peer_group.%s.name]
     enable = %t
 }
 
 resource "panos_bgp_conditional_adv_non_exist_filter" "x" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_bgp_conditional_adv.test.name}"
+    virtual_router = panos_bgp.x.virtual_router
+    bgp_conditional_adv = panos_bgp_conditional_adv.test.name
     name = "nef"
     community_regex = "*foo*"
     address_prefixes = ["9.8.7.0/24"]
 }
 
 resource "panos_bgp_conditional_adv_advertise_filter" "x" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_bgp_conditional_adv.test.name}"
+    virtual_router = panos_bgp.x.virtual_router
+    bgp_conditional_adv = panos_bgp_conditional_adv.test.name
     name = "af"
     community_regex = "*bar*"
     address_prefixes = ["7.8.9.0/24"]

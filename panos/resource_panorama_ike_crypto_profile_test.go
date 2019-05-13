@@ -134,7 +134,7 @@ resource "panos_panorama_template_stack" "x" {
 
 resource "panos_panorama_ike_crypto_profile" "test" {
     name = %q
-    template_stack = "${panos_panorama_template_stack.x.name}"
+    template_stack = panos_panorama_template_stack.x.name
     dh_groups = [%q]
     authentications = [%q]
     encryptions = [%q]

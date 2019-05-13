@@ -18,6 +18,7 @@ func TestAccPanosPanoramaSecurityPolicy_basic(t *testing.T) {
 	}
 
 	var o1, o2 security.Entry
+	dg := fmt.Sprintf("tf%s", acctest.RandString(6))
 	name1 := fmt.Sprintf("tf%s", acctest.RandString(6))
 	name2 := fmt.Sprintf("tf%s", acctest.RandString(6))
 
@@ -27,14 +28,14 @@ func TestAccPanosPanoramaSecurityPolicy_basic(t *testing.T) {
 		CheckDestroy: testAccPanosPanoramaSecurityPolicyDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaSecurityPolicyConfig(name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
+				Config: testAccPanoramaSecurityPolicyConfig(dg, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaSecurityPolicyExists("panos_panorama_security_policy.test", &o1, &o2),
 					testAccCheckPanosPanoramaSecurityPolicyAttributes(&o1, &o2, name1, "first description", "10.2.2.2", "10.3.3.3", "allow", true, false, name2, "another first", "192.168.1.1", "192.168.3.3", "deny", false, true),
 				),
 			},
 			{
-				Config: testAccPanoramaSecurityPolicyConfig(name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
+				Config: testAccPanoramaSecurityPolicyConfig(dg, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaSecurityPolicyExists("panos_panorama_security_policy.test", &o1, &o2),
 					testAccCheckPanosPanoramaSecurityPolicyAttributes(&o1, &o2, name1, "second description", "10.4.4.4", "10.5.5.5", "drop", false, true, name2, "next description", "192.168.2.2", "192.168.4.4", "allow", true, false),
@@ -164,9 +165,14 @@ func testAccPanosPanoramaSecurityPolicyDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanoramaSecurityPolicyConfig(name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
+func testAccPanoramaSecurityPolicyConfig(dg, name1, desc1, src1, dst1, action1 string, le1, dis1 bool, name2, desc2, src2, dst2, action2 string, le2, dis2 bool) string {
 	return fmt.Sprintf(`
+resource "panos_panorama_device_group" "x" {
+    name = %q
+}
+
 resource "panos_panorama_security_policy" "test" {
+    device_group = panos_panorama_device_group.x.name
     rule {
         name = "%s"
         description = "%s"
@@ -200,5 +206,5 @@ resource "panos_panorama_security_policy" "test" {
         categories = ["any"]
     }
 }
-`, name1, desc1, src1, dst1, action1, le1, dis1, name2, desc2, src2, dst2, action2, le2, dis2)
+`, dg, name1, desc1, src1, dst1, action1, le1, dis1, name2, desc2, src2, dst2, action2, le2, dis2)
 }

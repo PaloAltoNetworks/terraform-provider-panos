@@ -154,14 +154,14 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_bgp_aggregate" "test" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = %q
     prefix = %q
     local_preference = %q

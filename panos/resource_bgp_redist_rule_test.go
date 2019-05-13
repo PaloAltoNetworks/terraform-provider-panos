@@ -136,16 +136,16 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_bgp_redist_rule" "test" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     address_family = "ipv4"
-    route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+    route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     name = %q
     set_origin = %q
     set_med = %q

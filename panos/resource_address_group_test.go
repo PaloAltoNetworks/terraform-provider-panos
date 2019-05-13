@@ -168,7 +168,7 @@ resource "panos_address_object" "o2" {
 resource "panos_address_group" "test" {
     name = "%s"
     description = "%s"
-    static_addresses = ["${panos_address_object.o%d.name}"]
+    static_addresses = [panos_address_object.o%d.name]
 }
 `, o1, o2, name, desc, sv)
 }

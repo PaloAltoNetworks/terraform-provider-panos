@@ -127,12 +127,12 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_ethernet_interface" "test" {
-    name = "%s"
-    template = "${panos_panorama_template.x.name}"
+    name = %q
+    template = panos_panorama_template.x.name
     mode = "layer3"
-    link_state = "%s"
-    comment = "%s"
-    static_ips = ["%s", "%s"]
+    link_state = %q
+    comment = %q
+    static_ips = [%q, %q]
 }
 `, tmpl, n, ls, c, i1, i2)
 }

@@ -118,7 +118,7 @@ resource "panos_panorama_template_stack" "x" {
 }
 
 resource "panos_panorama_zone" "test" {
-    template_stack = "${panos_panorama_template_stack.x.name}"
+    template_stack = panos_panorama_template_stack.x.name
     name = %q
     mode = "layer3"
     include_acls = [%q]

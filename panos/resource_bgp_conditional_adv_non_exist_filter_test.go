@@ -135,21 +135,21 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_bgp_conditional_adv" "ca" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = %q
     enable = false
 }
 
 resource "panos_bgp_conditional_adv_non_exist_filter" "test" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_bgp_conditional_adv.ca.name}"
+    virtual_router = panos_bgp.x.virtual_router
+    bgp_conditional_adv = panos_bgp_conditional_adv.ca.name
     name = %q
     as_path_regex = %q
     community_regex = %q
@@ -161,8 +161,8 @@ resource "panos_bgp_conditional_adv_non_exist_filter" "test" {
 }
 
 resource "panos_bgp_conditional_adv_advertise_filter" "x" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_bgp_conditional_adv.ca.name}"
+    virtual_router = panos_bgp.x.virtual_router
+    bgp_conditional_adv = panos_bgp_conditional_adv.ca.name
     name = "af"
     community_regex = "*bar*"
     address_prefixes = ["7.8.9.0/24"]

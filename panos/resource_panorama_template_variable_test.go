@@ -143,7 +143,7 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_template_variable" "test" {
-    template = "${panos_panorama_template.x.name}"
+    template = panos_panorama_template.x.name
     name = %q
     type = %q
     value = %q
