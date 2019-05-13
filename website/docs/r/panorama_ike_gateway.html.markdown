@@ -81,7 +81,8 @@ The following arguments are supported:
 * `enable_nat_traversal` - (Optional, bool) Set to `true` to enable NAT
   traversal.
 * `nat_traversal_keep_alive` - (Optional, int) Sending interval for NAT
-  keep-alive packets (in seconds)
+  keep-alive packets (in seconds).  For versions 6.1 - 8.1, this param, if specified,
+  should be a multiple of 10 between 10 and 3600 to be valid.
 * `nat_traversal_enable_udp_checksum` - (Optional, bool) Set to `true` to enable
   NAT traversal UDP checksum.
 * `enable_fragmentation` - (Optional, bool) Set to `true` to enable fragmentation.
