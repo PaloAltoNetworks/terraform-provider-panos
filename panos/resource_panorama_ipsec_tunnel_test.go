@@ -126,26 +126,26 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_tunnel_interface" "t" {
+    template = panos_panorama_template.x.name
     name = "tunnel.3"
-    template = "${panos_panorama_template.x.name}"
     comment = "For ipsec tunnel test"
 }
 
 resource "panos_panorama_loopback_interface" "l" {
+    template = panos_panorama_template.x.name
     name = "loopback.4"
-    template = "${panos_panorama_template.x.name}"
     comment = "For ipsec tunnel test"
 }
 
 resource "panos_panorama_ipsec_tunnel" "test" {
+    template = panos_panorama_template.x.name
     name = %q
-    template = "${panos_panorama_template.x.name}"
-    tunnel_interface = "${panos_panorama_tunnel_interface.t.name}"
+    tunnel_interface = panos_panorama_tunnel_interface.t.name
     copy_tos = %t
     type = %q
     mk_local_spi = %q
     mk_remote_spi = %q
-    mk_interface = "${panos_panorama_loopback_interface.l.name}"
+    mk_interface = panos_panorama_loopback_interface.l.name
     mk_remote_address = %q
     mk_protocol = "ah"
     mk_auth_type = %q

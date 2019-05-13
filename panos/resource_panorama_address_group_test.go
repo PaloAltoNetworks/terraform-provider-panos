@@ -156,19 +156,19 @@ func buildPanoramaDagString(t1, op, t2 string) string {
 func testAccPanoramaAddressGroupStaticConfig(o1, o2, name, desc string, sv int) string {
 	return fmt.Sprintf(`
 resource "panos_panorama_address_object" "o1" {
-    name = "%s"
+    name = %q
     value = "10.20.30.0/24"
 }
 
 resource "panos_panorama_address_object" "o2" {
-    name = "%s"
+    name = %q
     value = "10.25.35.0/24"
 }
 
 resource "panos_panorama_address_group" "test" {
     name = "%s"
     description = "%s"
-    static_addresses = ["${panos_panorama_address_object.o%d.name}"]
+    static_addresses = [panos_panorama_address_object.o%d.name]
 }
 `, o1, o2, name, desc, sv)
 }
@@ -176,9 +176,9 @@ resource "panos_panorama_address_group" "test" {
 func testAccPanoramaAddressGroupDynamicConfig(name, desc, t1, op, t2 string) string {
 	return fmt.Sprintf(`
 resource "panos_panorama_address_group" "test" {
-    name = "%s"
-    description = "%s"
-    dynamic_match = "%s"
+    name = %q
+    description = %q
+    dynamic_match = %q
 }
 `, name, desc, buildPanoramaDagString(t1, op, t2))
 }

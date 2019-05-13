@@ -104,8 +104,8 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_virtual_router_entry" "test" {
-    virtual_router = "${panos_virtual_router.vr.name}"
-    interface = "${panos_ethernet_interface.eth.name}"
+    virtual_router = panos_virtual_router.vr.name
+    interface = panos_ethernet_interface.eth.name
 }
 `, eth_name, vr)
 }

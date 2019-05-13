@@ -233,9 +233,9 @@ resource "panos_panorama_device_group" "x" {
 }
 
 resource "panos_panorama_nat_rule_group" "top" {
-    device_group = "${panos_panorama_device_group.x.name}"
+    device_group = panos_panorama_device_group.x.name
     position_keyword = "directly before"
-    position_reference = "${panos_panorama_nat_rule_group.bot.rule.0.name}"
+    position_reference = panos_panorama_nat_rule_group.bot.rule.0.name
     rule {
         name = %q
         description = "wu"
@@ -265,7 +265,7 @@ resource "panos_panorama_nat_rule_group" "top" {
 }
 
 resource "panos_panorama_nat_rule_group" "bot" {
-    device_group = "${panos_panorama_device_group.x.name}"
+    device_group = panos_panorama_device_group.x.name
     rule {
         name = %q
         description = "tang"

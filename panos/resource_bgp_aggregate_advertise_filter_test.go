@@ -141,21 +141,21 @@ resource "panos_virtual_router" "vr" {
 }
 
 resource "panos_bgp" "x" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_bgp_aggregate" "x" {
-    virtual_router = "${panos_bgp.x.virtual_router}"
+    virtual_router = panos_bgp.x.virtual_router
     name = %q
     prefix = "192.168.1.0/24"
 }
 
 resource "panos_bgp_aggregate_advertise_filter" "test" {
-    virtual_router = "${panos_bgp_aggregate.x.virtual_router}"
-    bgp_aggregate = "${panos_bgp_aggregate.x.name}"
+    virtual_router = panos_bgp_aggregate.x.virtual_router
+    bgp_aggregate = panos_bgp_aggregate.x.name
     name = %q
     as_path_regex = %q
     community_regex = %q

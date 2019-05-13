@@ -130,12 +130,12 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_management_profile" "test" {
-    name = "%s"
-    template = "${panos_panorama_template.x.name}"
+    template = panos_panorama_template.x.name
+    name = %q
     https = %t
     ping = %t
     ssh = %t
-    permitted_ips = ["%s", "%s"]
+    permitted_ips = [%q, %q]
 }
 `, tmpl, n, h, p, s, pi1, pi2)
 }

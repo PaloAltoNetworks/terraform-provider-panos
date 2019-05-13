@@ -6,7 +6,6 @@ import (
     "github.com/PaloAltoNetworks/pango/util"
 )
 
-
 const (
     Ikev1 = "ikev1"
     Ikev2 = "ikev2"
@@ -25,6 +24,11 @@ const (
     PeerTypeIp = "ip"
     PeerTypeDynamic = "dynamic"
     PeerTypeFqdn = "fqdn"
+)
+
+const (
+	LocalTypeIp         = "ip"
+	LocalTypeFloatingIp = "floating-ip"
 )
 
 const (
@@ -150,7 +154,7 @@ func (o *container_v1) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
 
@@ -224,7 +228,7 @@ func (o *container_v2) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
 
@@ -303,6 +307,102 @@ func (o *container_v3) Normalize() Entry {
 
     if o.Answer.PeerIp.Dynamic != nil {
         ans.PeerIpType = PeerTypeDynamic
+    } else {
+        ans.PeerIpType = PeerTypeIp
+        ans.PeerIpValue = o.Answer.PeerIp.Static
+    }
+
+    if o.Answer.PeerId != nil {
+        ans.PeerIdType = o.Answer.PeerId.PeerIdType
+        ans.PeerIdValue = o.Answer.PeerId.PeerIdValue
+        ans.PeerIdCheck = o.Answer.PeerId.PeerIdCheck
+    }
+
+    if o.Answer.LocalIp.StaticIp != "" {
+        ans.LocalIpAddressType = LocalTypeIp
+        ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
+    }
+
+	if o.Answer.LocalIp.FloatingIp != "" {
+		ans.LocalIpAddressType = LocalTypeFloatingIp
+		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+	}
+
+    if o.Answer.LocalId != nil {
+        ans.LocalIdType = o.Answer.LocalId.LocalIdType
+        ans.LocalIdValue = o.Answer.LocalId.LocalIdValue
+    }
+
+    if o.Answer.PskAuth != nil {
+        ans.AuthType = AuthPreSharedKey
+        ans.PreSharedKey = o.Answer.PskAuth.Key
+    } else if o.Answer.CAuth != nil {
+        ans.AuthType = AuthCertificate
+        ans.LocalCert = o.Answer.CAuth.CLocal.LocalCert
+        ans.CertProfile = o.Answer.CAuth.CertProfile
+        ans.CertEnableStrictValidation = util.AsBool(o.Answer.CAuth.CertEnableStrictValidation)
+        ans.CertPermitPayloadMismatch = util.AsBool(o.Answer.CAuth.CertPermitPayloadMismatch)
+
+        if o.Answer.CAuth.CLocal.Hau != nil {
+            ans.CertEnableHashAndUrl = util.AsBool(o.Answer.CAuth.CLocal.Hau.CertEnableHashAndUrl)
+            ans.CertBaseUrl = o.Answer.CAuth.CLocal.Hau.CertBaseUrl
+        }
+    }
+
+    if o.Answer.Proto != nil {
+        ans.Version = o.Answer.Proto.Version
+
+        if o.Answer.Proto.Ikev1 != nil {
+            ans.Ikev1ExchangeMode = o.Answer.Proto.Ikev1.Ikev1ExchangeMode
+            ans.Ikev1CryptoProfile = o.Answer.Proto.Ikev1.Ikev1CryptoProfile
+
+            if o.Answer.Proto.Ikev1.Dpd != nil {
+                ans.EnableDeadPeerDetection = util.AsBool(o.Answer.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
+                ans.DeadPeerDetectionInterval = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
+                ans.DeadPeerDetectionRetry = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
+            }
+        }
+
+        if o.Answer.Proto.Ikev2 != nil {
+            ans.Ikev2CryptoProfile = o.Answer.Proto.Ikev2.Ikev2CryptoProfile
+            ans.Ikev2CookieValidation = util.AsBool(o.Answer.Proto.Ikev2.Ikev2CookieValidation)
+
+            if o.Answer.Proto.Ikev2.Dpd != nil {
+                ans.EnableLivenessCheck = util.AsBool(o.Answer.Proto.Ikev2.Dpd.EnableLivenessCheck)
+                ans.LivenessCheckInterval = o.Answer.Proto.Ikev2.Dpd.LivenessCheckInterval
+            }
+        }
+    }
+
+    if o.Answer.ProtoCommon != nil {
+        ans.EnablePassiveMode = util.AsBool(o.Answer.ProtoCommon.EnablePassiveMode)
+        if o.Answer.ProtoCommon.Nat != nil {
+            ans.EnableNatTraversal = util.AsBool(o.Answer.ProtoCommon.Nat.EnableNatTraversal)
+            ans.NatTraversalKeepAlive = o.Answer.ProtoCommon.Nat.NatTraversalKeepAlive
+            ans.NatTraversalEnableUdpChecksum = util.AsBool(o.Answer.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
+        }
+        if o.Answer.ProtoCommon.Frag != nil {
+            ans.EnableFragmentation = util.AsBool(o.Answer.ProtoCommon.Frag.EnableFragmentation)
+        }
+    }
+
+    return ans
+}
+
+type container_v4 struct {
+    Answer entry_v4 `xml:"result>entry"`
+}
+
+func (o *container_v4) Normalize() Entry {
+    ans := Entry{
+        Name: o.Answer.Name,
+        Interface: o.Answer.LocalIp.Interface,
+        Disabled: util.AsBool(o.Answer.Disabled),
+        EnableIpv6: util.AsBool(o.Answer.EnableIpv6),
+    }
+
+    if o.Answer.PeerIp.Dynamic != nil {
+        ans.PeerIpType = PeerTypeDynamic
     } else if o.Answer.PeerIp.Fqdn != "" {
         ans.PeerIpType = PeerTypeFqdn
         ans.PeerIpValue = o.Answer.PeerIp.Fqdn
@@ -318,9 +418,14 @@ func (o *container_v3) Normalize() Entry {
     }
 
     if o.Answer.LocalIp.StaticIp != "" {
-        ans.LocalIpAddressType = PeerTypeIp
+        ans.LocalIpAddressType = LocalTypeIp
         ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
     }
+
+	if o.Answer.LocalIp.FloatingIp != "" {
+		ans.LocalIpAddressType = LocalTypeFloatingIp
+		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+	}
 
     if o.Answer.LocalId != nil {
         ans.LocalIdType = o.Answer.LocalId.LocalIdType
@@ -388,7 +493,7 @@ type entry_v1 struct {
     Name string `xml:"name,attr"`
     PeerIp peerIp_v1 `xml:"peer-address"`
     PeerId *peerId `xml:"peer-id"`
-    LocalIp localIp `xml:"local-address"`
+    LocalIp localIp_v1 `xml:"local-address"`
     LocalId *localId `xml:"local-id"`
     PskAuth *pskAuth `xml:"authentication>pre-shared-key"`
     CAuth *cAuth_v1 `xml:"authentication>certificate"`
@@ -407,9 +512,15 @@ type peerId struct {
     PeerIdCheck string `xml:"matching,omitempty"`
 }
 
-type localIp struct {
+type localIp_v1 struct {
     Interface string `xml:"interface,omitempty"`
     StaticIp string `xml:"ip,omitempty"`
+}
+
+type localIp_v2 struct {
+    Interface string `xml:"interface,omitempty"`
+    StaticIp string `xml:"ip,omitempty"`
+    FloatingIp string `xml:"floating-ip,omitempty"`
 }
 
 type localId struct {
@@ -463,11 +574,12 @@ type protoFrag struct {
 func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
-        LocalIp: localIp{
+        LocalIp: localIp_v1{
             Interface: e.Interface,
             StaticIp: e.LocalIpAddressValue,
         },
     }
+
 
     switch e.PeerIpType {
     case PeerTypeIp:
@@ -555,7 +667,7 @@ type entry_v2 struct {
     EnableIpv6 string `xml:"ipv6"`
     PeerIp peerIp_v1 `xml:"peer-address"`
     PeerId *peerId `xml:"peer-id"`
-    LocalIp localIp `xml:"local-address"`
+    LocalIp localIp_v1 `xml:"local-address"`
     LocalId *localId `xml:"local-id"`
     PskAuth *pskAuth `xml:"authentication>pre-shared-key"`
     CAuth *cAuth_v2 `xml:"authentication>certificate"`
@@ -603,7 +715,7 @@ func specify_v2(e Entry) interface{} {
         Name: e.Name,
         Disabled: util.YesNo(e.Disabled),
         EnableIpv6: util.YesNo(e.EnableIpv6),
-        LocalIp: localIp{
+        LocalIp: localIp_v1{
             Interface: e.Interface,
             StaticIp: e.LocalIpAddressValue,
         },
@@ -721,9 +833,148 @@ type entry_v3 struct {
     Name string `xml:"name,attr"`
     Disabled string `xml:"disabled"`
     EnableIpv6 string `xml:"ipv6"`
+    PeerIp peerIp_v1 `xml:"peer-address"`
+    PeerId *peerId `xml:"peer-id"`
+    LocalIp localIp_v2 `xml:"local-address"`
+    LocalId *localId `xml:"local-id"`
+    PskAuth *pskAuth `xml:"authentication>pre-shared-key"`
+    CAuth *cAuth_v2 `xml:"authentication>certificate"`
+    Proto *proto_v2 `xml:"protocol"`
+    ProtoCommon *protoCommon `xml:"protocol-common"`
+}
+
+func specify_v3(e Entry) interface{} {
+    ans := entry_v3{
+        Name: e.Name,
+        Disabled: util.YesNo(e.Disabled),
+        EnableIpv6: util.YesNo(e.EnableIpv6),
+        LocalIp: localIp_v2{
+            Interface: e.Interface,
+        },
+    }
+
+	switch e.LocalIpAddressType {
+    case LocalTypeFloatingIp:
+        ans.LocalIp.FloatingIp = e.LocalIpAddressValue
+    default:
+        ans.LocalIp.StaticIp = e.LocalIpAddressValue
+    }
+
+    switch e.PeerIpType {
+    case PeerTypeIp:
+        ans.PeerIp.Static = e.PeerIpValue
+    case PeerTypeDynamic:
+        s := ""
+        ans.PeerIp.Dynamic = &s
+    }
+
+    if e.PeerIdType != "" || e.PeerIdValue != "" || e.PeerIdCheck != "" {
+        ans.PeerId = &peerId{
+            PeerIdType: e.PeerIdType,
+            PeerIdValue: e.PeerIdValue,
+            PeerIdCheck: e.PeerIdCheck,
+        }
+    }
+
+    if e.LocalIdType != "" || e.LocalIdValue != "" {
+        ans.LocalId = &localId{
+            LocalIdType: e.LocalIdType,
+            LocalIdValue: e.LocalIdValue,
+        }
+    }
+
+    switch e.AuthType {
+    case AuthPreSharedKey:
+        ans.PskAuth = &pskAuth{
+            Key: e.PreSharedKey,
+        }
+    case AuthCertificate:
+        ans.CAuth = &cAuth_v2{
+            CLocal: cLocal{
+                LocalCert: e.LocalCert,
+            },
+            CertProfile: e.CertProfile,
+            CertUseManagementAsSource: util.YesNo(e.CertUseManagementAsSource),
+            CertEnableStrictValidation: util.YesNo(e.CertEnableStrictValidation),
+            CertPermitPayloadMismatch: util.YesNo(e.CertPermitPayloadMismatch),
+        }
+
+        if e.CertEnableHashAndUrl || e.CertBaseUrl != "" {
+            ans.CAuth.CLocal.Hau = &hau{
+                CertEnableHashAndUrl: util.YesNo(e.CertEnableHashAndUrl),
+                CertBaseUrl: e.CertBaseUrl,
+            }
+        }
+    }
+
+    if e.Version != "" || e.Ikev1ExchangeMode != "" || e.Ikev1CryptoProfile != "" || e.EnableDeadPeerDetection || e.DeadPeerDetectionInterval != 0 || e.DeadPeerDetectionRetry != 0 || e.Ikev2CryptoProfile != "" || e.Ikev2CookieValidation || e.EnableLivenessCheck || e.LivenessCheckInterval != 0 {
+        ans.Proto = &proto_v2{
+            Version: e.Version,
+        }
+
+        if e.Ikev1ExchangeMode != "" || e.Ikev1CryptoProfile != "" || e.EnableDeadPeerDetection || e.DeadPeerDetectionInterval != 0 || e.DeadPeerDetectionRetry != 0 {
+            ans.Proto.Ikev1 = &ikev1_v1{
+                Ikev1ExchangeMode: e.Ikev1ExchangeMode,
+                Ikev1CryptoProfile: e.Ikev1CryptoProfile,
+            }
+
+            if e.EnableDeadPeerDetection || e.DeadPeerDetectionInterval != 0 || e.DeadPeerDetectionRetry != 0 {
+                ans.Proto.Ikev1.Dpd = &ikev1Dpd{
+                    EnableDeadPeerDetection: util.YesNo(e.EnableDeadPeerDetection),
+                    DeadPeerDetectionInterval: e.DeadPeerDetectionInterval,
+                    DeadPeerDetectionRetry: e.DeadPeerDetectionRetry,
+                }
+            }
+        }
+
+        if e.Ikev2CryptoProfile != "" || e.Ikev2CookieValidation || e.EnableLivenessCheck || e.LivenessCheckInterval != 0 {
+            ans.Proto.Ikev2 = &ikev2_v1{
+                Ikev2CryptoProfile: e.Ikev2CryptoProfile,
+                Ikev2CookieValidation: util.YesNo(e.Ikev2CookieValidation),
+            }
+
+            if e.EnableLivenessCheck || e.LivenessCheckInterval != 0 {
+                ans.Proto.Ikev2.Dpd = &ikev2Dpd{
+                    EnableLivenessCheck: util.YesNo(e.EnableLivenessCheck),
+                    LivenessCheckInterval: e.LivenessCheckInterval,
+                }
+            }
+        }
+    }
+
+    if e.EnablePassiveMode || e.EnableNatTraversal || e.NatTraversalKeepAlive != 0 || e.NatTraversalEnableUdpChecksum || e.EnableFragmentation {
+        s := protoCommon{
+            EnablePassiveMode: util.YesNo(e.EnablePassiveMode),
+        }
+
+        if e.EnableNatTraversal || e.NatTraversalKeepAlive != 0 || e.NatTraversalEnableUdpChecksum {
+            s.Nat = &protoNat{
+                EnableNatTraversal: util.YesNo(e.EnableNatTraversal),
+                NatTraversalKeepAlive: e.NatTraversalKeepAlive,
+                NatTraversalEnableUdpChecksum: util.YesNo(e.NatTraversalEnableUdpChecksum),
+            }
+        }
+
+        if e.EnableFragmentation {
+            s.Frag = &protoFrag{
+                EnableFragmentation: util.YesNo(e.EnableFragmentation),
+            }
+        }
+
+        ans.ProtoCommon = &s
+    }
+
+    return ans
+}
+
+type entry_v4 struct {
+    XMLName xml.Name `xml:"entry"`
+    Name string `xml:"name,attr"`
+    Disabled string `xml:"disabled"`
+    EnableIpv6 string `xml:"ipv6"`
     PeerIp peerIp_v2 `xml:"peer-address"`
     PeerId *peerId `xml:"peer-id"`
-    LocalIp localIp `xml:"local-address"`
+    LocalIp localIp_v2 `xml:"local-address"`
     LocalId *localId `xml:"local-id"`
     PskAuth *pskAuth `xml:"authentication>pre-shared-key"`
     CAuth *cAuth_v2 `xml:"authentication>certificate"`
@@ -737,15 +988,21 @@ type peerIp_v2 struct {
     Fqdn string `xml:"fqdn,omitempty"`
 }
 
-func specify_v3(e Entry) interface{} {
-    ans := entry_v3{
+func specify_v4(e Entry) interface{} {
+    ans := entry_v4{
         Name: e.Name,
         Disabled: util.YesNo(e.Disabled),
         EnableIpv6: util.YesNo(e.EnableIpv6),
-        LocalIp: localIp{
+        LocalIp: localIp_v2{
             Interface: e.Interface,
-            StaticIp: e.LocalIpAddressValue,
         },
+    }
+
+	switch e.LocalIpAddressType {
+    case LocalTypeFloatingIp:
+        ans.LocalIp.FloatingIp = e.LocalIpAddressValue
+    default:
+        ans.LocalIp.StaticIp = e.LocalIpAddressValue
     }
 
     switch e.PeerIpType {

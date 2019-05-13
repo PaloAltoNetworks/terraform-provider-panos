@@ -134,22 +134,22 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_ethernet_interface" "eth6" {
+    template = panos_panorama_template.t.name
     name = "ethernet1/6"
-    template = "${panos_panorama_template.t.name}"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
 }
 
 resource "panos_panorama_virtual_router" "vr" {
+    template = panos_panorama_template.t.name
     name = %q
-    template = "${panos_panorama_template.t.name}"
-    interfaces = ["${panos_panorama_ethernet_interface.eth6.name}"]
+    interfaces = [panos_panorama_ethernet_interface.eth6.name]
 }
 
 resource "panos_panorama_redistribution_profile_ipv4" "test" {
+    template = panos_panorama_template.t.name
     name = %q
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    virtual_router = panos_panorama_virtual_router.vr.name
     priority = %d
     action = %q
     types = [%q, %q]

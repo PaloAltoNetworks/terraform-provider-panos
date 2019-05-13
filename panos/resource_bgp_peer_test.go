@@ -149,18 +149,18 @@ resource "panos_ethernet_interface" "e" {
 
 resource "panos_virtual_router" "vr" {
     name = %q
-    interfaces = ["${panos_ethernet_interface.e.name}"]
+    interfaces = [panos_ethernet_interface.e.name]
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "42"
     enable = false
 }
 
 resource "panos_bgp_peer_group" "pg" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = %q
     enable = false
     type = "ibgp"
@@ -168,11 +168,11 @@ resource "panos_bgp_peer_group" "pg" {
 }
 
 resource "panos_bgp_peer" "test" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
-    bgp_peer_group = "${panos_bgp_peer_group.pg.name}"
-    local_address_interface = "${panos_ethernet_interface.e.name}"
-    local_address_ip = "${panos_ethernet_interface.e.static_ips.0}"
-    peer_as = "${panos_bgp.conf.as_number}"
+    virtual_router = panos_bgp.conf.virtual_router
+    bgp_peer_group = panos_bgp_peer_group.pg.name
+    local_address_interface = panos_ethernet_interface.e.name
+    local_address_ip = panos_ethernet_interface.e.static_ips.0
+    peer_as = panos_bgp.conf.as_number
     name = %q
     peer_address_ip = %q
     max_prefixes = %q
@@ -184,18 +184,18 @@ resource "panos_bgp_peer" "test" {
     idle_hold_time = %d
     incoming_connections_remote_port = %d
     outgoing_connections_local_port = %d
-    bfd_profile = "${
+    bfd_profile = (
         data.panos_system_info.x.version_major >= 7 ?
             data.panos_system_info.x.version_minor >= 1 ? "None" : ""
         : ""
-    }"
-    address_family_type = "${data.panos_system_info.x.version_major >= 8 ? "ipv4" : ""}"
-    reflector_client = "${data.panos_system_info.x.version_major >= 8 ? "non-client" : ""}"
-    min_route_advertisement_interval = "${
+    )
+    address_family_type = data.panos_system_info.x.version_major >= 8 ? "ipv4" : ""
+    reflector_client = data.panos_system_info.x.version_major >= 8 ? "non-client" : ""
+    min_route_advertisement_interval = (
         data.panos_system_info.x.version_major >= 8 ?
             data.panos_system_info.x.version_minor >= 1 ? 30 : 0
         : 0
-    }"
+    )
 }
 `, vr, pg, name, pai, mp, en, kai, mh, odt, ht, iht, icrp, oclp)
 }

@@ -235,64 +235,64 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_virtual_router" "x" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
 }
 
 resource "panos_panorama_bgp" "x" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.x.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.x.name
     router_id = "1.2.3.4"
     as_number = "42"
     enable = false
 }
 
 resource "panos_panorama_bgp_export_rule_group" "top" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
     position_keyword = "top"
     rule {
         name = "mary"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
     rule {
         name = "had"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 
 resource "panos_panorama_bgp_export_rule_group" "mid" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
     position_keyword = "before"
-    position_reference = "${panos_panorama_bgp_export_rule_group.bot.rule.0.name}"
+    position_reference = panos_panorama_bgp_export_rule_group.bot.rule.0.name
     rule {
         name = "a"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 
 resource "panos_panorama_bgp_export_rule_group" "bot" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
     position_keyword = "bottom"
     rule {
         name = "little"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
     rule {
         name = "lamb"
         match_as_path_regex = %q
         action = "deny"
-        match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
+        match_route_table = data.panos_system_info.x.version_major >= 8 ? "unicast" : ""
     }
 }
 `, tmpl, vr, m1, m2, m3, m4, m5)

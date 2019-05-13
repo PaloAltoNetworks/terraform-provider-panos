@@ -101,20 +101,20 @@ resource "panos_panorama_template" "tmpl" {
 }
 
 resource "panos_panorama_ethernet_interface" "eth" {
-    template = "${panos_panorama_template.tmpl.name}"
+    template = panos_panorama_template.tmpl.name
     name = %q
     mode = "layer3"
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.tmpl.name}"
+    template = panos_panorama_template.tmpl.name
     name = %q
 }
 
 resource "panos_panorama_virtual_router_entry" "test" {
-    template = "${panos_panorama_template.tmpl.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
-    interface = "${panos_panorama_ethernet_interface.eth.name}"
+    template = panos_panorama_template.tmpl.name
+    virtual_router = panos_panorama_virtual_router.vr.name
+    interface = panos_panorama_ethernet_interface.eth.name
 }
 `, tmpl, eth_name, vr)
 }

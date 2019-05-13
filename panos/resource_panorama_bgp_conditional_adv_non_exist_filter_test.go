@@ -136,29 +136,29 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
 }
 
 resource "panos_panorama_bgp" "x" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "5.5.5.5"
     as_number = "55"
     enable = false
 }
 
 resource "panos_panorama_bgp_conditional_adv" "ca" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
     name = %q
     enable = false
 }
 
 resource "panos_panorama_bgp_conditional_adv_non_exist_filter" "test" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_panorama_bgp_conditional_adv.ca.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
+    bgp_conditional_adv = panos_panorama_bgp_conditional_adv.ca.name
     name = %q
     as_path_regex = %q
     community_regex = %q
@@ -170,9 +170,9 @@ resource "panos_panorama_bgp_conditional_adv_non_exist_filter" "test" {
 }
 
 resource "panos_panorama_bgp_conditional_adv_advertise_filter" "x" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.x.virtual_router}"
-    bgp_conditional_adv = "${panos_panorama_bgp_conditional_adv.ca.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.x.virtual_router
+    bgp_conditional_adv = panos_panorama_bgp_conditional_adv.ca.name
     name = "af"
     community_regex = "*bar*"
     address_prefixes = ["7.8.9.0/24"]

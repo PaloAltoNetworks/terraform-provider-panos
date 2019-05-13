@@ -18,6 +18,7 @@ func TestAccPanosPanoramaNatRule_basic(t *testing.T) {
 	}
 
 	var o nat.Entry
+	dg := fmt.Sprintf("tf%s", acctest.RandString(6))
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
 	resource.Test(t, resource.TestCase{
@@ -26,14 +27,14 @@ func TestAccPanosPanoramaNatRule_basic(t *testing.T) {
 		CheckDestroy: testAccPanosPanoramaNatRuleDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaNatRuleConfig(name, "first description", "192.168.1.1", 5555),
+				Config: testAccPanoramaNatRuleConfig(dg, name, "first description", "192.168.1.1", 5555),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaNatRuleExists("panos_panorama_nat_rule.test", &o),
 					testAccCheckPanosPanoramaNatRuleAttributes(&o, name, "first description", "192.168.1.1", 5555),
 				),
 			},
 			{
-				Config: testAccPanoramaNatRuleConfig(name, "second desc", "192.168.3.1", 6666),
+				Config: testAccPanoramaNatRuleConfig(dg, name, "second desc", "192.168.3.1", 6666),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaNatRuleExists("panos_panorama_nat_rule.test", &o),
 					testAccCheckPanosPanoramaNatRuleAttributes(&o, name, "second desc", "192.168.3.1", 6666),
@@ -110,13 +111,18 @@ func testAccPanosPanoramaNatRuleDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanoramaNatRuleConfig(n, de, da string, dp int) string {
+func testAccPanoramaNatRuleConfig(dg, n, de, da string, dp int) string {
 	return fmt.Sprintf(`
+resource "panos_panorama_device_group" "x" {
+    name = %q
+}
+
 resource "panos_panorama_nat_rule" "test" {
+    device_group = panos_panorama_device_group.x.name
     name = "%s"
     description = "%s"
     source_zones = ["any"]
-    destination_zone = "any"
+    destination_zone = "myZone"
     to_interface = "any"
     service = "any"
     source_addresses = ["any"]
@@ -126,5 +132,5 @@ resource "panos_panorama_nat_rule" "test" {
     dat_address = "%s"
     dat_port = "%d"
 }
-`, n, de, da, dp)
+`, dg, n, de, da, dp)
 }

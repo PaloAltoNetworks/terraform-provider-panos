@@ -6,6 +6,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/netw/ikegw"
+	"github.com/PaloAltoNetworks/pango/version"
 
 	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"
@@ -13,8 +14,12 @@ import (
 )
 
 func TestAccPanosIkeGateway_basic(t *testing.T) {
+	fqdnOptionVersion := version.Number{8, 1, 0, ""}
+
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
+	} else if !testAccPanosVersion.Gte(fqdnOptionVersion) {
+		t.Skip("Peer IP type of FQDN available on PAN-OS 8.1+")
 	}
 
 	var mp ikegw.Entry
@@ -26,17 +31,17 @@ func TestAccPanosIkeGateway_basic(t *testing.T) {
 		CheckDestroy: testAccPanosIkeGatewayDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosIkeGatewayExists("panos_ike_gateway.test", &mp),
-					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				),
 			},
 			{
-				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+				Config: testAccIkeGatewayConfig(name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosIkeGatewayExists("panos_ike_gateway.test", &mp),
-					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+					testAccCheckPanosIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				),
 			},
 		},
@@ -165,7 +170,7 @@ resource "panos_ike_gateway" "test" {
     version = "ikev1"
     peer_ip_type = %q
     peer_ip_value = %q
-    interface = "${panos_loopback_interface.lo.name}"
+    interface = panos_loopback_interface.lo.name
     local_ip_address_type = %q
     local_ip_address_value = %q
     auth_type = %q
@@ -174,7 +179,7 @@ resource "panos_ike_gateway" "test" {
     local_id_value = %q
     peer_id_type = %q
     peer_id_value = %q
-    ikev1_crypto_profile = "${panos_ike_crypto_profile.prof%d.name}"
+    ikev1_crypto_profile = panos_ike_crypto_profile.prof%d.name
 }
 `, name, pipt, pipv, liat, liav, ikegw.AuthPreSharedKey, psk, lit, liv, pidt, pidv, prof)
 }

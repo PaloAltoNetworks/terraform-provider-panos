@@ -121,14 +121,14 @@ func testAccPanosDeviceGroupEntryDestroy(s *terraform.State) error {
 func testAccDeviceGroupEntryConfig(group, serial, vsys string) string {
 	return fmt.Sprintf(`
 resource "panos_panorama_device_group" "dg" {
-    name = "%s"
+    name = %q
     description = "for device group entry test"
 }
 
 resource "panos_panorama_device_group_entry" "test" {
-    device_group = "${panos_panorama_device_group.dg.name}"
-    serial = "%s"
-    vsys_list = ["%s"]
+    device_group = panos_panorama_device_group.dg.name
+    serial = %q
+    vsys_list = [%q]
 }
 `, group, serial, vsys)
 }

@@ -105,9 +105,9 @@ resource "panos_zone" "z" {
 }
 
 resource "panos_zone_entry" "test" {
-    zone = "${panos_zone.z.name}"
-    mode = "${panos_zone.z.mode}"
-    interface = "${panos_ethernet_interface.eth.name}"
+    zone = panos_zone.z.name
+    mode = panos_zone.z.mode
+    interface = panos_ethernet_interface.eth.name
 }
 `, eth_name, zone_name)
 }

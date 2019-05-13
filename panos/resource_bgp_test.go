@@ -128,11 +128,11 @@ resource "panos_ethernet_interface" "e1" {
 
 resource "panos_virtual_router" "vr" {
     name = %q
-    interfaces = ["${panos_ethernet_interface.e1.name}"]
+    interfaces = [panos_ethernet_interface.e1.name]
 }
 
 resource "panos_bgp" "test" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = %q
     as_number = %q
     enable = %t

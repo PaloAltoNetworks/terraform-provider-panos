@@ -27,17 +27,17 @@ func TestAccPanosPanoramaIkeGateway_basic(t *testing.T) {
 		CheckDestroy: testAccPanosPanoramaIkeGatewayDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaIkeGatewayExists("panos_panorama_ike_gateway.test", &mp),
-					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.PeerTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
+					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeIp, "192.168.1.1", ikegw.LocalTypeIp, "10.1.21.1", "secret1", ikegw.IdTypeIpAddress, "10.5.5.5", ikegw.IdTypeFqdn, "example.com", 1),
 				),
 			},
 			{
-				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+				Config: testAccPanoramaIkeGatewayConfig(tmpl, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaIkeGatewayExists("panos_panorama_ike_gateway.test", &mp),
-					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.PeerTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
+					testAccCheckPanosPanoramaIkeGatewayAttributes(&mp, name, ikegw.PeerTypeFqdn, "foobar.com", ikegw.LocalTypeIp, "10.2.21.1", "secret2", ikegw.IdTypeFqdn, "acctest.org", ikegw.IdTypeKeyId, "beef", 2),
 				),
 			},
 		},
@@ -144,14 +144,14 @@ resource "panos_panorama_template" "x" {
 }
 
 resource "panos_panorama_loopback_interface" "lo" {
+    template = panos_panorama_template.x.name
     name = "loopback.42"
-    template = "${panos_panorama_template.x.name}"
     static_ips = ["10.1.21.1", "10.2.21.1"]
 }
 
 resource "panos_panorama_ike_crypto_profile" "prof1" {
+    template = panos_panorama_template.x.name
     name = "prof1"
-    template = "${panos_panorama_template.x.name}"
     dh_groups = ["group1"]
     authentications = ["md5"]
     encryptions = ["3des"]
@@ -160,8 +160,8 @@ resource "panos_panorama_ike_crypto_profile" "prof1" {
 }
 
 resource "panos_panorama_ike_crypto_profile" "prof2" {
+    template = panos_panorama_template.x.name
     name = "prof2"
-    template = "${panos_panorama_template.x.name}"
     dh_groups = ["group1"]
     authentications = ["md5"]
     encryptions = ["3des"]
@@ -170,12 +170,12 @@ resource "panos_panorama_ike_crypto_profile" "prof2" {
 }
 
 resource "panos_panorama_ike_gateway" "test" {
+    template = panos_panorama_template.x.name
     name = %q
-    template = "${panos_panorama_template.x.name}"
     version = "ikev1"
     peer_ip_type = %q
     peer_ip_value = %q
-    interface = "${panos_panorama_loopback_interface.lo.name}"
+    interface = panos_panorama_loopback_interface.lo.name
     local_ip_address_type = %q
     local_ip_address_value = %q
     auth_type = %q
@@ -184,7 +184,7 @@ resource "panos_panorama_ike_gateway" "test" {
     local_id_value = %q
     peer_id_type = %q
     peer_id_value = %q
-    ikev1_crypto_profile = "${panos_panorama_ike_crypto_profile.prof%d.name}"
+    ikev1_crypto_profile = panos_panorama_ike_crypto_profile.prof%d.name
 }
 `, tmpl, name, pipt, pipv, liat, liav, ikegw.AuthPreSharedKey, psk, lit, liv, pidt, pidv, prof)
 }

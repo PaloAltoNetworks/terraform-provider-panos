@@ -137,14 +137,14 @@ resource "panos_ethernet_interface" "eth6" {
 
 resource "panos_virtual_router" "vr" {
     name = %q
-    interfaces = ["${panos_ethernet_interface.eth6.name}"]
+    interfaces = [panos_ethernet_interface.eth6.name]
 }
 
 resource "panos_static_route_ipv4" "test" {
     name = %q
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     destination = %q
-    interface = "${panos_ethernet_interface.eth6.name}"
+    interface = panos_ethernet_interface.eth6.name
     type = %q
     next_hop = %q
     admin_distance = %d

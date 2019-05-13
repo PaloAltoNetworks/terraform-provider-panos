@@ -130,7 +130,7 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_bfd_profile" "test" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = %q
     mode = %q
     minimum_tx_interval = %d

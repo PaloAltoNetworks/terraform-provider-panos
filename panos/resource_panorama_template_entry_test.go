@@ -134,7 +134,7 @@ resource "panos_panorama_template" "tmpl" {
 }
 
 resource "panos_panorama_template_entry" "test" {
-    template = "${panos_panorama_template.tmpl.name}"
+    template = panos_panorama_template.tmpl.name
     serial = %q
     vsys_list = [%q]
 }

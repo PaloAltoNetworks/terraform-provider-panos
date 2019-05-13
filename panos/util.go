@@ -98,7 +98,12 @@ func asStringList(v []interface{}) []string {
 
 	ans := make([]string, len(v))
 	for i := range v {
-		ans[i] = v[i].(string)
+		switch x := v[i].(type) {
+		case string:
+			ans[i] = x
+		case nil:
+			ans[i] = ""
+		}
 	}
 
 	return ans
