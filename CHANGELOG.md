@@ -1,11 +1,11 @@
-## 1.5.2 (Unreleased)
+## 1.5.2 (May 14, 2019)
 
-* `panos_ike_gateway` / `panos_panorama_ike_gateway` - `floating-ip` is now an accepted value for `local_ip_address_type` [GH-158]
-* `panos_ike_gateway` / `panos_panorama_ike_gateway` - Updated documentation for `nat_traversal_keep_alive` [GH-97]
-* Fixed the acctest for `panos_panorama_nat_rule` [GH-147]
-* Properly handle when a list of strings is sent an empty string [GH-153]
-* Updated the commit script given on the main documentation page to include more ways to specify auth credentials [GH-160]
-* Updated to github.com/hashicorp/terraform@v0.12.0-rc1 [GH-158]
+* `panos_ike_gateway` / `panos_panorama_ike_gateway` - `floating-ip` is now an accepted value for `local_ip_address_type` ([#158](https://github.com/terraform-providers/terraform-provider-panos/issues/158))
+* `panos_ike_gateway` / `panos_panorama_ike_gateway` - Updated documentation for `nat_traversal_keep_alive` ([#97](https://github.com/terraform-providers/terraform-provider-panos/issues/97))
+* Fixed the acctest for `panos_panorama_nat_rule` ([#147](https://github.com/terraform-providers/terraform-provider-panos/issues/147))
+* Properly handle when a list of strings is sent an empty string ([#153](https://github.com/terraform-providers/terraform-provider-panos/issues/153))
+* Updated the commit script given on the main documentation page to include more ways to specify auth credentials ([#160](https://github.com/terraform-providers/terraform-provider-panos/issues/160))
+* Updated to github.com/hashicorp/terraform@v0.12.0-rc1 ([#158](https://github.com/terraform-providers/terraform-provider-panos/issues/158))
 
 ## 1.5.1 (February 05, 2019)
 
