@@ -96,7 +96,7 @@ The following arguments are valid for each `rule` section:
 
 * `name` - (Required) The security rule name.
 * `enable` - (Optional, bool) Enable this export rule (default: `true`)
-* `used_by` - (Optional) List of auth profiles.
+* `used_by` - (Optional) List of peer groups.
 * `match_as_path_regex` - (Optional) AS path to match.
 * `match_community_regex` - (Optional) Community to match.
 * `match_extended_community_regex` - (Optional) Extended community to match.
