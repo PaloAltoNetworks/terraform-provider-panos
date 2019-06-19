@@ -279,7 +279,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 											"static": {
 												Type:          schema.TypeList,
 												Optional:      true,
-												ConflictsWith: []string{"rule.translated_packet.destination.dynamic"},
+												ConflictsWith: []string{"rule.translated_packet.destination.dynamic_ip_and_port"},
 												MaxItems:      1,
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
@@ -295,7 +295,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 												},
 											},
 
-											"dynamic": {
+											"dynamic_ip_and_port": {
 												Type:          schema.TypeList,
 												Optional:      true,
 												ConflictsWith: []string{"rule.translated_packet.destination.static"},
@@ -426,7 +426,7 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 
 		o.DatAddress = s["address"].(string)
 		o.DatPort = s["port"].(int)
-	} else if s := asInterfaceMap(dst, "dynamic"); len(s) != 0 {
+	} else if s := asInterfaceMap(dst, "dynamic_ip_and_port"); len(s) != 0 {
 		o.DatType = nat.DatTypeDynamic
 
 		o.DatAddress = s["address"].(string)
@@ -526,7 +526,7 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 			},
 		}
 	case nat.DatTypeDynamic:
-		dst["dynamic"] = []interface{}{
+		dst["dynamic_ip_and_port"] = []interface{}{
 			map[string]interface{}{
 				"address":      o.DatAddress,
 				"port":         o.DatPort,
