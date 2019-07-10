@@ -119,6 +119,26 @@ func resourceEthernetInterface() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"decrypt_forward": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"rx_policing_rate": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"tx_policing_rate": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"dhcp_send_hostname_enable": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"dhcp_send_hostname_value": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -155,6 +175,11 @@ func parseEthernetInterface(d *schema.ResourceData) (string, eth.Entry) {
 		Comment:                d.Get("comment").(string),
 		Ipv4MssAdjust:          d.Get("ipv4_mss_adjust").(int),
 		Ipv6MssAdjust:          d.Get("ipv6_mss_adjust").(int),
+		DecryptForward:         d.Get("decrypt_forward").(bool),
+		RxPolicingRate:         d.Get("rx_policing_rate").(int),
+		TxPolicingRate:         d.Get("tx_policing_rate").(int),
+		DhcpSendHostnameEnable: d.Get("dhcp_send_hostname_enable").(bool),
+		DhcpSendHostnameValue:  d.Get("dhcp_send_hostname_value").(string),
 	}
 
 	return vsys, o
@@ -219,6 +244,11 @@ func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 	d.Set("comment", o.Comment)
 	d.Set("ipv4_mss_adjust", o.Ipv4MssAdjust)
 	d.Set("ipv6_mss_adjust", o.Ipv6MssAdjust)
+	d.Set("decrypt_forward", o.DecryptForward)
+	d.Set("rx_policing_rate", o.RxPolicingRate)
+	d.Set("tx_policing_rate", o.TxPolicingRate)
+	d.Set("dhcp_send_hostname_enable", o.DhcpSendHostnameEnable)
+	d.Set("dhcp_send_hostname_value", o.DhcpSendHostnameValue)
 
 	return nil
 }

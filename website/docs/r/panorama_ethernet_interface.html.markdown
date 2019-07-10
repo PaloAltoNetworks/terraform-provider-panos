@@ -78,5 +78,13 @@ The following arguments are supported:
 * `aggregate_group` - (Optional) The aggregate group (applicable for
   physical firewalls only).
 * `comment` - (Optional) The interface comment.
-* `ipv4_mss_adjust` - (Optional, PAN-OS 8.0+) The IPv4 MSS adjust value.
-* `ipv6_mss_adjust` - (Optional, PAN-OS 8.0+) The IPv6 MSS adjust value.
+* `ipv4_mss_adjust` - (Optional, PAN-OS 7.1+) The IPv4 MSS adjust value.
+* `ipv6_mss_adjust` - (Optional, PAN-OS 7.1+) The IPv6 MSS adjust value.
+* `decrypt_forward` - (Optional, PAN-OS 8.1+) Enable decrypt forwarding.
+* `rx_policing_rate` - (Optional, PAN-OS 8.1+) Receive policing rate in Mbps.
+* `tx_policing_rate` - (Optional, PAN-OS 8.1+) Transmit policing rate in Mbps.
+* `dhcp_send_hostname_enable` - (Optional, PAN-OS 9.0+) For DHCP layer3 interfaces:
+  enable sending the firewall or a custom hostname to DHCP server
+* `dhcp_send_hostname_value` - (Optional, PAN-OS 9.0+) For DHCP layer3 interfaces:
+  the interface hostname.  Leaving this unspecified with `dhcp_send_hostname_enable`
+  set means to send the system hostname.
