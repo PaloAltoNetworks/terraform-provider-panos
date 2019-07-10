@@ -18,9 +18,9 @@ import (
 type Entry struct {
     Name string
     Description string
-    StaticAddresses []string
+    StaticAddresses []string // unordered
     DynamicMatch string
-    Tags []string
+    Tags []string // ordered
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the

@@ -17,18 +17,18 @@ type Entry struct {
     Name string
     Type string
     Description string
-    Tags []string
-    SourceZones []string
-    SourceAddresses []string
+    Tags []string // ordered
+    SourceZones []string // unordered
+    SourceAddresses []string // unordered
     NegateSource bool
-    SourceUsers []string
-    HipProfiles []string
-    DestinationZones []string
-    DestinationAddresses []string
+    SourceUsers []string // unordered
+    HipProfiles []string // unordered
+    DestinationZones []string // unordered
+    DestinationAddresses []string // unordered
     NegateDestination bool
-    Applications []string
-    Services []string
-    Categories []string
+    Applications []string // unordered
+    Services []string // unordered
+    Categories []string // unordered
     Action string
     LogSetting string
     LogStart bool

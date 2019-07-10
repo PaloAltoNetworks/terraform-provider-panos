@@ -50,7 +50,13 @@ func (c *Licen) Activate(auth string) error {
     }
 
     c.con.LogOp("(op) request license fetch auth-code \"********\"")
-    _, err := c.con.Op(auth_req{Code: auth}, "", nil, nil)
+    body, err := c.con.Op(auth_req{Code: auth}, "", nil, nil)
+    if err != nil {
+        if string(body) == "VM Device License installed. Restarting pan services." {
+            return nil
+        }
+    }
+
     return err
 }
 

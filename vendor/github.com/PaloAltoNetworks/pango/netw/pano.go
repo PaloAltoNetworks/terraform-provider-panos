@@ -4,6 +4,8 @@ package netw
 import (
     "github.com/PaloAltoNetworks/pango/netw/ikegw"
     "github.com/PaloAltoNetworks/pango/netw/interface/eth"
+    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer2"
+    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer3"
     "github.com/PaloAltoNetworks/pango/netw/interface/loopback"
     "github.com/PaloAltoNetworks/pango/netw/interface/tunnel"
     vli "github.com/PaloAltoNetworks/pango/netw/interface/vlan"
@@ -13,6 +15,7 @@ import (
     "github.com/PaloAltoNetworks/pango/netw/profile/ike"
     "github.com/PaloAltoNetworks/pango/netw/profile/ipsec"
     "github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
+    "github.com/PaloAltoNetworks/pango/netw/profile/monitor"
     redist4 "github.com/PaloAltoNetworks/pango/netw/routing/profile/redist/ipv4"
     "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp"
     "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate"
@@ -30,6 +33,7 @@ import (
     bgpredist "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist"
     "github.com/PaloAltoNetworks/pango/netw/routing/router"
     "github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4"
+    "github.com/PaloAltoNetworks/pango/netw/tunnel/gre"
     "github.com/PaloAltoNetworks/pango/netw/vlan"
     "github.com/PaloAltoNetworks/pango/netw/zone"
     "github.com/PaloAltoNetworks/pango/util"
@@ -54,13 +58,17 @@ type PanoNetw struct {
     BgpPeerGroup *group.PanoGroup
     BgpRedistRule *bgpredist.PanoRedist
     EthernetInterface *eth.PanoEth
+    GreTunnel *gre.PanoGre
     IkeCryptoProfile *ike.PanoIke
     IkeGateway *ikegw.PanoIkeGw
     IpsecCryptoProfile *ipsec.PanoIpsec
     IpsecTunnel *ipsectunnel.PanoIpsecTunnel
     IpsecTunnelProxyId *tpiv4.PanoIpv4
+    Layer2Subinterface *layer2.PanoLayer2
+    Layer3Subinterface *layer3.PanoLayer3
     LoopbackInterface *loopback.PanoLoopback
     ManagementProfile *mngtprof.PanoMngtProf
+    MonitorProfile *monitor.PanoMonitor
     RedistributionProfile *redist4.PanoIpv4
     StaticRoute *ipv4.PanoIpv4
     TunnelInterface *tunnel.PanoTunnel
@@ -120,6 +128,9 @@ func (c *PanoNetw) Initialize(i util.XapiClient) {
     c.EthernetInterface = &eth.PanoEth{}
     c.EthernetInterface.Initialize(i)
 
+    c.GreTunnel = &gre.PanoGre{}
+    c.GreTunnel.Initialize(i)
+
     c.IkeCryptoProfile = &ike.PanoIke{}
     c.IkeCryptoProfile.Initialize(i)
 
@@ -135,11 +146,20 @@ func (c *PanoNetw) Initialize(i util.XapiClient) {
     c.IpsecTunnelProxyId = &tpiv4.PanoIpv4{}
     c.IpsecTunnelProxyId.Initialize(i)
 
+    c.Layer2Subinterface = &layer2.PanoLayer2{}
+    c.Layer2Subinterface.Initialize(i)
+
+    c.Layer3Subinterface = &layer3.PanoLayer3{}
+    c.Layer3Subinterface.Initialize(i)
+
     c.LoopbackInterface = &loopback.PanoLoopback{}
     c.LoopbackInterface.Initialize(i)
 
     c.ManagementProfile = &mngtprof.PanoMngtProf{}
     c.ManagementProfile.Initialize(i)
+
+    c.MonitorProfile = &monitor.PanoMonitor{}
+    c.MonitorProfile.Initialize(i)
 
     c.RedistributionProfile = &redist4.PanoIpv4{}
     c.RedistributionProfile.Initialize(i)

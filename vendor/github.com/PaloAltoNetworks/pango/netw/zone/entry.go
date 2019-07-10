@@ -11,12 +11,12 @@ import (
 type Entry struct {
     Name string
     Mode string
-    Interfaces []string
+    Interfaces []string // unordered
     ZoneProfile string
     LogSetting string
     EnableUserId bool
-    IncludeAcls []string
-    ExcludeAcls []string
+    IncludeAcls []string // unordered
+    ExcludeAcls []string // unordered
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the

@@ -14,7 +14,7 @@ import (
 type Entry struct {
     Name string
     VlanInterface string
-    Interfaces []string
+    Interfaces []string // unordered
     StaticMacs map[string] string
 }
 

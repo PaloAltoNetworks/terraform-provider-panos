@@ -183,7 +183,11 @@ func (c *PanoEth) Delete(tmpl, ts string, e ...interface{}) error {
 func (c *PanoEth) versioning() (normalizer, func(Entry) (interface{})) {
     v := c.con.Versioning()
 
-    if v.Gte(version.Number{7, 1, 0, ""}) {
+    if v.Gte(version.Number{9, 0, 0, ""}) {
+        return &container_v4{}, specify_v4
+    } else if v.Gte(version.Number{8, 1, 0, ""}) {
+        return &container_v3{}, specify_v3
+    } else if v.Gte(version.Number{7, 1, 0, ""}) {
         return &container_v2{}, specify_v2
     } else {
         return &container_v1{}, specify_v1

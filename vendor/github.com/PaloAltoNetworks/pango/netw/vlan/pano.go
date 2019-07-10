@@ -18,29 +18,89 @@ func (c *PanoVlan) Initialize(con util.XapiClient) {
     c.con = con
 }
 
+/*
+SetInterface performs a SET to add an interface to a VLAN.
+
+The VLAN can be either a string or an Entry object.
+*/
+func (c *PanoVlan) SetInterface(tmpl, ts string, vlan interface{}, iface string) error {
+    var name string
+
+    if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
+    }
+
+    switch v := vlan.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s set interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(set) interface for %s %q: %s", singular, name, iface)
+
+    path := c.xpath(tmpl, ts, []string{name})
+    path = append(path, "interface")
+
+    _, err := c.con.Set(path, util.Member{Value: iface}, nil, nil)
+    return err
+}
+
+/*
+DeleteInterface performs a DELETE to remove an interface from a VLAN.
+
+The VLAN can be either a string or an Entry object.
+*/
+func (c *PanoVlan) DeleteInterface(tmpl, ts string, vlan interface{}, iface string) error {
+    var name string
+
+    if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
+    }
+
+    switch v := vlan.(type) {
+    case string:
+        name = v
+    case Entry:
+        name = v.Name
+    default:
+        return fmt.Errorf("Unknown type sent to %s delete interface: %s", singular, v)
+    }
+
+    c.con.LogAction("(delete) interface for %s %q: %s", singular, name, iface)
+
+    path := c.xpath(tmpl, ts, []string{name})
+    path = append(path, "interface", util.AsMemberXpath([]string{iface}))
+
+    _, err := c.con.Delete(path, nil, nil)
+    return err
+}
+
 // ShowList performs SHOW to retrieve a list of VLANs.
 func (c *PanoVlan) ShowList(tmpl, ts string) ([]string, error) {
-    c.con.LogQuery("(show) list of VLANs")
+    c.con.LogQuery("(show) list of %s", plural)
     path := c.xpath(tmpl, ts, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // GetList performs GET to retrieve a list of VLANs.
 func (c *PanoVlan) GetList(tmpl, ts string) ([]string, error) {
-    c.con.LogQuery("(get) list of VLANs")
+    c.con.LogQuery("(get) list of %s", plural)
     path := c.xpath(tmpl, ts, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given VLAN.
 func (c *PanoVlan) Get(tmpl, ts, name string) (Entry, error) {
-    c.con.LogQuery("(get) VLAN %q", name)
+    c.con.LogQuery("(get) %s %q", singular, name)
     return c.details(c.con.Get, tmpl, ts, name)
 }
 
 // Show performs SHOW to retrieve information for the given VLAN.
 func (c *PanoVlan) Show(tmpl, ts, name string) (Entry, error) {
-    c.con.LogQuery("(show) VLAN %q", name)
+    c.con.LogQuery("(show) %s %q", singular, name)
     return c.details(c.con.Show, tmpl, ts, name)
 }
 
@@ -66,7 +126,7 @@ func (c *PanoVlan) Set(tmpl, ts, vsys string, e ...Entry) error {
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
     }
-    c.con.LogAction("(set) VLANs: %v", names)
+    c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
     path := c.xpath(tmpl, ts, names)
@@ -103,7 +163,7 @@ func (c *PanoVlan) Edit(tmpl, ts, vsys string, e Entry) error {
 
     _, fn := c.versioning()
 
-    c.con.LogAction("(edit) VLAN %q", e.Name)
+    c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
     path := c.xpath(tmpl, ts, []string{e.Name})
@@ -145,7 +205,7 @@ func (c *PanoVlan) Delete(tmpl, ts string, e ...interface{}) error {
             return fmt.Errorf("Unknown type sent to delete: %s", v)
         }
     }
-    c.con.LogAction("(delete) VLANs: %v", names)
+    c.con.LogAction("(delete) %s: %v", plural, names)
 
     // Unimport VLANs.
     if err = c.con.VsysUnimport(util.VlanImport, tmpl, ts, names); err != nil {

@@ -39,7 +39,7 @@ type Entry struct {
     RepeatAt string
     RepeatDayOfWeek string
     RepeatDayOfMonth int
-    Exceptions []string
+    Exceptions []string // ordered
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the

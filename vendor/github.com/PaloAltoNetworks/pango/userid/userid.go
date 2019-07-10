@@ -8,6 +8,7 @@
 package userid
 
 import (
+    "fmt"
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
@@ -113,18 +114,27 @@ func (c *UserId) Registered(ip, tag, vsys string) (map[string] []string, error) 
         vsys = "vsys1"
     }
     c.con.LogOp("(op) getting registered ip addresses - ip:%q tag:%q vsys:%q", ip, tag, vsys)
-    con := c.versioning()
-    con.FilterOn(ip, tag)
+    req := c.versioning()
 
-    resp := regResp{}
-    _, err := c.con.Op(con, vsys, nil, &resp)
-    if err != nil {
-        return nil, err
-    }
+    ans := make(map[string] []string)
+    for {
+        req.FilterOn(ip, tag, len(ans))
+        resp := regResp{}
 
-    ans := make(map[string] []string, len(resp.Entry))
-    for i := range resp.Entry {
-        ans[resp.Entry[i].Ip] = resp.Entry[i].Tags
+        _, err := c.con.Op(req, vsys, nil, &resp)
+        if err != nil {
+            return nil, err
+        } else if resp.Msg != nil && resp.Msg.Outfile != "" {
+            return nil, fmt.Errorf("PAN-OS returned %q instead of IP/tag mappings, please upgrade to 8.0+", resp.Msg.Outfile)
+        }
+
+        for i := range resp.Entry {
+            ans[resp.Entry[i].Ip] = resp.Entry[i].Tags
+        }
+
+        if req.ShouldStop(len(resp.Entry)) {
+            break
+        }
     }
 
     return ans, nil
@@ -135,7 +145,9 @@ func (c *UserId) Registered(ip, tag, vsys string) (map[string] []string, error) 
 func (c *UserId) versioning() filterer {
     v := c.con.Versioning()
 
-    if v.Gte(version.Number{6, 1, 0, ""}) {
+    if v.Gte(version.Number{8, 0, 0, ""}) {
+        return &req_v3{}
+    } else if v.Gte(version.Number{6, 1, 0, ""}) {
         return &req_v2{}
     } else {
         return &req_v1{}
@@ -179,7 +191,8 @@ type regUnreg struct {
 }
 
 type filterer interface {
-    FilterOn(string, string)
+    FilterOn(string, string, int)
+    ShouldStop(int) bool
 }
 
 type req_filter struct {
@@ -200,11 +213,15 @@ type req_v1 struct {
     Filter req_filter `xml:"object>registered-address"`
 }
 
-func (o *req_v1) FilterOn(ip, tag string) {
+func (o *req_v1) FilterOn(ip, tag string, size int) {
     o.Filter.Ip = ip
     if tag != "" {
         o.Filter.Tag = &tagFilter{tagName{tag}}
     }
+}
+
+func (o *req_v1) ShouldStop(lastCount int) bool {
+    return true
 }
 
 type req_v2 struct {
@@ -212,18 +229,53 @@ type req_v2 struct {
     Filter req_filter `xml:"object>registered-ip"`
 }
 
-func (o *req_v2) FilterOn(ip, tag string) {
+func (o *req_v2) FilterOn(ip, tag string, size int) {
     o.Filter.Ip = ip
     if tag != "" {
         o.Filter.Tag = &tagFilter{tagName{tag}}
     }
 }
 
+func (o *req_v2) ShouldStop(lastCount int) bool {
+    return true
+}
+
+type req_v3 struct {
+    XMLName xml.Name `xml:"show"`
+    Filter req_filter_v2 `xml:"object>registered-ip"`
+}
+
+func (o *req_v3) FilterOn(ip, tag string, size int) {
+    o.Filter.Ip = ip
+    if tag != "" {
+        o.Filter.Tag = &tagFilter{tagName{tag}}
+    }
+
+    o.Filter.Limit = 500
+    o.Filter.Start = size + 1
+}
+
+func (o *req_v3) ShouldStop(lastCount int) bool {
+    return lastCount < o.Filter.Limit
+}
+
+type req_filter_v2 struct {
+    Tag *tagFilter `xml:"tag"`
+    Ip string `xml:"ip,omitempty"`
+    Limit int `xml:"limit"`
+    Start int `xml:"start-point"`
+}
+
 type regResp struct {
     Entry []respEntry `xml:"result>entry"`
+    Msg *msg `xml:"result>msg"`
 }
 
 type respEntry struct {
     Ip string `xml:"ip,attr"`
     Tags []string `xml:"tag>member"`
+}
+
+type msg struct {
+    Outfile string `xml:"line>outfile"`
 }
