@@ -1,9 +1,15 @@
 Palo Alto Networks pango
 ========================
 
+[![GoDoc](https://godoc.org/github.com/PaloAltoNetworks/pango?status.svg)](https://godoc.org/github.com/PaloAltoNetworks/pango)
 [![Build Status](https://travis-ci.com/PaloAltoNetworks/pango.svg?branch=master)](https://travis-ci.com/PaloAltoNetworks/pango)
 
 Package pango is a golang cross version mechanism for interacting with Palo Alto Networks devices (including physical and virtualized Next-generation Firewalls and Panorama).  Versioning support is in place for PANOS 6.1 to 8.1.
+
+Please refer to the godoc reference documentation above to get started.
+
+Using pango
+===========
 
 To start, create a client connection with the desired parameters and then initialize the connection:
 
@@ -36,7 +42,7 @@ Initializing the connection creates the API key (if it was not already specified
 
 ```go
     err = c.Network.EthernetInterface.Set(...)
-    myPolicies, err := c.Policies.Security.GetList(...)
+    myPolicies, err := c.Policies.Security.GetList()
 ```
 
 Generally speaking, there are the following functions inside each namespace:
@@ -60,60 +66,3 @@ Using `Edit` Functions
 ======================
 
 The PANOS XML API `Edit` command can be used to both create as well as update existing config, however it can also truncate config for the given XPATH.  Due to this, if you want to use `Edit()`, you need to make sure that you perform either a `Get()` or a `Show()` first, make your modification, then invoke `Edit()` using that object.  If you don't do this, you will truncate any sub config.
-
-
-Example 1: Creating an ethernet interface
-=========================================
-
-The following program will create ethernet1/7 as a DHCP interface and import it into vsys1 if it isn't already present:
-
-```go
-package main
-
-import (
-    "log"
-    "github.com/PaloAltoNetworks/pango"
-    "github.com/PaloAltoNetworks/pango/netw/interface/eth"
-)
-
-func main() {
-    var err error
-
-    c := &pango.Firewall{Client: pango.Client{
-        Hostname: "127.0.0.1",
-        Username: "admin",
-        Password: "admin",
-        Logging: pango.LogAction | pango.LogOp,
-    }}
-    if err = c.Initialize(); err != nil {
-        log.Printf("Failed to initialize client: %s", err)
-        return
-    }
-
-    e := eth.Entry{
-        Name: "ethernet1/7",
-        Mode: "layer3",
-        EnableDhcp: true,
-        CreateDhcpDefaultRoute: true,
-    }
-
-    interfaces, err := c.Network.EthernetInterface.GetList()
-    if err != nil {
-        log.Printf("Failed to get data interfaces: %s", err)
-        return
-    }
-    for i := range interfaces {
-        if e.Name == interfaces[i] {
-            log.Printf("%s already exists", e.Name)
-            return
-        }
-    }
-
-    err = c.Network.EthernetInterface.Set("vsys1", e)
-    if err != nil {
-        log.Printf("Failed to create %s: %s", e.Name, err)
-        return
-    }
-    log.Printf("Created %s ok", e.Name)
-}
-```

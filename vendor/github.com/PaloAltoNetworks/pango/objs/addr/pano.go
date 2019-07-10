@@ -5,6 +5,7 @@ import (
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
+    "github.com/PaloAltoNetworks/pango/version"
 )
 
 // PanoAddr is a namespace struct, included as part of pango.Firewall.
@@ -122,7 +123,13 @@ func (c *PanoAddr) Delete(dg string, e ...interface{}) error {
 /** Internal functions for the PanoAddr struct **/
 
 func (c *PanoAddr) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+    v := c.con.Versioning()
+
+    if v.Gte(version.Number{9, 0, 0, ""}) {
+        return &container_v2{}, specify_v2
+    } else {
+        return &container_v1{}, specify_v1
+    }
 }
 
 func (c *PanoAddr) details(fn util.Retriever, dg, name string) (Entry, error) {

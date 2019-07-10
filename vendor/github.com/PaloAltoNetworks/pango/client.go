@@ -64,6 +64,7 @@ type Client struct {
     // Variables determined at runtime.
     Version version.Number
     SystemInfo map[string] string
+    Plugin []map[string] string
 
     // Logging level.
     Logging uint32
@@ -105,6 +106,11 @@ func (c *Client) String() string {
 // Versioning returns the client version number.
 func (c *Client) Versioning() version.Number {
     return c.Version
+}
+
+// Plugins returns the plugin information.
+func (c *Client) Plugins() []map[string] string {
+    return c.Plugin
 }
 
 // Initialize does some initial setup of the Client connection, retrieves

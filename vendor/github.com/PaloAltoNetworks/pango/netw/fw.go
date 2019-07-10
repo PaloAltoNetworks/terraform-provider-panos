@@ -4,6 +4,8 @@ package netw
 import (
     "github.com/PaloAltoNetworks/pango/netw/ikegw"
     "github.com/PaloAltoNetworks/pango/netw/interface/eth"
+    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer2"
+    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer3"
     "github.com/PaloAltoNetworks/pango/netw/interface/loopback"
     "github.com/PaloAltoNetworks/pango/netw/interface/tunnel"
     vli "github.com/PaloAltoNetworks/pango/netw/interface/vlan"
@@ -13,6 +15,7 @@ import (
     "github.com/PaloAltoNetworks/pango/netw/profile/ike"
     "github.com/PaloAltoNetworks/pango/netw/profile/ipsec"
     "github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
+    "github.com/PaloAltoNetworks/pango/netw/profile/monitor"
     redist4 "github.com/PaloAltoNetworks/pango/netw/routing/profile/redist/ipv4"
     "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp"
     "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate"
@@ -30,6 +33,7 @@ import (
     bgpredist "github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist"
     "github.com/PaloAltoNetworks/pango/netw/routing/router"
     "github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4"
+    "github.com/PaloAltoNetworks/pango/netw/tunnel/gre"
     "github.com/PaloAltoNetworks/pango/netw/vlan"
     "github.com/PaloAltoNetworks/pango/netw/zone"
     "github.com/PaloAltoNetworks/pango/util"
@@ -54,13 +58,17 @@ type FwNetw struct {
     BgpPeerGroup *group.FwGroup
     BgpRedistRule *bgpredist.FwRedist
     EthernetInterface *eth.FwEth
+    GreTunnel *gre.FwGre
     IkeCryptoProfile *ike.FwIke
     IkeGateway *ikegw.FwIkeGw
     IpsecCryptoProfile *ipsec.FwIpsec
     IpsecTunnel *ipsectunnel.FwIpsecTunnel
     IpsecTunnelProxyId *tpiv4.FwIpv4
+    Layer2Subinterface *layer2.FwLayer2
+    Layer3Subinterface *layer3.FwLayer3
     LoopbackInterface *loopback.FwLoopback
     ManagementProfile *mngtprof.FwMngtProf
+    MonitorProfile *monitor.FwMonitor
     RedistributionProfile *redist4.FwIpv4
     StaticRoute *ipv4.FwIpv4
     TunnelInterface *tunnel.FwTunnel
@@ -120,6 +128,9 @@ func (c *FwNetw) Initialize(i util.XapiClient) {
     c.EthernetInterface = &eth.FwEth{}
     c.EthernetInterface.Initialize(i)
 
+    c.GreTunnel = &gre.FwGre{}
+    c.GreTunnel.Initialize(i)
+
     c.IkeCryptoProfile = &ike.FwIke{}
     c.IkeCryptoProfile.Initialize(i)
 
@@ -135,11 +146,20 @@ func (c *FwNetw) Initialize(i util.XapiClient) {
     c.IpsecTunnelProxyId = &tpiv4.FwIpv4{}
     c.IpsecTunnelProxyId.Initialize(i)
 
+    c.Layer2Subinterface = &layer2.FwLayer2{}
+    c.Layer2Subinterface.Initialize(i)
+
+    c.Layer3Subinterface = &layer3.FwLayer3{}
+    c.Layer3Subinterface.Initialize(i)
+
     c.LoopbackInterface = &loopback.FwLoopback{}
     c.LoopbackInterface.Initialize(i)
 
     c.ManagementProfile = &mngtprof.FwMngtProf{}
     c.ManagementProfile.Initialize(i)
+
+    c.MonitorProfile = &monitor.FwMonitor{}
+    c.MonitorProfile.Initialize(i)
 
     c.RedistributionProfile = &redist4.FwIpv4{}
     c.RedistributionProfile.Initialize(i)

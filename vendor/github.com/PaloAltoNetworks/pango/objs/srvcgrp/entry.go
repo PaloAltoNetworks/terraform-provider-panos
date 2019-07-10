@@ -11,8 +11,8 @@ import (
 // group.
 type Entry struct {
     Name string
-    Services []string
-    Tags []string
+    Services []string // unordered
+    Tags []string // ordered
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the

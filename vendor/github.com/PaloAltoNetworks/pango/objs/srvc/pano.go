@@ -5,6 +5,7 @@ import (
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
+    "github.com/PaloAltoNetworks/pango/version"
 )
 
 
@@ -123,7 +124,13 @@ func (c *PanoSrvc) Delete(dg string, e ...interface{}) error {
 /** Internal functions for the PanoSrvc struct **/
 
 func (c *PanoSrvc) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+    v := c.con.Versioning()
+
+    if v.Gte(version.Number{8, 1, 0, ""}) {
+        return &container_v2{}, specify_v2
+    } else {
+        return &container_v1{}, specify_v1
+    }
 }
 
 func (c *PanoSrvc) details(fn util.Retriever, dg, name string) (Entry, error) {

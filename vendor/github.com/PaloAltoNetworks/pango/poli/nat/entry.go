@@ -59,19 +59,19 @@ type Entry struct {
     Name string
     Description string
     Type string
-    SourceZones []string
+    SourceZones []string // unordered
     DestinationZone string
     ToInterface string
     Service string
-    SourceAddresses []string
-    DestinationAddresses []string
+    SourceAddresses []string // unordered
+    DestinationAddresses []string // unordered
     SatType string
     SatAddressType string
-    SatTranslatedAddresses []string
+    SatTranslatedAddresses []string // unordered
     SatInterface string
     SatIpAddress string
     SatFallbackType string
-    SatFallbackTranslatedAddresses []string
+    SatFallbackTranslatedAddresses []string // unordered
     SatFallbackInterface string
     SatFallbackIpType string
     SatFallbackIpAddress string
@@ -84,7 +84,7 @@ type Entry struct {
     Disabled bool
     Targets map[string] []string
     NegateTarget bool
-    Tags []string
+    Tags []string // ordered
 }
 
 // Defaults sets params with uninitialized values to their GUI default setting.

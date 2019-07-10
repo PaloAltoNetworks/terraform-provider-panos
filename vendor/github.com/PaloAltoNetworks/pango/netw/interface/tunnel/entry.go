@@ -13,7 +13,7 @@ type Entry struct {
     Name string
     Comment string
     NetflowProfile string
-    StaticIps []string
+    StaticIps []string // ordered
     ManagementProfile string
     Mtu int
 

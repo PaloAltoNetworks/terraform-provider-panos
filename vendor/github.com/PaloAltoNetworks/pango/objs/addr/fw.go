@@ -5,6 +5,7 @@ import (
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
+    "github.com/PaloAltoNetworks/pango/version"
 )
 
 // FwAddr is a namespace struct, included as part of pango.Firewall.
@@ -122,7 +123,13 @@ func (c *FwAddr) Delete(vsys string, e ...interface{}) error {
 /** Internal functions for the FwAddr struct **/
 
 func (c *FwAddr) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+    v := c.con.Versioning()
+
+    if v.Gte(version.Number{9, 0, 0, ""}) {
+        return &container_v2{}, specify_v2
+    } else {
+        return &container_v1{}, specify_v1
+    }
 }
 
 func (c *FwAddr) details(fn util.Retriever, vsys, name string) (Entry, error) {

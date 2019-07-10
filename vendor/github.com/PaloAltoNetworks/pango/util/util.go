@@ -314,7 +314,7 @@ func AsMemberXpath(vals []string) string {
     return buf.String()
 }
 
-// TemplateXpath returns the template xpath prefix of the given template name.
+// TemplateXpathPrefix returns the template xpath prefix of the given template name.
 func TemplateXpathPrefix(tmpl, ts string) []string {
     if tmpl != "" {
         return []string{
@@ -332,6 +332,45 @@ func TemplateXpathPrefix(tmpl, ts string) []string {
         AsEntryXpath([]string{"localhost.localdomain"}),
         "template-stack",
         AsEntryXpath([]string{ts}),
+    }
+}
+
+// DeviceGroupXpathPrefix returns a device group xpath prefix.
+// If the device group is empty, then the default is "shared".
+func DeviceGroupXpathPrefix(dg string) []string{
+    if dg == "" {
+        dg = "shared"
+    }
+
+    if dg == "shared" {
+        return []string{"config", "shared"}
+    }
+
+    return []string{
+        "config",
+        "devices",
+        AsEntryXpath([]string{"localhost.localdomain"}),
+        "device-group",
+        AsEntryXpath([]string{dg}),
+    }
+}
+
+// VsysXpathPrefix returns a vsys xpath prefix.
+func VsysXpathPrefix(vsys string) []string{
+    if vsys == "" {
+        vsys = "vsys1"
+    }
+
+    if vsys == "shared" {
+        return []string{"config", "shared"}
+    }
+
+    return []string{
+        "config",
+        "devices",
+        AsEntryXpath([]string{"localhost.localdomain"}),
+        "vsys",
+        AsEntryXpath([]string{vsys}),
     }
 }
 
