@@ -22,66 +22,86 @@ func resourceServiceObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The service object's name",
-			},
-			"vsys": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to put this service object in",
-			},
-			"description": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Object's description",
-			},
-			"protocol": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "The protocol (tcp or udp)",
-				ValidateFunc: validateStringIn("tcp", "udp"),
-			},
-			"source_port": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The source port definition",
-			},
-			"destination_port": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The destination port definition",
-			},
-			"tags": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "Administrative tags for the service object",
-			},
+		Schema: serviceObjectSchema(false),
+	}
+}
+
+func serviceObjectSchema(p bool) map[string]*schema.Schema {
+	ans := map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			ForceNew:    true,
+			Description: "The service object's name",
+		},
+		"description": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Object's description",
+		},
+		"protocol": {
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validateStringIn(srvc.ProtocolTcp, srvc.ProtocolUdp, srvc.ProtocolSctp),
+		},
+		"source_port": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The source port definition",
+		},
+		"destination_port": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The destination port definition",
+		},
+		"tags": tagSchema(),
+		"override_session_timeout": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"override_timeout": {
+			Type:     schema.TypeInt,
+			Optional: true,
+		},
+		"override_half_closed_timeout": {
+			Type:     schema.TypeInt,
+			Optional: true,
+		},
+		"override_time_wait_timeout": {
+			Type:     schema.TypeInt,
+			Optional: true,
 		},
 	}
+
+	if p {
+		ans["device_group"] = deviceGroupSchema()
+	} else {
+		ans["vsys"] = vsysSchema()
+	}
+
+	return ans
 }
 
 func parseServiceObject(d *schema.ResourceData) (string, srvc.Entry) {
 	vsys := d.Get("vsys").(string)
-	o := srvc.Entry{
-		Name:            d.Get("name").(string),
-		Description:     d.Get("description").(string),
-		Protocol:        d.Get("protocol").(string),
-		SourcePort:      d.Get("source_port").(string),
-		DestinationPort: d.Get("destination_port").(string),
-		Tags:            setAsList(d.Get("tags").(*schema.Set)),
-	}
+	o := loadServiceObject(d)
 
 	return vsys, o
+}
+
+func loadServiceObject(d *schema.ResourceData) srvc.Entry {
+	return srvc.Entry{
+		Name:                      d.Get("name").(string),
+		Description:               d.Get("description").(string),
+		Protocol:                  d.Get("protocol").(string),
+		SourcePort:                d.Get("source_port").(string),
+		DestinationPort:           d.Get("destination_port").(string),
+		Tags:                      asStringList(d.Get("tags").([]interface{})),
+		OverrideSessionTimeout:    d.Get("override_session_timeout").(bool),
+		OverrideTimeout:           d.Get("override_timeout").(int),
+		OverrideHalfClosedTimeout: d.Get("override_half_closed_timeout").(int),
+		OverrideTimeWaitTimeout:   d.Get("override_time_wait_timeout").(int),
+	}
 }
 
 func parseServiceObjectId(v string) (string, string) {
@@ -91,6 +111,21 @@ func parseServiceObjectId(v string) (string, string) {
 
 func buildServiceObjectId(a, b string) string {
 	return fmt.Sprintf("%s%s%s", a, IdSeparator, b)
+}
+
+func saveServiceObject(d *schema.ResourceData, o srvc.Entry) {
+	d.Set("name", o.Name)
+	d.Set("description", o.Description)
+	d.Set("protocol", o.Protocol)
+	d.Set("source_port", o.SourcePort)
+	d.Set("destination_port", o.DestinationPort)
+	if err := d.Set("tags", o.Tags); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
+	d.Set("override_session_timeout", o.OverrideSessionTimeout)
+	d.Set("override_timeout", o.OverrideTimeout)
+	d.Set("override_half_closed_timeout", o.OverrideHalfClosedTimeout)
+	d.Set("override_time_wait_timeout", o.OverrideTimeWaitTimeout)
 }
 
 func createServiceObject(d *schema.ResourceData, meta interface{}) error {
@@ -121,15 +156,8 @@ func readServiceObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
-	d.Set("description", o.Description)
-	d.Set("protocol", o.Protocol)
-	d.Set("source_port", o.SourcePort)
-	d.Set("destination_port", o.DestinationPort)
-	if err := d.Set("tags", listAsSet(o.Tags)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
+	saveServiceObject(d, o)
 
 	return nil
 }

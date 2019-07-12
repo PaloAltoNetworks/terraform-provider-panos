@@ -2,7 +2,6 @@ package panos
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -22,64 +21,13 @@ func resourcePanoramaServiceObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The service object's name",
-			},
-			"device_group": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "shared",
-				ForceNew:    true,
-				Description: "The device group to put this service object in",
-			},
-			"description": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Object's description",
-			},
-			"protocol": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "The protocol (tcp or udp)",
-				ValidateFunc: validateStringIn("tcp", "udp"),
-			},
-			"source_port": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The source port definition",
-			},
-			"destination_port": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The destination port definition",
-			},
-			"tags": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				MinItems: 1,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "Administrative tags for the service object",
-			},
-		},
+		Schema: serviceObjectSchema(true),
 	}
 }
 
 func parsePanoramaServiceObject(d *schema.ResourceData) (string, srvc.Entry) {
 	dg := d.Get("device_group").(string)
-	o := srvc.Entry{
-		Name:            d.Get("name").(string),
-		Description:     d.Get("description").(string),
-		Protocol:        d.Get("protocol").(string),
-		SourcePort:      d.Get("source_port").(string),
-		DestinationPort: d.Get("destination_port").(string),
-		Tags:            setAsList(d.Get("tags").(*schema.Set)),
-	}
+	o := loadServiceObject(d)
 
 	return dg, o
 }
@@ -121,15 +69,8 @@ func readPanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.Set("name", o.Name)
 	d.Set("device_group", dg)
-	d.Set("description", o.Description)
-	d.Set("protocol", o.Protocol)
-	d.Set("source_port", o.SourcePort)
-	d.Set("destination_port", o.DestinationPort)
-	if err := d.Set("tags", listAsSet(o.Tags)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
+	saveServiceObject(d, o)
 
 	return nil
 }
