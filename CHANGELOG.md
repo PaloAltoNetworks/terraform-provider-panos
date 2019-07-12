@@ -6,6 +6,7 @@ NEW PARAMS ADDED TO:
 
 * `panos_ethernet_interface` / `panos_panorama_ethernet_interface` [GH-173]
 * `panos_address_object` / `panos_panorama_address_object` [GH-174]
+* `panos_service_object` / `panos_panorama_service_object` [GH-175]
 
 BUG FIXES:
 
