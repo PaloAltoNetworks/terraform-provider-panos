@@ -111,3 +111,13 @@ func negateTargetSchema() *schema.Schema {
 		Optional: true,
 	}
 }
+
+func tagSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Schema{
+			Type: schema.TypeString,
+		},
+	}
+}

@@ -2,7 +2,6 @@ package panos
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -22,55 +21,13 @@ func resourcePanoramaAddressObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The address object's name",
-			},
-			"device_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "shared",
-				ForceNew: true,
-			},
-			"type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Default:      "ip-netmask",
-				Description:  "The type of address object (ip-netmask, ip-range, fqdn)",
-				ValidateFunc: validateStringIn("ip-netmask", "ip-range", "fqdn"),
-			},
-			"value": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"tags": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "Administrative tags for the address object",
-			},
-		},
+		Schema: addressObjectSchema(true),
 	}
 }
 
 func parsePanoramaAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 	dg := d.Get("device_group").(string)
-	o := addr.Entry{
-		Name:        d.Get("name").(string),
-		Value:       d.Get("value").(string),
-		Type:        d.Get("type").(string),
-		Description: d.Get("description").(string),
-		Tags:        setAsList(d.Get("tags").(*schema.Set)),
-	}
+	o := loadAddressObject(d)
 
 	return dg, o
 }
@@ -112,14 +69,8 @@ func readPanoramaAddressObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.Set("name", o.Name)
 	d.Set("device_group", dg)
-	d.Set("value", o.Value)
-	d.Set("type", o.Type)
-	d.Set("description", o.Description)
-	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
+	saveAddressObject(d, o)
 
 	return nil
 }
