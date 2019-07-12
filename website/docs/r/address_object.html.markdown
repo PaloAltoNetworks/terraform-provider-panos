@@ -37,7 +37,7 @@ The following arguments are supported:
 * `vsys` - (Optional) The vsys to put the address object into (default:
   `vsys1`).
 * `type` - (Optional) The type of address object.  This can be `ip-netmask`
-  (default), `ip-range`, or `fqdn`.
+  (default), `ip-range`, `fqdn`, or `ip-wildcard` (PAN-OS 9.0+).
 * `value` - (Required) The address object's value.  This can take various
   forms depending on what type of address object this is, but can be something
   like `192.168.80.150` or `192.168.80.0/24`.

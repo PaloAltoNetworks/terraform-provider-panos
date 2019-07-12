@@ -22,58 +22,68 @@ func resourceAddressObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The address object's name",
-			},
-			"vsys": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to put this address object in",
-			},
-			"type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Default:      "ip-netmask",
-				Description:  "The type of address object (ip-netmask, ip-range, fqdn)",
-				ValidateFunc: validateStringIn("ip-netmask", "ip-range", "fqdn"),
-			},
-			"value": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"tags": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "Administrative tags for the address object",
-			},
-		},
+		Schema: addressObjectSchema(false),
 	}
+}
+
+func addressObjectSchema(p bool) map[string]*schema.Schema {
+	ans := map[string]*schema.Schema{
+		"name": {
+			Type:     schema.TypeString,
+			Required: true,
+			ForceNew: true,
+		},
+		"type": {
+			Type:         schema.TypeString,
+			Optional:     true,
+			Default:      addr.IpNetmask,
+			ValidateFunc: validateStringIn(addr.IpNetmask, addr.IpRange, addr.Fqdn, addr.IpWildcard),
+		},
+		"value": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"description": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"tags": tagSchema(),
+	}
+
+	if p {
+		ans["device_group"] = deviceGroupSchema()
+	} else {
+		ans["vsys"] = vsysSchema()
+	}
+
+	return ans
 }
 
 func parseAddressObject(d *schema.ResourceData) (string, addr.Entry) {
 	vsys := d.Get("vsys").(string)
-	o := addr.Entry{
+	o := loadAddressObject(d)
+
+	return vsys, o
+}
+
+func loadAddressObject(d *schema.ResourceData) addr.Entry {
+	return addr.Entry{
 		Name:        d.Get("name").(string),
 		Value:       d.Get("value").(string),
 		Type:        d.Get("type").(string),
 		Description: d.Get("description").(string),
-		Tags:        setAsList(d.Get("tags").(*schema.Set)),
+		Tags:        asStringList(d.Get("tags").([]interface{})),
 	}
+}
 
-	return vsys, o
+func saveAddressObject(d *schema.ResourceData, o addr.Entry) {
+	d.Set("name", o.Name)
+	d.Set("type", o.Type)
+	d.Set("value", o.Value)
+	d.Set("description", o.Description)
+	if err := d.Set("tags", o.Tags); err != nil {
+		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
+	}
 }
 
 func parseAddressObjectId(v string) (string, string) {
@@ -113,14 +123,8 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.Set("name", o.Name)
 	d.Set("vsys", vsys)
-	d.Set("value", o.Value)
-	d.Set("type", o.Type)
-	d.Set("description", o.Description)
-	if err = d.Set("tags", listAsSet(o.Tags)); err != nil {
-		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
-	}
+	saveAddressObject(d, o)
 
 	return nil
 }
