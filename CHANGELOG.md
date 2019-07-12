@@ -1,4 +1,16 @@
-## 1.5.3 (Unreleased)
+## 1.6.0 (Unreleased)
+
+NEW RESOURCES:
+
+NEW PARAMS ADDED TO:
+
+* `panos_ethernet_interface` / `panos_panorama_ethernet_interface` [GH-173]
+* `panos_address_object` / `panos_panorama_address_object` [GH-174]
+
+BUG FIXES:
+
+* The ordering for administrative tags on objects (such as address objects or address groups) is now preserved [GH-161]
+
 ## 1.5.2 (May 14, 2019)
 
 * `panos_ike_gateway` / `panos_panorama_ike_gateway` - `floating-ip` is now an accepted value for `local_ip_address_type` ([#158](https://github.com/terraform-providers/terraform-provider-panos/issues/158))
