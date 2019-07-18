@@ -92,7 +92,7 @@ func bgpConditionalAdvNonExistFilterSchema(p bool) map[string]*schema.Schema {
 	}
 
 	if p {
-		ans["template"] = templateSchema()
+		ans["template"] = templateSchema(true)
 		ans["template_stack"] = templateStackSchema()
 	}
 
