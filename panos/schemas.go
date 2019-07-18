@@ -6,13 +6,20 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-func templateSchema() *schema.Schema {
-	return &schema.Schema{
-		Type:          schema.TypeString,
-		Optional:      true,
-		ForceNew:      true,
-		ConflictsWith: []string{"template_stack"},
+func templateSchema(ts bool) *schema.Schema {
+	ans := &schema.Schema{
+		Type:     schema.TypeString,
+		ForceNew: true,
 	}
+
+	if ts {
+		ans.Optional = true
+		ans.ConflictsWith = []string{"template_stack"}
+	} else {
+		ans.Required = true
+	}
+
+	return ans
 }
 
 func templateStackSchema() *schema.Schema {

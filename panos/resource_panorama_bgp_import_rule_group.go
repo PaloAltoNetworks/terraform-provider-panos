@@ -22,7 +22,7 @@ func resourcePanoramaBgpImportRuleGroup() *schema.Resource {
 		Delete: deletePanoramaBgpImportRuleGroup,
 
 		Schema: map[string]*schema.Schema{
-			"template":       templateSchema(),
+			"template":       templateSchema(true),
 			"template_stack": templateStackSchema(),
 			"virtual_router": {
 				Type:     schema.TypeString,
