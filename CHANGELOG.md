@@ -8,6 +8,7 @@ NEW RESOURCES:
 
 * `panos_gre_tunnel` / `panos_panorama_gre_tunnel` [GH-162]
 * `panos_panorama_gcp_account` [GH-179]
+* `panos_panorama_gke_cluster_group` [GH-180]
 
 NEW PARAMS ADDED TO:
 
