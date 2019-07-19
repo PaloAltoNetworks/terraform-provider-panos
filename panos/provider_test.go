@@ -18,6 +18,7 @@ var (
 	testAccProvider                                         *schema.Provider
 	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2 bool
 	testAccPanosVersion                                     version.Number
+	testAccPanoramaPlugins                                  map[string]string
 )
 
 func init() {
@@ -60,6 +61,13 @@ func init() {
 		case *pango.Panorama:
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
+
+			testAccPanoramaPlugins = make(map[string]string)
+			for _, v := range c.Plugin {
+				if v["installed"] == "yes" {
+					testAccPanoramaPlugins[v["name"]] = v["version"]
+				}
+			}
 
 			if err = c.Panorama.Template.Set(pt); err == nil {
 				if err = c.Network.VlanInterface.Set(pt.Name, "", "vsys1", vt); err == nil {
