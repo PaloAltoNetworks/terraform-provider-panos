@@ -1,6 +1,12 @@
 ## 1.6.0 (Unreleased)
 
+NEW DATA SOURCES:
+
+* `panos_panorama_plugin` [GH-178]
+
 NEW RESOURCES:
+
+* `panos_gre_tunnel` / `panos_panorama_gre_tunnel` [GH-162]
 
 NEW PARAMS ADDED TO:
 
