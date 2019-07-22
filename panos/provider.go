@@ -100,6 +100,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_edl":                                  resourcePanoramaEdl(),
 			"panos_panorama_ethernet_interface":                   resourcePanoramaEthernetInterface(),
 			"panos_panorama_gcp_account":                          resourcePanoramaGcpAccount(),
+			"panos_panorama_gke_cluster":                          resourcePanoramaGkeCluster(),
 			"panos_panorama_gke_cluster_group":                    resourcePanoramaGkeClusterGroup(),
 			"panos_panorama_gre_tunnel":                           resourcePanoramaGreTunnel(),
 			"panos_panorama_ike_crypto_profile":                   resourcePanoramaIkeCryptoProfile(),
