@@ -7,14 +7,15 @@ NEW DATA SOURCES:
 NEW RESOURCES:
 
 * `panos_gre_tunnel` / `panos_panorama_gre_tunnel` [GH-162]
+* `panos_monitor_profile` / `panos_panorama_monitor_profile` [GH-182]
 * `panos_panorama_gcp_account` [GH-179]
-* `panos_panorama_gke_cluster_group` [GH-180]
 * `panos_panorama_gke_cluster` [GH-181]
+* `panos_panorama_gke_cluster_group` [GH-180]
 
 NEW PARAMS ADDED TO:
 
-* `panos_ethernet_interface` / `panos_panorama_ethernet_interface` [GH-173]
 * `panos_address_object` / `panos_panorama_address_object` [GH-174]
+* `panos_ethernet_interface` / `panos_panorama_ethernet_interface` [GH-173]
 * `panos_service_object` / `panos_panorama_service_object` [GH-175]
 
 BUG FIXES:
