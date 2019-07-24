@@ -123,6 +123,41 @@ func (c *FwPbf) Delete(vsys string, e ...interface{}) error {
     return err
 }
 
+// MoveGroup moves a logical group of policy based forwarding rules somewhere
+// in relation to another rule.
+func (c *FwPbf) MoveGroup(vsys string, mvt int, rule string, e ...Entry) error {
+    var err error
+
+    c.con.LogAction("(move) %s group", singular)
+
+    if len(e) < 1 {
+        return fmt.Errorf("Requires at least one rule")
+    }
+
+    path := c.xpath(vsys, []string{e[0].Name})
+    list, err := c.GetList(vsys)
+    if err != nil {
+        return err
+    }
+
+    // Set the first entity's position.
+    if err = c.con.PositionFirstEntity(mvt, rule, e[0].Name, path, list); err != nil {
+        return err
+    }
+
+    // Move all the rest under it.
+    li := len(path) - 1
+    for i := 1; i < len(e); i++ {
+        path[li] = util.AsEntryXpath([]string{e[i].Name})
+        if _, err = c.con.Move(path, "after", e[i - 1].Name, nil, nil); err != nil {
+            return err
+        }
+    }
+
+    return nil
+}
+
+
 /** Internal functions for this namespace struct **/
 
 func (c *FwPbf) versioning() (normalizer, func(Entry) (interface{})) {

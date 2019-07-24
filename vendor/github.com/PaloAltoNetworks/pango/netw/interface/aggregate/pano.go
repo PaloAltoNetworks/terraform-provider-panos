@@ -1,4 +1,4 @@
-package layer3
+package aggregate
 
 import (
     "fmt"
@@ -9,50 +9,48 @@ import (
 )
 
 
-// PanoLayer3 is the client.Network.Layer3Subinterface namespace.
-type PanoLayer3 struct {
+// PanoAggregate is the client.Network.AggregateInterface namespace.
+type PanoAggregate struct {
     con util.XapiClient
 }
 
 // Initialize is invoked by client.Initialize().
-func (c *PanoLayer3) Initialize(con util.XapiClient) {
+func (c *PanoAggregate) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // ShowList performs SHOW to retrieve a list of values.
-func (c *PanoLayer3) ShowList(tmpl, ts, eth string) ([]string, error) {
+func (c *PanoAggregate) ShowList(tmpl, ts string) ([]string, error) {
     c.con.LogQuery("(show) list of %s", plural)
-    path := c.xpath(tmpl, ts, eth, nil)
+    path := c.xpath(tmpl, ts, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // GetList performs GET to retrieve a list of values.
-func (c *PanoLayer3) GetList(tmpl, ts, eth string) ([]string, error) {
+func (c *PanoAggregate) GetList(tmpl, ts string) ([]string, error) {
     c.con.LogQuery("(get) list of %s", plural)
-    path := c.xpath(tmpl, ts, eth, nil)
+    path := c.xpath(tmpl, ts, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given uid.
-func (c *PanoLayer3) Get(tmpl, ts, eth, name string) (Entry, error) {
+func (c *PanoAggregate) Get(tmpl, ts, name string) (Entry, error) {
     c.con.LogQuery("(get) %s %q", singular, name)
-    return c.details(c.con.Get, tmpl, ts, eth, name)
+    return c.details(c.con.Get, tmpl, ts, name)
 }
 
 // Show performs SHOW to retrieve information for the given uid.
-func (c *PanoLayer3) Show(tmpl, ts, eth, name string) (Entry, error) {
+func (c *PanoAggregate) Show(tmpl, ts, name string) (Entry, error) {
     c.con.LogQuery("(show) %s %q", singular, name)
-    return c.details(c.con.Show, tmpl, ts, eth, name)
+    return c.details(c.con.Show, tmpl, ts, name)
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *PanoLayer3) Set(vsys, tmpl, ts, eth string, e ...Entry) error {
+func (c *PanoAggregate) Set(tmpl, ts string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
         return nil
-    } else if eth == "" {
-        return fmt.Errorf("eth must be specified")
     } else if tmpl == "" && ts == "" {
         return fmt.Errorf("tmpl or ts must be specified")
     }
@@ -61,7 +59,7 @@ func (c *PanoLayer3) Set(vsys, tmpl, ts, eth string, e ...Entry) error {
     names := make([]string, len(e))
 
     // Build up the struct.
-    d := util.BulkElement{XMLName: xml.Name{Local: "units"}}
+    d := util.BulkElement{XMLName: xml.Name{Local: "temp"}}
     for i := range e {
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
@@ -69,7 +67,8 @@ func (c *PanoLayer3) Set(vsys, tmpl, ts, eth string, e ...Entry) error {
     c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
-    path := c.xpath(tmpl, ts, eth, names)
+    path := c.xpath(tmpl, ts, names)
+    d.XMLName = xml.Name{Local: path[len(path) - 2]}
     if len(e) == 1 {
         path = path[:len(path) - 1]
     } else {
@@ -78,26 +77,14 @@ func (c *PanoLayer3) Set(vsys, tmpl, ts, eth string, e ...Entry) error {
 
     // Create the objects.
     _, err = c.con.Set(path, d.Config(), nil, nil)
-    if err != nil {
-        return err
-    }
-
-    // Remove from any vsys it's currently in.
-    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, names); err != nil {
-        return err
-    }
-
-    // Perform vsys import.
-    return c.con.VsysImport(util.InterfaceImport, tmpl, ts, vsys, names)
+    return err
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *PanoLayer3) Edit(tmpl, ts, vsys, eth string, e Entry) error {
+func (c *PanoAggregate) Edit(tmpl, ts string, e Entry) error {
     var err error
 
-    if eth == "" {
-        return fmt.Errorf("eth must be specified")
-    } else if tmpl == "" && ts == "" {
+    if tmpl == "" && ts == "" {
         return fmt.Errorf("tmpl or ts must be specified")
     }
 
@@ -106,32 +93,21 @@ func (c *PanoLayer3) Edit(tmpl, ts, vsys, eth string, e Entry) error {
     c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
-    path := c.xpath(tmpl, ts, eth, []string{e.Name})
+    path := c.xpath(tmpl, ts, []string{e.Name})
 
     // Edit the object.
-    if _, err = c.con.Edit(path, fn(e), nil, nil); err != nil {
-        return err
-    }
-
-    // Remove from any vsys it's currently in.
-    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, []string{e.Name}); err != nil {
-        return err
-    }
-
-    // Perform vsys import.
-    return c.con.VsysImport(util.InterfaceImport, tmpl, ts, vsys, []string{e.Name})
+    _, err = c.con.Edit(path, fn(e), nil, nil)
+    return err
 }
 
 // Delete removes the given objects.
 //
 // Objects can be a string or an Entry object.
-func (c *PanoLayer3) Delete(tmpl, ts, eth string, e ...interface{}) error {
+func (c *PanoAggregate) Delete(tmpl, ts string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
         return nil
-    } else if eth == "" {
-        return fmt.Errorf("eth must be specified")
     } else if tmpl == "" && ts == "" {
         return fmt.Errorf("tmpl or ts must be specified")
     }
@@ -149,20 +125,15 @@ func (c *PanoLayer3) Delete(tmpl, ts, eth string, e ...interface{}) error {
     }
     c.con.LogAction("(delete) %s: %v", plural, names)
 
-    // Unimport interfaces.
-    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, names); err != nil {
-        return err
-    }
-
     // Remove the objects.
-    path := c.xpath(tmpl, ts, eth, names)
+    path := c.xpath(tmpl, ts, names)
     _, err = c.con.Delete(path, nil, nil)
     return err
 }
 
 /** Internal functions for this namespace struct **/
 
-func (c *PanoLayer3) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *PanoAggregate) versioning() (normalizer, func(Entry) (interface{})) {
     v := c.con.Versioning()
 
     if v.Gte(version.Number{9, 0, 0, ""}) {
@@ -174,8 +145,8 @@ func (c *PanoLayer3) versioning() (normalizer, func(Entry) (interface{})) {
     }
 }
 
-func (c *PanoLayer3) details(fn util.Retriever, tmpl, ts, eth, name string) (Entry, error) {
-    path := c.xpath(tmpl, ts, eth, []string{name})
+func (c *PanoAggregate) details(fn util.Retriever, tmpl, ts, name string) (Entry, error) {
+    path := c.xpath(tmpl, ts, []string{name})
     obj, _ := c.versioning()
     if _, err := fn(path, nil, obj); err != nil {
         return Entry{}, err
@@ -185,8 +156,8 @@ func (c *PanoLayer3) details(fn util.Retriever, tmpl, ts, eth, name string) (Ent
     return ans, nil
 }
 
-func (c *PanoLayer3) xpath(tmpl, ts, eth string, vals []string) []string {
-    ans := make([]string, 15)
+func (c *PanoAggregate) xpath(tmpl, ts string, vals []string) []string {
+    ans := make([]string, 0, 12)
     ans = append(ans, util.TemplateXpathPrefix(tmpl, ts)...)
     ans = append(ans,
         "config",
@@ -194,10 +165,7 @@ func (c *PanoLayer3) xpath(tmpl, ts, eth string, vals []string) []string {
         util.AsEntryXpath([]string{"localhost.localdomain"}),
         "network",
         "interface",
-        "ethernet",
-        util.AsEntryXpath([]string{eth}),
-        "layer3",
-        "units",
+        "aggregate-ethernet",
         util.AsEntryXpath(vals),
     )
 

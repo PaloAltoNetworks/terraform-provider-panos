@@ -406,6 +406,9 @@ func (c *Client) UnlockCommits(vsys, admin string) error {
 // Param desc is the optional commit description message you want associated
 // with the commit.
 //
+// Param admins is advanced options for doing partial commit admin-level changes,
+// include the administrator name in the request.
+//
 // Params dan and pao are advanced options for doing partial commits.  Setting
 // param dan to false excludes the Device and Network configuration, while
 // setting param pao to false excludes the Policy and Object configuration.
@@ -419,11 +422,11 @@ func (c *Client) UnlockCommits(vsys, admin string) error {
 // Commits result in a job being submitted to the backend.  The job ID and
 // if an error was encountered or not are returned from this function.  If
 // the job ID returned is 0, then no commit was needed.
-func (c *Client) Commit(desc string, dan, pao, force, sync bool) (uint, error) {
+func (c *Client) Commit(desc string, admins []string, dan, pao, force, sync bool) (uint, error) {
     c.LogAction("(commit) %q", desc)
 
     req := baseCommit{Description: desc}
-    if !dan || !pao {
+    if len(admins) > 0 || !dan || !pao {
         req.Partial = &baseCommitPartial{}
         if !dan {
             req.Partial.Dan = "excluded"
@@ -431,6 +434,7 @@ func (c *Client) Commit(desc string, dan, pao, force, sync bool) (uint, error) {
         if !pao {
             req.Partial.Pao = "excluded"
         }
+	req.Partial.Admin = util.StrToMem(admins)
     }
     if force {
         req.Force = ""
@@ -1475,4 +1479,5 @@ type baseCommit struct {
 type baseCommitPartial struct {
     Dan string `xml:"device-and-network,omitempty"`
     Pao string `xml:"policy-and-objects,omitempty"`
+    Admin *util.MemberType `xml:"admin"`
 }
