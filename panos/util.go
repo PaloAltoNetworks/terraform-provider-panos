@@ -23,7 +23,7 @@ func getMovementMap() map[int]string {
 
 func movementKeywords() []string {
 	mm := getMovementMap()
-	ans := make([]string, len(mm))
+	ans := make([]string, 0, len(mm))
 
 	for _, v := range mm {
 		ans = append(ans, v)

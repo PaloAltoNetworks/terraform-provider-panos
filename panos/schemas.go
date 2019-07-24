@@ -41,17 +41,11 @@ func deviceGroupSchema() *schema.Schema {
 }
 
 func positionKeywordSchema() *schema.Schema {
-	m := getMovementMap()
-	s := make([]string, len(m))
-	for _, v := range m {
-		s = append(s, v)
-	}
-
 	return &schema.Schema{
 		Type:         schema.TypeString,
 		Optional:     true,
 		Default:      "",
-		ValidateFunc: validateStringIn(s...),
+		ValidateFunc: validateStringIn(movementKeywords()...),
 		ForceNew:     true,
 	}
 }
