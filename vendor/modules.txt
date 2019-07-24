@@ -6,7 +6,7 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/compute/metadata
-# github.com/PaloAltoNetworks/pango v0.2.0
+# github.com/PaloAltoNetworks/pango v0.3.0
 github.com/PaloAltoNetworks/pango
 github.com/PaloAltoNetworks/pango/dev/general
 github.com/PaloAltoNetworks/pango/dev/telemetry
@@ -21,6 +21,7 @@ github.com/PaloAltoNetworks/pango/netw/profile/bfd
 github.com/PaloAltoNetworks/pango/netw/profile/ike
 github.com/PaloAltoNetworks/pango/netw/profile/ipsec
 github.com/PaloAltoNetworks/pango/netw/profile/mngtprof
+github.com/PaloAltoNetworks/pango/netw/profile/monitor
 github.com/PaloAltoNetworks/pango/netw/routing/profile/redist/ipv4
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate
@@ -38,6 +39,7 @@ github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/dampening
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist
 github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4
 github.com/PaloAltoNetworks/pango/netw/routing/router
+github.com/PaloAltoNetworks/pango/netw/tunnel/gre
 github.com/PaloAltoNetworks/pango/netw/zone
 github.com/PaloAltoNetworks/pango/objs/addr
 github.com/PaloAltoNetworks/pango/objs/addrgrp
@@ -46,10 +48,14 @@ github.com/PaloAltoNetworks/pango/objs/srvc
 github.com/PaloAltoNetworks/pango/objs/srvcgrp
 github.com/PaloAltoNetworks/pango/objs/tags
 github.com/PaloAltoNetworks/pango/pnrm/dg
+github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/account
+github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster
+github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster/group
 github.com/PaloAltoNetworks/pango/pnrm/template
 github.com/PaloAltoNetworks/pango/pnrm/template/stack
 github.com/PaloAltoNetworks/pango/pnrm/template/variable
 github.com/PaloAltoNetworks/pango/poli/nat
+github.com/PaloAltoNetworks/pango/poli/pbf
 github.com/PaloAltoNetworks/pango/poli/security
 github.com/PaloAltoNetworks/pango/util
 github.com/PaloAltoNetworks/pango/dev
@@ -71,10 +77,9 @@ github.com/PaloAltoNetworks/pango/dev/profile/snmp/v2c
 github.com/PaloAltoNetworks/pango/dev/profile/snmp/v3
 github.com/PaloAltoNetworks/pango/dev/profile/syslog
 github.com/PaloAltoNetworks/pango/dev/profile/syslog/server
-github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer2
-github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer3
-github.com/PaloAltoNetworks/pango/netw/profile/monitor
-github.com/PaloAltoNetworks/pango/netw/tunnel/gre
+github.com/PaloAltoNetworks/pango/netw/interface/aggregate
+github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2
+github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer3
 github.com/PaloAltoNetworks/pango/netw/vlan
 github.com/PaloAltoNetworks/pango/objs/app
 github.com/PaloAltoNetworks/pango/objs/app/group
@@ -84,10 +89,6 @@ github.com/PaloAltoNetworks/pango/objs/app/signature/orcond
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist/action
-github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/account
-github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster
-github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster/group
-github.com/PaloAltoNetworks/pango/poli/pbf
 # github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
 # github.com/apparentlymart/go-cidr v1.0.0

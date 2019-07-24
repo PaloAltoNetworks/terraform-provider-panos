@@ -1,4 +1,4 @@
-package pbf
+package aggregate
 
 import (
     "fmt"
@@ -9,44 +9,44 @@ import (
 )
 
 
-// PanoPbf is the client.Policies.PolicyBasedForwarding namespace.
-type PanoPbf struct {
+// FwAggregate is the client.Network.AggregateInterface namespace.
+type FwAggregate struct {
     con util.XapiClient
 }
 
 // Initialize is invoked by client.Initialize().
-func (c *PanoPbf) Initialize(con util.XapiClient) {
+func (c *FwAggregate) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // ShowList performs SHOW to retrieve a list of values.
-func (c *PanoPbf) ShowList(dg, base string) ([]string, error) {
+func (c *FwAggregate) ShowList() ([]string, error) {
     c.con.LogQuery("(show) list of %s", plural)
-    path := c.xpath(dg, base, nil)
+    path := c.xpath(nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // GetList performs GET to retrieve a list of values.
-func (c *PanoPbf) GetList(dg, base string) ([]string, error) {
+func (c *FwAggregate) GetList() ([]string, error) {
     c.con.LogQuery("(get) list of %s", plural)
-    path := c.xpath(dg, base, nil)
+    path := c.xpath(nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given uid.
-func (c *PanoPbf) Get(dg, base, name string) (Entry, error) {
+func (c *FwAggregate) Get(name string) (Entry, error) {
     c.con.LogQuery("(get) %s %q", singular, name)
-    return c.details(c.con.Get, dg, base, name)
+    return c.details(c.con.Get, name)
 }
 
 // Show performs SHOW to retrieve information for the given uid.
-func (c *PanoPbf) Show(dg, base, name string) (Entry, error) {
+func (c *FwAggregate) Show(name string) (Entry, error) {
     c.con.LogQuery("(show) %s %q", singular, name)
-    return c.details(c.con.Show, dg, base, name)
+    return c.details(c.con.Show, name)
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *PanoPbf) Set(dg, base string, e ...Entry) error {
+func (c *FwAggregate) Set(e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -65,7 +65,7 @@ func (c *PanoPbf) Set(dg, base string, e ...Entry) error {
     c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
-    path := c.xpath(dg, base, names)
+    path := c.xpath(names)
     d.XMLName = xml.Name{Local: path[len(path) - 2]}
     if len(e) == 1 {
         path = path[:len(path) - 1]
@@ -79,7 +79,7 @@ func (c *PanoPbf) Set(dg, base string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *PanoPbf) Edit(dg, base string, e Entry) error {
+func (c *FwAggregate) Edit(e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -87,7 +87,7 @@ func (c *PanoPbf) Edit(dg, base string, e Entry) error {
     c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
-    path := c.xpath(dg, base, []string{e.Name})
+    path := c.xpath([]string{e.Name})
 
     // Edit the object.
     _, err = c.con.Edit(path, fn(e), nil, nil)
@@ -97,7 +97,7 @@ func (c *PanoPbf) Edit(dg, base string, e Entry) error {
 // Delete removes the given objects.
 //
 // Objects can be a string or an Entry object.
-func (c *PanoPbf) Delete(dg, base string, e ...interface{}) error {
+func (c *FwAggregate) Delete(e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
@@ -118,59 +118,27 @@ func (c *PanoPbf) Delete(dg, base string, e ...interface{}) error {
     c.con.LogAction("(delete) %s: %v", plural, names)
 
     // Remove the objects.
-    path := c.xpath(dg, base, names)
+    path := c.xpath(names)
     _, err = c.con.Delete(path, nil, nil)
     return err
 }
 
-// MoveGroup moves a logical group of policy based forwarding rules
-// somewhere in relation to another rule.
-func (c *PanoPbf) MoveGroup(dg, base string, mvt int, rule string, e ...Entry) error {
-    var err error
-
-    c.con.LogAction("(move) %s group", singular)
-
-    if len(e) < 1 {
-        return fmt.Errorf("Requires at least one rule")
-    }
-
-    path := c.xpath(dg, base, []string{e[0].Name})
-    list, err := c.GetList(dg, base)
-    if err != nil {
-        return err
-    }
-
-    // Set the first entity's position.
-    if err = c.con.PositionFirstEntity(mvt, rule, e[0].Name, path, list); err != nil {
-        return err
-    }
-
-    // Move all the rest under it.
-    li := len(path) - 1
-    for i := 1; i < len(e); i++ {
-        path[li] = util.AsEntryXpath([]string{e[i].Name})
-        if _, err = c.con.Move(path, "after", e[i - 1].Name, nil, nil); err != nil {
-            return err
-        }
-    }
-
-    return nil
-}
-
 /** Internal functions for this namespace struct **/
 
-func (c *PanoPbf) versioning() (normalizer, func(Entry) (interface{})) {
+func (c *FwAggregate) versioning() (normalizer, func(Entry) (interface{})) {
     v := c.con.Versioning()
 
     if v.Gte(version.Number{9, 0, 0, ""}) {
+        return &container_v3{}, specify_v3
+    } else if v.Gte(version.Number{8, 1, 0, ""}) {
         return &container_v2{}, specify_v2
     } else {
         return &container_v1{}, specify_v1
     }
 }
 
-func (c *PanoPbf) details(fn util.Retriever, dg, base, name string) (Entry, error) {
-    path := c.xpath(dg, base, []string{name})
+func (c *FwAggregate) details(fn util.Retriever, name string) (Entry, error) {
+    path := c.xpath([]string{name})
     obj, _ := c.versioning()
     if _, err := fn(path, nil, obj); err != nil {
         return Entry{}, err
@@ -180,15 +148,14 @@ func (c *PanoPbf) details(fn util.Retriever, dg, base, name string) (Entry, erro
     return ans, nil
 }
 
-func (c *PanoPbf) xpath(dg, base string, vals []string) []string {
-    ans := make([]string, 0, 9)
-    ans = append(ans, util.DeviceGroupXpathPrefix(dg)...)
-    ans = append(ans,
-        base,
-        "pbf",
-        "rules",
+func (c *FwAggregate) xpath(vals []string) []string {
+    return []string{
+        "config",
+        "devices",
+        util.AsEntryXpath([]string{"localhost.localdomain"}),
+        "network",
+        "interface",
+        "aggregate-ethernet",
         util.AsEntryXpath(vals),
-    )
-
-    return ans
+    }
 }

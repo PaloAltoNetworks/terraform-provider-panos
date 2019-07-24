@@ -3,10 +3,11 @@ package netw
 
 import (
     "github.com/PaloAltoNetworks/pango/netw/ikegw"
+    aggeth "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
     "github.com/PaloAltoNetworks/pango/netw/interface/eth"
-    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer2"
-    "github.com/PaloAltoNetworks/pango/netw/interface/eth/subinterface/layer3"
     "github.com/PaloAltoNetworks/pango/netw/interface/loopback"
+    "github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2"
+    "github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer3"
     "github.com/PaloAltoNetworks/pango/netw/interface/tunnel"
     vli "github.com/PaloAltoNetworks/pango/netw/interface/vlan"
     "github.com/PaloAltoNetworks/pango/netw/ipsectunnel"
@@ -42,6 +43,7 @@ import (
 
 // PanoNetw is the client.Network namespace.
 type PanoNetw struct {
+    AggregateInterface *aggeth.PanoAggregate
     BfdProfile *bfd.PanoBfd
     BgpAggregate *aggregate.PanoAggregate
     BgpAggAdvertiseFilter *agaf.PanoAdvertise
@@ -80,6 +82,9 @@ type PanoNetw struct {
 
 // Initialize is invoked on client.Initialize().
 func (c *PanoNetw) Initialize(i util.XapiClient) {
+    c.AggregateInterface = &aggeth.PanoAggregate{}
+    c.AggregateInterface.Initialize(i)
+
     c.BfdProfile = &bfd.PanoBfd{}
     c.BfdProfile.Initialize(i)
 

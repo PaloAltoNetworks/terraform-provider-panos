@@ -22,9 +22,15 @@ func (c *PanoVlan) Initialize(con util.XapiClient) {
 SetInterface performs a SET to add an interface to a VLAN.
 
 The VLAN can be either a string or an Entry object.
+The iface variable is the interface.
+The rmMacs and addMacs params are MAC addresses to remove/add that
+will reference the iface interface.
 */
-func (c *PanoVlan) SetInterface(tmpl, ts string, vlan interface{}, iface string) error {
-    var name string
+func (c *PanoVlan) SetInterface(tmpl, ts string, vlan interface{}, iface string, rmMacs, addMacs []string) error {
+    var (
+        name string
+        err error
+    )
 
     if tmpl == "" && ts == "" {
         return fmt.Errorf("tmpl or ts must be specified")
@@ -41,20 +47,52 @@ func (c *PanoVlan) SetInterface(tmpl, ts string, vlan interface{}, iface string)
 
     c.con.LogAction("(set) interface for %s %q: %s", singular, name, iface)
 
-    path := c.xpath(tmpl, ts, []string{name})
-    path = append(path, "interface")
+    basePath := c.xpath(tmpl, ts, []string{name})
+    iPath := append(basePath, "interface")
 
-    _, err := c.con.Set(path, util.Member{Value: iface}, nil, nil)
-    return err
+    if _, err = c.con.Set(iPath, util.Member{Value: iface}, nil, nil); err != nil {
+        return err
+    }
+
+    if len(rmMacs) > 0 {
+        c.con.LogAction("(delete) removing %q mac addresses: %#v", name, rmMacs)
+        rPath := append(basePath, "mac", util.AsEntryXpath(rmMacs))
+        if _, err = c.con.Delete(rPath, nil, nil); err != nil {
+            return err
+        }
+    }
+
+    if len(addMacs) > 0 {
+        c.con.LogAction("(set) adding %q mac addresses: %#v", name, addMacs)
+        d := util.BulkElement{XMLName: xml.Name{Local: "mac"}}
+        for i := range addMacs {
+            d.Data = append(d.Data, macList{Mac: addMacs[i], Interface: iface})
+        }
+        aPath := make([]string, 0, len(basePath) + 1)
+        aPath = append(aPath, basePath...)
+        if len(addMacs) == 1 {
+            aPath = append(aPath, "mac")
+        }
+        if _, err = c.con.Set(aPath, d.Config(), nil, nil); err != nil {
+            return err
+        }
+    }
+
+    return nil
 }
 
 /*
 DeleteInterface performs a DELETE to remove an interface from a VLAN.
 
 The VLAN can be either a string or an Entry object.
+
+All MAC addresses referencing this interface are deleted.
 */
 func (c *PanoVlan) DeleteInterface(tmpl, ts string, vlan interface{}, iface string) error {
-    var name string
+    var (
+        name string
+        err error
+    )
 
     if tmpl == "" && ts == "" {
         return fmt.Errorf("tmpl or ts must be specified")
@@ -69,12 +107,31 @@ func (c *PanoVlan) DeleteInterface(tmpl, ts string, vlan interface{}, iface stri
         return fmt.Errorf("Unknown type sent to %s delete interface: %s", singular, v)
     }
 
+    o, err := c.Get(tmpl, ts, name)
+    if err != nil {
+        return err
+    }
+    rmMacs := make([]string, 0, len(o.StaticMacs))
+    for k, v := range o.StaticMacs {
+        if v == iface {
+            rmMacs = append(rmMacs, k)
+        }
+    }
+
     c.con.LogAction("(delete) interface for %s %q: %s", singular, name, iface)
 
-    path := c.xpath(tmpl, ts, []string{name})
-    path = append(path, "interface", util.AsMemberXpath([]string{iface}))
+    basePath := c.xpath(tmpl, ts, []string{name})
+    mPath := append(basePath, "mac", util.AsEntryXpath(rmMacs))
+    iPath := append(basePath, "interface", util.AsMemberXpath([]string{iface}))
 
-    _, err := c.con.Delete(path, nil, nil)
+    if len(rmMacs) > 0 {
+        c.con.LogAction("(delete) removing %q mac addresses: %#v", iface, rmMacs)
+        if _, err = c.con.Delete(mPath, nil, nil); err != nil {
+            return err
+        }
+    }
+
+    _, err = c.con.Delete(iPath, nil, nil)
     return err
 }
 

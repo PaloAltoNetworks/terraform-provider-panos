@@ -20,10 +20,13 @@ type Entry struct {
 
 // Copy copies the information from source Entry `s` to this object.  As the
 // Name field relates to the XPATH of this object, this field is not copied.
-func (o *Entry) Copy(s Entry) {
+func (o *Entry) Copy(s Entry, copyMacs bool) {
     o.VlanInterface = s.VlanInterface
     o.Interfaces = s.Interfaces
-    o.StaticMacs = s.StaticMacs
+
+    if copyMacs {
+        o.StaticMacs = s.StaticMacs
+    }
 }
 
 /** Structs / functions for this namespace. **/
@@ -39,9 +42,13 @@ type container_v1 struct {
 func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
-        VlanInterface: o.Answer.VlanInterface,
         Interfaces: util.MemToStr(o.Answer.Interfaces),
     }
+
+    if o.Answer.Vi != nil {
+        ans.VlanInterface = o.Answer.Vi.VlanInterface
+    }
+
     if len(o.Answer.Mac.Entry) > 0 {
         ans.StaticMacs = make(map[string] string, len(o.Answer.Mac.Entry))
         for i := range o.Answer.Mac.Entry {
@@ -55,9 +62,13 @@ func (o *container_v1) Normalize() Entry {
 type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
-    VlanInterface string `xml:"virtual-interface>interface"`
+    Vi *vi `xml:"virtual-interface"`
     Interfaces *util.MemberType `xml:"interface"`
     Mac mac `xml:"mac"`
+}
+
+type vi struct {
+    VlanInterface string `xml:"interface,omitempty"`
 }
 
 type mac struct {
@@ -73,8 +84,13 @@ type macList struct {
 func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
-        VlanInterface: e.VlanInterface,
         Interfaces: util.StrToMem(e.Interfaces),
+    }
+
+    if e.VlanInterface != "" {
+        ans.Vi = &vi{
+            VlanInterface: e.VlanInterface,
+        }
     }
 
     i := 0

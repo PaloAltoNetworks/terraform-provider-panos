@@ -1,58 +1,63 @@
-package layer3
+package layer2
 
 import (
     "fmt"
     "encoding/xml"
 
     "github.com/PaloAltoNetworks/pango/util"
-    "github.com/PaloAltoNetworks/pango/version"
 )
 
 
-// FwLayer3 is the client.Network.Layer3Subinterface namespace.
-type FwLayer3 struct {
+// PanoLayer2 is the client.Network.Layer2Subinterface namespace.
+type PanoLayer2 struct {
     con util.XapiClient
 }
 
 // Initialize is invoked by client.Initialize().
-func (c *FwLayer3) Initialize(con util.XapiClient) {
+func (c *PanoLayer2) Initialize(con util.XapiClient) {
     c.con = con
 }
 
 // ShowList performs SHOW to retrieve a list of values.
-func (c *FwLayer3) ShowList(eth string) ([]string, error) {
+func (c *PanoLayer2) ShowList(tmpl, ts, iType, eth, mType string) ([]string, error) {
     c.con.LogQuery("(show) list of %s", plural)
-    path := c.xpath(eth, nil)
+    path := c.xpath(tmpl, ts, iType, eth, mType, nil)
     return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
 }
 
 // GetList performs GET to retrieve a list of values.
-func (c *FwLayer3) GetList(eth string) ([]string, error) {
+func (c *PanoLayer2) GetList(tmpl, ts, iType, eth, mType string) ([]string, error) {
     c.con.LogQuery("(get) list of %s", plural)
-    path := c.xpath(eth, nil)
+    path := c.xpath(tmpl, ts, iType, eth, mType, nil)
     return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
 }
 
 // Get performs GET to retrieve information for the given uid.
-func (c *FwLayer3) Get(eth, name string) (Entry, error) {
+func (c *PanoLayer2) Get(tmpl, ts, iType, eth, mType, name string) (Entry, error) {
     c.con.LogQuery("(get) %s %q", singular, name)
-    return c.details(c.con.Get, eth, name)
+    return c.details(c.con.Get, tmpl, ts, iType, eth, mType, name)
 }
 
 // Show performs SHOW to retrieve information for the given uid.
-func (c *FwLayer3) Show(eth, name string) (Entry, error) {
+func (c *PanoLayer2) Show(tmpl, ts, iType, eth, mType, name string) (Entry, error) {
     c.con.LogQuery("(show) %s %q", singular, name)
-    return c.details(c.con.Show, eth, name)
+    return c.details(c.con.Show, tmpl, ts, iType, eth, mType, name)
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *FwLayer3) Set(vsys, eth string, e ...Entry) error {
+func (c *PanoLayer2) Set(vsys, tmpl, ts, iType, eth, mType string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
         return nil
+    } else if iType == "" {
+        return fmt.Errorf("iType must be specified")
     } else if eth == "" {
         return fmt.Errorf("eth must be specified")
+    } else if mType == "" {
+        return fmt.Errorf("mType must be specified")
+    } else if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
     }
 
     _, fn := c.versioning()
@@ -67,7 +72,7 @@ func (c *FwLayer3) Set(vsys, eth string, e ...Entry) error {
     c.con.LogAction("(set) %s: %v", plural, names)
 
     // Set xpath.
-    path := c.xpath(eth, names)
+    path := c.xpath(tmpl, ts, iType, eth, mType, names)
     if len(e) == 1 {
         path = path[:len(path) - 1]
     } else {
@@ -81,20 +86,26 @@ func (c *FwLayer3) Set(vsys, eth string, e ...Entry) error {
     }
 
     // Remove from any vsys it's currently in.
-    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", names); err != nil {
+    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, names); err != nil {
         return err
     }
 
     // Perform vsys import.
-    return c.con.VsysImport(util.InterfaceImport, "", "", vsys, names)
+    return c.con.VsysImport(util.InterfaceImport, tmpl, ts, vsys, names)
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *FwLayer3) Edit(vsys, eth string, e Entry) error {
+func (c *PanoLayer2) Edit(vsys, tmpl, ts, iType, eth, mType string, e Entry) error {
     var err error
 
-    if eth == "" {
+    if iType == "" {
+        return fmt.Errorf("iType must be specified")
+    } else if eth == "" {
         return fmt.Errorf("eth must be specified")
+    } else if mType == "" {
+        return fmt.Errorf("mType must be specified")
+    } else if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
     }
 
     _, fn := c.versioning()
@@ -102,7 +113,7 @@ func (c *FwLayer3) Edit(vsys, eth string, e Entry) error {
     c.con.LogAction("(edit) %s %q", singular, e.Name)
 
     // Set xpath.
-    path := c.xpath(eth, []string{e.Name})
+    path := c.xpath(tmpl, ts, iType, eth, mType, []string{e.Name})
 
     // Edit the object.
     if _, err = c.con.Edit(path, fn(e), nil, nil); err != nil {
@@ -110,24 +121,30 @@ func (c *FwLayer3) Edit(vsys, eth string, e Entry) error {
     }
 
     // Remove from any vsys it's currently in.
-    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", []string{e.Name}); err != nil {
+    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, []string{e.Name}); err != nil {
         return err
     }
 
     // Perform vsys import.
-    return c.con.VsysImport(util.InterfaceImport, "", "", vsys, []string{e.Name})
+    return c.con.VsysImport(util.InterfaceImport, tmpl, ts, vsys, []string{e.Name})
 }
 
 // Delete removes the given objects.
 //
 // Objects can be a string or an Entry object.
-func (c *FwLayer3) Delete(eth string, e ...interface{}) error {
+func (c *PanoLayer2) Delete(tmpl, ts, iType, eth, mType string, e ...interface{}) error {
     var err error
 
     if len(e) == 0 {
         return nil
+    } else if iType == "" {
+        return fmt.Errorf("iType must be specified")
     } else if eth == "" {
         return fmt.Errorf("eth must be specified")
+    } else if mType == "" {
+        return fmt.Errorf("mType must be specified")
+    } else if tmpl == "" && ts == "" {
+        return fmt.Errorf("tmpl or ts must be specified")
     }
 
     names := make([]string, len(e))
@@ -149,27 +166,19 @@ func (c *FwLayer3) Delete(eth string, e ...interface{}) error {
     }
 
     // Remove the objects.
-    path := c.xpath(eth, names)
+    path := c.xpath(tmpl, ts, iType, eth, mType, names)
     _, err = c.con.Delete(path, nil, nil)
     return err
 }
 
 /** Internal functions for this namespace struct **/
 
-func (c *FwLayer3) versioning() (normalizer, func(Entry) (interface{})) {
-    v := c.con.Versioning()
-
-    if v.Gte(version.Number{9, 0, 0, ""}) {
-        return &container_v3{}, specify_v3
-    } else if v.Gte(version.Number{8, 1, 0, ""}) {
-        return &container_v2{}, specify_v2
-    } else {
-        return &container_v1{}, specify_v1
-    }
+func (c *PanoLayer2) versioning() (normalizer, func(Entry) (interface{})) {
+    return &container_v1{}, specify_v1
 }
 
-func (c *FwLayer3) details(fn util.Retriever, eth, name string) (Entry, error) {
-    path := c.xpath(eth, []string{name})
+func (c *PanoLayer2) details(fn util.Retriever, tmpl, ts, iType, eth, mType, name string) (Entry, error) {
+    path := c.xpath(tmpl, ts, iType, eth, mType, []string{name})
     obj, _ := c.versioning()
     if _, err := fn(path, nil, obj); err != nil {
         return Entry{}, err
@@ -179,17 +188,21 @@ func (c *FwLayer3) details(fn util.Retriever, eth, name string) (Entry, error) {
     return ans, nil
 }
 
-func (c *FwLayer3) xpath(eth string, vals []string) []string {
-    return []string{
+func (c *PanoLayer2) xpath(tmpl, ts, iType, eth, mType string, vals []string) []string {
+    ans := make([]string, 15)
+    ans = append(ans, util.TemplateXpathPrefix(tmpl, ts)...)
+    ans = append(ans,
         "config",
         "devices",
         util.AsEntryXpath([]string{"localhost.localdomain"}),
         "network",
         "interface",
-        "ethernet",
+        iType,
         util.AsEntryXpath([]string{eth}),
-        "layer3",
+        mType,
         "units",
         util.AsEntryXpath(vals),
-    }
+    )
+
+    return ans
 }
