@@ -7,7 +7,13 @@ import (
 )
 
 
-// Entry is a normalized, version independent representation of a peer.
+// Entry is a normalized, version independent representation of a policy
+// based forwarding rule.
+//
+// Targets is a map where the key is the serial number of the target device and
+// the value is a list of specific vsys on that device.  The list of vsys is
+// nil if all vsys on that device should be included or if the device is a
+// virtual firewall (and thus only has vsys1).
 type Entry struct {
     Name string
     Description string
@@ -34,6 +40,8 @@ type Entry struct {
     EnableEnforceSymmetricReturn bool
     SymmetricReturnAddresses []string // ordered
     ActiveActiveDeviceBinding string
+    Targets map[string] []string
+    NegateTarget bool
     Uuid string // 9.0+
 }
 
@@ -64,6 +72,8 @@ func (o *Entry) Copy(s Entry) {
     o.EnableEnforceSymmetricReturn = s.EnableEnforceSymmetricReturn
     o.SymmetricReturnAddresses = s.SymmetricReturnAddresses
     o.ActiveActiveDeviceBinding = s.ActiveActiveDeviceBinding
+    o.Targets = s.Targets
+    o.NegateTarget = s.NegateTarget
     o.Uuid = s.Uuid
 }
 
@@ -92,6 +102,11 @@ func (o *container_v1) Normalize() Entry {
         Disabled: util.AsBool(o.Answer.Disabled),
         Description: o.Answer.Description,
         ActiveActiveDeviceBinding: o.Answer.ActiveActiveDeviceBinding,
+    }
+
+    if o.Answer.TargetInfo != nil {
+        ans.NegateTarget = util.AsBool(o.Answer.TargetInfo.NegateTarget)
+        ans.Targets = util.VsysEntToMap(o.Answer.TargetInfo.Targets)
     }
 
     switch {
@@ -159,6 +174,11 @@ func (o *container_v2) Normalize() Entry {
         Uuid: o.Answer.Uuid,
     }
 
+    if o.Answer.TargetInfo != nil {
+        ans.NegateTarget = util.AsBool(o.Answer.TargetInfo.NegateTarget)
+        ans.Targets = util.VsysEntToMap(o.Answer.TargetInfo.Targets)
+    }
+
     switch {
     case o.Answer.FromZones != nil:
         ans.FromType = FromTypeZone
@@ -224,6 +244,7 @@ type entry_v1 struct {
     Action act_v1 `xml:"action"`
     Symmetric *sym `xml:"enforce-symmetric-return"`
     ActiveActiveDeviceBinding string `xml:"active-active-device-binding,omitempty"`
+    TargetInfo *targetInfo `xml:"target"`
 }
 
 type act_v1 struct {
@@ -254,6 +275,11 @@ type sym struct {
     SymmetricReturnAddresses *util.EntryType `xml:"nexthop-address-list"`
 }
 
+type targetInfo struct {
+    Targets *util.VsysEntryType `xml:"devices"`
+    NegateTarget string `xml:"negate,omitempty"`
+}
+
 func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
@@ -269,6 +295,13 @@ func specify_v1(e Entry) interface{} {
         Disabled: util.YesNo(e.Disabled),
         Description: e.Description,
         ActiveActiveDeviceBinding: e.ActiveActiveDeviceBinding,
+    }
+
+    if e.Targets != nil || e.NegateTarget {
+        ans.TargetInfo = &targetInfo{
+            Targets: util.MapToVsysEnt(e.Targets),
+            NegateTarget: util.YesNo(e.NegateTarget),
+        }
     }
 
     switch e.FromType {
@@ -338,6 +371,7 @@ type entry_v2 struct {
     Action act_v2 `xml:"action"`
     Symmetric *sym `xml:"enforce-symmetric-return"`
     ActiveActiveDeviceBinding string `xml:"active-active-device-binding,omitempty"`
+    TargetInfo *targetInfo `xml:"target"`
 }
 
 type act_v2 struct {
@@ -374,6 +408,13 @@ func specify_v2(e Entry) interface{} {
         Description: e.Description,
         ActiveActiveDeviceBinding: e.ActiveActiveDeviceBinding,
         Uuid: e.Uuid,
+    }
+
+    if e.Targets != nil || e.NegateTarget {
+        ans.TargetInfo = &targetInfo{
+            Targets: util.MapToVsysEnt(e.Targets),
+            NegateTarget: util.YesNo(e.NegateTarget),
+        }
     }
 
     switch e.FromType {

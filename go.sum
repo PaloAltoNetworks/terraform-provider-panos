@@ -19,6 +19,8 @@ github.com/ChrisTrenkamp/goxpath v0.0.0-20170922090931-c385f95c6022 h1:y8Gs8CzNf
 github.com/ChrisTrenkamp/goxpath v0.0.0-20170922090931-c385f95c6022/go.mod h1:nuWgzSkT5PnyOd+272uUmV0dnAnAn42Mk7PiQC5VzN4=
 github.com/PaloAltoNetworks/pango v0.3.0 h1:/aGQj0DSpKf3aRiT0oCUqlx2+E1MpTPn9R3qBM+dSdM=
 github.com/PaloAltoNetworks/pango v0.3.0/go.mod h1:qoNb6YamAkRjOu1PEvlhcqj/aN7ot1qwtTbfvQou9Yg=
+github.com/PaloAltoNetworks/pango v0.3.1 h1:h8MP0hrMtDrL7tY4hjOFIdcFNbdS65vUTSlwIkkKWLI=
+github.com/PaloAltoNetworks/pango v0.3.1/go.mod h1:qoNb6YamAkRjOu1PEvlhcqj/aN7ot1qwtTbfvQou9Yg=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292 h1:tuQ7w+my8a8mkwN7x2TSd7OzTjkZ7rAeSyH4xncuAMI=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292/go.mod h1:KYCjqMOeHpNuTOiFQU6WEcTG7poCJrUs0YgyHNtn1no=
 github.com/abdullin/seq v0.0.0-20160510034733-d5467c17e7af/go.mod h1:5Jv4cbFiHJMsVxt52+i0Ha45fjshj6wxYr1r19tB9bw=
