@@ -11,6 +11,7 @@ NEW RESOURCES:
 * `panos_panorama_gcp_account` [GH-179]
 * `panos_panorama_gke_cluster` [GH-181]
 * `panos_panorama_gke_cluster_group` [GH-180]
+* `panos_pbf_rule_group` / `panos_panorama_pbf_rule_group` [GH-152]
 
 NEW PARAMS ADDED TO:
 
