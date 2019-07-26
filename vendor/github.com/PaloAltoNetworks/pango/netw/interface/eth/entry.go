@@ -123,17 +123,24 @@ func (o *container_v1) Normalize() Entry {
             }
         case o.Answer.ModeL2 != nil:
             ans.Mode = "layer2"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeL2.LldpProfile
             ans.NetflowProfile = o.Answer.ModeL2.NetflowProfile
+            if o.Answer.ModeL2.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeL2.Lldp.LldpProfile
+            }
             if o.Answer.ModeL2.Subinterface != nil {
                 ans.raw["l2subinterface"] = util.CleanRawXml(o.Answer.ModeL2.Subinterface.Text)
             }
         case o.Answer.ModeVwire != nil:
             ans.Mode = "virtual-wire"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeVwire.LldpProfile
             ans.NetflowProfile = o.Answer.ModeVwire.NetflowProfile
+            if o.Answer.ModeVwire.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeVwire.Lldp.LldpProfile
+            }
+            if o.Answer.ModeVwire.Subinterface != nil {
+                ans.raw["vwsub"] = util.CleanRawXml(o.Answer.ModeVwire.Subinterface.Text)
+            }
         case o.Answer.TapMode != nil:
             ans.Mode = "tap"
         case o.Answer.HaMode != nil:
@@ -170,10 +177,14 @@ type entry_v1 struct {
 type emptyMode struct {}
 
 type otherMode struct {
-    LldpEnabled string `xml:"lldp>enable"`
-    LldpProfile string `xml:"lldp>profile"`
     NetflowProfile string `xml:"netflow-profile,omitempty"`
+    Lldp *omLldp `xml:"lldp"`
     Subinterface *util.RawXml `xml:"units"`
+}
+
+type omLldp struct {
+    LldpEnabled string `xml:"enable"`
+    LldpProfile string `xml:"profile,omitempty"`
 }
 
 type l3Mode_v1 struct {
@@ -257,17 +268,24 @@ func (o *container_v2) Normalize() Entry {
             }
         case o.Answer.ModeL2 != nil:
             ans.Mode = "layer2"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeL2.LldpProfile
             ans.NetflowProfile = o.Answer.ModeL2.NetflowProfile
+            if o.Answer.ModeL2.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeL2.Lldp.LldpProfile
+            }
             if o.Answer.ModeL2.Subinterface != nil {
                 ans.raw["l2subinterface"] = util.CleanRawXml(o.Answer.ModeL2.Subinterface.Text)
             }
         case o.Answer.ModeVwire != nil:
             ans.Mode = "virtual-wire"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeVwire.LldpProfile
             ans.NetflowProfile = o.Answer.ModeVwire.NetflowProfile
+            if o.Answer.ModeVwire.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeVwire.Lldp.LldpProfile
+            }
+            if o.Answer.ModeVwire.Subinterface != nil {
+                ans.raw["vwsub"] = util.CleanRawXml(o.Answer.ModeVwire.Subinterface.Text)
+            }
         case o.Answer.TapMode != nil:
             ans.Mode = "tap"
         case o.Answer.HaMode != nil:
@@ -347,17 +365,24 @@ func (o *container_v3) Normalize() Entry {
             }
         case o.Answer.ModeL2 != nil:
             ans.Mode = "layer2"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeL2.LldpProfile
             ans.NetflowProfile = o.Answer.ModeL2.NetflowProfile
+            if o.Answer.ModeL2.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeL2.Lldp.LldpProfile
+            }
             if o.Answer.ModeL2.Subinterface != nil {
                 ans.raw["l2subinterface"] = util.CleanRawXml(o.Answer.ModeL2.Subinterface.Text)
             }
         case o.Answer.ModeVwire != nil:
             ans.Mode = "virtual-wire"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeVwire.LldpProfile
             ans.NetflowProfile = o.Answer.ModeVwire.NetflowProfile
+            if o.Answer.ModeVwire.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeVwire.Lldp.LldpProfile
+            }
+            if o.Answer.ModeVwire.Subinterface != nil {
+                ans.raw["vwsub"] = util.CleanRawXml(o.Answer.ModeVwire.Subinterface.Text)
+            }
         case o.Answer.TapMode != nil:
             ans.Mode = "tap"
         case o.Answer.HaMode != nil:
@@ -447,17 +472,24 @@ func (o *container_v4) Normalize() Entry {
             }
         case o.Answer.ModeL2 != nil:
             ans.Mode = "layer2"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeL2.LldpProfile
             ans.NetflowProfile = o.Answer.ModeL2.NetflowProfile
+            if o.Answer.ModeL2.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeL2.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeL2.Lldp.LldpProfile
+            }
             if o.Answer.ModeL2.Subinterface != nil {
                 ans.raw["l2subinterface"] = util.CleanRawXml(o.Answer.ModeL2.Subinterface.Text)
             }
         case o.Answer.ModeVwire != nil:
             ans.Mode = "virtual-wire"
-            ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.LldpEnabled)
-            ans.LldpProfile = o.Answer.ModeVwire.LldpProfile
             ans.NetflowProfile = o.Answer.ModeVwire.NetflowProfile
+            if o.Answer.ModeVwire.Lldp != nil {
+                ans.LldpEnabled = util.AsBool(o.Answer.ModeVwire.Lldp.LldpEnabled)
+                ans.LldpProfile = o.Answer.ModeVwire.Lldp.LldpProfile
+            }
+            if o.Answer.ModeVwire.Subinterface != nil {
+                ans.raw["vwsub"] = util.CleanRawXml(o.Answer.ModeVwire.Subinterface.Text)
+            }
         case o.Answer.TapMode != nil:
             ans.Mode = "tap"
         case o.Answer.HaMode != nil:
@@ -648,22 +680,31 @@ func specify_v1(e Entry) interface{} {
         }
         ans.ModeL3 = i
     case "layer2":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeL2 = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        if text, present := e.raw["l2subinterface"]; present {
-            i.Subinterface = &util.RawXml{text}
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeL2.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
         }
-        ans.ModeL2 = i
+        if text := e.raw["l2subinterface"]; text != "" {
+            ans.ModeL2.Subinterface = &util.RawXml{text}
+        }
     case "virtual-wire":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeVwire = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        ans.ModeVwire = i
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeVwire.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
+        }
+        if text := e.raw["vwsub"]; text != "" {
+            ans.ModeVwire.Subinterface = &util.RawXml{text}
+        }
     case "tap":
         ans.TapMode = &emptyMode{}
     case "ha":
@@ -740,22 +781,31 @@ func specify_v2(e Entry) interface{} {
         }
         ans.ModeL3 = i
     case "layer2":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeL2 = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        if text, present := e.raw["l2subinterface"]; present {
-            i.Subinterface = &util.RawXml{text}
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeL2.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
         }
-        ans.ModeL2 = i
+        if text := e.raw["l2subinterface"]; text != "" {
+            ans.ModeL2.Subinterface = &util.RawXml{text}
+        }
     case "virtual-wire":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeVwire = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        ans.ModeVwire = i
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeVwire.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
+        }
+        if text := e.raw["vwsub"]; text != "" {
+            ans.ModeVwire.Subinterface = &util.RawXml{text}
+        }
     case "tap":
         ans.TapMode = &emptyMode{}
     case "ha":
@@ -843,22 +893,31 @@ func specify_v3(e Entry) interface{} {
         }
         ans.ModeL3 = i
     case "layer2":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeL2 = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        if text, present := e.raw["l2subinterface"]; present {
-            i.Subinterface = &util.RawXml{text}
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeL2.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
         }
-        ans.ModeL2 = i
+        if text := e.raw["l2subinterface"]; text != "" {
+            ans.ModeL2.Subinterface = &util.RawXml{text}
+        }
     case "virtual-wire":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeVwire = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        ans.ModeVwire = i
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeVwire.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
+        }
+        if text := e.raw["vwsub"]; text != "" {
+            ans.ModeVwire.Subinterface = &util.RawXml{text}
+        }
     case "tap":
         ans.TapMode = &emptyMode{}
     case "ha":
@@ -959,22 +1018,31 @@ func specify_v4(e Entry) interface{} {
         }
         ans.ModeL3 = i
     case "layer2":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeL2 = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        if text, present := e.raw["l2subinterface"]; present {
-            i.Subinterface = &util.RawXml{text}
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeL2.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
         }
-        ans.ModeL2 = i
+        if text := e.raw["l2subinterface"]; text != "" {
+            ans.ModeL2.Subinterface = &util.RawXml{text}
+        }
     case "virtual-wire":
-        i := &otherMode{
-            LldpEnabled: util.YesNo(e.LldpEnabled),
-            LldpProfile: e.LldpProfile,
+        ans.ModeVwire = &otherMode{
             NetflowProfile: e.NetflowProfile,
         }
-        ans.ModeVwire = i
+        if e.LldpEnabled || e.LldpProfile != "" {
+            ans.ModeVwire.Lldp = &omLldp {
+                LldpEnabled: util.YesNo(e.LldpEnabled),
+                LldpProfile: e.LldpProfile,
+            }
+        }
+        if text := e.raw["vwsub"]; text != "" {
+            ans.ModeVwire.Subinterface = &util.RawXml{text}
+        }
     case "tap":
         ans.TapMode = &emptyMode{}
     case "ha":
