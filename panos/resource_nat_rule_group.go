@@ -50,13 +50,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 						Default:      nat.TypeIpv4,
 						ValidateFunc: validateStringIn(nat.TypeIpv4, nat.TypeNat64, nat.TypeNptv6),
 					},
-					"tags": {
-						Type:     schema.TypeList,
-						Optional: true,
-						Elem: &schema.Schema{
-							Type: schema.TypeString,
-						},
-					},
+					"tags": tagSchema(),
 					"disabled": {
 						Type:     schema.TypeBool,
 						Optional: true,
@@ -69,7 +63,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"source_zones": {
-									Type:     schema.TypeList,
+									Type:     schema.TypeSet,
 									Required: true,
 									MinItems: 1,
 									Elem: &schema.Schema{
@@ -91,7 +85,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 									Default:  "any",
 								},
 								"source_addresses": {
-									Type:     schema.TypeList,
+									Type:     schema.TypeSet,
 									Required: true,
 									MinItems: 1,
 									Elem: &schema.Schema{
@@ -99,7 +93,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 									},
 								},
 								"destination_addresses": {
-									Type:     schema.TypeList,
+									Type:     schema.TypeSet,
 									Required: true,
 									MinItems: 1,
 									Elem: &schema.Schema{
@@ -140,7 +134,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 															Elem: &schema.Resource{
 																Schema: map[string]*schema.Schema{
 																	"translated_addresses": {
-																		Type:     schema.TypeList,
+																		Type:     schema.TypeSet,
 																		Optional: true,
 																		Elem: &schema.Schema{
 																			Type: schema.TypeString,
@@ -183,7 +177,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"translated_addresses": {
-															Type:     schema.TypeList,
+															Type:     schema.TypeSet,
 															Required: true,
 															MinItems: 1,
 															Elem: &schema.Schema{
@@ -204,7 +198,7 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 																		Elem: &schema.Resource{
 																			Schema: map[string]*schema.Schema{
 																				"translated_addresses": {
-																					Type:     schema.TypeList,
+																					Type:     schema.TypeSet,
 																					Optional: true,
 																					Elem: &schema.Schema{
 																						Type: schema.TypeString,
@@ -369,12 +363,12 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 	}
 
 	op := (b["original_packet"].([]interface{})[0]).(map[string]interface{})
-	o.SourceZones = asStringList(op["source_zones"].([]interface{}))
+	o.SourceZones = setAsList(op["source_zones"].(*schema.Set))
 	o.DestinationZone = op["destination_zone"].(string)
 	o.ToInterface = op["destination_interface"].(string)
 	o.Service = op["service"].(string)
-	o.SourceAddresses = asStringList(op["source_addresses"].([]interface{}))
-	o.DestinationAddresses = asStringList(op["destination_addresses"].([]interface{}))
+	o.SourceAddresses = setAsList(op["source_addresses"].(*schema.Set))
+	o.DestinationAddresses = setAsList(op["destination_addresses"].(*schema.Set))
 
 	tp := (b["translated_packet"].([]interface{})[0]).(map[string]interface{})
 
@@ -385,7 +379,7 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 		if s := asInterfaceMap(diap, "translated_address"); len(s) != 0 {
 			o.SatAddressType = nat.TranslatedAddress
 
-			o.SatTranslatedAddresses = asStringList(s["translated_addresses"].([]interface{}))
+			o.SatTranslatedAddresses = setAsList(s["translated_addresses"].(*schema.Set))
 		} else if s := asInterfaceMap(diap, "interface_address"); len(s) != 0 {
 			o.SatAddressType = nat.InterfaceAddress
 
@@ -395,12 +389,12 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 	} else if di := asInterfaceMap(src, "dynamic_ip"); len(di) != 0 {
 		o.SatType = nat.DynamicIp
 
-		o.SatTranslatedAddresses = asStringList(di["translated_addresses"].([]interface{}))
+		o.SatTranslatedAddresses = setAsList(di["translated_addresses"].(*schema.Set))
 		if fb := asInterfaceMap(di, "fallback"); len(fb) != 0 {
 			if s := asInterfaceMap(fb, "translated_address"); len(s) != 0 {
 				o.SatFallbackType = nat.TranslatedAddress
 
-				o.SatFallbackTranslatedAddresses = asStringList(s["translated_addresses"].([]interface{}))
+				o.SatFallbackTranslatedAddresses = setAsList(s["translated_addresses"].(*schema.Set))
 			} else if s := asInterfaceMap(fb, "interface_address"); len(s) != 0 {
 				o.SatFallbackType = nat.InterfaceAddress
 
@@ -447,12 +441,12 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 	}
 
 	op := map[string]interface{}{
-		"source_zones":          o.SourceZones,
+		"source_zones":          listAsSet(o.SourceZones),
 		"destination_zone":      o.DestinationZone,
 		"destination_interface": o.ToInterface,
 		"service":               o.Service,
-		"source_addresses":      o.SourceAddresses,
-		"destination_addresses": o.DestinationAddresses,
+		"source_addresses":      listAsSet(o.SourceAddresses),
+		"destination_addresses": listAsSet(o.DestinationAddresses),
 	}
 	m["original_packet"] = []interface{}{op}
 
@@ -466,7 +460,7 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 		case nat.TranslatedAddress:
 			diap["translated_address"] = []interface{}{
 				map[string]interface{}{
-					"translated_addresses": o.SatTranslatedAddresses,
+					"translated_addresses": listAsSet(o.SatTranslatedAddresses),
 				},
 			}
 		case nat.InterfaceAddress:
@@ -480,7 +474,7 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 		src["dynamic_ip_and_port"] = []interface{}{diap}
 	case nat.DynamicIp:
 		di := map[string]interface{}{
-			"translated_addresses": o.SatTranslatedAddresses,
+			"translated_addresses": listAsSet(o.SatTranslatedAddresses),
 		}
 		switch o.SatFallbackType {
 		case nat.TranslatedAddress:
@@ -488,7 +482,7 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 				map[string]interface{}{
 					"translated_address": []interface{}{
 						map[string]interface{}{
-							"translated_addresses": o.SatFallbackTranslatedAddresses,
+							"translated_addresses": listAsSet(o.SatFallbackTranslatedAddresses),
 						},
 					},
 				},
