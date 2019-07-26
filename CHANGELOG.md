@@ -12,6 +12,7 @@ NEW RESOURCES:
 * `panos_panorama_gke_cluster` [GH-181]
 * `panos_panorama_gke_cluster_group` [GH-180]
 * `panos_pbf_rule_group` / `panos_panorama_pbf_rule_group` [GH-152]
+* `panos_vlan` / `panos_panorama_vlan` [GH-145]
 
 NEW PARAMS ADDED TO:
 
