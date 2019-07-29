@@ -16,8 +16,8 @@ func TestAccPanosAggregateInterface_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	} else if !testAccSupportsAggregateInterfaces {
-        t.Skip(SkipAggregateTest)
-    }
+		t.Skip(SkipAggregateTest)
+	}
 
 	var o agg.Entry
 	num := (acctest.RandInt() % 5) + 1
@@ -76,9 +76,9 @@ func testAccCheckPanosAggregateInterfaceAttributes(o *agg.Entry, name, sip, com 
 			return fmt.Errorf("Name is %s, expected %s", o.Name, name)
 		}
 
-        if len(o.StaticIps) != 1 || o.StaticIps[0] != sip {
-            return fmt.Errorf("Static IPs is %#v, not [%s]", o.StaticIps, sip)
-        }
+		if len(o.StaticIps) != 1 || o.StaticIps[0] != sip {
+			return fmt.Errorf("Static IPs is %#v, not [%s]", o.StaticIps, sip)
+		}
 
 		if o.Comment != com {
 			return fmt.Errorf("Comment is %q, expected %q", o.Comment, com)

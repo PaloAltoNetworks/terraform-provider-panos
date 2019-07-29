@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	testAccProviders                                        map[string]terraform.ResourceProvider
-	testAccProvider                                         *schema.Provider
+	testAccProviders                                                                            map[string]terraform.ResourceProvider
+	testAccProvider                                                                             *schema.Provider
 	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2, testAccSupportsAggregateInterfaces bool
-	testAccPanosVersion                                     version.Number
-	testAccPanoramaPlugins                                  map[string]string
+	testAccPanosVersion                                                                         version.Number
+	testAccPanoramaPlugins                                                                      map[string]string
 )
 
 func init() {
@@ -50,10 +50,10 @@ func init() {
 			Name:        "accL2Chk",
 			Description: "acctest l2 check",
 		}
-        ai := agg.Entry{
-            Name: "ae3",
-            Mode: agg.ModeLayer3,
-        }
+		ai := agg.Entry{
+			Name: "ae3",
+			Mode: agg.ModeLayer3,
+		}
 
 		switch c := con.(type) {
 		case *pango.Firewall:
@@ -65,10 +65,10 @@ func init() {
 				testAccSupportsL2 = true
 			}
 
-            if err = c.Network.AggregateInterface.Edit(ai); err == nil {
-                c.Network.AggregateInterface.Delete(ai)
-                testAccSupportsAggregateInterfaces = true
-            }
+			if err = c.Network.AggregateInterface.Edit(ai); err == nil {
+				c.Network.AggregateInterface.Delete(ai)
+				testAccSupportsAggregateInterfaces = true
+			}
 		case *pango.Panorama:
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
@@ -86,10 +86,10 @@ func init() {
 					testAccSupportsL2 = true
 				}
 
-                if err = c.Network.AggregateInterface.Edit(pt.Name, "", ai); err == nil {
-                    c.Network.AggregateInterface.Delete(pt.Name, "", ai)
-                    testAccSupportsAggregateInterfaces = true
-                }
+				if err = c.Network.AggregateInterface.Edit(pt.Name, "", ai); err == nil {
+					c.Network.AggregateInterface.Delete(pt.Name, "", ai)
+					testAccSupportsAggregateInterfaces = true
+				}
 				c.Panorama.Template.Delete(pt)
 			}
 		}

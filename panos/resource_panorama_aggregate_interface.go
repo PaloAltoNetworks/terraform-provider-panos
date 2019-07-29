@@ -20,26 +20,26 @@ func resourcePanoramaAggregateInterface() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-        Schema: aggregateInterfaceSchema(true),
-    }
+		Schema: aggregateInterfaceSchema(true),
+	}
 }
 
 func parsePanoramaAggregateInterfaceId(v string) (string, string, string) {
-    t := strings.Split(v, IdSeparator)
-    return t[0], t[1], t[2]
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1], t[2]
 }
 
 func buildPanoramaAggregateInterfaceId(a, b, c string) string {
-    return strings.Join([]string{a, b, c}, IdSeparator)
+	return strings.Join([]string{a, b, c}, IdSeparator)
 }
 
 func parsePanoramaAggregateInterface(d *schema.ResourceData) (string, string, agg.Entry) {
-    tmpl := d.Get("template").(string)
-    ts := ""
+	tmpl := d.Get("template").(string)
+	ts := ""
 
-    o := loadAggregateInterface(d)
+	o := loadAggregateInterface(d)
 
-    return tmpl, ts, o
+	return tmpl, ts, o
 }
 
 func createPanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) error {
@@ -58,7 +58,7 @@ func readPanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) er
 	var err error
 
 	pano := meta.(*pango.Panorama)
-    tmpl, ts, name := parsePanoramaAggregateInterfaceId(d.Id())
+	tmpl, ts, name := parsePanoramaAggregateInterfaceId(d.Id())
 
 	o, err := pano.Network.AggregateInterface.Get(tmpl, ts, name)
 	if err != nil {
@@ -70,8 +70,8 @@ func readPanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-    d.Set("template", tmpl)
-    saveAggregateInterface(d, o)
+	d.Set("template", tmpl)
+	saveAggregateInterface(d, o)
 
 	return nil
 }
@@ -96,7 +96,7 @@ func updatePanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) 
 
 func deletePanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 	pano := meta.(*pango.Panorama)
-    tmpl, ts, name := parsePanoramaAggregateInterfaceId(d.Id())
+	tmpl, ts, name := parsePanoramaAggregateInterfaceId(d.Id())
 
 	err := pano.Network.AggregateInterface.Delete(tmpl, ts, name)
 	if err != nil {

@@ -11,7 +11,7 @@ const (
 	SkipPanoramaAccTest = "Skipping panorama test"
 	SkipFirewallAccTest = "Skipping firewall test"
 	SkipL2AccTest       = "Skipping L2 test for PAN-OS model that does not have L2 support"
-    SkipAggregateTest = "Skipping test as aggregate ethernet interfaces are not supported by PAN-OS"
+	SkipAggregateTest   = "Skipping test as aggregate ethernet interfaces are not supported by PAN-OS"
 )
 
 func validateStringIn(vals ...string) schema.SchemaValidateFunc {
