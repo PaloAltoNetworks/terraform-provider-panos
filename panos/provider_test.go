@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/PaloAltoNetworks/pango"
+	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
 	"github.com/PaloAltoNetworks/pango/netw/interface/vlan"
 	"github.com/PaloAltoNetworks/pango/pnrm/template"
 	"github.com/PaloAltoNetworks/pango/version"
@@ -16,7 +17,7 @@ import (
 var (
 	testAccProviders                                        map[string]terraform.ResourceProvider
 	testAccProvider                                         *schema.Provider
-	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2 bool
+	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2, testAccSupportsAggregateInterfaces bool
 	testAccPanosVersion                                     version.Number
 	testAccPanoramaPlugins                                  map[string]string
 )
@@ -49,6 +50,11 @@ func init() {
 			Name:        "accL2Chk",
 			Description: "acctest l2 check",
 		}
+        ai := agg.Entry{
+            Name: "ae3",
+            Mode: agg.ModeLayer3,
+        }
+
 		switch c := con.(type) {
 		case *pango.Firewall:
 			testAccIsFirewall = true
@@ -58,6 +64,11 @@ func init() {
 				c.Network.VlanInterface.Delete(vt)
 				testAccSupportsL2 = true
 			}
+
+            if err = c.Network.AggregateInterface.Edit(ai); err == nil {
+                c.Network.AggregateInterface.Delete(ai)
+                testAccSupportsAggregateInterfaces = true
+            }
 		case *pango.Panorama:
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
@@ -74,6 +85,11 @@ func init() {
 					c.Network.VlanInterface.Delete(pt.Name, "", vt)
 					testAccSupportsL2 = true
 				}
+
+                if err = c.Network.AggregateInterface.Edit(pt.Name, "", ai); err == nil {
+                    c.Network.AggregateInterface.Delete(pt.Name, "", ai)
+                    testAccSupportsAggregateInterfaces = true
+                }
 				c.Panorama.Template.Delete(pt)
 			}
 		}
