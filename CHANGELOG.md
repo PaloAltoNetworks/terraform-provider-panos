@@ -14,6 +14,7 @@ NEW RESOURCES:
 * `panos_pbf_rule_group` / `panos_panorama_pbf_rule_group` [GH-152]
 * `panos_vlan` / `panos_panorama_vlan` [GH-145]
 * `panos_aggregate_interface` / `panos_panorama_aggregate_interface` [GH-169]
+* `panos_vlan_entry` / `panos_panorama_vlan_entry` [GH-146]
 
 NEW PARAMS ADDED TO:
 
