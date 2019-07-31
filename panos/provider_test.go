@@ -65,7 +65,7 @@ func init() {
 				testAccSupportsL2 = true
 			}
 
-			if err = c.Network.AggregateInterface.Edit(ai); err == nil {
+			if err = c.Network.AggregateInterface.Edit("vsys1", ai); err == nil {
 				c.Network.AggregateInterface.Delete(ai)
 				testAccSupportsAggregateInterfaces = true
 			}
@@ -86,7 +86,7 @@ func init() {
 					testAccSupportsL2 = true
 				}
 
-				if err = c.Network.AggregateInterface.Edit(pt.Name, "", ai); err == nil {
+				if err = c.Network.AggregateInterface.Edit(pt.Name, "", "vsys1", ai); err == nil {
 					c.Network.AggregateInterface.Delete(pt.Name, "", ai)
 					testAccSupportsAggregateInterfaces = true
 				}

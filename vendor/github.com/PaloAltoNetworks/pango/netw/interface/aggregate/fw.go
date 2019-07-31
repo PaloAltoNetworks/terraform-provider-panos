@@ -46,7 +46,12 @@ func (c *FwAggregate) Show(name string) (Entry, error) {
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *FwAggregate) Set(e ...Entry) error {
+//
+// Specifying a non-empty vsys will import the interfaces into that vsys,
+// allowing the vsys to use them, as long as the interface does not have a
+// mode of "ha".  Interfaces that have that mode are omitted from this
+// function's followup vsys import.
+func (c *FwAggregate) Set(vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -55,12 +60,16 @@ func (c *FwAggregate) Set(e ...Entry) error {
 
     _, fn := c.versioning()
     names := make([]string, len(e))
+    n2 := make([]string, 0, len(e))
 
     // Build up the struct.
     d := util.BulkElement{XMLName: xml.Name{Local: "temp"}}
     for i := range e {
         d.Data = append(d.Data, fn(e[i]))
         names[i] = e[i].Name
+        if e[i].Mode != ModeHa {
+            n2 = append(n2, e[i].Name)
+        }
     }
     c.con.LogAction("(set) %s: %v", plural, names)
 
@@ -74,12 +83,26 @@ func (c *FwAggregate) Set(e ...Entry) error {
     }
 
     // Create the objects.
-    _, err = c.con.Set(path, d.Config(), nil, nil)
-    return err
+    if _, err = c.con.Set(path, d.Config(), nil, nil); err != nil {
+        return err
+    }
+
+    // Remove the interfaces from any vsys they're currently in.
+    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", n2); err != nil {
+        return err
+    }
+
+    // Perform the vsys import.
+    return c.con.VsysImport(util.InterfaceImport, "", "", vsys, n2)
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *FwAggregate) Edit(e Entry) error {
+//
+// Specifying a non-empty vsys will import the interfaces into that vsys,
+// allowing the vsys to use them, as long as the interface does not have a
+// mode of "ha".  Interfaces that have that mode are omitted from this
+// function's followup vsys import.
+func (c *FwAggregate) Edit(vsys string, e Entry) error {
     var err error
 
     _, fn := c.versioning()
@@ -90,8 +113,22 @@ func (c *FwAggregate) Edit(e Entry) error {
     path := c.xpath([]string{e.Name})
 
     // Edit the object.
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
+    if _, err = c.con.Edit(path, fn(e), nil, nil); err != nil {
+        return err
+    }
+
+    // Check if we should skip the import step.
+    if e.Mode == ModeHa {
+        return nil
+    }
+
+    // Remove the interface from any vsys it's currently in.
+    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", []string{e.Name}); err != nil {
+        return err
+    }
+
+    // Import the interface.
+    return c.con.VsysImport(util.InterfaceImport, "", "", vsys, []string{e.Name})
 }
 
 // Delete removes the given objects.
@@ -116,6 +153,11 @@ func (c *FwAggregate) Delete(e ...interface{}) error {
         }
     }
     c.con.LogAction("(delete) %s: %v", plural, names)
+
+    // Unimport interfaces.
+    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", names); err != nil {
+        return err
+    }
 
     // Remove the objects.
     path := c.xpath(names)

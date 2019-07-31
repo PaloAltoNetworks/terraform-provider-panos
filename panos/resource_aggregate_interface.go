@@ -1,10 +1,13 @@
 package panos
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -30,6 +33,11 @@ func aggregateInterfaceSchema(p bool) map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Required: true,
 			ForceNew: true,
+		},
+		"vsys": {
+			Type:     schema.TypeString,
+			Optional: true,
+			Default:  "vsys1",
 		},
 		"mode": {
 			Type:         schema.TypeString,
@@ -166,21 +174,31 @@ func saveAggregateInterface(d *schema.ResourceData, o agg.Entry) {
 	d.Set("dhcp_send_hostname_value", o.DhcpSendHostnameValue)
 }
 
-func parseAggregateInterface(d *schema.ResourceData) agg.Entry {
+func parseAggregateInterface(d *schema.ResourceData) (string, agg.Entry) {
 	o := loadAggregateInterface(d)
+	vsys := d.Get("vsys").(string)
 
-	return o
+	return vsys, o
+}
+
+func buildAggregateInterfaceId(a, b string) string {
+	return strings.Join([]string{a, b}, IdSeparator)
+}
+
+func parseAggregateInterfaceId(v string) (string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1]
 }
 
 func createAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	o := parseAggregateInterface(d)
+	vsys, o := parseAggregateInterface(d)
 
-	if err := fw.Network.AggregateInterface.Set(o); err != nil {
+	if err := fw.Network.AggregateInterface.Set(vsys, o); err != nil {
 		return err
 	}
 
-	d.SetId(o.Name)
+	d.SetId(buildAggregateInterfaceId(vsys, o.Name))
 	return readAggregateInterface(d, meta)
 }
 
@@ -188,7 +206,7 @@ func readAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	name := d.Id()
+	vsys, name := parseAggregateInterfaceId(d.Id())
 
 	o, err := fw.Network.AggregateInterface.Get(name)
 	if err != nil {
@@ -199,8 +217,17 @@ func readAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 		}
 		return err
 	}
+	rv, err := fw.IsImported(util.InterfaceImport, "", "", vsys, name)
+	if err != nil {
+		return err
+	}
 
 	saveAggregateInterface(d, o)
+	if rv {
+		d.Set("vsys", vsys)
+	} else {
+		d.Set("vsys", fmt.Sprintf("(not %s)", vsys))
+	}
 
 	return nil
 }
@@ -209,14 +236,14 @@ func updateAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 	var err error
 
 	fw := meta.(*pango.Firewall)
-	o := parseAggregateInterface(d)
+	vsys, o := parseAggregateInterface(d)
 
 	lo, err := fw.Network.AggregateInterface.Get(o.Name)
 	if err != nil {
 		return err
 	}
 	lo.Copy(o)
-	if err = fw.Network.AggregateInterface.Edit(lo); err != nil {
+	if err = fw.Network.AggregateInterface.Edit(vsys, lo); err != nil {
 		return err
 	}
 
@@ -225,7 +252,7 @@ func updateAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 
 func deleteAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
-	name := d.Id()
+	_, name := parseAggregateInterfaceId(d.Id())
 
 	err := fw.Network.AggregateInterface.Delete(name)
 	if err != nil {
