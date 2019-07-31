@@ -189,7 +189,7 @@ func (c *PanoLayer2) details(fn util.Retriever, tmpl, ts, iType, eth, mType, nam
 }
 
 func (c *PanoLayer2) xpath(tmpl, ts, iType, eth, mType string, vals []string) []string {
-    ans := make([]string, 15)
+    ans := make([]string, 0, 15)
     ans = append(ans, util.TemplateXpathPrefix(tmpl, ts)...)
     ans = append(ans,
         "config",
