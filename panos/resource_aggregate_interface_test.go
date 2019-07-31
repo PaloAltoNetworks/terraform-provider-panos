@@ -58,7 +58,7 @@ func testAccCheckPanosAggregateInterfaceExists(n string, o *agg.Entry) resource.
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		name := rs.Primary.ID
+		_, name := parseAggregateInterfaceId(rs.Primary.ID)
 		v, err := fw.Network.AggregateInterface.Get(name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -97,7 +97,7 @@ func testAccPanosAggregateInterfaceDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			name := rs.Primary.ID
+			_, name := parseAggregateInterfaceId(rs.Primary.ID)
 			_, err := fw.Network.AggregateInterface.Get(name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)

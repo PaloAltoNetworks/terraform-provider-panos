@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-panos
 
 require (
-	github.com/PaloAltoNetworks/pango v0.3.2
+	github.com/PaloAltoNetworks/pango v0.3.3
 	github.com/hashicorp/go-hclog v0.0.0-20190109152822-4783caec6f2e // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/terraform v0.12.3

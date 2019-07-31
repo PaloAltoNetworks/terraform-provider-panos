@@ -59,7 +59,7 @@ func testAccCheckPanosPanoramaAggregateInterfaceExists(n string, o *agg.Entry) r
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		tmpl, ts, name := parsePanoramaAggregateInterfaceId(rs.Primary.ID)
+		tmpl, ts, _, name := parsePanoramaAggregateInterfaceId(rs.Primary.ID)
 		v, err := pano.Network.AggregateInterface.Get(tmpl, ts, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -98,7 +98,7 @@ func testAccPanosPanoramaAggregateInterfaceDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			tmpl, ts, name := parsePanoramaAggregateInterfaceId(rs.Primary.ID)
+			tmpl, ts, _, name := parsePanoramaAggregateInterfaceId(rs.Primary.ID)
 			_, err := pano.Network.AggregateInterface.Get(tmpl, ts, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
