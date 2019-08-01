@@ -45,7 +45,7 @@ func (c *FwLayer2) Show(iType, eth, mType, name string) (Entry, error) {
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *FwLayer2) Set(vsys, iType, eth, mType string, e ...Entry) error {
+func (c *FwLayer2) Set(iType, eth, mType, vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -93,7 +93,7 @@ func (c *FwLayer2) Set(vsys, iType, eth, mType string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *FwLayer2) Edit(vsys, iType, eth, mType string, e Entry) error {
+func (c *FwLayer2) Edit(iType, eth, mType, vsys string, e Entry) error {
     var err error
 
     if iType == "" {
