@@ -46,7 +46,7 @@ func (c *PanoLayer3) Show(tmpl, ts, iType, eth, name string) (Entry, error) {
 }
 
 // Set performs SET to create / update one or more objects.
-func (c *PanoLayer3) Set(vsys, tmpl, ts, iType, eth string, e ...Entry) error {
+func (c *PanoLayer3) Set(tmpl, ts, iType, eth, vsys string, e ...Entry) error {
     var err error
 
     if len(e) == 0 {
@@ -94,7 +94,7 @@ func (c *PanoLayer3) Set(vsys, tmpl, ts, iType, eth string, e ...Entry) error {
 }
 
 // Edit performs EDIT to create / update one object.
-func (c *PanoLayer3) Edit(tmpl, ts, vsys, iType, eth string, e Entry) error {
+func (c *PanoLayer3) Edit(tmpl, ts, iType, eth, vsys string, e Entry) error {
     var err error
 
     if iType == "" {
