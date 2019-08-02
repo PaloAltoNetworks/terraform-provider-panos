@@ -6,7 +6,7 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/compute/metadata
-# github.com/PaloAltoNetworks/pango v0.3.5
+# github.com/PaloAltoNetworks/pango v0.3.6
 github.com/PaloAltoNetworks/pango
 github.com/PaloAltoNetworks/pango/dev/general
 github.com/PaloAltoNetworks/pango/dev/telemetry
@@ -14,6 +14,7 @@ github.com/PaloAltoNetworks/pango/netw/ikegw
 github.com/PaloAltoNetworks/pango/netw/interface/aggregate
 github.com/PaloAltoNetworks/pango/netw/interface/eth
 github.com/PaloAltoNetworks/pango/netw/interface/loopback
+github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2
 github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer3
 github.com/PaloAltoNetworks/pango/netw/interface/tunnel
 github.com/PaloAltoNetworks/pango/netw/interface/vlan
@@ -80,7 +81,6 @@ github.com/PaloAltoNetworks/pango/dev/profile/snmp/v2c
 github.com/PaloAltoNetworks/pango/dev/profile/snmp/v3
 github.com/PaloAltoNetworks/pango/dev/profile/syslog
 github.com/PaloAltoNetworks/pango/dev/profile/syslog/server
-github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2
 github.com/PaloAltoNetworks/pango/objs/app
 github.com/PaloAltoNetworks/pango/objs/app/group
 github.com/PaloAltoNetworks/pango/objs/app/signature
