@@ -161,7 +161,7 @@ func (c *PanoLayer2) Delete(tmpl, ts, iType, eth, mType string, e ...interface{}
     c.con.LogAction("(delete) %s: %v", plural, names)
 
     // Unimport interfaces.
-    if err = c.con.VsysUnimport(util.InterfaceImport, "", "", names); err != nil {
+    if err = c.con.VsysUnimport(util.InterfaceImport, tmpl, ts, names); err != nil {
         return err
     }
 
