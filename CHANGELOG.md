@@ -16,6 +16,7 @@ NEW RESOURCES:
 * `panos_aggregate_interface` / `panos_panorama_aggregate_interface` [GH-169]
 * `panos_vlan_entry` / `panos_panorama_vlan_entry` [GH-146]
 * `panos_layer3_subinterface` / `panos_panorama_layer3_subinterface` [GH-195]
+* `panos_layer2_subinterface` / `panos_panorama_layer2_subinterface` [GH-82]
 
 NEW PARAMS ADDED TO:
 
