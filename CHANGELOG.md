@@ -18,6 +18,7 @@ NEW RESOURCES:
 * `panos_layer3_subinterface` / `panos_panorama_layer3_subinterface` [GH-195]
 * `panos_layer2_subinterface` / `panos_panorama_layer2_subinterface` [GH-82]
 * `panos_application_object` / `panos_panorama_application_object` [GH-197]
+* `panos_application_group` / `panos_panorama_application_group` [GH-198]
 
 NEW PARAMS ADDED TO:
 
