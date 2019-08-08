@@ -12,7 +12,7 @@ type Entry struct {
     Name string
     Comment string
     Scope string
-    OrderedMatch bool
+    OrderFree bool
 
     raw map[string] string
 }
@@ -22,7 +22,7 @@ type Entry struct {
 func (o *Entry) Copy(s Entry) {
     o.Comment = s.Comment
     o.Scope = s.Scope
-    o.OrderedMatch = s.OrderedMatch
+    o.OrderFree = s.OrderFree
 }
 
 /** Structs / functions for this namespace. **/
@@ -39,7 +39,7 @@ func (o *container_v1) Normalize() Entry {
     ans := Entry{
         Name: o.Answer.Name,
         Comment: o.Answer.Comment,
-        OrderedMatch: util.AsBool(o.Answer.OrderedMatch),
+        OrderFree: util.AsBool(o.Answer.OrderFree),
     }
 
     switch o.Answer.Scope {
@@ -67,7 +67,7 @@ type entry_v1 struct {
     Name string `xml:"name,attr"`
     Comment string `xml:"comment,omitempty"`
     Scope string `xml:"scope,omitempty"`
-    OrderedMatch string `xml:"order-free"`
+    OrderFree string `xml:"order-free"`
     Sigs *util.RawXml `xml:"and-condition"`
 }
 
@@ -75,7 +75,7 @@ func specify_v1(e Entry) interface{} {
     ans := entry_v1{
         Name: e.Name,
         Comment: e.Comment,
-        OrderedMatch: util.YesNo(e.OrderedMatch),
+        OrderFree: util.YesNo(e.OrderFree),
     }
 
     switch e.Scope {
