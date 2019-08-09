@@ -29,7 +29,7 @@ type FwObjs struct {
     AppGroup *appgrp.FwGroup
     AppSignature *signature.FwSignature
     AppSigAndCond *andcond.FwAndCond
-    AppSigAndCondOrCond *orcond.FwOrCond
+    AppSigOrCond *orcond.FwOrCond
     Edl *edl.FwEdl
     LogForwardingProfile *logfwd.FwLogFwd
     LogForwardingProfileMatchList *matchlist.FwMatchList
@@ -59,8 +59,8 @@ func (c *FwObjs) Initialize(i util.XapiClient) {
     c.AppSigAndCond = &andcond.FwAndCond{}
     c.AppSigAndCond.Initialize(i)
 
-    c.AppSigAndCondOrCond = &orcond.FwOrCond{}
-    c.AppSigAndCondOrCond.Initialize(i)
+    c.AppSigOrCond = &orcond.FwOrCond{}
+    c.AppSigOrCond.Initialize(i)
 
     c.Edl = &edl.FwEdl{}
     c.Edl.Initialize(i)
