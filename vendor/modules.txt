@@ -6,9 +6,12 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/compute/metadata
-# github.com/PaloAltoNetworks/pango v0.3.8
+# github.com/PaloAltoNetworks/pango v0.3.9
 github.com/PaloAltoNetworks/pango
 github.com/PaloAltoNetworks/pango/dev/general
+github.com/PaloAltoNetworks/pango/dev/profile/snmp
+github.com/PaloAltoNetworks/pango/dev/profile/snmp/v2c
+github.com/PaloAltoNetworks/pango/dev/profile/snmp/v3
 github.com/PaloAltoNetworks/pango/dev/telemetry
 github.com/PaloAltoNetworks/pango/netw/ikegw
 github.com/PaloAltoNetworks/pango/netw/interface/aggregate
@@ -81,9 +84,6 @@ github.com/PaloAltoNetworks/pango/dev/profile/http
 github.com/PaloAltoNetworks/pango/dev/profile/http/header
 github.com/PaloAltoNetworks/pango/dev/profile/http/param
 github.com/PaloAltoNetworks/pango/dev/profile/http/server
-github.com/PaloAltoNetworks/pango/dev/profile/snmp
-github.com/PaloAltoNetworks/pango/dev/profile/snmp/v2c
-github.com/PaloAltoNetworks/pango/dev/profile/snmp/v3
 github.com/PaloAltoNetworks/pango/dev/profile/syslog
 github.com/PaloAltoNetworks/pango/dev/profile/syslog/server
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd

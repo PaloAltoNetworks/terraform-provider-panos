@@ -93,6 +93,19 @@ func (c *PanoSnmp) Edit(tmpl, ts, vsys, dg string, e Entry) error {
     return err
 }
 
+// SetWithoutSubconfig performs a DELETE to remove any subconfig
+// before performing a SET to create an object.
+func (c *PanoSnmp) SetWithoutSubconfig(tmpl, ts, vsys, dg string, e Entry) error {
+    c.con.LogAction("(delete) %s subconfig for %s", singular, e.Name)
+
+    path := c.xpath(tmpl, ts, vsys, dg, []string{e.Name})
+
+    path = append(path, "version")
+    _, _ = c.con.Delete(path, nil, nil)
+
+    return c.Set(tmpl, ts, vsys, dg, e)
+}
+
 // Delete removes the given objects.
 //
 // Objects can be a string or an Entry object.
