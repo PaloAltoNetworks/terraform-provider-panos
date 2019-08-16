@@ -89,7 +89,10 @@ func readPanoramaSyslogServerProfile(d *schema.ResourceData, meta interface{}) e
 		serverList = append(serverList, entry)
 	}
 
+	d.Set("template", tmpl)
+	d.Set("template_stack", ts)
 	d.Set("vsys", vsys)
+	d.Set("device_group", dg)
 	saveSyslogServerProfile(d, o, serverList)
 
 	return nil
