@@ -94,6 +94,22 @@ func (c *PanoLogFwd) Edit(dg string, e Entry) error {
     return err
 }
 
+// SetWithoutSubconfig performs a DELETE to remove any subconfig
+// before performing a SET to create an object.
+func (c *PanoLogFwd) SetWithoutSubconfig(dg string, e Entry) error {
+    c.con.LogAction("(delete) %s subconfig for %s", singular, e.Name)
+
+    path := c.xpath(dg, []string{e.Name})
+
+    path = append(path, "description")
+    _, _ = c.con.Delete(path, nil, nil)
+
+    path[len(path) - 1] = "match-list"
+    _, _ = c.con.Delete(path, nil, nil)
+
+    return c.Set(dg, e)
+}
+
 // Delete removes the given objects.
 //
 // Objects can be a string or an Entry object.

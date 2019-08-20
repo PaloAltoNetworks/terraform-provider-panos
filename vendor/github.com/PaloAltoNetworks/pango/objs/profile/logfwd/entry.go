@@ -13,7 +13,7 @@ import (
 type Entry struct {
     Name string
     Description string
-    EnhancedLogging bool
+    EnhancedLogging bool // 8.1+
 
     raw map[string] string
 }
