@@ -72,7 +72,7 @@ func (o *container_v1) Normalize() Entry {
 type entry_v1 struct {
     XMLName xml.Name `xml:"entry"`
     Name string `xml:"name,attr"`
-    Description string `xml:"description,omitempty"`
+    Description string `xml:"action-desc,omitempty"`
     LogType string `xml:"log-type"`
     Filter string `xml:"filter"`
     SendToPanorama string `xml:"send-to-panorama"`
