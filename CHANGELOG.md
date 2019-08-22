@@ -24,6 +24,7 @@ NEW RESOURCES:
 * `panos_syslog_server_profile` / `panos_panorama_syslog_server_profile` [GH-83]
 * `panos_email_server_profile` / `panos_panorama_email_server_profile` [GH-206]
 * `panos_http_server_profile` / `panos_panorama_http_server_profile` [GH-207]
+* `panos_log_forwarding_profile` / `panos_panorama_log_forwarding_profile` [GH-84]
 
 NEW PARAMS ADDED TO:
 
