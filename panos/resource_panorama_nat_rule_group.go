@@ -135,6 +135,8 @@ func readPanoramaNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 		d.Set("position_reference", "(incorrect group positioning)")
 	}
 
+	schemaStyle := natRuleGroupSchemaStyle(d)
+
 	ilist := make([]interface{}, 0, len(names))
 	for i := 0; i+fIdx < len(rules) && i < len(names); i++ {
 		if rules[i+fIdx] != names[i] {
@@ -148,7 +150,7 @@ func readPanoramaNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 			}
 			return err
 		}
-		m := dumpNatEntry(o)
+		m := dumpNatEntry(o, schemaStyle)
 		m["target"] = buildTarget(o.Targets)
 		m["negate_target"] = o.NegateTarget
 

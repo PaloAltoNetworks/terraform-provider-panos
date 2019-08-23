@@ -255,7 +255,7 @@ resource "panos_panorama_nat_rule_group" "top" {
                 }
             }
             destination {
-                static {
+                static_translation {
                     address = "10.1.1.1"
                     port = 1234
                 }
@@ -279,7 +279,7 @@ resource "panos_panorama_nat_rule_group" "bot" {
         translated_packet {
             source {}
             destination {
-                static {
+                static_translation {
                     address = "10.2.3.1"
                     port = 5678
                 }
