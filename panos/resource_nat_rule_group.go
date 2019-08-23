@@ -271,10 +271,15 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"static": {
-												Type:          schema.TypeList,
-												Optional:      true,
-												ConflictsWith: []string{"rule.translated_packet.destination.dynamic"},
-												MaxItems:      1,
+												Type:     schema.TypeList,
+												Optional: true,
+												ConflictsWith: []string{
+													"rule.translated_packet.destination.static_translation",
+													"rule.translated_packet.destination.dynamic",
+													"rule.translated_packet.destination.dynamic_translation",
+												},
+												MaxItems:   1,
+												Deprecated: "Use 'static_translation' instead",
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"address": {
@@ -288,12 +293,64 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 													},
 												},
 											},
-
+											"static_translation": {
+												Type:     schema.TypeList,
+												Optional: true,
+												ConflictsWith: []string{
+													"rule.translated_packet.destination.static",
+													"rule.translated_packet.destination.dynamic",
+													"rule.translated_packet.destination.dynamic_translation",
+												},
+												MaxItems: 1,
+												Elem: &schema.Resource{
+													Schema: map[string]*schema.Schema{
+														"address": {
+															Type:     schema.TypeString,
+															Required: true,
+														},
+														"port": {
+															Type:     schema.TypeInt,
+															Optional: true,
+														},
+													},
+												},
+											},
 											"dynamic": {
-												Type:          schema.TypeList,
-												Optional:      true,
-												ConflictsWith: []string{"rule.translated_packet.destination.static"},
-												MaxItems:      1,
+												Type:     schema.TypeList,
+												Optional: true,
+												ConflictsWith: []string{
+													"rule.translated_packet.destination.static",
+													"rule.translated_packet.destination.static_translation",
+													"rule.translated_packet.destination.dynamic_translation",
+												},
+												MaxItems:   1,
+												Deprecated: "Use 'dynamic_translation' instead",
+												Elem: &schema.Resource{
+													Schema: map[string]*schema.Schema{
+														"address": {
+															Type:     schema.TypeString,
+															Required: true,
+														},
+														"port": {
+															Type:     schema.TypeInt,
+															Optional: true,
+														},
+														"distribution": {
+															Type:     schema.TypeString,
+															Optional: true,
+														},
+													},
+												},
+											},
+											"dynamic_translation": {
+												Type:     schema.TypeList,
+												Optional: true,
+												ConflictsWith: []string{
+													"rule.translated_packet.destination.static",
+													"rule.translated_packet.destination.static_translation",
+													"rule.translated_packet.destination.dynamic",
+												},
+												MaxItems: 1,
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"address": {
@@ -334,6 +391,22 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 	}
 
 	return ans
+}
+
+func natRuleGroupSchemaStyle(d *schema.ResourceData) int {
+	rlist := d.Get("rule").([]interface{})
+	for i := range rlist {
+		b := rlist[i].(map[string]interface{})
+		tp := (b["translated_packet"].([]interface{})[0]).(map[string]interface{})
+		dst := asInterfaceMap(tp, "destination")
+		if s := asInterfaceMap(dst, "static_translation"); len(s) != 0 {
+			return 2
+		} else if s := asInterfaceMap(dst, "dynamic_translation"); len(s) != 0 {
+			return 2
+		}
+	}
+
+	return 1
 }
 
 func parseNatRuleGroup(d *schema.ResourceData) (string, string, int, []nat.Entry) {
@@ -420,7 +493,18 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 
 		o.DatAddress = s["address"].(string)
 		o.DatPort = s["port"].(int)
+	} else if s := asInterfaceMap(dst, "static_translation"); len(s) != 0 {
+		o.DatType = nat.DatTypeStatic
+
+		o.DatAddress = s["address"].(string)
+		o.DatPort = s["port"].(int)
 	} else if s := asInterfaceMap(dst, "dynamic"); len(s) != 0 {
+		o.DatType = nat.DatTypeDynamic
+
+		o.DatAddress = s["address"].(string)
+		o.DatPort = s["port"].(int)
+		o.DatDynamicDistribution = s["distribution"].(string)
+	} else if s := asInterfaceMap(dst, "dynamic_translation"); len(s) != 0 {
 		o.DatType = nat.DatTypeDynamic
 
 		o.DatAddress = s["address"].(string)
@@ -431,7 +515,7 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 	return o
 }
 
-func dumpNatEntry(o nat.Entry) map[string]interface{} {
+func dumpNatEntry(o nat.Entry, schemaStyle int) map[string]interface{} {
 	m := map[string]interface{}{
 		"name":        o.Name,
 		"description": o.Description,
@@ -513,19 +597,31 @@ func dumpNatEntry(o nat.Entry) map[string]interface{} {
 	}
 	switch o.DatType {
 	case nat.DatTypeStatic:
-		dst["static"] = []interface{}{
+		val := []interface{}{
 			map[string]interface{}{
 				"address": o.DatAddress,
 				"port":    o.DatPort,
 			},
 		}
+		switch schemaStyle {
+		case 1:
+			dst["static"] = val
+		case 2:
+			dst["static_translation"] = val
+		}
 	case nat.DatTypeDynamic:
-		dst["dynamic"] = []interface{}{
+		val := []interface{}{
 			map[string]interface{}{
 				"address":      o.DatAddress,
 				"port":         o.DatPort,
 				"distribution": o.DatDynamicDistribution,
 			},
+		}
+		switch schemaStyle {
+		case 1:
+			dst["dynamic"] = val
+		case 2:
+			dst["dynamic_translation"] = val
 		}
 	}
 	tp["source"] = []interface{}{src}
@@ -624,6 +720,8 @@ func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 		d.Set("position_reference", "(incorrect group positioning)")
 	}
 
+	schemaStyle := natRuleGroupSchemaStyle(d)
+
 	ilist := make([]interface{}, 0, len(names))
 	for i := 0; i+fIdx < len(rules) && i < len(names); i++ {
 		if rules[i+fIdx] != names[i] {
@@ -637,7 +735,7 @@ func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 			}
 			return err
 		}
-		m := dumpNatEntry(o)
+		m := dumpNatEntry(o, schemaStyle)
 
 		ilist = append(ilist, m)
 	}
