@@ -36,6 +36,7 @@ BUG FIXES:
 
 * The ordering for administrative tags on objects (such as address objects or address groups) is now preserved [GH-161]
 * The ordering for various list params in `panos_nat_rule_group` / `panos_panorama_nat_rule_group` is now ignored [GH-143]
+* New params added to `panos_nat_rule_group` / `panos_panorama_nat_rule_group` to to replace `static` and `dynamic` as `dynamic` is now a recursively reserved keyword in Terraform 0.12 [GH-167]
 
 ## 1.5.2 (May 14, 2019)
 
