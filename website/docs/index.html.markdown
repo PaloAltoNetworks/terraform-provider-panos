@@ -18,7 +18,7 @@ resources.
 
 ## Versioning
 
-The panos provider has support for PAN-OS 6.1 - 8.1.
+The panos provider has support for PAN-OS 6.1 - 9.0.
 
 Some resources may contain variables that are only applicable for newer
 versions of PAN-OS.  If this is the case, then make sure to use
@@ -163,7 +163,7 @@ func main() {
         log.Fatalf("Failed: %s", err)
     }
 
-    job, err = fw.Commit(flag.Arg(0), true, true, false, true)
+    job, err = fw.Commit(flag.Arg(0), nil, true, true, false, true)
     if err != nil {
         log.Fatalf("Error in commit: %s", err)
     } else if job == 0 {
