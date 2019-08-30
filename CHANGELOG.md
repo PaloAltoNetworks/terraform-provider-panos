@@ -1,42 +1,42 @@
-## 1.6.0 (Unreleased)
+## 1.6.0 (August 30, 2019)
 
 NEW DATA SOURCES:
 
-* `panos_panorama_plugin` [GH-178]
+* `panos_panorama_plugin` ([#178](https://github.com/terraform-providers/terraform-provider-panos/issues/178))
 
 NEW RESOURCES:
 
-* `panos_gre_tunnel` / `panos_panorama_gre_tunnel` [GH-162]
-* `panos_monitor_profile` / `panos_panorama_monitor_profile` [GH-182]
-* `panos_panorama_gcp_account` [GH-179]
-* `panos_panorama_gke_cluster` [GH-181]
-* `panos_panorama_gke_cluster_group` [GH-180]
-* `panos_pbf_rule_group` / `panos_panorama_pbf_rule_group` [GH-152]
-* `panos_vlan` / `panos_panorama_vlan` [GH-145]
-* `panos_aggregate_interface` / `panos_panorama_aggregate_interface` [GH-169]
-* `panos_vlan_entry` / `panos_panorama_vlan_entry` [GH-146]
-* `panos_layer3_subinterface` / `panos_panorama_layer3_subinterface` [GH-195]
-* `panos_layer2_subinterface` / `panos_panorama_layer2_subinterface` [GH-82]
-* `panos_application_object` / `panos_panorama_application_object` [GH-197]
-* `panos_application_group` / `panos_panorama_application_group` [GH-198]
-* `panos_application_signature` / `panos_panorama_application_signature` [GH-201]
-* `panos_snmptrap_server_profile` / `panos_panorama_snmptrap_server_profile` [GH-203]
-* `panos_syslog_server_profile` / `panos_panorama_syslog_server_profile` [GH-83]
-* `panos_email_server_profile` / `panos_panorama_email_server_profile` [GH-206]
-* `panos_http_server_profile` / `panos_panorama_http_server_profile` [GH-207]
-* `panos_log_forwarding_profile` / `panos_panorama_log_forwarding_profile` [GH-84]
+* `panos_gre_tunnel` / `panos_panorama_gre_tunnel` ([#162](https://github.com/terraform-providers/terraform-provider-panos/issues/162))
+* `panos_monitor_profile` / `panos_panorama_monitor_profile` ([#182](https://github.com/terraform-providers/terraform-provider-panos/issues/182))
+* `panos_panorama_gcp_account` ([#179](https://github.com/terraform-providers/terraform-provider-panos/issues/179))
+* `panos_panorama_gke_cluster` ([#181](https://github.com/terraform-providers/terraform-provider-panos/issues/181))
+* `panos_panorama_gke_cluster_group` ([#180](https://github.com/terraform-providers/terraform-provider-panos/issues/180))
+* `panos_pbf_rule_group` / `panos_panorama_pbf_rule_group` ([#152](https://github.com/terraform-providers/terraform-provider-panos/issues/152))
+* `panos_vlan` / `panos_panorama_vlan` ([#145](https://github.com/terraform-providers/terraform-provider-panos/issues/145))
+* `panos_aggregate_interface` / `panos_panorama_aggregate_interface` ([#169](https://github.com/terraform-providers/terraform-provider-panos/issues/169))
+* `panos_vlan_entry` / `panos_panorama_vlan_entry` ([#146](https://github.com/terraform-providers/terraform-provider-panos/issues/146))
+* `panos_layer3_subinterface` / `panos_panorama_layer3_subinterface` ([#195](https://github.com/terraform-providers/terraform-provider-panos/issues/195))
+* `panos_layer2_subinterface` / `panos_panorama_layer2_subinterface` ([#82](https://github.com/terraform-providers/terraform-provider-panos/issues/82))
+* `panos_application_object` / `panos_panorama_application_object` ([#197](https://github.com/terraform-providers/terraform-provider-panos/issues/197))
+* `panos_application_group` / `panos_panorama_application_group` ([#198](https://github.com/terraform-providers/terraform-provider-panos/issues/198))
+* `panos_application_signature` / `panos_panorama_application_signature` ([#201](https://github.com/terraform-providers/terraform-provider-panos/issues/201))
+* `panos_snmptrap_server_profile` / `panos_panorama_snmptrap_server_profile` ([#203](https://github.com/terraform-providers/terraform-provider-panos/issues/203))
+* `panos_syslog_server_profile` / `panos_panorama_syslog_server_profile` ([#83](https://github.com/terraform-providers/terraform-provider-panos/issues/83))
+* `panos_email_server_profile` / `panos_panorama_email_server_profile` ([#206](https://github.com/terraform-providers/terraform-provider-panos/issues/206))
+* `panos_http_server_profile` / `panos_panorama_http_server_profile` ([#207](https://github.com/terraform-providers/terraform-provider-panos/issues/207))
+* `panos_log_forwarding_profile` / `panos_panorama_log_forwarding_profile` ([#84](https://github.com/terraform-providers/terraform-provider-panos/issues/84))
 
 NEW PARAMS ADDED TO:
 
-* `panos_address_object` / `panos_panorama_address_object` [GH-174]
-* `panos_ethernet_interface` / `panos_panorama_ethernet_interface` [GH-173]
-* `panos_service_object` / `panos_panorama_service_object` [GH-175]
+* `panos_address_object` / `panos_panorama_address_object` ([#174](https://github.com/terraform-providers/terraform-provider-panos/issues/174))
+* `panos_ethernet_interface` / `panos_panorama_ethernet_interface` ([#173](https://github.com/terraform-providers/terraform-provider-panos/issues/173))
+* `panos_service_object` / `panos_panorama_service_object` ([#175](https://github.com/terraform-providers/terraform-provider-panos/issues/175))
 
 BUG FIXES:
 
-* The ordering for administrative tags on objects (such as address objects or address groups) is now preserved [GH-161]
-* The ordering for various list params in `panos_nat_rule_group` / `panos_panorama_nat_rule_group` is now ignored [GH-143]
-* New params added to `panos_nat_rule_group` / `panos_panorama_nat_rule_group` to to replace `static` and `dynamic` as `dynamic` is now a recursively reserved keyword in Terraform 0.12 [GH-167]
+* The ordering for administrative tags on objects (such as address objects or address groups) is now preserved ([#161](https://github.com/terraform-providers/terraform-provider-panos/issues/161))
+* The ordering for various list params in `panos_nat_rule_group` / `panos_panorama_nat_rule_group` is now ignored ([#143](https://github.com/terraform-providers/terraform-provider-panos/issues/143))
+* New params added to `panos_nat_rule_group` / `panos_panorama_nat_rule_group` to to replace `static` and `dynamic` as `dynamic` is now a recursively reserved keyword in Terraform 0.12 ([#167](https://github.com/terraform-providers/terraform-provider-panos/issues/167))
 
 ## 1.5.2 (May 14, 2019)
 
