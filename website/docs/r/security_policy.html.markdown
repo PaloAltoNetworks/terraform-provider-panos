@@ -10,11 +10,13 @@ description: |-
 
 This resource allows you to manage the full security posture.
 
-~> **Note:** `panos_security_policies` is known as `panos_security_policy`.
+-> **Note:** `panos_security_policies` is known as `panos_security_policy`.
 
 This resource manages the full set of security rules in a vsys, enforcing both
 the contents of individual rules as well as their ordering.  Rules are defined
 in a `rule` config block.
+
+!> **Note**: This resource will remove any security rule not defined in your plan file.
 
 For each security rule, there are three styles of profile settings:
 

@@ -52,7 +52,7 @@ resource "panos_panorama_nat_rule_group" "bot" {
         translated_packet {
             source {}
             destination {
-                static {
+                static_translation {
                     address = "10.2.3.1"
                     port = 5678
                 }
@@ -106,7 +106,7 @@ resource "panos_panorama_nat_rule_group" "top" {
                 }
             }
             destination {
-                static {
+                static_translation {
                     address = "10.1.1.1"
                     port = 1234
                 }
@@ -253,18 +253,26 @@ following arguments:
 
 `translated_packet.destination` supports the following arguments:
 
-* `static` - (Optional) Specifies a static destination NAT (see below).
-* `dynamic` - (Optional, PAN-OS 8.1+) Specify a dynamic destination NAT
+* `static_translation` - (Optional) Specifies a static destination NAT (see below).
+* `dynamic_translation` - (Optional, PAN-OS 8.1+) Specify a dynamic destination NAT
   (see below).
+* `static` - (**DEPRECATED**, Optional) Specifies a static destination NAT (see below).
+  This was deprecated in provider version 1.6 in favor of `static_translation` instead.
+* `dynamic` - (**DEPRECATED**, Optional, PAN-OS 8.1+) Specify a dynamic destination NAT
+  (see below).  If you are using Terraform 0.12+, you cannot use this param as it
+  conflicts with the new
+  [dynamic](https://www.terraform.io/docs/configuration/expressions.html#dynamic-blocks) block.
 
 
-`translated_packet.destination.static` supports the following arguments:
+`translated_packet.destination.static` and `translated_packet.destination.static_translation`
+support the following arguments:
 
 * `address` - (Required) Destination address translation address.
 * `port` - (Optional, int) Destination address translation port number.
 
 
-`translated_packet.destination.dynamic` supports the following arguments:
+`translated_packet.destination.dynamic` and `translated_packet.destination.dynamic_translation`
+support the following arguments:
 
 * `address` - (Required) Destination address translation address.
 * `port` - (Optional, int) Destination address translation port number.
