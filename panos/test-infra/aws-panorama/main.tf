@@ -108,13 +108,16 @@ data "aws_ami" "panorama" {
 }
 
 resource "aws_instance" "main" {
-  ami = "${data.aws_ami.panorama.id}"
-
+  ami                         = "${data.aws_ami.panorama.id}"
+  associate_public_ip_address = true
   instance_type               = "m4.2xlarge"
+  key_name                    = "${aws_key_pair.default.key_name}"
   subnet_id                   = "${aws_subnet.default.id}"
   vpc_security_group_ids      = ["${aws_security_group.main.id}"]
-  key_name                    = "${aws_key_pair.default.key_name}"
-  associate_public_ip_address = true
+
+  root_block_device {
+    delete_on_termination = true
+  }
 
   tags = {
     Name = "tf-acc-panorama-${random_id.name.hex}"
