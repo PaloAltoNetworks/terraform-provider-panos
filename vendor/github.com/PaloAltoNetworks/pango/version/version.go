@@ -39,10 +39,7 @@ func (v Number) String() string {
 
 // New returns a version number from the given string.
 func New(version string) (Number, error) {
-    parts := strings.Split(version, ".")
-    if len(parts) != 3 {
-        return Number{}, fmt.Errorf("Improperly formatted version: %s", version)
-    }
+    parts := strings.Split(version, ".")[:3]
 
     major, err := strconv.Atoi(parts[0])
     if err != nil {
