@@ -61,6 +61,11 @@ type Client struct {
     Timeout int
     Target string
 
+    // HTTP transport options.  Note that the VerifyCertificate setting is
+    // only used if you do not specify a HTTP transport yourself.
+    VerifyCertificate bool
+    Transport *http.Transport
+
     // Variables determined at runtime.
     Version version.Number
     SystemInfo map[string] string
@@ -977,11 +982,15 @@ func (c *Client) initCon() error {
     }
 
     // Setup the https client
-    tr := &http.Transport{
-        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    if c.Transport == nil {
+        c.Transport = &http.Transport{
+            TLSClientConfig: &tls.Config{
+                InsecureSkipVerify: !c.VerifyCertificate,
+            },
+        }
     }
     c.con = &http.Client{
-        Transport: tr,
+        Transport: c.Transport,
         Timeout: tout,
     }
 
