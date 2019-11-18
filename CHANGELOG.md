@@ -1,4 +1,10 @@
 ## 1.6.1 (Unreleased)
+
+
+UPDATES:
+
+* The provider can now manage XFR PAN-OS releases [#216]
+
 ## 1.6.0 (August 30, 2019)
 
 NEW DATA SOURCES:
