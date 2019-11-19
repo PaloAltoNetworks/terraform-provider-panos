@@ -40,9 +40,10 @@ func Provider() terraform.ResourceProvider {
 				Description: "The api key of the firewall",
 			},
 			"protocol": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The protocol (https or http)",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "The protocol (https or http)",
+				ValidateFunc: validateStringIn("https", "http", ""),
 			},
 			"port": {
 				Type:        schema.TypeInt,
@@ -61,6 +62,11 @@ func Provider() terraform.ResourceProvider {
 				},
 				Optional:    true,
 				Description: "Logging options for the API connection",
+			},
+			"verify_certificate": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "For HTTPS protocol connections, verify the certificate",
 			},
 			"json_config_file": {
 				Type:        schema.TypeString,
@@ -225,14 +231,15 @@ func Provider() terraform.ResourceProvider {
 }
 
 type CredsSpec struct {
-	Hostname string   `json:"hostname"`
-	Username string   `json:"username"`
-	Password string   `json:"password"`
-	ApiKey   string   `json:"api_key"`
-	Protocol string   `json:"protocol"`
-	Port     uint     `json:"port"`
-	Timeout  int      `json:"timeout"`
-	Logging  []string `json:"logging"`
+	Hostname          string   `json:"hostname"`
+	Username          string   `json:"username"`
+	Password          string   `json:"password"`
+	ApiKey            string   `json:"api_key"`
+	Protocol          string   `json:"protocol"`
+	Port              uint     `json:"port"`
+	Timeout           int      `json:"timeout"`
+	VerifyCertificate bool     `json:"verify_certificate"`
+	Logging           []string `json:"logging"`
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -260,6 +267,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	protocol := d.Get("protocol").(string)
 	port := uint(d.Get("port").(int))
 	timeout := d.Get("timeout").(int)
+	verifyCert := d.Get("verify_certificate").(bool)
 	lc := d.Get("logging")
 	if lc != nil {
 		ll := lc.([]interface{})
@@ -309,6 +317,9 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		if timeout == 0 && cs.Timeout != 0 {
 			timeout = cs.Timeout
 		}
+		if !verifyCert && cs.VerifyCertificate {
+			verifyCert = cs.VerifyCertificate
+		}
 		if logging == 0 && len(cs.Logging) > 0 {
 			for i := range cs.Logging {
 				if v, ok := lm[cs.Logging[i]]; !ok {
@@ -322,14 +333,15 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	// Create the client connection.
 	con, err := pango.Connect(pango.Client{
-		Hostname: hostname,
-		Username: username,
-		Password: password,
-		ApiKey:   apiKey,
-		Protocol: protocol,
-		Port:     port,
-		Timeout:  timeout,
-		Logging:  logging,
+		Hostname:          hostname,
+		Username:          username,
+		Password:          password,
+		ApiKey:            apiKey,
+		Protocol:          protocol,
+		Port:              port,
+		Timeout:           timeout,
+		VerifyCertificate: verifyCert,
+		Logging:           logging,
 	})
 	if err != nil {
 		return nil, err

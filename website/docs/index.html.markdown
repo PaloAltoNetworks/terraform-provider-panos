@@ -68,6 +68,7 @@ type Credentials struct {
     Protocol string `json:"protocol"`
     Port uint `json:"port"`
     Timeout int `json:"timeout"`
+    VerifyCertificate bool `json:"verify_certificate"`
 }
 
 func getCredentials(configFile, hostname, username, password, apiKey string) (Credentials) {
@@ -572,6 +573,8 @@ The following arguments are supported:
 * `logging` - (Optional) List of logging options for the provider's connection
   to the API.  If this is unspecified, then it defaults to
   `["action", "uid"]`.
+* `verify_certificate` - (Optional, bool, added in v1.6.1) For HTTPS protocol
+  connections, verify that the certificate is valid.
 * `json_config_file` - (Optional) The path to a JSON configuration file that
   contains any number of the provider's parameters.  If specified, the params
   present act as a last resort for any other provider param that has not been
