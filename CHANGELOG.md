@@ -1,10 +1,10 @@
-## 1.6.1 (Unreleased)
+## 1.6.1 (November 19, 2019)
 
 
 UPDATES:
 
-* The provider can now manage XFR PAN-OS releases [GH-216]
-* New optional provider param: `verify_certificate` [GH-218]
+* The provider can now manage XFR PAN-OS releases ([#216](https://github.com/terraform-providers/terraform-provider-panos/issues/216))
+* New optional provider param: `verify_certificate` ([#218](https://github.com/terraform-providers/terraform-provider-panos/issues/218))
 
 ## 1.6.0 (August 30, 2019)
 
