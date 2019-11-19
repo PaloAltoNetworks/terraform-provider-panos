@@ -3,7 +3,8 @@
 
 UPDATES:
 
-* The provider can now manage XFR PAN-OS releases [#216]
+* The provider can now manage XFR PAN-OS releases [GH-216]
+* New optional provider param: `verify_certificate` [GH-218]
 
 ## 1.6.0 (August 30, 2019)
 
