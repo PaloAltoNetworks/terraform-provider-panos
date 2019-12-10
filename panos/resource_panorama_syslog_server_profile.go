@@ -7,7 +7,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/dev/profile/syslog"
 	"github.com/PaloAltoNetworks/pango/dev/profile/syslog/server"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourcePanoramaSyslogServerProfile() *schema.Resource {

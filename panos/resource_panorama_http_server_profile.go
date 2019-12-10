@@ -10,7 +10,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/dev/profile/http/param"
 	"github.com/PaloAltoNetworks/pango/dev/profile/http/server"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourcePanoramaHttpServerProfile() *schema.Resource {
