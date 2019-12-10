@@ -1,8 +1,8 @@
-## 1.6.2 (Unreleased)
+## 1.6.2 (December 10, 2019)
 
 UPDATES:
 
-* Updated the provider to use the Terraform Plugin SDK [GH-220]
+* Updated the provider to use the Terraform Plugin SDK ([#220](https://github.com/terraform-providers/terraform-provider-panos/issues/220))
 
 ## 1.6.1 (November 19, 2019)
 
