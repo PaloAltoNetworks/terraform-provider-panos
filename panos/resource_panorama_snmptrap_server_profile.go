@@ -10,7 +10,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/dev/profile/snmp/v2c"
 	"github.com/PaloAltoNetworks/pango/dev/profile/snmp/v3"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourcePanoramaSnmptrapServerProfile() *schema.Resource {

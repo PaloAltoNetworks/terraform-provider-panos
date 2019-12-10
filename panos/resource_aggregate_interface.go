@@ -9,7 +9,7 @@ import (
 	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
 	"github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceAggregateInterface() *schema.Resource {

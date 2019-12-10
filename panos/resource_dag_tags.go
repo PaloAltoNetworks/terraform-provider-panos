@@ -5,7 +5,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"log"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDagTags() *schema.Resource {

@@ -8,9 +8,9 @@ import (
 	"github.com/PaloAltoNetworks/pango/dev/profile/syslog"
 	"github.com/PaloAltoNetworks/pango/dev/profile/syslog/server"
 
-	"github.com/hashicorp/terraform/helper/acctest"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
 func TestAccPanosSyslogServerProfile_basic(t *testing.T) {
