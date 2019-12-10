@@ -8,9 +8,9 @@ import (
 	"github.com/PaloAltoNetworks/pango/pnrm/template/variable"
 	"github.com/PaloAltoNetworks/pango/version"
 
-	"github.com/hashicorp/terraform/helper/acctest"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
 func TestAccPanosPanoramaTemplateVariable_basic(t *testing.T) {

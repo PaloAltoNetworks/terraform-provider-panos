@@ -9,7 +9,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer3"
 	"github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceLayer3Subinterface() *schema.Resource {
