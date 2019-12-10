@@ -1,4 +1,9 @@
 ## 1.6.2 (Unreleased)
+
+UPDATES:
+
+* Updated the provider to use the Terraform Plugin SDK [GH-220]
+
 ## 1.6.1 (November 19, 2019)
 
 
