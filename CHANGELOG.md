@@ -1,4 +1,8 @@
-## 1.6.3 (Unreleased)
+## 1.6.4 (Unreleased)
+## 1.6.3 (September 1, 2020)
+
+* Terraform Registry release
+
 ## 1.6.2 (December 10, 2019)
 
 UPDATES:
