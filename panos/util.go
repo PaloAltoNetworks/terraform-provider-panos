@@ -1,6 +1,8 @@
 package panos
 
 import (
+	"fmt"
+
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/util"
 
@@ -8,6 +10,8 @@ import (
 )
 
 const IdSeparator string = ":"
+const WrongPanosWithoutAltError string = "This is a %s resource, but encountered a %s system"
+const WrongPanosWithAltError string = "This is a %s resource, but encountered a %s system - Please use %s instead"
 
 func getMovementMap() map[int]string {
 	return map[int]string{
@@ -186,4 +190,28 @@ func buildTarget(m map[string][]string) *schema.Set {
 	}
 
 	return ans
+}
+
+func firewall(meta interface{}, alt string) (*pango.Firewall, error) {
+	if fw, ok := meta.(*pango.Firewall); ok {
+		return fw, nil
+	}
+
+	if alt != "" {
+		return nil, fmt.Errorf(WrongPanosWithAltError, "firewall", "Panorama", alt)
+	}
+
+	return nil, fmt.Errorf(WrongPanosWithoutAltError, "firewall", "Panorama")
+}
+
+func panorama(meta interface{}, alt string) (*pango.Panorama, error) {
+	if p, ok := meta.(*pango.Panorama); ok {
+		return p, nil
+	}
+
+	if alt != "" {
+		return nil, fmt.Errorf(WrongPanosWithAltError, "Panorama", "firewall", alt)
+	}
+
+	return nil, fmt.Errorf(WrongPanosWithoutAltError, "Panorama", "firewall")
 }
