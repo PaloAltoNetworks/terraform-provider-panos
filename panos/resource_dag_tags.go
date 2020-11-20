@@ -2,8 +2,10 @@ package panos
 
 import (
 	"fmt"
-	"github.com/PaloAltoNetworks/pango"
 	"log"
+
+	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/userid"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -48,20 +50,22 @@ func resourceDagTags() *schema.Resource {
 	}
 }
 
-func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set, map[string][]string, map[string][]string, *schema.Set, error) {
+func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*userid.Message, *userid.Message, *schema.Set, error) {
 	dag := d.Get("register").(*schema.Set)
 	missingMap := make(map[string][]string)
 	overlapMap := make(map[string][]string)
 	overlapSet := &schema.Set{F: dag.F}
+	missing := &userid.Message{}
+	overlap := &userid.Message{}
 
 	osl := dag.List()
 	for i := range osl {
 		group := osl[i].(map[string]interface{})
 		key := group["ip"].(string)
 		if _, ok := missingMap[key]; ok {
-			return nil, nil, nil, nil, fmt.Errorf("IP %q already defined, please merge these groups", key)
+			return nil, nil, nil, fmt.Errorf("IP %q already defined, please merge these groups", key)
 		} else if _, ok := overlapMap[key]; ok {
-			return nil, nil, nil, nil, fmt.Errorf("IP %q already defined, please merge these groups", key)
+			return nil, nil, nil, fmt.Errorf("IP %q already defined, please merge these groups", key)
 		}
 		info := cur[key]
 		tl := group["tags"].(*schema.Set).List()
@@ -94,24 +98,41 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*schema.Set,
 		}
 	}
 
-	return dag, missingMap, overlapMap, overlapSet, nil
+	missing.TagIps = make([]userid.TagIp, 0, len(missingMap))
+	for key, tags := range missingMap {
+		missing.TagIps = append(missing.TagIps, userid.TagIp{
+			Ip:   key,
+			Tags: tags,
+		})
+	}
+
+	overlap.UntagIps = make([]userid.UntagIp, 0, len(overlapMap))
+	for key, tags := range overlapMap {
+		overlap.UntagIps = append(overlap.UntagIps, userid.UntagIp{
+			Ip:   key,
+			Tags: tags,
+		})
+	}
+
+	return missing, overlap, overlapSet, nil
+	//return dag, missingMap, overlapMap, overlapSet, nil
 }
 
 func createUpdateDagTags(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.Registered("", "", vsys)
+	cur, err := fw.UserId.GetIpTags("", "", vsys)
 	if err != nil {
 		return err
 	}
 
-	_, missingMap, _, _, err := parseDagTags(cur, d)
+	missing, _, _, err := parseDagTags(cur, d)
 	if err != nil {
 		return err
 	}
 
-	if err = fw.UserId.Run(nil, nil, missingMap, nil, vsys); err != nil {
+	if err = fw.UserId.Run(missing, vsys); err != nil {
 		return err
 	}
 
@@ -123,13 +144,13 @@ func readDagTags(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.Registered("", "", vsys)
+	cur, err := fw.UserId.GetIpTags("", "", vsys)
 	if err != nil || len(cur) == 0 {
 		d.SetId("")
 		return nil
 	}
 
-	_, _, _, overlapSet, err := parseDagTags(cur, d)
+	_, _, overlapSet, err := parseDagTags(cur, d)
 	if err != nil {
 		return err
 	}
@@ -146,20 +167,20 @@ func deleteDagTags(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.Registered("", "", vsys)
+	cur, err := fw.UserId.GetIpTags("", "", vsys)
 	if err != nil {
 		d.SetId("")
 		return nil
 	}
 
-	_, _, overlapMap, _, err := parseDagTags(cur, d)
+	_, overlap, _, err := parseDagTags(cur, d)
 	if err != nil {
 		return err
 	}
 
 	// The UserId subsystem doesn't return ObjectNotFound, so we don't need
 	// to check for that at this point.
-	err = fw.UserId.Run(nil, nil, nil, overlapMap, vsys)
+	err = fw.UserId.Run(overlap, vsys)
 	if err != nil {
 		return err
 	}
