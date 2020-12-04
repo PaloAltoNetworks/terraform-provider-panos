@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_dhcp_interface_info"
-sidebar_current: "docs-panos-datasource-dhcp-interface-info"
-description: |-
-  Gets DHCP client information on the given data interface.
+subcategory: "Firewall Networking"
 ---
 
 # panos_dhcp_interface_info
@@ -23,13 +20,11 @@ output "eth1_ip" {
 }
 ```
 
-## Attribute Reference
-
-The following attributes are present:
+## Argument Reference
 
 * `interface` - (Required) The data interface to get DHCP information for.
 
-These attributes are exported once the data source refreshes:
+## Attribute Reference
 
 * `state` - The interface's state.
 * `ip` - DHCP IP address.
