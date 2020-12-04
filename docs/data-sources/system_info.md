@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_system_info"
-sidebar_current: "docs-panos-datasource-system-info"
-description: |-
-  Gets system info from the firewall.
+subcategory: "Shared"
 ---
 
 # panos_system_info
@@ -21,8 +18,6 @@ data "panos_system_info" "example" {}
 ```
 
 ## Attribute Reference
-
-The following attributes are present:
 
 * `info` - a map containing the contents of `show system info`.
 * `version_major` - Major version number.
