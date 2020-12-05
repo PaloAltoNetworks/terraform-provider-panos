@@ -1,9 +1,5 @@
 ---
-layout: "panos"
 page_title: "Provider: panos"
-sidebar_current: "docs-panos-index"
-description: |-
-  Provider panos is used to interact with Palo Alto Networks NGFW and Panorama.
 ---
 
 # Provider panos
@@ -18,11 +14,14 @@ resources.
 
 ## Versioning
 
-The panos provider has support for PAN-OS 6.1 - 9.0.
+In general, the panos provider has support for PAN-OS 6.1 onwards.  Data
+sources or resources that have minimum PAN-OS version requirements will
+specify their version requirements in their documentation.
 
 Some resources may contain variables that are only applicable for newer
-versions of PAN-OS.  If this is the case, then make sure to use
-[conditionals](https://www.terraform.io/docs/configuration/expressions.html#conditional-expressions)
+versions of PAN-OS.  If you need to work with multiple versions of PAN-OS
+where some versions have a new parameter and some don't, then make sure to use
+[conditionals](https://www.terraform.io/docs/configuration/expressions/conditionals.html)
 along with the `panos_system_info` data source to only set these variables
 when the version of PAN-OS is appropriate.
 
@@ -46,230 +45,8 @@ data "panos_ethernet_interface" "eth1" {
 ## Commits
 
 As of right now, Terraform does not provide native support for commits, so
-commits are handled out-of-band.  Please use the following for commits:
-
-```go
-package main
-
-import (
-    "encoding/json"
-    "flag"
-    "log"
-    "os"
-
-    "github.com/PaloAltoNetworks/pango"
-)
-
-type Credentials struct {
-    Hostname string `json:"hostname"`
-    Username string `json:"username"`
-    Password string `json:"password"`
-    ApiKey string `json:"api_key"`
-    Protocol string `json:"protocol"`
-    Port uint `json:"port"`
-    Timeout int `json:"timeout"`
-    VerifyCertificate bool `json:"verify_certificate"`
-}
-
-func getCredentials(configFile, hostname, username, password, apiKey string) (Credentials) {
-    var (
-        config Credentials
-        val string
-        ok bool
-    )
-
-    // Auth from the config file.
-    if configFile != "" {
-        fd, err := os.Open(configFile)
-        if err != nil {
-            log.Fatalf("ERROR: %s", err)
-        }
-        defer fd.Close()
-
-        dec := json.NewDecoder(fd)
-        err = dec.Decode(&config)
-        if err != nil {
-            log.Fatalf("ERROR: %s", err)
-        }
-    }
-
-    // Auth from env variables.
-    if val, ok = os.LookupEnv("PANOS_HOSTNAME"); ok {
-        config.Hostname = val
-    }
-    if val, ok = os.LookupEnv("PANOS_USERNAME"); ok {
-        config.Username = val
-    }
-    if val, ok = os.LookupEnv("PANOS_PASSWORD"); ok {
-        config.Password = val
-    }
-    if val, ok = os.LookupEnv("PANOS_API_KEY"); ok {
-        config.ApiKey = val
-    }
-
-    // Auth from CLI args.
-    if hostname != "" {
-        config.Hostname = hostname
-    }
-    if username != "" {
-        config.Username = username
-    }
-    if password != "" {
-        config.Password = password
-    }
-    if apiKey != "" {
-        config.ApiKey = apiKey
-    }
-
-    if config.Hostname == "" {
-        log.Fatalf("ERROR: No hostname specified")
-    } else if config.Username == "" && config.ApiKey == "" {
-        log.Fatalf("ERROR: No username specified")
-    } else if config.Password == "" && config.ApiKey == "" {
-        log.Fatalf("ERROR: No password specified")
-    }
-
-    return config
-}
-
-func main() {
-    var (
-        err error
-        configFile, hostname, username, password, apiKey string
-        job uint
-    )
-
-    log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds)
-
-    flag.StringVar(&configFile, "config", "", "JSON config file with panos connection info")
-    flag.StringVar(&hostname, "host", "", "PAN-OS hostname")
-    flag.StringVar(&username, "user", "", "PAN-OS username")
-    flag.StringVar(&password, "pass", "", "PAN-OS password")
-    flag.StringVar(&apiKey, "key", "", "PAN-OS API key")
-    flag.Parse()
-
-    config := getCredentials(configFile, hostname, username, password, apiKey)
-
-    fw := &pango.Firewall{Client: pango.Client{
-        Hostname: config.Hostname,
-        Username: config.Username,
-        Password: config.Password,
-        ApiKey: config.ApiKey,
-        Protocol: config.Protocol,
-        Port: config.Port,
-        Timeout: config.Timeout,
-        Logging: pango.LogOp | pango.LogAction,
-    }}
-    if err = fw.Initialize(); err != nil {
-        log.Fatalf("Failed: %s", err)
-    }
-
-    job, err = fw.Commit(flag.Arg(0), nil, true, true, false, true)
-    if err != nil {
-        log.Fatalf("Error in commit: %s", err)
-    } else if job == 0 {
-        log.Printf("No commit needed")
-    } else {
-        log.Printf("Committed config successfully")
-    }
-}
-```
-
-Compile the above, put it somewhere in your `$PATH` (such as `$HOME/bin`),
-then invoke it after `terraform apply` and `terraform destroy`:
-
-```bash
-$ go get github.com/PaloAltoNetworks/pango
-$ go build commit.go
-$ mv commit ~/bin
-$ terraform apply && commit -config fwauth.json 'My commit comment'
-```
-
-The first trailing CLI arg is assumed to be the commit comment.  If there is
-no CLI arg present then no commit comment is given to PAN-OS.
-
-The authentication credentials can be given multiple ways, and if all are
-present then this is the order, from lowest to highest priority:
-
-1. JSON authentication credential file
-2. Environment variables
-3. CLI arguments (WARNING: this is insecure)
-
-See the argument reference section below for more info on the JSON config
-file and supported environment variables.
-
-## PAN-OS API Key
-
-API connections to PAN-OS require an
-[API key](https://www.paloaltonetworks.com/documentation/71/pan-os/xml-api/get-started-with-the-pan-os-xml-api/get-your-api-key).
-If you do not provide the API key to the panos provider, then the API key is
-generated before every single API call.  Thus, some slight speed gains can be
-realized in the panos provider by specifying the API key instead of the
-username/password combo.  The following may be used to generate the API key:
-
-```go
-package main
-
-import (
-    "fmt"
-    "os"
-
-    "github.com/PaloAltoNetworks/pango"
-)
-
-func main() {
-    var (
-        hostname, username, password string
-        ok bool
-    )
-
-    if hostname, ok = os.LookupEnv("PANOS_HOSTNAME"); !ok {
-        os.Stderr.WriteString("PANOS_HOSTNAME must be set\n")
-        return
-    }
-    if username, ok = os.LookupEnv("PANOS_USERNAME"); !ok {
-        os.Stderr.WriteString("PANOS_USERNAME must be set\n")
-        return
-    }
-    if password, ok = os.LookupEnv("PANOS_PASSWORD"); !ok {
-        os.Stderr.WriteString("PANOS_PASSWORD must be set\n")
-        return
-    }
-
-    fw := &pango.Firewall{Client: pango.Client{
-        Hostname: hostname,
-        Username: username,
-        Password: password,
-        Logging: pango.LogQuiet,
-    }}
-    if err := fw.Initialize(); err != nil {
-        os.Stderr.WriteString(fmt.Sprintf("Failed initialize: %s\n", err))
-        return
-    }
-    os.Stdout.WriteString(fmt.Sprintf("%s\n", fw.ApiKey))
-}
-```
-
-Then execute it like this:
-
-```bash
-$ go get github.com/PaloAltoNetworks/pango
-$ go run make_api_key.go
-```
-
-The API key is output to stdout, but you can redirect this to a file using
-normal shell redirection if desired:
-
-```bash
-$ go run make_api_key.go > my_api_key.txt
-```
-
-Connection information for the above is expected to be set as environment
-variables:
-
-* `PANOS_HOSTNAME`
-* `PANOS_USERNAME`
-* `PANOS_PASSWORD`
+commits are handled out-of-band.  Please refer to the commit guide to the left
+for more information.
 
 ## AWS / GCP Considerations
 
@@ -541,49 +318,50 @@ provider "panos" {
     username = "admin"
     password = "secret"
 }
-
-# Add a new zone to the firewall
-resource "panos_zone" "zone1" {
-    # ...
-}
 ```
 
 ## Argument Reference
 
+Arguments can be given in any or all of the following ways.  A parameter value
+is taken from the highest priority source, with lower priority sources being
+ignored.  From highest to lowest priority, these ways are:
+
+1. Directly in the `provider` block
+2. Environment variable setting (where applicable)
+3. From the JSON config file
+
+
 The following arguments are supported:
 
-* `hostname` - (Optional) This is the hostname / IP address of the firewall.  It
-  must be provided, but can also be defined via the `PANOS_HOSTNAME`
-  environment variable.
-* `username` - (Optional) The username to authenticate to the firewall as.  It
-  must be provided, but can also be defined via the `PANOS_USERNAME`
-  environment variable.
-* `password` - (Optional) The password for the given username. It must be
-  provided, but can also be defined via the `PANOS_PASSWORD` environment
-  variable.
-* `api_key` - (Optional) The API key for the firewall.  If this is given, then
-  the `username` and `password` settings are ignored.  This can also be defined
-  via the `PANOS_API_KEY` environment variable.
-* `protocol` - (Optional) The communication protocol.  This can be set to
-  either `https` or `http`.  If left unspecified, this defaults to `https`.
-* `port` - (Optional) If the port number is non-standard for the desired
-  protocol, then the port number to use.
-* `timeout` - (Optional) The timeout for all communications with the
-  firewall.  If left unspecified, this will be set to 10 seconds.
+* `hostname` - (Optional, env:`PANOS_HOSTNAME`) The hostname / IP address of PAN-OS.
+* `username` - (Optional, env:`PANOS_USERNAME`) The PAN-OS username.  This is ignored
+  if the `api_key` is given.
+* `password` - (Optional, env:`PANOS_PASSWORD`) The PAN-OS password.  This is ignored
+  if the `api_key` is given.
+* `api_key` - (Optional, env:`PANOS_API_KEY`) The API key for the firewall.
+* `protocol` - (Optional, env:`PANOS_PROTOCOL`) The communication protocol.  Valid
+  values are `https` (the default) or `http`.
+* `port` - (Optional, int, env:`PANOS_PORT`) If the port number is non-standard for
+  the desired protocol, then the port number to use.
+* `timeout` - (Optional, int, env:`PANOS_TIMEOUT`) The timeout for all communications
+  with PAN-OS (default: `10`).
+* `target` - (Optional, env:`PANOS_TARGET`) The firewall serial number to target
+  configuration commands to (the `hostname` should be a Panorama PAN-OS).
 * `logging` - (Optional) List of logging options for the provider's connection
   to the API.  If this is unspecified, then it defaults to
   `["action", "uid"]`.
-* `verify_certificate` - (Optional, bool, added in v1.6.1) For HTTPS protocol
-  connections, verify that the certificate is valid.
+* `verify_certificate` - (Optional, bool, env:`PANOS_VERIFY_CERTIFICATE`) For HTTPS
+  protocol connections, verify that the certificate is valid.
 * `json_config_file` - (Optional) The path to a JSON configuration file that
   contains any number of the provider's parameters.  If specified, the params
   present act as a last resort for any other provider param that has not been
-  specified yet.
+  specified yet.  Params in the JSON config file match what the provider block
+  supports, both in naming convention and data types.  See below for an example of
+  the JSON config file contents.
 
 The list of strings supported for `logging` are as follows:
 
-* `quiet` - Disables logging.  This is ignored, however, if other logging
-  flags are present.
+* `quiet` - Disables logging if only `quiet` is specified.
 * `action` - Log `set` / `edit` / `delete`.
 * `query` - Log `get`.
 * `op` - Log `op`.
@@ -593,6 +371,18 @@ The list of strings supported for `logging` are as follows:
   only useful in development of the provider itself.
 * `receive` - Log the raw response sent back from the device.  This is probably
   only useful in development of the provider itself.
+
+The following is an example of the contents of a JSON config file:
+
+```json
+{
+    "hostname": "127.0.0.1",
+    "api_key": "secret",
+    "timeout": 10,
+    "logging": ["action", "op", "uid"],
+    "verify_certificate": false
+}
+```
 
 ## Support
 
