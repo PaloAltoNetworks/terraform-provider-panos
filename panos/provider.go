@@ -215,6 +215,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_syslog_server_profile":                resourceSyslogServerProfile(),
 			"panos_telemetry":                            resourceTelemetry(),
 			"panos_tunnel_interface":                     resourceTunnelInterface(),
+			"panos_userid_login":                         resourceUseridLogin(),
 			"panos_virtual_router":                       resourceVirtualRouter(),
 			"panos_virtual_router_entry":                 resourceVirtualRouterEntry(),
 			"panos_vlan":                                 resourceVlan(),
