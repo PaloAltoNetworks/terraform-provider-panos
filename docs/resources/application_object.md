@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_application_object"
-description: |-
-  Manages application objects.
+subcategory: "Firewall Objects"
 ---
 
 # panos_application_object
