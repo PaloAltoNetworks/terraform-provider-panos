@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp"
-sidebar_current: "docs-panos-resource-bgp"
-description: |-
-  Manages a virtual router's BGP configuration.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp
@@ -30,7 +27,7 @@ of `panos_virtual_router.bar.name`.
 
 ```hcl
 resource "panos_bgp" "example" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
