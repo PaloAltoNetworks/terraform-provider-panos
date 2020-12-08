@@ -1,12 +1,9 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bfd_profile"
-sidebar_current: "docs-panos-resource-bfd-profile"
-description: |-
-  Manages BFD profiles.
+subcategory: "Firewall Networking"
 ---
 
-# panos_bfd_profile.
+# panos_bfd_profile
 
 This resource allows you to add/update/delete BFD profiles.
 
