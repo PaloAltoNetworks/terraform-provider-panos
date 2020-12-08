@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_aggregate"
-sidebar_current: "docs-panos-resource-bgp-aggregate"
-description: |-
-  Manages BGP address aggregation rules.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_aggregate
@@ -23,14 +20,14 @@ rules.
 
 ```hcl
 resource "panos_bgp_aggregate" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "myAggRule"
     prefix = "192.168.1.0/24"
     weight = 17
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
 }
