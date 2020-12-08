@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_address_object"
-sidebar_current: "docs-panos-resource-address-object"
-description: |-
-  Manages address objects.
+subcategory: "Firewall Objects"
 ---
 
 # panos_address_object
