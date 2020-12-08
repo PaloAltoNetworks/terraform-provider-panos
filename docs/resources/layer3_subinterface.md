@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_layer3_subinterface"
-description: |-
-  Manages layer3 subinterfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_layer3_subinterface
@@ -23,7 +21,7 @@ This resource allows you to add/update/delete layer3 subinterfaces.
 resource "panos_layer3_subinterface" "example" {
     parent_interface = panos_ethernet_interface.e.name
     vsys = "vsys1"
-    name = "ethernet1/5.5"
+    name = "${panos_ethernet_interface.e.name}.5"
     tag = 5
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
