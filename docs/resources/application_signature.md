@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_application_signature"
-description: |-
-  Manages application signatures.
+subcategory: "Firewall Objects"
 ---
 
 # panos_application_signature
