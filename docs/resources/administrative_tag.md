@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_administrative_tag"
-sidebar_current: "docs-panos-resource-administrative-tag"
-description: |-
-  Manages administrative tags.
+subcategory: "Firewall Objects"
 ---
 
 # panos_administrative_tag
