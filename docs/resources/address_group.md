@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_address_group"
-sidebar_current: "docs-panos-resource-address-group"
-description: |-
-  Manages address groups.
+subcategory: "Firewall Objects"
 ---
 
 # panos_address_group
@@ -29,9 +26,24 @@ group.
 resource "panos_address_group" "example1" {
     name = "static ntp grp"
     description = "My NTP servers"
-    static_addresses = ["ntp1", "ntp2", "ntp3"]
+    static_addresses = [
+        panos_address_object.ao1.name,
+        panos_address_object.ao2.name,
+    ]
 }
 
+resource "panos_address_object" "ao1" {
+    name = "ntp1"
+    value = "10.0.0.1"
+}
+
+resource "panos_address_object" "ao2" {
+    name = "ntp2"
+    value = "10.0.0.2"
+}
+```
+
+```hcl
 # Dynamic group
 resource "panos_address_group" "example2" {
     name = "dynamic grp"
