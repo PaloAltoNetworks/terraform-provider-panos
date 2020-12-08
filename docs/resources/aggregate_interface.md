@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_aggregate_interface"
-description: |-
-  Manages aggregate ethernet interfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_aggregate_interface
