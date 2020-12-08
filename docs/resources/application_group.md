@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_application_group"
-description: |-
-  Manages application groups.
+subcategory: "Firewall Objects"
 ---
 
 # panos_application_group
@@ -23,9 +21,19 @@ This resource allows you to add/update/delete application groups.
 resource "panos_application_group" "example" {
     name = "myApp"
     applications = [
-        "app1",
-        "app2",
+        panos_application_object.a1.name,
+        panos_application_object.a2.name,
     ]
+}
+
+resource "panos_application_object" "a1" {
+    name = "app1"
+    ...
+}
+
+resource "panos_application_object" "a2" {
+    name = "app2"
+    ...
 }
 ```
 
