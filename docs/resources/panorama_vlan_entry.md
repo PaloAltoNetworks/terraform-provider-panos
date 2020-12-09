@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_vlan_entry"
-description: |-
-  Manages a Panorama interface in a VLAN.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_vlan_entry
