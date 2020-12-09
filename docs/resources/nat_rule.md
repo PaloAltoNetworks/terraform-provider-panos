@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_nat_rule"
-sidebar_current: "docs-panos-resource-nat-rule"
-description: |-
-  Manages NAT rules.
+subcategory: "Firewall Policy"
 ---
 
 # panos_nat_rule
@@ -30,14 +27,30 @@ params may become necessary to correctly configure the NAT rule.
 ```hcl
 resource "panos_nat_rule" "example" {
     name = "my nat rule"
-    source_zones = ["zone1"]
-    destination_zone = "zone2"
-    to_interface = "ethernet1/3"
+    source_zones = [panos_zone.z1.name]
+    destination_zone = panos_zone.z2.name
+    to_interface = panos_ethernet_interface.e1.name
     source_addresses = ["any"]
     destination_addresses = ["any"]
     sat_type = "none"
     dat_type = "static"
     dat_address = "my dat address object"
+}
+
+resource "panos_zone" "z1" {
+    name = "zone1"
+    mode = "layer3"
+}
+
+resource "panos_zone" "z2" {
+    name = "zone2"
+    mode = "layer3"
+}
+
+resource "panos_ethernet_interface" "e1" {
+    name = "ethernet1/3"
+    vsys = "vsys1"
+    mode = "layer3"
 }
 ```
 
