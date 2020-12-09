@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_http_server_profile"
-description: |-
-  Manages Panorama HTTP server profiles.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_http_server_profile
