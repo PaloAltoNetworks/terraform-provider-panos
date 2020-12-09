@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_peer_group"
-sidebar_current: "docs-panos-resource-bgp-peer-group"
-description: |-
-  Manages a BGP peer group.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_peer_group
@@ -22,12 +19,12 @@ This resource allows you to add/update/delete a BGP peer group.
 
 ```hcl
 resource "panos_bgp_peer_group" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "myName"
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
