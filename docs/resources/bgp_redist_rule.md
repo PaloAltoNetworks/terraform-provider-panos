@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_redist_rule"
-sidebar_current: "docs-panos-resource-bgp-redist-rule"
-description: |-
-  Manages a BGP redistribution rule.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_redist_rule
@@ -22,7 +19,7 @@ This resource allows you to add/update/delete a BGP redistribution rule.
 
 ```hcl
 resource "panos_bgp_redist_rule" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     name = "192.168.1.0/24"
     set_med = "42"
@@ -31,7 +28,7 @@ resource "panos_bgp_redist_rule" "example" {
 data "panos_system_info" "x" {}
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
