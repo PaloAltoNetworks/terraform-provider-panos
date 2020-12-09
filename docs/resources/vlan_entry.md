@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_vlan_entry"
-description: |-
-  Manages an interface in a VLAN.
+subcategory: "Firewall Networking"
 ---
 
 # panos_vlan_entry
