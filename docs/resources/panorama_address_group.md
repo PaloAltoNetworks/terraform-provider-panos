@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_address_group"
-sidebar_current: "docs-panos-panorama-resource-address-group"
-description: |-
-  Manages Panorama address groups.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_address_group
@@ -26,14 +23,29 @@ group.
 
 ```hcl
 # Static group
-resource "panos_panorama_address_group" "example1" {
+resource "panos_panorama_address_group" "example" {
     name = "static ntp grp"
     description = "My NTP servers"
-    static_addresses = ["ntp1", "ntp2", "ntp3"]
+    static_addresses = [
+        panos_panorama_address_object.o1.name,
+        panos_panorama_address_object.o2.name,
+    ]
 }
 
+resource "panos_panorama_address_object" "o1" {
+    name = "ntp1"
+    value = "192.168.1.1"
+}
+
+resource "panos_panorama_address_object" "o2" {
+    name = "ntp2"
+    value = "192.168.1.1"
+}
+```
+
+```hcl
 # Dynamic group
-resource "panos_panorama_address_group" "example2" {
+resource "panos_panorama_address_group" "example" {
     name = "dynamic grp"
     description = "My internal NTP servers"
     dynamic_match = "'internal' and 'ntp'"
