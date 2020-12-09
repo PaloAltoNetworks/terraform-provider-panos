@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_licensing"
-sidebar_current: "docs-panos-resource-licensing"
-description: |-
-  Manages PAN-OS licensing.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_licensing
@@ -19,7 +16,10 @@ using this resource will cause the firewall to be temporarily inaccessible.
 
 ```hcl
 resource "panos_licensing" "example" {
-    auth_codes = ["code1", "code2"]
+    auth_codes = [
+        "code1",
+        "code2",
+    ]
 }
 ```
 
