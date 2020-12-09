@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_virtual_router_entry"
-sidebar_current: "docs-panos-resource-virtual-router-entry"
-description: |-
-  Manages an interface in a virtual router.
+subcategory: "Firewall Networking"
 ---
 
 # panos_virtual_router_entry
@@ -27,13 +24,18 @@ sure that your `panos_virtual_router` spec does not define the
 ## Example Usage
 
 ```hcl
+resource "panos_virtual_router_entry" "example" {
+    virtual_router = panos_virtual_router.vr.name
+    interface = panos_ethernet_interface.e.name
+}
+
 resource "panos_virtual_router" "vr" {
     name = "my vr"
 }
 
-resource "panos_virtual_router_entry" "example" {
-    virtual_router = "${panos_virtual_router.vr.name}"
-    interface = "ethernet1/5"
+resource "panos_ethernet_interface" "e" {
+    name = "ethernet1/1"
+    mode = "layer3"
 }
 ```
 
