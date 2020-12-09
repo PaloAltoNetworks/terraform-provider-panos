@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_loopback_interface"
-sidebar_current: "docs-panos-resource-loopback-interface"
-description: |-
-  Manages loopback interfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_loopback_interface
