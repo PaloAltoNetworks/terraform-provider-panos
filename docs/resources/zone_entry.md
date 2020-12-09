@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_zone_entry"
-sidebar_current: "docs-panos-resource-zone-entry"
-description: |-
-  Manages a specific interface in a zone.
+subcategory: "Firewall Networking"
 ---
 
 # panos_zone_entry
@@ -29,6 +26,12 @@ and don't want Terraform to delete it on `terraform destroy`.
 ## Example Usage
 
 ```hcl
+resource "panos_zone_entry" "example" {
+    zone = panos_zone.z.name
+    mode = panos_zone.z.mode
+    interface = panos_ethernet_interface.e5.name
+}
+
 resource "panos_ethernet_interface" "e5" {
     name = "ethernet1/5"
     mode = "layer3"
@@ -37,12 +40,6 @@ resource "panos_ethernet_interface" "e5" {
 resource "panos_zone" "z" {
     name = "exZone"
     mode = "layer3"
-}
-
-resource "panos_zone_entry" "example" {
-    zone = "${panos_zone.z.name}"
-    mode = "${panos_zone.z.mode}"
-    interface = "${panos_ethernet_interface.e5.name}"
 }
 ```
 
