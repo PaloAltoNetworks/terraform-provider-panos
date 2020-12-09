@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ipsec_tunnel"
-sidebar_current: "docs-panos-panorama-resource-ipsec-tunnel"
-description: |-
-  Manages Panorama IPSec tunnels.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ipsec_tunnel
@@ -22,11 +19,11 @@ A large number of params have prefixes:
 ```hcl
 resource "panos_panorama_ipsec_tunnel" "example" {
     name = "example"
-    template = "my template"
-    tunnel_interface = "tunnel.7"
+    template = panos_panorama_template.t.name
+    tunnel_interface = panos_panorama_tunnel_interface.tunnel.name
     anti_replay = true
-    ak_ike_gateway = "myIkeGateway"
-    ak_ipsec_crypto_profile = "myIkeProfile"
+    ak_ike_gateway = panos_panorama_ike_gateway.gw.name
+    ak_ipsec_crypto_profile = panos_panorama_ipsec_crypto_profile.p.name
 }
 ```
 
