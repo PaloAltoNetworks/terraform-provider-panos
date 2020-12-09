@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_import_rule_group"
-sidebar_current: "docs-panos-resource-bgp-import-rule-group"
-description: |-
-  Manages BGP import rule groups.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_import_rule_group
@@ -39,7 +36,7 @@ is for them to be `before` the last group's rules.
 
 ```hcl
 resource "panos_bgp_import_rule_group" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     rule {
         name = "first"
         match_as_path_regex = "*foo*"
@@ -67,7 +64,7 @@ resource "panos_bgp_import_rule_group" "example" {
 data "panos_system_info" "x" {}
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.vr.name}"
+    virtual_router = panos_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
 }
