@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_edl"
-sidebar_current: "docs-panos-resource-edl"
-description: |-
-  Manages Panorama external dynamic lists.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_edl
