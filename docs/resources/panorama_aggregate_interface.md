@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_aggregate_interface"
-description: |-
-  Manages Panorama aggregate ethernet interfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_aggregate_interface
@@ -21,12 +19,16 @@ This resource allows you to add/update/delete Panorama aggregate ethernet interf
 
 ```hcl
 resource "panos_panorama_aggregate_interface" "example" {
-    template = "myTemplate"
+    template = panos_panorama_template.t1.name
     vsys = "vsys1"
     name = "ae5"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+}
+
+resource "panos_panorama_template" "t1" {
+    name = "myTemplate"
 }
 ```
 
