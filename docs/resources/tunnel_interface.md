@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_tunnel_interface"
-sidebar_current: "docs-panos-resource-tunnel-interface"
-description: |-
-  Manages tunnel interfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_tunnel_interface
