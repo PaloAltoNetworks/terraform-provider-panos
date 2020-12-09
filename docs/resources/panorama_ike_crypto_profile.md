@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ike_crypto_profile"
-sidebar_current: "docs-panos-panorama-resource-ike-crypto-profile"
-description: |-
-  Manages Panorama IKE crypto profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ike_crypto_profile
@@ -23,13 +20,17 @@ to a template or template stack.
 
 ```hcl
 resource "panos_panorama_ike_crypto_profile" "example" {
+    template = panos_panorama_template.t.name
     name = "example"
-    template = "my template"
     dh_groups = ["group1", "group2"]
     authentications = ["md5", "sha1"]
     encryptions = ["des"]
     lifetime_value = 8
     authentication_multiple = 3
+}
+
+resource "panos_panorama_template" "t" {
+    name = "some template"
 }
 ```
 
