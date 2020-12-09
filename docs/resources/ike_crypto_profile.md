@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ike_crypto_profile"
-sidebar_current: "docs-panos-resource-ike-crypto-profile"
-description: |-
-  Manages IKE crypto profiles.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ike_crypto_profile
