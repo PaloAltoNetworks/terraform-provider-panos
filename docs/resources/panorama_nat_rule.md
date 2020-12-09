@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_nat_rule"
-sidebar_current: "docs-panos-panorama-resource-nat-rule"
-description: |-
-  Manages Panorama NAT rules.
+subcategory: "Panorama Policy"
 ---
 
 # panos_panorama_nat_rule
@@ -30,9 +27,9 @@ params may become necessary to correctly configure the NAT rule.
 ```hcl
 resource "panos_panorama_nat_rule" "example" {
     name = "my nat rule"
-    source_zones = ["zone1"]
-    destination_zone = "zone2"
-    to_interface = "ethernet1/3"
+    source_zones = panos_panorama_zone.z1.name
+    destination_zone = panos_panorama_zone.z2.name
+    to_interface = panos_panorama_ethernet_interface.e1.name
     source_addresses = ["any"]
     destination_addresses = ["any"]
     sat_type = "none"
