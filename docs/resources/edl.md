@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_edl"
-sidebar_current: "docs-panos-resource-edl"
-description: |-
-  Manages external dynamic lists.
+subcategory: "Firewall Objects"
 ---
 
 # panos_edl
