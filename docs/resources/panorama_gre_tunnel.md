@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_gre_tunnel"
-sidebar_current: "docs-panos-panorama-resource-gre-tunnel"
-description: |-
-  Manages Panorama GRE tunnels.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_gre_tunnel
