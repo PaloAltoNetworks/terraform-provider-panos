@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_pbf_rule_group"
-description: |-
-  Manages policy based forwarding rule groups.
+subcategory: "Firewall Policy"
 ---
 
 # panos_pbf_rule_group
