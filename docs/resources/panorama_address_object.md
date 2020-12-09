@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_address_object"
-sidebar_current: "docs-panos-panorama-resource-address-object"
-description: |-
-  Manages Panorama address objects.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_address_object
