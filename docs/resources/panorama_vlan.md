@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_vlan"
-description: |-
-  Manages Panorama VLANs.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_vlan
