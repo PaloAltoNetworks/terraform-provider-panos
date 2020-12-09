@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_aggregate_suppress_filter"
-sidebar_current: "docs-panos-resource-bgp-aggregate-suppress-filter"
-description: |-
-  Manages a route suppression filter for a BGP address aggregation rule.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_aggregate_suppress_filter
@@ -23,8 +20,8 @@ BGP address aggregation rule.
 
 ```hcl
 resource "panos_bgp_aggregate_suppress_filter" "example" {
-    virtual_router = "${panos_bgp_aggregate.ag.virtual_router}"
-    bgp_aggregate = "${panos_bgp_aggregate.ag.name}"
+    virtual_router = panos_bgp_aggregate.ag.virtual_router
+    bgp_aggregate = panos_bgp_aggregate.ag.name
     name = "my suppression filter"
     as_path_regex = "*42*"
     med = "443"
@@ -38,13 +35,13 @@ resource "panos_bgp_aggregate_suppress_filter" "example" {
 }
 
 resource "panos_bgp_aggregate" "ag" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "addyAgg1"
     prefix = "192.168.1.0/24"
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
