@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ipsec_tunnel"
-sidebar_current: "docs-panos-resource-ipsec-tunnel"
-description: |-
-  Manages IPSec tunnels.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ipsec_tunnel
