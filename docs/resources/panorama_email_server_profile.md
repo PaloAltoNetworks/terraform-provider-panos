@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_email_server_profile"
-description: |-
-  Manages Panorama email server profiles.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_email_server_profile
