@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ethernet_interface"
-sidebar_current: "docs-panos-resource-ethernet-interface"
-description: |-
-  Manages ethernet interfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ethernet_interface
@@ -22,16 +19,18 @@ This resource allows you to add/update/delete ethernet interfaces.
 
 ```hcl
 # Configure a bare-bones ethernet interface.
-resource "panos_ethernet_interface" "example1" {
+resource "panos_ethernet_interface" "example" {
     name = "ethernet1/3"
     vsys = "vsys1"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
 }
+```
 
+```hcl
 # Configure a DHCP ethernet interface for vsys1 to use.
-resource "panos_ethernet_interface" "example2" {
+resource "panos_ethernet_interface" "example" {
     name = "ethernet1/4"
     vsys = "vsys1"
     mode = "layer3"
