@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_telemetry"
-sidebar_current: "docs-panos-resource-telemetry"
-description: |-
-  Manages anonymous statistics sharing.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_telemetry
@@ -17,6 +14,13 @@ lifecycle. Choose the type of data you share across applications, threat
 intelligence, and device health information to improve the fidelity of the
 protections we deliver. This is an opt-in feature controlled with granular
 policy, and we encourage you to join the community.
+
+
+## Import Name
+
+```
+<provider hostname>
+```
 
 
 ## Example Usage
