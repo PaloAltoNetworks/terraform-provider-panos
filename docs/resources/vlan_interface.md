@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_vlan_interface"
-sidebar_current: "docs-panos-resource-vlan-interface"
-description: |-
-  Manages vlan interfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_vlan_interface
