@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_static_route_ipv4"
-sidebar_current: "docs-panos-resource-static-route-ipv4"
-description: |-
-  Manages IPv4 static routes.
+subcategory: "Firewall Networking"
 ---
 
 # panos_static_route_ipv4
@@ -24,7 +21,7 @@ virtual router.
 ```hcl
 resource "panos_static_route_ipv4" "example" {
     name = "localnet"
-    virtual_router = "${panos_virtual_router.vr1.name}"
+    virtual_router = panos_virtual_router.vr1.name
     destination = "10.1.7.0/32"
     next_hop = "10.1.7.4"
 }
