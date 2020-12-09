@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_email_server_profile"
-description: |-
-  Manages email server profiles.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_email_server_profile
