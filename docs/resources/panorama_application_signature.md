@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_application_signature"
-description: |-
-  Manages Panorama application signatures.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_application_signature
