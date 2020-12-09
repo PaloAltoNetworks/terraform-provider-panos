@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_http_server_profile"
-description: |-
-  Manages http server profiles.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_http_server_profile
