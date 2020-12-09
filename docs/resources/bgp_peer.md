@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_peer"
-sidebar_current: "docs-panos-resource-bgp-peer"
-description: |-
-  Manages a BGP peer.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_peer
@@ -25,12 +22,12 @@ data "panos_system_info" "x" {}
 
 // Peer definition that will work starting from PAN-OS 6.1.
 resource "panos_bgp_peer" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
-    bgp_peer_group = "${panos_bgp_peer_group.pg.name}"
+    virtual_router = panos_bgp.conf.virtual_router
+    bgp_peer_group = panos_bgp_peer_group.pg.name
     name = "peer1"
-    peer_as = "${panos_bgp.conf.as_number}"
-    local_address_interface = "${panos_ethernet_interface.e.name}"
-    local_address_ip = "${panos_ethernet_interface.e.static_ips.0}"
+    peer_as = panos_bgp.conf.as_number
+    local_address_interface = panos_ethernet_interface.e.name
+    local_address_ip = panos_ethernet_interface.e.static_ips.0
     peer_address_ip = "5.6.7.8"
     max_prefixes = "unlimited"
     bfd_profile = "${
@@ -48,20 +45,20 @@ resource "panos_bgp_peer" "example" {
 }
 
 resource "panos_bgp_peer_group" "pg" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "myName"
     type = "ibgp"
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
 
 resource "panos_virtual_router" "rtr" {
     name = "my virtual router"
-    interfaces = ["${panos_ethernet_interface.e.name}"]
+    interfaces = [panos_ethernet_interface.e.name]
 }
 
 resource "panos_ethernet_interface" "e" {
