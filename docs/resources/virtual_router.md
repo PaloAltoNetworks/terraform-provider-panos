@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_virtual_router"
-sidebar_current: "docs-panos-resource-virtual-router"
-description: |-
-  Manages virtual routers.
+subcategory: "Firewall Networking"
 ---
 
 # panos_virtual_router
@@ -35,7 +32,22 @@ sure that your `panos_virtual_router` spec does not define the
 resource "panos_virtual_router" "example" {
     name = "my virtual router"
     static_dist = 15
-    interfaces = ["ethernet1/1", "ethernet1/2"]
+    interfaces = [
+        panos_ethernet_interface.e1.name,
+        panos_ethernet_interface.e2.name,
+    ]
+}
+
+resource "panos_ethernet_interface" "e1" {
+    vsys = "vsys1"
+    name = "ethernet1/1"
+    mode = "layer3"
+}
+
+resource "panos_ethernet_interface" "e2" {
+    vsys = "vsys1"
+    name = "ethernet1/2"
+    mode = "layer3"
 }
 ```
 
@@ -47,7 +59,8 @@ The following arguments are supported:
 * `vsys` - (Required) The vsys that will use this virtual router.  This should
   be something like `vsys1` or `vsys3`.
 * `interfaces` - (Optional) List of interfaces that should use this virtual
-  router.
+  router.  If you intend to use `panos_virtual_router_entry` then leave this
+  field undefined.
 * `static_dist` - (Optional) Admin distance - Static (default: `10`).
 * `static_ipv6_dist` - (Optional) Admin distance - Static IPv6 (default: `10`).
 * `ospf_int_dist` - (Optional) Admin distance - OSPF Int (default: `30`).
