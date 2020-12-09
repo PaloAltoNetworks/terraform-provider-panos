@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_syslog_server_profile"
-description: |-
-  Manages syslog server profiles.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_syslog_server_profile
