@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_dag_tags"
-sidebar_current: "docs-panos-resource-dag-tags"
-description: |-
-  Manages Dynamic address group tags.
+subcategory: "Firewall User-ID"
 ---
 
 # panos_dag_tags
