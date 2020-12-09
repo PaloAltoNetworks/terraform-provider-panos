@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_snmptrap_server_profile"
-description: |-
-  Manages Panorama snmptrap server profiles.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_snmptrap_server_profile
