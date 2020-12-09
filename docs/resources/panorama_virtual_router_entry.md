@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_virtual_router_entry"
-sidebar_current: "docs-panos-panorama-resource-virtual-router-entry"
-description: |-
-  Manages an interface in a Panorama virtual router.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_virtual_router_entry
@@ -27,15 +24,25 @@ sure that your `panos_panorama_virtual_router` spec does not define the
 ## Example Usage
 
 ```hcl
+resource "panos_panorama_virtual_router_entry" "example" {
+    template = panos_panorama_template.tmpl.name
+    virtual_router = panos_panorama_virtual_router.vr.name
+    interface = panos_panorama_ethernet_interface.e1.name
+}
+
+resource "panos_panorama_template" "tmpl" {
+    name = "my template"
+}
+
 resource "panos_panorama_virtual_router" "vr" {
-    template = "my template"
+    template = panos_panorama_template.tmpl.name
     name = "my vr"
 }
 
-resource "panos_panorama_virtual_router_entry" "example" {
-    template = "my template"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
-    interface = "ethernet1/5"
+resource "panos_panorama_ethernet_interface" "e1" {
+    template = panos_panorama_template.tmpl.name
+    name = "ethernet1/5"
+    mode = "layer3"
 }
 ```
 
