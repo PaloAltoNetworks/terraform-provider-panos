@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_gre_tunnel"
-sidebar_current: "docs-panos-resource-gre-tunnel"
-description: |-
-  Manages GRE tunnels.
+subcategory: "Firewall Networking"
 ---
 
 # panos_gre_tunnel
