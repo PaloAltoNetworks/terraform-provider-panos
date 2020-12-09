@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_administrative_tag"
-sidebar_current: "docs-panos-panorama-resource-administrative-tag"
-description: |-
-  Manages Panorama administrative tags.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_administrative_tag
