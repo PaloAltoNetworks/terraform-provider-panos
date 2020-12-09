@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp_aggregate_suppress_filter"
-sidebar_current: "docs-panos-panorama-resource-bgp-aggregate-suppress-filter"
-description: |-
-  Manages a Panorama route suppression filter for a BGP address aggregation rule.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bgp_aggregate_suppress_filter
@@ -23,9 +20,9 @@ BGP address aggregation rule.
 
 ```hcl
 resource "panos_panorama_bgp_aggregate_suppress_filter" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp_aggregate.ag.virtual_router}"
-    bgp_aggregate = "${panos_panorama_bgp_aggregate.ag.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp_aggregate.ag.virtual_router
+    bgp_aggregate = panos_panorama_bgp_aggregate.ag.name
     name = "my suppression filter"
     as_path_regex = "*42*"
     med = "443"
@@ -43,21 +40,21 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_bgp_aggregate" "ag" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     name = "addyAgg1"
     prefix = "192.168.1.0/24"
 }
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.rtr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my virtual router"
 }
 ```
