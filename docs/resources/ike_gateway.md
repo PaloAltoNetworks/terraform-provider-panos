@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ike_gateway"
-sidebar_current: "docs-panos-resource-ike-gateway"
-description: |-
-  Manages IKE gateways.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ike_gateway
