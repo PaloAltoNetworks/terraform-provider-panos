@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_redistribution_profile_ipv4"
-sidebar_current: "docs-panos-panorama-resource-redistribution-profile-ipv4"
-description: |-
-  Manages Panorama redistribution profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_redistribution_profile_ipv4
@@ -23,24 +20,23 @@ profiles on a virtual router.
 
 ```hcl
 resource "panos_panorama_redistribution_profile_ipv4" "example" {
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     name = "example"
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
     priority = 1
     action = "redist"
     types = ["static"]
-    interfaces = ["${panos_panorama_virtual_router.vr.interfaces}"]
-}
-
-resource "panos_panorama_virtual_router" "vr" {
-    name = "my virtual router"
-    template = "${panos_panorama_template.t.name}"
-    interfaces = ["ethernet1/2"]
+    interfaces = [panos_panorama_virtual_router.vr.interfaces]
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
-    description = "my template"
+}
+
+resource "panos_panorama_virtual_router" "vr" {
+    template = panos_panorama_template.t.name
+    name = "my virtual router"
+    interfaces = ["ethernet1/2"]
 }
 ```
 
