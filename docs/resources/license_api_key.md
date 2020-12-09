@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_license_api_key"
-sidebar_current: "docs-panos-resource-license-api-key"
-description: |-
-  Manages the licensing API key.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_license_api_key
