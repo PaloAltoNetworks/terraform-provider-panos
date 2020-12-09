@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_redistribution_profile_ipv4"
-sidebar_current: "docs-panos-resource-redistribution-profile-ipv4"
-description: |-
-  Manages redistribution profiles.
+subcategory: "Firewall Networking"
 ---
 
 # panos_redistribution_profile_ipv4
@@ -23,12 +20,12 @@ on a virtual router.
 
 ```hcl
 resource "panos_redistribution_profile_ipv4" "example" {
+    virtual_router = panos_virtual_router.vr.name
     name = "example"
-    virtual_router = "${panos_virtual_router.vr.name}"
     priority = 1
     action = "redist"
     types = ["static"]
-    interfaces = ["${panos_virtual_router.vr.interfaces}"]
+    interfaces = [panos_virtual_router.vr.interfaces.0]
 }
 
 resource "panos_virtual_router" "vr" {
