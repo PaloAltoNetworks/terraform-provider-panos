@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bfd_profile"
-sidebar_current: "docs-panos-panorama-resource-bfd-profile"
-description: |-
-  Manages Panorama BFD profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bfd_profile.
@@ -24,7 +21,7 @@ This resource allows you to add/update/delete BFD profiles on Panorama.
 
 ```hcl
 resource "panos_panorama_bfd_profile" "example" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "myBfdProfile"
 }
 
