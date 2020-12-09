@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_log_forwarding_profile"
-description: |-
-  Manages log forwarding profiles.
+subcategory: "Firewall Objects"
 ---
 
 # panos_log_forwarding_profile
