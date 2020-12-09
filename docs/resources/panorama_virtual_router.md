@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_virtual_router"
-sidebar_current: "docs-panos-panorama-resource-virtual-router"
-description: |-
-  Manages Panorama virtual routers.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_virtual_router
@@ -34,10 +31,29 @@ sure that your `panos_panorama_virtual_router` spec does not define the
 ```hcl
 # Configure a bare-bones ethernet interface.
 resource "panos_panorama_virtual_router" "example" {
+    template = panos_panorama_template.t.name
     name = "my virtual router"
-    template = "foo"
     static_dist = 15
-    interfaces = ["ethernet1/1", "ethernet1/2"]
+    interfaces = [
+        panos_panorama_ethernet_interface.e1.name,
+        panos_panorama_ethernet_interface.e2.name,
+    ]
+}
+
+resource "panos_panorama_template" "t" {
+    name = "foo"
+}
+
+resource "panos_panorama_ethernet_interface" "e1" {
+    template = panos_panorama_template.t.name
+    name = "ethernet1/1"
+    mode = "layer3"
+}
+
+resource "panos_panorama_ethernet_interface" "e2" {
+    template = panos_panorama_template.t.name
+    name = "ethernet1/2"
+    mode = "layer3"
 }
 ```
 
@@ -50,7 +66,8 @@ The following arguments are supported:
 * `vsys` - (Required) The vsys that will use this virtual router.  This should
   be something like `vsys1` or `vsys3`.
 * `interfaces` - (Optional) List of interfaces that should use this virtual
-  router.
+  router.  If you intend to use the `panos_panorama_virtual_router_entry`
+  resource, then you should leave this param unspecified.
 * `static_dist` - (Optional) Admin distance - Static (default: `10`).
 * `static_ipv6_dist` - (Optional) Admin distance - Static IPv6 (default: `10`).
 * `ospf_int_dist` - (Optional) Admin distance - OSPF Int (default: `30`).
