@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_tunnel_interface"
-sidebar_current: "docs-panos-panorama-resource-tunnel-interface"
-description: |-
-  Manages Panorama tunnel interfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_tunnel_interface
@@ -23,10 +20,14 @@ for templates.
 
 ```hcl
 resource "panos_panorama_tunnel_interface" "example1" {
+    template = panos_panorama_template.t.name
     name = "tunnel.5"
-    template = "foo"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+}
+
+resource "panos_panorama_template" "t" {
+    name = "foo"
 }
 ```
 
