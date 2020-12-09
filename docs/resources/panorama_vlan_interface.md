@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_vlan_interface"
-sidebar_current: "docs-panos-panorama-resource-vlan-interface"
-description: |-
-  Manages Panorama VLAN interfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_vlan_interface
@@ -23,11 +20,15 @@ for templates.
 
 ```hcl
 resource "panos_panorama_vlan_interface" "example" {
+    template = panos_panorama_template.t.name
     name = "vlan.17"
-    template = "foo"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
