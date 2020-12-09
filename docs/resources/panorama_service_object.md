@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_service_object"
-sidebar_current: "docs-panos-panorama-resource-service-object"
-description: |-
-  Manages Panorama service objects.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_service_object
