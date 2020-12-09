@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_general_settings"
-sidebar_current: "docs-panos-resource-general-settings"
-description: |-
-  Manages general device settings.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_general_settings
