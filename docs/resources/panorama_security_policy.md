@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_security_policy"
-sidebar_current: "docs-panos-panorama-resource-security-policy"
-description: |-
-  Manages the full Panorama security policy.
+subcategory: "Panorama Policy"
 ---
 
 # panos_panorama_security_policy
