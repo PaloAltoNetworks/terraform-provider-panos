@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_security_policy"
-sidebar_current: "docs-panos-resource-security-policy"
-description: |-
-  Manages the full security policy.
+subcategory: "Firewall Policy"
 ---
 
 # panos_security_policy
@@ -16,7 +13,7 @@ This resource manages the full set of security rules in a vsys, enforcing both
 the contents of individual rules as well as their ordering.  Rules are defined
 in a `rule` config block.
 
-!> **Note**: This resource will remove any security rule not defined in your plan file.
+!> **Warning**: This resource will remove any security rule not defined in your plan file.
 
 For each security rule, there are three styles of profile settings:
 
@@ -54,30 +51,17 @@ the Profile Setting is set to `None`.
 ```hcl
 resource "panos_security_policy" "example" {
     rule {
-        name = "allow bizdev to dmz"
-        source_zones = ["bizdev"]
+        name = "allow everything lolwat"
+        source_zones = ["any"]
         source_addresses = ["any"]
         source_users = ["any"]
         hip_profiles = ["any"]
-        destination_zones = ["dmz"]
+        destination_zones = ["all"]
         destination_addresses = ["any"]
         applications = ["any"]
         services = ["application-default"]
         categories = ["any"]
         action = "allow"
-    }
-    rule {
-        name = "deny sales to eng"
-        source_zones = ["sales"]
-        source_addresses = ["any"]
-        source_users = ["any"]
-        hip_profiles = ["any"]
-        destination_zones = ["eng"]
-        destination_addresses = ["any"]
-        applications = ["any"]
-        services = ["application-default"]
-        categories = ["any"]
-        action = "deny"
     }
 }
 ```
