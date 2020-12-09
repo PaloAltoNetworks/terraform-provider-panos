@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_layer2_subinterface"
-description: |-
-  Manages Panorama layer2 subinterfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_layer2_subinterface
