@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_service_group"
-sidebar_current: "docs-panos-resource-service-group"
-description: |-
-  Manages service groups.
+subcategory: "Firewall Objects"
 ---
 
 # panos_service_group
@@ -23,7 +20,16 @@ This resource allows you to add/update/delete service groups.
 ```hcl
 resource "panos_service_group" "example" {
     name = "static ntp grp"
-    services = ["svc1", "svc2"]
+    services = [
+        panos_service_object.o1.name,
+    ]
+}
+
+resource "panos_service_object" "o1" {
+    name = "my_service"
+    protocol = "tcp"
+    source_port = "2000-2049"
+    destination_port = "32123"
 }
 ```
 
