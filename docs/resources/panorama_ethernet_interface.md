@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ethernet_interface"
-sidebar_current: "docs-panos-panorama-resource-ethernet-interface"
-description: |-
-  Manages Panorama ethernet interfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ethernet_interface
@@ -25,21 +22,31 @@ for templates.
 # Configure a bare-bones ethernet interface.
 resource "panos_panorama_ethernet_interface" "example1" {
     name = "ethernet1/3"
-    template = "foo"
+    template = panos_panorama_template.t1.name
     vsys = "vsys1"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
 }
 
+resource "panos_panorama_template" "t1" {
+    name = "foo"
+}
+```
+
+```hcl
 # Configure a DHCP ethernet interface for vsys1 to use.
 resource "panos_panorama_ethernet_interface" "example2" {
     name = "ethernet1/4"
-    template = "bar"
+    template = panos_panorama_template.t2.name
     mode = "layer3"
     enable_dhcp = true
     create_dhcp_default_route = true
     dhcp_default_route_metric = 10
+}
+
+resource "panos_panorama_template" "t2" {
+    name = "bar"
 }
 ```
 
