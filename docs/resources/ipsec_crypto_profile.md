@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ipsec_crypto_profile"
-sidebar_current: "docs-panos-resource-ipsec-crypto-profile"
-description: |-
-  Manages IPSec crypto profiles.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ipsec_crypto_profile
