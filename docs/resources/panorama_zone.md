@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_zone"
-sidebar_current: "docs-panos-panorama-resource-zone"
-description: |-
-  Manages Panorama Zone objects.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_zone
@@ -29,9 +26,12 @@ sure that your `panos_panorama_zone` spec does not define the
 ```hcl
 resource "panos_panorama_zone" "example" {
     name = "myZone"
-    template = "${panos_panorama_template.tmpl1.name}"
+    template = panos_panorama_template.tmpl1.name
     mode = "layer3"
-    interfaces = ["${panos_panorama_ethernet_interface.e2.name", "${panos_panorama_ethernet_interface.e3.name}"]
+    interfaces = [
+        panos_panorama_ethernet_interface.e2.name,
+        panos_panorama_ethernet_interface.e3.name,
+    ]
     enable_user_id = true
     exclude_acls = ["192.168.0.0/16"]
 }
@@ -41,13 +41,13 @@ resource "panos_panorama_template" "tmpl1" {
 }
 
 resource "panos_panorama_ethernet_interface" "e2" {
-    template = "${panos_panorama_template.tmpl1.name}"
+    template = panos_panorama_template.tmpl1.name
     name = "ethernet1/2"
     mode = "layer3"
 }
 
 resource "panos_panorama_ethernet_interface" "e3" {
-    template = "${panos_panorama_template.tmpl1.name}"
+    template = panos_panorama_template.tmpl1.name
     name = "ethernet1/3"
     mode = "layer3"
 }
@@ -69,7 +69,9 @@ The following arguments are supported:
 * `zone_profile` - (Optional) The zone protection profile.
 * `log_setting` - (Optional) Log setting.
 * `enable_user_id` - (Optional) Boolean to enable user identification.
-* `interfaces` - (Optional) List of interfaces to associated with this zone.
+* `interfaces` - (Optional) List of interfaces to associated with this zone.  If
+  you are going to use the `panos_panorama_zone_entry` resource then this param
+  should be left unspecified.
 * `include_acls` - (Optional) Users from these addresses/subnets will
   be identified.  This can be an address object, an address group, a single
   IP address, or an IP address subnet.
