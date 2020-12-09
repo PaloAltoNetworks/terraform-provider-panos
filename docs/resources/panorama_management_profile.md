@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_management_profile"
-sidebar_current: "docs-panos-panorama-resource-management-profile"
-description: |-
-  Manages Panorama interface management profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_management_profile
@@ -23,10 +20,14 @@ for both templates and template stacks.
 
 ```hcl
 resource "panos_panorama_management_profile" "example" {
+    template = panos_panorama_template.t.name
     name = "allow ping"
-    template = "foo"
     ping = true
     permitted_ips = ["10.1.1.0/24", "192.168.80.0/24"]
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
