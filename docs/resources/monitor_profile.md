@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_monitor_profile"
-description: |-
-  Manages monitor profiles.
+subcategory: "Firewall Networking"
 ---
 
 # panos_monitor_profile
