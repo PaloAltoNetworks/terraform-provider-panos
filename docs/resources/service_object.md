@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_service_object"
-sidebar_current: "docs-panos-resource-service-object"
-description: |-
-  Manages service objects.
+subcategory: "Firewall Objects"
 ---
 
 # panos_service_object
