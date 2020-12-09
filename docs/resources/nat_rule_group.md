@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_nat_rule_group"
-sidebar_current: "docs-panos-resource-nat-rule-group"
-description: |-
-  Manages a group of NAT rules.
+subcategory: "Firewall Policy"
 ---
 
 # panos_nat_rule_group
@@ -42,9 +39,9 @@ resource "panos_nat_rule_group" "bot" {
     rule {
         name = "second"
         original_packet {
-            source_zones = ["${panos_zone.z2.name}"]
-            destination_zone = "${panos_zone.z3.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z2.name]
+            destination_zone = panos_zone.z3.name
+            destination_interface panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }
@@ -61,9 +58,9 @@ resource "panos_nat_rule_group" "bot" {
     rule {
         name = "third"
         original_packet {
-            source_zones = ["${panos_zone.z3.name}"]
-            destination_zone = "${panos_zone.z2.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z3.name]
+            destination_zone = panos_zone.z2.name
+            destination_interface = panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }
@@ -81,13 +78,13 @@ resource "panos_nat_rule_group" "bot" {
 
 resource "panos_nat_rule_group" "top" {
     position_keyword = "directly before"
-    position_reference = "${panos_nat_rule_group.bot.rule.0.name}"
+    position_reference = panos_nat_rule_group.bot.rule.0.name
     rule {
         name = "first"
         original_packet {
-            source_zones = ["${panos_zone.z1.name}"]
-            destination_zone = "${panos_zone.z1.name}"
-            destination_interface = "${panos_ethernet_interface.x.name}"
+            source_zones = [panos_zone.z1.name]
+            destination_zone = panos_zone.z1.name
+            destination_interface = panos_ethernet_interface.x.name
             source_addresses = ["any"]
             destination_addresses = ["any"]
         }
@@ -95,8 +92,8 @@ resource "panos_nat_rule_group" "top" {
             source {
                 dynamic_ip_and_port {
                     interface_address {
-                        interface = "${panos_ethernet_interface.x.name}"
-                        ip_address = "${panos_ethernet_interface.x.static_ips.0}"
+                        interface = panos_ethernet_interface.x.name
+                        ip_address = panos_ethernet_interface.x.static_ips.0
                     }
                 }
             }
