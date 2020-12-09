@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp"
-sidebar_current: "docs-panos-panorama-resource-bgp"
-description: |-
-  Manages a Panorama virtual router's BGP configuration.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bgp
@@ -30,8 +27,8 @@ of `panos_panorama_virtual_router.bar.name`.
 
 ```hcl
 resource "panos_panorama_bgp" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.rtr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
@@ -41,7 +38,7 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my virtual router"
 }
 ```
