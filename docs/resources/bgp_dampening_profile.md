@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_dampening_profile"
-sidebar_current: "docs-panos-resource-bgp-dampening-profile"
-description: |-
-  Manages a BGP dampening profile.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_dampening_profile
@@ -22,12 +19,12 @@ This resource allows you to add/update/delete a BGP dampening profile.
 
 ```hcl
 resource "panos_bgp_dampening_profile" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "myDampeningProfile"
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
