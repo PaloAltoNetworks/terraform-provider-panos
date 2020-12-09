@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_service_group"
-sidebar_current: "docs-panos-panorama-resource-service-group"
-description: |-
-  Manages Panorama service groups.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_service_group
@@ -23,7 +20,20 @@ This resource allows you to add/update/delete Panorama service groups.
 ```hcl
 resource "panos_panorama_service_group" "example" {
     name = "static ntp grp"
-    services = ["svc1", "svc2"]
+    services = [
+        panos_panorama_service_object.o1.name,
+        panos_panorama_service_object.o2.name,
+    ]
+}
+
+resource "panos_panorama_service_object" "o1" {
+    name = "svc1"
+    ...
+}
+
+resource "panos_panorama_service_object" "o2" {
+    name = "svc2"
+    ...
 }
 ```
 
