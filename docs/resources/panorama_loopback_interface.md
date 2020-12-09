@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_loopback_interface"
-sidebar_current: "docs-panos-panorama-resource-loopback-interface"
-description: |-
-  Manages Panorama loopback interfaces.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_loopback_interface
@@ -22,11 +19,15 @@ for templates.
 ## Example Usage
 
 ```hcl
-resource "panos_panorama_loopback_interface" "example1" {
+resource "panos_panorama_loopback_interface" "example" {
     name = "loopback.2"
-    template = "myStack"
+    template = panos_panorama_template.t.name
     comment = "my loopback interface"
     static_ips = ["10.1.1.1"]
+}
+
+resource "panos_panorama_template" "t" {
+    name = "myTemplate"
 }
 ```
 
