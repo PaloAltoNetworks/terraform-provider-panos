@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_security_rule_group"
-sidebar_current: "docs-panos-panorama-resource-security-rule-group"
-description: |-
-  Manages Panorama security rule groups.
+subcategory: "Panorama Policy"
 ---
 
 # panos_panorama_security_rule_group
