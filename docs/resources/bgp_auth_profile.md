@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_bgp_auth_profile"
-sidebar_current: "docs-panos-resource-bgp-auth-profile"
-description: |-
-  Manages a BGP auth profile.
+subcategory: "Firewall Networking"
 ---
 
 # panos_bgp_auth_profile
@@ -15,13 +12,13 @@ This resource allows you to add/update/delete a BGP auth profile.
 
 ```hcl
 resource "panos_bgp_auth_profile" "example" {
-    virtual_router = "${panos_bgp.conf.virtual_router}"
+    virtual_router = panos_bgp.conf.virtual_router
     name = "prof1"
     secret = "secret"
 }
 
 resource "panos_bgp" "conf" {
-    virtual_router = "${panos_virtual_router.rtr.name}"
+    virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
