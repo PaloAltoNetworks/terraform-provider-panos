@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp_conditional_adv"
-sidebar_current: "docs-panos-panorama-resource-bgp-conditional-adv"
-description: |-
-  Manages a Panorama BGP conditional advertisement.
+subcategory: "Panorama Networking"
 ---
 
 # panos_bgp_conditional_adv
@@ -32,8 +29,8 @@ advertise filter.
 data "panos_system_info" "x" {}
 
 resource "panos_panorama_bgp_conditional_adv" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     name = "example"
     enable = false
 }
@@ -43,32 +40,32 @@ resource "panos_panorama_template" "t" {
 }
 
 resource "panos_panorama_bgp_conditional_adv_non_exist_filter" "nef" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
-    bgp_conditional_adv = "${panos_panorama_bgp_conditional_adv.example.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
+    bgp_conditional_adv = panos_panorama_bgp_conditional_adv.example.name
     route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     name = "nef"
     address_prefixes = ["192.168.1.0/24"]
 }
 
 resource "panos_panorama_bgp_conditional_adv_advertise_filter" "af" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
-    bgp_conditional_adv = "${panos_panorama_bgp_conditional_adv.example.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
+    bgp_conditional_adv = panos_panorama_bgp_conditional_adv.example.name
     route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     name = "af"
     address_prefixes = ["192.168.2.0/24"]
 }
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.rtr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my virtual router"
 }
 ```
