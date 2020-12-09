@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_ipsec_tunnel_proxy_id_ipv4"
-sidebar_current: "docs-panos-resource-ipsec-tunnel-proxy-id-ipv4"
-description: |-
-  Manages IPv4 proxy IDs for auto key IPSec tunnels.
+subcategory: "Firewall Networking"
 ---
 
 # panos_ipsec_tunnel_proxy_id_ipv4
@@ -23,7 +20,7 @@ a parent auto key IPSec tunnel.
 
 ```hcl
 resource "panos_ipsec_tunnel_proxy_id_ipv4" "example" {
-    ipsec_tunnel = "myIpsecTunnel"
+    ipsec_tunnel = panos_ipsec_tunnel.t1.name
     name = "example"
     local = "10.1.1.1"
     remote = "10.2.1.1"
