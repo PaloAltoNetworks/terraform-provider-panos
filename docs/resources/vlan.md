@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_vlan"
-description: |-
-  Manages VLANs.
+subcategory: "Firewall Networking"
 ---
 
 # panos_vlan
