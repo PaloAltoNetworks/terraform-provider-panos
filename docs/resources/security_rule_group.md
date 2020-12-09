@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_security_rule_group"
-sidebar_current: "docs-panos-resource-security-rule-group"
-description: |-
-  Manages security rule groups.
+subcategory: "Firewall Policy"
 ---
 
 # panos_security_rule_group
@@ -74,11 +71,11 @@ resource "panos_security_rule_group" "example" {
     position_reference = "deny everything else"
     rule {
         name = "allow bizdev to dmz"
-        source_zones = ["bizdev"]
+        source_zones = [panos_zone.bizdev.name]
         source_addresses = ["any"]
         source_users = ["any"]
         hip_profiles = ["any"]
-        destination_zones = ["dmz"]
+        destination_zones = [panos_zone.dmz.name]
         destination_addresses = ["any"]
         applications = ["any"]
         services = ["application-default"]
@@ -87,17 +84,37 @@ resource "panos_security_rule_group" "example" {
     }
     rule {
         name = "deny sales to eng"
-        source_zones = ["sales"]
+        source_zones = [panos_zone.sales.name]
         source_addresses = ["any"]
         source_users = ["any"]
         hip_profiles = ["any"]
-        destination_zones = ["eng"]
+        destination_zones = [panos_zone.eng.name]
         destination_addresses = ["any"]
         applications = ["any"]
         services = ["application-default"]
         categories = ["any"]
         action = "deny"
     }
+}
+
+resource "panos_zone" "bizdev" {
+    name = "bizdev"
+    mode = "layer3"
+}
+
+resource "panos_zone" "dmz" {
+    name = "dmz"
+    mode = "layer3"
+}
+
+resource "panos_zone" "sales" {
+    name = "sales"
+    mode = "layer3"
+}
+
+resource "panos_zone" "eng" {
+    name = "eng"
+    mode = "layer3"
 }
 ```
 
