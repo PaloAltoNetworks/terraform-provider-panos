@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_zone_entry"
-sidebar_current: "docs-panos-panorama-resource-zone-entry"
-description: |-
-  Manages a specific interface in a Panorama zone.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_zone_entry
@@ -30,27 +27,27 @@ in Panorama and don't want Terraform to delete it on `terraform destroy`.
 ## Example Usage
 
 ```hcl
+resource "panos_panorama_zone_entry" "example" {
+    template = panos_panorama_template.t.name
+    zone = panos_panorama_zone.z.name
+    mode = panos_panorama_zone.z.mode
+    interface = panos_panorama_ethernet_interface.e5.name
+}
+
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
 }
 
 resource "panos_panorama_ethernet_interface" "e5" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "ethernet1/5"
     mode = "layer3"
 }
 
 resource "panos_panorama_zone" "z" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "exZone"
     mode = "layer3"
-}
-
-resource "panos_panorama_zone_entry" "example" {
-    template = "${panos_panorama_template.t.name}"
-    zone = "${panos_panorama_zone.z.name}"
-    mode = "${panos_panorama_zone.z.mode}"
-    interface = "${panos_panorama_ethernet_interface.e5.name}"
 }
 ```
 
