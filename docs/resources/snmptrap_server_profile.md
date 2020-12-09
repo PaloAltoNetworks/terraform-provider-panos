@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_snmptrap_server_profile"
-description: |-
-  Manages snmptrap server profiles.
+subcategory: "Firewall Device Config"
 ---
 
 # panos_snmptrap_server_profile
