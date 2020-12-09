@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_application_object"
-description: |-
-  Manages Panorama application objects.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_application_object
