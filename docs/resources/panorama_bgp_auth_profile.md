@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp_auth_profile"
-sidebar_current: "docs-panos-panorama-resource-bgp-auth-profile"
-description: |-
-  Manages a Panorama BGP auth profile.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bgp_auth_profile
@@ -15,21 +12,21 @@ This resource allows you to add/update/delete a Panorama BGP auth profile.
 
 ```hcl
 resource "panos_panorama_bgp_auth_profile" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     name = "prof1"
     secret = "secret"
 }
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.rtr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my virtual router"
 }
 
