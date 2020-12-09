@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_layer2_subinterface"
-description: |-
-  Manages layer2 subinterfaces.
+subcategory: "Firewall Networking"
 ---
 
 # panos_layer2_subinterface
@@ -24,7 +22,7 @@ resource "panos_layer2_subinterface" "example" {
     parent_interface = panos_ethernet_interface.e.name
     parent_mode = panos_ethernet_interface.e.mode
     vsys = "vsys1"
-    name = "ethernet1/5.5"
+    name = "${panos_ethernet_interface.e.name}.5"
     tag = 5
 }
 
