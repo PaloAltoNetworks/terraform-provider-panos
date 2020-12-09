@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp_redist_rule"
-sidebar_current: "docs-panos-panorama-resource-bgp-redist-rule"
-description: |-
-  Manages a Panorama BGP redistribution rule.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bgp_redist_rule
@@ -22,8 +19,8 @@ This resource allows you to add/update/delete a Panorama BGP redistribution rule
 
 ```hcl
 resource "panos_panorama_bgp_redist_rule" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     name = "192.168.1.0/24"
     set_med = "42"
@@ -32,14 +29,14 @@ resource "panos_panorama_bgp_redist_rule" "example" {
 data "panos_system_info" "x" {}
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.rtr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my virtual router"
 }
 
