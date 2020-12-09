@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_nat_rule_group"
-sidebar_current: "docs-panos-panorama-resource-nat-rule-group"
-description: |-
-  Manages a group of Panorama NAT rules.
+subcategory: "Panorama Policy"
 ---
 
 # panos_panorama_nat_rule_group
@@ -39,7 +36,7 @@ is for them to be `before` the last group's rules.
 
 ```hcl
 resource "panos_panorama_nat_rule_group" "bot" {
-    device_group = "${panos_panorama_device_group.dg.name}"
+    device_group = panos_panorama_device_group.dg.name
     rule {
         name = "second"
         original_packet {
@@ -81,9 +78,9 @@ resource "panos_panorama_nat_rule_group" "bot" {
 }
 
 resource "panos_panorama_nat_rule_group" "top" {
-    device_group = "${panos_panorama_device_group.dg.name}"
+    device_group = panos_panorama_device_group.dg.name
     position_keyword = "directly before"
-    position_reference = "${panos_panorama_nat_rule_group.bot.rule.0.name}"
+    position_reference = panos_panorama_nat_rule_group.bot.rule.0.name
     rule {
         name = "first"
         target {
