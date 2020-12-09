@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_static_route_ipv4"
-sidebar_current: "docs-panos-panorama-resource-static-route-ipv4"
-description: |-
-  Manages Panorama IPv4 static routes.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_static_route_ipv4
@@ -23,16 +20,20 @@ virtual router for either a template or a template stack.
 
 ```hcl
 resource "panos_panorama_static_route_ipv4" "example" {
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr1.name
     name = "localnet"
-    virtual_router = "${panos_panorama_virtual_router.vr1.name}"
-    template = "template1"
     destination = "10.1.7.0/32"
     next_hop = "10.1.7.4"
 }
 
 resource "panos_panorama_virtual_router" "vr1" {
     name = "my virtual router"
-    template = "template1"
+    template = panos_panorama_template.t.name
+}
+
+resource "panos_panorama_template" "t" {
+    name = "template1"
 }
 ```
 
