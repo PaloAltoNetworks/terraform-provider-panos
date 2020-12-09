@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_management_profile"
-sidebar_current: "docs-panos-resource-management-profile"
-description: |-
-  Manages interface management profiles.
+subcategory: "Firewall Networking"
 ---
 
 # panos_management_profile
