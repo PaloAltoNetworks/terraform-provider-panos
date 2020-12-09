@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_bgp_import_rule_group"
-sidebar_current: "docs-panos-panorama-resource-bgp-import-rule-group"
-description: |-
-  Manages Panorama BGP import rule groups.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_bgp_import_rule_group
@@ -39,8 +36,8 @@ is for them to be `before` the last group's rules.
 
 ```hcl
 resource "panos_panorama_bgp_import_rule_group" "example" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_bgp.conf.virtual_router}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_bgp.conf.virtual_router
     rule {
         name = "first"
         match_as_path_regex = "*foo*"
@@ -68,14 +65,14 @@ resource "panos_panorama_bgp_import_rule_group" "example" {
 data "panos_system_info" "x" {}
 
 resource "panos_panorama_bgp" "conf" {
-    template = "${panos_panorama_template.t.name}"
-    virtual_router = "${panos_panorama_virtual_router.vr.name}"
+    template = panos_panorama_template.t.name
+    virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
 }
 
 resource "panos_panorama_virtual_router" "vr" {
-    template = "${panos_panorama_template.t.name}"
+    template = panos_panorama_template.t.name
     name = "my vr"
 }
 
