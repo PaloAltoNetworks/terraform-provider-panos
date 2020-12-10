@@ -8,9 +8,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
-func dataSourcePanoramaPlugin() *schema.Resource {
+func dataSourcePlugin() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourcePanoramaPluginRead,
+		Read: dataSourcePluginRead,
 
 		Schema: map[string]*schema.Schema{
 			"installed": {
@@ -72,39 +72,49 @@ func dataSourcePanoramaPlugin() *schema.Resource {
 	}
 }
 
-func dataSourcePanoramaPluginRead(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+func dataSourcePluginRead(d *schema.ResourceData, meta interface{}) error {
+	var id string
+	var list []pango.PluginInfo
 
-	details := make([]interface{}, 0, len(pano.Plugin))
-	installed := make([]string, 0, len(pano.Plugin))
-	for _, pinfo := range pano.Plugin {
+	switch v := meta.(type) {
+	case *pango.Panorama:
+		id = v.Hostname
+		list = v.Plugin
+	case *pango.Firewall:
+		id = v.Hostname
+		list = v.Plugin
+	}
+
+	details := make([]interface{}, 0, len(list))
+	installed := make([]string, 0, len(list))
+	for _, pinfo := range list {
 		entry := map[string]interface{}{
-			"name":             pinfo["name"],
-			"version":          pinfo["version"],
-			"release_date":     pinfo["release-date"],
-			"release_note_url": pinfo["release-note-url"],
-			"package_file":     pinfo["package-file"],
-			"size":             pinfo["size"],
-			"platform":         pinfo["platform"],
-			"installed":        pinfo["installed"],
-			"downloaded":       pinfo["downloaded"],
+			"name":             pinfo.Name,
+			"version":          pinfo.Version,
+			"release_date":     pinfo.ReleaseDate,
+			"release_note_url": pinfo.ReleaseNoteUrl,
+			"package_file":     pinfo.PackageFile,
+			"size":             pinfo.Size,
+			"platform":         pinfo.Platform,
+			"installed":        pinfo.Installed,
+			"downloaded":       pinfo.Downloaded,
 		}
 
-		if pinfo["installed"] == "yes" {
-			installed = append(installed, pinfo["name"])
+		if pinfo.Installed == "yes" {
+			installed = append(installed, pinfo.Name)
 		}
 
 		details = append(details, entry)
 	}
 
-	d.SetId(pano.Hostname)
+	d.SetId(id)
 	if err := d.Set("details", details); err != nil {
 		log.Printf("[WARN] Error setting 'info' for %q: %s", d.Id(), err)
 	}
 	if err := d.Set("installed", installed); err != nil {
 		log.Printf("[WARN] Error setting 'installed_plugins' for %q: %s", d.Id(), err)
 	}
-	d.Set("total", len(pano.Plugin))
+	d.Set("total", len(list))
 
 	return nil
 }
