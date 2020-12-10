@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_device_group"
-sidebar_current: "docs-panos-panorama-resource-device-group"
-description: |-
-  Manages Panorama device groups.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_device_group
