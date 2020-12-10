@@ -15,11 +15,12 @@ import (
 )
 
 var (
-	testAccProviders                                                                            map[string]terraform.ResourceProvider
-	testAccProvider                                                                             *schema.Provider
-	testAccIsFirewall, testAccIsPanorama, testAccSupportsL2, testAccSupportsAggregateInterfaces bool
-	testAccPanosVersion                                                                         version.Number
-	testAccPanoramaPlugins                                                                      map[string]string
+	testAccProviders                                      map[string]terraform.ResourceProvider
+	testAccProvider                                       *schema.Provider
+	testAccIsFirewall, testAccIsPanorama                  bool
+	testAccSupportsL2, testAccSupportsAggregateInterfaces bool
+	testAccPanosVersion                                   version.Number
+	testAccPlugins                                        map[string]string
 )
 
 func init() {
@@ -60,6 +61,13 @@ func init() {
 			testAccIsFirewall = true
 			testAccPanosVersion = c.Versioning()
 
+			testAccPlugins = make(map[string]string)
+			for _, v := range c.Plugin {
+				if v.Installed == "yes" {
+					testAccPlugins[v.Name] = v.Version
+				}
+			}
+
 			if err = c.Network.VlanInterface.Set("", vt); err == nil {
 				c.Network.VlanInterface.Delete(vt)
 				testAccSupportsL2 = true
@@ -73,10 +81,10 @@ func init() {
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
 
-			testAccPanoramaPlugins = make(map[string]string)
+			testAccPlugins = make(map[string]string)
 			for _, v := range c.Plugin {
-				if v["installed"] == "yes" {
-					testAccPanoramaPlugins[v["name"]] = v["version"]
+				if v.Installed == "yes" {
+					testAccPlugins[v.Name] = v.Version
 				}
 			}
 
