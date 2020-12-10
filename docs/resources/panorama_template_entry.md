@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_template_entry"
-sidebar_current: "docs-panos-panorama-resource-template-entry"
-description: |-
-  Manages a specific device in a Panorama template.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_template_entry
@@ -37,15 +34,19 @@ only the single entry for the specific serial number is deleted, then a
 ```hcl
 # Example for a virtual firewall.
 resource "panos_panorama_template_entry" "example1" {
-    template = "my template"
+    template = panos_panorama_template.t.name
     serial = "00112233"
 }
 
 # Example for a physical firewall with multi-vsys enabled.
 resource "panos_panorama_template_entry" "example2" {
-    template = "my template"
+    template = panos_panorama_template.t.name
     serial = "44556677"
     vsys_list = ["vsys1", "vsys2"]
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
