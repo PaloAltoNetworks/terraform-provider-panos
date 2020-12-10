@@ -1,11 +1,11 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_gke_cluster"
-description: |-
-  Manages a GKE cluster in a cluster group.
+subcategory: "Panorama Plugins"
 ---
 
 # panos_panorama_gke_cluster
+
+!> **Note:** This is only valid for the 1.0 GCP Plugin.
 
 This resource allows you to add/update/delete a GKE cluster in a cluster group.
 
