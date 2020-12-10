@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ipsec_tunnel_proxy_id_ipv4"
-sidebar_current: "docs-panos-panorama-resource-ipsec-tunnel-proxy-id-ipv4"
-description: |-
-  Manages Panorama IPv4 proxy IDs for auto key IPSec tunnels.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ipsec_tunnel_proxy_id_ipv4
@@ -22,13 +19,19 @@ to a parent auto key IPSec tunnel for templates.
 ## Example Usage
 
 ```hcl
+# NOTE: ipsec_tunnel should be an attribute resource variable (like how the
+#  template param is referenced) in practice.
 resource "panos_panorama_ipsec_tunnel_proxy_id_ipv4" "example" {
-    template = "my template"
+    template = panos_panorama_template.t.name
     ipsec_tunnel = "myIpsecTunnel"
     name = "example"
     local = "10.1.1.1"
     remote = "10.2.1.1"
     protocol_any = true
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
