@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_device_group_entry"
-sidebar_current: "docs-panos-panorama-resource-device-group-entry"
-description: |-
-  Manages a specific device in a Panorama device group.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_device_group_entry
