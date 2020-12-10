@@ -1,11 +1,11 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_gcp_account"
-description: |-
-  Manages GCP accounts on Panorama.
+subcategory: "Panorama Plugins"
 ---
 
 # panos_panorama_gcp_account
+
+!> **NOTE:**  This is only valid for the GCP 1.0 Plugin.
 
 This resource allows you to add/update/delete GCP accounts on Panorama.
 
