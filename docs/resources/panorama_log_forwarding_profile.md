@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_log_forwarding_profile"
-description: |-
-  Manages log forwarding profiles.
+subcategory: "Panorama Objects"
 ---
 
 # panos_panorama_log_forwarding_profile
