@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_template_stack"
-sidebar_current: "docs-panos-panorama-resource-template-stack"
-description: |-
-  Manages Panorama template stacks.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_template_stack
