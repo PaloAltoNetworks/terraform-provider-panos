@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ipsec_crypto_profile"
-sidebar_current: "docs-panos-panorama-resource-ipsec-crypto-profile"
-description: |-
-  Manages Panorama IPSec crypto profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ipsec_crypto_profile
@@ -23,8 +20,8 @@ for both templates and template stacks.
 
 ```hcl
 resource "panos_panorama_ipsec_crypto_profile" "example" {
+    template = panos_panorama_template.t.name
     name = "example"
-    template = "my template"
     authentications = ["md5", "sha384"]
     encryptions = ["des", "aes-128-cbc"]
     dh_group = "group14"
@@ -32,6 +29,10 @@ resource "panos_panorama_ipsec_crypto_profile" "example" {
     lifetime_value = 4
     lifesize_type = "mb"
     lifesize_value = 1
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
