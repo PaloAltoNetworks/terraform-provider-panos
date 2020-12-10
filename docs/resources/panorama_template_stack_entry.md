@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_template_stack_entry"
-sidebar_current: "docs-panos-panorama-resource-template-stack-entry"
-description: |-
-  Manages a specific device in a Panorama template stack.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_template_stack_entry
@@ -31,8 +28,12 @@ in Panorama and don't want Terraform to delete it on `terraform destroy`.
 
 ```hcl
 resource "panos_panorama_template_stack_entry" "example1" {
-    template_stack = "my template stack"
+    template_stack = panos_panorama_template_stack.t.name
     device = "00112233"
+}
+
+resource "panos_panorama_template_stack" "t" {
+    name = "my template stack"
 }
 ```
 
