@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_template_variable"
-sidebar_current: "docs-panos-panorama-resource-template-variable"
-description: |-
-  Manages Panorama template variables.
+subcategory: "Panorama Device Config"
 ---
 
 # panos_panorama_template_variable
@@ -25,7 +22,7 @@ Template variables are available in PAN-OS 8.1+.
 
 ```hcl
 resource "panos_panorama_template_variable" "example" {
-    template = "${panos_panorama_template.tmpl1.name}"
+    template = panos_panorama_template.tmpl1.name
     name = "$example"
     type = "ip-address"
     value = "10.1.1.1/24"
