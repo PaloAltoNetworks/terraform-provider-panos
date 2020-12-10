@@ -1,9 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_ike_gateway"
-sidebar_current: "docs-panos-panorama-resource-ike-gateway"
-description: |-
-  Manages Panorama IKE gateways.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_ike_gateway
@@ -14,9 +11,11 @@ for both templates and template stacks.
 ## Example Usage
 
 ```hcl
+# Note:  Only the template is a resource attribute variable, but all other
+#   params (such as interface) should also be reference variables.
 resource "panos_panorama_ike_gateway" "example" {
+    template = panos_panorama_template.t.name
     name = "example"
-    template = "my template"
     peer_ip_type = "dynamic"
     interface = "loopback.42"
     pre_shared_key = "secret"
@@ -25,6 +24,10 @@ resource "panos_panorama_ike_gateway" "example" {
     peer_id_type = "ipaddr"
     peer_id_value = "10.5.1.1"
     ikev1_crypto_profile = "myIkeProfile"
+}
+
+resource "panos_panorama_template" "t" {
+    name = "my template"
 }
 ```
 
