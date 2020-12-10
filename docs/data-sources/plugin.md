@@ -1,22 +1,20 @@
 ---
-layout: "panos"
-page_title: "panos: panos_panorama_plugin"
-description: |-
-  Gets Panorama plugin info.
+page_title: "panos: panos_plugin"
+subcategory: "Shared"
 ---
 
-# panos_plugin_info
+# panos_plugin
 
-Use this data source to retrieve "show system info" from the NGFW or Panorama.
+Retrieves information on plugins available on the PAN-OS NGFW or Panorama.
 
-All contents of "show system info" are saved to the `info` variable.  In
-addition, the version number of PAN-OS encountered is saved to multiple
-fields for ease of access.
+-> **Note:** Plugins for NGFW are present in PAN-OS 9.0+.
+
+-> **Note:** `panos_panorama_plugin` is now `panos_plugin`.
 
 ## Example Usage
 
 ```hcl
-data "panos_panorama_plugin" "example" {}
+data "panos_plugin" "example" {}
 ```
 
 ## Attribute Reference
