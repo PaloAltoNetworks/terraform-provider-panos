@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -15,8 +16,10 @@ import (
 func TestAccPanosPanoramaGkeClusterGroup_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
-	} else if x := testAccPanoramaPlugins["gcp"]; x == "" {
+	} else if x := testAccPlugins["gcp"]; x == "" {
 		t.Skip("The GCP plugin must be installed to run this test")
+	} else if !strings.HasPrefix(testAccPlugins["gcp"], "1.") {
+		t.Skip("GCP Plugin should be version 1 for this acctest")
 	}
 
 	var o group.Entry
