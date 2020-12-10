@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_pbf_rule_group"
-description: |-
-  Manages Panorama policy based forwarding rule groups.
+subcategory: "Panorama Policy"
 ---
 
 # panos_panorama_pbf_rule_group
@@ -30,6 +28,8 @@ they'll keep shoving each other out of the way indefinitely.
 ## Example Usage
 
 ```hcl
+# NOTE:  The "deny everything else" rule will need to already exist or
+#  this will fail.
 resource "panos_panorama_pbf_rule_group" "example" {
     device_group = panos_panorama_device_group.grp.name
     position_keyword = "above"
@@ -56,7 +56,6 @@ resource "panos_panorama_pbf_rule_group" "example" {
 
 resource "panos_panorama_device_group" "grp" {
     name = "myDeviceGroup"
-    description = "deployed by Terraform"
 }
 ```
 
