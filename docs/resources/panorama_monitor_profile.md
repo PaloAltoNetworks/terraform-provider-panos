@@ -1,8 +1,6 @@
 ---
-layout: "panos"
 page_title: "panos: panos_panorama_monitor_profile"
-description: |-
-  Manages Panorama monitor profiles.
+subcategory: "Panorama Networking"
 ---
 
 # panos_panorama_monitor_profile
@@ -21,9 +19,14 @@ This resource allows you to add/update/delete Panorama monitor profiles.
 
 ```hcl
 resource "panos_panorama_monitor_profile" "example" {
+    template_stack = panos_panorama_template_stack.t.name
     name = "myProfile"
     interval = 5
     threshold = 3
+}
+
+resource "panos_panorama_template_stack" "t" {
+    name = "my stack"
 }
 ```
 
