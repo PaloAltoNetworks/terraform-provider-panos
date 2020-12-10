@@ -76,9 +76,15 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
+			// Shared data sources.
+			"panos_plugin":      dataSourcePlugin(),
+			"panos_system_info": dataSourceSystemInfo(),
+
+			// Firewall data sources.
 			"panos_dhcp_interface_info": dataSourceDhcpInterfaceInfo(),
-			"panos_panorama_plugin":     dataSourcePanoramaPlugin(),
-			"panos_system_info":         dataSourceSystemInfo(),
+
+			// Aliases.
+			"panos_panorama_plugin": dataSourcePlugin(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
