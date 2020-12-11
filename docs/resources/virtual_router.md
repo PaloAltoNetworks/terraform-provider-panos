@@ -56,19 +56,34 @@ resource "panos_ethernet_interface" "e2" {
 The following arguments are supported:
 
 * `name` - (Required) The virtual router's name.
-* `vsys` - (Required) The vsys that will use this virtual router.  This should
+* `vsys` - The vsys that will use this virtual router.  This should
   be something like `vsys1` or `vsys3`.
-* `interfaces` - (Optional) List of interfaces that should use this virtual
+* `interfaces` - List of interfaces that should use this virtual
   router.  If you intend to use `panos_virtual_router_entry` then leave this
   field undefined.
-* `static_dist` - (Optional) Admin distance - Static (default: `10`).
-* `static_ipv6_dist` - (Optional) Admin distance - Static IPv6 (default: `10`).
-* `ospf_int_dist` - (Optional) Admin distance - OSPF Int (default: `30`).
-* `ospf_ext_dist` - (Optional) Admin distance - OSPF Ext (default: `110`).
-* `ospfv3_int_dist` - (Optional) Admin distance - OSPFv3 Int (default:
-  `30`).
-* `ospfv3_ext_dist` - (Optional) Admin distance - OSPFv3 Ext (default:
-  `110`).
-* `ibgp_dist` - (Optional) Admin distance - IBGP (default: `200`).
-* `ebgp_dist` - (Optional) Admin distance - EBGP (default: `20`).
-* `rip_dist` - (Optional) Admin distance - RIP (default: `120`).
+* `static_dist` - (Int) Admin distance - Static (default: `10`).
+* `static_ipv6_dist` - (Int) Admin distance - Static IPv6 (default: `10`).
+* `ospf_int_dist` - (Int) Admin distance - OSPF Int (default: `30`).
+* `ospf_ext_dist` - (Int) Admin distance - OSPF Ext (default: `110`).
+* `ospfv3_int_dist` - (Int) Admin distance - OSPFv3 Int (default: `30`).
+* `ospfv3_ext_dist` - (Int) Admin distance - OSPFv3 Ext (default: `110`).
+* `ibgp_dist` - (Int) Admin distance - IBGP (default: `200`).
+* `ebgp_dist` - (Int) Admin distance - EBGP (default: `20`).
+* `rip_dist` - (Int) Admin distance - RIP (default: `120`).
+* `enable_ecmp` - (Bool) Enable ECMP
+* `ecmp_max_path` - (Int) Maximum number of ECMP paths supported.
+* `ecmp_symmetric_return` - (Bool) Allows return packets to egress out
+  of the ingress interface of the flow.
+* `ecmp_strict_source_path` - (Bool) Force VPN traffic to exit interface
+  that the source-ip belongs to.
+* `ecmp_load_balance_method` - (Optional) Load balancing algorithm.  Valid
+  values are `ip-modulo`, `ip-hash`, `weighted-round-robin`, or
+  `balanced-round-robin`.
+* `ecmp_hash_source_only` - (Bool) For `ecmp_load_balance_method` = `ip-hash`:
+  Only use source address for hash.
+* `ecmp_hash_use_port` - (Bool) For `ecmp_load_balance_method` = `ip-hash`:
+  Use source/destination port for hash.
+* `ecmp_hash_seed` - (Int) For `ecmp_load_balance_method` = `ip-hash`:
+  User-specified hash seed.
+* `ecmp_weighted_round_robin_interfaces` - (Map of ints) For `ecmp_load_balance_method` =
+  `weighted-round-robin`: Interface weight used in weighted ECMP load balancing.
