@@ -95,6 +95,51 @@ func resourceVirtualRouter() *schema.Resource {
 				Default:      120,
 				ValidateFunc: validateIntInRange(10, 240),
 			},
+			"enable_ecmp": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ecmp_symmetric_return": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ecmp_strict_source_path": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ecmp_max_path": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"ecmp_load_balance_method": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ValidateFunc: validateStringIn(
+					router.EcmpLoadBalanceMethodIpModulo,
+					router.EcmpLoadBalanceMethodIpHash,
+					router.EcmpLoadBalanceMethodWeightedRoundRobin,
+					router.EcmpLoadBalanceMethodBalancedRoundRobin,
+				),
+			},
+			"ecmp_hash_source_only": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ecmp_hash_use_port": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ecmp_hash_seed": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"ecmp_weighted_round_robin_interfaces": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+			},
 		},
 	}
 }
@@ -110,18 +155,37 @@ func buildVirtualRouterId(a, b string) string {
 
 func parseVirtualRouter(d *schema.ResourceData) (string, router.Entry) {
 	vsys := d.Get("vsys").(string)
+	var iList map[string]int
+
+	iMap := d.Get("ecmp_weighted_round_robin_interfaces").(map[string]interface{})
+	if len(iMap) > 0 {
+		iList = make(map[string]int)
+		for key, value := range iMap {
+			iList[key] = value.(int)
+		}
+	}
+
 	o := router.Entry{
-		Name:           d.Get("name").(string),
-		Interfaces:     asStringList(d.Get("interfaces").([]interface{})),
-		StaticDist:     d.Get("static_dist").(int),
-		StaticIpv6Dist: d.Get("static_ipv6_dist").(int),
-		OspfIntDist:    d.Get("ospf_int_dist").(int),
-		OspfExtDist:    d.Get("ospf_ext_dist").(int),
-		Ospfv3IntDist:  d.Get("ospfv3_int_dist").(int),
-		Ospfv3ExtDist:  d.Get("ospfv3_ext_dist").(int),
-		IbgpDist:       d.Get("ibgp_dist").(int),
-		EbgpDist:       d.Get("ebgp_dist").(int),
-		RipDist:        d.Get("rip_dist").(int),
+		Name:                             d.Get("name").(string),
+		Interfaces:                       asStringList(d.Get("interfaces").([]interface{})),
+		StaticDist:                       d.Get("static_dist").(int),
+		StaticIpv6Dist:                   d.Get("static_ipv6_dist").(int),
+		OspfIntDist:                      d.Get("ospf_int_dist").(int),
+		OspfExtDist:                      d.Get("ospf_ext_dist").(int),
+		Ospfv3IntDist:                    d.Get("ospfv3_int_dist").(int),
+		Ospfv3ExtDist:                    d.Get("ospfv3_ext_dist").(int),
+		IbgpDist:                         d.Get("ibgp_dist").(int),
+		EbgpDist:                         d.Get("ebgp_dist").(int),
+		RipDist:                          d.Get("rip_dist").(int),
+		EnableEcmp:                       d.Get("enable_ecmp").(bool),
+		EcmpSymmetricReturn:              d.Get("ecmp_symmetric_return").(bool),
+		EcmpStrictSourcePath:             d.Get("ecmp_strict_source_path").(bool),
+		EcmpMaxPath:                      d.Get("ecmp_max_path").(int),
+		EcmpLoadBalanceMethod:            d.Get("ecmp_load_balance_method").(string),
+		EcmpHashSourceOnly:               d.Get("ecmp_hash_source_only").(bool),
+		EcmpHashUsePort:                  d.Get("ecmp_hash_use_port").(bool),
+		EcmpHashSeed:                     d.Get("ecmp_hash_seed").(int),
+		EcmpWeightedRoundRobinInterfaces: iList,
 	}
 
 	return vsys, o
@@ -175,6 +239,26 @@ func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	d.Set("ibgp_dist", o.IbgpDist)
 	d.Set("ebgp_dist", o.EbgpDist)
 	d.Set("rip_dist", o.RipDist)
+	d.Set("enable_ecmp", o.EnableEcmp)
+	d.Set("ecmp_symmetric_return", o.EcmpSymmetricReturn)
+	d.Set("ecmp_strict_source_path", o.EcmpStrictSourcePath)
+	d.Set("ecmp_max_path", o.EcmpMaxPath)
+	d.Set("ecmp_load_balance_method", o.EcmpLoadBalanceMethod)
+	d.Set("ecmp_hash_source_only", o.EcmpHashSourceOnly)
+	d.Set("ecmp_hash_use_port", o.EcmpHashUsePort)
+	d.Set("ecmp_hash_seed", o.EcmpHashSeed)
+
+	var bm map[string]interface{}
+	if len(o.EcmpWeightedRoundRobinInterfaces) > 0 {
+		bm = make(map[string]interface{})
+		for key, value := range o.EcmpWeightedRoundRobinInterfaces {
+			bm[key] = value
+		}
+	}
+
+	if err = d.Set("ecmp_weighted_round_robin_interfaces", bm); err != nil {
+		log.Printf("[WARN] Error setting 'ecmp_weighted_round_robin_interfaces' for %q: %s", d.Id(), err)
+	}
 
 	return nil
 }
