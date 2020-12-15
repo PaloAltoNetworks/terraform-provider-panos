@@ -65,6 +65,8 @@ The following arguments are supported:
 * `netflow_profile` - (Optional) The netflow profile.
 * `lldp_enabled` - (Optional) Enable LLDP (default: false).
 * `lldp_profile` - (Optional) LLDP profile.
+* `lldp_ha_passive_pre_negotiation` - (bool) LLDP HA passive pre-negotiation.
+* `lacp_ha_passive_pre_negotiation` - (bool) LACP HA passive pre-negotiation.
 * `link_speed` - (Optional) Link speed.  This can be any of the following:
   `10`, `100`, `1000`, or `auto`.
 * `link_duplex` - (Optional) Link duplex setting.  This can be `full`, `half`,
@@ -74,6 +76,7 @@ The following arguments are supported:
 * `aggregate_group` - (Optional) The aggregate group (applicable for
   physical firewalls only).
 * `comment` - (Optional) The interface comment.
+* `lacp_port_priority` - (int) LACP port priority.
 * `ipv4_mss_adjust` - (Optional, PAN-OS 7.1+) The IPv4 MSS adjust value.
 * `ipv6_mss_adjust` - (Optional, PAN-OS 7.1+) The IPv6 MSS adjust value.
 * `decrypt_forward` - (Optional, PAN-OS 8.1+) Enable decrypt forwarding.
