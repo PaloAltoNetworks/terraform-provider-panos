@@ -101,6 +101,56 @@ func aggregateInterfaceSchema(p bool) map[string]*schema.Schema {
 			Type:     schema.TypeInt,
 			Optional: true,
 		},
+		"lacp_enable": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"lacp_fast_failover": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"lacp_mode": {
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateStringIn("", agg.LacpModePassive, agg.LacpModeActive),
+		},
+		"lacp_transmission_rate": {
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateStringIn("", agg.LacpTransmissionRateFast, agg.LacpTransmissionRateSlow),
+		},
+		"lacp_system_priority": {
+			Type:     schema.TypeInt,
+			Optional: true,
+		},
+		"lacp_max_ports": {
+			Type:     schema.TypeInt,
+			Optional: true,
+		},
+		"lacp_ha_passive_pre_negotiation": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"lacp_ha_enable_same_system_mac": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"lacp_ha_same_system_mac_address": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"lldp_enable": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"lldp_profile": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"lldp_ha_passive_pre_negotiation": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
 		"comment": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -128,25 +178,37 @@ func aggregateInterfaceSchema(p bool) map[string]*schema.Schema {
 
 func loadAggregateInterface(d *schema.ResourceData) agg.Entry {
 	return agg.Entry{
-		Name:                       d.Get("name").(string),
-		Mode:                       d.Get("mode").(string),
-		NetflowProfile:             d.Get("netflow_profile").(string),
-		Mtu:                        d.Get("mtu").(int),
-		AdjustTcpMss:               d.Get("adjust_tcp_mss").(bool),
-		Ipv4MssAdjust:              d.Get("ipv4_mss_adjust").(int),
-		Ipv6MssAdjust:              d.Get("ipv6_mss_adjust").(int),
-		EnableUntaggedSubinterface: d.Get("enable_untagged_subinterface").(bool),
-		StaticIps:                  asStringList(d.Get("static_ips").([]interface{})),
-		Ipv6Enabled:                d.Get("ipv6_enabled").(bool),
-		Ipv6InterfaceId:            d.Get("ipv6_interface_id").(string),
-		ManagementProfile:          d.Get("management_profile").(string),
-		EnableDhcp:                 d.Get("enable_dhcp").(bool),
-		CreateDhcpDefaultRoute:     d.Get("create_dhcp_default_route").(bool),
-		DhcpDefaultRouteMetric:     d.Get("dhcp_default_route_metric").(int),
-		Comment:                    d.Get("comment").(string),
-		DecryptForward:             d.Get("decrypt_forward").(bool),
-		DhcpSendHostnameEnable:     d.Get("dhcp_send_hostname_enable").(bool),
-		DhcpSendHostnameValue:      d.Get("dhcp_send_hostname_value").(string),
+		Name:                        d.Get("name").(string),
+		Mode:                        d.Get("mode").(string),
+		NetflowProfile:              d.Get("netflow_profile").(string),
+		Mtu:                         d.Get("mtu").(int),
+		AdjustTcpMss:                d.Get("adjust_tcp_mss").(bool),
+		Ipv4MssAdjust:               d.Get("ipv4_mss_adjust").(int),
+		Ipv6MssAdjust:               d.Get("ipv6_mss_adjust").(int),
+		EnableUntaggedSubinterface:  d.Get("enable_untagged_subinterface").(bool),
+		StaticIps:                   asStringList(d.Get("static_ips").([]interface{})),
+		Ipv6Enabled:                 d.Get("ipv6_enabled").(bool),
+		Ipv6InterfaceId:             d.Get("ipv6_interface_id").(string),
+		ManagementProfile:           d.Get("management_profile").(string),
+		EnableDhcp:                  d.Get("enable_dhcp").(bool),
+		CreateDhcpDefaultRoute:      d.Get("create_dhcp_default_route").(bool),
+		DhcpDefaultRouteMetric:      d.Get("dhcp_default_route_metric").(int),
+		LacpEnable:                  d.Get("lacp_enable").(bool),
+		LacpFastFailover:            d.Get("lacp_fast_failover").(bool),
+		LacpMode:                    d.Get("lacp_mode").(string),
+		LacpTransmissionRate:        d.Get("lacp_transmission_rate").(string),
+		LacpSystemPriority:          d.Get("lacp_system_priority").(int),
+		LacpMaxPorts:                d.Get("lacp_max_ports").(int),
+		LacpHaPassivePreNegotiation: d.Get("lacp_ha_passive_pre_negotiation").(bool),
+		LacpHaEnableSameSystemMac:   d.Get("lacp_ha_enable_same_system_mac").(bool),
+		LacpHaSameSystemMacAddress:  d.Get("lacp_ha_same_system_mac_address").(string),
+		LldpEnable:                  d.Get("lldp_enable").(bool),
+		LldpProfile:                 d.Get("lldp_profile").(string),
+		LldpHaPassivePreNegotiation: d.Get("lldp_ha_passive_pre_negotiation").(bool),
+		Comment:                     d.Get("comment").(string),
+		DecryptForward:              d.Get("decrypt_forward").(bool),
+		DhcpSendHostnameEnable:      d.Get("dhcp_send_hostname_enable").(bool),
+		DhcpSendHostnameValue:       d.Get("dhcp_send_hostname_value").(string),
 	}
 }
 
@@ -169,6 +231,18 @@ func saveAggregateInterface(d *schema.ResourceData, o agg.Entry) {
 	d.Set("create_dhcp_default_route", o.CreateDhcpDefaultRoute)
 	d.Set("dhcp_default_route_metric", o.DhcpDefaultRouteMetric)
 	d.Set("comment", o.Comment)
+	d.Set("lacp_enable", o.LacpEnable)
+	d.Set("lacp_fast_failover", o.LacpFastFailover)
+	d.Set("lacp_mode", o.LacpMode)
+	d.Set("lacp_transmission_rate", o.LacpTransmissionRate)
+	d.Set("lacp_system_priority", o.LacpSystemPriority)
+	d.Set("lacp_max_ports", o.LacpMaxPorts)
+	d.Set("lacp_ha_passive_pre_negotiation", o.LacpHaPassivePreNegotiation)
+	d.Set("lacp_ha_enable_same_system_mac", o.LacpHaEnableSameSystemMac)
+	d.Set("lacp_ha_same_system_mac_address", o.LacpHaSameSystemMacAddress)
+	d.Set("lldp_enable", o.LldpEnable)
+	d.Set("lldp_profile", o.LldpProfile)
+	d.Set("lldp_ha_passive_pre_negotiation", o.LldpHaPassivePreNegotiation)
 	d.Set("decrypt_forward", o.DecryptForward)
 	d.Set("dhcp_send_hostname_enable", o.DhcpSendHostnameEnable)
 	d.Set("dhcp_send_hostname_value", o.DhcpSendHostnameValue)
