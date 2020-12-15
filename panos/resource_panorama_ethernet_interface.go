@@ -93,6 +93,14 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"lldp_ha_passive_pre_negotiation": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"lacp_ha_passive_pre_negotiation": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"link_speed": {
 				Type:         schema.TypeString,
 				Optional:     true,
@@ -114,6 +122,10 @@ func resourcePanoramaEthernetInterface() *schema.Resource {
 			},
 			"comment": {
 				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"lacp_port_priority": {
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 			"ipv4_mss_adjust": {
@@ -162,31 +174,34 @@ func parsePanoramaEthernetInterface(d *schema.ResourceData) (string, string, str
 	vsys := d.Get("vsys").(string)
 
 	o := eth.Entry{
-		Name:                   d.Get("name").(string),
-		Mode:                   d.Get("mode").(string),
-		StaticIps:              asStringList(d.Get("static_ips").([]interface{})),
-		EnableDhcp:             d.Get("enable_dhcp").(bool),
-		CreateDhcpDefaultRoute: d.Get("create_dhcp_default_route").(bool),
-		DhcpDefaultRouteMetric: d.Get("dhcp_default_route_metric").(int),
-		Ipv6Enabled:            d.Get("ipv6_enabled").(bool),
-		ManagementProfile:      d.Get("management_profile").(string),
-		Mtu:                    d.Get("mtu").(int),
-		AdjustTcpMss:           d.Get("adjust_tcp_mss").(bool),
-		NetflowProfile:         d.Get("netflow_profile").(string),
-		LldpEnabled:            d.Get("lldp_enabled").(bool),
-		LldpProfile:            d.Get("lldp_profile").(string),
-		LinkSpeed:              d.Get("link_speed").(string),
-		LinkDuplex:             d.Get("link_duplex").(string),
-		LinkState:              d.Get("link_state").(string),
-		AggregateGroup:         d.Get("aggregate_group").(string),
-		Comment:                d.Get("comment").(string),
-		Ipv4MssAdjust:          d.Get("ipv4_mss_adjust").(int),
-		Ipv6MssAdjust:          d.Get("ipv6_mss_adjust").(int),
-		DecryptForward:         d.Get("decrypt_forward").(bool),
-		RxPolicingRate:         d.Get("rx_policing_rate").(int),
-		TxPolicingRate:         d.Get("tx_policing_rate").(int),
-		DhcpSendHostnameEnable: d.Get("dhcp_send_hostname_enable").(bool),
-		DhcpSendHostnameValue:  d.Get("dhcp_send_hostname_value").(string),
+		Name:                        d.Get("name").(string),
+		Mode:                        d.Get("mode").(string),
+		StaticIps:                   asStringList(d.Get("static_ips").([]interface{})),
+		EnableDhcp:                  d.Get("enable_dhcp").(bool),
+		CreateDhcpDefaultRoute:      d.Get("create_dhcp_default_route").(bool),
+		DhcpDefaultRouteMetric:      d.Get("dhcp_default_route_metric").(int),
+		Ipv6Enabled:                 d.Get("ipv6_enabled").(bool),
+		ManagementProfile:           d.Get("management_profile").(string),
+		Mtu:                         d.Get("mtu").(int),
+		AdjustTcpMss:                d.Get("adjust_tcp_mss").(bool),
+		NetflowProfile:              d.Get("netflow_profile").(string),
+		LldpEnabled:                 d.Get("lldp_enabled").(bool),
+		LldpProfile:                 d.Get("lldp_profile").(string),
+		LldpHaPassivePreNegotiation: d.Get("lldp_ha_passive_pre_negotiation").(bool),
+		LacpHaPassivePreNegotiation: d.Get("lacp_ha_passive_pre_negotiation").(bool),
+		LinkSpeed:                   d.Get("link_speed").(string),
+		LinkDuplex:                  d.Get("link_duplex").(string),
+		LinkState:                   d.Get("link_state").(string),
+		AggregateGroup:              d.Get("aggregate_group").(string),
+		Comment:                     d.Get("comment").(string),
+		LacpPortPriority:            d.Get("lacp_port_priority").(int),
+		Ipv4MssAdjust:               d.Get("ipv4_mss_adjust").(int),
+		Ipv6MssAdjust:               d.Get("ipv6_mss_adjust").(int),
+		DecryptForward:              d.Get("decrypt_forward").(bool),
+		RxPolicingRate:              d.Get("rx_policing_rate").(int),
+		TxPolicingRate:              d.Get("tx_policing_rate").(int),
+		DhcpSendHostnameEnable:      d.Get("dhcp_send_hostname_enable").(bool),
+		DhcpSendHostnameValue:       d.Get("dhcp_send_hostname_value").(string),
 	}
 
 	return tmpl, "", vsys, o
@@ -245,11 +260,14 @@ func readPanoramaEthernetInterface(d *schema.ResourceData, meta interface{}) err
 	d.Set("netflow_profile", o.NetflowProfile)
 	d.Set("lldp_enabled", o.LldpEnabled)
 	d.Set("lldp_profile", o.LldpProfile)
+	d.Set("lldp_ha_passive_pre_negotiation", o.LldpHaPassivePreNegotiation)
+	d.Set("lacp_ha_passive_pre_negotiation", o.LacpHaPassivePreNegotiation)
 	d.Set("link_speed", o.LinkSpeed)
 	d.Set("link_duplex", o.LinkDuplex)
 	d.Set("link_state", o.LinkState)
 	d.Set("aggregate_group", o.AggregateGroup)
 	d.Set("comment", o.Comment)
+	d.Set("lacp_port_priority", o.LacpPortPriority)
 	d.Set("ipv4_mss_adjust", o.Ipv4MssAdjust)
 	d.Set("ipv6_mss_adjust", o.Ipv6MssAdjust)
 	d.Set("decrypt_forward", o.DecryptForward)
