@@ -52,6 +52,18 @@ The following arguments are supported:
   default route.
 * `dhcp_default_route_metric` - (Optional) The metric for the DHCP default
   route.
+* `lacp_enable` - (bool) Enable LACP.
+* `lacp_fast_failover` - (bool) Enable LACP fast failover.
+* `lacp_mode` - LACP mode.  Valid values are `active` or `passive`.
+* `lacp_transmission_rate` - LACP transmission rate.  Valid values are `fast` or `slow`.
+* `lacp_system_priority` - (int) LACP system priority.
+* `lacp_max_ports` - (int) LACP max ports.
+* `lacp_ha_passive_pre_negotiation` - (bool) LACP HA passive pre-negotiation.
+* `lacp_ha_enable_same_system_mac` - (bool) LACP HA enable same system MAC.
+* `lacp_ha_same_system_mac_address` - LACP HA same system MAC address.
+* `lldp_enable` - (bool) Enable LLDP.
+* `lldp_profile` - LLDP profile name.
+* `lldp_ha_passive_pre_negotiation` - (bool) LLDP HA passive pre-negotiation.
 * `comment` - (Optional) The interface comment.
 * `decrypt_forward` - (Optional, bool, PAN-OS 8.1+) Set to `true` to enable decrypt forward.
 * `dhcp_send_hostname_enable` - (Optional, PAN-OS 9.0+) For DHCP layer3 interfaces:
