@@ -215,3 +215,47 @@ func panorama(meta interface{}, alt string) (*pango.Panorama, error) {
 
 	return nil, fmt.Errorf(WrongPanosWithoutAltError, "Panorama", "firewall")
 }
+
+func computed(sm map[string]*schema.Schema, parent string, omits []string) {
+	for key, s := range sm {
+		stop := false
+		for _, o := range omits {
+			if parent == "" {
+				if o == key {
+					stop = true
+					break
+				}
+			} else if o == parent+"."+key {
+				stop = true
+				break
+			}
+		}
+		if stop {
+			continue
+		}
+		s.Computed = true
+		s.Required = false
+		s.Optional = false
+		s.MinItems = 0
+		s.MaxItems = 0
+		s.Default = nil
+		s.DefaultFunc = nil
+		s.ConflictsWith = nil
+		s.ExactlyOneOf = nil
+		s.AtLeastOneOf = nil
+		s.ValidateFunc = nil
+		//s.RequiredWith = nil
+		if s.Type == schema.TypeList || s.Type == schema.TypeSet {
+			switch et := s.Elem.(type) {
+			case *schema.Resource:
+				var path string
+				if parent == "" {
+					path = key
+				} else {
+					path = parent + "." + key
+				}
+				computed(et.Schema, path, omits)
+			}
+		}
+	}
+}
