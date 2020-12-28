@@ -1,6 +1,8 @@
 package panos
 
 import (
+	"log"
+
 	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -120,5 +122,30 @@ func tagSchema() *schema.Schema {
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		},
+	}
+}
+
+func listingSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"total": {
+			Type:        schema.TypeInt,
+			Computed:    true,
+			Description: "Number of objects present",
+		},
+		"listing": {
+			Type:        schema.TypeList,
+			Computed:    true,
+			Description: "Object names",
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		},
+	}
+}
+
+func saveListing(d *schema.ResourceData, v []string) {
+	d.Set("total", len(v))
+	if err := d.Set("listing", v); err != nil {
+		log.Printf("[WARN] Error setting 'listing' for %q: %s", d.Id(), err)
 	}
 }
