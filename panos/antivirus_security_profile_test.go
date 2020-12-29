@@ -13,7 +13,7 @@ import (
 )
 
 // Data source listing tests.
-func TestAccDsPanosFirewallAntivirusSecurityProfileList(t *testing.T) {
+func TestAccPanosDsFirewallAntivirusSecurityProfileList(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -32,7 +32,7 @@ func TestAccDsPanosFirewallAntivirusSecurityProfileList(t *testing.T) {
 	})
 }
 
-func TestAccDsPanosPanoramaAntivirusSecurityProfileList(t *testing.T) {
+func TestAccPanosDsPanoramaAntivirusSecurityProfileList(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -52,7 +52,7 @@ func TestAccDsPanosPanoramaAntivirusSecurityProfileList(t *testing.T) {
 }
 
 // Data source tests.
-func TestAccDsPanosFirewallAntivirusSecurityProfile_basic(t *testing.T) {
+func TestAccPanosDsFirewallAntivirusSecurityProfile_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -73,7 +73,7 @@ func TestAccDsPanosFirewallAntivirusSecurityProfile_basic(t *testing.T) {
 	})
 }
 
-func TestAccDsPanosPanoramaAntivirusSecurityProfile_basic(t *testing.T) {
+func TestAccPanosDsPanoramaAntivirusSecurityProfile_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -109,8 +109,10 @@ resource "panos_antivirus_security_profile" "x" {
     decoder { name = "smb" }
     decoder { name = "pop3" }
     decoder { name = "imap" }
-    decoder { name = "http2" }
-    decoder { name = "http" }
+    # HTTP2 was added later; seems to be ok to remove both HTTP and HTTP2
+    # without causing plan diffs.
+    #decoder { name = "http2" }
+    #decoder { name = "http" }
     decoder { name = "ftp" }
     application_exception {
         application = "hotmail"
@@ -316,8 +318,10 @@ resource "panos_antivirus_security_profile" "test" {
     }
     decoder { name = "smb" }
     decoder { name = "pop3" }
-    decoder { name = "http2" }
-    decoder { name = "http" }
+    # HTTP2 was added later; seems to be ok to remove both HTTP and HTTP2
+    # without causing plan diffs.
+    #decoder { name = "http2" }
+    #decoder { name = "http" }
     decoder { name = "ftp" }
     application_exception {
         application = %q
