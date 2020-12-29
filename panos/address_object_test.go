@@ -13,7 +13,7 @@ import (
 )
 
 // Data source listing tests.
-func TestAccDsPanosFirewallAddressObjectList(t *testing.T) {
+func TestAccPanosDsFirewallAddressObjectList(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -32,7 +32,7 @@ func TestAccDsPanosFirewallAddressObjectList(t *testing.T) {
 	})
 }
 
-func TestAccDsPanosPanoramaAddressObjectList(t *testing.T) {
+func TestAccPanosDsPanoramaAddressObjectList(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
@@ -52,7 +52,7 @@ func TestAccDsPanosPanoramaAddressObjectList(t *testing.T) {
 }
 
 // Data source tests.
-func TestAccDsPanosFirewallAddressObject_basic(t *testing.T) {
+func TestAccPanosDsFirewallAddressObject_basic(t *testing.T) {
 	if !testAccIsFirewall {
 		t.Skip(SkipFirewallAccTest)
 	}
@@ -73,7 +73,7 @@ func TestAccDsPanosFirewallAddressObject_basic(t *testing.T) {
 	})
 }
 
-func TestAccDsPanosPanoramaAddressObject_basic(t *testing.T) {
+func TestAccPanosDsPanoramaAddressObject_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
 	}
