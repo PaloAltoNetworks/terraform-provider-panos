@@ -222,6 +222,12 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "(PAN-OS 8.x only) Packet capture config",
+			ValidateFunc: validateStringIn(
+				"",
+				spyware.Disable,
+				spyware.SinglePacket,
+				spyware.ExtendedCapture,
+			),
 		},
 		"sinkhole_ipv4_address": {
 			Type:        schema.TypeString,
@@ -244,7 +250,7 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 		"botnet_list": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Botnet list structs",
+			Description: "Botnet list specs",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -256,6 +262,14 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "Action to take",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.ActionAlert,
+							spyware.ActionDefault,
+							spyware.ActionAllow,
+							spyware.ActionBlock,
+							spyware.ActionSinkhole,
+						),
 					},
 					"packet_capture": {
 						Type:        schema.TypeString,
@@ -274,7 +288,7 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 		"dns_category": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "(PAN-OS 10.0+) DNS category structs",
+			Description: "(PAN-OS 10.0+) DNS category specs",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -286,11 +300,29 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 						Type:        schema.TypeString,
 						Optional:    true,
 						Description: "Action to take",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.ActionAlert,
+							spyware.ActionDefault,
+							spyware.ActionAllow,
+							spyware.ActionBlock,
+							spyware.ActionSinkhole,
+						),
 					},
 					"log_level": {
 						Type:        schema.TypeString,
 						Optional:    true,
 						Description: "Logging level",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.LogLevelDefault,
+							spyware.LogLevelNone,
+							spyware.LogLevelLow,
+							spyware.LogLevelInformational,
+							spyware.LogLevelMedium,
+							spyware.LogLevelHigh,
+							spyware.LogLevelCritical,
+						),
 					},
 					"packet_capture": {
 						Type:        schema.TypeString,
@@ -309,7 +341,7 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 		"white_list": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "White list structs",
+			Description: "(PAN-OS 10.0+) White list specs",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
