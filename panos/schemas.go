@@ -46,7 +46,7 @@ func positionKeywordSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:         schema.TypeString,
 		Optional:     true,
-		Default:      "",
+		Description:  "The position keyword for this group of rules",
 		ValidateFunc: validateStringIn(movementKeywords()...),
 		ForceNew:     true,
 	}
@@ -54,9 +54,10 @@ func positionKeywordSchema() *schema.Schema {
 
 func positionReferenceSchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeString,
-		Optional: true,
-		ForceNew: true,
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "The position reference for this group of rules",
+		ForceNew:    true,
 	}
 }
 
