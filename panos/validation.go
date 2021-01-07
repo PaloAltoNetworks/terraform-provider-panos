@@ -2,6 +2,7 @@ package panos
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -69,6 +70,17 @@ func validateStringHasPrefix(p string) schema.SchemaValidateFunc {
 		val := v.(string)
 		if !strings.HasPrefix(val, p) {
 			errors = append(errors, fmt.Errorf("Param value must start with %q", p))
+		}
+
+		return
+	}
+}
+
+func validateIsRegex() schema.SchemaValidateFunc {
+	return func(v interface{}, k string) (ws []string, errors []error) {
+		val := v.(string)
+		if _, err := regexp.Compile(val); err != nil {
+			errors = append(errors, err)
 		}
 
 		return
