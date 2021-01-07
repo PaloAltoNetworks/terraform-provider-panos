@@ -1,7 +1,10 @@
 package panos
 
 import (
+	"bytes"
+	"encoding/base64"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/util"
@@ -60,6 +63,28 @@ func movementIsRelative(v int) bool {
 	default:
 		return false
 	}
+}
+
+func groupIndexes(rules, names []string, move int, oRule string) (int, int, error) {
+	var err error
+	fIdx, oIdx := -1, -1
+
+	for i := range rules {
+		if rules[i] == names[0] {
+			fIdx = i
+		} else if rules[i] == oRule {
+			oIdx = i
+		}
+		if fIdx != -1 && oIdx != -1 {
+			break
+		}
+	}
+
+	if oIdx == -1 && movementIsRelative(move) {
+		err = fmt.Errorf("Can't verify positioning as position_reference %q is not present", oRule)
+	}
+
+	return fIdx, oIdx, err
 }
 
 func groupPositionIsOk(move, fIdx, oIdx int, list, grp []string) bool {
@@ -258,4 +283,26 @@ func computed(sm map[string]*schema.Schema, parent string, omits []string) {
 			}
 		}
 	}
+}
+
+func base64Encode(v []interface{}) string {
+	var buf bytes.Buffer
+
+	for i := range v {
+		if i != 0 {
+			buf.WriteString("\n")
+		}
+		buf.WriteString(v[i].(string))
+	}
+
+	return base64.StdEncoding.EncodeToString(buf.Bytes())
+}
+
+func base64Decode(v string) []string {
+	joined, err := base64.StdEncoding.DecodeString(v)
+	if err != nil {
+		return nil
+	}
+
+	return strings.Split(string(joined), "\n")
 }
