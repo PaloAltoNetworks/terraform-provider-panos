@@ -127,38 +127,39 @@ func TestAccPanosFirewallAntiSpywareSecurityProfileThreatException_basic(t *test
 	})
 }
 
-/*
-func TestAccPanosPanoramaAntiSpywareSecurityProfile_basic(t *testing.T) {
+func TestAccPanosPanoramaAntiSpywareSecurityProfileThreatException_basic(t *testing.T) {
 	if !testAccIsPanorama {
 		t.Skip(SkipPanoramaAccTest)
+	} else if len(testAccPredefinedThreats) == 0 {
+		t.Skip("No predefined threats present")
 	}
 
-	var o spyware.Entry
-	name := fmt.Sprintf("tf%s", acctest.RandString(6))
+	var o tex.Entry
+	prof := fmt.Sprintf("tf%s", acctest.RandString(6))
+	name := testAccPredefinedThreats[acctest.RandInt()%len(testAccPredefinedThreats)].Name
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosAntiSpywareSecurityProfileDestroy,
+		CheckDestroy: testAccPanosAntiSpywareSecurityProfileThreatExceptionDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccAntiSpywareSecurityProfileConfig(name, "desc one", "ip1.example.com"),
+				Config: testAccAntiSpywareSecurityProfileThreatExceptionConfig(prof, name, tex.Disable, tex.ActionAllow, "192.168.55.55", "192.168.44.44"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAntiSpywareSecurityProfileExists("panos_anti_spyware_security_profile.test", &o),
-					testAccCheckPanosAntiSpywareSecurityProfileAttributes(&o, name, "desc one", "ip1.example.com"),
+					testAccCheckPanosAntiSpywareSecurityProfileThreatExceptionExists("panos_anti_spyware_security_profile_threat_exception.test", &o),
+					testAccCheckPanosAntiSpywareSecurityProfileThreatExceptionAttributes(&o, name, tex.Disable, tex.ActionAllow, "192.168.55.55", "192.168.44.44"),
 				),
 			},
 			{
-				Config: testAccAntiSpywareSecurityProfileConfig(name, "desc two", "ip2.example.com"),
+				Config: testAccAntiSpywareSecurityProfileThreatExceptionConfig(prof, name, tex.ExtendedCapture, tex.ActionDrop, "192.168.55.55", "192.168.66.66"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAntiSpywareSecurityProfileExists("panos_anti_spyware_security_profile.test", &o),
-					testAccCheckPanosAntiSpywareSecurityProfileAttributes(&o, name, "desc two", "ip2.example.com"),
+					testAccCheckPanosAntiSpywareSecurityProfileThreatExceptionExists("panos_anti_spyware_security_profile_threat_exception.test", &o),
+					testAccCheckPanosAntiSpywareSecurityProfileThreatExceptionAttributes(&o, name, tex.ExtendedCapture, tex.ActionDrop, "192.168.55.55", "192.168.66.66"),
 				),
 			},
 		},
 	})
 }
-*/
 
 func testAccCheckPanosAntiSpywareSecurityProfileThreatExceptionExists(n string, o *tex.Entry) resource.TestCheckFunc {
 	return func(s *terraform.State) error {

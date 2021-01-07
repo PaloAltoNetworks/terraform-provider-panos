@@ -8,6 +8,7 @@ import (
 	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
 	"github.com/PaloAltoNetworks/pango/netw/interface/vlan"
 	"github.com/PaloAltoNetworks/pango/pnrm/template"
+	"github.com/PaloAltoNetworks/pango/predefined/threat"
 	"github.com/PaloAltoNetworks/pango/version"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -21,6 +22,7 @@ var (
 	testAccSupportsL2, testAccSupportsAggregateInterfaces bool
 	testAccPanosVersion                                   version.Number
 	testAccPlugins                                        map[string]string
+	testAccPredefinedThreats                              []threat.Entry
 )
 
 func init() {
@@ -77,6 +79,8 @@ func init() {
 				c.Network.AggregateInterface.Delete(ai)
 				testAccSupportsAggregateInterfaces = true
 			}
+
+			testAccPredefinedThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
 		case *pango.Panorama:
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
@@ -100,6 +104,8 @@ func init() {
 				}
 				c.Panorama.Template.Delete(pt)
 			}
+
+			testAccPredefinedThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
 		}
 	}
 }
