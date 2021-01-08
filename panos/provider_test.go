@@ -22,7 +22,8 @@ var (
 	testAccSupportsL2, testAccSupportsAggregateInterfaces bool
 	testAccPanosVersion                                   version.Number
 	testAccPlugins                                        map[string]string
-	testAccPredefinedThreats                              []threat.Entry
+	testAccPredefinedPhoneHomeThreats                     []threat.Entry
+	testAccPredefinedVulnerabilityThreats                 []threat.Entry
 )
 
 func init() {
@@ -80,7 +81,8 @@ func init() {
 				testAccSupportsAggregateInterfaces = true
 			}
 
-			testAccPredefinedThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
+			testAccPredefinedPhoneHomeThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
+			testAccPredefinedVulnerabilityThreats, _ = c.Predefined.Threat.GetThreats(threat.Vulnerability, "Overflow")
 		case *pango.Panorama:
 			testAccIsPanorama = true
 			testAccPanosVersion = c.Versioning()
@@ -105,7 +107,8 @@ func init() {
 				c.Panorama.Template.Delete(pt)
 			}
 
-			testAccPredefinedThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
+			testAccPredefinedPhoneHomeThreats, _ = c.Predefined.Threat.GetThreats(threat.PhoneHome, "Phishing")
+			testAccPredefinedVulnerabilityThreats, _ = c.Predefined.Threat.GetThreats(threat.Vulnerability, "Overflow")
 		}
 	}
 }
