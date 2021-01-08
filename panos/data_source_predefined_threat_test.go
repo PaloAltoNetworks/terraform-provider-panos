@@ -9,8 +9,8 @@ import (
 )
 
 func TestAccPanosDsPredefinedThreats(t *testing.T) {
-	if len(testAccPredefinedThreats) == 0 {
-		t.Skip("No predefined threats found")
+	if len(testAccPredefinedPhoneHomeThreats) == 0 {
+		t.Skip("No predefined phone home threats found")
 	}
 
 	resource.Test(t, resource.TestCase{
@@ -30,11 +30,11 @@ func TestAccPanosDsPredefinedThreats(t *testing.T) {
 }
 
 func TestAccPanosDsPredefinedThreat(t *testing.T) {
-	if len(testAccPredefinedThreats) == 0 {
-		t.Skip("No predefined threats found")
+	if len(testAccPredefinedPhoneHomeThreats) == 0 {
+		t.Skip("No predefined phone home threats found")
 	}
 
-	name := testAccPredefinedThreats[acctest.RandInt()%len(testAccPredefinedThreats)].Name
+	name := testAccPredefinedPhoneHomeThreats[acctest.RandInt()%len(testAccPredefinedPhoneHomeThreats)].Name
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
