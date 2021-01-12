@@ -357,6 +357,144 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 				},
 			},
 		},
+		"rule": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Rule list spec",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Name",
+					},
+					"threat_name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Threat name",
+					},
+					"category": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "The category",
+					},
+					"severities": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "List of severities",
+						Elem: &schema.Schema{
+							Type: schema.TypeString,
+						},
+					},
+					"packet_capture": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Packet capture setting",
+						ValidateFunc: validateStringIn(
+							"", spyware.Disable, spyware.SinglePacket, spyware.ExtendedCapture,
+						),
+					},
+					"action": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Action to take",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.ActionDefault,
+							spyware.ActionAllow,
+							spyware.ActionAlert,
+							spyware.ActionDrop,
+							spyware.ActionResetClient,
+							spyware.ActionResetServer,
+							spyware.ActionResetBoth,
+							spyware.ActionBlockIp,
+						),
+					},
+					"block_ip_track_by": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "(For action = block-ip) The track by setting",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.TrackBySource,
+							spyware.TrackBySourceAndDestination,
+						),
+					},
+					"block_ip_duration": {
+						Type:        schema.TypeInt,
+						Optional:    true,
+						Description: "(For action = block-ip) The duration",
+					},
+				},
+			},
+		},
+		"exception": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Exception list spec",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						ForceNew:    true,
+						Description: "Threat name",
+					},
+					"packet_capture": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "(PAN-OS 8.x only) Packet capture config",
+						Default:     spyware.Disable,
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.Disable,
+							spyware.SinglePacket,
+							spyware.ExtendedCapture,
+						),
+					},
+					"action": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "IPv4 sinkhole address",
+						Default:     spyware.ActionDefault,
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.ActionDefault,
+							spyware.ActionAllow,
+							spyware.ActionAlert,
+							spyware.ActionDrop,
+							spyware.ActionResetClient,
+							spyware.ActionResetServer,
+							spyware.ActionResetBoth,
+							spyware.ActionBlockIp,
+						),
+					},
+					"block_ip_track_by": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "(action = block-ip) The track by config",
+						ValidateFunc: validateStringIn(
+							"",
+							spyware.TrackBySource,
+							spyware.TrackBySourceAndDestination,
+						),
+					},
+					"block_ip_duration": {
+						Type:        schema.TypeInt,
+						Optional:    true,
+						Description: "(action = block-ip) The duration to block for",
+					},
+					"exempt_ips": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "List of exempt IP addresses",
+						Elem: &schema.Schema{
+							Type: schema.TypeString,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	if !isResource {
@@ -411,6 +549,42 @@ func loadAntiSpywareSecurityProfile(d *schema.ResourceData) spyware.Entry {
 		}
 	}
 
+	var rules []spyware.Rule
+	list = d.Get("rule").([]interface{})
+	if len(list) > 0 {
+		rules = make([]spyware.Rule, 0, len(list))
+		for i := range list {
+			elm := list[i].(map[string]interface{})
+			rules = append(rules, spyware.Rule{
+				Name:            elm["name"].(string),
+				ThreatName:      elm["threat_name"].(string),
+				Category:        elm["category"].(string),
+				Severities:      asStringList(elm["severities"].([]interface{})),
+				PacketCapture:   elm["packet_capture"].(string),
+				Action:          elm["action"].(string),
+				BlockIpTrackBy:  elm["block_ip_track_by"].(string),
+				BlockIpDuration: elm["block_ip_duration"].(int),
+			})
+		}
+	}
+
+	var exceptions []spyware.Exception
+	list = d.Get("exception").([]interface{})
+	if len(list) > 0 {
+		exceptions = make([]spyware.Exception, 0, len(list))
+		for i := range list {
+			elm := list[i].(map[string]interface{})
+			exceptions = append(exceptions, spyware.Exception{
+				Name:            elm["name"].(string),
+				PacketCapture:   elm["packet_capture"].(string),
+				Action:          elm["action"].(string),
+				BlockIpTrackBy:  elm["block_ip_track_by"].(string),
+				BlockIpDuration: elm["block_ip_duration"].(int),
+				ExemptIps:       asStringList(elm["exempt_ips"].([]interface{})),
+			})
+		}
+	}
+
 	return spyware.Entry{
 		Name:                d.Get("name").(string),
 		Description:         d.Get("description").(string),
@@ -421,6 +595,8 @@ func loadAntiSpywareSecurityProfile(d *schema.ResourceData) spyware.Entry {
 		SinkholeIpv4Address: d.Get("sinkhole_ipv4_address").(string),
 		SinkholeIpv6Address: d.Get("sinkhole_ipv6_address").(string),
 		ThreatExceptions:    asStringList(d.Get("threat_exceptions").([]interface{})),
+		Rules:               rules,
+		Exceptions:          exceptions,
 	}
 }
 
@@ -479,6 +655,46 @@ func saveAntiSpywareSecurityProfile(d *schema.ResourceData, o spyware.Entry) {
 		}
 		if err := d.Set("white_list", list); err != nil {
 			log.Printf("[WARN] Error setting 'white_list' for %q: %s", d.Id(), err)
+		}
+	}
+
+	if len(o.Rules) == 0 {
+		d.Set("rule", nil)
+	} else {
+		list := make([]interface{}, 0, len(o.Rules))
+		for _, x := range o.Rules {
+			list = append(list, map[string]interface{}{
+				"name":              x.Name,
+				"threat_name":       x.ThreatName,
+				"category":          x.Category,
+				"severities":        x.Severities,
+				"packet_capture":    x.PacketCapture,
+				"action":            x.Action,
+				"block_ip_track_by": x.BlockIpTrackBy,
+				"block_ip_duration": x.BlockIpDuration,
+			})
+		}
+		if err := d.Set("rule", list); err != nil {
+			log.Printf("[WARN] Error setting 'rule' for %q: %s", d.Id(), err)
+		}
+	}
+
+	if len(o.Exceptions) == 0 {
+		d.Set("exception", nil)
+	} else {
+		list := make([]interface{}, 0, len(o.Exceptions))
+		for _, x := range o.Exceptions {
+			list = append(list, map[string]interface{}{
+				"name":              x.Name,
+				"packet_capture":    x.PacketCapture,
+				"action":            x.Action,
+				"block_ip_track_by": x.BlockIpTrackBy,
+				"block_ip_duration": x.BlockIpDuration,
+				"exempt_ips":        x.ExemptIps,
+			})
+		}
+		if err := d.Set("exception", list); err != nil {
+			log.Printf("[WARN] Error setting 'rule' for %q: %s", d.Id(), err)
 		}
 	}
 }
