@@ -35,6 +35,10 @@ func TestAccPanosDsAntiSpywareSecurityProfileList(t *testing.T) {
 
 // Data source tests.
 func TestAccPanosDsAntiSpywareSecurityProfile_basic(t *testing.T) {
+	if len(testAccPredefinedPhoneHomeThreats) == 0 {
+		t.Skip("No predefined phone home threats present")
+	}
+
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 	tName := testAccPredefinedPhoneHomeThreats[acctest.RandInt()%len(testAccPredefinedPhoneHomeThreats)].Name
 
