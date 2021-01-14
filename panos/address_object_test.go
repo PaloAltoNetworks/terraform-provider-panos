@@ -13,30 +13,7 @@ import (
 )
 
 // Data source listing tests.
-func TestAccPanosDsFirewallAddressObjectList(t *testing.T) {
-	if !testAccIsFirewall {
-		t.Skip(SkipFirewallAccTest)
-	}
-
-	name := fmt.Sprintf("tf%s", acctest.RandString(6))
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccDsAddressObjectConfig(name),
-				Check:  checkDataSourceListing("panos_address_objects"),
-			},
-		},
-	})
-}
-
-func TestAccPanosDsPanoramaAddressObjectList(t *testing.T) {
-	if !testAccIsPanorama {
-		t.Skip(SkipPanoramaAccTest)
-	}
-
+func TestAccPanosDsAddressObjectList(t *testing.T) {
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
 	resource.Test(t, resource.TestCase{
@@ -52,32 +29,7 @@ func TestAccPanosDsPanoramaAddressObjectList(t *testing.T) {
 }
 
 // Data source tests.
-func TestAccPanosDsFirewallAddressObject_basic(t *testing.T) {
-	if !testAccIsFirewall {
-		t.Skip(SkipFirewallAccTest)
-	}
-
-	name := fmt.Sprintf("tf%s", acctest.RandString(6))
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccDsAddressObjectConfig(name),
-				Check: checkDataSource("panos_address_object", []string{
-					"name", "type", "value", "description",
-				}),
-			},
-		},
-	})
-}
-
-func TestAccPanosDsPanoramaAddressObject_basic(t *testing.T) {
-	if !testAccIsPanorama {
-		t.Skip(SkipPanoramaAccTest)
-	}
-
+func TestAccPanosDsAddressObject_basic(t *testing.T) {
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
 	resource.Test(t, resource.TestCase{
@@ -111,42 +63,7 @@ resource "panos_address_object" "x" {
 }
 
 // Resource tests.
-func TestAccPanosFirewallAddressObject_basic(t *testing.T) {
-	if !testAccIsFirewall {
-		t.Skip(SkipFirewallAccTest)
-	}
-
-	var o addr.Entry
-	name := fmt.Sprintf("tf%s", acctest.RandString(6))
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccPanosAddressObjectDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccAddressObjectConfig(name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAddressObjectExists("panos_address_object.test", &o),
-					testAccCheckPanosAddressObjectAttributes(&o, name, "10.1.1.1-10.1.1.250", "ip-range", "new desc"),
-				),
-			},
-			{
-				Config: testAccAddressObjectConfig(name, "10.1.1.1", "ip-netmask", "foobar"),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPanosAddressObjectExists("panos_address_object.test", &o),
-					testAccCheckPanosAddressObjectAttributes(&o, name, "10.1.1.1", "ip-netmask", "foobar"),
-				),
-			},
-		},
-	})
-}
-
-func TestAccPanosPanoramaAddressObject_basic(t *testing.T) {
-	if !testAccIsPanorama {
-		t.Skip(SkipPanoramaAccTest)
-	}
-
+func TestAccPanosAddressObject_basic(t *testing.T) {
 	var o addr.Entry
 	name := fmt.Sprintf("tf%s", acctest.RandString(6))
 
