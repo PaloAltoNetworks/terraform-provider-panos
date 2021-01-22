@@ -192,6 +192,41 @@ func TestAccPanosDosProtectionProfile_basic(t *testing.T) {
 					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "second", dos.TypeAggregate, syns[1], nil, nil, nil, others[0]),
 				),
 			},
+			{
+				Config: testAccDosProtectionProfileConfig(name, "third", dos.TypeAggregate, syns[1], others[0], others[1], others[2], others[3]),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosDosProtectionProfileExists("panos_dos_protection_profile.test", &o),
+					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "third", dos.TypeAggregate, syns[1], others[0], others[1], others[2], others[3]),
+				),
+			},
+			{
+				Config: testAccDosProtectionProfileConfig(name, "four", dos.TypeClassified, syns[2], others[3], others[4], others[5], others[6]),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosDosProtectionProfileExists("panos_dos_protection_profile.test", &o),
+					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "four", dos.TypeClassified, syns[2], others[3], others[4], others[5], others[6]),
+				),
+			},
+			{
+				Config: testAccDosProtectionProfileConfig(name, "five", dos.TypeClassified, syns[3], others[4], others[5], others[6], others[7]),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosDosProtectionProfileExists("panos_dos_protection_profile.test", &o),
+					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "five", dos.TypeClassified, syns[3], others[4], others[5], others[6], others[7]),
+				),
+			},
+			{
+				Config: testAccDosProtectionProfileConfig(name, "six", dos.TypeClassified, nil, nil, nil, nil, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosDosProtectionProfileExists("panos_dos_protection_profile.test", &o),
+					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "six", dos.TypeClassified, nil, nil, nil, nil, nil),
+				),
+			},
+			{
+				Config: testAccDosProtectionProfileConfig(name, "seven", dos.TypeAggregate, syns[0], others[8], others[9], others[8], others[9]),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosDosProtectionProfileExists("panos_dos_protection_profile.test", &o),
+					testAccCheckPanosDosProtectionProfileAttributes(&o, name, "seven", dos.TypeAggregate, syns[0], others[8], others[9], others[8], others[9]),
+				),
+			},
 		},
 	})
 }
@@ -429,7 +464,7 @@ resource "panos_dos_protection_profile" "test" {
 
 	if udp != nil {
 		ans = fmt.Sprintf(`%s
-    upd {
+    udp {
         enable = %t
         alarm_rate = %d
         activate_rate = %d
