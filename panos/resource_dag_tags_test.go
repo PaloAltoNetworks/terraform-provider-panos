@@ -45,7 +45,7 @@ func testAccCheckPanosDagTagsExists(n string, o map[string][]string) resource.Te
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		v, err := fw.UserId.Registered("", "", rs.Primary.ID)
+		v, err := fw.UserId.GetIpTags("", "", rs.Primary.ID)
 		if err != nil {
 			return err
 		}
