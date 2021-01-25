@@ -26,7 +26,7 @@ func TestAccPanosDsUserTag(t *testing.T) {
 			{
 				Config: testAccDsUserTagConfig(name),
 				Check: checkDataSource("panos_user_tag", []string{
-					"user", "users.0.user",
+					"user", "entries.0.user",
 				}),
 			},
 		},

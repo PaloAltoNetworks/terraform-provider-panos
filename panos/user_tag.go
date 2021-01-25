@@ -24,10 +24,10 @@ func dataSourceUserTag() *schema.Resource {
 			},
 
 			// Output.
-			"users": {
+			"entries": {
 				Type:        schema.TypeList,
 				Computed:    true,
-				Description: "List of user specs",
+				Description: "List of entry specs",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"user": {
@@ -68,7 +68,7 @@ func readDataSourceUserTag(d *schema.ResourceData, meta interface{}) error {
 		vsys, su,
 	}))
 	if len(cur) == 0 {
-		d.Set("users", nil)
+		d.Set("entries", nil)
 		return nil
 	}
 
@@ -80,8 +80,8 @@ func readDataSourceUserTag(d *schema.ResourceData, meta interface{}) error {
 		})
 	}
 
-	if err = d.Set("users", data); err != nil {
-		log.Printf("[WARN] Error setting 'users' for %q: %s", d.Id(), err)
+	if err = d.Set("entries", data); err != nil {
+		log.Printf("[WARN] Error setting 'entries' for %q: %s", d.Id(), err)
 	}
 
 	return nil
