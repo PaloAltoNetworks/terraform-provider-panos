@@ -234,6 +234,7 @@ func ospfExportSchema(isResource bool) map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "The export rule name",
+			ForceNew:    true,
 		},
 		"path_type": {
 			Type:        schema.TypeString,
