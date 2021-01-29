@@ -67,24 +67,24 @@ The following attributes are supported:
 * `machine_learning_exception` - (Repeatable) A machine learning exception spec, as
   defined below.
 
-`decoder` supports the following arguments:
+`decoder` supports the following attributes:
 
 * `name` - Decoder name.
 * `action` - Decoder action.
 * `wildfire_action` - Wildfire action.
 * `machine_learning_action` - (PAN-OS 10.0+) Machine learning action.
 
-`application_exception` supports the following arguments:
+`application_exception` supports the following attributes:
 
 * `application` - The application name
 * `action` - The action.
 
-`machine_learning_model` supports the following arguments:
+`machine_learning_model` supports the following attributes:
 
 * `model` - The model.
 * `action` - The action.
 
-`machine_learning_exception` supports the following arguments:
+`machine_learning_exception` supports the following attributes:
 
 * `name` - The name.
 * `description` - The description.
