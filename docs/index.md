@@ -12,6 +12,30 @@ policies.
 Use the navigation to the left to read about the available Panorama and NGFW
 resources.
 
+## Resource Naming
+
+In earlier releases of the `panos` provider, resources for the NGFW had a
+`panos_` prefix, while resources intended for Panorama had a `panos_panorama_`
+prefix.  This has become a bit of a stumbling block for new users of the `panos`
+provider.  So starting in `panos` provider v1.7, we are doing away with this
+distinction for any resources or data sources added, and will be slowing working to
+retrofit the existing resources to behave this way.
+
+One resource has been retrofitted in this regard, and that's the `panos_address_object`
+resource.  In order to not break existing plans / deployments, the provider has an alias
+for `panos_panorama_address_object` that uses this new approach.  This means that as of
+1.7, you can add an address object to Panorama using the name `panos_address_object` or
+`panos_panorama_address_object`.  This is the only pre-1.7 resource that has been
+modified like this as a trial run.  If you encounter any issues, please open a GitHub
+issue against the provider.
+
+This merging also has an affect on the ID for a resource.  Since NGFW and Panorama
+often require slightly different params, the names will be slightly different based
+on if the provider is acting on a NGFW or a Panorama.  The ID is important when you
+try to import an existing config into Terraform.  So in the documentation for these
+newer style resources, there will be one format for NGFW and another format for
+Panorama.
+
 ## Versioning
 
 In general, the panos provider has support for PAN-OS 6.1 onwards.  Data
@@ -72,6 +96,9 @@ a Panorama IPv4 static route whose import name is
 template, your import name would be something like
 `myTemplate::myVirtualRouter:myStaticRouteName`.
 
+If the resource is a combined resource (see [Resource
+Naming](#resource-naming) above), then the documentation for that resource
+or data source will have separate entries for NGFW and Panorama naming.
 
 ## Example Provider Usage
 
