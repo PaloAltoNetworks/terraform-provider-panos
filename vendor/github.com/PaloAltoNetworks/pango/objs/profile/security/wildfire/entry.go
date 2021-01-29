@@ -47,6 +47,7 @@ func (o *Entry) Copy(s Entry) {
 				item.FileTypes = make([]string, len(x.FileTypes))
 				copy(item.FileTypes, x.FileTypes)
 			}
+			o.Rules = append(o.Rules, item)
 		}
 	}
 }
