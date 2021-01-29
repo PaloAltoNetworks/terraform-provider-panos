@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_system_info"
-subcategory: "Shared"
+subcategory: "Operational State"
 ---
 
 # panos_system_info
