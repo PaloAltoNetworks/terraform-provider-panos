@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_dhcp_interface_info"
-subcategory: "Firewall Networking"
+subcategory: "Operational State"
 ---
 
 # panos_dhcp_interface_info
@@ -16,7 +16,7 @@ data "panos_dhcp_interface_info" "example" {
 }
 
 output "eth1_ip" {
-    value = "${data.panos_dhcp_interface_info.example.ip}"
+    value = data.panos_dhcp_interface_info.example.ip
 }
 ```
 
