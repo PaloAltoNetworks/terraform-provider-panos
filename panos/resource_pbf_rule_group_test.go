@@ -182,7 +182,7 @@ func testAccCheckPanosPbfRuleGroupOrdering(n1, n2, n3 string) resource.TestCheck
 	return func(s *terraform.State) error {
 		fw := testAccProvider.Meta().(*pango.Firewall)
 
-		list, err := fw.Policies.PolicyBasedForwarding.GetList("")
+		list, err := fw.Policies.PolicyBasedForwarding.GetList("vsys1")
 		if err != nil {
 			return fmt.Errorf("Failed GetList in ordering check: %s", err)
 		}
