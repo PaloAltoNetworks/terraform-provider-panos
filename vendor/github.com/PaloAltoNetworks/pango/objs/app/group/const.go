@@ -1,6 +1,6 @@
 package group
 
 const (
-    singular = "application group"
-    plural = "application groups"
+	singular = "application group"
+	plural   = "application groups"
 )

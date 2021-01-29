@@ -1,6 +1,6 @@
 package syslog
 
 const (
-    singular = "syslog server profile"
-    plural = "syslog server profiles"
+	singular = "syslog server profile"
+	plural   = "syslog server profiles"
 )

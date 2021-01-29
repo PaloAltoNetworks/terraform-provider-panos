@@ -1,161 +1,161 @@
 package ipv4
 
 import (
-    "fmt"
-    "encoding/xml"
+	"encoding/xml"
+	"fmt"
 
-    "github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/util"
 )
 
 // FwIpv4 is a namespace struct, included as part of pango.Firewall.
 type FwIpv4 struct {
-    con util.XapiClient
+	con util.XapiClient
 }
 
 // Initialize is invoked when Initialize on the pango.Client is called.
 func (c *FwIpv4) Initialize(con util.XapiClient) {
-    c.con = con
+	c.con = con
 }
 
 // GetList performs GET to retrieve a list of IPSec tunnel proxy IDs.
 func (c *FwIpv4) GetList(tun string) ([]string, error) {
-    c.con.LogQuery("(get) list of ipsec tunnel proxy ids")
-    path := c.xpath(tun, nil)
-    return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
+	c.con.LogQuery("(get) list of ipsec tunnel proxy ids")
+	path := c.xpath(tun, nil)
+	return c.con.EntryListUsing(c.con.Get, path[:len(path)-1])
 }
 
 // ShowList performs SHOW to retrieve a list of IPSec tunnel proxy IDs.
 func (c *FwIpv4) ShowList(tun string) ([]string, error) {
-    c.con.LogQuery("(show) list of ipsec tunnel proxy ids")
-    path := c.xpath(tun, nil)
-    return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
+	c.con.LogQuery("(show) list of ipsec tunnel proxy ids")
+	path := c.xpath(tun, nil)
+	return c.con.EntryListUsing(c.con.Show, path[:len(path)-1])
 }
 
 // Get performs GET to retrieve information for the given IPSec tunnel proxy ID.
 func (c *FwIpv4) Get(tun, name string) (Entry, error) {
-    c.con.LogQuery("(get) ipsec tunnel proxy id %q", name)
-    return c.details(c.con.Get, tun, name)
+	c.con.LogQuery("(get) ipsec tunnel proxy id %q", name)
+	return c.details(c.con.Get, tun, name)
 }
 
 // Get performs SHOW to retrieve information for the given IPSec tunnel proxy ID.
 func (c *FwIpv4) Show(tun, name string) (Entry, error) {
-    c.con.LogQuery("(show) ipsec tunnel proxy id %q", name)
-    return c.details(c.con.Show, tun, name)
+	c.con.LogQuery("(show) ipsec tunnel proxy id %q", name)
+	return c.details(c.con.Show, tun, name)
 }
 
 // Set performs SET to create / update one or more IPSec tunnel proxy IDs.
 func (c *FwIpv4) Set(tun string, e ...Entry) error {
-    var err error
+	var err error
 
-    if len(e) == 0 {
-        return nil
-    } else if tun == "" {
-        return fmt.Errorf("tun must be specified")
-    }
+	if len(e) == 0 {
+		return nil
+	} else if tun == "" {
+		return fmt.Errorf("tun must be specified")
+	}
 
-    _, fn := c.versioning()
-    names := make([]string, len(e))
+	_, fn := c.versioning()
+	names := make([]string, len(e))
 
-    // Build up the struct with the given configs.
-    d := util.BulkElement{XMLName: xml.Name{Local: "proxy-id"}}
-    for i := range e {
-        d.Data = append(d.Data, fn(e[i]))
-        names[i] = e[i].Name
-    }
-    c.con.LogAction("(set) ipsec tunnel proxy ids: %v", names)
+	// Build up the struct with the given configs.
+	d := util.BulkElement{XMLName: xml.Name{Local: "proxy-id"}}
+	for i := range e {
+		d.Data = append(d.Data, fn(e[i]))
+		names[i] = e[i].Name
+	}
+	c.con.LogAction("(set) ipsec tunnel proxy ids: %v", names)
 
-    // Set xpath.
-    path := c.xpath(tun, names)
-    if len(e) == 1 {
-        path = path[:len(path) - 1]
-    } else {
-        path = path[:len(path) - 2]
-    }
+	// Set xpath.
+	path := c.xpath(tun, names)
+	if len(e) == 1 {
+		path = path[:len(path)-1]
+	} else {
+		path = path[:len(path)-2]
+	}
 
-    // Create the objects.
-    _, err = c.con.Set(path, d.Config(), nil, nil)
-    return err
+	// Create the objects.
+	_, err = c.con.Set(path, d.Config(), nil, nil)
+	return err
 }
 
 // Edit performs EDIT to create / update an IPSec tunnel proxy ID.
 func (c *FwIpv4) Edit(tun string, e Entry) error {
-    var err error
+	var err error
 
-    if tun == "" {
-        return fmt.Errorf("tun must be specified")
-    }
+	if tun == "" {
+		return fmt.Errorf("tun must be specified")
+	}
 
-    _, fn := c.versioning()
+	_, fn := c.versioning()
 
-    c.con.LogAction("(edit) ipsec tunnel proxy id %q", e.Name)
+	c.con.LogAction("(edit) ipsec tunnel proxy id %q", e.Name)
 
-    // Set xpath.
-    path := c.xpath(tun, []string{e.Name})
+	// Set xpath.
+	path := c.xpath(tun, []string{e.Name})
 
-    // Create the objects.
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
+	// Create the objects.
+	_, err = c.con.Edit(path, fn(e), nil, nil)
+	return err
 }
 
 // Delete removes the given IPSec tunnel proxy IDs from the firewall.
 //
 // Items can be either a string or an Entry object.
 func (c *FwIpv4) Delete(tun string, e ...interface{}) error {
-    var err error
+	var err error
 
-    if len(e) == 0 {
-        return nil
-    } else if tun == "" {
-        return fmt.Errorf("tun must be specified")
-    }
+	if len(e) == 0 {
+		return nil
+	} else if tun == "" {
+		return fmt.Errorf("tun must be specified")
+	}
 
-    names := make([]string, len(e))
-    for i := range e {
-        switch v := e[i].(type) {
-        case string:
-            names[i] = v
-        case Entry:
-            names[i] = v.Name
-        default:
-            return fmt.Errorf("Unsupported type to delete: %s", v)
-        }
-    }
-    c.con.LogAction("(delete) ipsec tunnel proxy ids: %v", names)
+	names := make([]string, len(e))
+	for i := range e {
+		switch v := e[i].(type) {
+		case string:
+			names[i] = v
+		case Entry:
+			names[i] = v.Name
+		default:
+			return fmt.Errorf("Unsupported type to delete: %s", v)
+		}
+	}
+	c.con.LogAction("(delete) ipsec tunnel proxy ids: %v", names)
 
-    path := c.xpath(tun, names)
-    _, err = c.con.Delete(path, nil, nil)
-    return err
+	path := c.xpath(tun, names)
+	_, err = c.con.Delete(path, nil, nil)
+	return err
 }
 
 /** Internal functions for this namespace struct **/
 
-func (c *FwIpv4) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+func (c *FwIpv4) versioning() (normalizer, func(Entry) interface{}) {
+	return &container_v1{}, specify_v1
 }
 
 func (c *FwIpv4) details(fn util.Retriever, tun, name string) (Entry, error) {
-    path := c.xpath(tun, []string{name})
-    obj, _ := c.versioning()
-    _, err := fn(path, nil, obj)
-    if err != nil {
-        return Entry{}, err
-    }
-    ans := obj.Normalize()
+	path := c.xpath(tun, []string{name})
+	obj, _ := c.versioning()
+	_, err := fn(path, nil, obj)
+	if err != nil {
+		return Entry{}, err
+	}
+	ans := obj.Normalize()
 
-    return ans, nil
+	return ans, nil
 }
 
 func (c *FwIpv4) xpath(tun string, vals []string) []string {
-    return []string {
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "network",
-        "tunnel",
-        "ipsec",
-        util.AsEntryXpath([]string{tun}),
-        "auto-key",
-        "proxy-id",
-        util.AsEntryXpath(vals),
-    }
+	return []string{
+		"config",
+		"devices",
+		util.AsEntryXpath([]string{"localhost.localdomain"}),
+		"network",
+		"tunnel",
+		"ipsec",
+		util.AsEntryXpath([]string{tun}),
+		"auto-key",
+		"proxy-id",
+		util.AsEntryXpath(vals),
+	}
 }

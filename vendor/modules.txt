@@ -6,10 +6,12 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/storage
-# github.com/PaloAltoNetworks/pango v0.3.12
+# github.com/PaloAltoNetworks/pango v0.5.0
 github.com/PaloAltoNetworks/pango
 github.com/PaloAltoNetworks/pango/dev
 github.com/PaloAltoNetworks/pango/dev/general
+github.com/PaloAltoNetworks/pango/dev/ha
+github.com/PaloAltoNetworks/pango/dev/ha/monitor/link
 github.com/PaloAltoNetworks/pango/dev/profile/email
 github.com/PaloAltoNetworks/pango/dev/profile/email/server
 github.com/PaloAltoNetworks/pango/dev/profile/http
@@ -23,10 +25,15 @@ github.com/PaloAltoNetworks/pango/dev/profile/syslog
 github.com/PaloAltoNetworks/pango/dev/profile/syslog/server
 github.com/PaloAltoNetworks/pango/dev/telemetry
 github.com/PaloAltoNetworks/pango/licen
+github.com/PaloAltoNetworks/pango/namespace
 github.com/PaloAltoNetworks/pango/netw
+github.com/PaloAltoNetworks/pango/netw/dhcp
 github.com/PaloAltoNetworks/pango/netw/ikegw
 github.com/PaloAltoNetworks/pango/netw/interface/aggregate
+github.com/PaloAltoNetworks/pango/netw/interface/arp
 github.com/PaloAltoNetworks/pango/netw/interface/eth
+github.com/PaloAltoNetworks/pango/netw/interface/ipv6/address
+github.com/PaloAltoNetworks/pango/netw/interface/ipv6/neighbor
 github.com/PaloAltoNetworks/pango/netw/interface/loopback
 github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2
 github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer3
@@ -54,7 +61,14 @@ github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/peer/group
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/auth
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/profile/dampening
 github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/redist
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/area
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/area/iface
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/area/vlink
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/exp
+github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/profile/auth
 github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4
+github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv6
 github.com/PaloAltoNetworks/pango/netw/routing/router
 github.com/PaloAltoNetworks/pango/netw/tunnel/gre
 github.com/PaloAltoNetworks/pango/netw/vlan
@@ -67,10 +81,20 @@ github.com/PaloAltoNetworks/pango/objs/app/group
 github.com/PaloAltoNetworks/pango/objs/app/signature
 github.com/PaloAltoNetworks/pango/objs/app/signature/andcond
 github.com/PaloAltoNetworks/pango/objs/app/signature/orcond
+github.com/PaloAltoNetworks/pango/objs/custom/data
+github.com/PaloAltoNetworks/pango/objs/dug
 github.com/PaloAltoNetworks/pango/objs/edl
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist
 github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist/action
+github.com/PaloAltoNetworks/pango/objs/profile/security/data
+github.com/PaloAltoNetworks/pango/objs/profile/security/dos
+github.com/PaloAltoNetworks/pango/objs/profile/security/file
+github.com/PaloAltoNetworks/pango/objs/profile/security/spyware
+github.com/PaloAltoNetworks/pango/objs/profile/security/url
+github.com/PaloAltoNetworks/pango/objs/profile/security/virus
+github.com/PaloAltoNetworks/pango/objs/profile/security/vulnerability
+github.com/PaloAltoNetworks/pango/objs/profile/security/wildfire
 github.com/PaloAltoNetworks/pango/objs/srvc
 github.com/PaloAltoNetworks/pango/objs/srvcgrp
 github.com/PaloAltoNetworks/pango/objs/tags
@@ -86,6 +110,10 @@ github.com/PaloAltoNetworks/pango/poli
 github.com/PaloAltoNetworks/pango/poli/nat
 github.com/PaloAltoNetworks/pango/poli/pbf
 github.com/PaloAltoNetworks/pango/poli/security
+github.com/PaloAltoNetworks/pango/predefined
+github.com/PaloAltoNetworks/pango/predefined/dlp/filetype
+github.com/PaloAltoNetworks/pango/predefined/tdb/filetype
+github.com/PaloAltoNetworks/pango/predefined/threat
 github.com/PaloAltoNetworks/pango/userid
 github.com/PaloAltoNetworks/pango/util
 github.com/PaloAltoNetworks/pango/version

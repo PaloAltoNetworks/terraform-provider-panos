@@ -2,11 +2,11 @@ package account
 
 // Valid ProjectType values.
 const (
-    Project = "gcp"
-    Gke = "gke"
+	Project = "gcp"
+	Gke     = "gke"
 )
 
 const (
-    singular = "gcp account"
-    plural = "gcp accounts"
+	singular = "gcp account"
+	plural   = "gcp accounts"
 )

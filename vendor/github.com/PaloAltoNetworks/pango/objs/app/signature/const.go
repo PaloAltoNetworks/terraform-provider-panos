@@ -2,13 +2,13 @@ package signature
 
 // Valid Scope values.
 const (
-    ScopeTransaction = "transaction"
-    ScopeSession = "session"
+	ScopeTransaction = "transaction"
+	ScopeSession     = "session"
 )
 
 const transactionRaw = "protocol-data-unit"
 
 const (
-    singular = "application signature"
-    plural = "application signatures"
+	singular = "application signature"
+	plural   = "application signatures"
 )

@@ -1,189 +1,113 @@
 package suppress
 
 import (
-    "fmt"
-    "encoding/xml"
+	"fmt"
 
-    "github.com/PaloAltoNetworks/pango/util"
-    "github.com/PaloAltoNetworks/pango/version"
+	"github.com/PaloAltoNetworks/pango/namespace"
+	"github.com/PaloAltoNetworks/pango/util"
 )
 
-
-// PanoSuppress is the client.Network.BgpAggSuppressFilter namespace.
-type PanoSuppress struct {
-    con util.XapiClient
+// Panorama is the client.Network.BgpAggSuppressFilter namespace.
+type Panorama struct {
+	ns *namespace.Standard
 }
 
-// Initialize is invoked by client.Initialize().
-func (c *PanoSuppress) Initialize(con util.XapiClient) {
-    c.con = con
+// GetList performs GET to retrieve a list of all objects.
+func (c *Panorama) GetList(tmpl, ts, vr, ag string) ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Get, c.pather(tmpl, ts, vr, ag), ans)
 }
 
-// ShowList performs SHOW to retrieve a list of values.
-func (c *PanoSuppress) ShowList(tmpl, ts, vr, ag string) ([]string, error) {
-    c.con.LogQuery("(show) list of %s", plural)
-    path := c.xpath(tmpl, ts, vr, ag, nil)
-    return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
+// ShowList performs SHOW to retrieve a list of all objects.
+func (c *Panorama) ShowList(tmpl, ts, vr, ag string) ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Show, c.pather(tmpl, ts, vr, ag), ans)
 }
 
-// GetList performs GET to retrieve a list of values.
-func (c *PanoSuppress) GetList(tmpl, ts, vr, ag string) ([]string, error) {
-    c.con.LogQuery("(get) list of %s", plural)
-    path := c.xpath(tmpl, ts, vr, ag, nil)
-    return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
+// Get performs GET to retrieve information for the given object.
+func (c *Panorama) Get(tmpl, ts, vr, ag, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(tmpl, ts, vr, ag), name, ans)
+	return first(ans, err)
 }
 
-// Get performs GET to retrieve information for the given uid.
-func (c *PanoSuppress) Get(tmpl, ts, vr, ag, name string) (Entry, error) {
-    c.con.LogQuery("(get) %s %q", singular, name)
-    return c.details(c.con.Get, tmpl, ts, vr, ag, name)
+// Show performs SHOW to retrieve information for the given object.
+func (c *Panorama) Show(tmpl, ts, vr, ag, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(tmpl, ts, vr, ag), name, ans)
+	return first(ans, err)
 }
 
-// Show performs SHOW to retrieve information for the given uid.
-func (c *PanoSuppress) Show(tmpl, ts, vr, ag, name string) (Entry, error) {
-    c.con.LogQuery("(show) %s %q", singular, name)
-    return c.details(c.con.Show, tmpl, ts, vr, ag, name)
+// GetAll performs GET to retrieve all objects configured.
+func (c *Panorama) GetAll(tmpl, ts, vr, ag string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Get, c.pather(tmpl, ts, vr, ag), ans)
+	return all(ans, err)
 }
 
-// Set performs SET to create / update one or more objects.
-func (c *PanoSuppress) Set(tmpl, ts, vr, ag string, e ...Entry) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    } else if tmpl == "" && ts == "" {
-        return fmt.Errorf("tmpl or ts must be specified")
-    } else if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    } else if ag == "" {
-        return fmt.Errorf("ag must be specified")
-    }
-
-    _, fn := c.versioning()
-    names := make([]string, len(e))
-
-    // Build up the struct.
-    d := util.BulkElement{XMLName: xml.Name{Local: "suppress-filters"}}
-    for i := range e {
-        d.Data = append(d.Data, fn(e[i]))
-        names[i] = e[i].Name
-    }
-    c.con.LogAction("(set) %s: %v", plural, names)
-
-    // Set xpath.
-    path := c.xpath(tmpl, ts, vr, ag, names)
-    if len(e) == 1 {
-        path = path[:len(path) - 1]
-    } else {
-        path = path[:len(path) - 2]
-    }
-
-    // Create the objects.
-    _, err = c.con.Set(path, d.Config(), nil, nil)
-    return err
+// ShowAll performs SHOW to retrieve information for all objects.
+func (c *Panorama) ShowAll(tmpl, ts, vr, ag string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Show, c.pather(tmpl, ts, vr, ag), ans)
+	return all(ans, err)
 }
 
-// Edit performs EDIT to create / update one object.
-func (c *PanoSuppress) Edit(tmpl, ts, vr, ag string, e Entry) error {
-    var err error
-
-    if tmpl == "" && ts == "" {
-        return fmt.Errorf("tmpl or ts must be specified")
-    } else if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    } else if ag == "" {
-        return fmt.Errorf("ag must be specified")
-    }
-
-    _, fn := c.versioning()
-
-    c.con.LogAction("(edit) %s %q", singular, e.Name)
-
-    // Set xpath.
-    path := c.xpath(tmpl, ts, vr, ag, []string{e.Name})
-
-    // Edit the object.
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
+// Set performs SET to configure the specified objects.
+func (c *Panorama) Set(tmpl, ts, vr, ag string, e ...Entry) error {
+	return c.ns.Set(c.pather(tmpl, ts, vr, ag), specifier(e...))
 }
 
-// Delete removes the given objects.
+// Edit performs EDIT to configure the specified object.
+func (c *Panorama) Edit(tmpl, ts, vr, ag string, e Entry) error {
+	return c.ns.Edit(c.pather(tmpl, ts, vr, ag), e)
+}
+
+// Delete performs DELETE to remove the specified objects.
 //
-// Objects can be a string or an Entry object.
-func (c *PanoSuppress) Delete(tmpl, ts, vr, ag string, e ...interface{}) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    } else if tmpl == "" && ts == "" {
-        return fmt.Errorf("tmpl or ts must be specified")
-    } else if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    } else if ag == "" {
-        return fmt.Errorf("ag must be specified")
-    }
-
-    names := make([]string, len(e))
-    for i := range e {
-        switch v := e[i].(type) {
-        case string:
-            names[i] = v
-        case Entry:
-            names[i] = v.Name
-        default:
-            return fmt.Errorf("Unknown type sent to delete: %s", v)
-        }
-    }
-    c.con.LogAction("(delete) %s: %v", plural, names)
-
-    // Remove the objects.
-    path := c.xpath(tmpl, ts, vr, ag, names)
-    _, err = c.con.Delete(path, nil, nil)
-    return err
+// Objects can be either a string or an Entry object.
+func (c *Panorama) Delete(tmpl, ts, vr, ag string, e ...interface{}) error {
+	names, nErr := toNames(e)
+	return c.ns.Delete(c.pather(tmpl, ts, vr, ag), names, nErr)
 }
 
-/** Internal functions for this namespace struct **/
-
-func (c *PanoSuppress) versioning() (normalizer, func(Entry) (interface{})) {
-    v := c.con.Versioning()
-
-    if v.Gte(version.Number{8, 0, 0, ""}) {
-        return &container_v2{}, specify_v2
-    } else {
-        return &container_v1{}, specify_v1
-    }
+func (c *Panorama) pather(tmpl, ts, vr, ag string) namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(tmpl, ts, vr, ag, v)
+	}
 }
 
-func (c *PanoSuppress) details(fn util.Retriever, tmpl, ts, vr, ag, name string) (Entry, error) {
-    path := c.xpath(tmpl, ts, vr, ag, []string{name})
-    obj, _ := c.versioning()
-    if _, err := fn(path, nil, obj); err != nil {
-        return Entry{}, err
-    }
-    ans := obj.Normalize()
+func (c *Panorama) xpath(tmpl, ts, vr, ag string, vals []string) ([]string, error) {
+	if tmpl == "" && ts == "" {
+		return nil, fmt.Errorf("tmpl or ts must be specified")
+	}
+	if vr == "" {
+		return nil, fmt.Errorf("vr must be specified")
+	}
+	if ag == "" {
+		return nil, fmt.Errorf("ag must be specified")
+	}
 
-    return ans, nil
+	ans := make([]string, 0, 19)
+	ans = append(ans, util.TemplateXpathPrefix(tmpl, ts)...)
+	ans = append(ans,
+		"config",
+		"devices",
+		util.AsEntryXpath([]string{"localhost.localdomain"}),
+		"network",
+		"virtual-router",
+		util.AsEntryXpath([]string{vr}),
+		"protocol",
+		"bgp",
+		"policy",
+		"aggregation",
+		"address",
+		util.AsEntryXpath([]string{ag}),
+		"suppress-filters",
+		util.AsEntryXpath(vals),
+	)
+	return ans, nil
 }
 
-func (c *PanoSuppress) xpath(tmpl, ts, vr, ag string, vals []string) []string {
-    ans := make([]string, 0, 19)
-    ans = append(ans, util.TemplateXpathPrefix(tmpl, ts)...)
-    ans = append(ans,
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "network",
-        "virtual-router",
-        util.AsEntryXpath([]string{vr}),
-        "protocol",
-        "bgp",
-        "policy",
-        "aggregation",
-        "address",
-        util.AsEntryXpath([]string{ag}),
-        "suppress-filters",
-        util.AsEntryXpath(vals),
-    )
-
-    return ans
+func (c *Panorama) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

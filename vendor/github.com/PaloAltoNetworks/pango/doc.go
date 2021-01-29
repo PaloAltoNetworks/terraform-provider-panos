@@ -7,12 +7,12 @@ To start, create a client connection with the desired parameters and then
 initialize the connection:
 
     package main
-    
+
     import (
         "log"
         "github.com/PaloAltoNetworks/pango"
     )
-    
+
     func main() {
         var err error
         c := pango.Firewall{Client: pango.Client{
@@ -40,10 +40,8 @@ available in the GUI.  For example:
 
 Generally speaking, there are the following functions inside each namespace:
 
-    * GetList
-    * ShowList
-    * Get
-    * Show
+    * Get / GetList / GetAll
+    * Show / ShowList / ShowAll
     * Set
     * Edit
     * Delete

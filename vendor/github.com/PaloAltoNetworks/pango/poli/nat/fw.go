@@ -1,233 +1,160 @@
 package nat
 
 import (
-    "fmt"
-    "encoding/xml"
-    "strings"
+	"fmt"
+	"strings"
 
-    "github.com/PaloAltoNetworks/pango/util"
-    "github.com/PaloAltoNetworks/pango/version"
+	"github.com/PaloAltoNetworks/pango/namespace"
+	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
-// FwNat is the client.Policies.Nat namespace.
-type FwNat struct {
-    con util.XapiClient
+// Firewall is the client.Policies.Nat namespace.
+type Firewall struct {
+	ns *namespace.Standard
 }
 
-// Initialize is invoed by client.Initialize().
-func (c *FwNat) Initialize(con util.XapiClient) {
-    c.con = con
+// GetList performs GET to retrieve a list of all objects.
+func (c *Firewall) GetList(vsys string) ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Get, c.pather(vsys), ans)
 }
 
-// GetList performs GET to retrieve a list of NAT policies.
-func (c *FwNat) GetList(vsys string) ([]string, error) {
-    c.con.LogQuery("(get) list of %s", plural)
-    path := c.xpath(vsys, nil)
-    return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
+// ShowList performs SHOW to retrieve a list of all objects.
+func (c *Firewall) ShowList(vsys string) ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Show, c.pather(vsys), ans)
 }
 
-// ShowList performs SHOW to retrieve a list of NAT policies.
-func (c *FwNat) ShowList(vsys string) ([]string, error) {
-    c.con.LogQuery("(show) list of %s", plural)
-    path := c.xpath(vsys, nil)
-    return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
+// Get performs GET to retrieve information for the given object.
+func (c *Firewall) Get(vsys, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(vsys), name, ans)
+	return first(ans, err)
 }
 
-// Get performs GET to retrieve information for the given NAT policy.
-func (c *FwNat) Get(vsys, name string) (Entry, error) {
-    c.con.LogQuery("(get) %s %q", singular, name)
-    return c.details(c.con.Get, vsys, name)
+// Show performs SHOW to retrieve information for the given object.
+func (c *Firewall) Show(vsys, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(vsys), name, ans)
+	return first(ans, err)
 }
 
-// Get performs SHOW to retrieve information for the given NAT policy.
-func (c *FwNat) Show(vsys, name string) (Entry, error) {
-    c.con.LogQuery("(show) %s %q", singular, name)
-    return c.details(c.con.Show, vsys, name)
+// GetAll performs GET to retrieve all objects configured.
+func (c *Firewall) GetAll(vsys string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Get, c.pather(vsys), ans)
+	return all(ans, err)
 }
 
-// Set performs SET to create / update one or more NAT policies.
-func (c *FwNat) Set(vsys string, e ...Entry) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    } else {
-        // Make sure rule names are unique.
-        m := make(map[string] int)
-        for i := range e {
-            m[e[i].Name] = m[e[i].Name] + 1
-            if m[e[i].Name] > 1 {
-                return fmt.Errorf("NAT rule is defined multiple times: %s", e[i].Name)
-            }
-        }
-    }
-
-    _, fn := c.versioning()
-    names := make([]string, len(e))
-
-    // Build up the struct with the given configs.
-    d := util.BulkElement{XMLName: xml.Name{Local: "rules"}}
-    for i := range e {
-        d.Data = append(d.Data, fn(e[i]))
-        names[i] = e[i].Name
-    }
-    c.con.LogAction("(set) %s: %v", plural, names)
-
-    // Set xpath.
-    path := c.xpath(vsys, names)
-    if len(e) == 1 {
-        path = path[:len(path) - 1]
-    } else {
-        path = path[:len(path) - 2]
-    }
-
-    // Create the NAT policies.
-    _, err = c.con.Set(path, d.Config(), nil, nil)
-
-    // On error: find the rule that's causing the error if multiple rules
-    // were given.
-    if err != nil && strings.Contains(err.Error(), "rules is invalid") {
-        for i := 0; i < len(e); i++ {
-            if e2 := c.Set(vsys, e[i]); e2 != nil {
-                return fmt.Errorf("Error with rule %d: %s", i + 1, e2)
-            } else {
-                _ = c.Delete(vsys, e[i])
-            }
-        }
-
-        // Couldn't find it, just return the original error.
-        return err
-    }
-
-    return err
+// ShowAll performs SHOW to retrieve information for all objects.
+func (c *Firewall) ShowAll(vsys string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Show, c.pather(vsys), ans)
+	return all(ans, err)
 }
 
-// Edit performs EDIT to create / update a NAT policy.
-func (c *FwNat) Edit(vsys string, e Entry) error {
-    var err error
+// Set performs SET to configure the specified objects.
+func (c *Firewall) Set(vsys string, e ...Entry) error {
+	err := c.ns.Set(c.pather(vsys), specifier(e...))
 
-    _, fn := c.versioning()
+	// On error: find the rule that's causing the error if multiple rules
+	// were given.
+	if err != nil && strings.Contains(err.Error(), "rules is invalid") {
+		for i := 0; i < len(e); i++ {
+			if e2 := c.Set(vsys, e[i]); e2 != nil {
+				return fmt.Errorf("Error with rule %d: %s", i+1, e2)
+			} else {
+				_ = c.Delete(vsys, e[i])
+			}
+		}
 
-    c.con.LogAction("(edit) %s %q", singular, e.Name)
+		// Couldn't find it, just return the original error.
+		return err
+	}
 
-    // Set xpath.
-    path := c.xpath(vsys, []string{e.Name})
-
-    // Edit the NAT policy.
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
+	return err
 }
 
-// Delete removes the given NAT policies.
+// Edit performs EDIT to configure the specified object.
+func (c *Firewall) Edit(vsys string, e Entry) error {
+	return c.ns.Edit(c.pather(vsys), e)
+}
+
+// Delete performs DELETE to remove the specified objects.
 //
-// NAT policies can be either a string or an Entry object.
-func (c *FwNat) Delete(vsys string, e ...interface{}) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    }
-
-    names := make([]string, len(e))
-    for i := range e {
-        switch v := e[i].(type) {
-        case string:
-            names[i] = v
-        case Entry:
-            names[i] = v.Name
-        default:
-            return fmt.Errorf("Unsupported type to delete: %s", v)
-        }
-    }
-    c.con.LogAction("(delete) %s: %v", plural, names)
-
-    path := c.xpath(vsys, names)
-    _, err = c.con.Delete(path, nil, nil)
-    return err
+// Objects can be either a string or an Entry object.
+func (c *Firewall) Delete(vsys string, e ...interface{}) error {
+	names, nErr := toNames(e)
+	return c.ns.Delete(c.pather(vsys), names, nErr)
 }
 
-// MoveGroup moves a logical group of NAT rules somewhere in relation
-// to another rule.
-func (c *FwNat) MoveGroup(vsys string, mvt int, rule string, e ...Entry) error {
-    var err error
+// MoveGroup moves a logical group of NAT rules somewhere
+// in relation to another rule.
+//
+// The `movement` param should be one of the Move constants in the util
+// package.
+//
+// The `rule` param is the other rule the `movement` param is referencing.  If
+// this is an empty string, then the first policy in the group isn't moved
+// anywhere, but all other policies will still be moved to be grouped with the
+// first one.
+func (c *Firewall) MoveGroup(vsys string, movement int, rule string, e ...Entry) error {
+	lister := func() ([]string, error) {
+		return c.GetList(vsys)
+	}
 
-    c.con.LogAction("(move) %s group", singular)
+	ei := make([]interface{}, 0, len(e))
+	for i := range e {
+		ei = append(ei, e[i])
+	}
+	names, _ := toNames(ei)
 
-    if len(e) < 1 {
-        return fmt.Errorf("Requires at least one rule")
-    }
-
-    path := c.xpath(vsys, []string{e[0].Name})
-    list, err := c.GetList(vsys)
-    if err != nil {
-        return err
-    }
-
-    // Set the first entity's position.
-    if err = c.con.PositionFirstEntity(mvt, rule, e[0].Name, path, list); err != nil {
-        return err
-    }
-
-    // Move all the rest under it.
-    li := len(path) - 1
-    for i := 1; i < len(e); i++ {
-        path[li] = util.AsEntryXpath([]string{e[i].Name})
-        if _, err = c.con.Move(path, "after", e[i - 1].Name, nil, nil); err != nil {
-            return err
-        }
-    }
-
-    return nil
+	return c.ns.MoveGroup(c.pather(vsys), lister, movement, rule, names)
 }
 
-/** Internal functions for the Zone struct **/
+// HitCount gets the rule hit count for the given rules.
+//
+// If the rules param is nil, then the hit count for all rules is returned.
+func (c *Firewall) HitCount(vsys string, rules []string) ([]util.HitCount, error) {
+	if !c.ns.Client.Versioning().Gte(version.Number{8, 1, 0, ""}) {
+		return nil, fmt.Errorf("rule hit count requires PAN-OS 8.1+")
+	}
 
-func (c *FwNat) versioning() (normalizer, func(Entry) (interface{})) {
-    v := c.con.Versioning()
+	req := util.NewHitCountRequest("nat", vsys, rules)
+	resp := util.HitCountResponse{}
+	if _, err := c.ns.Client.Op(req, "", nil, &resp); err != nil {
+		return nil, err
+	}
 
-    if v.Gte(version.Number{8, 1, 0, ""}) {
-        return &container_v2{}, specify_v2
-    } else {
-        return &container_v1{}, specify_v1
-    }
+	return resp.Results, nil
 }
 
-func (c *FwNat) details(fn util.Retriever, vsys, name string) (Entry, error) {
-    path := c.xpath(vsys, []string{name})
-    obj, _ := c.versioning()
-    if _, err := fn(path, nil, obj); err != nil {
-        return Entry{}, err
-    }
-    ans := obj.Normalize()
-
-    return ans, nil
+func (c *Firewall) pather(vsys string) namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(vsys, v)
+	}
 }
 
-func (c *FwNat) xpath(vsys string, vals []string) []string {
-    if vsys == "" {
-        vsys = "vsys1"
-    }
+func (c *Firewall) xpath(vsys string, vals []string) ([]string, error) {
+	if vsys == "shared" {
+		return nil, fmt.Errorf("vsys cannot be 'shared'")
+	} else if vsys == "" {
+		vsys = "vsys1"
+	}
 
-    if vsys == "shared" {
-        return []string{
-            "config",
-            "shared",
-            "rulebase",
-            "nat",
-            "rules",
-            util.AsEntryXpath(vals),
-        }
-    }
+	ans := make([]string, 0, 9)
+	ans = append(ans, util.VsysXpathPrefix(vsys)...)
+	ans = append(ans,
+		"rulebase",
+		"nat",
+		"rules",
+		util.AsEntryXpath(vals),
+	)
 
-    return []string{
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "vsys",
-        util.AsEntryXpath([]string{vsys}),
-        "rulebase",
-        "nat",
-        "rules",
-        util.AsEntryXpath(vals),
-    }
+	return ans, nil
+}
+
+func (c *Firewall) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

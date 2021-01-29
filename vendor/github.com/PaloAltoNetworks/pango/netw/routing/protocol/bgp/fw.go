@@ -1,121 +1,69 @@
 package bgp
 
 import (
-    "fmt"
-    //"encoding/xml"
+	"fmt"
 
-    "github.com/PaloAltoNetworks/pango/util"
-    "github.com/PaloAltoNetworks/pango/version"
+	"github.com/PaloAltoNetworks/pango/namespace"
+	"github.com/PaloAltoNetworks/pango/util"
 )
 
-
-// FwBgp is the client.Network.RedistributionProfile namespace.
-type FwBgp struct {
-    con util.XapiClient
+// Firewall is the client.Network.BgpConfig namespace.
+type Firewall struct {
+	ns *namespace.Standard
 }
 
-// Initialize is invoked by client.Initialize().
-func (c *FwBgp) Initialize(con util.XapiClient) {
-    c.con = con
+// Get performs GET to retrieve configuration for the given object.
+func (c *Firewall) Get(vr string) (Config, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(vr), "", ans)
+	return first(ans, err)
 }
 
-// Get performs GET to retrieve the BGP config.
-func (c *FwBgp) Get(vr string) (Config, error) {
-    c.con.LogQuery("(get) bgp config for %q", vr)
-    return c.details(c.con.Get, vr)
+// Show performs SHOW to retrieve configuration for the given object.
+func (c *Firewall) Show(vr string) (Config, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(vr), "", ans)
+	return first(ans, err)
 }
 
-// Show performs SHOW to retrieve the BGP config.
-func (c *FwBgp) Show(vr string) (Config, error) {
-    c.con.LogQuery("(show) bgp config for %q", vr)
-    return c.details(c.con.Show, vr)
+// Set performs SET to configure the specified objects.
+func (c *Firewall) Set(vr string, e Config) error {
+	return c.ns.Set(c.pather(vr), specifier(e))
 }
 
-// Set performs SET to create / update the BGP config.
-func (c *FwBgp) Set(vr string, e Config) error {
-    var err error
-
-    if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    }
-
-    _, fn := c.versioning()
-    c.con.LogAction("(set) bgp config for %q", vr)
-    path := c.xpath(vr)
-    path = path[:len(path) - 1]
-
-    _, err = c.con.Set(path, fn(e), nil, nil)
-    return err
+// Edit performs EDIT to configure the specified object.
+func (c *Firewall) Edit(vr string, e Config) error {
+	return c.ns.Edit(c.pather(vr), e)
 }
 
-// Edit performs EDIT to create / update the BGP config.
-func (c *FwBgp) Edit(vr string, e Config) error {
-    var err error
-
-    if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    }
-
-    _, fn := c.versioning()
-    c.con.LogAction("(edit) bgp config for %q", vr)
-    path := c.xpath(vr)
-
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    return err
+// Delete performs DELETE to remove the config.
+func (c *Firewall) Delete(vr string) error {
+	return c.ns.Delete(c.pather(vr), nil, nil)
 }
 
-// Delete removes the BGP config for the given virtual router.
-func (c *FwBgp) Delete(vr string) error {
-    var err error
-
-    if vr == "" {
-        return fmt.Errorf("vr must be specified")
-    }
-
-    c.con.LogAction("(delete) bgp config for %q", vr)
-
-    // Remove the objects.
-    path := c.xpath(vr)
-    _, err = c.con.Delete(path, nil, nil)
-    return err
+func (c *Firewall) pather(vr string) namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(vr)
+	}
 }
 
-/** Internal functions for this namespace struct **/
+func (c *Firewall) xpath(vr string) ([]string, error) {
+	if vr == "" {
+		return nil, fmt.Errorf("vr must be specified")
+	}
 
-func (c *FwBgp) versioning() (normalizer, func(Config) (interface{})) {
-    v := c.con.Versioning()
-
-    if v.Gte(version.Number{8, 0, 0, ""}) {
-        return &container_v4{}, specify_v4
-    } else if v.Gte(version.Number{7, 1, 0, ""}) {
-        return &container_v3{}, specify_v3
-    } else if v.Gte(version.Number{7, 0, 0, ""}) {
-        return &container_v2{}, specify_v2
-    } else {
-        return &container_v1{}, specify_v1
-    }
+	return []string{
+		"config",
+		"devices",
+		util.AsEntryXpath([]string{"localhost.localdomain"}),
+		"network",
+		"virtual-router",
+		util.AsEntryXpath([]string{vr}),
+		"protocol",
+		"bgp",
+	}, nil
 }
 
-func (c *FwBgp) details(fn util.Retriever, vr string) (Config, error) {
-    path := c.xpath(vr)
-    obj, _ := c.versioning()
-    if _, err := fn(path, nil, obj); err != nil {
-        return Config{}, err
-    }
-    ans := obj.Normalize()
-
-    return ans, nil
-}
-
-func (c *FwBgp) xpath(vr string) []string {
-    return []string{
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "network",
-        "virtual-router",
-        util.AsEntryXpath([]string{vr}),
-        "protocol",
-        "bgp",
-    }
+func (c *Firewall) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

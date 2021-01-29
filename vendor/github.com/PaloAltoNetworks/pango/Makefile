@@ -9,7 +9,7 @@ verbose:
 bench:
 	go test -v -bench . ./...
 
-format:
+fmt:
 	find . -type f -name \*.go | xargs gofmt -w
 
-.PHONY: test verbose bench format
+.PHONY: test verbose bench fmt

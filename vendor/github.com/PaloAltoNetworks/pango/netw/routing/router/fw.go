@@ -1,21 +1,13 @@
 package router
 
 import (
-    "fmt"
-    "encoding/xml"
-
-    "github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/namespace"
+	"github.com/PaloAltoNetworks/pango/util"
 )
 
-
-// FwRouter is the client.Network.VirtualRouter namespace.
-type FwRouter struct {
-    con util.XapiClient
-}
-
-// Initialize is invoked by client.Initialize().
-func (c *FwRouter) Initialize(con util.XapiClient) {
-    c.con = con
+// Firewall is the client.Network.VirtualRouter namespace.
+type Firewall struct {
+	ns *namespace.Importable
 }
 
 /*
@@ -23,25 +15,20 @@ SetInterface performs a SET to add an interface to a virtual router.
 
 The virtual router can be either a string or an Entry object.
 */
-func (c *FwRouter) SetInterface(vr interface{}, iface string) error {
-    var name string
+func (c *Firewall) SetInterface(vr interface{}, iface string) error {
+	names, err := toNames([]interface{}{vr})
+	if err != nil {
+		return err
+	}
+	name := names[0]
 
-    switch v := vr.(type) {
-    case string:
-        name = v
-    case Entry:
-        name = v.Name
-    default:
-        return fmt.Errorf("Unknown type sent to %s set interface: %s", singular, v)
-    }
+	c.ns.Client.LogAction("(set) interface for %s %q: %s", singular, name, iface)
 
-    c.con.LogAction("(set) interface for %s %q: %s", singular, name, iface)
+	path, _ := c.xpath([]string{name})
+	path = append(path, "interface")
 
-    path := c.xpath([]string{name})
-    path = append(path, "interface")
-
-    _, err := c.con.Set(path, util.Member{Value: iface}, nil, nil)
-    return err
+	_, err = c.ns.Client.Set(path, util.Member{Value: iface}, nil, nil)
+	return err
 }
 
 /*
@@ -49,207 +36,108 @@ DeleteInterface performs a DELETE to remove an interface from a virtual router.
 
 The virtual router can be either a string or an Entry object.
 */
-func (c *FwRouter) DeleteInterface(vr interface{}, iface string) error {
-    var name string
+func (c *Firewall) DeleteInterface(vr interface{}, iface string) error {
+	names, err := toNames([]interface{}{vr})
+	if err != nil {
+		return err
+	}
+	name := names[0]
 
-    switch v := vr.(type) {
-    case string:
-        name = v
-    case Entry:
-        name = v.Name
-    default:
-        return fmt.Errorf("Unknown type sent to %s delete interface: %s", singular, v)
-    }
+	c.ns.Client.LogAction("(delete) interface for %s %q: %s", singular, name, iface)
 
-    c.con.LogAction("(delete) interface for %s %q: %s", singular, name, iface)
+	path, _ := c.xpath([]string{name})
+	path = append(path, "interface", util.AsMemberXpath([]string{iface}))
 
-    path := c.xpath([]string{name})
-    path = append(path, "interface", util.AsMemberXpath([]string{iface}))
-
-    _, err := c.con.Delete(path, nil, nil)
-    return err
+	_, err = c.ns.Client.Delete(path, nil, nil)
+	return err
 }
 
-// ShowList performs SHOW to retrieve a list of virtual routers.
-func (c *FwRouter) ShowList() ([]string, error) {
-    c.con.LogQuery("(show) list of virtual routeres")
-    path := c.xpath(nil)
-    return c.con.EntryListUsing(c.con.Show, path[:len(path) - 1])
+// GetList performs GET to retrieve a list of all objects.
+func (c *Firewall) GetList() ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Get, c.pather(), ans)
 }
 
-// GetList performs GET to retrieve a list of virtual routers.
-func (c *FwRouter) GetList() ([]string, error) {
-    c.con.LogQuery("(get) list of virtual routers")
-    path := c.xpath(nil)
-    return c.con.EntryListUsing(c.con.Get, path[:len(path) - 1])
+// ShowList performs a SHOW to retrieve a list of all objects.
+func (c *Firewall) ShowList() ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Show, c.pather(), ans)
 }
 
-// Get performs GET to retrieve information for the given virtual router.
-func (c *FwRouter) Get(name string) (Entry, error) {
-    c.con.LogQuery("(get) virtual router %q", name)
-    return c.details(c.con.Get, name)
+// Get performs GET to retrieve configuration for the given object.
+func (c *Firewall) Get(name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(), name, ans)
+	return first(ans, err)
 }
 
-// Show performs SHOW to retrieve information for the given virtual router.
-func (c *FwRouter) Show(name string) (Entry, error) {
-    c.con.LogQuery("(show) virtual router %q", name)
-    return c.details(c.con.Show, name)
+// Show performs SHOW to retrieve configuration for the given object.
+func (c *Firewall) Show(name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(), name, ans)
+	return first(ans, err)
 }
 
-// Set performs SET to create / update one or more virtual routers.
+// GetAll performs GET to retrieve all objects configured.
+func (c *Firewall) GetAll() ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Get, c.pather(), ans)
+	return all(ans, err)
+}
+
+// ShowAll performs SHOW to retrieve all objects configured.
+func (c *Firewall) ShowAll() ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Show, c.pather(), ans)
+	return all(ans, err)
+}
+
+// Set performs SET to configure the specified objects.
+func (c *Firewall) Set(vsys string, e ...Entry) error {
+	return c.ns.Set("", "", vsys, c.pather(), specifier(e...))
+}
+
+// Edit performs EDIT to configure the specified object.
+func (c *Firewall) Edit(vsys string, e Entry) error {
+	return c.ns.Edit("", "", vsys, c.pather(), e)
+}
+
+// Delete performs DELETE to remove the specified objects.
 //
-// Specify a non-empty vsys to import the virtual routers into the given vsys
-// after creating, allowing the vsys to use them.
-func (c *FwRouter) Set(vsys string, e ...Entry) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    }
-
-    _, fn := c.versioning()
-    names := make([]string, len(e))
-
-    // Build up the struct with the given router configs.
-    d := util.BulkElement{XMLName: xml.Name{Local: "virtual-router"}}
-    for i := range e {
-        d.Data = append(d.Data, fn(e[i]))
-        names[i] = e[i].Name
-    }
-    c.con.LogAction("(set) virtual routers: %v", names)
-
-    // Set xpath.
-    path := c.xpath(names)
-    if len(e) == 1 {
-        path = path[:len(path) - 1]
-    } else {
-        path = path[:len(path) - 2]
-    }
-
-    // Create the virtual routers.
-    if _, err = c.con.Set(path, d.Config(), nil, nil); err != nil {
-        return err
-    }
-
-    // Remove the virtual routers from any vsys they're currently in.
-    if err = c.con.VsysUnimport(util.VirtualRouterImport, "", "", names); err != nil {
-        return err
-    }
-
-    // Perform vsys import next.
-    return c.con.VsysImport(util.VirtualRouterImport, "", "", vsys, names)
-}
-
-// Edit performs EDIT to create / update a virtual router.
-//
-// Specify a non-empty vsys to import the virtual router into the given vsys
-// after creating, allowing the vsys to use them.
-func (c *FwRouter) Edit(vsys string, e Entry) error {
-    var err error
-
-    _, fn := c.versioning()
-
-    c.con.LogAction("(edit) virtual router %q", e.Name)
-
-    // Set xpath.
-    path := c.xpath([]string{e.Name})
-
-    // Edit the virtual router.
-    _, err = c.con.Edit(path, fn(e), nil, nil)
-    if err != nil {
-        return err
-    }
-
-    // Remove the virtual routers from any vsys they're currently in.
-    if err = c.con.VsysUnimport(util.VirtualRouterImport, "", "", []string{e.Name}); err != nil {
-        return err
-    }
-
-    // Perform vsys import next.
-    return c.con.VsysImport(util.VirtualRouterImport, "", "", vsys, []string{e.Name})
-}
-
-// Delete removes the given virtual routers from the firewall.
-//
-// Virtual routers can be a string or an Entry object.
-func (c *FwRouter) Delete(e ...interface{}) error {
-    var err error
-
-    if len(e) == 0 {
-        return nil
-    }
-
-    names := make([]string, len(e))
-    for i := range e {
-        switch v := e[i].(type) {
-        case string:
-            names[i] = v
-        case Entry:
-            names[i] = v.Name
-        default:
-            return fmt.Errorf("Unknown type sent to delete: %s", v)
-        }
-    }
-    c.con.LogAction("(delete) virtual routers: %v", names)
-
-    // Unimport virtual routers.
-    err = c.con.VsysUnimport(util.VirtualRouterImport, "", "", names)
-    if err != nil {
-        return err
-    }
-
-    // Remove virtual routers next.
-    path := c.xpath(names)
-    _, err = c.con.Delete(path, nil, nil)
-    return err
+// Objects can be either a string or an Entry object.
+func (c *Firewall) Delete(e ...interface{}) error {
+	names, nErr := toNames(e)
+	return c.ns.Delete("", "", c.pather(), names, nErr)
 }
 
 // CleanupDefault clears the `default` route configuration instead of deleting
 // it outright.  This involves unimporting the route "default" from the given
 // vsys, then performing an `EDIT` with an empty router.Entry object.
-func (c *FwRouter) CleanupDefault() error {
-    var err error
+func (c *Firewall) CleanupDefault() error {
+	c.ns.Client.LogAction("(action) cleaning up %s: default", c.ns.Singular)
 
-    c.con.LogAction("(action) cleaning up default route")
-
-    // Unimport the default virtual router.
-    if err = c.con.VsysUnimport(util.VirtualRouterImport, "", "", []string{"default"}); err != nil {
-        return err
-    }
-
-    // Cleanup the interfaces the virtual router refers to.
-    info := Entry{Name: "default"}
-    if err = c.Edit("", info); err != nil {
-        return err
-    }
-
-    return nil
+	// Cleanup the interfaces the virtual router refers to.
+	info := Entry{Name: "default"}
+	return c.Edit("", info)
 }
 
-/** Internal functions for this namespace struct **/
-
-func (c *FwRouter) versioning() (normalizer, func(Entry) (interface{})) {
-    return &container_v1{}, specify_v1
+func (c *Firewall) pather() namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(v)
+	}
 }
 
-func (c *FwRouter) details(fn util.Retriever, name string) (Entry, error) {
-    path := c.xpath([]string{name})
-    obj, _ := c.versioning()
-    if _, err := fn(path, nil, obj); err != nil {
-        return Entry{}, err
-    }
-    ans := obj.Normalize()
-
-    return ans, nil
+func (c *Firewall) xpath(vals []string) ([]string, error) {
+	return []string{
+		"config",
+		"devices",
+		util.AsEntryXpath([]string{"localhost.localdomain"}),
+		"network",
+		"virtual-router",
+		util.AsEntryXpath(vals),
+	}, nil
 }
 
-func (c *FwRouter) xpath(vals []string) []string {
-    return []string{
-        "config",
-        "devices",
-        util.AsEntryXpath([]string{"localhost.localdomain"}),
-        "network",
-        "virtual-router",
-        util.AsEntryXpath(vals),
-    }
+func (c *Firewall) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

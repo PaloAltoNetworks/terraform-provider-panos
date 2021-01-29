@@ -1,6 +1,6 @@
 package group
 
 const (
-    singular = "gke cluster group"
-    plural = "gke cluster groups"
+	singular = "gke cluster group"
+	plural   = "gke cluster groups"
 )

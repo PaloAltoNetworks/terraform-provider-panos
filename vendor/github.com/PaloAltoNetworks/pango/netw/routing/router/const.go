@@ -1,6 +1,14 @@
 package router
 
+// Valid values for EcmpLoadBalanceMethod.
 const (
-    singular = "virtual router"
-    plural = "virtual routers"
+	EcmpLoadBalanceMethodIpModulo           = "ip-modulo"
+	EcmpLoadBalanceMethodIpHash             = "ip-hash"
+	EcmpLoadBalanceMethodWeightedRoundRobin = "weighted-round-robin"
+	EcmpLoadBalanceMethodBalancedRoundRobin = "balanced-round-robin"
+)
+
+const (
+	singular = "virtual router"
+	plural   = "virtual routers"
 )

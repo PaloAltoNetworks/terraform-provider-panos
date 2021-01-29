@@ -1,17 +1,16 @@
 package andcond
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 
-    "github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/util"
 )
-
 
 // Entry is a normalized, version independent representation of an application signature and-condition.
 type Entry struct {
-    Name string
+	Name string
 
-    raw map[string] string
+	raw map[string]string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -22,45 +21,45 @@ func (o *Entry) Copy(s Entry) {
 /** Structs / functions for this namespace. **/
 
 type normalizer interface {
-    Normalize() Entry
+	Normalize() Entry
 }
 
 type container_v1 struct {
-    Answer entry_v1 `xml:"result>entry"`
+	Answer entry_v1 `xml:"result>entry"`
 }
 
 func (o *container_v1) Normalize() Entry {
-    ans := Entry{
-        Name: o.Answer.Name,
-    }
+	ans := Entry{
+		Name: o.Answer.Name,
+	}
 
-    ans.raw = make(map[string] string)
+	ans.raw = make(map[string]string)
 
-    if o.Answer.Sigs != nil {
-        ans.raw["sigs"] = util.CleanRawXml(o.Answer.Sigs.Text)
-    }
+	if o.Answer.Sigs != nil {
+		ans.raw["sigs"] = util.CleanRawXml(o.Answer.Sigs.Text)
+	}
 
-    if len(ans.raw) == 0 {
-        ans.raw = nil
-    }
+	if len(ans.raw) == 0 {
+		ans.raw = nil
+	}
 
-    return ans
+	return ans
 }
 
 type entry_v1 struct {
-    XMLName xml.Name `xml:"entry"`
-    Name string `xml:"name,attr"`
-    Sigs *util.RawXml `xml:"or-condition"`
+	XMLName xml.Name     `xml:"entry"`
+	Name    string       `xml:"name,attr"`
+	Sigs    *util.RawXml `xml:"or-condition"`
 }
 
 func specify_v1(e Entry) interface{} {
-    ans := entry_v1{
-        Name: e.Name,
-    }
+	ans := entry_v1{
+		Name: e.Name,
+	}
 
-    if text := e.raw["sigs"]; text != "" {
-        ans.Sigs = &util.RawXml{text}
-    }
+	if text := e.raw["sigs"]; text != "" {
+		ans.Sigs = &util.RawXml{text}
+	}
 
-    return ans
+	return ans
 }

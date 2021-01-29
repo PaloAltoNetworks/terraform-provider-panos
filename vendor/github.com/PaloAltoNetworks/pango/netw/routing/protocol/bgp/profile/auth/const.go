@@ -1,7 +1,6 @@
 package auth
 
-
 const (
-    singular = "auth profile"
-    plural = "auth profiles"
+	singular = "auth profile"
+	plural   = "auth profiles"
 )

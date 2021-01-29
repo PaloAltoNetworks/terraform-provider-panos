@@ -1,6 +1,6 @@
 package vlan
 
 const (
-    singular = "vlan"
-    plural = "vlans"
+	singular = "vlan"
+	plural   = "vlans"
 )
