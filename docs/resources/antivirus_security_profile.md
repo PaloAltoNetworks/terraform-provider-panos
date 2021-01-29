@@ -50,8 +50,7 @@ resource "panos_antivirus_security_profile" "example" {
 
 NGFW:
 
-* `vsys` - (Optional) The vsys to put the address object into (default:
-  `vsys1`).
+* `vsys` - (Optional) The vsys location (default: `vsys1`).
 
 Panorama:
 
