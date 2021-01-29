@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_plugin"
-subcategory: "Shared"
+subcategory: "Operational State"
 ---
 
 # panos_plugin
