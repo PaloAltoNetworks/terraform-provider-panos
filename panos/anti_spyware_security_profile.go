@@ -455,7 +455,7 @@ func antiSpywareSecurityProfileSchema(isResource bool) map[string]*schema.Schema
 					"action": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "IPv4 sinkhole address",
+						Description: "Action",
 						Default:     spyware.ActionDefault,
 						ValidateFunc: validateStringIn(
 							"",
