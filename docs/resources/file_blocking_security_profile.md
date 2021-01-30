@@ -3,6 +3,9 @@ page_title: "panos: panos_file_blocking_security_profile"
 subcategory: "Objects"
 ---
 
+-> **NOTE:** Minimum PAN-OS version: 8.0.
+
+
 # panos_file_blocking_security_profile
 
 Manages file_blocking security profiles.
