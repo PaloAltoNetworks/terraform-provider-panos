@@ -41,8 +41,9 @@ resource "panos_custom_data_pattern_object" "predef" {
     }
 }
 
+
 # Regex example.
-resource "panos_custom_data_pattern_object" "predef" {
+resource "panos_custom_data_pattern_object" "regex" {
     name = "ex2
     description = "made by Terraform"
     type = "regex"
@@ -53,12 +54,13 @@ resource "panos_custom_data_pattern_object" "predef" {
     }
 }
 
+
 # File property example.
 # Here again, you can either use `data.panos_custom_data_pattern_object` to see
 # how something is currently configured or you can use the
 # `data.panos_predefined_dlp_file_type` data source to discover a setting that's
 # already configured.
-resource "panos_custom_data_pattern_object" "predef" {
+resource "panos_custom_data_pattern_object" "file_prop" {
     name = "ex3"
     description = "made by Terraform"
     type = "file-properties"
