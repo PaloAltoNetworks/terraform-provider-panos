@@ -57,13 +57,17 @@ func readDataSourceVmAuthKey(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	now, err := pano.Clock()
+	if err != nil {
+		return err
+	}
+
 	d.SetId(pano.Hostname)
 	d.Set("total", len(keys))
 	if len(keys) == 0 {
 		d.Set("entries", nil)
 	} else {
 		var empty time.Time
-		now := time.Now()
 		list := make([]interface{}, 0, len(keys))
 		for _, key := range keys {
 			var valid bool
@@ -142,6 +146,11 @@ func readVmAuthKey(d *schema.ResourceData, meta interface{}) error {
 
 	authKey := d.Id()
 
+	now, err := pano.Clock()
+	if err != nil {
+		return err
+	}
+
 	keys, err := pano.GetVmAuthKeys()
 	if err != nil {
 		return err
@@ -151,7 +160,6 @@ func readVmAuthKey(d *schema.ResourceData, meta interface{}) error {
 	for _, key := range keys {
 		if key.AuthKey == authKey {
 			var empty time.Time
-			now := time.Now()
 
 			d.Set("auth_key", key.AuthKey)
 			d.Set("expiry", key.Expiry)
