@@ -221,7 +221,7 @@ func dosProtectionProfileSchema(isResource bool) map[string]*schema.Schema {
 		"type": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "The profilel type",
+			Description: "The profile type",
 			Default:     dos.TypeAggregate,
 			ValidateFunc: validateStringIn(
 				dos.TypeAggregate,
