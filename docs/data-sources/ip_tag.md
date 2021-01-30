@@ -6,10 +6,7 @@ subcategory: "NGFW User-ID"
 
 # panos_ip_tag
 
-Manages tags on a single IP address.
-
-This resource only manages the given tags for the given IP address.  Any
-other tags associated with the IP address are left as-is.
+Gets information on IP tags.
 
 **NOTE:** This is for Firewall only.
 
