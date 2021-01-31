@@ -27,7 +27,7 @@ func dataSourcePredefinedDlpFileType() *schema.Resource {
 			"total": {
 				Type:        schema.TypeInt,
 				Computed:    true,
-				Description: "The number of threats matching the given criteria",
+				Description: "The total number of file types",
 			},
 			"file_types": {
 				Type:        schema.TypeList,
