@@ -219,13 +219,13 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_vlan_interface":                       resourcePanoramaVlanInterface(),
 			"panos_panorama_zone":                                 resourcePanoramaZone(),
 			"panos_panorama_zone_entry":                           resourcePanoramaZoneEntry(),
+			"panos_vm_auth_key":                                   resourceVmAuthKey(),
 
 			// Panorama aliases.
 			"panos_panorama_address_object":        resourceAddressObject(),
 			"panos_panorama_nat_policy":            resourcePanoramaNatRule(),
 			"panos_panorama_security_policies":     resourcePanoramaSecurityPolicy(),
 			"panos_panorama_security_policy_group": resourcePanoramaSecurityRuleGroup(),
-			"panos_vm_auth_key":                    resourceVmAuthKey(),
 
 			// Firewall resources.
 			"panos_address_group":                        resourceAddressGroup(),
