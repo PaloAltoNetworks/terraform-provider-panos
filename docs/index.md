@@ -137,9 +137,10 @@ The following arguments are supported:
   with PAN-OS (default: `10`).
 * `target` - (Optional, env:`PANOS_TARGET`) The firewall serial number to target
   configuration commands to (the `hostname` should be a Panorama PAN-OS).
-* `logging` - (Optional) List of logging options for the provider's connection
-  to the API.  If this is unspecified, then it defaults to
-  `["action", "uid"]`.
+* `logging` - (Optional, env:`PANOS_LOGGING`) List of logging options for the
+  provider's connection to the API.  If this is unspecified, then it defaults to
+  `["action", "uid"]`.  If this is being specified as an environment variable,
+  then it should be a CSV list.
 * `verify_certificate` - (Optional, bool, env:`PANOS_VERIFY_CERTIFICATE`) For HTTPS
   protocol connections, verify that the certificate is valid.
 * `json_config_file` - (Optional) The path to a JSON configuration file that
