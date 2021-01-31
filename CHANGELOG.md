@@ -1,4 +1,77 @@
-## 1.6.4 (Unreleased)
+## 1.7.0 (January 30, 2021)
+
+Newly added resources and data sources now work with both NGFW and Panorama; there
+is no separate `panos_panorama_` for Panorama.  If a data source or resource only
+works with one, it will say as much in the documentation.  Additionally, the subheading
+for the documentation will now be just "Objects" or "Network" for any of these new
+style data sources/resources.
+
+NEW DATA SOURCES:
+
+* `panos_address_object` / `panos_address_objects`
+* `panos_anti_spyware_security_profile` / `panos_anti_spyware_security_profiles`
+* `panos_antivirus_security_profile` / `panos_antivirus_security_profiles`
+* `panos_arp` / `panos_arps`
+* `panos_custom_data_pattern_object` / `panos_custom_data_pattern_objects`
+* `panos_data_filtering_security_profile` / `panos_data_filtering_security_profiles`
+* `panos_device_group_parent`
+* `panos_dos_protection_profile` / `panos_dos_protection_profiles`
+* `panos_dynamic_user_group` / `panos_dynamic_user_groups`
+* `panos_file_blocking_security_profile` / `panos_file_blocking_security_profiles`
+* `panos_ospf`
+* `panos_ospf_area` / `panos_ospf_areas`
+* `panos_ospf_area_interface` / `panos_ospf_area_interfaces`
+* `panos_ospf_area_virtual_link` / `panos_ospf_area_virtual_links`
+* `panos_ospf_auth_profiles`
+* `panos_ospf_export` / `panos_ospf_exports`
+* `panos_predefined_dlp_file_type`
+* `panos_predefined_tdb_file_type`
+* `panos_predefined_threat`
+* `panos_url_filtering_security_profile` / `panos_url_filtering_security_profiles`
+* `panos_vulnerability_security_profile` / `panos_vulnerability_security_profiles`
+* `panos_wildfire_analysis_security_profile` / `panos_wildfire_analysis_security_profiles`
+* `panos_ip_tag`
+* `panos_user_tag`
+* `panos_vm_auth_key`
+
+NEW RESOURCES:
+
+* `panos_anti_spyware_security_profile`
+* `panos_antivirus_security_profile`
+* `panos_arp`
+* `panos_custom_data_pattern_object`
+* `panos_data_filtering_security_profile`
+* `panos_dos_protection_profile`
+* `panos_dynamic_user_group`
+* `panos_file_blocking_security_profile`
+* `panos_ip_tag`
+* `panos_ospf`
+* `panos_ospf_area`
+* `panos_ospf_area_interface`
+* `panos_ospf_area_virtual_link`
+* `panos_ospf_auth_profile`
+* `panos_ospf_export`
+* `panos_url_filtering_security_profile`
+* `panos_user_tag`
+* `panos_vulnerability_security_profile`
+* `panos_wildfire_analysis_security_profile`
+* `panos_device_group_parent`
+* `panos_vm_auth_key`
+
+UPDATES:
+
+* ECMP options added to `panos_virtual_router` / `panos_panorama_virtual_router`
+* LACP, HA, and LLDP options added to both ethernet interfaces and aggregate interfaces
+* `panos_panorama_plugin` has been renamed to `panos_plugin` and now also works with NGFW
+  now.  `panos_panorama_plugin` still exists as an alias but will be removed in a
+  future release, so please update your plan files accordingly.
+* `panos_panorama_address_object` has been remade into the new "shared" style for
+  data sources and resources as a kind of beta before touching any other existing
+  resources.  This will cause extra unused params to exist in resources, but should
+  not affect functionality.  Please let us know (GitHub issue) if this causes
+  problems for you.  Otherwise the intent is to slowly retrofit resources into this
+  new style.
+
 ## 1.6.3 (September 1, 2020)
 
 * Release for Terraform Registry
