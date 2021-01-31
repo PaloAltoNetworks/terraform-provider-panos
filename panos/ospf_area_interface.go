@@ -314,7 +314,7 @@ func ospfAreaInterfaceSchema(isResource bool) map[string]*schema.Schema {
 		"grace_restart_delay": {
 			Type:        schema.TypeInt,
 			Optional:    true,
-			Description: "Graceful restart hellow delay in seconds",
+			Description: "Graceful restart hello delay in seconds",
 			Default:     10,
 		},
 		"auth_profile": {
