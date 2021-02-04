@@ -153,6 +153,7 @@ func Provider() terraform.ResourceProvider {
 			// Panorama resources.
 			"panos_device_group_parent":                           resourceDeviceGroupParent(),
 			"panos_panorama_address_group":                        resourcePanoramaAddressGroup(),
+			"panos_panorama_address_object":                       resourcePanoramaAddressObject(),
 			"panos_panorama_administrative_tag":                   resourcePanoramaAdministrativeTag(),
 			"panos_panorama_aggregate_interface":                  resourcePanoramaAggregateInterface(),
 			"panos_panorama_application_group":                    resourcePanoramaApplicationGroup(),
@@ -221,7 +222,6 @@ func Provider() terraform.ResourceProvider {
 			"panos_vm_auth_key":                                   resourceVmAuthKey(),
 
 			// Panorama aliases.
-			"panos_panorama_address_object":        resourceAddressObject(),
 			"panos_panorama_nat_policy":            resourcePanoramaNatRule(),
 			"panos_panorama_security_policies":     resourcePanoramaSecurityPolicy(),
 			"panos_panorama_security_policy_group": resourcePanoramaSecurityRuleGroup(),
