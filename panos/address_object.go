@@ -51,7 +51,7 @@ func dataSourceAddressObject() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceAddressObjectRead,
 
-		Schema: addressObjectSchema(false),
+		Schema: addressObjectSchema(false, ""),
 	}
 }
 
@@ -94,12 +94,60 @@ func resourceAddressObject() *schema.Resource {
 		Update: updateAddressObject,
 		Delete: deleteAddressObject,
 
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: addressObjectSchema(true, "device_group"),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: addressObjectUpgradeV0,
+			},
+		},
+
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: addressObjectSchema(true),
+		Schema: addressObjectSchema(true, ""),
 	}
+}
+
+func resourcePanoramaAddressObject() *schema.Resource {
+	return &schema.Resource{
+		Create: createAddressObject,
+		Read:   readAddressObject,
+		Update: updateAddressObject,
+		Delete: deleteAddressObject,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: addressObjectSchema(true, "vsys"),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: addressObjectUpgradeV0,
+			},
+		},
+
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
+		Schema: addressObjectSchema(true, ""),
+	}
+}
+
+func addressObjectUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+	if _, ok := raw["vsys"]; ok {
+		raw["device_group"] = "shared"
+	}
+	if _, ok := raw["device_group"]; ok {
+		raw["vsys"] = "vsys1"
+	}
+
+	return raw, nil
 }
 
 func createAddressObject(d *schema.ResourceData, meta interface{}) error {
@@ -203,7 +251,7 @@ func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 // Schema handling.
-func addressObjectSchema(isResource bool) map[string]*schema.Schema {
+func addressObjectSchema(isResource bool, rmKey string) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
 		"device_group": deviceGroupSchema(),
 		"vsys":         vsysSchema(),
@@ -231,6 +279,10 @@ func addressObjectSchema(isResource bool) map[string]*schema.Schema {
 
 	if !isResource {
 		computed(ans, "", []string{"vsys", "device_group", "name"})
+	}
+
+	if rmKey != "" {
+		delete(ans, rmKey)
 	}
 
 	return ans
