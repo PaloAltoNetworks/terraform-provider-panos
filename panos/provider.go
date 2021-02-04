@@ -82,6 +82,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_anti_spyware_security_profiles":      dataSourceAntiSpywareSecurityProfiles(),
 			"panos_antivirus_security_profile":          dataSourceAntivirusSecurityProfile(),
 			"panos_antivirus_security_profiles":         dataSourceAntivirusSecurityProfiles(),
+			"panos_api_key":                             dataSourceApiKey(),
 			"panos_arp":                                 dataSourceArp(),
 			"panos_arps":                                dataSourceArps(),
 			"panos_custom_data_pattern_object":          dataSourceCustomDataPatternObject(),
