@@ -1,3 +1,15 @@
+## 1.7.2 (February 4, 2021)
+
+NEW DATA SOURCES:
+
+* `panos_api_key`
+
+## 1.7.1 (February 4, 2021)
+
+BUG FIXES:
+
+* Fixing `panos_address_object` wanting to redeploy existing address objects.
+
 ## 1.7.0 (January 30, 2021)
 
 Newly added resources and data sources now work with both NGFW and Panorama; there
