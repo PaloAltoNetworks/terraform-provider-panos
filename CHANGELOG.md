@@ -1,4 +1,4 @@
-## 1.7.2 (February 4, 2021)
+## 1.8.0 (February 4, 2021)
 
 NEW DATA SOURCES:
 
