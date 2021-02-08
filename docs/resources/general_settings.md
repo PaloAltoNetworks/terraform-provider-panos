@@ -37,6 +37,8 @@ The following arguments are supported:
 * `proxy_port` - (int, 1.5+) Proxy's port number.
 * `proxy_username` - (1.5+) Proxy's username.
 * `proxy_password` - (1.5+) Proxy's password.
+* `panorama_primary`- Primary Panorama server.
+* `panorama_secondary`- Secondary Panorama server.
 * `dns_primary` - Primary DNS server.
 * `dns_secondary` - Secondary DNS server.
 * `ntp_primary_address` - Primary NTP server.
