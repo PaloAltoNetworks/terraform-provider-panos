@@ -56,7 +56,7 @@ resource "panos_security_policy" "example" {
         source_addresses = ["any"]
         source_users = ["any"]
         hip_profiles = ["any"]
-        destination_zones = ["all"]
+        destination_zones = ["any"]
         destination_addresses = ["any"]
         applications = ["any"]
         services = ["application-default"]
