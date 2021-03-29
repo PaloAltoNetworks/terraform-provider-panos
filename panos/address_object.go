@@ -182,9 +182,13 @@ func readAddressObject(d *schema.ResourceData, meta interface{}) error {
 	case *pango.Firewall:
 		vsys, name := parseAddressObjectId(d.Id())
 		o, err = con.Objects.Address.Get(vsys, name)
+		d.Set("vsys", vsys)
+		d.Set("device_group", "shared")
 	case *pango.Panorama:
 		dg, name := parseAddressObjectId(d.Id())
 		o, err = con.Objects.Address.Get(dg, name)
+		d.Set("vsys", "vsys1")
+		d.Set("device_group", dg)
 	}
 
 	if err != nil {
