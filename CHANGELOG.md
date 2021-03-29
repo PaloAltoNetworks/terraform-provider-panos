@@ -1,3 +1,15 @@
+## 1.8.1 (March 29, 2021)
+
+BUG FIXES:
+
+* Importing an address object into state should not result in `terraform plan`
+  showing differences.
+
+DOCUMENTATION:
+
+* Updating the commit script to add support for a configurable timeout.
+* Minor fixes.
+
 ## 1.8.0 (February 4, 2021)
 
 NEW DATA SOURCES:
