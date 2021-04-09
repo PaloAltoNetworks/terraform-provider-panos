@@ -319,10 +319,20 @@ func createUpdatePanoramaSecurityPolicy(d *schema.ResourceData, meta interface{}
 	pano := meta.(*pango.Panorama)
 	dg, rb, list := parsePanoramaSecurityPolicy(d)
 
+	prevPolicy, err := pano.Policies.Security.GetAll(dg, rb)
+	if err != nil {
+		return err
+	}
+
 	if err = pano.Policies.Security.DeleteAll(dg, rb); err != nil {
 		return err
 	}
+
 	if err = pano.Policies.Security.VerifiableSet(dg, rb, list...); err != nil {
+		// Try and restore the previous security policy.
+		if len(prevPolicy) > 0 {
+			_ = pano.Policies.Security.VerifiableSet(dg, rb, prevPolicy...)
+		}
 		return err
 	}
 

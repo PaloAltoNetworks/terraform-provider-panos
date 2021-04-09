@@ -296,10 +296,20 @@ func createUpdateSecurityPolicy(d *schema.ResourceData, meta interface{}) error 
 	fw := meta.(*pango.Firewall)
 	vsys, _, list := parseSecurityPolicy(d)
 
+	prevPolicy, err := fw.Policies.Security.GetAll(vsys)
+	if err != nil {
+		return err
+	}
+
 	if err = fw.Policies.Security.DeleteAll(vsys); err != nil {
 		return err
 	}
+
 	if err = fw.Policies.Security.VerifiableSet(vsys, list...); err != nil {
+		// Try and restore the previous security policy.
+		if len(prevPolicy) > 0 {
+			_ = fw.Policies.Security.VerifiableSet(vsys, prevPolicy...)
+		}
 		return err
 	}
 
