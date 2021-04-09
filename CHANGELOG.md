@@ -1,3 +1,12 @@
+## 1.8.2 (April 9, 2021)
+
+ENHANCEMENTS:
+
+* Try to restore the previous security policy if `panos_security_policy` /
+  `panos_panorama_security_policy` has an error applying the new one.
+  ([#272](https://github.com/terraform-providers/terraform-provider-panos/issues/272))
+* Add additional architecture support (update to go 1.16).
+
 ## 1.8.1 (March 29, 2021)
 
 BUG FIXES:
