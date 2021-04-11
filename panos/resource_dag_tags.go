@@ -119,72 +119,136 @@ func parseDagTags(cur map[string][]string, d *schema.ResourceData) (*userid.Mess
 }
 
 func createUpdateDagTags(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys := d.Get("vsys").(string)
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.GetIpTags("", "", vsys)
-	if err != nil {
-		return err
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil {
+			return err
+		}
+
+		missing, _, _, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
+
+		if err = con.UserId.Run(missing, vsys); err != nil {
+			return err
+		}
+
+		d.SetId(vsys)
+	case *pango.Panorama:
+		vsys := d.Get("vsys").(string)
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil {
+			return err
+		}
+
+		missing, _, _, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
+
+		if err = con.UserId.Run(missing, vsys); err != nil {
+			return err
+		}
+
+		d.SetId(vsys)
 	}
 
-	missing, _, _, err := parseDagTags(cur, d)
-	if err != nil {
-		return err
-	}
-
-	if err = fw.UserId.Run(missing, vsys); err != nil {
-		return err
-	}
-
-	d.SetId(vsys)
 	return readDagTags(d, meta)
 }
 
 func readDagTags(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.GetIpTags("", "", vsys)
-	if err != nil || len(cur) == 0 {
-		d.SetId("")
-		return nil
-	}
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		vsys := d.Get("vsys").(string)
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil || len(cur) == 0 {
+			d.SetId("")
+			return nil
+		}
 
-	_, _, overlapSet, err := parseDagTags(cur, d)
-	if err != nil {
-		return err
-	}
+		_, _, overlapSet, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
 
-	d.Set("vsys", vsys)
-	if err := d.Set("register", overlapSet); err != nil {
-		log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
+		d.Set("vsys", vsys)
+		if err := d.Set("register", overlapSet); err != nil {
+			log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
+		}
+
+	case *pango.Panorama:
+		vsys := d.Get("vsys").(string)
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil || len(cur) == 0 {
+			d.SetId("")
+			return nil
+		}
+
+		_, _, overlapSet, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
+
+		d.Set("vsys", vsys)
+		if err := d.Set("register", overlapSet); err != nil {
+			log.Printf("[WARN] Error setting 'register' param for %q: %s", d.Id(), err)
+		}
 	}
 
 	return nil
 }
 
 func deleteDagTags(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys := d.Get("vsys").(string)
 
-	cur, err := fw.UserId.GetIpTags("", "", vsys)
-	if err != nil {
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		vsys := d.Get("vsys").(string)
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil {
+			d.SetId("")
+			return nil
+		}
+
+		_, overlap, _, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
+
+		// The UserId subsystem doesn't return ObjectNotFound, so we don't need
+		// to check for that at this point.
+		err = con.UserId.Run(overlap, vsys)
+		if err != nil {
+			return err
+		}
+
 		d.SetId("")
-		return nil
+	case *pango.Panorama:
+		vsys := d.Get("vsys").(string)
+		cur, err := con.UserId.GetIpTags("", "", vsys)
+		if err != nil {
+			d.SetId("")
+			return nil
+		}
+
+		_, overlap, _, err := parseDagTags(cur, d)
+		if err != nil {
+			return err
+		}
+
+		// The UserId subsystem doesn't return ObjectNotFound, so we don't need
+		// to check for that at this point.
+		err = con.UserId.Run(overlap, vsys)
+		if err != nil {
+			return err
+		}
+
+		d.SetId("")
 	}
 
-	_, overlap, _, err := parseDagTags(cur, d)
-	if err != nil {
-		return err
-	}
-
-	// The UserId subsystem doesn't return ObjectNotFound, so we don't need
-	// to check for that at this point.
-	err = fw.UserId.Run(overlap, vsys)
-	if err != nil {
-		return err
-	}
-
-	d.SetId("")
 	return nil
 }

@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_dag_tags"
-subcategory: "Firewall User-ID"
+subcategory: "Firewall/Panorama User-ID"
 ---
 
 # panos_dag_tags
