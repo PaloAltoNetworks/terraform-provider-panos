@@ -136,225 +136,153 @@ func resourceIpTag() *schema.Resource {
 }
 
 func createIpTag(d *schema.ResourceData, meta interface{}) error {
+	var cur map[string][]string
+	var err error
+
+	vsys := d.Get("vsys").(string)
+	ip := d.Get("ip").(string)
+	tagList := d.Get("tags").(*schema.Set).List()
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		vsys := d.Get("vsys").(string)
-		ip := d.Get("ip").(string)
-		tagList := d.Get("tags").(*schema.Set).List()
-
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
-		if err != nil {
-			return err
-		}
-		curTags := cur[ip]
-
-		missing := make([]string, 0, len(tagList))
-		for i := range tagList {
-			tag := tagList[i].(string)
-			var found bool
-			for _, x := range curTags {
-				if x == tag {
-					found = true
-					break
-				}
-			}
-
-			if !found {
-				missing = append(missing, tag)
-			}
-		}
-
-		if len(missing) > 0 {
-			msg := &userid.Message{
-				TagIps: []userid.TagIp{
-					userid.TagIp{
-						Ip:   ip,
-						Tags: missing,
-					},
-				},
-			}
-
-			if err = con.UserId.Run(msg, vsys); err != nil {
-				return err
-			}
-		}
-
-		d.SetId(buildIpTagId(vsys, ip, tagList))
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
 	case *pango.Panorama:
-		vsys := d.Get("vsys").(string)
-		ip := d.Get("ip").(string)
-		tagList := d.Get("tags").(*schema.Set).List()
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
+	}
 
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
+	curTags := cur[ip]
+
+	missing := make([]string, 0, len(tagList))
+	for i := range tagList {
+		tag := tagList[i].(string)
+		var found bool
+		for _, x := range curTags {
+			if x == tag {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			missing = append(missing, tag)
+		}
+	}
+
+	if len(missing) > 0 {
+		msg := &userid.Message{
+			TagIps: []userid.TagIp{
+				userid.TagIp{
+					Ip:   ip,
+					Tags: missing,
+				},
+			},
+		}
+
+		switch con := meta.(type) {
+		case *pango.Firewall:
+			err = con.UserId.Run(msg, vsys)
+		case *pango.Panorama:
+			err = con.UserId.Run(msg, vsys)
+		}
+
 		if err != nil {
 			return err
 		}
-		curTags := cur[ip]
-
-		missing := make([]string, 0, len(tagList))
-		for i := range tagList {
-			tag := tagList[i].(string)
-			var found bool
-			for _, x := range curTags {
-				if x == tag {
-					found = true
-					break
-				}
-			}
-
-			if !found {
-				missing = append(missing, tag)
-			}
-		}
-
-		if len(missing) > 0 {
-			msg := &userid.Message{
-				TagIps: []userid.TagIp{
-					userid.TagIp{
-						Ip:   ip,
-						Tags: missing,
-					},
-				},
-			}
-
-			if err = con.UserId.Run(msg, vsys); err != nil {
-				return err
-			}
-		}
-
-		d.SetId(buildIpTagId(vsys, ip, tagList))
 	}
+
+	d.SetId(buildIpTagId(vsys, ip, tagList))
 
 	return readIpTag(d, meta)
 }
 
 func readIpTag(d *schema.ResourceData, meta interface{}) error {
+	var cur map[string][]string
+	var err error
+
+	vsys, ip, tagList := parseIpTagId(d.Id())
+
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		vsys, ip, tagList := parseIpTagId(d.Id())
-
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
-		if err != nil || len(cur) == 0 {
-			d.SetId("")
-			return nil
-		}
-		curTags := cur[ip]
-
-		list := make([]string, 0, len(tagList))
-		for _, tag := range tagList {
-			for _, curTag := range curTags {
-				if tag == curTag {
-					list = append(list, tag)
-					break
-				}
-			}
-		}
-
-		d.Set("ip", ip)
-		if len(list) == 0 {
-			d.Set("tags", nil)
-		} else if err = d.Set("tags", listAsSet(list)); err != nil {
-			log.Printf("[WARN] Error setting 'tags' for %q: %s", d.Id(), err)
-		}
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
 	case *pango.Panorama:
-		vsys, ip, tagList := parseIpTagId(d.Id())
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
+	}
 
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
-		if err != nil || len(cur) == 0 {
-			d.SetId("")
-			return nil
-		}
-		curTags := cur[ip]
+	if err != nil || len(cur) == 0 {
+		d.SetId("")
+		return nil
+	}
 
-		list := make([]string, 0, len(tagList))
-		for _, tag := range tagList {
-			for _, curTag := range curTags {
-				if tag == curTag {
-					list = append(list, tag)
-					break
-				}
+	curTags := cur[ip]
+
+	list := make([]string, 0, len(tagList))
+	for _, tag := range tagList {
+		for _, curTag := range curTags {
+			if tag == curTag {
+				list = append(list, tag)
+				break
 			}
 		}
+	}
 
-		d.Set("ip", ip)
-		if len(list) == 0 {
-			d.Set("tags", nil)
-		} else if err = d.Set("tags", listAsSet(list)); err != nil {
-			log.Printf("[WARN] Error setting 'tags' for %q: %s", d.Id(), err)
-		}
+	d.Set("ip", ip)
+	if len(list) == 0 {
+		d.Set("tags", nil)
+	} else if err = d.Set("tags", listAsSet(list)); err != nil {
+		log.Printf("[WARN] Error setting 'tags' for %q: %s", d.Id(), err)
 	}
 
 	return nil
 }
 
 func deleteIpTag(d *schema.ResourceData, meta interface{}) error {
+	var cur map[string][]string
+	var err error
+
+	vsys, ip, tagList := parseIpTagId(d.Id())
+
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		vsys, ip, tagList := parseIpTagId(d.Id())
-
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
-		if err != nil {
-			return err
-		}
-		curTags := cur[ip]
-
-		list := make([]string, 0, len(tagList))
-		for _, tag := range tagList {
-			for _, curTag := range curTags {
-				if tag == curTag {
-					list = append(list, tag)
-					break
-				}
-			}
-		}
-
-		if len(list) > 0 {
-			msg := &userid.Message{
-				UntagIps: []userid.UntagIp{
-					userid.UntagIp{
-						Ip:   ip,
-						Tags: list,
-					},
-				},
-			}
-
-			if err = con.UserId.Run(msg, vsys); err != nil {
-				return err
-			}
-		}
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
 	case *pango.Panorama:
-		vsys, ip, tagList := parseIpTagId(d.Id())
+		cur, err = con.UserId.GetIpTags(ip, "", vsys)
+	}
 
-		cur, err := con.UserId.GetIpTags(ip, "", vsys)
+	if err != nil {
+		return err
+	}
+
+	curTags := cur[ip]
+
+	list := make([]string, 0, len(tagList))
+	for _, tag := range tagList {
+		for _, curTag := range curTags {
+			if tag == curTag {
+				list = append(list, tag)
+				break
+			}
+		}
+	}
+
+	if len(list) > 0 {
+		msg := &userid.Message{
+			UntagIps: []userid.UntagIp{
+				userid.UntagIp{
+					Ip:   ip,
+					Tags: list,
+				},
+			},
+		}
+
+		switch con := meta.(type) {
+		case *pango.Firewall:
+			err = con.UserId.Run(msg, vsys)
+		case *pango.Panorama:
+			err = con.UserId.Run(msg, vsys)
+		}
+
 		if err != nil {
 			return err
-		}
-		curTags := cur[ip]
-
-		list := make([]string, 0, len(tagList))
-		for _, tag := range tagList {
-			for _, curTag := range curTags {
-				if tag == curTag {
-					list = append(list, tag)
-					break
-				}
-			}
-		}
-
-		if len(list) > 0 {
-			msg := &userid.Message{
-				UntagIps: []userid.UntagIp{
-					userid.UntagIp{
-						Ip:   ip,
-						Tags: list,
-					},
-				},
-			}
-
-			if err = con.UserId.Run(msg, vsys); err != nil {
-				return err
-			}
 		}
 	}
 
