@@ -8,9 +8,6 @@ subcategory: "NGFW User-ID"
 
 Gets information on IP tags.
 
-**NOTE:** This is for Firewall only.
-
-
 ## Example Usage
 
 ```hcl

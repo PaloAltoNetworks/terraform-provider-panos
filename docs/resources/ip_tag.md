@@ -1,8 +1,7 @@
 ---
 page_title: "panos: panos_ip_tag"
-subcategory: "NGFW User-ID"
+subcategory: "User-ID"
 ---
-
 
 # panos_ip_tag
 
@@ -11,8 +10,7 @@ Manages a specific set of tags on a single IP address.
 This resource only manages the given tags for the given IP address.  Any
 other tags associated with the IP address are left as-is.
 
-**NOTE:** This is for Firewall only.
-
+Note: Supported on Panorama 8.0+.
 
 ## Example Usage
 
