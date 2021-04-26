@@ -1,3 +1,9 @@
+## 1.8.3 (April 26, 2021)
+
+ENHANCEMENTS:
+
+* `panos_ip_tag` now works on Panorama ([#277](https://github.com/terraform-providers/terraform-provider-panos/issues/272))
+
 ## 1.8.2 (April 9, 2021)
 
 ENHANCEMENTS:
