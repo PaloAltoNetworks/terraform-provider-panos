@@ -203,6 +203,62 @@ func createVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	return readVirtualRouter(d, meta)
 }
 
+func saveDistances(d *schema.ResourceData, o router.Entry) {
+	if o.StaticDist == 0 {
+		d.Set("static_dist", 10)
+	} else {
+		d.Set("static_dist", o.StaticDist)
+	}
+
+	if o.StaticIpv6Dist == 0 {
+		d.Set("static_ipv6_dist", 10)
+	} else {
+		d.Set("static_ipv6_dist", o.StaticIpv6Dist)
+	}
+
+	if o.OspfIntDist == 0 {
+		d.Set("ospf_int_dist", 30)
+	} else {
+		d.Set("ospf_int_dist", o.OspfIntDist)
+	}
+
+	if o.OspfExtDist == 0 {
+		d.Set("ospf_ext_dist", 110)
+	} else {
+		d.Set("ospf_ext_dist", o.OspfExtDist)
+	}
+
+	if o.Ospfv3IntDist == 0 {
+		d.Set("ospfv3_int_dist", 30)
+	} else {
+		d.Set("ospfv3_int_dist", o.Ospfv3IntDist)
+	}
+
+	if o.Ospfv3ExtDist == 0 {
+		d.Set("ospfv3_ext_dist", 110)
+	} else {
+		d.Set("ospfv3_ext_dist", o.Ospfv3ExtDist)
+	}
+
+	if o.IbgpDist == 0 {
+		d.Set("ibgp_dist", 200)
+	} else {
+		d.Set("ibgp_dist", o.IbgpDist)
+	}
+
+	if o.EbgpDist == 0 {
+		d.Set("ebgp_dist", 20)
+	} else {
+		d.Set("ebgp_dist", o.EbgpDist)
+	}
+
+	if o.RipDist == 0 {
+		d.Set("rip_dist", 120)
+	} else {
+		d.Set("rip_dist", o.RipDist)
+	}
+}
+
 func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	fw := meta.(*pango.Firewall)
 	vsys, name := parseVirtualRouterId(d.Id())
@@ -230,15 +286,8 @@ func readVirtualRouter(d *schema.ResourceData, meta interface{}) error {
 	if err := d.Set("interfaces", o.Interfaces); err != nil {
 		log.Printf("[WARN] Error setting 'interfaces' for %q: %s", d.Id(), err)
 	}
-	d.Set("static_dist", o.StaticDist)
-	d.Set("static_ipv6_dist", o.StaticIpv6Dist)
-	d.Set("ospf_int_dist", o.OspfIntDist)
-	d.Set("ospf_ext_dist", o.OspfExtDist)
-	d.Set("ospfv3_int_dist", o.Ospfv3IntDist)
-	d.Set("ospfv3_ext_dist", o.Ospfv3ExtDist)
-	d.Set("ibgp_dist", o.IbgpDist)
-	d.Set("ebgp_dist", o.EbgpDist)
-	d.Set("rip_dist", o.RipDist)
+
+	saveDistances(d, o)
 	d.Set("enable_ecmp", o.EnableEcmp)
 	d.Set("ecmp_symmetric_return", o.EcmpSymmetricReturn)
 	d.Set("ecmp_strict_source_path", o.EcmpStrictSourcePath)
