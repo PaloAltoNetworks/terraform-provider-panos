@@ -104,6 +104,12 @@ func resourceVmAuthKey() *schema.Resource {
 				Default:     8,
 				Description: "The VM auth key lifetime",
 			},
+			"keepers": {
+				Description: "Arbitrary map of values that, when changed, will trigger recreation of resource.",
+				Type:        schema.TypeMap,
+				Optional:    true,
+				ForceNew:    true,
+			},
 			"auth_key": {
 				Type:        schema.TypeString,
 				Computed:    true,

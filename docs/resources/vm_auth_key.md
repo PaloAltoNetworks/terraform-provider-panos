@@ -25,6 +25,7 @@ resource "panos_vm_auth_key" "example" {
 The following arguments are supported:
 
 * `hours` - (int) The VM auth key lifetime in hours.
+* `keepers` - (map) Arbitrary map of values that, when changed, will trigger a new key to be generated.
 
 
 ## Attribute Reference
