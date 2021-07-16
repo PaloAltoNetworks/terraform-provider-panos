@@ -25,9 +25,9 @@ func templateSchema(ts bool) *schema.Schema {
 
 func templateStackSchema() *schema.Schema {
 	return &schema.Schema{
-		Type:          schema.TypeString,
-		Optional:      true,
-		ForceNew:      true,
+		Type:     schema.TypeString,
+		Optional: true,
+		ForceNew: true,
 	}
 }
 
