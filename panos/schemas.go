@@ -16,7 +16,6 @@ func templateSchema(ts bool) *schema.Schema {
 
 	if ts {
 		ans.Optional = true
-		ans.ConflictsWith = []string{"template_stack"}
 	} else {
 		ans.Required = true
 	}
@@ -29,7 +28,6 @@ func templateStackSchema() *schema.Schema {
 		Type:          schema.TypeString,
 		Optional:      true,
 		ForceNew:      true,
-		ConflictsWith: []string{"template"},
 	}
 }
 
