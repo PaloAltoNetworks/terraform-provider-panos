@@ -29,16 +29,14 @@ func resourcePanoramaZone() *schema.Resource {
 				ForceNew: true,
 			},
 			"template": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template_stack"},
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
 			},
 			"template_stack": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"template"},
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
 			},
 			"vsys": {
 				Type:     schema.TypeString,
