@@ -55,7 +55,7 @@ resource "panos_panorama_ethernet_interface" "e3" {
 
 ## Argument Reference
 
-One and only one of the following must be specified:
+At least one of the following must be specified:
 
 * `template` - The template name.
 * `template_stack` - The template stack name.
