@@ -1,12 +1,18 @@
 ---
 page_title: "panos: panos_panorama_ike_gateway"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_ike_gateway
 
 This resource allows you to add/update/delete Panorama IKE gateways
 for both templates and template stacks.
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Example Usage
 

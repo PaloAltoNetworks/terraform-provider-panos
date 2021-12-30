@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_ike_gateway"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ike_gateway
 
 This resource allows you to add/update/delete IKE gateways.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage
