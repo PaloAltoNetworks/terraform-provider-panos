@@ -113,8 +113,7 @@ func readPanoramaTunnelInterface(d *schema.ResourceData, meta interface{}) error
 
 	o, err := pano.Network.TunnelInterface.Get(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -167,8 +166,7 @@ func deletePanoramaTunnelInterface(d *schema.ResourceData, meta interface{}) err
 
 	err := pano.Network.TunnelInterface.Delete(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
