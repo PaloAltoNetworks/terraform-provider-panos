@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_dag_tags"
-subcategory: "Firewall User-ID"
+subcategory: "User-ID"
 ---
 
 # panos_dag_tags
@@ -13,6 +13,12 @@ should only be one `panos_dag_tags` block defined in a given plan.
 **Note** - Tags are only removed during `terraform destroy`.  Updating an
 applied terraform plan to have alternative tags will leave behind the
 old tags from the previously published plan(s).
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Example Usage
 
