@@ -16,7 +16,7 @@ func dataSourceIpTag() *schema.Resource {
 		Read: readDataSourceIpTag,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": vsysSchema(),
+			"vsys": vsysSchema("vsys1"),
 			"ip": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -81,7 +81,7 @@ func readDataSourceIpTag(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.SetId(base64Encode([]interface{}{
+	d.SetId(base64Encode([]string{
 		d.Get("ip").(string), d.Get("tag").(string), d.Get("vsys").(string),
 	}))
 
@@ -114,7 +114,7 @@ func resourceIpTag() *schema.Resource {
 		Delete: deleteIpTag,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": vsysSchema(),
+			"vsys": vsysSchema("vsys1"),
 			"ip": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -292,7 +292,11 @@ func deleteIpTag(d *schema.ResourceData, meta interface{}) error {
 
 // Id functions.
 func buildIpTagId(a, b string, c []interface{}) string {
-	return strings.Join([]string{a, b, base64Encode(c)}, IdSeparator)
+	list := make([]string, len(c))
+	for i := range c {
+		list[i] = c[i].(string)
+	}
+	return strings.Join([]string{a, b, base64Encode(list)}, IdSeparator)
 }
 
 func parseIpTagId(v string) (string, string, []string) {
