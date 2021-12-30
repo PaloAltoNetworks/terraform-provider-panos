@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_application_group"
-subcategory: "Firewall Objects"
+subcategory: "Objects"
 ---
 
 # panos_application_group
 
 This resource allows you to add/update/delete application groups.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
