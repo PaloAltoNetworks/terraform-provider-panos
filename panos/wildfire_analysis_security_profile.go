@@ -13,7 +13,7 @@ import (
 // Data source (listing).
 func dataSourceWildfireAnalysisSecurityProfiles() *schema.Resource {
 	s := listingSchema()
-	s["vsys"] = vsysSchema()
+	s["vsys"] = vsysSchema("vsys1")
 	s["device_group"] = deviceGroupSchema()
 
 	return &schema.Resource{
@@ -205,7 +205,7 @@ func deleteWildfireAnalysisSecurityProfile(d *schema.ResourceData, meta interfac
 // Schema handling.
 func wildfireAnalysisSecurityProfileSchema(isResource bool) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
-		"vsys":         vsysSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"device_group": deviceGroupSchema(),
 		"name": {
 			Type:        schema.TypeString,
