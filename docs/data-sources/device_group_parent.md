@@ -8,7 +8,11 @@ subcategory: "Panorama"
 
 Retrieves the device group hierarchy as a map.
 
-**NOTE:** This is for Panorama only.
+
+
+## PAN-OS
+
+Panorama.
 
 
 ## Example Usage
