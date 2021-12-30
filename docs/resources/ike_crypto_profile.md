@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_ike_crypto_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ike_crypto_profile
 
 This resource allows you to add/update/delete IKE crypto profiles.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
@@ -37,7 +42,8 @@ The following arguments are supported:
   have a prefix if `group`.
 * `authentications` - (Required, list) List of authentication types.  This c
 * `encryptions` - (Required, list) List of encryption types.  Valid values
-  are `des`, `3des`, `aes-128-cbc`, `aes-192-cbc`, and `aes-256-cbc`.
+  are `des`, `3des`, `aes-128-cbc`, `aes-192-cbc`, `aes-256-cbc`,
+  `aes-128-gcm` (PAN-OS 10.0), and `aes-256-gcm` (PAN-OS 10.0).
 * `lifetime_type` - (Optional) The lifetime type.  Valid values are `seconds`,
   `minutes`, `hours` (the default), and `days`.
 * `lifetime_value` - (Optional, int) The lifetime value.
