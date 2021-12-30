@@ -107,8 +107,7 @@ func readPanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := pano.Objects.AddressGroup.Get(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -153,8 +152,7 @@ func deletePanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error 
 
 	err := pano.Objects.AddressGroup.Delete(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
