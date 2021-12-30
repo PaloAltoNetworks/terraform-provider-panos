@@ -10,8 +10,9 @@ import (
 
 func templateSchema(ts bool) *schema.Schema {
 	ans := &schema.Schema{
-		Type:     schema.TypeString,
-		ForceNew: true,
+		Type:        schema.TypeString,
+		Description: "The template.",
+		ForceNew:    true,
 	}
 
 	if ts {
@@ -27,6 +28,7 @@ func templateSchema(ts bool) *schema.Schema {
 func templateStackSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:          schema.TypeString,
+		Description:   "The template stack.",
 		Optional:      true,
 		ForceNew:      true,
 		ConflictsWith: []string{"template"},
@@ -35,10 +37,11 @@ func templateStackSchema() *schema.Schema {
 
 func deviceGroupSchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeString,
-		Optional: true,
-		ForceNew: true,
-		Default:  "shared",
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "The device group.",
+		ForceNew:    true,
+		Default:     "shared",
 	}
 }
 
@@ -48,7 +51,6 @@ func positionKeywordSchema() *schema.Schema {
 		Optional:     true,
 		Description:  "The position keyword for this group of rules",
 		ValidateFunc: validateStringIn(movementKeywords()...),
-		ForceNew:     true,
 	}
 }
 
@@ -57,16 +59,16 @@ func positionReferenceSchema() *schema.Schema {
 		Type:        schema.TypeString,
 		Optional:    true,
 		Description: "The position reference for this group of rules",
-		ForceNew:    true,
 	}
 }
 
 func rulebaseSchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeString,
-		ForceNew: true,
-		Optional: true,
-		Default:  util.PreRulebase,
+		Type:        schema.TypeString,
+		ForceNew:    true,
+		Optional:    true,
+		Description: "The rulebase location.",
+		Default:     util.PreRulebase,
 		ValidateFunc: validateStringIn(
 			util.PreRulebase,
 			util.Rulebase,
@@ -75,31 +77,56 @@ func rulebaseSchema() *schema.Schema {
 	}
 }
 
-func vsysSchema() *schema.Schema {
-	return &schema.Schema{
-		Type:     schema.TypeString,
-		ForceNew: true,
-		Optional: true,
-		Default:  "vsys1",
+func templateWithPanoramaSharedSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"vsys": {
+			Type:     schema.TypeString,
+			ForceNew: true,
+			Optional: true,
+			Default:  "shared",
+		},
+		"template": {
+			Type:     schema.TypeString,
+			ForceNew: true,
+			Optional: true,
+		},
+		"template_stack": {
+			Type:     schema.TypeString,
+			ForceNew: true,
+			Optional: true,
+		},
 	}
 }
 
-func targetSchema() *schema.Schema {
+func vsysSchema(v string) *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeSet,
-		Optional: true,
-		Set:      resourceTargetHash,
+		Type:        schema.TypeString,
+		Optional:    true,
+		ForceNew:    true,
+		Description: "The vsys this object belongs in.",
+		Default:     v,
+	}
+}
+
+func targetSchema(computed bool) *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeSet,
+		Description: "NGFW serial numbers and vsys spec.",
+		Optional:    true,
+		Computed:    computed,
 		// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
 		//ValidateFunc: validateSetKeyIsUnique("serial"),
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"serial": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Description: "The NGFW serial number.",
+					Required:    true,
 				},
 				"vsys_list": {
-					Type:     schema.TypeSet,
-					Optional: true,
+					Type:        schema.TypeSet,
+					Description: "List of vsys; leave this unspecified if the NGFW is a VM.",
+					Optional:    true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 					},
@@ -118,8 +145,9 @@ func negateTargetSchema() *schema.Schema {
 
 func tagSchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: true,
+		Type:        schema.TypeList,
+		Description: "The administrative tags.",
+		Optional:    true,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		},
@@ -148,5 +176,32 @@ func saveListing(d *schema.ResourceData, v []string) {
 	d.Set("total", len(v))
 	if err := d.Set("listing", v); err != nil {
 		log.Printf("[WARN] Error setting 'listing' for %q: %s", d.Id(), err)
+	}
+}
+
+func auditCommentSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Description: "The audit comment.",
+		Optional:    true,
+		DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+			return true
+		},
+	}
+}
+
+func groupTagSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Description: "(PAN-OS 9.0+) The group tag.",
+		Optional:    true,
+	}
+}
+
+func uuidSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Description: "(PAN-OS 9.0+) The PAN-OS UUID.",
+		Computed:    true,
 	}
 }
