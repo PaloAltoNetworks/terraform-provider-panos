@@ -48,9 +48,8 @@ func resourceIpsecCryptoProfile() *schema.Resource {
 				},
 			},
 			"dh_group": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validateStringHasPrefix("group"),
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"lifetime_type": {
 				Type:         schema.TypeString,
@@ -111,8 +110,7 @@ func readIpsecCryptoProfile(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.IpsecCryptoProfile.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -158,8 +156,7 @@ func deleteIpsecCryptoProfile(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.IpsecCryptoProfile.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
