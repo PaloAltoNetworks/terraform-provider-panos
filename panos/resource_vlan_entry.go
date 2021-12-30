@@ -4,8 +4,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -119,10 +117,13 @@ func buildVlanEntryId(a, b string) string {
 }
 
 func createUpdateVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_vlan_entry")
+	if err != nil {
+		return err
+	}
 	vlan, iface, rmMacs, addMacs := parseVlanEntry(d)
 
-	if err := fw.Network.Vlan.SetInterface(vlan, iface, rmMacs, addMacs); err != nil {
+	if err = fw.Network.Vlan.SetInterface(vlan, iface, rmMacs, addMacs); err != nil {
 		return err
 	}
 
@@ -131,17 +132,18 @@ func createUpdateVlanEntry(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	fw, err := firewall(meta, "panos_panorama_vlan_entry")
+	if err != nil {
+		return err
+	}
 
-	fw := meta.(*pango.Firewall)
 	vlan, iface := parseVlanEntryId(d.Id())
 
 	// Two possibilities:  either the router itself doesn't exist or the
 	// interface isn't present.
 	o, err := fw.Network.Vlan.Get(vlan)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -149,8 +151,8 @@ func readVlanEntry(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	found := false
-	for i := range o.Interfaces {
-		if o.Interfaces[i] == iface {
+	for _, x := range o.Interfaces {
+		if x == iface {
 			found = true
 			break
 		}
@@ -173,14 +175,14 @@ func readVlanEntry(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_vlan_entry")
+	if err != nil {
+		return err
+	}
 	vlan, iface := parseVlanEntryId(d.Id())
 
-	if err := fw.Network.VirtualRouter.DeleteInterface(vlan, iface); err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
-			return err
-		}
+	if err = fw.Network.Vlan.DeleteInterface(vlan, iface); err != nil && !isObjectNotFound(err) {
+		return err
 	}
 
 	d.SetId("")

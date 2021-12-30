@@ -3,8 +3,6 @@ package panos
 import (
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -41,10 +39,13 @@ func buildPanoramaVlanEntryId(a, b, c, d string) string {
 }
 
 func createUpdatePanoramaVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_vlan_entry")
+	if err != nil {
+		return err
+	}
 	tmpl, ts, vlan, iface, rmMacs, addMacs := parsePanoramaVlanEntry(d)
 
-	if err := pano.Network.Vlan.SetInterface(tmpl, ts, vlan, iface, rmMacs, addMacs); err != nil {
+	if err = pano.Network.Vlan.SetInterface(tmpl, ts, vlan, iface, rmMacs, addMacs); err != nil {
 		return err
 	}
 
@@ -53,17 +54,21 @@ func createUpdatePanoramaVlanEntry(d *schema.ResourceData, meta interface{}) err
 }
 
 func readPanoramaVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	pano, err := panorama(meta, "panos_vlan_entry")
+	if err != nil {
+		return err
+	}
 
-	pano := meta.(*pango.Panorama)
 	tmpl, ts, vlan, iface := parsePanoramaVlanEntryId(d.Id())
+
+	d.Set("template", tmpl)
+	d.Set("template_stack", ts)
 
 	// Two possibilities:  either the router itself doesn't exist or the
 	// interface isn't present.
 	o, err := pano.Network.Vlan.Get(tmpl, ts, vlan)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -71,8 +76,8 @@ func readPanoramaVlanEntry(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	found := false
-	for i := range o.Interfaces {
-		if o.Interfaces[i] == iface {
+	for _, x := range o.Interfaces {
+		if x == iface {
 			found = true
 			break
 		}
@@ -91,20 +96,19 @@ func readPanoramaVlanEntry(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	saveVlanEntry(d, vlan, iface, macs)
-	d.Set("template", tmpl)
 
 	return nil
 }
 
 func deletePanoramaVlanEntry(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_vlan_entry")
+	if err != nil {
+		return err
+	}
 	tmpl, ts, vlan, iface := parsePanoramaVlanEntryId(d.Id())
 
-	if err := pano.Network.VirtualRouter.DeleteInterface(tmpl, ts, vlan, iface); err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
-			return err
-		}
+	if err = pano.Network.Vlan.DeleteInterface(tmpl, ts, vlan, iface); err != nil && !isObjectNotFound(err) {
+		return err
 	}
 
 	d.SetId("")

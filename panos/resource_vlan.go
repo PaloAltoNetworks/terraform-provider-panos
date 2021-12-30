@@ -29,12 +29,12 @@ func resourceVlan() *schema.Resource {
 
 func vlanSchema(p bool) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
+		"vsys": vsysSchema("vsys1"),
 		"name": {
 			Type:     schema.TypeString,
 			Required: true,
 			ForceNew: true,
 		},
-		"vsys": vsysSchema(),
 		"vlan_interface": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -108,8 +108,7 @@ func readVlan(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.Vlan.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -155,8 +154,7 @@ func deleteVlan(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.Vlan.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
