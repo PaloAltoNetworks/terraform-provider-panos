@@ -98,8 +98,7 @@ func readPanoramaTemplateVariable(d *schema.ResourceData, meta interface{}) erro
 
 	o, err := pano.Panorama.TemplateVariable.Get(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -141,8 +140,7 @@ func deletePanoramaTemplateVariable(d *schema.ResourceData, meta interface{}) er
 
 	err = pano.Panorama.TemplateVariable.Delete(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

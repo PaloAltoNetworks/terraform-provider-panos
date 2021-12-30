@@ -87,8 +87,7 @@ func readPanoramaTemplateStack(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := pano.Panorama.TemplateStack.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -134,8 +133,7 @@ func deletePanoramaTemplateStack(d *schema.ResourceData, meta interface{}) error
 
 	err = pano.Panorama.TemplateStack.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

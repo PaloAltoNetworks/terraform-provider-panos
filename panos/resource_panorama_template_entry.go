@@ -76,8 +76,7 @@ func readPanoramaTemplateEntry(d *schema.ResourceData, meta interface{}) error {
 	// device is not in the group.
 	o, err := pano.Panorama.Template.Get(tmpl)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -105,8 +104,7 @@ func deletePanoramaTemplateEntry(d *schema.ResourceData, meta interface{}) error
 
 	err := pano.Panorama.Template.DeleteDeviceVsys(tmpl, dev, nil)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

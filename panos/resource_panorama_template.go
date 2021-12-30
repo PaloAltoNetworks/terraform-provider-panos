@@ -114,6 +114,7 @@ func createPanoramaTemplate(d *schema.ResourceData, meta interface{}) error {
 
 	pano := meta.(*pango.Panorama)
 	o := parsePanoramaTemplate(d)
+	o.SetConfTree()
 
 	if err = pano.Panorama.Template.Set(o); err != nil {
 		return err
@@ -131,8 +132,7 @@ func readPanoramaTemplate(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := pano.Panorama.Template.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -184,8 +184,7 @@ func deletePanoramaTemplate(d *schema.ResourceData, meta interface{}) error {
 
 	err = pano.Panorama.Template.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
