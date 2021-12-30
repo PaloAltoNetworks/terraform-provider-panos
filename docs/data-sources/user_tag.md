@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_user_tag"
-subcategory: "NGFW User-ID"
+subcategory: "User-ID"
 ---
 
 
@@ -8,7 +8,10 @@ subcategory: "NGFW User-ID"
 
 Gets information on user tags.
 
-**NOTE:** This is for Firewall only.
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage

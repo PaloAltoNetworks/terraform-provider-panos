@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_ip_tag"
-subcategory: "NGFW User-ID"
+subcategory: "User-ID"
 ---
-
 
 # panos_ip_tag
 
 Gets information on IP tags.
+
+
+## PAN-OS
+
+NGFW and Panorama
+
 
 ## Example Usage
 

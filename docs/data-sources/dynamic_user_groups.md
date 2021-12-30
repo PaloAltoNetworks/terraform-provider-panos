@@ -21,12 +21,11 @@ data "panos_dynamic_user_groups" "example" {}
 
 NGFW:
 
-* `vsys` - (Optional) The vsys to put the address object into (default:
-  `vsys1`).
+* `vsys` - The vsys (default: `vsys1`).
 
 Panorama:
 
-* `device_group` - (Optional) The device group location (default: `shared`)
+* `device_group` - The device group location (default: `shared`)
 
 
 ## Attribute Reference
