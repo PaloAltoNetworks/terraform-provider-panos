@@ -148,8 +148,7 @@ func readGreTunnel(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.GreTunnel.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -185,8 +184,7 @@ func deleteGreTunnel(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.GreTunnel.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
