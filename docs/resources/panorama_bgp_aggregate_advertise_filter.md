@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_bgp_aggregate_advertise_filter"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_aggregate_advertise_filter
 
 This resource allows you to add/update/delete a Panorama route advertise filter for a
 BGP address aggregation rule.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

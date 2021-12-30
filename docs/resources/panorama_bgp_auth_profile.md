@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_bgp_auth_profile"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_auth_profile
 
 This resource allows you to add/update/delete a Panorama BGP auth profile.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Example Usage

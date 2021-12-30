@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_bgp_conditional_adv"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_conditional_adv
@@ -14,6 +14,11 @@ the API will start throwing errors if you try to update it and there is not at
 least one non-exist filter and one advertise filter.  In order for a conditional
 advertisement to be valid, you must specify at least one non-exist and one
 advertise filter.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

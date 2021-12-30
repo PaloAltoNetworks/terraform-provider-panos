@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_bgp_aggregate"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_aggregate
 
 This resource allows you to add/update/delete Panorama BGP address aggregation
 rules.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

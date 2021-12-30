@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_bgp_dampening_profile"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_dampening_profile
 
 This resource allows you to add/update/delete a Panorama BGP dampening profile.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

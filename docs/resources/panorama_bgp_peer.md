@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_bgp_peer"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_peer
 
 This resource allows you to add/update/delete a Panorama BGP peer.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

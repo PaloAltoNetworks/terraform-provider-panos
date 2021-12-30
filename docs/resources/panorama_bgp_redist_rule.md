@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_bgp_redist_rule"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp_redist_rule
 
 This resource allows you to add/update/delete a Panorama BGP redistribution rule.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

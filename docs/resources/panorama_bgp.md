@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_bgp"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bgp
@@ -14,6 +14,11 @@ as dampening profiles or peer groups.  Since every BGP resource must reference a
 virtual router, the key to accomplishing this is by pointing the `virtual_router`
 param for each BGP sub-config to `panos_panorama_bgp.foo.virtual_router` instead
 of `panos_panorama_virtual_router.bar.name`.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
