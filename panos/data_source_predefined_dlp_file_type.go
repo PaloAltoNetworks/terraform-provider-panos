@@ -73,7 +73,7 @@ func dataSourcePredefinedDlpFileTypeRead(d *schema.ResourceData, meta interface{
 
 	name := d.Get("name").(string)
 	label := d.Get("label").(string)
-	id := base64Encode([]interface{}{
+	id := base64Encode([]string{
 		name, label,
 	})
 

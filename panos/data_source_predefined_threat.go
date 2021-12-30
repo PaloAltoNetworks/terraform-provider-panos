@@ -94,7 +94,7 @@ func dataSourcePredefinedThreatRead(d *schema.ResourceData, meta interface{}) er
 	regex := d.Get("threat_regex").(string)
 	threatName := d.Get("threat_name").(string)
 	tt := d.Get("threat_type").(string)
-	id := base64Encode([]interface{}{
+	id := base64Encode([]string{
 		name, regex, threatName, tt,
 	})
 

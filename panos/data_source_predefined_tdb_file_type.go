@@ -105,7 +105,7 @@ func dataSourcePredefinedTdbFileTypeRead(d *schema.ResourceData, meta interface{
 	fullName := d.Get("full_name").(string)
 	fullNameRegex := d.Get("full_name_regex").(string)
 	dio := d.Get("data_ident_only").(bool)
-	id := base64Encode([]interface{}{
+	id := base64Encode([]string{
 		name, fullName, fullNameRegex, fmt.Sprintf("%t", dio),
 	})
 
