@@ -8,6 +8,11 @@ subcategory: "Device"
 Retrieves information on the SSL decrypt settings.
 
 
+## Minimum PAN-OS Version
+
+8.0
+
+
 ## PAN-OS
 
 NGFW and Panorama.
