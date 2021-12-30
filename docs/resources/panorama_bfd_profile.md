@@ -1,13 +1,21 @@
 ---
 page_title: "panos: panos_panorama_bfd_profile"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_bfd_profile.
 
 This resource allows you to add/update/delete BFD profiles on Panorama.
 
-~> **Note:** This resource is only applicable for PAN-OS 7.1+.
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

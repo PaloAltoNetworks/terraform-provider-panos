@@ -1,13 +1,21 @@
 ---
 page_title: "panos: panos_bfd_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bfd_profile
 
 This resource allows you to add/update/delete BFD profiles.
 
-~> **Note:** This resource is only applicable for PAN-OS 7.1+.
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
