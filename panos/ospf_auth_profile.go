@@ -47,7 +47,7 @@ func readDataSourceOspfAuthProfiles(d *schema.ResourceData, meta interface{}) er
 	case *pango.Panorama:
 		tmpl := d.Get("template").(string)
 		ts := d.Get("template_stack").(string)
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			tmpl, ts, vr,
 		})
 		listing, err = con.Network.OspfAuthProfile.GetList(tmpl, ts, vr)

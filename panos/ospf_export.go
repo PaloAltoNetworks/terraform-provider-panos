@@ -45,7 +45,7 @@ func readDataSourceOspfExports(d *schema.ResourceData, meta interface{}) error {
 	case *pango.Panorama:
 		tmpl := d.Get("template").(string)
 		ts := d.Get("template_stack").(string)
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			tmpl, ts, vr,
 		})
 		listing, err = con.Network.OspfExport.GetList(tmpl, ts, vr)

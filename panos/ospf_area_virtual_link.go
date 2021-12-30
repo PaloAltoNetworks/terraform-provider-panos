@@ -46,14 +46,14 @@ func readDataSourceOspfAreaVirtualLinks(d *schema.ResourceData, meta interface{}
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			vr, area,
 		})
 		listing, err = con.Network.OspfAreaVirtualLink.GetList(vr, area)
 	case *pango.Panorama:
 		tmpl := d.Get("template").(string)
 		ts := d.Get("template_stack").(string)
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			tmpl, ts, vr, area,
 		})
 		listing, err = con.Network.OspfAreaVirtualLink.GetList(tmpl, ts, vr, area)
