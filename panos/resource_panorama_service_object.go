@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/srvc"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -42,7 +41,10 @@ func buildPanoramaServiceObjectId(a, b string) string {
 }
 
 func createPanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_service_object")
+	if err != nil {
+		return err
+	}
 	dg, o := parsePanoramaServiceObject(d)
 
 	if err := pano.Objects.Services.Set(dg, o); err != nil {
@@ -54,15 +56,15 @@ func createPanoramaServiceObject(d *schema.ResourceData, meta interface{}) error
 }
 
 func readPanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_service_object")
+	if err != nil {
+		return err
+	}
 	dg, name := parsePanoramaServiceObjectId(d.Id())
 
 	o, err := pano.Objects.Services.Get(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -76,9 +78,10 @@ func readPanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updatePanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_service_object")
+	if err != nil {
+		return err
+	}
 	dg, o := parsePanoramaServiceObject(d)
 
 	lo, err := pano.Objects.Services.Get(dg, o.Name)
@@ -94,13 +97,15 @@ func updatePanoramaServiceObject(d *schema.ResourceData, meta interface{}) error
 }
 
 func deletePanoramaServiceObject(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_service_object")
+	if err != nil {
+		return err
+	}
 	dg, name := parsePanoramaServiceObjectId(d.Id())
 
-	err := pano.Objects.Services.Delete(dg, name)
+	err = pano.Objects.Services.Delete(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

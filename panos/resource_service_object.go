@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/srvc"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -76,7 +75,7 @@ func serviceObjectSchema(p bool) map[string]*schema.Schema {
 	if p {
 		ans["device_group"] = deviceGroupSchema()
 	} else {
-		ans["vsys"] = vsysSchema()
+		ans["vsys"] = vsysSchema("vsys1")
 	}
 
 	return ans
@@ -129,7 +128,10 @@ func saveServiceObject(d *schema.ResourceData, o srvc.Entry) {
 }
 
 func createServiceObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_service_object")
+	if err != nil {
+		return err
+	}
 	vsys, o := parseServiceObject(d)
 
 	if err := fw.Objects.Services.Set(vsys, o); err != nil {
@@ -141,15 +143,15 @@ func createServiceObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readServiceObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_service_object")
+	if err != nil {
+		return err
+	}
 	vsys, name := parseServiceObjectId(d.Id())
 
 	o, err := fw.Objects.Services.Get(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -163,9 +165,10 @@ func readServiceObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updateServiceObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_service_object")
+	if err != nil {
+		return err
+	}
 	vsys, o := parseServiceObject(d)
 
 	lo, err := fw.Objects.Services.Get(vsys, o.Name)
@@ -181,13 +184,15 @@ func updateServiceObject(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteServiceObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_service_object")
+	if err != nil {
+		return err
+	}
 	vsys, name := parseServiceObjectId(d.Id())
 
-	err := fw.Objects.Services.Delete(vsys, name)
+	err = fw.Objects.Services.Delete(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
