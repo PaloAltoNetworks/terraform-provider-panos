@@ -55,8 +55,8 @@ func resourceTelemetry() *schema.Resource {
 	}
 }
 
-func parseTelemetry(d *schema.ResourceData) telemetry.Settings {
-	o := telemetry.Settings{
+func parseTelemetry(d *schema.ResourceData) telemetry.Config {
+	o := telemetry.Config{
 		ApplicationReports:             d.Get("application_reports").(bool),
 		ThreatPreventionReports:        d.Get("threat_prevention_reports").(bool),
 		UrlReports:                     d.Get("url_reports").(bool),
@@ -71,10 +71,13 @@ func parseTelemetry(d *schema.ResourceData) telemetry.Settings {
 }
 
 func createTelemetry(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 	o := parseTelemetry(d)
 
-	if err := fw.Device.Telemetry.Set(o); err != nil {
+	if err = fw.Device.Telemetry.Set(o); err != nil {
 		return err
 	}
 
@@ -83,13 +86,14 @@ func createTelemetry(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readTelemetry(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 
-	fw := meta.(*pango.Firewall)
 	o, err := fw.Device.Telemetry.Get()
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -109,9 +113,10 @@ func readTelemetry(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updateTelemetry(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 	o := parseTelemetry(d)
 
 	lo, err := fw.Device.Telemetry.Get()
@@ -127,15 +132,15 @@ func updateTelemetry(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteTelemetry(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-
-	err := fw.Device.Telemetry.Delete()
+	fw, err := firewall(meta, "")
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
-			return err
-		}
+		return err
 	}
+
+	if err = fw.Device.Telemetry.Delete(); err != nil && !isObjectNotFound(err) {
+		return err
+	}
+
 	d.SetId("")
 	return nil
 }
