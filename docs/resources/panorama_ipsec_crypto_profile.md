@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_ipsec_crypto_profile"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_ipsec_crypto_profile
 
 This resource allows you to add/update/delete Panorama IPSec crypto profiles
 for both templates and template stacks.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

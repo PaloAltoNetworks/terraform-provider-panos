@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_ipsec_crypto_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ipsec_crypto_profile
 
 This resource allows you to add/update/delete IPSec crypto profiles.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
