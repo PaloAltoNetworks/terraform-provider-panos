@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_license_api_key"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_license_api_key
@@ -14,6 +14,12 @@ present.  This means that either the `panos_licensing` resource must use
 `depends_on` and depend on this resource, or you must set the `retain_key`
 param to `true`.  As there is no harm in leaving the licensing API key on the
 PAN-OS firewall, it is recommended that `retain_key` be set to `true`.
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Example Usage
 
