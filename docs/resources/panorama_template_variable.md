@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_template_variable"
-subcategory: "Panorama Device Config"
+subcategory: "Panorama"
 ---
 
 # panos_panorama_template_variable
@@ -8,7 +8,15 @@ subcategory: "Panorama Device Config"
 This resource allows you to add/update/delete variables for both Panorama
 templates and template stacks.
 
-Template variables are available in PAN-OS 8.1+.
+
+## Minimum PAN-OS Version
+
+8.1
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

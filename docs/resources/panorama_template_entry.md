@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_template_entry"
-subcategory: "Panorama Device Config"
+subcategory: "Panorama"
 ---
 
 # panos_panorama_template_entry
@@ -8,7 +8,8 @@ subcategory: "Panorama Device Config"
 This resource allows you to add/update/delete a specific device in a Panorama
 template.
 
-This resource has some overlap with the `panos_panorama_template`
+This resource has some overlap with the
+[`panos_panorama_template`](panorama_template.html)
 resource.  If you want to use this resource with the other one, then make
 sure that your `panos_panorama_template` spec does not define any
 `device` blocks, and just stays as "computed".
@@ -20,6 +21,11 @@ An interesting side effect of the underlying XML API - if the template does
 not already exist, then this resource can actually create it.  However, since
 only the single entry for the specific serial number is deleted, then a
 `terraform destroy` would not remove the template itself in this situation.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
