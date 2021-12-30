@@ -55,7 +55,7 @@ func testAccCheckPanosEdlExists(n string, o *edl.Entry) resource.TestCheckFunc {
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, name := parseEdlId(rs.Primary.ID)
+		_, vsys, name := parseEdlId(rs.Primary.ID)
 		v, err := fw.Objects.Edl.Get(vsys, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -106,7 +106,7 @@ func testAccPanosEdlDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseEdlId(rs.Primary.ID)
+			_, vsys, name := parseEdlId(rs.Primary.ID)
 			_, err := fw.Objects.Edl.Get(vsys, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)

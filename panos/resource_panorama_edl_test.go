@@ -55,8 +55,8 @@ func testAccCheckPanosPanoramaEdlExists(n string, o *edl.Entry) resource.TestChe
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		vsys, name := parseEdlId(rs.Primary.ID)
-		v, err := pano.Objects.Edl.Get(vsys, name)
+		dg, _, name := parseEdlId(rs.Primary.ID)
+		v, err := pano.Objects.Edl.Get(dg, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
 		}
@@ -106,8 +106,8 @@ func testAccPanosPanoramaEdlDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseEdlId(rs.Primary.ID)
-			_, err := pano.Objects.Edl.Get(vsys, name)
+			dg, _, name := parseEdlId(rs.Primary.ID)
+			_, err := pano.Objects.Edl.Get(dg, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
 			}
