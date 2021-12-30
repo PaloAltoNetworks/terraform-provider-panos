@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_service_object"
-subcategory: "Firewall Objects"
+subcategory: "Objects"
 ---
 
 # panos_service_object
 
 This resource allows you to add/update/delete service objects.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
