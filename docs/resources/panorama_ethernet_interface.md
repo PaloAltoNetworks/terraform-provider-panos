@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_ethernet_interface"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_ethernet_interface
 
 This resource allows you to add/update/delete Panorama ethernet interfaces
 for templates.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

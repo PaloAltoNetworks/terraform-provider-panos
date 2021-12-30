@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_ethernet_interface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ethernet_interface
 
 This resource allows you to add/update/delete ethernet interfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
