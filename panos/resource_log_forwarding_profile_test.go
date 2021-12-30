@@ -283,6 +283,8 @@ func testAccPanosLogForwardingProfileDestroy(s *terraform.State) error {
 
 func testAccLogForwardingProfileConfig(snmp1, snmp2, syslog1, syslog2, email1, email2, http1, http2, tag, name string, tout int) string {
 	return fmt.Sprintf(`
+data "panos_system_info" "x" {}
+
 resource "panos_snmptrap_server_profile" "a" {
     name = %q
     v2c_server {
@@ -344,6 +346,8 @@ resource "panos_http_server_profile" "a" {
     http_server {
         name = "server7"
         address = "foo.example.com"
+        certificate_profile = data.panos_system_info.x.version_major >= 9 ? "None" : ""
+        tls_version = data.panos_system_info.x.version_major >= 9 ? "1.2" : ""
     }
 }
 
@@ -352,6 +356,8 @@ resource "panos_http_server_profile" "b" {
     http_server {
         name = "server8"
         address = "bar.example.com"
+        certificate_profile = data.panos_system_info.x.version_major >= 9 ? "None" : ""
+        tls_version = data.panos_system_info.x.version_major >= 9 ? "1.2" : ""
     }
 }
 

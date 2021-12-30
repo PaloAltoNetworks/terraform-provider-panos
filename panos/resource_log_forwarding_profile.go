@@ -69,6 +69,7 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 							matchlist.LogTypeTunnel,
 							matchlist.LogTypeAuth,
 							matchlist.LogTypeSctp,
+							matchlist.LogTypeDecryption,
 						),
 					},
 					"filter": {
@@ -236,7 +237,7 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 	if p {
 		ans["device_group"] = deviceGroupSchema()
 	} else {
-		ans["vsys"] = vsysSchema()
+		ans["vsys"] = vsysSchema("vsys1")
 	}
 
 	return ans
@@ -440,8 +441,7 @@ func readLogForwardingProfile(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.LogForwardingProfile.Get(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -495,8 +495,7 @@ func deleteLogForwardingProfile(d *schema.ResourceData, meta interface{}) error 
 
 	err := fw.Objects.LogForwardingProfile.Delete(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
