@@ -72,7 +72,7 @@ func testAccCheckPanosDeviceGroupEntryExists(n string, o *dg.Entry) resource.Tes
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		group, serial := parsePanoramaDeviceGroupEntryId(rs.Primary.ID)
+		group, serial := parseDeviceGroupEntryId(rs.Primary.ID)
 		v, err := pano.Panorama.DeviceGroup.Get(group)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -104,7 +104,7 @@ func testAccPanosDeviceGroupEntryDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			group, serial := parsePanoramaDeviceGroupEntryId(rs.Primary.ID)
+			group, serial := parseDeviceGroupEntryId(rs.Primary.ID)
 			o, err := pano.Panorama.DeviceGroup.Get(group)
 			if err == nil {
 				if _, ok := o.Devices[serial]; ok {
