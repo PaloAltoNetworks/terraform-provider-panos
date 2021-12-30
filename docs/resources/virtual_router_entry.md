@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_virtual_router_entry"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_virtual_router_entry
@@ -14,10 +14,20 @@ sure that your `panos_virtual_router` spec does not define the
 `interfaces` field.
 
 
+## PAN-OS
+
+NGFW and Panorama.
+
+
+## Aliases
+
+* `panos_panorama_virtual_router_entry`
+
+
 ## Import Name
 
 ```
-<virtual_router>:<interface>
+<template>:<template_stack>:<virtual_router>:<interface>
 ```
 
 
@@ -39,7 +49,14 @@ resource "panos_ethernet_interface" "e" {
 }
 ```
 
+
 ## Argument Reference
+
+Panorama:
+
+* `template` - The template.
+* `template_stack` - The template stack.
+
 
 The following arguments are supported:
 
