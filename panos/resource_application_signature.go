@@ -202,7 +202,7 @@ func applicationSignatureSchema(p bool) map[string]*schema.Schema {
 	if p {
 		ans["device_group"] = deviceGroupSchema()
 	} else {
-		ans["vsys"] = vsysSchema()
+		ans["vsys"] = vsysSchema("vsys1")
 	}
 
 	return ans
@@ -398,8 +398,7 @@ func readApplicationSignature(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.AppSignature.Get(vsys, app, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -443,8 +442,7 @@ func deleteApplicationSignature(d *schema.ResourceData, meta interface{}) error 
 
 	err := fw.Objects.AppSignature.Delete(vsys, app, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

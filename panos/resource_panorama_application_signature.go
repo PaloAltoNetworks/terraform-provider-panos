@@ -74,8 +74,7 @@ func readPanoramaApplicationSignature(d *schema.ResourceData, meta interface{}) 
 
 	o, err := pano.Objects.AppSignature.Get(dg, app, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -119,8 +118,7 @@ func deletePanoramaApplicationSignature(d *schema.ResourceData, meta interface{}
 
 	err := pano.Objects.AppSignature.Delete(dg, app, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
