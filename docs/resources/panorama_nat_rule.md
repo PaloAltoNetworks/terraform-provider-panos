@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_nat_rule"
-subcategory: "Panorama Policy"
+subcategory: "Policies"
 ---
 
 # panos_panorama_nat_rule
@@ -21,6 +21,17 @@ definition will simplify the process.
 Note that while many of the params for this resource are optional in an
 absolute sense, depending on what type of NAT you wish to configure, certain
 params may become necessary to correctly configure the NAT rule.
+
+
+## PAN-OS
+
+Panorama.
+
+
+## Aliases
+
+* `panos_panorama_nat_policy`
+
 
 ## Example Usage
 

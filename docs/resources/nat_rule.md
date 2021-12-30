@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_nat_rule"
-subcategory: "Firewall Policy"
+subcategory: "Policies"
 ---
 
 # panos_nat_rule
@@ -9,8 +9,6 @@ This resource allows you to add/update/delete NAT rules.
 
 ~> **Note:** This resource has been deprecated.  Please use
 `panos_nat_rule_group` instead.
-
-~> **Note:** `panos_nat_policy` is known as `panos_nat_rule`.
 
 The prefix `sat` stands for "Source Address Translation" while the prefix "dat"
 stands for "Destination Address Translation".  The order of the params in
@@ -21,6 +19,16 @@ definition will simplify the process.
 Note that while many of the params for this resource are optional in an
 absolute sense, depending on what type of NAT you wish to configure, certain
 params may become necessary to correctly configure the NAT rule.
+
+
+## PAN-OS
+
+NGFW
+
+## Aliases
+
+* `panos_nat_policy`
+
 
 ## Example Usage
 
