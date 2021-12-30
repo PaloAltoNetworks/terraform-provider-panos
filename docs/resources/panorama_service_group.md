@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_service_group"
-subcategory: "Panorama Objects"
+subcategory: "Objects"
 ---
 
 # panos_panorama_service_group
 
 This resource allows you to add/update/delete Panorama service groups.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_service_group"
-subcategory: "Firewall Objects"
+subcategory: "Objects"
 ---
 
 # panos_service_group
 
 This resource allows you to add/update/delete service groups.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
