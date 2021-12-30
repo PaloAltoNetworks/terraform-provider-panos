@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_email_server_profile"
-subcategory: "Panorama Device Config"
+subcategory: "Device"
 ---
 
 # panos_panorama_email_server_profile
 
 This resource allows you to add/update/delete Panorama email server profiles.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

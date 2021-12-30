@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_email_server_profile"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_email_server_profile
 
 This resource allows you to add/update/delete email server profiles.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
