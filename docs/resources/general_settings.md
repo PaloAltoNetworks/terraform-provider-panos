@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_general_settings"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_general_settings
@@ -12,6 +12,12 @@ All params are optional for this resource.  If any options are not specified,
 then whatever is already configured on the firewall is left as-is.  The
 general device settings will always exist on the firewall, so `terraform
 destroy` does not remove config from the firewall.
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Example Usage
 
