@@ -13,7 +13,7 @@ import (
 // Data source (listing).
 func dataSourceDynamicUserGroups() *schema.Resource {
 	s := map[string]*schema.Schema{
-		"vsys":         vsysSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"device_group": deviceGroupSchema(),
 	}
 
@@ -211,7 +211,7 @@ func deleteDynamicUserGroup(d *schema.ResourceData, meta interface{}) error {
 func dynamicUserGroupSchema(isResource bool) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
 		"device_group": deviceGroupSchema(),
-		"vsys":         vsysSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"name": {
 			Type:        schema.TypeString,
 			Required:    true,
