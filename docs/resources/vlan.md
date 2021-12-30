@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_vlan"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_vlan
 
 This resource allows you to add/update/delete VLANs.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
@@ -37,4 +42,4 @@ The following arguments are supported:
 * `vsys` - (Optional) The vsys to put the object into (default: `vsys1`).
 * `vlan_interface` - (Optional) The VLAN interface.
 * `interfaces` - (Optional, computed) List of layer2 interfaces.  You can also leave
-  this blank and also use [panos_vlan_entry](./vlan_entry.html) for more control.
+  this blank and also use [panos_vlan_entry](vlan_entry.html) for more control.

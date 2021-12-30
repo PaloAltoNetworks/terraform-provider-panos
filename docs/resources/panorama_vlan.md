@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_vlan"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_vlan
 
 This resource allows you to add/update/delete Panorama VLANs.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
@@ -44,4 +49,4 @@ The following arguments are supported:
 * `template` - (Required) The template name.
 * `vlan_interface` - (Optional) The VLAN interface.
 * `interfaces` - (Optional, computed) List of layer2 interfaces.  You can also leave
-  this blank and also use [panos_vlan_entry](./vlan_entry.html) for more control.
+  this blank and also use [panos_panorama_vlan_entry](./vlan_entry.html) for more control.
