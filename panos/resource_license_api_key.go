@@ -3,8 +3,6 @@ package panos
 import (
 	"fmt"
 
-	"github.com/PaloAltoNetworks/pango"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -29,12 +27,15 @@ func resourceLicenseApiKey() *schema.Resource {
 }
 
 func createUpdateLicenseApiKey(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 
 	key := d.Get("key").(string)
 	keep := d.Get("retain_key").(bool)
 
-	if err := fw.Licensing.SetApiKey(key); err != nil {
+	if err = fw.Licensing.SetApiKey(key); err != nil {
 		return err
 	}
 
@@ -43,7 +44,10 @@ func createUpdateLicenseApiKey(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readLicenseApiKey(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 	keep := d.Get("retain_key").(bool)
 
 	key, err := fw.Licensing.GetApiKey()
@@ -62,7 +66,10 @@ func readLicenseApiKey(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteLicenseApiKey(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 	keep := d.Id()
 
 	if keep == "false" {
