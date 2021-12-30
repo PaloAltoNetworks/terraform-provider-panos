@@ -68,7 +68,7 @@ func testAccCheckPanosSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, 
 		if rTop.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, topList := parseSecurityRuleGroupId(rTop.Primary.ID)
+		_, _, vsys, _, _, topList := parseSecurityRuleGroupId(rTop.Primary.ID)
 		if len(topList) != 2 {
 			return fmt.Errorf("top is not len 2")
 		}
@@ -91,7 +91,7 @@ func testAccCheckPanosSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, 
 		if rMid.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, midList := parseSecurityRuleGroupId(rMid.Primary.ID)
+		_, _, vsys, _, _, midList := parseSecurityRuleGroupId(rMid.Primary.ID)
 		if len(midList) != 1 {
 			return fmt.Errorf("mid is not len 1")
 		}
@@ -109,7 +109,7 @@ func testAccCheckPanosSecurityRuleGroupExists(top, mid, bot string, o1, o2, o3, 
 		if rBot.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, botList := parseSecurityRuleGroupId(rBot.Primary.ID)
+		_, _, vsys, _, _, botList := parseSecurityRuleGroupId(rBot.Primary.ID)
 		if len(botList) != 2 {
 			return fmt.Errorf("bot is not len 2")
 		}
@@ -209,7 +209,7 @@ func testAccPanosSecurityRuleGroupDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, _, _, list := parseSecurityRuleGroupId(rs.Primary.ID)
+			_, _, vsys, _, _, list := parseSecurityRuleGroupId(rs.Primary.ID)
 			for _, rule := range list {
 				_, err := fw.Policies.Security.Get(vsys, rule)
 				if err == nil {

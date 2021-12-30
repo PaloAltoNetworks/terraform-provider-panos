@@ -57,7 +57,7 @@ func testAccCheckPanosPanoramaSecurityPolicyExists(n string, o1, o2 *security.En
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		dg, rb := parsePanoramaSecurityPolicyId(rs.Primary.ID)
+		dg, rb, _ := parseSecurityPolicyId(rs.Primary.ID)
 		list, err := pano.Policies.Security.GetList(dg, rb)
 		if err != nil {
 			return fmt.Errorf("Error getting list of policies: %s", err)
@@ -151,7 +151,7 @@ func testAccPanosPanoramaSecurityPolicyDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			dg, rb := parsePanoramaSecurityPolicyId(rs.Primary.ID)
+			dg, rb, _ := parseSecurityPolicyId(rs.Primary.ID)
 			list, err := pano.Policies.Security.GetList(dg, rb)
 			if err != nil {
 				return fmt.Errorf("Error getting list: %s", err)
