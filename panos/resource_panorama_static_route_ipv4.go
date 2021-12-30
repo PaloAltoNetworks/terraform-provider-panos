@@ -133,8 +133,7 @@ func readPanoramaStaticRouteIpv4(d *schema.ResourceData, meta interface{}) error
 
 	o, err := pano.Network.StaticRoute.Get(tmpl, ts, vr, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -181,8 +180,7 @@ func deletePanoramaStaticRouteIpv4(d *schema.ResourceData, meta interface{}) err
 
 	err := pano.Network.StaticRoute.Delete(tmpl, ts, vr, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
