@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_ipsec_tunnel"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ipsec_tunnel
@@ -12,6 +12,11 @@ A large number of params have prefixes:
 * `ak` - Auto key
 * `mk` - Manual key
 * `gps` - GlobalProtect Satellite
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage

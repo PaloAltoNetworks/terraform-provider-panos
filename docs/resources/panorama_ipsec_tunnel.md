@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_ipsec_tunnel"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_ipsec_tunnel
@@ -13,6 +13,12 @@ A large number of params have prefixes:
 * `ak` - Auto key
 * `mk` - Manual key
 * `gps` - GlobalProtect Satellite
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Example Usage
 
