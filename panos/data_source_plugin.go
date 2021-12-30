@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/plugin"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -74,7 +75,7 @@ func dataSourcePlugin() *schema.Resource {
 
 func dataSourcePluginRead(d *schema.ResourceData, meta interface{}) error {
 	var id string
-	var list []pango.PluginInfo
+	var list []plugin.Info
 
 	switch v := meta.(type) {
 	case *pango.Panorama:
