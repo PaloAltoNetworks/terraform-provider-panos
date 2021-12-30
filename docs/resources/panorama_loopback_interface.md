@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_loopback_interface"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_loopback_interface
 
 This resource allows you to add/update/delete Panorama loopback interfaces
 for templates.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

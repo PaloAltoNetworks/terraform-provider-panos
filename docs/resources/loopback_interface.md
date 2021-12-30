@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_loopback_interface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_loopback_interface
 
 This resource allows you to add/update/delete loopback interfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
