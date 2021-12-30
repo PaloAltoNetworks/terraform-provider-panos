@@ -1,13 +1,11 @@
 ---
 page_title: "panos: panos_security_rule_group"
-subcategory: "Firewall Policy"
+subcategory: "Policies"
 ---
 
 # panos_security_rule_group
 
 This resource allows you to add/update/delete security rule groups.
-
-~> **Note:** `panos_security_policy_group` is known as `panos_security_rule_group`.
 
 This resource manages clusters of security rules in a single vsys,
 enforcing both the contents of individual rules as well as their
@@ -19,7 +17,7 @@ implications on the effective security posture of your firewall, but it
 will allow you to spread your security rules across multiple Terraform
 state files.  If you want to verify that the security rules are only
 what appears in the plan file, then you should probably be using the
-[panos_security_policy](security_policy.html) resource.
+[`panos_security_policy`](security_policy.html) resource.
 
 Although you cannot modify non-group security rules with this
 resource, the `position_keyword` and `position_reference` parameters allow you
@@ -49,6 +47,7 @@ the following params:
 If the `group` param and none of the `Profiles` params are specified, then
 the Profile Setting is set to `None`.
 
+
 ## Best Practices
 
 As is to be expected, if you are separating your deployment across
@@ -63,14 +62,29 @@ do it this way because rules will natually be added at the tail end of the
 rulebase, so they will always be `after` the first group, but what you want
 is for them to be `before` the last group's rules.
 
+
+## PAN-OS
+
+NGFW and Panorama
+
+
+## Aliases
+
+* `panos_security_policy_group`
+* `panos_panorama_security_rule_group`
+* `panos_panorama_security_policy_group`
+
+
 ## Example Usage
 
+### NGFW Example
+
 ```hcl
-resource "panos_security_rule_group" "example" {
+resource "panos_security_rule_group" "example1" {
     position_keyword = "above"
-    position_reference = "deny everything else"
+    position_reference = panos_security_rule_group.example2.rule.0.name
     rule {
-        name = "allow bizdev to dmz"
+        name = "Allow bizdev to dmz"
         source_zones = [panos_zone.bizdev.name]
         source_addresses = ["any"]
         source_users = ["any"]
@@ -83,12 +97,29 @@ resource "panos_security_rule_group" "example" {
         action = "allow"
     }
     rule {
-        name = "deny sales to eng"
+        name = "Deny sales to eng"
         source_zones = [panos_zone.sales.name]
         source_addresses = ["any"]
         source_users = ["any"]
         hip_profiles = ["any"]
         destination_zones = [panos_zone.eng.name]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
+        action = "deny"
+    }
+}
+
+resource "panos_security_rule_group" "example2" {
+    position_keyword = "bottom"
+    rule {
+        name = "Deny everything else"
+        source_zones = ["any"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["any"]
         destination_addresses = ["any"]
         applications = ["any"]
         services = ["application-default"]
@@ -118,12 +149,88 @@ resource "panos_zone" "eng" {
 }
 ```
 
+
+### Panorama Example
+
+```
+resource "panos_security_rule_group" "example1" {
+    position_keyword = "above"
+    position_reference = panos_security_rule_group.example2.rule.0.name
+    rule {
+        name = "Allow bizdev to dmz"
+        audit_comment = "Case id 12345"
+        source_zones = ["bizdev"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["dmz"]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
+        action = "allow"
+    }
+    rule {
+        name = "Deny sales to eng"
+        audit_comment = "Initial config"
+        source_zones = ["sales"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["eng"]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
+        action = "deny"
+        target {
+            serial = "01234"
+        }
+        target {
+            serial = "56789"
+            vsys_list = [
+                "vsys1",
+                "vsys3",
+            ]
+        }
+    }
+}
+
+resource "panos_security_rule_group" "example2" {
+    position_keyword = "bottom"
+    rule {
+        name = "Deny everything else"
+        audit_comment = "Initial config"
+        source_zones = ["any"]
+        source_addresses = ["any"]
+        source_users = ["any"]
+        hip_profiles = ["any"]
+        destination_zones = ["any"]
+        destination_addresses = ["any"]
+        applications = ["any"]
+        services = ["application-default"]
+        categories = ["any"]
+        action = "deny"
+    }
+}
+```
+
+
 ## Argument Reference
+
+Panorama specific arguments:
+
+* `device_group` - (Optional) The device group (default: `shared`).
+* `rulebase` - (Optional) The rulebase.  This can be `pre-rulebase` (default),
+  `post-rulebase`, or `rulebase`.
+
+NGFW specific arguments:
+
+* `vsys` - The vsys (default: `vsys1`).
+
 
 The following arguments are supported:
 
-* `vsys` - (Optional) The vsys to put the security rule into (default:
-  `vsys1`).
 * `position_keyword` - (Optional) A positioning keyword for this group.  This
   can be `before`, `directly before`, `after`, `directly after`, `top`,
   `bottom`, or left empty (the default) to have no particular placement.  This
@@ -137,42 +244,56 @@ The following arguments are supported:
 The following arguments are valid for each `rule` section:
 
 * `name` - (Required) The security rule name.
-* `type` - (Optional) Rule type.  This can be `universal` (default),
-  `interzone`, or `intrazone`.
-* `description` - (Optional) The description.
-* `tags` - (Optional) List of tags for this security rule.
+* `audit_comment` - When this rule is created/updated, the audit comment to
+  apply for this rule.
+* `group_tag` - (PAN-OS 9.0+) The group tag.
+* `type` - Rule type.  This can be `universal` (default), `interzone`, or `intrazone`.
+* `description` - The description.
+* `tags` - List of tags for this security rule.
 * `source_zones` - (Required) List of source zones.
 * `source_addresses` - (Required) List of source addresses.
-* `negate_source` - (Optional, bool) If the source should be negated.
+* `negate_source` - (bool) If the source should be negated.
 * `source_users` - (Required) List of source users.
-* `hip_profiles` - (Required) List of HIP profiles.
+* `hip_profiles` - List of HIP profiles.
 * `destination_zones` - (Required) List of destination zones.
 * `destination_addresses` - (Required) List of destination addresses.
-* `negate_destination` - (Optional, bool) If the destination should be negated.
+* `negate_destination` - (bool) If the destination should be negated.
 * `applications` - (Required) List of applications.
 * `services` - (Required) List of services.
 * `categories` - (Required) List of categories.
-* `action` - (Optional) Action for the matched traffic.  This can be `allow`
+* `action` - Action for the matched traffic.  This can be `allow`
   (default), `deny`, `drop`, `reset-client`, `reset-server`, or `reset-both`.
-* `log_setting` - (Optional) Log forwarding profile.
-* `log_start` - (Optional, bool) Log the start of the traffic flow.
-* `log_end` - (Optional, bool) Log the end of the traffic flow (default: `true`).
-* `disabled` - (Optional, bool) Set to `true` to disable this rule.
-* `schedule` - (Optional) The security rule schedule.
-* `icmp_unreachable` - (Optional) Set to `true` to enable ICMP unreachable.
-* `disable_server_response_inspection` - (Optional) Set to `true` to disable
+* `log_setting` - Log forwarding profile.
+* `log_start` - (bool) Log the start of the traffic flow.
+* `log_end` - (bool) Log the end of the traffic flow (default: `true`).
+* `disabled` - (bool) Set to `true` to disable this rule.
+* `schedule` - The security rule schedule.
+* `icmp_unreachable` - (bool) Set to `true` to enable ICMP unreachable.
+* `disable_server_response_inspection` - (bool) Set to `true` to disable
   server response inspection.
-* `group` - (Optional) Profile Setting: `Group` - The group profile name.
-* `virus` - (Optional) Profile Setting: `Profiles` - The antivirus setting.
-* `spyware` - (Optional) Profile Setting: `Profiles` - The anti-spyware
-  setting.
-* `vulnerability` - (Optional) Profile Setting: `Profiles` - The Vulnerability
-  Protection setting.
-* `url_filtering` - (Optional) Profile Setting: `Profiles` - The URL filtering
-  setting.
-* `file_blocking` - (Optional) Profile Setting: `Profiles` - The file blocking
-  setting.
-* `wildfire_analysis` - (Optional) Profile Setting: `Profiles` - The WildFire
-  Analysis setting.
-* `data_filtering` - (Optional) Profile Setting: `Profiles` - The Data
-  Filtering setting.
+* `group` - Profile Setting: `Group` - The group profile name.
+* `virus` - Profile Setting: `Profiles` - The antivirus setting.
+* `spyware` - Profile Setting: `Profiles` - The anti-spyware setting.
+* `vulnerability` - Profile Setting: `Profiles` - The Vulnerability Protection setting.
+* `url_filtering` - Profile Setting: `Profiles` - The URL filtering setting.
+* `file_blocking` - Profile Setting: `Profiles` - The file blocking setting.
+* `wildfire_analysis` - Profile Setting: `Profiles` - The WildFire Analysis setting.
+* `data_filtering` - Profile Setting: `Profiles` - The Data Filtering setting.
+* `target` - (repeatable, Panorama only) A target definition (see below).  If there
+  are no target sections, then the rule will apply to every vsys of every device
+  in the device group.
+* `negate_target` - (bool, Panorama only) Instead of applying the rule for the
+  given serial numbers, apply it to everything except them.
+
+`rule.target` supports the following arguments:
+
+* `serial` - (Required) The serial number of the firewall.
+* `vsys_list` - A listing of vsys to apply this rule to.  If `serial` is
+  a VM, then this parameter should just be omitted.
+
+
+## Attribute Reference
+
+Each `rule` has the following attribute:
+
+* `uuid` - The PAN-OS UUID.
