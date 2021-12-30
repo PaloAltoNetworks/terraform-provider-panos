@@ -10,7 +10,11 @@ Manages a specific set of tags on a single IP address.
 This resource only manages the given tags for the given IP address.  Any
 other tags associated with the IP address are left as-is.
 
-Note: Supported on Panorama 8.0+.
+
+## PAN-OS
+
+NGFW and Panorama (8.0+)
+
 
 ## Example Usage
 
