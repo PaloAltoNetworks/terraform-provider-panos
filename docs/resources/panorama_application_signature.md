@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_application_signature"
-subcategory: "Panorama Objects"
+subcategory: "Objects"
 ---
 
 # panos_panorama_application_signature
 
 This resource allows you to add/update/delete Panorama application signatures.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
