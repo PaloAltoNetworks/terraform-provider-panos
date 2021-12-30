@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_panorama_monitor_profile"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_monitor_profile
 
 This resource allows you to add/update/delete Panorama monitor profiles.
 
-**Minimum PAN-OS version**: 7.1
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Import Name
 

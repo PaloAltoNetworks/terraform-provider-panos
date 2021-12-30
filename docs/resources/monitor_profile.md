@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_monitor_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_monitor_profile
 
 This resource allows you to add/update/delete monitor profiles.
 
-**Minimum PAN-OS version**: 7.1
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Import Name
 
