@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_static_route_ipv4"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_static_route_ipv4
 
 This resource allows you to add/update/delete IPv4 static routes on a
 virtual router.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

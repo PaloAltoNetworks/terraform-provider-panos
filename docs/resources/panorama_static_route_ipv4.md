@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_static_route_ipv4"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_static_route_ipv4
 
 This resource allows you to add/update/delete Panorama IPv4 static routes on a
 virtual router for either a template or a template stack.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
