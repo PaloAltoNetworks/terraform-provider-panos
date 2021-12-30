@@ -76,8 +76,7 @@ func readPanoramaGkeClusterGroup(d *schema.ResourceData, meta interface{}) error
 
 	o, err := pano.Panorama.GkeClusterGroup.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -117,8 +116,7 @@ func deletePanoramaGkeClusterGroup(d *schema.ResourceData, meta interface{}) err
 
 	err := pano.Panorama.GkeClusterGroup.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
