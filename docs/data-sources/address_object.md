@@ -8,6 +8,11 @@ subcategory: "Objects"
 Gets information on an address object.
 
 
+## PAN-OS
+
+NGFW and Panorama.
+
+
 ## Example Usage
 
 ```hcl
