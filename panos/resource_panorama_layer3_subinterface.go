@@ -66,8 +66,7 @@ func readPanoramaLayer3Subinterface(d *schema.ResourceData, meta interface{}) er
 
 	o, err := pano.Network.Layer3Subinterface.Get(tmpl, ts, iType, eth, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -116,8 +115,7 @@ func deletePanoramaLayer3Subinterface(d *schema.ResourceData, meta interface{}) 
 
 	err := pano.Network.Layer3Subinterface.Delete(tmpl, ts, iType, eth, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
