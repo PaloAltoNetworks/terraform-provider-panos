@@ -55,7 +55,7 @@ func testAccCheckPanosZoneExists(n string, o *zone.Entry) resource.TestCheckFunc
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, name := parseZoneId(rs.Primary.ID)
+		_, _, vsys, name := parseZoneId(rs.Primary.ID)
 		v, err := fw.Network.Zone.Get(vsys, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -98,7 +98,7 @@ func testAccPanosZoneDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseZoneId(rs.Primary.ID)
+			_, _, vsys, name := parseZoneId(rs.Primary.ID)
 			_, err := fw.Network.Zone.Get(vsys, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
