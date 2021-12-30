@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_address_group"
-subcategory: "Panorama Objects"
+subcategory: "Objects"
 ---
 
 # panos_panorama_address_group
@@ -10,6 +10,11 @@ This resource allows you to add/update/delete Panorama address groups.
 Address groups are either statically defined or dynamically defined, so only
 `static_addresses` or `dynamic_match` should be defined within a given address
 group.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
