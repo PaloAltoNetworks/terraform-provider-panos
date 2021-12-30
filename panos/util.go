@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -162,7 +163,7 @@ func listAsSet(list []string) *schema.Set {
 }
 
 func isObjectNotFound(e error) bool {
-	e2, ok := e.(pango.PanosError)
+	e2, ok := e.(errors.Panos)
 	if ok && e2.ObjectNotFound() {
 		return true
 	}
@@ -188,33 +189,60 @@ func asInterfaceMap(m map[string]interface{}, k string) map[string]interface{} {
 	return map[string]interface{}{}
 }
 
-func parseTarget(v interface{}) map[string][]string {
+func configFolder(d *schema.ResourceData, key string) map[string]interface{} {
+	if clist, ok := d.Get(key).([]interface{}); ok {
+		if clist != nil && len(clist) == 1 {
+			ans, ok := clist[0].(map[string]interface{})
+			if ok && ans != nil {
+				return ans
+			}
+		}
+	}
+
+	return nil
+}
+
+func loadTarget(v interface{}) map[string][]string {
+	if v == nil {
+		return nil
+	}
+
 	ans := make(map[string][]string)
 	sl := v.(*schema.Set).List()
+
+	if len(sl) == 0 {
+		return nil
+	}
 
 	for i := range sl {
 		dev := sl[i].(map[string]interface{})
 		key := dev["serial"].(string)
-		value := asStringList(dev["vsys_list"].(*schema.Set).List())
+		value := setAsList(dev["vsys_list"].(*schema.Set))
 		ans[key] = value
 	}
 
 	return ans
 }
 
-func buildTarget(m map[string][]string) *schema.Set {
-	ans := &schema.Set{
-		F: resourceTargetHash,
+func dumpTarget(m map[string][]string) *schema.Set {
+	var items []interface{}
+
+	if len(m) > 0 {
+		items := make([]interface{}, 0, len(m))
+		for key := range m {
+			items = append(items, map[string]interface{}{
+				"serial":    key,
+				"vsys_list": listAsSet(m[key]),
+			})
+		}
 	}
 
-	for k, v := range m {
-		ans.Add(map[string]interface{}{
-			"serial":    k,
-			"vsys_list": listAsSet(v),
-		})
-	}
-
-	return ans
+	return schema.NewSet(
+		schema.HashResource(
+			targetSchema(false).Elem.(*schema.Resource),
+		),
+		items,
+	)
 }
 
 func firewall(meta interface{}, alt string) (*pango.Firewall, error) {
@@ -264,6 +292,7 @@ func computed(sm map[string]*schema.Schema, parent string, omits []string) {
 		s.MinItems = 0
 		s.MaxItems = 0
 		s.Default = nil
+		s.DiffSuppressFunc = nil
 		s.DefaultFunc = nil
 		s.ConflictsWith = nil
 		s.ExactlyOneOf = nil
@@ -285,14 +314,14 @@ func computed(sm map[string]*schema.Schema, parent string, omits []string) {
 	}
 }
 
-func base64Encode(v []interface{}) string {
+func base64Encode(v []string) string {
 	var buf bytes.Buffer
 
 	for i := range v {
 		if i != 0 {
 			buf.WriteString("\n")
 		}
-		buf.WriteString(v[i].(string))
+		buf.WriteString(v[i])
 	}
 
 	return base64.StdEncoding.EncodeToString(buf.Bytes())
