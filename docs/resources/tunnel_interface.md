@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_tunnel_interface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_tunnel_interface
 
 This resource allows you to add/update/delete tunnel interfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

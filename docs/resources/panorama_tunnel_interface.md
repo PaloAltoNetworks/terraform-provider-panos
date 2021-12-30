@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_tunnel_interface"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_tunnel_interface
 
 This resource allows you to add/update/delete Panorama tunnel interfaces
 for templates.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
