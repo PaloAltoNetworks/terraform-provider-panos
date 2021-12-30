@@ -13,7 +13,7 @@ import (
 // Data source (listing).
 func dataSourceAddressObjects() *schema.Resource {
 	s := listingSchema()
-	s["vsys"] = vsysSchema()
+	s["vsys"] = vsysSchema("vsys1")
 	s["device_group"] = deviceGroupSchema()
 
 	return &schema.Resource{
@@ -258,7 +258,7 @@ func deleteAddressObject(d *schema.ResourceData, meta interface{}) error {
 func addressObjectSchema(isResource bool, rmKey string) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
 		"device_group": deviceGroupSchema(),
-		"vsys":         vsysSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"name": {
 			Type:     schema.TypeString,
 			Required: true,
