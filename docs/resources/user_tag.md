@@ -1,8 +1,7 @@
 ---
 page_title: "panos: panos_user_tag"
-subcategory: "NGFW User-ID"
+subcategory: "User-ID"
 ---
-
 
 # panos_user_tag
 
@@ -11,7 +10,10 @@ Manages a specific set of tags for a single user.
 This resource only manages the given tags for the given user.  Any
 other tags associated with the user are left as-is.
 
-**NOTE:** This is for Firewall only.
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage
