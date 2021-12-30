@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_bgp_aggregate_advertise_filter"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_aggregate_advertise_filter
 
 This resource allows you to add/update/delete a route advertise filter for a
 BGP address aggregation rule.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

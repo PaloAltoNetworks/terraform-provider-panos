@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_bgp_redist_rule"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_redist_rule
 
 This resource allows you to add/update/delete a BGP redistribution rule.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_bgp_dampening_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_dampening_profile
 
 This resource allows you to add/update/delete a BGP dampening profile.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

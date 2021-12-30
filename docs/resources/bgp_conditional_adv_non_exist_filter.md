@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_bgp_conditional_adv_non_exist_filter"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_conditional_adv_non_exist_filter
@@ -11,6 +11,11 @@ BGP conditional advertisement.
 ~> **Note:** A BGP conditional advertisement is valid only if there is at least
 one non-exist filter and one advertise filter attached.  This filter must be paired
 with the other in order for the configuration to be valid.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

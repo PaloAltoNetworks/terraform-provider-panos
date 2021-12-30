@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_bgp_peer_group"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_peer_group
 
 This resource allows you to add/update/delete a BGP peer group.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

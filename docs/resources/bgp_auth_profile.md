@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_bgp_auth_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_auth_profile
 
 This resource allows you to add/update/delete a BGP auth profile.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage

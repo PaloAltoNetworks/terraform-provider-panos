@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_bgp_import_rule_group"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_import_rule_group
@@ -15,6 +15,11 @@ Although you cannot modify non-group import rules with this
 resource, the `position_keyword` and `position_reference` parameters allow you
 to reference some other import rule that already exists, using it as
 a means to ensure some rough placement within the ruleset as a whole.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Best Practices

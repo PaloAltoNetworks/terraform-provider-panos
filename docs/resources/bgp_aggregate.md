@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_bgp_aggregate"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_bgp_aggregate
 
 This resource allows you to add/update/delete BGP address aggregation
 rules.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
