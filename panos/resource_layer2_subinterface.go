@@ -133,8 +133,7 @@ func readLayer2Subinterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.Layer2Subinterface.Get(iType, eth, mType, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -183,8 +182,7 @@ func deleteLayer2Subinterface(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.Layer2Subinterface.Delete(iType, eth, mType, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
