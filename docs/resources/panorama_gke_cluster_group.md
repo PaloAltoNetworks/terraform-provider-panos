@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_gke_cluster_group"
-subcategory: "Panorama Plugins"
+subcategory: "Plugins"
 ---
 
 # panos_panorama_gke_cluster_group
@@ -10,6 +10,11 @@ subcategory: "Panorama Plugins"
 This resource allows you to add/update/delete a GKE cluster group.
 
 This resource requires that the GCP plugin be installed.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

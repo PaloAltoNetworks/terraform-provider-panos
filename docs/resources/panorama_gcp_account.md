@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_panorama_gcp_account"
-subcategory: "Panorama Plugins"
+subcategory: "Plugins"
 ---
 
 # panos_panorama_gcp_account
@@ -10,6 +10,11 @@ subcategory: "Panorama Plugins"
 This resource allows you to add/update/delete GCP accounts on Panorama.
 
 This resource requires that the GCP plugin be installed.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
