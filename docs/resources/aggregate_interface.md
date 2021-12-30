@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_aggregate_interface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_aggregate_interface
 
 This resource allows you to add/update/delete aggregate ethernet interfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
