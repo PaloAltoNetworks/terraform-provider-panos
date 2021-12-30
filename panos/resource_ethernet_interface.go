@@ -220,8 +220,7 @@ func readEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.EthernetInterface.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -295,8 +294,7 @@ func deleteEthernetInterface(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.EthernetInterface.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
