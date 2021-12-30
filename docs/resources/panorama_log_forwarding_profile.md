@@ -1,13 +1,21 @@
 ---
 page_title: "panos: panos_panorama_log_forwarding_profile"
-subcategory: "Panorama Objects"
+subcategory: "Objects"
 ---
 
 # panos_panorama_log_forwarding_profile
 
 This resource allows you to add/update/delete log forwarding profiles.
 
-**Minimum PAN-OS version**:  8.0
+## Minimum PAN-OS Version
+
+8.0
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Import Name
 

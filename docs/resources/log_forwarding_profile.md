@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_log_forwarding_profile"
-subcategory: "Firewall Objects"
+subcategory: "Objects"
 ---
 
 # panos_log_forwarding_profile
 
 This resource allows you to add/update/delete log forwarding profiles.
 
-**Minimum PAN-OS version**:  8.0
+
+## Minimum PAN-OS Version
+
+8.0
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Import Name
 
