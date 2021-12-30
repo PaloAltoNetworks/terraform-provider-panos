@@ -121,8 +121,7 @@ func readLoopbackInterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.LoopbackInterface.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -177,8 +176,7 @@ func deleteLoopbackInterface(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.LoopbackInterface.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
