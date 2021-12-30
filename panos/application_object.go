@@ -2,6 +2,7 @@ package panos
 
 import (
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -10,6 +11,86 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
+// Data source (listing).
+func dataSourceApplicationObjects() *schema.Resource {
+	s := listingSchema()
+	s["vsys"] = vsysSchema("vsys1")
+	s["device_group"] = deviceGroupSchema()
+
+	return &schema.Resource{
+		Read: dataSourceApplicationObjectsRead,
+
+		Schema: s,
+	}
+}
+
+func dataSourceApplicationObjectsRead(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var listing []string
+	var id string
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		id = d.Get("vsys").(string)
+		listing, err = con.Objects.Application.GetList(id)
+	case *pango.Panorama:
+		id = d.Get("device_group").(string)
+		listing, err = con.Objects.Edl.GetList(id)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId(id)
+	saveListing(d, listing)
+	return nil
+}
+
+// Data source.
+func dataSourceApplicationObject() *schema.Resource {
+	return &schema.Resource{
+		Read: dataSourceApplicationObjectRead,
+
+		Schema: applicationObjectSchema(false, "", 1),
+	}
+}
+
+func dataSourceApplicationObjectRead(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var o app.Entry
+
+	vsys := d.Get("vsys").(string)
+	dg := d.Get("device_group").(string)
+	name := d.Get("name").(string)
+
+	d.Set("vsys", vsys)
+	d.Set("device_group", dg)
+
+	id := buildApplicationObjectId(dg, vsys, name)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		o, err = con.Objects.Application.Get(vsys, name)
+	case *pango.Panorama:
+		o, err = con.Objects.Application.Get(dg, name)
+	}
+
+	if err != nil {
+		if isObjectNotFound(err) {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	d.SetId(id)
+	saveApplicationObject(d, o)
+
+	return nil
+}
+
+// Resource.
 func resourceApplicationObject() *schema.Resource {
 	return &schema.Resource{
 		Create: createApplicationObject,
@@ -17,16 +98,189 @@ func resourceApplicationObject() *schema.Resource {
 		Update: updateApplicationObject,
 		Delete: deleteApplicationObject,
 
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: applicationObjectSchema(true, "device_group", 0),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: applicationObjectUpgradeV0,
+			},
+		},
+
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: applicationObjectSchema(false),
+		Schema: applicationObjectSchema(true, "", 1),
 	}
 }
 
-func applicationObjectSchema(p bool) map[string]*schema.Schema {
+func resourcePanoramaApplicationObject() *schema.Resource {
+	return &schema.Resource{
+		Create: createApplicationObject,
+		Read:   readApplicationObject,
+		Update: updateApplicationObject,
+		Delete: deleteApplicationObject,
+
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: applicationObjectSchema(true, "vsys", 0),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: applicationObjectUpgradeV0,
+			},
+		},
+
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
+		Schema: applicationObjectSchema(true, "", 1),
+	}
+}
+
+func applicationObjectUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+	if _, ok := raw["vsys"]; !ok {
+		raw["vsys"] = "vsys1"
+	}
+	if _, ok := raw["device_group"]; !ok {
+		raw["device_group"] = "shared"
+	}
+
+	if dl := raw["defaults"].([]interface{}); len(dl) > 0 {
+		def := dl[0].(map[string]interface{})
+		if x := asInterfaceMap(def, "ip_protocol"); len(x) > 0 {
+			x["value"] = strconv.Itoa(x["value"].(int))
+		}
+	}
+
+	return raw, nil
+}
+
+func createApplicationObject(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	o := loadApplicationObject(d)
+
+	dg := d.Get("device_group").(string)
+	vsys := d.Get("vsys").(string)
+
+	d.Set("device_group", dg)
+	d.Set("vsys", vsys)
+
+	id := buildApplicationObjectId(dg, vsys, o.Name)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		err = con.Objects.Application.Set(vsys, o)
+	case *pango.Panorama:
+		err = con.Objects.Application.Set(dg, o)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId(id)
+	return readApplicationObject(d, meta)
+}
+
+func readApplicationObject(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var o app.Entry
+
+	// Migrate the Id.
+	tok := strings.Split(d.Id(), IdSeparator)
+	if len(tok) == 2 {
+		switch meta.(type) {
+		case *pango.Firewall:
+			d.SetId(buildApplicationObjectId("shared", tok[0], tok[1]))
+		case *pango.Panorama:
+			d.SetId(buildApplicationObjectId(tok[0], "vsys1", tok[1]))
+		}
+	}
+
+	dg, vsys, name := parseApplicationObjectId(d.Id())
+	d.Set("device_group", dg)
+	d.Set("vsys", vsys)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		o, err = con.Objects.Application.Get(vsys, name)
+	case *pango.Panorama:
+		o, err = con.Objects.Application.Get(dg, name)
+	}
+
+	if err != nil {
+		if isObjectNotFound(err) {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	saveApplicationObject(d, o)
+
+	return nil
+}
+
+func updateApplicationObject(d *schema.ResourceData, meta interface{}) error {
+	o := loadApplicationObject(d)
+
+	dg, vsys, _ := parseApplicationObjectId(d.Id())
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		lo, err := con.Objects.Application.Get(vsys, o.Name)
+		if err != nil {
+			return err
+		}
+		lo.Copy(o)
+		if err = con.Objects.Application.Edit(vsys, lo); err != nil {
+			return err
+		}
+	case *pango.Panorama:
+		lo, err := con.Objects.Application.Get(dg, o.Name)
+		if err != nil {
+			return err
+		}
+		lo.Copy(o)
+		if err = con.Objects.Application.Edit(dg, lo); err != nil {
+			return err
+		}
+	}
+
+	return readApplicationObject(d, meta)
+}
+
+func deleteApplicationObject(d *schema.ResourceData, meta interface{}) error {
+	var err error
+
+	dg, vsys, name := parseApplicationObjectId(d.Id())
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		err = con.Objects.Application.Delete(vsys, name)
+	case *pango.Panorama:
+		err = con.Objects.Application.Delete(dg, name)
+	}
+
+	if err != nil && !isObjectNotFound(err) {
+		return err
+	}
+
+	d.SetId("")
+	return nil
+}
+
+// Schema handling.
+func applicationObjectSchema(isResource bool, rmKey string, schemaVersion int) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
+		"device_group": deviceGroupSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"name": {
 			Type:     schema.TypeString,
 			Required: true,
@@ -72,7 +326,7 @@ func applicationObjectSchema(p bool) map[string]*schema.Schema {
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"value": {
-									Type:     schema.TypeInt,
+									Type:     schema.TypeString,
 									Required: true,
 								},
 							},
@@ -246,20 +500,22 @@ func applicationObjectSchema(p bool) map[string]*schema.Schema {
 		},
 	}
 
-	if p {
-		ans["device_group"] = deviceGroupSchema()
-	} else {
-		ans["vsys"] = vsysSchema()
+	if !isResource {
+		computed(ans, "", []string{"vsys", "device_group", "name"})
+	}
+
+	if rmKey != "" {
+		delete(ans, rmKey)
+	}
+
+	if schemaVersion == 0 {
+		var x *schema.Resource
+		x = ans["defaults"].Elem.(*schema.Resource)
+		x = x.Schema["ip_protocol"].Elem.(*schema.Resource)
+		x.Schema["value"].Type = schema.TypeInt
 	}
 
 	return ans
-}
-
-func parseApplicationObject(d *schema.ResourceData) (string, app.Entry) {
-	vsys := d.Get("vsys").(string)
-	o := loadApplicationObject(d)
-
-	return vsys, o
 }
 
 func loadApplicationObject(d *schema.ResourceData) app.Entry {
@@ -293,7 +549,7 @@ func loadApplicationObject(d *schema.ResourceData) app.Entry {
 				ans.DefaultPorts = asStringList(x["ports"].([]interface{}))
 			} else if x := asInterfaceMap(def, "ip_protocol"); len(x) > 0 {
 				ans.DefaultType = app.DefaultTypeIpProtocol
-				ans.DefaultIpProtocol = x["value"].(int)
+				ans.DefaultIpProtocol = x["value"].(string)
 			} else if x := asInterfaceMap(def, "icmp"); len(x) > 0 {
 				ans.DefaultType = app.DefaultTypeIcmp
 				ans.DefaultIcmpType = x["type"].(int)
@@ -325,15 +581,6 @@ func loadApplicationObject(d *schema.ResourceData) app.Entry {
 	}
 
 	return ans
-}
-
-func parseApplicationObjectId(v string) (string, string) {
-	t := strings.Split(v, IdSeparator)
-	return t[0], t[1]
-}
-
-func buildApplicationObjectId(a, b string) string {
-	return strings.Join([]string{a, b}, IdSeparator)
 }
 
 func saveApplicationObject(d *schema.ResourceData, o app.Entry) {
@@ -443,69 +690,12 @@ func saveApplicationObject(d *schema.ResourceData, o app.Entry) {
 	}
 }
 
-func createApplicationObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, o := parseApplicationObject(d)
-
-	if err := fw.Objects.Application.Set(vsys, o); err != nil {
-		return err
-	}
-
-	d.SetId(buildApplicationObjectId(vsys, o.Name))
-	return readApplicationObject(d, meta)
+// Id functions.
+func parseApplicationObjectId(v string) (string, string, string) {
+	t := strings.Split(v, IdSeparator)
+	return t[0], t[1], t[2]
 }
 
-func readApplicationObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseApplicationObjectId(d.Id())
-
-	o, err := fw.Objects.Application.Get(vsys, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
-			d.SetId("")
-			return nil
-		}
-		return err
-	}
-
-	d.Set("vsys", vsys)
-	saveApplicationObject(d, o)
-
-	return nil
-}
-
-func updateApplicationObject(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
-	vsys, o := parseApplicationObject(d)
-
-	lo, err := fw.Objects.Application.Get(vsys, o.Name)
-	if err != nil {
-		return err
-	}
-	lo.Copy(o)
-	if err = fw.Objects.Application.Edit(vsys, lo); err != nil {
-		return err
-	}
-
-	return readApplicationObject(d, meta)
-}
-
-func deleteApplicationObject(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, name := parseApplicationObjectId(d.Id())
-
-	err := fw.Objects.Application.Delete(vsys, name)
-	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
-			return err
-		}
-	}
-	d.SetId("")
-	return nil
+func buildApplicationObjectId(a, b, c string) string {
+	return strings.Join([]string{a, b, c}, IdSeparator)
 }

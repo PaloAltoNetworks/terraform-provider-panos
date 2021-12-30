@@ -42,7 +42,7 @@ func TestAccPanosPanoramaApplicationObject_basic(t *testing.T) {
 				Config: testAccPanoramaApplicationObjectConfig(dg, name, "desc updated", "networking", "proxy", "client-server", `
     defaults {
         ip_protocol {
-            value = 21
+            value = "21"
         }
     }`, 3, 101, 202, 303, false, true, false),
 				Check: resource.ComposeTestCheckFunc(
@@ -99,7 +99,7 @@ func testAccCheckPanosPanoramaApplicationObjectExists(n string, o *app.Entry) re
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		dg, name := parsePanoramaApplicationObjectId(rs.Primary.ID)
+		dg, _, name := parseApplicationObjectId(rs.Primary.ID)
 		v, err := pano.Objects.Application.Get(dg, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -143,8 +143,8 @@ func testAccCheckPanosPanoramaApplicationObjectAttributes(o *app.Entry, name, de
 				return fmt.Errorf("Default ports is %#v, expected [udp/dynamic]", o.DefaultPorts)
 			}
 		case app.DefaultTypeIpProtocol:
-			if o.DefaultIpProtocol != 21 {
-				return fmt.Errorf("Default IP protocol is %d, expected 21", o.DefaultIpProtocol)
+			if o.DefaultIpProtocol != "21" {
+				return fmt.Errorf("Default IP protocol is %s, expected '21'", o.DefaultIpProtocol)
 			}
 		case app.DefaultTypeIcmp:
 			if o.DefaultIcmpType != 7 {
@@ -201,7 +201,7 @@ func testAccPanosPanoramaApplicationObjectDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			dg, name := parsePanoramaApplicationObjectId(rs.Primary.ID)
+			dg, _, name := parseApplicationObjectId(rs.Primary.ID)
 			_, err := pano.Objects.Application.Get(dg, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)

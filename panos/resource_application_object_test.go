@@ -41,7 +41,7 @@ func TestAccPanosApplicationObject_basic(t *testing.T) {
 				Config: testAccApplicationObjectConfig(name, "desc updated", "networking", "proxy", "client-server", `
     defaults {
         ip_protocol {
-            value = 21
+            value = "21"
         }
     }`, 3, 101, 202, 303, false, true, false),
 				Check: resource.ComposeTestCheckFunc(
@@ -98,7 +98,7 @@ func testAccCheckPanosApplicationObjectExists(n string, o *app.Entry) resource.T
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		vsys, name := parseApplicationObjectId(rs.Primary.ID)
+		_, vsys, name := parseApplicationObjectId(rs.Primary.ID)
 		v, err := fw.Objects.Application.Get(vsys, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -142,8 +142,8 @@ func testAccCheckPanosApplicationObjectAttributes(o *app.Entry, name, desc, cat,
 				return fmt.Errorf("Default ports is %#v, expected [udp/dynamic]", o.DefaultPorts)
 			}
 		case app.DefaultTypeIpProtocol:
-			if o.DefaultIpProtocol != 21 {
-				return fmt.Errorf("Default IP protocol is %d, expected 21", o.DefaultIpProtocol)
+			if o.DefaultIpProtocol != "21" {
+				return fmt.Errorf("Default IP protocol is %s, expected '21'", o.DefaultIpProtocol)
 			}
 		case app.DefaultTypeIcmp:
 			if o.DefaultIcmpType != 7 {
@@ -200,7 +200,7 @@ func testAccPanosApplicationObjectDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, name := parseApplicationObjectId(rs.Primary.ID)
+			_, vsys, name := parseApplicationObjectId(rs.Primary.ID)
 			_, err := fw.Objects.Application.Get(vsys, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
