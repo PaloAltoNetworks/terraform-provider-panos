@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_panorama_gre_tunnel"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_gre_tunnel
 
 This resource allows you to add/update/delete Panorama GRE tunnels.
 
-*Minimum PAN-OS version*: 9.0
+
+## Minimum PAN-OS Version
+
+9.0
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Import Name
 
