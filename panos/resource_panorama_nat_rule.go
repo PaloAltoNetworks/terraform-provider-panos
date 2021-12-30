@@ -178,31 +178,8 @@ func resourcePanoramaNatRule() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"target": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				// TODO(gfreeman): Uncomment once ValidateFunc is supported for TypeSet.
-				//ValidateFunc: validateSetKeyIsUnique("serial"),
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"serial": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"vsys_list": {
-							Type:     schema.TypeSet,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
-				},
-			},
-			"negate_target": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
+			"target":        targetSchema(false),
+			"negate_target": negateTargetSchema(),
 		},
 	}
 }
@@ -238,6 +215,7 @@ func parsePanoramaNatRule(d *schema.ResourceData) (string, string, nat.Entry) {
 		DatDynamicDistribution:         d.Get("dat_dynamic_distribution").(string),
 		Disabled:                       d.Get("disabled").(bool),
 		Tags:                           asStringList(d.Get("tags").([]interface{})),
+		Targets:                        loadTarget(d.Get("target")),
 		NegateTarget:                   d.Get("negate_target").(bool),
 	}
 
@@ -247,16 +225,6 @@ func parsePanoramaNatRule(d *schema.ResourceData) (string, string, nat.Entry) {
 	case "dynamic":
 		o.DatType = nat.DatTypeDynamic
 	}
-
-	m := make(map[string][]string)
-	tl := d.Get("target").(*schema.Set).List()
-	for i := range tl {
-		device := tl[i].(map[string]interface{})
-		key := device["serial"].(string)
-		value := asStringList(device["vsys_list"].(*schema.Set).List())
-		m[key] = value
-	}
-	o.Targets = m
 
 	return dg, rb, o
 }
@@ -290,21 +258,11 @@ func readPanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := pano.Policies.Nat.Get(dg, rb, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
 		return err
-	}
-
-	ts := d.Get("target").(*schema.Set)
-	s := &schema.Set{F: ts.F}
-	for key := range o.Targets {
-		sg := make(map[string]interface{})
-		sg["serial"] = key
-		sg["vsys_list"] = listAsSet(o.Targets[key])
-		s.Add(sg)
 	}
 
 	d.Set("name", o.Name)
@@ -353,8 +311,8 @@ func readPanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("tags", o.Tags); err != nil {
 		log.Printf("[WARN] Error setting 'tags' param for %q: %s", d.Id(), err)
 	}
-	if err = d.Set("targets", s); err != nil {
-		log.Printf("[WARN] Error setting 'targets' param for %q: %s", d.Id(), err)
+	if err = d.Set("target", dumpTarget(o.Targets)); err != nil {
+		log.Printf("[WARN] Error setting 'target' param for %q: %s", d.Id(), err)
 	}
 	d.Set("negate_target", o.NegateTarget)
 
@@ -385,8 +343,7 @@ func deletePanoramaNatRule(d *schema.ResourceData, meta interface{}) error {
 
 	err := pano.Policies.Nat.Delete(dg, rb, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

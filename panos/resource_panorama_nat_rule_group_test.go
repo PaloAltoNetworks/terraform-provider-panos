@@ -6,6 +6,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/poli/nat"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -177,7 +178,7 @@ func testAccCheckPanosPanoramaNatRuleGroupOrdering(dg, n1, n2, n3 string) resour
 	return func(s *terraform.State) error {
 		pano := testAccProvider.Meta().(*pango.Panorama)
 
-		list, err := pano.Policies.Nat.GetList(dg, "")
+		list, err := pano.Policies.Nat.GetList(dg, util.PreRulebase)
 		if err != nil {
 			return fmt.Errorf("Failed GetList in ordering check: %s", err)
 		}

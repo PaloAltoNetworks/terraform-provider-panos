@@ -1,19 +1,113 @@
 package panos
 
 import (
-	"bytes"
-	"encoding/base64"
 	"fmt"
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/poli/nat"
+	"github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
+// Data source (listing).
+func dataSourceNatRules() *schema.Resource {
+	s := listingSchema()
+	s["vsys"] = vsysSchema("vsys1")
+	s["device_group"] = deviceGroupSchema()
+	s["rulebase"] = rulebaseSchema()
+
+	return &schema.Resource{
+		Read: dataSourceNatRulesRead,
+
+		Schema: s,
+	}
+}
+
+func dataSourceNatRulesRead(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var listing []string
+	var id string
+
+	vsys := d.Get("vsys").(string)
+	dg := d.Get("device_group").(string)
+	base := d.Get("rulebase").(string)
+
+	d.Set("vsys", vsys)
+	d.Set("device_group", dg)
+	d.Set("rulebase", base)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		id = vsys
+		listing, err = con.Policies.Nat.GetList(vsys)
+	case *pango.Panorama:
+		id = strings.Join([]string{dg, base}, IdSeparator)
+		listing, err = con.Policies.Nat.GetList(dg, base)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId(id)
+	saveListing(d, listing)
+
+	return nil
+}
+
+// Data source.
+func dataSourceNatRule() *schema.Resource {
+	return &schema.Resource{
+		Read: dataSourceNatRuleRead,
+
+		Schema: natRuleGroupSchema(false, nil),
+	}
+}
+
+func dataSourceNatRuleRead(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var id string
+	var o nat.Entry
+
+	vsys := d.Get("vsys").(string)
+	dg := d.Get("device_group").(string)
+	base := d.Get("rulebase").(string)
+	name := d.Get("name").(string)
+
+	d.Set("vsys", vsys)
+	d.Set("device_group", dg)
+	d.Set("rulebase", base)
+	d.Set("name", name)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		id = strings.Join([]string{vsys, name}, IdSeparator)
+		o, err = con.Policies.Nat.Get(vsys, name)
+	case *pango.Panorama:
+		id = strings.Join([]string{dg, base, name}, IdSeparator)
+		o, err = con.Policies.Nat.Get(dg, base, name)
+	}
+
+	if err != nil {
+		if isObjectNotFound(err) {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	d.SetId(id)
+	saveNatRules(d, []nat.Entry{o})
+
+	return nil
+}
+
+// Resource.
 func resourceNatRuleGroup() *schema.Resource {
 	return &schema.Resource{
 		Create: createUpdateNatRuleGroup,
@@ -21,40 +115,214 @@ func resourceNatRuleGroup() *schema.Resource {
 		Update: createUpdateNatRuleGroup,
 		Delete: deleteNatRuleGroup,
 
-		Schema: natRuleGroupSchema(false),
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(10 * time.Minute),
+			Update: schema.DefaultTimeout(10 * time.Minute),
+		},
+
+		Schema: natRuleGroupSchema(true, []string{"device_group", "rulebase"}),
 	}
 }
 
-func natRuleGroupSchema(p bool) map[string]*schema.Schema {
+func resourcePanoramaNatRuleGroup() *schema.Resource {
+	return &schema.Resource{
+		Create: createUpdateNatRuleGroup,
+		Read:   readNatRuleGroup,
+		Update: createUpdateNatRuleGroup,
+		Delete: deleteNatRuleGroup,
+
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(10 * time.Minute),
+			Update: schema.DefaultTimeout(10 * time.Minute),
+		},
+
+		Schema: natRuleGroupSchema(true, []string{"vsys"}),
+	}
+}
+
+func createUpdateNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var id string
+	var vsys, dg, base string
+	var prevNames []string
+
+	move := movementAtoi(d.Get("position_keyword").(string))
+	oRule := d.Get("position_reference").(string)
+	rules, auditComments := loadNatRules(d)
+
+	d.Set("position_keyword", movementItoa(move))
+	d.Set("position_reference", oRule)
+
+	if !movementIsRelative(move) && oRule != "" {
+		return fmt.Errorf("'position_reference' must be empty for non-relative movement")
+	}
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		if d.Id() != "" {
+			_, _, _, prevNames = parseNatRuleGroupId(d.Id())
+		}
+		vsys = d.Get("vsys").(string)
+		d.Set("vsys", vsys)
+		id = buildNatRuleGroupId(vsys, move, oRule, rules)
+		err = con.Policies.Nat.ConfigureRules(vsys, rules, auditComments, false, move, oRule, prevNames)
+	case *pango.Panorama:
+		if d.Id() != "" {
+			_, _, _, _, prevNames = parsePanoramaNatRuleGroupId(d.Id())
+		}
+		dg = d.Get("device_group").(string)
+		base = d.Get("rulebase").(string)
+		d.Set("device_group", dg)
+		d.Set("rulebase", base)
+		id = buildPanoramaNatRuleGroupId(dg, base, move, oRule, rules)
+		err = con.Policies.Nat.ConfigureRules(dg, base, rules, auditComments, false, move, oRule, prevNames)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId(id)
+	return readNatRuleGroup(d, meta)
+}
+
+func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var names []string
+	var vsys, dg, base, oRule string
+	var listing []nat.Entry
+	var move int
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		vsys, move, oRule, names = parseNatRuleGroupId(d.Id())
+		listing, err = con.Policies.Nat.GetAll(vsys)
+	case *pango.Panorama:
+		dg, base, move, oRule, names = parsePanoramaNatRuleGroupId(d.Id())
+		listing, err = con.Policies.Nat.GetAll(dg, base)
+	}
+
+	if err != nil {
+		d.SetId("")
+		return nil
+	}
+
+	fIdx, oIdx := -1, -1
+	for i := range listing {
+		if listing[i].Name == names[0] {
+			fIdx = i
+		} else if listing[i].Name == oRule {
+			oIdx = i
+		}
+		if fIdx != -1 && (oIdx != -1 || oRule == "") {
+			break
+		}
+	}
+
+	if fIdx == -1 {
+		// First rule is MIA, but others may be present, so report an
+		// empty ruleset to force rules to be recreated.
+		d.Set("rule", nil)
+		return nil
+	} else if oIdx == -1 && movementIsRelative(move) {
+		return fmt.Errorf("Can't position group %s %q: rule is not present", movementItoa(move), oRule)
+	} else if move == util.MoveTop && fIdx != 0 {
+		d.Set("position_keyword", "")
+	}
+
+	dlist := make([]nat.Entry, 0, len(names))
+	for i := 0; i+fIdx < len(listing) && i < len(names); i++ {
+		if listing[i+fIdx].Name != names[i] {
+			break
+		}
+
+		dlist = append(dlist, listing[i+fIdx])
+	}
+
+	if move == util.MoveBottom && dlist[len(dlist)-1].Name != listing[len(listing)-1].Name {
+		d.Set("position_keyword", "")
+	}
+	saveNatRules(d, dlist)
+
+	return nil
+}
+
+func deleteNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var vsys, dg, base string
+	var names []string
+
+	switch meta.(type) {
+	case *pango.Firewall:
+		vsys, _, _, names = parseNatRuleGroupId(d.Id())
+	case *pango.Panorama:
+		dg, base, _, _, names = parsePanoramaNatRuleGroupId(d.Id())
+	}
+
+	ilist := make([]interface{}, 0, len(names))
+	for _, x := range names {
+		ilist = append(ilist, x)
+	}
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		err = con.Policies.Nat.Delete(vsys, ilist...)
+	case *pango.Panorama:
+		err = con.Policies.Nat.Delete(dg, base, ilist...)
+	}
+
+	if err != nil && !isObjectNotFound(err) {
+		return err
+	}
+
+	d.SetId("")
+	return nil
+}
+
+// Schema functions.
+func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
+	var minRules int
+	if isResource {
+		minRules = 1
+	}
+
 	ans := map[string]*schema.Schema{
+		"vsys":               vsysSchema("vsys1"),
+		"device_group":       deviceGroupSchema(),
+		"rulebase":           rulebaseSchema(),
 		"position_keyword":   positionKeywordSchema(),
 		"position_reference": positionReferenceSchema(),
 		"rule": {
 			Type:     schema.TypeList,
 			Required: true,
-			MinItems: 1,
+			MinItems: minRules,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
 						Type:     schema.TypeString,
 						Required: true,
-						ForceNew: true,
 					},
 					"description": {
 						Type:     schema.TypeString,
 						Optional: true,
 					},
 					"type": {
-						Type:         schema.TypeString,
-						Optional:     true,
-						Default:      nat.TypeIpv4,
-						ValidateFunc: validateStringIn(nat.TypeIpv4, nat.TypeNat64, nat.TypeNptv6),
+						Type:     schema.TypeString,
+						Optional: true,
+						Default:  nat.TypeIpv4,
+						ValidateFunc: validateStringIn(
+							nat.TypeIpv4,
+							nat.TypeNat64,
+							nat.TypeNptv6,
+						),
 					},
 					"tags": tagSchema(),
 					"disabled": {
 						Type:     schema.TypeBool,
 						Optional: true,
 					},
+					"uuid":      uuidSchema(),
+					"group_tag": groupTagSchema(),
 
 					"original_packet": {
 						Type:     schema.TypeList,
@@ -374,65 +642,55 @@ func natRuleGroupSchema(p bool) map[string]*schema.Schema {
 							},
 						},
 					},
+					"target":        targetSchema(false),
+					"negate_target": negateTargetSchema(),
+					"audit_comment": auditCommentSchema(),
 				},
 			},
 		},
 	}
 
-	if p {
-		ans["device_group"] = deviceGroupSchema()
-		ans["rulebase"] = rulebaseSchema()
+	for _, rmKey := range rmKeys {
+		delete(ans, rmKey)
+	}
 
-		r := ans["rule"].Elem.(*schema.Resource)
-		r.Schema["target"] = targetSchema()
-		r.Schema["negate_target"] = negateTargetSchema()
-	} else {
-		ans["vsys"] = vsysSchema()
+	if !isResource {
+		delete(ans, "position_keyword")
+		delete(ans, "position_reference")
+		ans["name"] = &schema.Schema{
+			Type:     schema.TypeString,
+			Required: true,
+		}
+
+		computed(ans, "", []string{"device_group", "vsys", "rulebase", "name"})
 	}
 
 	return ans
 }
 
-func natRuleGroupSchemaStyle(d *schema.ResourceData) int {
-	rlist := d.Get("rule").([]interface{})
-	for i := range rlist {
-		b := rlist[i].(map[string]interface{})
-		tp := (b["translated_packet"].([]interface{})[0]).(map[string]interface{})
-		dst := asInterfaceMap(tp, "destination")
-		if s := asInterfaceMap(dst, "static_translation"); len(s) != 0 {
-			return 2
-		} else if s := asInterfaceMap(dst, "dynamic_translation"); len(s) != 0 {
-			return 2
-		}
-	}
-
-	return 1
-}
-
-func parseNatRuleGroup(d *schema.ResourceData) (string, string, int, []nat.Entry) {
-	vsys := d.Get("vsys").(string)
-	oRule := d.Get("position_reference").(string)
-	move := movementAtoi(d.Get("position_keyword").(string))
-
+func loadNatRules(d *schema.ResourceData) ([]nat.Entry, map[string]string) {
+	auditComments := make(map[string]string)
 	rlist := d.Get("rule").([]interface{})
 	list := make([]nat.Entry, 0, len(rlist))
 	for i := range rlist {
-		b := rlist[i].(map[string]interface{})
-		o := loadNatEntry(b)
-
-		list = append(list, o)
+		x := rlist[i].(map[string]interface{})
+		auditComments[x["name"].(string)] = x["audit_comment"].(string)
+		list = append(list, loadNatEntry(x))
 	}
 
-	return vsys, oRule, move, list
+	return list, auditComments
 }
 
 func loadNatEntry(b map[string]interface{}) nat.Entry {
 	o := nat.Entry{
-		Name:        b["name"].(string),
-		Type:        b["type"].(string),
-		Description: b["description"].(string),
-		Disabled:    b["disabled"].(bool),
-		Tags:        asStringList(b["tags"].([]interface{})),
+		Name:         b["name"].(string),
+		GroupTag:     b["group_tag"].(string),
+		Type:         b["type"].(string),
+		Description:  b["description"].(string),
+		Disabled:     b["disabled"].(bool),
+		Tags:         asStringList(b["tags"].([]interface{})),
+		Targets:      loadTarget(b["target"]),
+		NegateTarget: b["negate_target"].(bool),
 	}
 
 	op := (b["original_packet"].([]interface{})[0]).(map[string]interface{})
@@ -515,13 +773,18 @@ func loadNatEntry(b map[string]interface{}) nat.Entry {
 	return o
 }
 
-func dumpNatEntry(o nat.Entry, schemaStyle int) map[string]interface{} {
+func dumpNatRule(o nat.Entry) map[string]interface{} {
 	m := map[string]interface{}{
-		"name":        o.Name,
-		"description": o.Description,
-		"type":        o.Type,
-		"disabled":    o.Disabled,
-		"tags":        o.Tags,
+		"name":          o.Name,
+		"description":   o.Description,
+		"type":          o.Type,
+		"disabled":      o.Disabled,
+		"tags":          o.Tags,
+		"target":        dumpTarget(o.Targets),
+		"negate_target": o.NegateTarget,
+		"uuid":          o.Uuid,
+		"group_tag":     o.GroupTag,
+		"audit_comment": "",
 	}
 
 	op := map[string]interface{}{
@@ -597,31 +860,19 @@ func dumpNatEntry(o nat.Entry, schemaStyle int) map[string]interface{} {
 	}
 	switch o.DatType {
 	case nat.DatTypeStatic:
-		val := []interface{}{
+		dst["static_translation"] = []interface{}{
 			map[string]interface{}{
 				"address": o.DatAddress,
 				"port":    o.DatPort,
 			},
 		}
-		switch schemaStyle {
-		case 1:
-			dst["static"] = val
-		case 2:
-			dst["static_translation"] = val
-		}
 	case nat.DatTypeDynamic:
-		val := []interface{}{
+		dst["dynamic_translation"] = []interface{}{
 			map[string]interface{}{
 				"address":      o.DatAddress,
 				"port":         o.DatPort,
 				"distribution": o.DatDynamicDistribution,
 			},
-		}
-		switch schemaStyle {
-		case 1:
-			dst["dynamic"] = val
-		case 2:
-			dst["dynamic_translation"] = val
 		}
 	}
 	tp["source"] = []interface{}{src}
@@ -631,137 +882,47 @@ func dumpNatEntry(o nat.Entry, schemaStyle int) map[string]interface{} {
 	return m
 }
 
+func saveNatRules(d *schema.ResourceData, rules []nat.Entry) {
+	if len(rules) == 0 {
+		d.Set("rule", nil)
+		return
+	}
+
+	list := make([]interface{}, 0, len(rules))
+	for _, x := range rules {
+		list = append(list, dumpNatRule(x))
+	}
+
+	if err := d.Set("rule", list); err != nil {
+		log.Printf("[WARN] Error setting 'rule' for %q: %s", d.Id(), err)
+	}
+}
+
+// Id functions.
+func buildNatRuleGroupId(a string, b int, c string, d []nat.Entry) string {
+	names := make([]string, 0, len(d))
+	for _, x := range d {
+		names = append(names, x.Name)
+	}
+	return strings.Join([]string{a, strconv.Itoa(b), c, base64Encode(names)}, IdSeparator)
+}
+
+func buildPanoramaNatRuleGroupId(a, b string, c int, d string, e []nat.Entry) string {
+	names := make([]string, 0, len(e))
+	for _, x := range e {
+		names = append(names, x.Name)
+	}
+	return strings.Join([]string{a, b, strconv.Itoa(c), d, base64Encode(names)}, IdSeparator)
+}
+
 func parseNatRuleGroupId(v string) (string, int, string, []string) {
 	t := strings.Split(v, IdSeparator)
 	move, _ := strconv.Atoi(t[1])
-	joined, _ := base64.StdEncoding.DecodeString(t[3])
-	names := strings.Split(string(joined), "\n")
-	return t[0], move, t[2], names
+	return t[0], move, t[2], base64Decode(t[3])
 }
 
-func buildNatRuleGroupId(a string, b int, c string, d []nat.Entry) string {
-	var buf bytes.Buffer
-	for i := range d {
-		if i != 0 {
-			buf.WriteString("\n")
-		}
-		buf.WriteString(d[i].Name)
-	}
-	enc := base64.StdEncoding.EncodeToString(buf.Bytes())
-
-	return strings.Join([]string{a, strconv.Itoa(b), c, enc}, IdSeparator)
-}
-
-func createUpdateNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
-	vsys, oRule, move, list := parseNatRuleGroup(d)
-
-	if !movementIsRelative(move) && oRule != "" {
-		return fmt.Errorf("'position_reference' must be empty for non-relative movement")
-	}
-	if err = fw.Policies.Nat.Edit(vsys, list[0]); err != nil {
-		return err
-	}
-	dl := make([]interface{}, len(list)-1)
-	for i := 1; i < len(list); i++ {
-		dl = append(dl, list[i])
-	}
-	_ = fw.Policies.Nat.Delete(vsys, dl...)
-	if err = fw.Policies.Nat.Set(vsys, list[1:len(list)]...); err != nil {
-		return err
-	}
-	if err = fw.Policies.Nat.MoveGroup(vsys, move, oRule, list...); err != nil {
-		return err
-	}
-
-	d.SetId(buildNatRuleGroupId(vsys, move, oRule, list))
-	return readNatRuleGroup(d, meta)
-}
-
-func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
-
-	fw := meta.(*pango.Firewall)
-	vsys, move, oRule, names := parseNatRuleGroupId(d.Id())
-
-	rules, err := fw.Policies.Nat.GetList(vsys)
-	if err != nil {
-		return err
-	}
-
-	fIdx, oIdx := -1, -1
-	for i := range rules {
-		if rules[i] == names[0] {
-			fIdx = i
-		} else if rules[i] == oRule {
-			oIdx = i
-		}
-		if fIdx != -1 && oIdx != -1 {
-			break
-		}
-	}
-
-	if fIdx == -1 {
-		// First rule is MIA, but others may be present, so report an
-		// empty ruleset to force rules to be recreated.
-		d.Set("rule", nil)
-		return nil
-	} else if oIdx == -1 && movementIsRelative(move) {
-		return fmt.Errorf("Can't position group %s %q: rule is not present", movementItoa(move), oRule)
-	}
-
-	d.Set("vsys", vsys)
-	d.Set("position_keyword", movementItoa(move))
-	if groupPositionIsOk(move, fIdx, oIdx, rules, names) {
-		d.Set("position_reference", oRule)
-	} else {
-		d.Set("position_reference", "(incorrect group positioning)")
-	}
-
-	schemaStyle := natRuleGroupSchemaStyle(d)
-
-	ilist := make([]interface{}, 0, len(names))
-	for i := 0; i+fIdx < len(rules) && i < len(names); i++ {
-		if rules[i+fIdx] != names[i] {
-			// Must be contiguous.
-			break
-		}
-		o, err := fw.Policies.Nat.Get(vsys, names[i])
-		if err != nil {
-			if isObjectNotFound(err) {
-				break
-			}
-			return err
-		}
-		m := dumpNatEntry(o, schemaStyle)
-
-		ilist = append(ilist, m)
-	}
-
-	if err = d.Set("rule", ilist); err != nil {
-		log.Printf("[WARN] Error setting 'rule' for %q: %s", d.Id(), err)
-	}
-
-	return nil
-}
-
-func deleteNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
-	vsys, _, _, names := parseNatRuleGroupId(d.Id())
-
-	ilist := make([]interface{}, len(names))
-	for i := range names {
-		ilist[i] = names[i]
-	}
-
-	if err := fw.Policies.Nat.Delete(vsys, ilist...); err != nil {
-		if !isObjectNotFound(err) {
-			return err
-		}
-	}
-
-	d.SetId("")
-	return nil
+func parsePanoramaNatRuleGroupId(v string) (string, string, int, string, []string) {
+	t := strings.Split(v, IdSeparator)
+	move, _ := strconv.Atoi(t[2])
+	return t[0], t[1], move, t[3], base64Decode(t[4])
 }
