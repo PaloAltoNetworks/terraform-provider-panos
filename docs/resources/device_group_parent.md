@@ -8,7 +8,17 @@ subcategory: "Panorama"
 
 Manage the device group parent for a given device group.
 
-**NOTE:** This is for Panorama only.
+
+## PAN-OS
+
+Panorama.
+
+
+## Import Name
+
+```
+<device_group>
+```
 
 
 ## Example Usage
@@ -16,25 +26,26 @@ Manage the device group parent for a given device group.
 ```hcl
 # Example 1:  Move "Group B" under "Group A".
 resource "panos_device_group_parent" "example1" {
-    device_group = panos_panorama_template.b.name
-    parent = panos_panorama_template.a.name
+    device_group = panos_device_group.b.name
+    parent = panos_device_group.a.name
 }
 
-resource "panos_panorama_template" "a" {
+resource "panos_device_group" "a" {
     name = "Group A"
 }
 
-resource "panos_panorama_template" "b" {
+resource "panos_device_group" "b" {
     name = "Group B"
 }
+```
 
-
+```hcl
 # Example 2:  Ensure that "Group C" is under "shared" and has no parent.
 resource "panos_device_group_parent" "example2" {
-    device_group = panos_panorama_template.c.name
+    device_group = panos_device_group.c.name
 }
 
-resource "panos_panorama_template" "c" {
+resource "panos_device_group" "c" {
     name = "Group C"
 }
 ```
