@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_layer2_subinterface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_layer2_subinterface
 
 This resource allows you to add/update/delete layer2 subinterfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name

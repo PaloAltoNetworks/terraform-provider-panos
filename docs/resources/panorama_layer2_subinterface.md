@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_panorama_layer2_subinterface"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_layer2_subinterface
 
 This resource allows you to add/update/delete Panorama layer2 subinterfaces.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name
