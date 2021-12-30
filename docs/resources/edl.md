@@ -1,11 +1,21 @@
 ---
 page_title: "panos: panos_edl"
-subcategory: "Firewall Objects"
+subcategory: "Objects"
 ---
 
 # panos_edl
 
 This resource allows you to add/update/delete external dynamic lists (EDL).
+
+
+## PAN-OS
+
+NGFW and Panorama.
+
+
+## Aliases
+
+* `panos_panorama_edl`
 
 
 ## Setting `repeat_at`
@@ -35,7 +45,7 @@ and the version of PAN-OS you're running against:
 ## Import Name
 
 ```
-<vsys>:<name>
+<device_group>:<vsys>:<name>
 ```
 
 
@@ -54,27 +64,36 @@ resource "panos_edl" "example" {
 
 ## Argument Reference
 
+Panorama specific arguments:
+
+* `device_group` - The device group (default: `shared`).
+
+
+NGFW specific arguments:
+
+* `vsys` - The vsys (default: `vsys1`).
+
+
 The following arguments are supported:
 
 * `name` - (Required) The object's name
-* `vsys` - (Optional) The vsys to put the object into (default: `vsys1`)
-* `type` - (Optional) The type of EDL.  This can be `ip` (the default; and the
-  only valid value for PAN-OS 6.1 - 7.0), `domain`, `url`, or `predefined`
-  (PAN-OS 8.0+)
-* `description` - (Optional) The object's description.
-* `source` - (Optional) The EDL source URL
-* `certificate_profile` - (Optional) Profile for authenticating client certificates
-* `username` - (Optional) EDL username
-* `password` - (Optional) EDL password
-* `repeat` - (Optional) How often to retrieve the EDL.  This can be `hourly` (the
+* `type` - The type of EDL.  This can be `ip` (the default; and the
+  only valid value for PAN-OS 6.1 - 7.0), `domain`, `url`, `predefined-ip`
+  (PAN-OS 8.0+), or `predefined-url` (PAN-OS 9.0+).
+* `description` - The object's description.
+* `source` - The EDL source URL
+* `certificate_profile` - Profile for authenticating client certificates
+* `username` - EDL username
+* `password` - EDL password
+* `repeat` - How often to retrieve the EDL.  This can be `hourly` (the
   default), `daily`, `weekly`, `monthly`, or `every five minutes` (valid for
   PAN-OS 7.1+)
-* `repeat_at` - (Optional) The time at which to retrieve the EDL.  Please refer
+* `repeat_at` - The time at which to retrieve the EDL.  Please refer
   to the section above for how to set this value properly.
-* `repeat_day_of_week` - (Optional) If `repeat` is `weekly`, then this should
+* `repeat_day_of_week` - If `repeat` is `weekly`, then this should
   be set to the desired day of the week.  Valid values are `sunday`,
   `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, and
   `sunday`
-* `repeat_day_of_month` - (Optional, int) If `repeat` is `monthly`, then this should
+* `repeat_day_of_month` - (int) If `repeat` is `monthly`, then this should
   be set to the desired day of the month.
-* `exceptions` - (Optional, list) Provide a list of exception entries.
+* `exceptions` - (list) Provide a list of exception entries.
