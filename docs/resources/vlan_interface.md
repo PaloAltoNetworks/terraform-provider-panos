@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_vlan_interface"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_vlan_interface
 
 This resource allows you to add/update/delete vlan interfaces.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
