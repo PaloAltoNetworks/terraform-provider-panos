@@ -1,14 +1,16 @@
 ---
 page_title: "panos: panos_userid_login"
-subcategory: "NGFW User-ID"
+subcategory: "User-ID"
 ---
-
 
 # panos_userid_login
 
 Login a specific user to a given IP address.
 
-**NOTE:** This is for Firewall only.
+
+## PAN-OS
+
+NGFW
 
 
 ## Example Usage
