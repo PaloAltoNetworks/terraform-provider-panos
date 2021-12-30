@@ -16,7 +16,7 @@ func TestAccPanosTelemetry_basic(t *testing.T) {
 		t.Skip(SkipFirewallAccTest)
 	}
 
-	var o telemetry.Settings
+	var o telemetry.Config
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -41,7 +41,7 @@ func TestAccPanosTelemetry_basic(t *testing.T) {
 	})
 }
 
-func testAccCheckPanosTelemetryExists(n string, o *telemetry.Settings) resource.TestCheckFunc {
+func testAccCheckPanosTelemetryExists(n string, o *telemetry.Config) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -64,7 +64,7 @@ func testAccCheckPanosTelemetryExists(n string, o *telemetry.Settings) resource.
 	}
 }
 
-func testAccCheckPanosTelemetryAttributes(o *telemetry.Settings, ar, tpr, ur, pdm bool) resource.TestCheckFunc {
+func testAccCheckPanosTelemetryAttributes(o *telemetry.Config, ar, tpr, ur, pdm bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.ApplicationReports != ar {
 			return fmt.Errorf("Application reports is %t, expected %t", o.ApplicationReports, ar)
