@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_management_profile"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_management_profile
 
 This resource allows you to add/update/delete interface management profiles.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
