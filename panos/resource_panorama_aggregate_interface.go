@@ -65,8 +65,7 @@ func readPanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) er
 
 	o, err := pano.Network.AggregateInterface.Get(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -113,8 +112,7 @@ func deletePanoramaAggregateInterface(d *schema.ResourceData, meta interface{}) 
 
 	err := pano.Network.AggregateInterface.Delete(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

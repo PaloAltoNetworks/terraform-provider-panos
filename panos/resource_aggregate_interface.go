@@ -284,8 +284,7 @@ func readAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.AggregateInterface.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -330,8 +329,7 @@ func deleteAggregateInterface(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.AggregateInterface.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
