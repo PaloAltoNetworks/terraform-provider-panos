@@ -1,11 +1,16 @@
 ---
 page_title: "panos: panos_syslog_server_profile"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_syslog_server_profile
 
 This resource allows you to add/update/delete syslog server profiles.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
