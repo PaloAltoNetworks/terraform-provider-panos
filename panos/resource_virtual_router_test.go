@@ -55,7 +55,7 @@ func testAccCheckPanosVirtualRouterExists(n string, o *router.Entry) resource.Te
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		_, name := parseVirtualRouterId(rs.Primary.ID)
+		_, _, _, name := parseVirtualRouterId(rs.Primary.ID)
 		v, err := fw.Network.VirtualRouter.Get(name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -126,7 +126,7 @@ func testAccPanosVirtualRouterDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			_, name := parseVirtualRouterId(rs.Primary.ID)
+			_, _, _, name := parseVirtualRouterId(rs.Primary.ID)
 			_, err := fw.Network.VirtualRouter.Get(name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)

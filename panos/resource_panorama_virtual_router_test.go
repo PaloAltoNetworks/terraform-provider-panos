@@ -56,7 +56,7 @@ func testAccCheckPanosPanoramaVirtualRouterExists(n string, o *router.Entry) res
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		tmpl, ts, _, name := parsePanoramaVirtualRouterId(rs.Primary.ID)
+		tmpl, ts, _, name := parseVirtualRouterId(rs.Primary.ID)
 		v, err := pano.Network.VirtualRouter.Get(tmpl, ts, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -127,7 +127,7 @@ func testAccPanosPanoramaVirtualRouterDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			tmpl, ts, _, name := parsePanoramaVirtualRouterId(rs.Primary.ID)
+			tmpl, ts, _, name := parseVirtualRouterId(rs.Primary.ID)
 			_, err := pano.Network.VirtualRouter.Get(tmpl, ts, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
