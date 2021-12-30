@@ -136,8 +136,7 @@ func readVlanInterface(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.VlanInterface.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -195,8 +194,7 @@ func deleteVlanInterface(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.VlanInterface.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
