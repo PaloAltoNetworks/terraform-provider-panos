@@ -9,6 +9,20 @@ const (
 	ApPassiveLinkStateAuto     = "auto"
 	ApPassiveLinkStateShutdown = "shutdown"
 
+	// AaSessionOwnerSelection Values
+	AaSessionOwnerSelectionPrimaryDevice = "primary-device"
+	AaSessionOwnerSelectionFirstPacket   = "first-packet"
+
+	// AaFpSessionSetup Values
+	AaFpSessionSetupPrimaryDevice = "primary-device"
+	AaFpSessionSetupFirstPacket   = "first-packet"
+	AaFpSessionSetupIpModulo      = "ip-modulo"
+	AaFpSessionSetupIpHash        = "ip-hash"
+
+	// AaFpSessionSetupIpHashKey Values
+	AaFpSessionSetupIpHashKeySource     = "source"
+	AaFpSessionSetupIpHashKeySourceDest = "source-and-destination"
+
 	// ElectionTimersMode Values
 	ElectionTimersModeRecommended = "recommended"
 	ElectionTimersModeAggressive  = "aggressive"

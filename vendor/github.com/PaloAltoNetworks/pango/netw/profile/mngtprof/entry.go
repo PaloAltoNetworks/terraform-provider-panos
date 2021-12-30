@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an interface
@@ -38,34 +39,63 @@ func (o *Entry) Copy(s Entry) {
 	o.UseridService = s.UseridService
 	o.UseridSyslogListenerSsl = s.UseridSyslogListenerSsl
 	o.UseridSyslogListenerUdp = s.UseridSyslogListenerUdp
-	o.PermittedIps = s.PermittedIps
+	if s.PermittedIps == nil {
+		o.PermittedIps = nil
+	} else {
+		o.PermittedIps = make([]string, len(s.PermittedIps))
+		copy(o.PermittedIps, s.PermittedIps)
+	}
 }
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:                    o.Answer.Name,
-		Ping:                    util.AsBool(o.Answer.Ping),
-		Telnet:                  util.AsBool(o.Answer.Telnet),
-		Ssh:                     util.AsBool(o.Answer.Ssh),
-		Http:                    util.AsBool(o.Answer.Http),
-		HttpOcsp:                util.AsBool(o.Answer.HttpOcsp),
-		Https:                   util.AsBool(o.Answer.Https),
-		Snmp:                    util.AsBool(o.Answer.Snmp),
-		ResponsePages:           util.AsBool(o.Answer.ResponsePages),
-		UseridService:           util.AsBool(o.Answer.UseridService),
-		UseridSyslogListenerSsl: util.AsBool(o.Answer.UseridSyslogListenerSsl),
-		UseridSyslogListenerUdp: util.AsBool(o.Answer.UseridSyslogListenerUdp),
-		PermittedIps:            util.EntToStr(o.Answer.PermittedIps),
+		Name:                    o.Name,
+		Ping:                    util.AsBool(o.Ping),
+		Telnet:                  util.AsBool(o.Telnet),
+		Ssh:                     util.AsBool(o.Ssh),
+		Http:                    util.AsBool(o.Http),
+		HttpOcsp:                util.AsBool(o.HttpOcsp),
+		Https:                   util.AsBool(o.Https),
+		Snmp:                    util.AsBool(o.Snmp),
+		ResponsePages:           util.AsBool(o.ResponsePages),
+		UseridService:           util.AsBool(o.UseridService),
+		UseridSyslogListenerSsl: util.AsBool(o.UseridSyslogListenerSsl),
+		UseridSyslogListenerUdp: util.AsBool(o.UseridSyslogListenerUdp),
+		PermittedIps:            util.EntToStr(o.PermittedIps),
 	}
 
 	return ans

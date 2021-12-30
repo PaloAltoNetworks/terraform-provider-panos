@@ -70,6 +70,20 @@ func (c *Panorama) Delete(tmpl, ts, iType, iName, subName string, e ...interface
 	return c.ns.Delete(c.pather(tmpl, ts, iType, iName, subName), names, nErr)
 }
 
+// FromPanosConfig retrieves the object stored in the retrieved config.
+func (c *Panorama) FromPanosConfig(tmpl, ts, iType, iName, subName, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.FromPanosConfig(c.pather(tmpl, ts, iType, iName, subName), name, ans)
+	return first(ans, err)
+}
+
+// AllFromPanosConfig retrieves all objects stored in the retrieved config.
+func (c *Panorama) AllFromPanosConfig(tmpl, ts, iType, iName, subName string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.AllFromPanosConfig(c.pather(tmpl, ts, iType, iName, subName), ans)
+	return all(ans, err)
+}
+
 func (c *Panorama) pather(tmpl, ts, iType, iName, subName string) namespace.Pather {
 	return func(v []string) ([]string, error) {
 		return c.xpath(tmpl, ts, iType, iName, subName, v)

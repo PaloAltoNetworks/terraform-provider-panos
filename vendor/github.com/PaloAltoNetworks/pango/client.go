@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -17,6 +18,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PaloAltoNetworks/pango/errors"
+	"github.com/PaloAltoNetworks/pango/plugin"
 	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/version"
 )
@@ -28,25 +31,44 @@ import (
 // such, those two flags should be considered for debugging only.  To disable
 // all logging, set the logging level as LogQuiet.
 //
+// As of right now, pango is not officially supported by Palo Alto Networks TAC,
+// however using the API itself via cURL is.  If you run into an issue and you believe
+// it to be a PAN-OS problem, you can enable a cURL output logging style to have pango
+// output an equivalent cURL command to use when interfacing with TAC.
+//
+// If you want to get the cURL command so that you can run it yourself, then set
+// the LogCurlWithPersonalData flag, which will output your real API key, hostname,
+// and any custom headers you have configured the client to send to PAN-OS.
+//
 // The bit-wise flags are as follows:
 //
 //      * LogQuiet: disables all logging
-//      * LogAction: action being performed (Set / Delete functions)
+//      * LogAction: action being performed (Set / Edit / Delete functions)
 //      * LogQuery: queries being run (Get / Show functions)
 //      * LogOp: operation commands (Op functions)
 //      * LogUid: User-Id commands (Uid functions)
+//      * LogLog: log retrieval commands
+//      * LogExport: log export commands
 //      * LogXpath: the resultant xpath
 //      * LogSend: xml docuemnt being sent
 //      * LogReceive: xml responses being received
+//      * LogOsxCurl: output an OSX cURL command for the data being sent in
+//      * LogCurlWithPersonalData: If doing a curl style logging, then include
+//        personal data in the curl command instead of tokens.
 const (
 	LogQuiet = 1 << (iota + 1)
 	LogAction
 	LogQuery
 	LogOp
 	LogUid
+	LogLog
+	LogExport
+	LogImport
 	LogXpath
 	LogSend
 	LogReceive
+	LogOsxCurl
+	LogCurlWithPersonalData
 )
 
 // Client is a generic connector struct.  It provides wrapper functions for
@@ -63,14 +85,15 @@ const (
 // so you can find the raw XML returned from PAN-OS there.
 type Client struct {
 	// Connection properties.
-	Hostname string `json:"hostname"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	ApiKey   string `json:"api_key"`
-	Protocol string `json:"protocol"`
-	Port     uint   `json:"port"`
-	Timeout  int    `json:"timeout"`
-	Target   string `json:"target"`
+	Hostname string            `json:"hostname"`
+	Username string            `json:"username"`
+	Password string            `json:"password"`
+	ApiKey   string            `json:"api_key"`
+	Protocol string            `json:"protocol"`
+	Port     uint              `json:"port"`
+	Timeout  int               `json:"timeout"`
+	Target   string            `json:"target"`
+	Headers  map[string]string `json:"headers"`
 
 	// Set to true if you want to check environment variables
 	// for auth and connection properties.
@@ -84,7 +107,7 @@ type Client struct {
 	// Variables determined at runtime.
 	Version        version.Number    `json:"-"`
 	SystemInfo     map[string]string `json:"-"`
-	Plugin         []PluginInfo      `json:"-"`
+	Plugin         []plugin.Info     `json:"-"`
 	MultiConfigure *MultiConfigure   `json:"-"`
 
 	// Logging level.
@@ -92,13 +115,15 @@ type Client struct {
 	LoggingFromInitialize []string `json:"logging"`
 
 	// Internal variables.
-	credsFile string
-	con       *http.Client
-	api_url   string
+	credsFile  string
+	con        *http.Client
+	api_url    string
+	configTree *util.XmlNode
 
-	// Variables for testing, response bytes and response index.
+	// Variables for testing, response bytes, headers, and response index.
 	rp              []url.Values
 	rb              [][]byte
+	rh              []http.Header
 	ri              int
 	authFileContent []byte
 }
@@ -133,7 +158,7 @@ func (c *Client) Versioning() version.Number {
 }
 
 // Plugins returns the plugin information.
-func (c *Client) Plugins() []PluginInfo {
+func (c *Client) Plugins() []plugin.Info {
 	return c.Plugin
 }
 
@@ -199,7 +224,7 @@ func (c *Client) RetrieveApiKey() error {
 	data.Add("password", c.Password)
 	data.Add("type", "keygen")
 
-	_, err := c.Communicate(data, &ans)
+	_, _, err := c.Communicate(data, &ans)
 	if err != nil {
 		return err
 	}
@@ -229,7 +254,7 @@ func (c *Client) EntryListUsing(fn util.Retriever, path []string) ([]string, err
 
 	_, err = fn(path, nil, &resp)
 	if err != nil {
-		e2, ok := err.(PanosError)
+		e2, ok := err.(errors.Panos)
 		if ok && e2.ObjectNotFound() {
 			return nil, nil
 		}
@@ -259,7 +284,7 @@ func (c *Client) MemberListUsing(fn util.Retriever, path []string) ([]string, er
 
 	_, err := fn(path, nil, &resp)
 	if err != nil {
-		e2, ok := err.(PanosError)
+		e2, ok := err.(errors.Panos)
 		if ok && e2.ObjectNotFound() {
 			return nil, nil
 		}
@@ -548,7 +573,7 @@ func (c *Client) WaitForJob(id uint, sleep time.Duration, resp interface{}) erro
 	return xml.Unmarshal(data, resp)
 }
 
-// LogAction writes a log message for SET/DELETE operations if LogAction is set.
+// LogAction writes a log message for SET/EDIT/DELETE operations if LogAction is set.
 func (c *Client) LogAction(msg string, i ...interface{}) {
 	if c.Logging&LogAction == LogAction {
 		log.Printf(msg, i...)
@@ -576,6 +601,27 @@ func (c *Client) LogUid(msg string, i ...interface{}) {
 	}
 }
 
+// LogLog writes a log message for LOG operations if LogLog is set.
+func (c *Client) LogLog(msg string, i ...interface{}) {
+	if c.Logging&LogLog == LogLog {
+		log.Printf(msg, i...)
+	}
+}
+
+// LogExport writes a log message for EXPORT operations if LogExport is set.
+func (c *Client) LogExport(msg string, i ...interface{}) {
+	if c.Logging&LogExport == LogExport {
+		log.Printf(msg, i...)
+	}
+}
+
+// LogImport writes a log message for IMPORT operations if LogImport is set.
+func (c *Client) LogImport(msg string, i ...interface{}) {
+	if c.Logging&LogImport == LogImport {
+		log.Printf(msg, i...)
+	}
+}
+
 // Communicate sends the given data to PAN-OS.
 //
 // The ans param should be a pointer to a struct to unmarshal the response
@@ -589,28 +635,19 @@ func (c *Client) LogUid(msg string, i ...interface{}) {
 // performed.
 //
 // If the API key is set, but not present in the given data, then it is added in.
-func (c *Client) Communicate(data url.Values, ans interface{}) ([]byte, error) {
+func (c *Client) Communicate(data url.Values, ans interface{}) ([]byte, http.Header, error) {
 	if c.ApiKey != "" && data.Get("key") == "" {
 		data.Set("key", c.ApiKey)
 	}
 
-	if c.Logging&LogSend == LogSend {
-		old_key := data.Get("key")
-		if old_key != "" {
-			data.Set("key", "########")
-		}
-		log.Printf("Sending data: %#v", data)
-		if old_key != "" {
-			data.Set("key", old_key)
-		}
-	}
+	c.logSend(data)
 
-	body, err := c.post(data)
+	body, hdrs, err := c.post(data)
 	if err != nil {
-		return nil, err
+		return body, hdrs, err
 	}
 
-	return c.endCommunication(body, ans)
+	return body, hdrs, c.endCommunication(body, ans)
 }
 
 // CommunicateFile does a file upload to PAN-OS.
@@ -633,23 +670,14 @@ func (c *Client) Communicate(data url.Values, ans interface{}) ([]byte, error) {
 // performed.
 //
 // If the API key is set, but not present in the given data, then it is added in.
-func (c *Client) CommunicateFile(content, filename, fp string, data url.Values, ans interface{}) ([]byte, error) {
+func (c *Client) CommunicateFile(content, filename, fp string, data url.Values, ans interface{}) ([]byte, http.Header, error) {
 	var err error
 
 	if c.ApiKey != "" && data.Get("key") == "" {
 		data.Set("key", c.ApiKey)
 	}
 
-	if c.Logging&LogSend == LogSend {
-		old_key := data.Get("key")
-		if old_key != "" {
-			data.Set("key", "########")
-		}
-		log.Printf("Sending data: %#v", data)
-		if old_key != "" {
-			data.Set("key", old_key)
-		}
-	}
+	c.logSend(data)
 
 	buf := bytes.Buffer{}
 	w := multipart.NewWriter(&buf)
@@ -660,33 +688,36 @@ func (c *Client) CommunicateFile(content, filename, fp string, data url.Values, 
 
 	w2, err := w.CreateFormFile(fp, filename)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if _, err = io.Copy(w2, strings.NewReader(content)); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	w.Close()
 
 	req, err := http.NewRequest("POST", c.api_url, &buf)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
+	for k, v := range c.Headers {
+		req.Header.Set(k, v)
+	}
 
 	res, err := c.con.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return body, res.Header, err
 	}
 
-	return c.endCommunication(body, ans)
+	return body, res.Header, c.endCommunication(body, ans)
 }
 
 // Op runs an operational or "op" type command.
@@ -725,7 +756,117 @@ func (c *Client) Op(req interface{}, vsys string, extras, ans interface{}) ([]by
 		return nil, err
 	}
 
-	return c.Communicate(data, ans)
+	b, _, err := c.Communicate(data, ans)
+	return b, err
+}
+
+// Log submits a "log" command.
+//
+// Use `WaitForLogs` to get the results of the log command.
+//
+// The extras param should be either nil or a url.Values{} to be mixed in with
+// the constructed request.
+//
+// Any response received from the server is returned, along with any errors
+// encountered.
+func (c *Client) Log(logType, action, query, dir string, nlogs, skip int, extras, ans interface{}) ([]byte, error) {
+	data := url.Values{}
+	data.Set("type", "log")
+
+	if logType != "" {
+		data.Set("log-type", logType)
+	}
+
+	if action != "" {
+		data.Set("action", action)
+	}
+
+	if query != "" {
+		data.Set("query", query)
+	}
+
+	if dir != "" {
+		data.Set("dir", dir)
+	}
+
+	if nlogs != 0 {
+		data.Set("nlogs", strconv.Itoa(nlogs))
+	}
+
+	if skip != 0 {
+		data.Set("skip", strconv.Itoa(skip))
+	}
+
+	if err := mergeUrlValues(&data, extras); err != nil {
+		return nil, err
+	}
+
+	b, _, err := c.Communicate(data, ans)
+	return b, err
+}
+
+// WaitForLogs performs repeated log retrieval operations until the log job is complete
+// or the timeout is reached.
+//
+// Specify a timeout of zero to wait indefinitely.
+//
+// The ans param should be a pointer to a struct to unmarshal the response
+// into or nil.
+//
+// Any response received from the server is returned, along with any errors
+// encountered.
+func (c *Client) WaitForLogs(id uint, sleep, timeout time.Duration, ans interface{}) ([]byte, error) {
+	var err error
+	var data []byte
+	var prev string
+	start := time.Now()
+	end := start.Add(timeout)
+	extras := url.Values{}
+	extras.Set("job-id", fmt.Sprintf("%d", id))
+
+	c.LogLog("(log) waiting for logs: %d", id)
+
+	var resp util.BasicJob
+	for {
+		resp = util.BasicJob{}
+
+		data, err = c.Log("", "get", "", "", 0, 0, extras, &resp)
+		if err != nil {
+			return data, err
+		}
+
+		if resp.Status != prev {
+			prev = resp.Status
+			c.LogLog("(log) job %d status: %s", id, prev)
+		}
+
+		if resp.Status == "FIN" {
+			break
+		}
+
+		if timeout > 0 && end.After(time.Now()) {
+			return data, fmt.Errorf("timeout")
+		}
+
+		if sleep > 0 {
+			time.Sleep(sleep)
+		}
+	}
+
+	if resp.Result == "FAIL" {
+		if len(resp.Details.Lines) > 0 {
+			return data, fmt.Errorf(resp.Details.String())
+		} else {
+			return data, fmt.Errorf("Job %d has failed to complete successfully", id)
+		}
+	}
+
+	if ans == nil {
+		return data, nil
+	}
+
+	err = xml.Unmarshal(data, ans)
+	return data, err
 }
 
 // Show runs a "show" type command.
@@ -912,7 +1053,8 @@ func (c *Client) Uid(cmd interface{}, vsys string, extras, ans interface{}) ([]b
 		return nil, err
 	}
 
-	return c.Communicate(data, ans)
+	b, _, err := c.Communicate(data, ans)
+	return b, err
 }
 
 // Import performs an import type command.
@@ -926,23 +1068,34 @@ func (c *Client) Uid(cmd interface{}, vsys string, extras, ans interface{}) ([]b
 //
 // The fp param is the name of the param for the file upload.
 //
-// The extras param is any additional key/value file upload params.
+// The extras param should be either nil or a url.Values{} to be mixed in with
+// the constructed request.
 //
 // The ans param should be a pointer to a struct to unmarshal the response
 // into or nil.
 //
 // Any response received from the server is returned, along with any errors
 // encountered.
-func (c *Client) Import(cat, content, filename, fp string, extras map[string]string, ans interface{}) ([]byte, error) {
+func (c *Client) Import(cat, content, filename, fp string, timeout time.Duration, extras, ans interface{}) ([]byte, error) {
+	if timeout < 0 {
+		return nil, fmt.Errorf("timeout cannot be negative")
+	} else if timeout > 0 {
+		defer func(c *Client, v time.Duration) {
+			c.con.Timeout = v
+		}(c, c.con.Timeout)
+		c.con.Timeout = timeout
+	}
+
 	data := url.Values{}
 	data.Set("type", "import")
 	data.Set("category", cat)
 
-	for k := range extras {
-		data.Set(k, extras[k])
+	if err := mergeUrlValues(&data, extras); err != nil {
+		return nil, err
 	}
 
-	return c.CommunicateFile(content, filename, fp, data, ans)
+	b, _, err := c.CommunicateFile(content, filename, fp, data, ans)
+	return b, err
 }
 
 // Commit performs PAN-OS commits.
@@ -985,8 +1138,58 @@ func (c *Client) Commit(cmd interface{}, action string, extras interface{}) (uin
 	}
 
 	ans := util.JobResponse{}
-	b, err := c.Communicate(data, &ans)
+	b, _, err := c.Communicate(data, &ans)
 	return ans.Id, b, err
+}
+
+// Export runs an "export" type command.
+//
+// The category param specifies the desired file type to export.
+//
+// The extras param should be either nil or a url.Values{} to be mixed in with
+// the constructed request.
+//
+// The ans param should be a pointer to a struct to unmarshal the response
+// into or nil.
+//
+// Any response received from the server is returned, along with any errors
+// encountered.
+//
+// If the export invoked results in a file being downloaded from PAN-OS, then
+// the string returned is the name of the remote file that is retrieved,
+// otherwise it's just an empty string.
+func (c *Client) Export(category string, timeout time.Duration, extras, ans interface{}) (string, []byte, error) {
+	if timeout < 0 {
+		return "", nil, fmt.Errorf("timeout cannot be negative")
+	} else if timeout > 0 {
+		defer func(c *Client, v time.Duration) {
+			c.con.Timeout = v
+		}(c, c.con.Timeout)
+		c.con.Timeout = timeout
+	}
+
+	data := url.Values{}
+	data.Set("type", "export")
+
+	if category != "" {
+		data.Set("category", category)
+	}
+
+	if err := mergeUrlValues(&data, extras); err != nil {
+		return "", nil, err
+	}
+
+	var filename string
+	b, hdrs, err := c.Communicate(data, ans)
+	if err == nil && hdrs != nil {
+		// Check and see if there's a filename in the content disposition.
+		mediatype, params, err := mime.ParseMediaType(hdrs.Get("Content-Disposition"))
+		if err == nil && mediatype == "attachment" {
+			filename = params["filename"]
+		}
+	}
+
+	return filename, b, err
 }
 
 /*** Internal functions ***/
@@ -1096,8 +1299,8 @@ func (c *Client) initCon() error {
 			c.Timeout = 10
 		}
 	}
-	if c.Timeout <= 0 || c.Timeout > 600 {
-		return fmt.Errorf("Timeout for %q is %d, expecting a number between [0, 600]", c.Hostname, c.Timeout)
+	if c.Timeout <= 0 {
+		return fmt.Errorf("Timeout for %q must be a positive int", c.Hostname)
 	}
 	tout = time.Duration(time.Duration(c.Timeout) * time.Second)
 
@@ -1107,6 +1310,21 @@ func (c *Client) initCon() error {
 			c.Target = val
 		} else {
 			c.Target = json_client.Target
+		}
+	}
+
+	// Headers.
+	if len(c.Headers) == 0 {
+		if val := os.Getenv("PANOS_HEADERS"); c.CheckEnvironment && val != "" {
+			if err := json.Unmarshal([]byte(val), &c.Headers); err != nil {
+				return err
+			}
+		}
+		if len(c.Headers) == 0 && len(json_client.Headers) > 0 {
+			c.Headers = make(map[string]string)
+			for k, v := range json_client.Headers {
+				c.Headers[k] = v
+			}
 		}
 	}
 
@@ -1250,53 +1468,15 @@ func (c *Client) initSystemInfo() error {
 func (c *Client) initPlugins() {
 	c.LogOp("(op) getting plugin info")
 
-	type plugin_req struct {
-		XMLName xml.Name `xml:"show"`
-		Cmd     string   `xml:"plugins>packages"`
-	}
-
-	type relNote struct {
-		ReleaseNoteUrl string `xml:",cdata"`
-	}
-
-	type pkgInfo struct {
-		Name        string  `xml:"name"`
-		Version     string  `xml:"version"`
-		ReleaseDate string  `xml:"release-date"`
-		RelNote     relNote `xml:"release-note-url"`
-		PackageFile string  `xml:"pkg-file"`
-		Size        string  `xml:"size"`
-		Platform    string  `xml:"platform"`
-		Installed   string  `xml:"installed"`
-		Downloaded  string  `xml:"downloaded"`
-	}
-
-	type pluginResp struct {
-		Answer []pkgInfo `xml:"result>plugins>entry"`
-	}
-
-	req := plugin_req{}
-	ans := pluginResp{}
+	var req plugin.GetPlugins
+	var ans plugin.PackageListing
 
 	if _, err := c.Op(req, "", nil, &ans); err != nil {
 		c.LogAction("WARNING: Failed to get plugin info: %s", err)
 		return
 	}
 
-	c.Plugin = make([]PluginInfo, 0, len(ans.Answer))
-	for _, data := range ans.Answer {
-		c.Plugin = append(c.Plugin, PluginInfo{
-			Name:           data.Name,
-			Version:        data.Version,
-			ReleaseDate:    data.ReleaseDate,
-			ReleaseNoteUrl: data.RelNote.ReleaseNoteUrl,
-			PackageFile:    data.PackageFile,
-			Size:           data.Size,
-			Platform:       data.Platform,
-			Installed:      data.Installed,
-			Downloaded:     data.Downloaded,
-		})
-	}
+	c.Plugin = ans.Listing()
 }
 
 func (c *Client) typeConfig(action string, data url.Values, element, extras, ans interface{}) ([]byte, error) {
@@ -1333,7 +1513,8 @@ func (c *Client) typeConfig(action string, data url.Values, element, extras, ans
 		return nil, err
 	}
 
-	return c.Communicate(data, ans)
+	b, _, err := c.Communicate(data, ans)
+	return b, err
 }
 
 func (c *Client) logXpath(p string) {
@@ -1372,7 +1553,7 @@ func (c *Client) VsysUnimport(loc, tmpl, ts string, names []string) error {
 
 	_, err := c.Delete(path, nil, nil)
 	if err != nil {
-		e2, ok := err.(PanosError)
+		e2, ok := err.(errors.Panos)
 		if ok && e2.ObjectNotFound() {
 			return nil
 		}
@@ -1396,7 +1577,7 @@ func (c *Client) IsImported(loc, tmpl, ts, vsys, name string) (bool, error) {
 		}
 	}
 
-	e2, ok := err.(PanosError)
+	e2, ok := err.(errors.Panos)
 	if ok && e2.ObjectNotFound() {
 		if vsys != "" {
 			return false, nil
@@ -1426,26 +1607,40 @@ func (c *Client) xpathImport(tmpl, ts, vsys string) []string {
 	return ans
 }
 
-func (c *Client) post(data url.Values) ([]byte, error) {
+func (c *Client) post(data url.Values) ([]byte, http.Header, error) {
 	if len(c.rb) == 0 {
-		r, err := c.con.PostForm(c.api_url, data)
+		req, err := http.NewRequest("POST", c.api_url, strings.NewReader(data.Encode()))
 		if err != nil {
-			return nil, err
+			return nil, nil, err
+		}
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		for k, v := range c.Headers {
+			req.Header.Set(k, v)
+		}
+
+		r, err := c.con.Do(req)
+		if err != nil {
+			return nil, nil, err
 		}
 
 		defer r.Body.Close()
-		return ioutil.ReadAll(r.Body)
+		ans, err := ioutil.ReadAll(r.Body)
+		return ans, r.Header, err
 	} else {
 		if c.ri < len(c.rb) {
 			c.rp = append(c.rp, data)
 		}
 		body := c.rb[c.ri%len(c.rb)]
+		var hdr http.Header
+		if len(c.rh) > 0 {
+			hdr = c.rh[c.ri%len(c.rh)]
+		}
 		c.ri++
-		return body, nil
+		return body, hdr, nil
 	}
 }
 
-func (c *Client) endCommunication(body []byte, ans interface{}) ([]byte, error) {
+func (c *Client) endCommunication(body []byte, ans interface{}) error {
 	var err error
 
 	if c.Logging&LogReceive == LogReceive {
@@ -1453,37 +1648,22 @@ func (c *Client) endCommunication(body []byte, ans interface{}) ([]byte, error) 
 	}
 
 	// Check for errors first
-	errType1 := &panosErrorResponseWithoutLine{}
-	err = xml.Unmarshal(body, errType1)
-	// At this point, we make use of the shared error error checking that exists
-	// between response types.  If the first response is not an error type, we
-	// don't have to check the others.  We can get some modest speed gains as
-	// a result.
-	if errType1.Failed() {
-		if err == nil && errType1.Error() != "" {
-			return body, PanosError{errType1.Error(), errType1.ResponseCode}
-		}
-		errType2 := panosErrorResponseWithLine{}
-		err = xml.Unmarshal(body, &errType2)
-		if err == nil && errType2.Error() != "" {
-			return body, PanosError{errType2.Error(), errType2.ResponseCode}
-		}
-		// Still an error, but some unknown format.
-		return body, fmt.Errorf("Unknown error format: %s", body)
+	if err = errors.Parse(body); err != nil {
+		return err
 	}
 
 	// Return the body string if we weren't given something to unmarshal into
 	if ans == nil {
-		return body, nil
+		return nil
 	}
 
 	// Unmarshal using the struct passed in
 	err = xml.Unmarshal(body, ans)
 	if err != nil {
-		return body, fmt.Errorf("Error unmarshaling into provided interface: %s", err)
+		return fmt.Errorf("Error unmarshaling into provided interface: %s", err)
 	}
 
-	return body, nil
+	return nil
 }
 
 /*
@@ -1609,6 +1789,255 @@ func (c *Client) SendMultiConfigure(strict bool) (MultiConfigureResponse, error)
 	return ans, err
 }
 
+// GetTechSupportFile returns the tech support .tgz file.
+//
+// This function returns the name of the tech support file, the file
+// contents, and an error if one occurred.
+//
+// The timeout param is the new timeout (in seconds) to temporarily assign to
+// client connections to allow for the successful download of the tech support
+// file.  If the timeout is zero, then pango.Client.Timeout is the timeout for
+// tech support file retrieval.
+func (c *Client) GetTechSupportFile(timeout time.Duration) (string, []byte, error) {
+	if timeout < 0 {
+		return "", nil, fmt.Errorf("timeout cannot be negative")
+	}
+
+	var err error
+	var resp util.JobResponse
+	cmd := "tech-support"
+
+	c.LogExport("(export) tech support file")
+
+	// Request the tech support file creation.
+	_, _, err = c.Export(cmd, 0, nil, &resp)
+	if err != nil {
+		return "", nil, err
+	}
+	if resp.Id == 0 {
+		return "", nil, fmt.Errorf("Job ID was not found")
+	}
+
+	extras := url.Values{}
+	extras.Set("action", "status")
+	extras.Set("job-id", fmt.Sprintf("%d", resp.Id))
+
+	// Poll the job until it's done.
+	var pr util.BasicJob
+	var prev uint
+	for {
+		_, _, err = c.Export(cmd, 0, extras, &pr)
+		if err != nil {
+			return "", nil, err
+		}
+
+		// The progress is not an uint when the job completes, so don't print
+		// the progress as 0 when the job is actually complete.
+		if pr.Progress != prev && pr.Progress != 0 {
+			prev = pr.Progress
+			c.LogExport("(export) tech support job %d: %d percent complete", resp.Id, prev)
+		}
+
+		if pr.Status == "FIN" {
+			break
+		}
+
+		time.Sleep(2 * time.Second)
+	}
+
+	if pr.Result == "FAIL" {
+		return "", nil, fmt.Errorf(pr.Details.String())
+	}
+
+	extras.Set("action", "get")
+	return c.Export(cmd, timeout, extras, nil)
+}
+
+// RetrievePanosConfig retrieves either the running config, candidate config,
+// or the specified saved config file, then does `LoadPanosConfig()` to save it.
+//
+// After the config is loaded, config can be queried and retrieved using
+// any `FromPanosConfig()` methods.
+//
+// Param `value` can be the word "candidate" to load candidate config or
+// `running` to load running config.  If the value is neither of those, it
+// is assumed to be the name of a saved config and that is loaded.
+func (c *Client) RetrievePanosConfig(value string) error {
+	type getConfig struct {
+		XMLName   xml.Name `xml:"show"`
+		Running   *string  `xml:"config>running"`
+		Candidate *string  `xml:"config>candidate"`
+		Saved     *string  `xml:"config>saved"`
+	}
+
+	type data struct {
+		Data []byte `xml:",innerxml"`
+	}
+
+	type resp struct {
+		XMLName xml.Name `xml:"response"`
+		Result  data     `xml:"result"`
+	}
+
+	s := ""
+	req := getConfig{}
+	switch value {
+	case "candidate":
+		req.Candidate = &s
+	case "running":
+		req.Running = &s
+	default:
+		req.Saved = &value
+	}
+	ans := resp{}
+
+	if _, err := c.Op(req, "", nil, &ans); err != nil {
+		return err
+	}
+
+	return c.LoadPanosConfig(ans.Result.Data)
+}
+
+// LoadPanosConfig stores the given XML document into the local client instance.
+//
+// The `config` can either be `<config>...</config>` or something that contians
+// only the config document (such as `<result ...><config>...</config></result>`).
+//
+// After the config is loaded, config can be queried and retrieved using
+// any `FromPanosConfig()` methods.
+func (c *Client) LoadPanosConfig(config []byte) error {
+	log.Printf("load panos config")
+	if err := xml.Unmarshal(config, &c.configTree); err != nil {
+		return err
+	}
+
+	if c.configTree.XMLName.Local == "config" {
+		// Add a place holder parent util.XmlNode.
+		c.configTree = &util.XmlNode{
+			XMLName: xml.Name{
+				Local: "a",
+			},
+			Nodes: []util.XmlNode{
+				*c.configTree,
+			},
+		}
+		return nil
+	}
+
+	if len(c.configTree.Nodes) == 1 && c.configTree.Nodes[0].XMLName.Local == "config" {
+		// Already has a place holder parent.
+		return nil
+	}
+
+	c.configTree = nil
+	return fmt.Errorf("doesn't seem to be a config tree")
+}
+
+// ConfigTree returns the configuration tree that was loaded either via
+// `RetrievePanosConfig()` or `LoadPanosConfig()`.
+func (c *Client) ConfigTree() *util.XmlNode {
+	return c.configTree
+}
+
+func (c *Client) logSend(data url.Values) {
+	var b strings.Builder
+
+	// Traditional send logging.
+	if c.Logging&LogSend == LogSend {
+		if b.Len() > 0 {
+			fmt.Fprintf(&b, "\n")
+		}
+		realKey := data.Get("key")
+		if realKey != "" {
+			data.Set("key", "########")
+		}
+		fmt.Fprintf(&b, "Sending data: %#v", data)
+		if realKey != "" {
+			data.Set("key", realKey)
+		}
+	}
+
+	// Log the send data as an OSX curl command.
+	if c.Logging&LogOsxCurl == LogOsxCurl {
+		if b.Len() > 0 {
+			fmt.Fprintf(&b, "\n")
+		}
+		special := map[string]string{
+			"key":     "",
+			"element": "",
+		}
+		ev := url.Values{}
+		for k := range data {
+			var isSpecial bool
+			for sk := range special {
+				if sk == k {
+					isSpecial = true
+					special[k] = data.Get(k)
+					break
+				}
+			}
+			if !isSpecial {
+				ev[k] = make([]string, 0, len(data[k]))
+				for i := range data[k] {
+					ev[k] = append(ev[k], data[k][i])
+				}
+			}
+		}
+
+		// Build up the curl command.
+		fmt.Fprintf(&b, "curl")
+		// Verify cert.
+		if !c.VerifyCertificate {
+			fmt.Fprintf(&b, " -k")
+		}
+		// Headers.
+		if len(c.Headers) > 0 && c.Logging&LogCurlWithPersonalData == LogCurlWithPersonalData {
+			for k, v := range c.Headers {
+				if v != "" {
+					fmt.Fprintf(&b, " --header '%s: %s'", k, v)
+				} else {
+					fmt.Fprintf(&b, " --header '%s;'", k)
+				}
+			}
+		}
+		// Add URL encoded values.
+		if special["key"] != "" {
+			if c.Logging&LogCurlWithPersonalData == LogCurlWithPersonalData {
+				ev.Set("key", special["key"])
+			} else {
+				ev.Set("key", "APIKEY")
+			}
+		}
+		// Add in the element, if present.
+		if special["element"] != "" {
+			fmt.Fprintf(&b, " --data-urlencode element@element.xml")
+		}
+		// URL.
+		fmt.Fprintf(&b, " '%s://", c.Protocol)
+		if c.Logging&LogCurlWithPersonalData == LogCurlWithPersonalData {
+			fmt.Fprintf(&b, "%s", c.Hostname)
+		} else {
+			fmt.Fprintf(&b, "HOST")
+		}
+		if c.Port != 0 {
+			fmt.Fprintf(&b, ":%d", c.Port)
+		}
+		fmt.Fprintf(&b, "/api")
+		if len(ev) > 0 {
+			fmt.Fprintf(&b, "?%s", ev.Encode())
+		}
+		fmt.Fprintf(&b, "'")
+		// Data.
+		if special["element"] != "" {
+			fmt.Fprintf(&b, "\nelement.xml:\n%s", special["element"])
+		}
+	}
+
+	if b.Len() > 0 {
+		log.Printf("%s", b.String())
+	}
+}
+
 /** Non-struct private functions **/
 
 func mergeUrlValues(data *url.Values, extras interface{}) error {
@@ -1669,118 +2098,6 @@ func asString(i interface{}, attemptMarshal bool) (string, error) {
 	}
 }
 
-// PanosError is the error struct returned from the Communicate method.
-type PanosError struct {
-	Msg  string
-	Code int
-}
-
-// Error returns the error message.
-func (e PanosError) Error() string {
-	return e.Msg
-}
-
-// ObjectNotFound returns true on missing object error.
-func (e PanosError) ObjectNotFound() bool {
-	return e.Code == 7
-}
-
-/*
-// Code returns the error code.
-func (e PanosError) Code() int {
-    return e.ErrCode
-}
-*/
-
-type panosStatus struct {
-	ResponseStatus string `xml:"status,attr"`
-	ResponseCode   int    `xml:"code,attr"`
-}
-
-// Failed checks for a status of "failed" or "error".
-func (e panosStatus) Failed() bool {
-	if e.ResponseStatus == "failed" || e.ResponseStatus == "error" {
-		return true
-	} else if e.ResponseCode == 0 || e.ResponseCode == 19 || e.ResponseCode == 20 {
-		return false
-	} else {
-		return true
-	}
-}
-
-func (e panosStatus) codeError() string {
-	switch e.ResponseCode {
-	case 1:
-		return "Unknown command"
-	case 2, 3, 4, 5, 11:
-		return fmt.Sprintf("Internal error (%d) encountered", e.ResponseCode)
-	case 6:
-		return "Bad Xpath"
-	case 7:
-		return "Object not found"
-	case 8:
-		return "Object not unique"
-	case 10:
-		return "Reference count not zero"
-	case 12:
-		return "Invalid object"
-	case 14:
-		return "Operation not possible"
-	case 15:
-		return "Operation denied"
-	case 16:
-		return "Unauthorized"
-	case 17:
-		return "Invalid command"
-	case 18:
-		return "Malformed command"
-	case 0, 19, 20:
-		return ""
-	case 22:
-		return "Session timed out"
-	default:
-		return fmt.Sprintf("(%d) Unknown failure code, operation failed", e.ResponseCode)
-	}
-}
-
-// panosErrorResponseWithLine is one of a few known error formats that PAN-OS
-// outputs.  This has to be split from the other error struct because the
-// the XML unmarshaler doesn't like a single struct to have overlapping
-// definitions (the msg>line part).
-type panosErrorResponseWithLine struct {
-	XMLName xml.Name `xml:"response"`
-	panosStatus
-	ResponseMsg string `xml:"msg>line"`
-}
-
-// Error retrieves the parsed error message.
-func (e panosErrorResponseWithLine) Error() string {
-	if e.ResponseMsg != "" {
-		return e.ResponseMsg
-	} else {
-		return e.codeError()
-	}
-}
-
-// panosErrorResponseWithoutLine is one of a few known error formats that PAN-OS
-// outputs.  It checks two locations that the error could be, and returns the
-// one that was discovered in its Error().
-type panosErrorResponseWithoutLine struct {
-	XMLName xml.Name `xml:"response"`
-	panosStatus
-	ResponseMsg1 string `xml:"result>msg"`
-	ResponseMsg2 string `xml:"msg"`
-}
-
-// Error retrieves the parsed error message.
-func (e panosErrorResponseWithoutLine) Error() string {
-	if e.ResponseMsg1 != "" {
-		return e.ResponseMsg1
-	} else {
-		return e.ResponseMsg2
-	}
-}
-
 // vis is a vsys import struct.
 type vis struct {
 	XMLName xml.Name
@@ -1793,17 +2110,4 @@ type configLocks struct {
 
 type commitLocks struct {
 	Locks []util.Lock `xml:"result>commit-locks>entry"`
-}
-
-// PluginInfo is information on plugin packages available to PAN-OS.
-type PluginInfo struct {
-	Name           string
-	Version        string
-	ReleaseDate    string
-	ReleaseNoteUrl string
-	PackageFile    string
-	Size           string
-	Platform       string
-	Installed      string
-	Downloaded     string
 }

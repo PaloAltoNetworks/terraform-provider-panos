@@ -60,6 +60,19 @@ For any version safe object, attempting to configure a parameter that your
 PAN-OS doesn't support will be safely ignored in the resultant XML sent to the
 firewall / Panorama.
 
+
+Loading PAN-OS Config
+
+A PAN-OS configuration can be loaded from a PAN-OS device using `RetrievePanosConfig()`
+to pull it from a live device or `LoadPanosConfig()` if already in local memory.  Once
+it's been loaded, use `FromPanosConfig()` for singletons and `AllFromPanosConfig()`
+for slices of normalized objects from the loaded config.
+
+You can also use this file load and config retrieval to do offline inspection of the
+config, just make sure to set `pango.Client.Version` to the appropriate PAN-OS
+version so the version normalization can take place.
+
+
 Using Edit Functions
 
 The PAN-OS XML API Edit command can be used to both create as well as update

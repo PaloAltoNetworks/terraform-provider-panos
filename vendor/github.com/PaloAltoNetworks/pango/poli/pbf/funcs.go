@@ -68,11 +68,13 @@ func toNames(e []interface{}) ([]string, error) {
 // FirewallNamespace returns an initialized namespace.
 func FirewallNamespace(client util.XapiClient) *Firewall {
 	return &Firewall{
-		ns: &namespace.Standard{
-			Common: namespace.Common{
-				Singular: singular,
-				Plural:   plural,
-				Client:   client,
+		ns: &namespace.Policy{
+			Standard: namespace.Standard{
+				Common: namespace.Common{
+					Singular: singular,
+					Plural:   plural,
+					Client:   client,
+				},
 			},
 		},
 	}
@@ -81,12 +83,45 @@ func FirewallNamespace(client util.XapiClient) *Firewall {
 // PanoramaNamespace returns an initialized namespace.
 func PanoramaNamespace(client util.XapiClient) *Panorama {
 	return &Panorama{
-		ns: &namespace.Standard{
-			Common: namespace.Common{
-				Singular: singular,
-				Plural:   plural,
-				Client:   client,
+		ns: &namespace.Policy{
+			Standard: namespace.Standard{
+				Common: namespace.Common{
+					Singular: singular,
+					Plural:   plural,
+					Client:   client,
+				},
 			},
 		},
 	}
+}
+
+func RulesMatch(a, b Entry) bool {
+	return a.Name == b.Name &&
+		a.Description == b.Description &&
+		util.OrderedListsMatch(a.Tags, b.Tags) &&
+		a.FromType == b.FromType &&
+		util.UnorderedListsMatch(a.FromValues, b.FromValues) &&
+		util.UnorderedListsMatch(a.SourceAddresses, b.SourceAddresses) &&
+		util.UnorderedListsMatch(a.SourceUsers, b.SourceUsers) &&
+		a.NegateSource == b.NegateSource &&
+		util.UnorderedListsMatch(a.DestinationAddresses, b.DestinationAddresses) &&
+		a.NegateDestination == b.NegateDestination &&
+		util.UnorderedListsMatch(a.Applications, b.Applications) &&
+		util.UnorderedListsMatch(a.Services, b.Services) &&
+		a.Schedule == b.Schedule &&
+		a.Disabled == b.Disabled &&
+		a.Action == b.Action &&
+		a.ForwardVsys == b.ForwardVsys &&
+		a.ForwardEgressInterface == b.ForwardEgressInterface &&
+		a.ForwardNextHopType == b.ForwardNextHopType &&
+		a.ForwardNextHopValue == b.ForwardNextHopValue &&
+		a.ForwardMonitorProfile == b.ForwardMonitorProfile &&
+		a.ForwardMonitorIpAddress == b.ForwardMonitorIpAddress &&
+		a.ForwardMonitorDisableIfUnreachable == b.ForwardMonitorDisableIfUnreachable &&
+		a.EnableEnforceSymmetricReturn == b.EnableEnforceSymmetricReturn &&
+		util.OrderedListsMatch(a.SymmetricReturnAddresses, b.SymmetricReturnAddresses) &&
+		a.ActiveActiveDeviceBinding == b.ActiveActiveDeviceBinding &&
+		util.TargetsMatch(a.Targets, b.Targets) &&
+		// Don't compare UUID.
+		a.NegateTarget == b.NegateTarget
 }

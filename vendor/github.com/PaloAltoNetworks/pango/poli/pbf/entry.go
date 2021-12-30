@@ -43,22 +43,23 @@ type Entry struct {
 	Targets                            map[string][]string
 	NegateTarget                       bool
 	Uuid                               string // 9.0+
+	GroupTag                           string // 9.0+
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
+// Name and Uuid fields relates to the identify of this object, they are not copied.
 func (o *Entry) Copy(s Entry) {
 	o.Description = s.Description
-	o.Tags = s.Tags
+	o.Tags = util.CopyStringSlice(s.Tags)
 	o.FromType = s.FromType
-	o.FromValues = s.FromValues
-	o.SourceAddresses = s.SourceAddresses
-	o.SourceUsers = s.SourceUsers
+	o.FromValues = util.CopyStringSlice(s.FromValues)
+	o.SourceAddresses = util.CopyStringSlice(s.SourceAddresses)
+	o.SourceUsers = util.CopyStringSlice(s.SourceUsers)
 	o.NegateSource = s.NegateSource
-	o.DestinationAddresses = s.DestinationAddresses
+	o.DestinationAddresses = util.CopyStringSlice(s.DestinationAddresses)
 	o.NegateDestination = s.NegateDestination
-	o.Applications = s.Applications
-	o.Services = s.Services
+	o.Applications = util.CopyStringSlice(s.Applications)
+	o.Services = util.CopyStringSlice(s.Services)
 	o.Schedule = s.Schedule
 	o.Disabled = s.Disabled
 	o.Action = s.Action
@@ -70,11 +71,11 @@ func (o *Entry) Copy(s Entry) {
 	o.ForwardMonitorIpAddress = s.ForwardMonitorIpAddress
 	o.ForwardMonitorDisableIfUnreachable = s.ForwardMonitorDisableIfUnreachable
 	o.EnableEnforceSymmetricReturn = s.EnableEnforceSymmetricReturn
-	o.SymmetricReturnAddresses = s.SymmetricReturnAddresses
+	o.SymmetricReturnAddresses = util.CopyStringSlice(s.SymmetricReturnAddresses)
 	o.ActiveActiveDeviceBinding = s.ActiveActiveDeviceBinding
-	o.Targets = s.Targets
+	o.Targets = util.CopyTargets(s.Targets)
 	o.NegateTarget = s.NegateTarget
-	o.Uuid = s.Uuid
+	o.GroupTag = s.GroupTag
 }
 
 /** Structs / functions for this namespace. **/
@@ -151,97 +152,6 @@ func (o *entry_v1) normalize() Entry {
 			if o.Action.Forward.NextHop.IpAddress != "" {
 				ans.ForwardNextHopType = ForwardNextHopTypeIpAddress
 				ans.ForwardNextHopValue = o.Action.Forward.NextHop.IpAddress
-			}
-		}
-
-		if o.Action.Forward.Monitor != nil {
-			ans.ForwardMonitorProfile = o.Action.Forward.Monitor.ForwardMonitorProfile
-			ans.ForwardMonitorIpAddress = o.Action.Forward.Monitor.ForwardMonitorIpAddress
-			ans.ForwardMonitorDisableIfUnreachable = util.AsBool(o.Action.Forward.Monitor.ForwardMonitorDisableIfUnreachable)
-		}
-	case o.Action.ForwardVsys != nil:
-		ans.Action = ActionVsysForward
-		ans.ForwardVsys = *o.Action.ForwardVsys
-	case o.Action.Discard != nil:
-		ans.Action = ActionDiscard
-	case o.Action.NoPbf != nil:
-		ans.Action = ActionNoPbf
-	}
-
-	if o.Symmetric != nil {
-		ans.EnableEnforceSymmetricReturn = util.AsBool(o.Symmetric.EnableEnforceSymmetricReturn)
-		ans.SymmetricReturnAddresses = util.EntToStr(o.Symmetric.SymmetricReturnAddresses)
-	}
-
-	return ans
-}
-
-type container_v2 struct {
-	Answer []entry_v2 `xml:"entry"`
-}
-
-func (o *container_v2) Normalize() []Entry {
-	ans := make([]Entry, 0, len(o.Answer))
-	for i := range o.Answer {
-		ans = append(ans, o.Answer[i].normalize())
-	}
-
-	return ans
-}
-
-func (o *container_v2) Names() []string {
-	ans := make([]string, 0, len(o.Answer))
-	for i := range o.Answer {
-		ans = append(ans, o.Answer[i].Name)
-	}
-
-	return ans
-}
-
-func (o *entry_v2) normalize() Entry {
-	ans := Entry{
-		Name:                      o.Name,
-		SourceAddresses:           util.MemToStr(o.SourceAddresses),
-		SourceUsers:               util.MemToStr(o.SourceUsers),
-		NegateSource:              util.AsBool(o.NegateSource),
-		DestinationAddresses:      util.MemToStr(o.DestinationAddresses),
-		NegateDestination:         util.AsBool(o.NegateDestination),
-		Applications:              util.MemToStr(o.Applications),
-		Services:                  util.MemToStr(o.Services),
-		Schedule:                  o.Schedule,
-		Tags:                      util.MemToStr(o.Tags),
-		Disabled:                  util.AsBool(o.Disabled),
-		Description:               o.Description,
-		ActiveActiveDeviceBinding: o.ActiveActiveDeviceBinding,
-		Uuid:                      o.Uuid,
-	}
-
-	if o.TargetInfo != nil {
-		ans.NegateTarget = util.AsBool(o.TargetInfo.NegateTarget)
-		ans.Targets = util.VsysEntToMap(o.TargetInfo.Targets)
-	}
-
-	switch {
-	case o.FromZones != nil:
-		ans.FromType = FromTypeZone
-		ans.FromValues = util.MemToStr(o.FromZones)
-	case o.FromInterfaces != nil:
-		ans.FromType = FromTypeInterface
-		ans.FromValues = util.MemToStr(o.FromInterfaces)
-	}
-
-	switch {
-	case o.Action.Forward != nil:
-		ans.Action = ActionForward
-		ans.ForwardEgressInterface = o.Action.Forward.ForwardEgressInterface
-
-		if o.Action.Forward.NextHop != nil {
-			if o.Action.Forward.NextHop.IpAddress != "" {
-				ans.ForwardNextHopType = ForwardNextHopTypeIpAddress
-				ans.ForwardNextHopValue = o.Action.Forward.NextHop.IpAddress
-			} else if o.Action.Forward.NextHop.Fqdn != "" {
-				ans.ForwardNextHopType = ForwardNextHopTypeFqdn
-				ans.ForwardNextHopValue = o.Action.Forward.NextHop.Fqdn
 			}
 		}
 
@@ -393,10 +303,104 @@ func specify_v1(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 9.0
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:                      o.Name,
+		SourceAddresses:           util.MemToStr(o.SourceAddresses),
+		SourceUsers:               util.MemToStr(o.SourceUsers),
+		NegateSource:              util.AsBool(o.NegateSource),
+		DestinationAddresses:      util.MemToStr(o.DestinationAddresses),
+		NegateDestination:         util.AsBool(o.NegateDestination),
+		Applications:              util.MemToStr(o.Applications),
+		Services:                  util.MemToStr(o.Services),
+		Schedule:                  o.Schedule,
+		Tags:                      util.MemToStr(o.Tags),
+		Disabled:                  util.AsBool(o.Disabled),
+		Description:               o.Description,
+		ActiveActiveDeviceBinding: o.ActiveActiveDeviceBinding,
+		Uuid:                      o.Uuid,
+		GroupTag:                  o.GroupTag,
+	}
+
+	if o.TargetInfo != nil {
+		ans.NegateTarget = util.AsBool(o.TargetInfo.NegateTarget)
+		ans.Targets = util.VsysEntToMap(o.TargetInfo.Targets)
+	}
+
+	switch {
+	case o.FromZones != nil:
+		ans.FromType = FromTypeZone
+		ans.FromValues = util.MemToStr(o.FromZones)
+	case o.FromInterfaces != nil:
+		ans.FromType = FromTypeInterface
+		ans.FromValues = util.MemToStr(o.FromInterfaces)
+	}
+
+	switch {
+	case o.Action.Forward != nil:
+		ans.Action = ActionForward
+		ans.ForwardEgressInterface = o.Action.Forward.ForwardEgressInterface
+
+		if o.Action.Forward.NextHop != nil {
+			if o.Action.Forward.NextHop.IpAddress != "" {
+				ans.ForwardNextHopType = ForwardNextHopTypeIpAddress
+				ans.ForwardNextHopValue = o.Action.Forward.NextHop.IpAddress
+			} else if o.Action.Forward.NextHop.Fqdn != "" {
+				ans.ForwardNextHopType = ForwardNextHopTypeFqdn
+				ans.ForwardNextHopValue = o.Action.Forward.NextHop.Fqdn
+			}
+		}
+
+		if o.Action.Forward.Monitor != nil {
+			ans.ForwardMonitorProfile = o.Action.Forward.Monitor.ForwardMonitorProfile
+			ans.ForwardMonitorIpAddress = o.Action.Forward.Monitor.ForwardMonitorIpAddress
+			ans.ForwardMonitorDisableIfUnreachable = util.AsBool(o.Action.Forward.Monitor.ForwardMonitorDisableIfUnreachable)
+		}
+	case o.Action.ForwardVsys != nil:
+		ans.Action = ActionVsysForward
+		ans.ForwardVsys = *o.Action.ForwardVsys
+	case o.Action.Discard != nil:
+		ans.Action = ActionDiscard
+	case o.Action.NoPbf != nil:
+		ans.Action = ActionNoPbf
+	}
+
+	if o.Symmetric != nil {
+		ans.EnableEnforceSymmetricReturn = util.AsBool(o.Symmetric.EnableEnforceSymmetricReturn)
+		ans.SymmetricReturnAddresses = util.EntToStr(o.Symmetric.SymmetricReturnAddresses)
+	}
+
+	return ans
+}
+
 type entry_v2 struct {
 	XMLName                   xml.Name         `xml:"entry"`
 	Name                      string           `xml:"name,attr"`
 	Uuid                      string           `xml:"uuid,attr,omitempty"`
+	GroupTag                  string           `xml:"group-tag,omitempty"`
 	FromZones                 *util.MemberType `xml:"from>zone"`
 	FromInterfaces            *util.MemberType `xml:"from>interface"`
 	SourceAddresses           *util.MemberType `xml:"source"`
@@ -450,6 +454,7 @@ func specify_v2(e Entry) interface{} {
 		Description:               e.Description,
 		ActiveActiveDeviceBinding: e.ActiveActiveDeviceBinding,
 		Uuid:                      e.Uuid,
+		GroupTag:                  e.GroupTag,
 	}
 
 	if e.Targets != nil || e.NegateTarget {

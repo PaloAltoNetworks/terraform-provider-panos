@@ -4,25 +4,11 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
-const (
-	EncryptionDes    = "des"
-	Encryption3des   = "3des"
-	EncryptionAes128 = "aes-128-cbc"
-	EncryptionAes192 = "aes-192-cbc"
-	EncryptionAes256 = "aes-256-cbc"
-)
-
-const (
-	TimeSeconds = "seconds"
-	TimeMinutes = "minutes"
-	TimeHours   = "hours"
-	TimeDays    = "days"
-)
-
-// Entry is a normalized, version independent representation of an interface
-// management profile.
+// Entry is a normalized, version independent representation of
+// IKE crypto profile.
 type Entry struct {
 	Name                   string
 	DhGroup                []string
@@ -37,28 +23,51 @@ type Entry struct {
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
 	o.DhGroup = s.DhGroup
-	o.Authentication = s.Authentication
-	o.Encryption = s.Encryption
+	if s.DhGroup == nil {
+		o.DhGroup = nil
+	} else {
+		o.DhGroup = make([]string, len(s.DhGroup))
+		copy(o.DhGroup, s.DhGroup)
+	}
+	if s.Authentication == nil {
+		o.Authentication = nil
+	} else {
+		o.Authentication = make([]string, len(s.Authentication))
+		copy(o.Authentication, s.Authentication)
+	}
+	if s.Encryption == nil {
+		o.Encryption = nil
+	} else {
+		o.Encryption = make([]string, len(s.Encryption))
+		copy(o.Encryption, s.Encryption)
+	}
 	o.LifetimeType = s.LifetimeType
 	o.LifetimeValue = s.LifetimeValue
 	o.AuthenticationMultiple = s.AuthenticationMultiple
 }
 
-// SpecifyEncryption takes normalizes encryption values and changes them to the
-// version specific values PAN-OS will be expecting.
-//
-// Param v should be 1 if you're running against PAN-OS 6.1; 2 if you're
-// running against 7.0 or later.
-func (o *Entry) SpecifyEncryption(v int) {
-	if len(o.Encryption) == 0 {
-		return
+/** Structs / functions for this namespace. **/
+
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
+type normalizer interface {
+	Normalize() []Entry
+	Names() []string
+}
+
+func specifyEncryption(vals []string, v int) []string {
+	if vals == nil {
+		return nil
 	}
 
-	nv := make([]string, len(o.Encryption))
+	nv := make([]string, len(vals))
 	switch v {
 	case 2:
-		for i := range o.Encryption {
-			switch o.Encryption[i] {
+		for i := range vals {
+			switch vals[i] {
 			case EncryptionDes:
 				nv[i] = "des"
 			case Encryption3des:
@@ -69,13 +78,17 @@ func (o *Entry) SpecifyEncryption(v int) {
 				nv[i] = "aes-192-cbc"
 			case EncryptionAes256:
 				nv[i] = "aes-256-cbc"
+			case EncryptionAes128Gcm:
+				nv[i] = "aes-128-gcm"
+			case EncryptionAes256Gcm:
+				nv[i] = "aes-256-gcm"
 			default:
-				nv[i] = o.Encryption[i]
+				nv[i] = vals[i]
 			}
 		}
 	case 1:
-		for i := range o.Encryption {
-			switch o.Encryption[i] {
+		for i := range vals {
+			switch vals[i] {
 			case Encryption3des:
 				nv[i] = "3des"
 			case EncryptionAes128:
@@ -85,74 +98,89 @@ func (o *Entry) SpecifyEncryption(v int) {
 			case EncryptionAes256:
 				nv[i] = "aes256"
 			default:
-				nv[i] = o.Encryption[i]
+				nv[i] = vals[i]
 			}
 		}
 	default:
-		copy(nv, o.Encryption)
+		copy(nv, vals)
 	}
 
-	o.Encryption = nv
+	return nv
 }
 
-// NormalizeEncryption normalizes the fields in o.Encryption.
-func (o *Entry) NormalizeEncryption() {
-	if len(o.Encryption) == 0 {
-		return
+func normalizeEncryption(v []string) []string {
+	if v == nil {
+		return nil
 	}
 
-	nv := make([]string, len(o.Encryption))
-	for i := range o.Encryption {
-		switch o.Encryption[i] {
+	ans := make([]string, len(v))
+	for i := range v {
+		switch v[i] {
 		case "des":
-			nv[i] = EncryptionDes
+			ans[i] = EncryptionDes
 		case "3des":
-			nv[i] = Encryption3des
+			ans[i] = Encryption3des
 		case "aes-128-cbc", "aes128":
-			nv[i] = EncryptionAes128
+			ans[i] = EncryptionAes128
 		case "aes-192-cbc", "aes192":
-			nv[i] = EncryptionAes192
+			ans[i] = EncryptionAes192
 		case "aes-256-cbc", "aes256":
-			nv[i] = EncryptionAes256
+			ans[i] = EncryptionAes256
+		case "aes-128-gcm":
+			ans[i] = EncryptionAes128Gcm
+		case "aes-256-gcm":
+			ans[i] = EncryptionAes256Gcm
 		default:
-			nv[i] = o.Encryption[i]
+			ans[i] = v[i]
 		}
 	}
 
-	o.Encryption = nv
-}
-
-/** Structs / functions for this namespace. **/
-
-type normalizer interface {
-	Normalize() Entry
+	return ans
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:           o.Answer.Name,
-		DhGroup:        util.MemToStr(o.Answer.DhGroup),
-		Authentication: util.MemToStr(o.Answer.Authentication),
-		Encryption:     util.MemToStr(o.Answer.Encryption),
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.Lifetime != nil {
-		if o.Answer.Lifetime.Seconds != 0 {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name:           o.Name,
+		DhGroup:        util.MemToStr(o.DhGroup),
+		Authentication: util.MemToStr(o.Authentication),
+		Encryption:     normalizeEncryption(util.MemToStr(o.Encryption)),
+	}
+
+	if o.Lifetime != nil {
+		if o.Lifetime.Seconds != 0 {
 			ans.LifetimeType = TimeSeconds
-			ans.LifetimeValue = o.Answer.Lifetime.Seconds
-		} else if o.Answer.Lifetime.Minutes != 0 {
+			ans.LifetimeValue = o.Lifetime.Seconds
+		} else if o.Lifetime.Minutes != 0 {
 			ans.LifetimeType = TimeMinutes
-			ans.LifetimeValue = o.Answer.Lifetime.Minutes
-		} else if o.Answer.Lifetime.Hours != 0 {
+			ans.LifetimeValue = o.Lifetime.Minutes
+		} else if o.Lifetime.Hours != 0 {
 			ans.LifetimeType = TimeHours
-			ans.LifetimeValue = o.Answer.Lifetime.Hours
-		} else if o.Answer.Lifetime.Days != 0 {
+			ans.LifetimeValue = o.Lifetime.Hours
+		} else if o.Lifetime.Days != 0 {
 			ans.LifetimeType = TimeDays
-			ans.LifetimeValue = o.Answer.Lifetime.Days
+			ans.LifetimeValue = o.Lifetime.Days
 		}
 	}
 
@@ -160,31 +188,65 @@ func (o *container_v1) Normalize() Entry {
 }
 
 type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
+	Answer []entry_v2 `xml:"entry"`
 }
 
-func (o *container_v2) Normalize() Entry {
-	ans := Entry{
-		Name:                   o.Answer.Name,
-		DhGroup:                util.MemToStr(o.Answer.DhGroup),
-		Authentication:         util.MemToStr(o.Answer.Authentication),
-		Encryption:             util.MemToStr(o.Answer.Encryption),
-		AuthenticationMultiple: o.Answer.AuthenticationMultiple,
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.Lifetime != nil {
-		if o.Answer.Lifetime.Seconds != 0 {
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:                   o.Name,
+		DhGroup:                util.MemToStr(o.DhGroup),
+		Authentication:         util.MemToStr(o.Authentication),
+		Encryption:             normalizeEncryption(util.MemToStr(o.Encryption)),
+		AuthenticationMultiple: o.AuthenticationMultiple,
+	}
+
+	if o.Lifetime != nil {
+		if o.Lifetime.Seconds != 0 {
 			ans.LifetimeType = TimeSeconds
-			ans.LifetimeValue = o.Answer.Lifetime.Seconds
-		} else if o.Answer.Lifetime.Minutes != 0 {
+			ans.LifetimeValue = o.Lifetime.Seconds
+		} else if o.Lifetime.Minutes != 0 {
 			ans.LifetimeType = TimeMinutes
-			ans.LifetimeValue = o.Answer.Lifetime.Minutes
-		} else if o.Answer.Lifetime.Hours != 0 {
+			ans.LifetimeValue = o.Lifetime.Minutes
+		} else if o.Lifetime.Hours != 0 {
 			ans.LifetimeType = TimeHours
-			ans.LifetimeValue = o.Answer.Lifetime.Hours
-		} else if o.Answer.Lifetime.Days != 0 {
+			ans.LifetimeValue = o.Lifetime.Hours
+		} else if o.Lifetime.Days != 0 {
 			ans.LifetimeType = TimeDays
-			ans.LifetimeValue = o.Answer.Lifetime.Days
+			ans.LifetimeValue = o.Lifetime.Days
+		}
+	}
+
+	// Normalize the encryption values.
+	for i := range ans.Encryption {
+		switch ans.Encryption[i] {
+		case "des":
+			ans.Encryption[i] = EncryptionDes
+		case "3des":
+			ans.Encryption[i] = Encryption3des
+		case "aes-128-cbc", "aes128":
+			ans.Encryption[i] = EncryptionAes128
+		case "aes-192-cbc", "aes192":
+			ans.Encryption[i] = EncryptionAes192
+		case "aes-256-cbc", "aes256":
+			ans.Encryption[i] = EncryptionAes256
 		}
 	}
 
@@ -212,7 +274,7 @@ func specify_v1(e Entry) interface{} {
 		Name:           e.Name,
 		DhGroup:        util.StrToMem(e.DhGroup),
 		Authentication: util.StrToMem(e.Authentication),
-		Encryption:     util.StrToMem(e.Encryption),
+		Encryption:     util.StrToMem(specifyEncryption(e.Encryption, 1)),
 	}
 
 	switch e.LifetimeType {
@@ -244,7 +306,7 @@ func specify_v2(e Entry) interface{} {
 		Name:                   e.Name,
 		DhGroup:                util.StrToMem(e.DhGroup),
 		Authentication:         util.StrToMem(e.Authentication),
-		Encryption:             util.StrToMem(e.Encryption),
+		Encryption:             util.StrToMem(specifyEncryption(e.Encryption, 2)),
 		AuthenticationMultiple: e.AuthenticationMultiple,
 	}
 

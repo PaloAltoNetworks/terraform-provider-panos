@@ -41,6 +41,13 @@ func (c *Firewall) Delete(iType, iName, subName string) error {
 	return c.ns.Delete(c.pather(iType, iName, subName), nil, nil)
 }
 
+// FromPanosConfig retrieves the object stored in the retrieved config.
+func (c *Firewall) FromPanosConfig(iType, iName, subName string) (Config, error) {
+	ans := c.container()
+	err := c.ns.FromPanosConfig(c.pather(iType, iName, subName), "", ans)
+	return first(ans, err)
+}
+
 func (c *Firewall) pather(iType, iName, subName string) namespace.Pather {
 	return func(v []string) ([]string, error) {
 		return c.xpath(iType, iName, subName)

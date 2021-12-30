@@ -15,6 +15,9 @@ import (
 	"github.com/PaloAltoNetworks/pango/poli"
 	"github.com/PaloAltoNetworks/pango/predefined"
 	"github.com/PaloAltoNetworks/pango/userid"
+	"github.com/PaloAltoNetworks/pango/vsys"
+
+	"github.com/PaloAltoNetworks/pango/util"
 )
 
 // Panorama is a panorama specific client, providing version safe functions
@@ -29,13 +32,14 @@ type Panorama struct {
 
 	// Namespaces
 	Predefined *predefined.Panorama
-	Device     *dev.PanoDev
+	Device     *dev.Panorama
 	Licensing  *licen.Licen
 	UserId     *userid.UserId
-	Panorama   *pnrm.Pnrm
+	Panorama   *pnrm.Panorama
 	Objects    *objs.PanoObjs
-	Policies   *poli.PanoPoli
-	Network    *netw.PanoNetw
+	Policies   *poli.Panorama
+	Network    *netw.Panorama
+	Vsys       *vsys.Panorama
 }
 
 // Initialize does some initial setup of the Panorama connection, retrieves
@@ -195,9 +199,7 @@ type VmAuthKey struct {
 // information.  Then in the string parsing for Expires, the location
 // information of the system clock is applied.
 func (o *VmAuthKey) ParseExpires(clock time.Time) {
-	format := "2006/01/02 15:04:05"
-
-	if t, err := time.ParseInLocation(format, o.Expiry, clock.Location()); err == nil {
+	if t, err := time.ParseInLocation(util.PanosTimeWithoutTimezoneFormat, o.Expiry, clock.Location()); err == nil {
 		o.Expires = t
 	}
 }
@@ -207,8 +209,7 @@ func (o *VmAuthKey) ParseExpires(clock time.Time) {
 func (c *Panorama) initNamespaces() {
 	c.Predefined = predefined.PanoramaNamespace(c)
 
-	c.Device = &dev.PanoDev{}
-	c.Device.Initialize(c)
+	c.Device = dev.PanoramaNamespace(c)
 
 	c.Licensing = &licen.Licen{}
 	c.Licensing.Initialize(c)
@@ -216,15 +217,14 @@ func (c *Panorama) initNamespaces() {
 	c.UserId = &userid.UserId{}
 	c.UserId.Initialize(c)
 
-	c.Panorama = &pnrm.Pnrm{}
-	c.Panorama.Initialize(c)
+	c.Panorama = pnrm.PanoramaNamespace(c)
 
 	c.Objects = &objs.PanoObjs{}
 	c.Objects.Initialize(c)
 
-	c.Policies = &poli.PanoPoli{}
-	c.Policies.Initialize(c)
+	c.Policies = poli.PanoramaNamespace(c)
 
-	c.Network = &netw.PanoNetw{}
-	c.Network.Initialize(c)
+	c.Network = netw.PanoramaNamespace(c)
+
+	c.Vsys = vsys.PanoramaNamespace(c)
 }

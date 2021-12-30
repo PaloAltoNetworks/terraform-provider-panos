@@ -4,25 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
-)
-
-// Constants for Entry.Type field.  Only TypeIp is valid for PAN-OS 7.0 and
-// earlier.  TypePredefined is valid for PAN-OS 8.0 and later.
-const (
-	TypeIp         string = "ip"
-	TypeDomain     string = "domain"
-	TypeUrl        string = "url"
-	TypePredefined string = "predefined"
-)
-
-// Constants for the Repeat field.  Option "RepeatEveryFiveMinutes" is valid
-// for PAN-OS 8.0 and higher.
-const (
-	RepeatEveryFiveMinutes = "every five minutes"
-	RepeatHourly           = "hourly"
-	RepeatDaily            = "daily"
-	RepeatWeekly           = "weekly"
-	RepeatMonthly          = "monthly"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an
@@ -32,9 +14,10 @@ type Entry struct {
 	Type               string
 	Description        string
 	Source             string
-	CertificateProfile string
-	Username           string
-	Password           string
+	CertificateProfile string // PAN-OS 8.0+
+	Username           string // PAN-OS 8.0+
+	Password           string // PAN-OS 8.0+
+	ExpandDomain       bool   // PAN-OS 9.0+
 	Repeat             string
 	RepeatAt           string
 	RepeatDayOfWeek    string
@@ -51,77 +34,182 @@ func (o *Entry) Copy(s Entry) {
 	o.CertificateProfile = s.CertificateProfile
 	o.Username = s.Username
 	o.Password = s.Password
+	o.ExpandDomain = s.ExpandDomain
 	o.Repeat = s.Repeat
 	o.RepeatAt = s.RepeatAt
 	o.RepeatDayOfWeek = s.RepeatDayOfWeek
 	o.RepeatDayOfMonth = s.RepeatDayOfMonth
-	o.Exceptions = s.Exceptions
+	if s.Exceptions == nil {
+		o.Exceptions = nil
+	} else {
+		o.Exceptions = make([]string, len(s.Exceptions))
+		copy(o.Exceptions, s.Exceptions)
+	}
 }
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:        o.Answer.Name,
-		Type:        o.Answer.Type,
-		Description: o.Answer.Description,
-		Source:      o.Answer.Source,
-	}
-
-	if o.Answer.Repeat.FiveMinute != nil {
-		ans.Repeat = RepeatEveryFiveMinutes
-	} else if o.Answer.Repeat.Hourly != nil {
-		ans.Repeat = RepeatHourly
-		ans.RepeatAt = o.Answer.Repeat.Hourly.At
-	} else if o.Answer.Repeat.Daily != nil {
-		ans.Repeat = RepeatDaily
-		ans.RepeatAt = o.Answer.Repeat.Daily.At
-	} else if o.Answer.Repeat.Weekly != nil {
-		ans.Repeat = RepeatWeekly
-		ans.RepeatAt = o.Answer.Repeat.Weekly.At
-		ans.RepeatDayOfWeek = o.Answer.Repeat.Weekly.DayOfWeek
-	} else if o.Answer.Repeat.Monthly != nil {
-		ans.Repeat = RepeatMonthly
-		ans.RepeatAt = o.Answer.Repeat.Monthly.At
-		ans.RepeatDayOfMonth = o.Answer.Repeat.Monthly.DayOfMonth
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
 	return ans
 }
 
-type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
 }
 
-func (o *container_v2) Normalize() Entry {
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name: o.Answer.Name,
+		Name:        o.Name,
+		Type:        o.Type,
+		Description: o.Description,
+		Source:      o.Source,
+	}
+
+	if o.Repeat.FiveMinute != nil {
+		ans.Repeat = RepeatEveryFiveMinutes
+	} else if o.Repeat.Hourly != nil {
+		ans.Repeat = RepeatHourly
+	} else if o.Repeat.Daily != nil {
+		ans.Repeat = RepeatDaily
+		ans.RepeatAt = o.Repeat.Daily.At
+	} else if o.Repeat.Weekly != nil {
+		ans.Repeat = RepeatWeekly
+		ans.RepeatAt = o.Repeat.Weekly.At
+		ans.RepeatDayOfWeek = o.Repeat.Weekly.DayOfWeek
+	} else if o.Repeat.Monthly != nil {
+		ans.Repeat = RepeatMonthly
+		ans.RepeatAt = o.Repeat.Monthly.At
+		ans.RepeatDayOfMonth = o.Repeat.Monthly.DayOfMonth
+	}
+
+	return ans
+}
+
+type entry_v1 struct {
+	XMLName     xml.Name `xml:"entry"`
+	Name        string   `xml:"name,attr"`
+	Type        string   `xml:"type"`
+	Description string   `xml:"description,omitempty"`
+	Source      string   `xml:"url"`
+	Repeat      repeat   `xml:"recurring"`
+}
+
+type repeat struct {
+	FiveMinute *string    `xml:"five-minute"`
+	Hourly     *string    `xml:"hourly"`
+	Daily      *timeDay   `xml:"daily"`
+	Weekly     *timeWeek  `xml:"weekly"`
+	Monthly    *timeMonth `xml:"monthly"`
+}
+
+type timeDay struct {
+	At string `xml:"at,omitempty"`
+}
+
+type timeWeek struct {
+	At        string `xml:"at"`
+	DayOfWeek string `xml:"day-of-week"`
+}
+
+type timeMonth struct {
+	At         string `xml:"at"`
+	DayOfMonth int    `xml:"day-of-month"`
+}
+
+func specify_v1(e Entry) interface{} {
+	ans := entry_v1{
+		Name:        e.Name,
+		Type:        e.Type,
+		Description: e.Description,
+		Source:      e.Source,
+	}
+
+	switch e.Repeat {
+	case RepeatEveryFiveMinutes:
+		s := ""
+		ans.Repeat.FiveMinute = &s
+	case RepeatHourly:
+		s := ""
+		ans.Repeat.Hourly = &s
+	case RepeatDaily:
+		ans.Repeat.Daily = &timeDay{e.RepeatAt}
+	case RepeatWeekly:
+		ans.Repeat.Weekly = &timeWeek{e.RepeatAt, e.RepeatDayOfWeek}
+	case RepeatMonthly:
+		ans.Repeat.Monthly = &timeMonth{e.RepeatAt, e.RepeatDayOfMonth}
+	}
+
+	return ans
+}
+
+// PAN-OS 8.0.
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
 	}
 
 	var sp *typeSpec
 
-	if o.Answer.PredefinedIp != nil {
-		ans.Type = TypePredefined
-		ans.Description = o.Answer.PredefinedIp.Description
-		ans.Source = o.Answer.PredefinedIp.Source
-		ans.Exceptions = util.MemToStr(o.Answer.PredefinedIp.Exceptions)
-	} else if o.Answer.Ip != nil {
+	if o.PredefinedIp != nil {
+		ans.Type = TypePredefinedIp
+		ans.Description = o.PredefinedIp.Description
+		ans.Source = o.PredefinedIp.Source
+		ans.Exceptions = util.MemToStr(o.PredefinedIp.Exceptions)
+	} else if o.Ip != nil {
 		ans.Type = TypeIp
-		sp = o.Answer.Ip
-	} else if o.Answer.Domain != nil {
+		sp = o.Ip
+	} else if o.Domain != nil {
 		ans.Type = TypeDomain
-		sp = o.Answer.Domain
-	} else if o.Answer.Url != nil {
+		sp = o.Domain
+	} else if o.Url != nil {
 		ans.Type = TypeUrl
-		sp = o.Answer.Url
+		sp = o.Url
 	}
 
 	if sp != nil {
@@ -154,41 +242,6 @@ func (o *container_v2) Normalize() Entry {
 	return ans
 }
 
-// Ideally there would be one struct for PAN-OS 6.1 & 7.0 and another for
-// PAN-OS 7.1, but since the difference is minimal, I'm using the same struct.
-//
-// Probably revisit this at a later time..?
-type entry_v1 struct {
-	XMLName     xml.Name `xml:"entry"`
-	Name        string   `xml:"name,attr"`
-	Type        string   `xml:"type"`
-	Description string   `xml:"description,omitempty"`
-	Source      string   `xml:"url"`
-	Repeat      rep_v1   `xml:"recurring"`
-}
-
-type rep_v1 struct {
-	FiveMinute *string    `xml:"five-minute"`
-	Hourly     *timeAt    `xml:"hourly"`
-	Daily      *timeAt    `xml:"daily"`
-	Weekly     *timeWeek  `xml:"weekly"`
-	Monthly    *timeMonth `xml:"monthly"`
-}
-
-type timeAt struct {
-	At string `xml:"at,omitempty"`
-}
-
-type timeWeek struct {
-	At        string `xml:"at"`
-	DayOfWeek string `xml:"day-of-week"`
-}
-
-type timeMonth struct {
-	At         string `xml:"at"`
-	DayOfMonth int    `xml:"day-of-month"`
-}
-
 type entry_v2 struct {
 	XMLName      xml.Name        `xml:"entry"`
 	Name         string          `xml:"name,attr"`
@@ -209,7 +262,7 @@ type typeSpec struct {
 	Source             string           `xml:"url"`
 	CertificateProfile string           `xml:"certificate-profile,omitempty"`
 	Auth               *authType        `xml:"auth"`
-	Repeat             rep_v2           `xml:"recurring"`
+	Repeat             repeat           `xml:"recurring"`
 	Exceptions         *util.MemberType `xml:"exception-list"`
 }
 
@@ -218,46 +271,13 @@ type authType struct {
 	Password string `xml:"password"`
 }
 
-type rep_v2 struct {
-	FiveMinute *string    `xml:"five-minute"`
-	Hourly     *string    `xml:"hourly"`
-	Daily      *timeAt    `xml:"daily"`
-	Weekly     *timeWeek  `xml:"weekly"`
-	Monthly    *timeMonth `xml:"monthly"`
-}
-
-func specify_v1(e Entry) interface{} {
-	ans := entry_v1{
-		Name:        e.Name,
-		Type:        e.Type,
-		Description: e.Description,
-		Source:      e.Source,
-	}
-
-	switch e.Repeat {
-	case RepeatEveryFiveMinutes:
-		sp := ""
-		ans.Repeat.FiveMinute = &sp
-	case RepeatHourly:
-		ans.Repeat.Hourly = &timeAt{e.RepeatAt}
-	case RepeatDaily:
-		ans.Repeat.Daily = &timeAt{e.RepeatAt}
-	case RepeatWeekly:
-		ans.Repeat.Weekly = &timeWeek{e.RepeatAt, e.RepeatDayOfWeek}
-	case RepeatMonthly:
-		ans.Repeat.Monthly = &timeMonth{e.RepeatAt, e.RepeatDayOfMonth}
-	}
-
-	return ans
-}
-
 func specify_v2(e Entry) interface{} {
 	ans := entry_v2{
 		Name: e.Name,
 	}
 
 	switch e.Type {
-	case TypePredefined:
+	case TypePredefinedIp:
 		ans.PredefinedIp = &typePredefined{
 			Description: e.Description,
 			Source:      e.Source,
@@ -282,7 +302,7 @@ func specify_v2(e Entry) interface{} {
 		case RepeatHourly:
 			spec.Repeat.Hourly = &sp
 		case RepeatDaily:
-			spec.Repeat.Daily = &timeAt{e.RepeatAt}
+			spec.Repeat.Daily = &timeDay{e.RepeatAt}
 		case RepeatWeekly:
 			spec.Repeat.Weekly = &timeWeek{e.RepeatAt, e.RepeatDayOfWeek}
 		case RepeatMonthly:
@@ -294,6 +314,332 @@ func specify_v2(e Entry) interface{} {
 			ans.Ip = spec
 		case TypeDomain:
 			ans.Domain = spec
+		case TypeUrl:
+			ans.Url = spec
+		}
+	}
+
+	return ans
+}
+
+// PAN-OS 9.0.
+type container_v3 struct {
+	Answer []entry_v3 `xml:"entry"`
+}
+
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	var sp *typeSpec
+
+	if o.PredefinedIp != nil {
+		ans.Type = TypePredefinedIp
+		ans.Description = o.PredefinedIp.Description
+		ans.Source = o.PredefinedIp.Source
+		ans.Exceptions = util.MemToStr(o.PredefinedIp.Exceptions)
+	} else if o.Ip != nil {
+		ans.Type = TypeIp
+		sp = o.Ip
+	} else if o.Domain != nil {
+		ans.Type = TypeDomain
+		ans.ExpandDomain = util.AsBool(o.Domain.ExpandDomain)
+		sp = &typeSpec{
+			Description:        o.Domain.Description,
+			Source:             o.Domain.Source,
+			CertificateProfile: o.Domain.CertificateProfile,
+			Auth:               o.Domain.Auth,
+			Repeat:             o.Domain.Repeat,
+			Exceptions:         o.Domain.Exceptions,
+		}
+	} else if o.Url != nil {
+		ans.Type = TypeUrl
+		sp = o.Url
+	}
+
+	if sp != nil {
+		ans.Description = sp.Description
+		ans.Source = sp.Source
+		ans.CertificateProfile = sp.CertificateProfile
+		ans.Exceptions = util.MemToStr(sp.Exceptions)
+		if sp.Auth != nil {
+			ans.Username = sp.Auth.Username
+			ans.Password = sp.Auth.Password
+		}
+		if sp.Repeat.FiveMinute != nil {
+			ans.Repeat = RepeatEveryFiveMinutes
+		} else if sp.Repeat.Hourly != nil {
+			ans.Repeat = RepeatHourly
+		} else if sp.Repeat.Daily != nil {
+			ans.Repeat = RepeatDaily
+			ans.RepeatAt = sp.Repeat.Daily.At
+		} else if sp.Repeat.Weekly != nil {
+			ans.Repeat = RepeatWeekly
+			ans.RepeatAt = sp.Repeat.Weekly.At
+			ans.RepeatDayOfWeek = sp.Repeat.Weekly.DayOfWeek
+		} else if sp.Repeat.Monthly != nil {
+			ans.Repeat = RepeatMonthly
+			ans.RepeatAt = sp.Repeat.Monthly.At
+			ans.RepeatDayOfMonth = sp.Repeat.Monthly.DayOfMonth
+		}
+	}
+
+	return ans
+}
+
+type entry_v3 struct {
+	XMLName      xml.Name        `xml:"entry"`
+	Name         string          `xml:"name,attr"`
+	PredefinedIp *typePredefined `xml:"type>predefined-ip"`
+	Ip           *typeSpec       `xml:"type>ip"`
+	Domain       *domainSpec     `xml:"type>domain"`
+	Url          *typeSpec       `xml:"type>url"`
+}
+
+type domainSpec struct {
+	Description        string           `xml:"description,omitempty"`
+	Source             string           `xml:"url"`
+	CertificateProfile string           `xml:"certificate-profile,omitempty"`
+	Auth               *authType        `xml:"auth"`
+	Repeat             repeat           `xml:"recurring"`
+	Exceptions         *util.MemberType `xml:"exception-list"`
+	ExpandDomain       string           `xml:"expand-domain"`
+}
+
+func specify_v3(e Entry) interface{} {
+	ans := entry_v3{
+		Name: e.Name,
+	}
+
+	switch e.Type {
+	case TypePredefinedIp:
+		ans.PredefinedIp = &typePredefined{
+			Description: e.Description,
+			Source:      e.Source,
+			Exceptions:  util.StrToMem(e.Exceptions),
+		}
+	default:
+		spec := &typeSpec{
+			Description:        e.Description,
+			Source:             e.Source,
+			CertificateProfile: e.CertificateProfile,
+			Exceptions:         util.StrToMem(e.Exceptions),
+		}
+
+		if e.Username != "" || e.Password != "" {
+			spec.Auth = &authType{e.Username, e.Password}
+		}
+
+		sp := ""
+		switch e.Repeat {
+		case RepeatEveryFiveMinutes:
+			spec.Repeat.FiveMinute = &sp
+		case RepeatHourly:
+			spec.Repeat.Hourly = &sp
+		case RepeatDaily:
+			spec.Repeat.Daily = &timeDay{e.RepeatAt}
+		case RepeatWeekly:
+			spec.Repeat.Weekly = &timeWeek{e.RepeatAt, e.RepeatDayOfWeek}
+		case RepeatMonthly:
+			spec.Repeat.Monthly = &timeMonth{e.RepeatAt, e.RepeatDayOfMonth}
+		}
+
+		switch e.Type {
+		case TypeIp:
+			ans.Ip = spec
+		case TypeDomain:
+			ans.Domain = &domainSpec{
+				Description:        spec.Description,
+				Source:             spec.Source,
+				CertificateProfile: spec.CertificateProfile,
+				Auth:               spec.Auth,
+				Repeat:             spec.Repeat,
+				Exceptions:         spec.Exceptions,
+				ExpandDomain:       util.YesNo(e.ExpandDomain),
+			}
+		case TypeUrl:
+			ans.Url = spec
+		}
+	}
+
+	return ans
+}
+
+// PAN-OS 10.0.
+type container_v4 struct {
+	Answer []entry_v4 `xml:"entry"`
+}
+
+func (o *container_v4) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v4) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v4) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	var sp *typeSpec
+
+	if o.PredefinedIp != nil {
+		ans.Type = TypePredefinedIp
+		ans.Description = o.PredefinedIp.Description
+		ans.Source = o.PredefinedIp.Source
+		ans.Exceptions = util.MemToStr(o.PredefinedIp.Exceptions)
+	} else if o.PredefinedUrl != nil {
+		ans.Type = TypePredefinedUrl
+		ans.Description = o.PredefinedUrl.Description
+		ans.Source = o.PredefinedUrl.Source
+		ans.Exceptions = util.MemToStr(o.PredefinedUrl.Exceptions)
+	} else if o.Ip != nil {
+		ans.Type = TypeIp
+		sp = o.Ip
+	} else if o.Domain != nil {
+		ans.Type = TypeDomain
+		ans.ExpandDomain = util.AsBool(o.Domain.ExpandDomain)
+		sp = &typeSpec{
+			Description:        o.Domain.Description,
+			Source:             o.Domain.Source,
+			CertificateProfile: o.Domain.CertificateProfile,
+			Auth:               o.Domain.Auth,
+			Repeat:             o.Domain.Repeat,
+			Exceptions:         o.Domain.Exceptions,
+		}
+	} else if o.Url != nil {
+		ans.Type = TypeUrl
+		sp = o.Url
+	}
+
+	if sp != nil {
+		ans.Description = sp.Description
+		ans.Source = sp.Source
+		ans.CertificateProfile = sp.CertificateProfile
+		ans.Exceptions = util.MemToStr(sp.Exceptions)
+		if sp.Auth != nil {
+			ans.Username = sp.Auth.Username
+			ans.Password = sp.Auth.Password
+		}
+		if sp.Repeat.FiveMinute != nil {
+			ans.Repeat = RepeatEveryFiveMinutes
+		} else if sp.Repeat.Hourly != nil {
+			ans.Repeat = RepeatHourly
+		} else if sp.Repeat.Daily != nil {
+			ans.Repeat = RepeatDaily
+			ans.RepeatAt = sp.Repeat.Daily.At
+		} else if sp.Repeat.Weekly != nil {
+			ans.Repeat = RepeatWeekly
+			ans.RepeatAt = sp.Repeat.Weekly.At
+			ans.RepeatDayOfWeek = sp.Repeat.Weekly.DayOfWeek
+		} else if sp.Repeat.Monthly != nil {
+			ans.Repeat = RepeatMonthly
+			ans.RepeatAt = sp.Repeat.Monthly.At
+			ans.RepeatDayOfMonth = sp.Repeat.Monthly.DayOfMonth
+		}
+	}
+
+	return ans
+}
+
+type entry_v4 struct {
+	XMLName       xml.Name        `xml:"entry"`
+	Name          string          `xml:"name,attr"`
+	PredefinedIp  *typePredefined `xml:"type>predefined-ip"`
+	PredefinedUrl *typePredefined `xml:"type>predefined-url"`
+	Ip            *typeSpec       `xml:"type>ip"`
+	Domain        *domainSpec     `xml:"type>domain"`
+	Url           *typeSpec       `xml:"type>url"`
+}
+
+func specify_v4(e Entry) interface{} {
+	ans := entry_v4{
+		Name: e.Name,
+	}
+
+	switch e.Type {
+	case TypePredefinedIp:
+		ans.PredefinedIp = &typePredefined{
+			Description: e.Description,
+			Source:      e.Source,
+			Exceptions:  util.StrToMem(e.Exceptions),
+		}
+	case TypePredefinedUrl:
+		ans.PredefinedUrl = &typePredefined{
+			Description: e.Description,
+			Source:      e.Source,
+			Exceptions:  util.StrToMem(e.Exceptions),
+		}
+	default:
+		spec := &typeSpec{
+			Description:        e.Description,
+			Source:             e.Source,
+			CertificateProfile: e.CertificateProfile,
+			Exceptions:         util.StrToMem(e.Exceptions),
+		}
+
+		if e.Username != "" || e.Password != "" {
+			spec.Auth = &authType{e.Username, e.Password}
+		}
+
+		sp := ""
+		switch e.Repeat {
+		case RepeatEveryFiveMinutes:
+			spec.Repeat.FiveMinute = &sp
+		case RepeatHourly:
+			spec.Repeat.Hourly = &sp
+		case RepeatDaily:
+			spec.Repeat.Daily = &timeDay{e.RepeatAt}
+		case RepeatWeekly:
+			spec.Repeat.Weekly = &timeWeek{e.RepeatAt, e.RepeatDayOfWeek}
+		case RepeatMonthly:
+			spec.Repeat.Monthly = &timeMonth{e.RepeatAt, e.RepeatDayOfMonth}
+		}
+
+		switch e.Type {
+		case TypeIp:
+			ans.Ip = spec
+		case TypeDomain:
+			ans.Domain = &domainSpec{
+				Description:        spec.Description,
+				Source:             spec.Source,
+				CertificateProfile: spec.CertificateProfile,
+				Auth:               spec.Auth,
+				Repeat:             spec.Repeat,
+				Exceptions:         spec.Exceptions,
+				ExpandDomain:       util.YesNo(e.ExpandDomain),
+			}
 		case TypeUrl:
 			ans.Url = spec
 		}

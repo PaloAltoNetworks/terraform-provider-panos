@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PaloAltoNetworks/pango/audit"
 	"github.com/PaloAltoNetworks/pango/namespace"
 	"github.com/PaloAltoNetworks/pango/util"
-	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Firewall is the client.Policies.Nat namespace.
 type Firewall struct {
-	ns *namespace.Standard
+	ns *namespace.Policy
 }
 
 // GetList performs GET to retrieve a list of all objects.
@@ -51,6 +51,143 @@ func (c *Firewall) GetAll(vsys string) ([]Entry, error) {
 func (c *Firewall) ShowAll(vsys string) ([]Entry, error) {
 	ans := c.container()
 	err := c.ns.Objects(util.Show, c.pather(vsys), ans)
+	return all(ans, err)
+}
+
+/*
+ConfigureRules configures the given rules on PAN-OS.
+
+It does a mass SET if it can, but will EDIT any rules that are present but
+differ from what is given.
+
+Audit comments are applied only for rules which are either SET or EDIT'ed.
+
+If isPolicy is true, then any rules not explicitly present in the rules param will
+be deleted.
+
+Params move and oRule are for moving the group into place after configuration.
+
+Any rule name that appears in prevRules but not in the rules param will be deleted.
+*/
+func (c *Firewall) ConfigureRules(vsys string, rules []Entry, auditComments map[string]string, isPolicy bool, move int, oRule string, prevNames []string) error {
+	var err error
+	setRules := make([]Entry, 0, len(rules))
+	editRules := make([]Entry, 0, len(rules))
+
+	curRules, err := c.GetAll(vsys)
+	if err != nil {
+		return err
+	}
+
+	// Determine which can be set and which can must be edited.
+	for _, x := range rules {
+		var found bool
+		for _, live := range curRules {
+			if x.Name == live.Name {
+				found = true
+				if !RulesMatch(x, live) {
+					editRules = append(editRules, x)
+				}
+				break
+			}
+		}
+		if !found {
+			setRules = append(setRules, x)
+		}
+	}
+
+	// Set all rules.
+	if len(setRules) > 0 {
+		if err = c.Set(vsys, setRules...); err != nil {
+			return err
+		}
+		// Configure audit comments for each set rule.
+		for _, x := range setRules {
+			if comment := auditComments[x.Name]; comment != "" {
+				if err = c.SetAuditComment(vsys, x.Name, comment); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	// Edit each rule one by one.
+	for _, x := range editRules {
+		if err = c.Edit(vsys, x); err != nil {
+			return err
+		}
+		// Configure the audit comment for each edited rule.
+		if comment := auditComments[x.Name]; comment != "" {
+			if err = c.SetAuditComment(vsys, x.Name, comment); err != nil {
+				return err
+			}
+		}
+	}
+
+	// Move the group into place.
+	if err = c.MoveGroup(vsys, move, oRule, rules...); err != nil {
+		return err
+	}
+
+	// Delete rules removed from the group.
+	if len(prevNames) != 0 {
+		rmList := make([]interface{}, 0, len(prevNames))
+		for _, name := range prevNames {
+			var found bool
+			for _, x := range rules {
+				if x.Name == name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				rmList = append(rmList, name)
+			}
+		}
+
+		if len(rmList) != 0 {
+			_ = c.Delete(vsys, rmList...)
+		}
+	}
+
+	// Optional: If this is a policy, delete everything else.
+	if isPolicy {
+		delRules := make([]interface{}, 0, len(curRules))
+		for _, cur := range curRules {
+			var found bool
+			for _, x := range rules {
+				if x.Name == cur.Name {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				delRules = append(delRules, cur.Name)
+			}
+		}
+
+		if len(delRules) != 0 {
+			if err = c.Delete(vsys, delRules...); err != nil {
+				return nil
+			}
+		}
+	}
+
+	return nil
+}
+
+// FromPanosConfig retrieves the object stored in the retrieved config.
+func (c *Firewall) FromPanosConfig(vsys, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.FromPanosConfig(c.pather(vsys), name, ans)
+	return first(ans, err)
+}
+
+// AllFromPanosConfig retrieves all objects stored in the retrieved config.
+func (c *Firewall) AllFromPanosConfig(vsys string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.AllFromPanosConfig(c.pather(vsys), ans)
 	return all(ans, err)
 }
 
@@ -117,17 +254,22 @@ func (c *Firewall) MoveGroup(vsys string, movement int, rule string, e ...Entry)
 //
 // If the rules param is nil, then the hit count for all rules is returned.
 func (c *Firewall) HitCount(vsys string, rules []string) ([]util.HitCount, error) {
-	if !c.ns.Client.Versioning().Gte(version.Number{8, 1, 0, ""}) {
-		return nil, fmt.Errorf("rule hit count requires PAN-OS 8.1+")
-	}
+	return c.ns.HitCount("nat", vsys, rules)
+}
 
-	req := util.NewHitCountRequest("nat", vsys, rules)
-	resp := util.HitCountResponse{}
-	if _, err := c.ns.Client.Op(req, "", nil, &resp); err != nil {
-		return nil, err
-	}
+// SetAuditComment sets the audit comment for the given rule.
+func (c *Firewall) SetAuditComment(vsys, rule, comment string) error {
+	return c.ns.SetAuditComment(c.pather(vsys), rule, comment)
+}
 
-	return resp.Results, nil
+// CurrentAuditComment returns the current audit comment.
+func (c *Firewall) CurrentAuditComment(vsys, rule string) (string, error) {
+	return c.ns.CurrentAuditComment(c.pather(vsys), rule)
+}
+
+// AuditCommentHistory returns a chunk of historical audit comment logs.
+func (c *Firewall) AuditCommentHistory(vsys, rule, direction string, nlogs, skip int) ([]audit.Comment, error) {
+	return c.ns.AuditCommentHistory(c.pather(vsys), rule, direction, nlogs, skip)
 }
 
 func (c *Firewall) pather(vsys string) namespace.Pather {

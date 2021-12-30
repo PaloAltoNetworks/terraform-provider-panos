@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a service
@@ -17,25 +18,59 @@ type Entry struct {
 // Copy copies the information from source Entry `s` to this object.  As the
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
-	o.Services = s.Services
-	o.Tags = s.Tags
+	if s.Services == nil {
+		o.Services = nil
+	} else {
+		o.Services = make([]string, len(s.Services))
+		copy(o.Services, s.Services)
+	}
+	if s.Tags == nil {
+		o.Tags = nil
+	} else {
+		o.Tags = make([]string, len(s.Tags))
+		copy(o.Tags, s.Tags)
+	}
 }
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:     o.Answer.Name,
-		Services: util.MemToStr(o.Answer.Services),
-		Tags:     util.MemToStr(o.Answer.Tags),
+		Name:     o.Name,
+		Services: util.MemToStr(o.Services),
+		Tags:     util.MemToStr(o.Tags),
 	}
 
 	return ans

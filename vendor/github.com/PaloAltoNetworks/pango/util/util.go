@@ -181,6 +181,14 @@ func VsysXpathPrefix(vsys string) []string {
 	}
 }
 
+// PanoramaXpathPrefix returns the panorama xpath prefix.
+func PanoramaXpathPrefix() []string {
+	return []string{
+		"config",
+		"panorama",
+	}
+}
+
 // StripPanosPackaging removes the response / result and an optional third
 // containing XML tag from the given byte slice.
 func StripPanosPackaging(input []byte, tag string) []byte {
@@ -255,14 +263,23 @@ func RelativeMovement(v int) bool {
 	return false
 }
 
-// ValidateRulebase returns a nil error if the rulebase is valid.
-func ValidateRulebase(base string) error {
+// ValidateRulebase validates the device group and rulebase pairing for
+// Panorama policies.
+func ValidateRulebase(dg, base string) error {
 	switch base {
 	case "":
-		return fmt.Errorf("base must be specified")
-	case Rulebase, PreRulebase, PostRulebase:
-		return nil
+		return fmt.Errorf("rulebase must be specified")
+	case Rulebase:
+		if dg != "shared" {
+			return fmt.Errorf("rulebase %q requires \"shared\" device group", base)
+		}
+	case PreRulebase, PostRulebase:
+		if dg == "shared" {
+			return fmt.Errorf("rulebase %q requires a specific device group, not \"shared\"", base)
+		}
+	default:
+		return fmt.Errorf("unknown rulebase %q", base)
 	}
 
-	return fmt.Errorf("invalid rulebase value: %s", base)
+	return nil
 }

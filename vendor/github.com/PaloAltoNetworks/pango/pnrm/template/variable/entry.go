@@ -2,15 +2,8 @@ package variable
 
 import (
 	"encoding/xml"
-)
 
-// These are the constants for the Type field.
-const (
-	TypeIpNetmask = "ip-netmask"
-	TypeIpRange   = "ip-range"
-	TypeFqdn      = "fqdn"
-	TypeGroupId   = "group-id"
-	TypeInterface = "interface"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a template
@@ -32,34 +25,58 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name: o.Answer.Name,
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.IpNetmask != "" {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	if o.IpNetmask != "" {
 		ans.Type = TypeIpNetmask
-		ans.Value = o.Answer.IpNetmask
-	} else if o.Answer.IpRange != "" {
+		ans.Value = o.IpNetmask
+	} else if o.IpRange != "" {
 		ans.Type = TypeIpRange
-		ans.Value = o.Answer.IpRange
-	} else if o.Answer.Fqdn != "" {
+		ans.Value = o.IpRange
+	} else if o.Fqdn != "" {
 		ans.Type = TypeFqdn
-		ans.Value = o.Answer.Fqdn
-	} else if o.Answer.GroupId != "" {
+		ans.Value = o.Fqdn
+	} else if o.GroupId != "" {
 		ans.Type = TypeGroupId
-		ans.Value = o.Answer.GroupId
-	} else if o.Answer.Interface != "" {
+		ans.Value = o.GroupId
+	} else if o.Interface != "" {
 		ans.Type = TypeInterface
-		ans.Value = o.Answer.Interface
+		ans.Value = o.Interface
 	}
 
 	return ans

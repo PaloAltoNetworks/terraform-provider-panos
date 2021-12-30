@@ -121,8 +121,8 @@ type entry_v1 struct {
 	Passive            string          `xml:"passive"`
 	LinkType           *linktype       `xml:"link-type"`
 	Metric             int             `xml:"metric,omitempty"`
-	Priority           int             `xml:"priority,omitempty"`
-	HelloInterval      int             `xml:"hello-interval,omitempty"`
+	Priority           int             `xml:"priority"`
+	HelloInterval      int             `xml:"hello-interval"`
 	DeadCounts         int             `xml:"dead-counts,omitempty"`
 	RetransmitInterval int             `xml:"retransmit-interval,omitempty"`
 	TransitDelay       int             `xml:"transit-delay,omitempty"`
@@ -130,6 +130,24 @@ type entry_v1 struct {
 	AuthProfile        string          `xml:"authentication,omitempty"`
 	Neighbors          *util.EntryType `xml:"neighbor"`
 	Bfd                *bfd            `xml:"bfd"`
+}
+
+func (e *entry_v1) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type localEntry_v1 entry_v1
+	ans := localEntry_v1{
+		Priority:           1,
+		Metric:             10,
+		HelloInterval:      10,
+		DeadCounts:         4,
+		RetransmitInterval: 5,
+		TransitDelay:       1,
+		GraceRestartDelay:  10,
+	}
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+	*e = entry_v1(ans)
+	return nil
 }
 
 type linktype struct {

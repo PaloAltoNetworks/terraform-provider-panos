@@ -84,7 +84,12 @@ func (o *container_v1) Normalize() []Config {
 }
 
 func (o *container_v1) Names() []string {
-	return nil
+	ans := make([]string, 0, len(o.Answer))
+	for _ = range o.Answer {
+		ans = append(ans, "")
+	}
+
+	return ans
 }
 
 func (o *entry_v1) normalize() Config {
@@ -163,7 +168,12 @@ func (o *container_v2) Normalize() []Config {
 }
 
 func (o *container_v2) Names() []string {
-	return nil
+	ans := make([]string, 0, len(o.Answer))
+	for _ = range o.Answer {
+		ans = append(ans, "")
+	}
+
+	return ans
 }
 
 func (o *entry_v2) normalize() Config {
@@ -243,7 +253,12 @@ func (o *container_v3) Normalize() []Config {
 }
 
 func (o *container_v3) Names() []string {
-	return nil
+	ans := make([]string, 0, len(o.Answer))
+	for _ = range o.Answer {
+		ans = append(ans, "")
+	}
+
+	return ans
 }
 
 func (o *entry_v3) normalize() Config {
@@ -327,7 +342,12 @@ func (o *container_v4) Normalize() []Config {
 }
 
 func (o *container_v4) Names() []string {
-	return nil
+	ans := make([]string, 0, len(o.Answer))
+	for _ = range o.Answer {
+		ans = append(ans, "")
+	}
+
+	return ans
 }
 
 func (o *entry_v4) normalize() Config {

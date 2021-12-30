@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an application.
@@ -11,7 +12,7 @@ type Entry struct {
 	Name                                 string
 	DefaultType                          string
 	DefaultPorts                         []string // ordered
-	DefaultIpProtocol                    int
+	DefaultIpProtocol                    string
 	DefaultIcmpType                      int
 	DefaultIcmpCode                      int
 	Category                             string
@@ -47,7 +48,12 @@ type Entry struct {
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
 	o.DefaultType = s.DefaultType
-	o.DefaultPorts = s.DefaultPorts
+	if s.DefaultPorts == nil {
+		o.DefaultPorts = nil
+	} else {
+		o.DefaultPorts = make([]string, len(s.DefaultPorts))
+		copy(o.DefaultPorts, s.DefaultPorts)
+	}
 	o.DefaultIpProtocol = s.DefaultIpProtocol
 	o.DefaultIcmpType = s.DefaultIcmpType
 	o.DefaultIcmpCode = s.DefaultIcmpCode
@@ -80,134 +86,93 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:                                 o.Answer.Name,
-		Category:                             o.Answer.Category,
-		Subcategory:                          o.Answer.Subcategory,
-		Technology:                           o.Answer.Technology,
-		Description:                          o.Answer.Description,
-		Timeout:                              o.Answer.Timeout,
-		TcpTimeout:                           o.Answer.TcpTimeout,
-		UdpTimeout:                           o.Answer.UdpTimeout,
-		TcpHalfClosedTimeout:                 o.Answer.TcpHalfClosedTimeout,
-		TcpTimeWaitTimeout:                   o.Answer.TcpTimeWaitTimeout,
-		Risk:                                 o.Answer.Risk,
-		AbleToFileTransfer:                   util.AsBool(o.Answer.AbleToFileTransfer),
-		ExcessiveBandwidth:                   util.AsBool(o.Answer.ExcessiveBandwidth),
-		TunnelsOtherApplications:             util.AsBool(o.Answer.TunnelsOtherApplications),
-		HasKnownVulnerability:                util.AsBool(o.Answer.HasKnownVulnerability),
-		UsedByMalware:                        util.AsBool(o.Answer.UsedByMalware),
-		EvasiveBehavior:                      util.AsBool(o.Answer.EvasiveBehavior),
-		PervasiveUse:                         util.AsBool(o.Answer.PervasiveUse),
-		ProneToMisuse:                        util.AsBool(o.Answer.ProneToMisuse),
-		ContinueScanningForOtherApplications: util.AsBool(o.Answer.ContinueScanningForOtherApplications),
-		FileTypeIdent:                        util.AsBool(o.Answer.FileTypeIdent),
-		VirusIdent:                           util.AsBool(o.Answer.VirusIdent),
-		DataIdent:                            util.AsBool(o.Answer.DataIdent),
-		AlgDisableCapability:                 o.Answer.AlgDisableCapability,
-		ParentApp:                            o.Answer.ParentApp,
-	}
-
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Default == nil {
-		ans.DefaultType = DefaultTypeNone
-	} else if o.Answer.Default.DefaultPorts != nil {
-		ans.DefaultType = DefaultTypePort
-		ans.DefaultPorts = util.MemToStr(o.Answer.Default.DefaultPorts)
-	} else if o.Answer.Default.DefaultIpProtocol != nil {
-		ans.DefaultType = DefaultTypeIpProtocol
-		ans.DefaultIpProtocol = *o.Answer.Default.DefaultIpProtocol
-	} else if o.Answer.Default.Icmp != nil {
-		ans.DefaultType = DefaultTypeIcmp
-		ans.DefaultIcmpType = o.Answer.Default.Icmp.Type
-		ans.DefaultIcmpCode = o.Answer.Default.Icmp.Code
-	} else if o.Answer.Default.Icmp6 != nil {
-		ans.DefaultType = DefaultTypeIcmp6
-		ans.DefaultIcmpType = o.Answer.Default.Icmp6.Type
-		ans.DefaultIcmpCode = o.Answer.Default.Icmp6.Code
-	}
-
-	if o.Answer.Sigs != nil {
-		ans.raw["sigs"] = util.CleanRawXml(o.Answer.Sigs.Text)
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
 	return ans
 }
 
-type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
 }
 
-func (o *container_v2) Normalize() Entry {
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:                                 o.Answer.Name,
-		Category:                             o.Answer.Category,
-		Subcategory:                          o.Answer.Subcategory,
-		Technology:                           o.Answer.Technology,
-		Description:                          o.Answer.Description,
-		Timeout:                              o.Answer.Timeout,
-		TcpTimeout:                           o.Answer.TcpTimeout,
-		UdpTimeout:                           o.Answer.UdpTimeout,
-		TcpHalfClosedTimeout:                 o.Answer.TcpHalfClosedTimeout,
-		TcpTimeWaitTimeout:                   o.Answer.TcpTimeWaitTimeout,
-		Risk:                                 o.Answer.Risk,
-		AbleToFileTransfer:                   util.AsBool(o.Answer.AbleToFileTransfer),
-		ExcessiveBandwidth:                   util.AsBool(o.Answer.ExcessiveBandwidth),
-		TunnelsOtherApplications:             util.AsBool(o.Answer.TunnelsOtherApplications),
-		HasKnownVulnerability:                util.AsBool(o.Answer.HasKnownVulnerability),
-		UsedByMalware:                        util.AsBool(o.Answer.UsedByMalware),
-		EvasiveBehavior:                      util.AsBool(o.Answer.EvasiveBehavior),
-		PervasiveUse:                         util.AsBool(o.Answer.PervasiveUse),
-		ProneToMisuse:                        util.AsBool(o.Answer.ProneToMisuse),
-		ContinueScanningForOtherApplications: util.AsBool(o.Answer.ContinueScanningForOtherApplications),
-		FileTypeIdent:                        util.AsBool(o.Answer.FileTypeIdent),
-		VirusIdent:                           util.AsBool(o.Answer.VirusIdent),
-		DataIdent:                            util.AsBool(o.Answer.DataIdent),
-		AlgDisableCapability:                 o.Answer.AlgDisableCapability,
-		ParentApp:                            o.Answer.ParentApp,
-		NoAppIdCaching:                       util.AsBool(o.Answer.NoAppIdCaching),
+		Name:                                 o.Name,
+		Category:                             o.Category,
+		Subcategory:                          o.Subcategory,
+		Technology:                           o.Technology,
+		Description:                          o.Description,
+		Timeout:                              o.Timeout,
+		TcpTimeout:                           o.TcpTimeout,
+		UdpTimeout:                           o.UdpTimeout,
+		TcpHalfClosedTimeout:                 o.TcpHalfClosedTimeout,
+		TcpTimeWaitTimeout:                   o.TcpTimeWaitTimeout,
+		Risk:                                 o.Risk,
+		AbleToFileTransfer:                   util.AsBool(o.AbleToFileTransfer),
+		ExcessiveBandwidth:                   util.AsBool(o.ExcessiveBandwidth),
+		TunnelsOtherApplications:             util.AsBool(o.TunnelsOtherApplications),
+		HasKnownVulnerability:                util.AsBool(o.HasKnownVulnerability),
+		UsedByMalware:                        util.AsBool(o.UsedByMalware),
+		EvasiveBehavior:                      util.AsBool(o.EvasiveBehavior),
+		PervasiveUse:                         util.AsBool(o.PervasiveUse),
+		ProneToMisuse:                        util.AsBool(o.ProneToMisuse),
+		ContinueScanningForOtherApplications: util.AsBool(o.ContinueScanningForOtherApplications),
+		FileTypeIdent:                        util.AsBool(o.FileTypeIdent),
+		VirusIdent:                           util.AsBool(o.VirusIdent),
+		DataIdent:                            util.AsBool(o.DataIdent),
+		AlgDisableCapability:                 o.AlgDisableCapability,
+		ParentApp:                            o.ParentApp,
 	}
 
-	ans.raw = make(map[string]string)
+	raw := make(map[string]string)
 
-	if o.Answer.Default == nil {
+	if o.Default == nil {
 		ans.DefaultType = DefaultTypeNone
-	} else if o.Answer.Default.DefaultPorts != nil {
+	} else if o.Default.DefaultPorts != nil {
 		ans.DefaultType = DefaultTypePort
-		ans.DefaultPorts = util.MemToStr(o.Answer.Default.DefaultPorts)
-	} else if o.Answer.Default.DefaultIpProtocol != nil {
+		ans.DefaultPorts = util.MemToStr(o.Default.DefaultPorts)
+	} else if o.Default.DefaultIpProtocol != "" {
 		ans.DefaultType = DefaultTypeIpProtocol
-		ans.DefaultIpProtocol = *o.Answer.Default.DefaultIpProtocol
-	} else if o.Answer.Default.Icmp != nil {
+		ans.DefaultIpProtocol = o.Default.DefaultIpProtocol
+	} else if o.Default.Icmp != nil {
 		ans.DefaultType = DefaultTypeIcmp
-		ans.DefaultIcmpType = o.Answer.Default.Icmp.Type
-		ans.DefaultIcmpCode = o.Answer.Default.Icmp.Code
-	} else if o.Answer.Default.Icmp6 != nil {
+		ans.DefaultIcmpType = o.Default.Icmp.Type
+		ans.DefaultIcmpCode = o.Default.Icmp.Code
+	} else if o.Default.Icmp6 != nil {
 		ans.DefaultType = DefaultTypeIcmp6
-		ans.DefaultIcmpType = o.Answer.Default.Icmp6.Type
-		ans.DefaultIcmpCode = o.Answer.Default.Icmp6.Code
+		ans.DefaultIcmpType = o.Default.Icmp6.Type
+		ans.DefaultIcmpCode = o.Default.Icmp6.Code
 	}
 
-	if o.Answer.Sigs != nil {
-		ans.raw["sigs"] = util.CleanRawXml(o.Answer.Sigs.Text)
+	if o.Sigs != nil {
+		raw["sigs"] = util.CleanRawXml(o.Sigs.Text)
 	}
 
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+	if len(raw) != 0 {
+		ans.raw = raw
 	}
 
 	return ans
@@ -246,7 +211,7 @@ type entry_v1 struct {
 
 type theDefault struct {
 	DefaultPorts      *util.MemberType `xml:"port"`
-	DefaultIpProtocol *int             `xml:"ident-by-ip-protocol"`
+	DefaultIpProtocol string           `xml:"ident-by-ip-protocol,omitempty"`
 	Icmp              *icmp            `xml:"ident-by-icmp-type"`
 	Icmp6             *icmp            `xml:"ident-by-icmp6-type"`
 }
@@ -292,7 +257,7 @@ func specify_v1(e Entry) interface{} {
 		}
 	case DefaultTypeIpProtocol:
 		ans.Default = &theDefault{
-			DefaultIpProtocol: &e.DefaultIpProtocol,
+			DefaultIpProtocol: e.DefaultIpProtocol,
 		}
 	case DefaultTypeIcmp:
 		ans.Default = &theDefault{
@@ -312,6 +277,90 @@ func specify_v1(e Entry) interface{} {
 
 	if text := e.raw["sigs"]; text != "" {
 		ans.Sigs = &util.RawXml{text}
+	}
+
+	return ans
+}
+
+// PAN-OS 8.1
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:                                 o.Name,
+		Category:                             o.Category,
+		Subcategory:                          o.Subcategory,
+		Technology:                           o.Technology,
+		Description:                          o.Description,
+		Timeout:                              o.Timeout,
+		TcpTimeout:                           o.TcpTimeout,
+		UdpTimeout:                           o.UdpTimeout,
+		TcpHalfClosedTimeout:                 o.TcpHalfClosedTimeout,
+		TcpTimeWaitTimeout:                   o.TcpTimeWaitTimeout,
+		Risk:                                 o.Risk,
+		AbleToFileTransfer:                   util.AsBool(o.AbleToFileTransfer),
+		ExcessiveBandwidth:                   util.AsBool(o.ExcessiveBandwidth),
+		TunnelsOtherApplications:             util.AsBool(o.TunnelsOtherApplications),
+		HasKnownVulnerability:                util.AsBool(o.HasKnownVulnerability),
+		UsedByMalware:                        util.AsBool(o.UsedByMalware),
+		EvasiveBehavior:                      util.AsBool(o.EvasiveBehavior),
+		PervasiveUse:                         util.AsBool(o.PervasiveUse),
+		ProneToMisuse:                        util.AsBool(o.ProneToMisuse),
+		ContinueScanningForOtherApplications: util.AsBool(o.ContinueScanningForOtherApplications),
+		FileTypeIdent:                        util.AsBool(o.FileTypeIdent),
+		VirusIdent:                           util.AsBool(o.VirusIdent),
+		DataIdent:                            util.AsBool(o.DataIdent),
+		AlgDisableCapability:                 o.AlgDisableCapability,
+		ParentApp:                            o.ParentApp,
+		NoAppIdCaching:                       util.AsBool(o.NoAppIdCaching),
+	}
+
+	raw := make(map[string]string)
+
+	if o.Default == nil {
+		ans.DefaultType = DefaultTypeNone
+	} else if o.Default.DefaultPorts != nil {
+		ans.DefaultType = DefaultTypePort
+		ans.DefaultPorts = util.MemToStr(o.Default.DefaultPorts)
+	} else if o.Default.DefaultIpProtocol != "" {
+		ans.DefaultType = DefaultTypeIpProtocol
+		ans.DefaultIpProtocol = o.Default.DefaultIpProtocol
+	} else if o.Default.Icmp != nil {
+		ans.DefaultType = DefaultTypeIcmp
+		ans.DefaultIcmpType = o.Default.Icmp.Type
+		ans.DefaultIcmpCode = o.Default.Icmp.Code
+	} else if o.Default.Icmp6 != nil {
+		ans.DefaultType = DefaultTypeIcmp6
+		ans.DefaultIcmpType = o.Default.Icmp6.Type
+		ans.DefaultIcmpCode = o.Default.Icmp6.Code
+	}
+
+	if o.Sigs != nil {
+		raw["sigs"] = util.CleanRawXml(o.Sigs.Text)
+	}
+
+	if len(raw) != 0 {
+		ans.raw = raw
 	}
 
 	return ans
@@ -386,7 +435,7 @@ func specify_v2(e Entry) interface{} {
 		}
 	case DefaultTypeIpProtocol:
 		ans.Default = &theDefault{
-			DefaultIpProtocol: &e.DefaultIpProtocol,
+			DefaultIpProtocol: e.DefaultIpProtocol,
 		}
 	case DefaultTypeIcmp:
 		ans.Default = &theDefault{

@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a peer.
@@ -42,38 +43,62 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:            o.Answer.Name,
-		Interface:       o.Answer.Local.Interface,
-		PeerAddress:     o.Answer.Peer.PeerAddress,
-		TunnelInterface: o.Answer.TunnelInterface,
-		Ttl:             o.Answer.Ttl,
-		CopyTos:         util.AsBool(o.Answer.CopyTos),
-		Disabled:        util.AsBool(o.Answer.Disabled),
+		Name:            o.Name,
+		Interface:       o.Local.Interface,
+		PeerAddress:     o.Peer.PeerAddress,
+		TunnelInterface: o.TunnelInterface,
+		Ttl:             o.Ttl,
+		CopyTos:         util.AsBool(o.CopyTos),
+		Disabled:        util.AsBool(o.Disabled),
 	}
 
-	if o.Answer.Local.Ip != "" {
+	if o.Local.Ip != "" {
 		ans.LocalAddressType = LocalAddressTypeIp
-		ans.LocalAddressValue = o.Answer.Local.Ip
-	} else if o.Answer.Local.FloatingIp != "" {
+		ans.LocalAddressValue = o.Local.Ip
+	} else if o.Local.FloatingIp != "" {
 		ans.LocalAddressType = LocalAddressTypeFloatingIp
-		ans.LocalAddressValue = o.Answer.Local.FloatingIp
+		ans.LocalAddressValue = o.Local.FloatingIp
 	}
 
-	if o.Answer.KeepAlive != nil {
-		ans.EnableKeepAlive = util.AsBool(o.Answer.KeepAlive.EnableKeepAlive)
-		ans.KeepAliveInterval = o.Answer.KeepAlive.KeepAliveInterval
-		ans.KeepAliveRetry = o.Answer.KeepAlive.KeepAliveRetry
-		ans.KeepAliveHoldTimer = o.Answer.KeepAlive.KeepAliveHoldTimer
+	if o.KeepAlive != nil {
+		ans.EnableKeepAlive = util.AsBool(o.KeepAlive.EnableKeepAlive)
+		ans.KeepAliveInterval = o.KeepAlive.KeepAliveInterval
+		ans.KeepAliveRetry = o.KeepAlive.KeepAliveRetry
+		ans.KeepAliveHoldTimer = o.KeepAlive.KeepAliveHoldTimer
 	}
 
 	return ans

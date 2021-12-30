@@ -1,6 +1,6 @@
 /*
 Package telemetry is the firewall.Device.Telemetry namespace.
 
-Normalized object: Settings
+Normalized object: Config
 */
 package telemetry

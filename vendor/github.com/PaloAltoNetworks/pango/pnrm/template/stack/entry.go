@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a template stack.
@@ -27,41 +28,75 @@ type Entry struct {
 func (o *Entry) Copy(s Entry) {
 	o.Description = s.Description
 	o.DefaultVsys = s.DefaultVsys
-	o.Templates = s.Templates
-	o.Devices = s.Devices
+	if s.Templates == nil {
+		o.Templates = nil
+	} else {
+		o.Templates = make([]string, len(s.Templates))
+		copy(o.Templates, s.Templates)
+	}
+	if s.Devices == nil {
+		o.Devices = nil
+	} else {
+		o.Devices = make([]string, len(s.Devices))
+		copy(o.Devices, s.Devices)
+	}
 }
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:        o.Answer.Name,
-		Description: o.Answer.Description,
-		DefaultVsys: o.Answer.DefaultVsys,
-		Templates:   util.MemToStr(o.Answer.Templates),
-		Devices:     util.EntToStr(o.Answer.Devices),
+		Name:        o.Name,
+		Description: o.Description,
+		DefaultVsys: o.DefaultVsys,
+		Templates:   util.MemToStr(o.Templates),
+		Devices:     util.EntToStr(o.Devices),
 	}
 
-	ans.raw = make(map[string]string)
+	raw := make(map[string]string)
 
-	if o.Answer.Variables != nil {
-		ans.raw["var"] = util.CleanRawXml(o.Answer.Variables.Text)
+	if o.Variables != nil {
+		raw["var"] = util.CleanRawXml(o.Variables.Text)
 	}
 
-	if o.Answer.Config != nil {
-		ans.raw["conf"] = util.CleanRawXml(o.Answer.Config.Text)
+	if o.Config != nil {
+		raw["conf"] = util.CleanRawXml(o.Config.Text)
 	}
 
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+	if len(raw) > 0 {
+		ans.raw = raw
 	}
 
 	return ans

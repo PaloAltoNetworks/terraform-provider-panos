@@ -88,6 +88,20 @@ func (c *Firewall) Delete(vr string, e ...interface{}) error {
 	return c.ns.Delete(c.pather(vr), names, nErr)
 }
 
+// FromPanosConfig retrieves the object stored in the retrieved config.
+func (c *Firewall) FromPanosConfig(vr, name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.FromPanosConfig(c.pather(vr), name, ans)
+	return first(ans, err)
+}
+
+// AllFromPanosConfig retrieves all objects stored in the retrieved config.
+func (c *Firewall) AllFromPanosConfig(vr string) ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.AllFromPanosConfig(c.pather(vr), ans)
+	return all(ans, err)
+}
+
 // MoveGroup moves a logical group of bgp export rules somewhere in relation
 // to another security policy.
 //

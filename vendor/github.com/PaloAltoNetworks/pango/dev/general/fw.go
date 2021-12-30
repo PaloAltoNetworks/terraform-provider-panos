@@ -1,79 +1,56 @@
 package general
 
 import (
+	"github.com/PaloAltoNetworks/pango/namespace"
 	"github.com/PaloAltoNetworks/pango/util"
 )
 
-// FwGeneral is a namespace struct, included as part of pango.Client.
-type FwGeneral struct {
-	con util.XapiClient
-}
-
-// Initialize is invoked by client.Initialize().
-func (c *FwGeneral) Initialize(con util.XapiClient) {
-	c.con = con
-}
-
-// Show performs SHOW to retrieve the device's general settings.
-func (c *FwGeneral) Show() (Config, error) {
-	c.con.LogQuery("(show) general settings")
-	return c.details(c.con.Show)
+// Firewall is a namespace struct, included as part of pango.Client.
+type Firewall struct {
+	ns *namespace.Standard
 }
 
 // Get performs GET to retrieve the device's general settings.
-func (c *FwGeneral) Get() (Config, error) {
-	c.con.LogQuery("(get) general settings")
-	return c.details(c.con.Get)
+func (c *Firewall) Get() (Config, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(), "", ans)
+	return first(ans, err)
+}
+
+// Show performs SHOW to retrieve the device's general settings.
+func (c *Firewall) Show() (Config, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(), "", ans)
+	return first(ans, err)
 }
 
 // Set performs SET to create / update the device's general settings.
-func (c *FwGeneral) Set(e Config) error {
-	var err error
-	_, fn := c.versioning()
-	c.con.LogAction("(set) general settings")
-
-	path := c.xpath()
-	path = path[:len(path)-1]
-
-	_, err = c.con.Set(path, fn(e), nil, nil)
-	return err
+func (c *Firewall) Set(e Config) error {
+	return c.ns.Set(c.pather(), specifier(e))
 }
 
 // Edit performs EDIT to update the device's general settings.
-func (c *FwGeneral) Edit(e Config) error {
-	var err error
-	_, fn := c.versioning()
-	c.con.LogAction("(edit) general settings")
-
-	path := c.xpath()
-
-	_, err = c.con.Edit(path, fn(e), nil, nil)
-	return err
+func (c *Firewall) Edit(e Config) error {
+	return c.ns.Edit(c.pather(), e)
 }
 
-/** Internal functions for the FwGeneral struct **/
-
-func (c *FwGeneral) versioning() (normalizer, func(Config) interface{}) {
-	return &container_v1{}, specify_v1
-}
-
-func (c *FwGeneral) details(fn util.Retriever) (Config, error) {
-	path := c.xpath()
-	obj, _ := c.versioning()
-	if _, err := fn(path, nil, obj); err != nil {
-		return Config{}, err
+/** Internal functions for the Firewall struct **/
+func (c *Firewall) pather() namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath()
 	}
-	ans := obj.Normalize()
-
-	return ans, nil
 }
 
-func (c *FwGeneral) xpath() []string {
+func (c *Firewall) xpath() ([]string, error) {
 	return []string{
 		"config",
 		"devices",
 		util.AsEntryXpath([]string{"localhost.localdomain"}),
 		"deviceconfig",
 		"system",
-	}
+	}, nil
+}
+
+func (c *Firewall) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

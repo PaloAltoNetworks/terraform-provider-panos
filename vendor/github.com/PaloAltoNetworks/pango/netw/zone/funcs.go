@@ -9,7 +9,13 @@ import (
 )
 
 func versioning(v version.Number) (normalizer, func(Entry) interface{}) {
-	return &container_v1{}, specify_v1
+	if v.Gte(version.Number{10, 0, 0, ""}) {
+		return &container_v3{}, specify_v3
+	} else if v.Gte(version.Number{8, 0, 0, ""}) {
+		return &container_v2{}, specify_v2
+	} else {
+		return &container_v1{}, specify_v1
+	}
 }
 
 func specifier(e ...Entry) []namespace.Specifier {

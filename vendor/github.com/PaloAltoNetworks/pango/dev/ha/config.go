@@ -30,6 +30,19 @@ type Config struct {
 	ApPassiveLinkState        string
 	ApMonitorFailHoldDownTime int
 
+	// active active
+	AaDeviceId string
+	// HA3 packet forwarding
+	AaTentativeHoldTime     string
+	AaSyncVirtualRouter     bool
+	AaSyncQos               bool
+	AaSessionOwnerSelection string // primary-device, first-packet
+	// session owner selection: first-packet
+	AaFpSessionSetup string // primary-device, first-packet, ip-modulo, ip-hash
+	// session setup: ip-hash
+	AaFpSessionSetupIpHashKey  string
+	AaFpSessionSetupIpHashSeed string
+
 	ElectionDevicePriority  string
 	ElectionPreemptive      bool
 	ElectionHeartBeatBackup bool
@@ -169,6 +182,15 @@ func (o *Config) Copy(s Config) {
 	o.ApPassiveLinkState = s.ApPassiveLinkState
 	o.ApMonitorFailHoldDownTime = s.ApMonitorFailHoldDownTime
 
+	o.AaDeviceId = s.AaDeviceId
+	o.AaTentativeHoldTime = s.AaTentativeHoldTime
+	o.AaSyncVirtualRouter = s.AaSyncVirtualRouter
+	o.AaSyncQos = s.AaSyncQos
+	o.AaSessionOwnerSelection = s.AaSessionOwnerSelection
+	o.AaFpSessionSetup = s.AaFpSessionSetup
+	o.AaFpSessionSetupIpHashKey = s.AaFpSessionSetupIpHashKey
+	o.AaFpSessionSetupIpHashSeed = s.AaFpSessionSetupIpHashSeed
+
 	o.ElectionDevicePriority = s.ElectionDevicePriority
 	o.ElectionPreemptive = s.ElectionPreemptive
 	o.ElectionHeartBeatBackup = s.ElectionHeartBeatBackup
@@ -241,10 +263,38 @@ func (o *entry_v1) normalize() Config {
 			ans.ApMonitorFailHoldDownTime = o.Mode.ActivePassive.MonitorFailHoldDownTime
 		case o.Mode.ActiveActive != nil:
 			ans.Mode = ModeActiveActive
-			if o.Mode.ActiveActive != nil {
-				raw["aa"] = util.CleanRawXml(o.Mode.ActiveActive.Text)
+			ans.AaDeviceId = o.Mode.ActiveActive.DeviceId
+			ans.AaTentativeHoldTime = o.Mode.ActiveActive.TentativeHoldTime
+			if o.Mode.ActiveActive.NetConfSync != nil {
+				x := o.Mode.ActiveActive.NetConfSync
+				ans.AaSyncVirtualRouter = util.AsBool(x.VirtualRouter)
+				ans.AaSyncQos = util.AsBool(x.Qos)
 			}
-
+			if o.Mode.ActiveActive.SessionOwnerSelection != nil {
+				x := o.Mode.ActiveActive.SessionOwnerSelection
+				if x.PrimaryDevice != nil {
+					ans.AaSessionOwnerSelection = AaSessionOwnerSelectionPrimaryDevice
+				} else if x.FirstPacket != nil {
+					ans.AaSessionOwnerSelection = AaSessionOwnerSelectionFirstPacket
+					switch {
+					case x.FirstPacket.PrimaryDevice != nil:
+						ans.AaFpSessionSetup = AaFpSessionSetupPrimaryDevice
+					case x.FirstPacket.FirstPacket != nil:
+						ans.AaFpSessionSetup = AaFpSessionSetupFirstPacket
+					case x.FirstPacket.IpModulo != nil:
+						ans.AaFpSessionSetup = AaFpSessionSetupIpModulo
+					case x.FirstPacket.IpHash != nil:
+						ans.AaFpSessionSetup = AaFpSessionSetupIpHash
+						ans.AaFpSessionSetupIpHashKey =
+							x.FirstPacket.IpHash.HashKey
+						ans.AaFpSessionSetupIpHashSeed =
+							x.FirstPacket.IpHash.HashSeed
+					}
+				}
+			}
+			if o.Mode.ActiveActive.VirtualAddress != nil {
+				raw["vaddr"] = util.CleanRawXml(o.Mode.ActiveActive.VirtualAddress.Text)
+			}
 		}
 	}
 
@@ -333,9 +383,11 @@ func (o *entry_v1) normalize() Config {
 	if o.StateSync != nil {
 		ans.Ha2StateSyncEnable = util.AsBool(o.StateSync.Enable)
 		ans.Ha2StateSyncTransport = o.StateSync.Transport
-		ans.Ha2StateSyncKeepAliveEnable = util.AsBool(o.StateSync.Ha2KeepAlive.Enable)
-		ans.Ha2StateSyncKeepAliveAction = o.StateSync.Ha2KeepAlive.Action
-		ans.Ha2StateSyncKeepAliveThreshold = o.StateSync.Ha2KeepAlive.Threshold
+		if o.StateSync.Ha2KeepAlive != nil {
+			ans.Ha2StateSyncKeepAliveEnable = util.AsBool(o.StateSync.Ha2KeepAlive.Enable)
+			ans.Ha2StateSyncKeepAliveAction = o.StateSync.Ha2KeepAlive.Action
+			ans.Ha2StateSyncKeepAliveThreshold = o.StateSync.Ha2KeepAlive.Threshold
+		}
 	}
 
 	if o.LinkMonitor != nil {
@@ -376,6 +428,20 @@ type entry_v1 struct {
 
 	PathMonitor *util.RawXml `xml:"group>monitoring>path-monitoring"`
 	Cluster     *util.RawXml `xml:"cluster"`
+}
+
+func (e *entry_v1) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type localEntry_v1 entry_v1
+	ans := localEntry_v1{
+		StateSync: &stateSync{
+			Enable: util.YesNo(true),
+		},
+	}
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+	*e = entry_v1(ans)
+	return nil
 }
 
 type interfaces struct {
@@ -459,12 +525,42 @@ type ha2KeepAlive struct {
 
 type mode struct {
 	ActivePassive *activePassive `xml:"active-passive"`
-	ActiveActive  *util.RawXml   `xml:"active-active"`
+	ActiveActive  *activeActive  `xml:"active-active"`
 }
 
 type activePassive struct {
 	PassiveLinkState        string `xml:"passive-link-state,omitempty"`
 	MonitorFailHoldDownTime int    `xml:"monitor-fail-hold-down-time,omitempty"`
+}
+
+type activeActive struct {
+	DeviceId              string                 `xml:"device-id"`
+	TentativeHoldTime     string                 `xml:"tentative-hold-time,omitempty"`
+	NetConfSync           *netConfSync           `xml:"network-configuration>sync"`
+	SessionOwnerSelection *sessionOwnerSelection `xml:"session-owner-selection"`
+	VirtualAddress        *util.RawXml           `xml:"virtual-address"`
+}
+
+type netConfSync struct {
+	VirtualRouter string `xml:"virtual-router"`
+	Qos           string `xml:"qos"`
+}
+
+type sessionOwnerSelection struct {
+	PrimaryDevice *string             `xml:"primary-device"`
+	FirstPacket   *firstPacketSession `xml:"first-packet>session-setup"`
+}
+
+type firstPacketSession struct {
+	PrimaryDevice *string `xml:"primary-device"`
+	FirstPacket   *string `xml:"first-packet"`
+	IpModulo      *string `xml:"ip-modulo"`
+	IpHash        *ipHash `xml:"ip-hash"`
+}
+
+type ipHash struct {
+	HashKey  string `xml:"hash-key,omitempty"`
+	HashSeed string `xml:"hash-seed,omitempty"`
 }
 
 type linkMonitor struct {
@@ -494,8 +590,42 @@ func specify_v1(e Config) interface{} {
 				MonitorFailHoldDownTime: e.ApMonitorFailHoldDownTime,
 			}
 		case ModeActiveActive:
-			if text, present := e.raw["aa"]; present {
-				ans.Mode.ActiveActive = &util.RawXml{text}
+			ans.Mode.ActiveActive = &activeActive{
+				DeviceId:          e.AaDeviceId,
+				TentativeHoldTime: e.AaTentativeHoldTime,
+			}
+			if e.AaSyncVirtualRouter || e.AaSyncQos {
+				ans.Mode.ActiveActive.NetConfSync = &netConfSync{
+					VirtualRouter: util.YesNo(e.AaSyncVirtualRouter),
+					Qos:           util.YesNo(e.AaSyncQos),
+				}
+			}
+			switch e.AaSessionOwnerSelection {
+			case AaSessionOwnerSelectionPrimaryDevice:
+				ans.Mode.ActiveActive.SessionOwnerSelection = &sessionOwnerSelection{
+					PrimaryDevice: &s,
+				}
+			case AaSessionOwnerSelectionFirstPacket:
+				x := &sessionOwnerSelection{
+					FirstPacket: &firstPacketSession{},
+				}
+				switch e.AaFpSessionSetup {
+				case AaFpSessionSetupPrimaryDevice:
+					x.FirstPacket.PrimaryDevice = &s
+				case AaFpSessionSetupFirstPacket:
+					x.FirstPacket.FirstPacket = &s
+				case AaFpSessionSetupIpModulo:
+					x.FirstPacket.IpModulo = &s
+				case AaFpSessionSetupIpHash:
+					x.FirstPacket.IpHash = &ipHash{
+						HashKey:  e.AaFpSessionSetupIpHashKey,
+						HashSeed: e.AaFpSessionSetupIpHashSeed,
+					}
+				}
+				ans.Mode.ActiveActive.SessionOwnerSelection = x
+			}
+			if text, present := e.raw["vaddr"]; present {
+				ans.Mode.ActiveActive.VirtualAddress = &util.RawXml{text}
 			}
 		}
 	}

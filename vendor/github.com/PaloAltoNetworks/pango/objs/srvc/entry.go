@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a service
@@ -30,7 +31,12 @@ func (o *Entry) Copy(s Entry) {
 	o.Protocol = s.Protocol
 	o.SourcePort = s.SourcePort
 	o.DestinationPort = s.DestinationPort
-	o.Tags = s.Tags
+	if s.Tags == nil {
+		o.Tags = nil
+	} else {
+		o.Tags = make([]string, len(s.Tags))
+		copy(o.Tags, s.Tags)
+	}
 	o.OverrideSessionTimeout = s.OverrideSessionTimeout
 	o.OverrideTimeout = s.OverrideTimeout
 	o.OverrideHalfClosedTimeout = s.OverrideHalfClosedTimeout
@@ -39,18 +45,33 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
 	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer []entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
 func (o *container_v1) Normalize() []Entry {
 	ans := make([]Entry, 0, len(o.Answer))
 	for i := range o.Answer {
 		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
 	return ans
@@ -76,14 +97,60 @@ func (o *entry_v1) normalize() Entry {
 	return ans
 }
 
+type entry_v1 struct {
+	XMLName     xml.Name         `xml:"entry"`
+	Name        string           `xml:"name,attr"`
+	TcpProto    *protoDef        `xml:"protocol>tcp"`
+	UdpProto    *protoDef        `xml:"protocol>udp"`
+	Description string           `xml:"description,omitempty"`
+	Tags        *util.MemberType `xml:"tag"`
+}
+
+type protoDef struct {
+	SourcePort      string `xml:"source-port,omitempty"`
+	DestinationPort string `xml:"port"`
+}
+
+func specify_v1(e Entry) interface{} {
+	ans := entry_v1{
+		Name:        e.Name,
+		Description: e.Description,
+		Tags:        util.StrToMem(e.Tags),
+	}
+	switch e.Protocol {
+	case ProtocolTcp:
+		ans.TcpProto = &protoDef{
+			e.SourcePort,
+			e.DestinationPort,
+		}
+	case ProtocolUdp:
+		ans.UdpProto = &protoDef{
+			e.SourcePort,
+			e.DestinationPort,
+		}
+	}
+
+	return ans
+}
+
+// 8.1
 type container_v2 struct {
-	Answer []entry_v2 `xml:"result>entry"`
+	Answer []entry_v2 `xml:"entry"`
 }
 
 func (o *container_v2) Normalize() []Entry {
 	ans := make([]Entry, 0, len(o.Answer))
 	for i := range o.Answer {
 		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
 	return ans
@@ -124,49 +191,13 @@ func (o *entry_v2) normalize() Entry {
 	return ans
 }
 
-type entry_v1 struct {
-	XMLName     xml.Name         `xml:"entry"`
-	Name        string           `xml:"name,attr"`
-	TcpProto    *protoDef        `xml:"protocol>tcp"`
-	UdpProto    *protoDef        `xml:"protocol>udp"`
-	Description string           `xml:"description"`
-	Tags        *util.MemberType `xml:"tag"`
-}
-
-type protoDef struct {
-	SourcePort      string `xml:"source-port,omitempty"`
-	DestinationPort string `xml:"port"`
-}
-
-func specify_v1(e Entry) interface{} {
-	ans := entry_v1{
-		Name:        e.Name,
-		Description: e.Description,
-		Tags:        util.StrToMem(e.Tags),
-	}
-	switch e.Protocol {
-	case ProtocolTcp:
-		ans.TcpProto = &protoDef{
-			e.SourcePort,
-			e.DestinationPort,
-		}
-	case ProtocolUdp:
-		ans.UdpProto = &protoDef{
-			e.SourcePort,
-			e.DestinationPort,
-		}
-	}
-
-	return ans
-}
-
 type entry_v2 struct {
 	XMLName     xml.Name         `xml:"entry"`
 	Name        string           `xml:"name,attr"`
 	TcpProto    *tcpProto        `xml:"protocol>tcp"`
 	UdpProto    *udpProto        `xml:"protocol>udp"`
 	SctpProto   *protoDef        `xml:"protocol>sctp"`
-	Description string           `xml:"description"`
+	Description string           `xml:"description,omitempty"`
 	Tags        *util.MemberType `xml:"tag"`
 }
 

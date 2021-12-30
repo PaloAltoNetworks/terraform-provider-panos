@@ -3,7 +3,7 @@ package syslog
 import (
 	"encoding/xml"
 
-	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an syslog profile.
@@ -27,8 +27,17 @@ type Entry struct {
 	Iptag             string // 9.0+
 	EscapedCharacters string
 	EscapeCharacter   string
+	Servers           []Server
+}
 
-	raw map[string]string
+// Server is a syslog server.
+type Server struct {
+	Name         string
+	Server       string
+	Transport    string
+	Port         int
+	SyslogFormat string
+	Facility     string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
@@ -50,156 +59,88 @@ func (o *Entry) Copy(s Entry) {
 	o.Iptag = s.Iptag
 	o.EscapedCharacters = s.EscapedCharacters
 	o.EscapeCharacter = s.EscapeCharacter
+	if s.Servers == nil {
+		o.Servers = nil
+	} else {
+		list := make([]Server, 0, len(s.Servers))
+		for _, x := range s.Servers {
+			list = append(list, Server{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		o.Servers = list
+	}
 }
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name: o.Answer.Name,
-	}
-
-	if o.Answer.Server != nil {
-		ans.raw = map[string]string{
-			"srv": util.CleanRawXml(o.Answer.Server.Text),
-		}
-	}
-
-	if o.Answer.Format != nil {
-		ans.Config = o.Answer.Format.Config
-		ans.System = o.Answer.Format.System
-		ans.Threat = o.Answer.Format.Threat
-		ans.Traffic = o.Answer.Format.Traffic
-		ans.HipMatch = o.Answer.Format.HipMatch
-
-		if o.Answer.Format.Esc != nil {
-			ans.EscapedCharacters = o.Answer.Format.Esc.EscapedCharacters
-			ans.EscapeCharacter = o.Answer.Format.Esc.EscapeCharacter
-		}
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
 	return ans
 }
 
-type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
-}
-
-func (o *container_v2) Normalize() Entry {
-	ans := Entry{
-		Name: o.Answer.Name,
-	}
-
-	if o.Answer.Server != nil {
-		ans.raw = map[string]string{
-			"srv": util.CleanRawXml(o.Answer.Server.Text),
-		}
-	}
-
-	if o.Answer.Format != nil {
-		ans.Config = o.Answer.Format.Config
-		ans.System = o.Answer.Format.System
-		ans.Threat = o.Answer.Format.Threat
-		ans.Traffic = o.Answer.Format.Traffic
-		ans.HipMatch = o.Answer.Format.HipMatch
-		ans.Url = o.Answer.Format.Url
-		ans.Data = o.Answer.Format.Data
-		ans.Wildfire = o.Answer.Format.Wildfire
-		ans.Tunnel = o.Answer.Format.Tunnel
-		ans.UserId = o.Answer.Format.UserId
-		ans.Gtp = o.Answer.Format.Gtp
-		ans.Auth = o.Answer.Format.Auth
-
-		if o.Answer.Format.Esc != nil {
-			ans.EscapedCharacters = o.Answer.Format.Esc.EscapedCharacters
-			ans.EscapeCharacter = o.Answer.Format.Esc.EscapeCharacter
-		}
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
 	return ans
 }
 
-type container_v3 struct {
-	Answer entry_v3 `xml:"result>entry"`
-}
-
-func (o *container_v3) Normalize() Entry {
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name: o.Answer.Name,
+		Name: o.Name,
 	}
 
-	if o.Answer.Server != nil {
-		ans.raw = map[string]string{
-			"srv": util.CleanRawXml(o.Answer.Server.Text),
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
 		}
+		ans.Servers = list
 	}
 
-	if o.Answer.Format != nil {
-		ans.Config = o.Answer.Format.Config
-		ans.System = o.Answer.Format.System
-		ans.Threat = o.Answer.Format.Threat
-		ans.Traffic = o.Answer.Format.Traffic
-		ans.HipMatch = o.Answer.Format.HipMatch
-		ans.Url = o.Answer.Format.Url
-		ans.Data = o.Answer.Format.Data
-		ans.Wildfire = o.Answer.Format.Wildfire
-		ans.Tunnel = o.Answer.Format.Tunnel
-		ans.UserId = o.Answer.Format.UserId
-		ans.Gtp = o.Answer.Format.Gtp
-		ans.Auth = o.Answer.Format.Auth
-		ans.Sctp = o.Answer.Format.Sctp
+	if o.Format != nil {
+		ans.Config = o.Format.Config
+		ans.System = o.Format.System
+		ans.Threat = o.Format.Threat
+		ans.Traffic = o.Format.Traffic
+		ans.HipMatch = o.Format.HipMatch
 
-		if o.Answer.Format.Esc != nil {
-			ans.EscapedCharacters = o.Answer.Format.Esc.EscapedCharacters
-			ans.EscapeCharacter = o.Answer.Format.Esc.EscapeCharacter
-		}
-	}
-
-	return ans
-}
-
-type container_v4 struct {
-	Answer entry_v4 `xml:"result>entry"`
-}
-
-func (o *container_v4) Normalize() Entry {
-	ans := Entry{
-		Name: o.Answer.Name,
-	}
-
-	if o.Answer.Server != nil {
-		ans.raw = map[string]string{
-			"srv": util.CleanRawXml(o.Answer.Server.Text),
-		}
-	}
-
-	if o.Answer.Format != nil {
-		ans.Config = o.Answer.Format.Config
-		ans.System = o.Answer.Format.System
-		ans.Threat = o.Answer.Format.Threat
-		ans.Traffic = o.Answer.Format.Traffic
-		ans.HipMatch = o.Answer.Format.HipMatch
-		ans.Url = o.Answer.Format.Url
-		ans.Data = o.Answer.Format.Data
-		ans.Wildfire = o.Answer.Format.Wildfire
-		ans.Tunnel = o.Answer.Format.Tunnel
-		ans.UserId = o.Answer.Format.UserId
-		ans.Gtp = o.Answer.Format.Gtp
-		ans.Auth = o.Answer.Format.Auth
-		ans.Sctp = o.Answer.Format.Sctp
-		ans.Iptag = o.Answer.Format.Iptag
-
-		if o.Answer.Format.Esc != nil {
-			ans.EscapedCharacters = o.Answer.Format.Esc.EscapedCharacters
-			ans.EscapeCharacter = o.Answer.Format.Esc.EscapeCharacter
+		if o.Format.Esc != nil {
+			ans.EscapedCharacters = o.Format.Esc.EscapedCharacters
+			ans.EscapeCharacter = o.Format.Esc.EscapeCharacter
 		}
 	}
 
@@ -207,10 +148,37 @@ func (o *container_v4) Normalize() Entry {
 }
 
 type entry_v1 struct {
-	XMLName xml.Name     `xml:"entry"`
-	Name    string       `xml:"name,attr"`
-	Server  *util.RawXml `xml:"server"`
-	Format  *format_v1   `xml:"format"`
+	XMLName xml.Name   `xml:"entry"`
+	Name    string     `xml:"name,attr"`
+	Server  *servers   `xml:"server"`
+	Format  *format_v1 `xml:"format"`
+}
+
+type servers struct {
+	Entries []serverEntry `xml:"entry"`
+}
+
+type serverEntry struct {
+	XMLName      xml.Name `xml:"entry"`
+	Name         string   `xml:"name,attr"`
+	Server       string   `xml:"server"`
+	Transport    string   `xml:"transport,omitempty"`
+	Port         int      `xml:"port,omitempty"`
+	SyslogFormat string   `xml:"format,omitempty"`
+	Facility     string   `xml:"facility,omitempty"`
+}
+
+func (e *serverEntry) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type local serverEntry
+	ans := local{
+		Transport:    TransportUdp,
+		SyslogFormat: SyslogFormatBsd,
+	}
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+	*e = serverEntry(ans)
+	return nil
 }
 
 type format_v1 struct {
@@ -232,8 +200,19 @@ func specify_v1(e Entry) interface{} {
 		Name: e.Name,
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Server = &servers{Entries: list}
 	}
 
 	hasEsc := e.EscapedCharacters != "" || e.EscapeCharacter != ""
@@ -257,11 +236,77 @@ func specify_v1(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 8.0
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Servers = list
+	}
+
+	if o.Format != nil {
+		ans.Config = o.Format.Config
+		ans.System = o.Format.System
+		ans.Threat = o.Format.Threat
+		ans.Traffic = o.Format.Traffic
+		ans.HipMatch = o.Format.HipMatch
+		ans.Url = o.Format.Url
+		ans.Data = o.Format.Data
+		ans.Wildfire = o.Format.Wildfire
+		ans.Tunnel = o.Format.Tunnel
+		ans.UserId = o.Format.UserId
+		ans.Gtp = o.Format.Gtp
+		ans.Auth = o.Format.Auth
+
+		if o.Format.Esc != nil {
+			ans.EscapedCharacters = o.Format.Esc.EscapedCharacters
+			ans.EscapeCharacter = o.Format.Esc.EscapeCharacter
+		}
+	}
+
+	return ans
+}
+
 type entry_v2 struct {
-	XMLName xml.Name     `xml:"entry"`
-	Name    string       `xml:"name,attr"`
-	Server  *util.RawXml `xml:"server"`
-	Format  *format_v2   `xml:"format"`
+	XMLName xml.Name   `xml:"entry"`
+	Name    string     `xml:"name,attr"`
+	Server  *servers   `xml:"server"`
+	Format  *format_v2 `xml:"format"`
 }
 
 type format_v2 struct {
@@ -285,8 +330,19 @@ func specify_v2(e Entry) interface{} {
 		Name: e.Name,
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Server = &servers{Entries: list}
 	}
 
 	hasEsc := e.EscapedCharacters != "" || e.EscapeCharacter != ""
@@ -317,11 +373,78 @@ func specify_v2(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 8.1
+type container_v3 struct {
+	Answer []entry_v3 `xml:"entry"`
+}
+
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Servers = list
+	}
+
+	if o.Format != nil {
+		ans.Config = o.Format.Config
+		ans.System = o.Format.System
+		ans.Threat = o.Format.Threat
+		ans.Traffic = o.Format.Traffic
+		ans.HipMatch = o.Format.HipMatch
+		ans.Url = o.Format.Url
+		ans.Data = o.Format.Data
+		ans.Wildfire = o.Format.Wildfire
+		ans.Tunnel = o.Format.Tunnel
+		ans.UserId = o.Format.UserId
+		ans.Gtp = o.Format.Gtp
+		ans.Auth = o.Format.Auth
+		ans.Sctp = o.Format.Sctp
+
+		if o.Format.Esc != nil {
+			ans.EscapedCharacters = o.Format.Esc.EscapedCharacters
+			ans.EscapeCharacter = o.Format.Esc.EscapeCharacter
+		}
+	}
+
+	return ans
+}
+
 type entry_v3 struct {
-	XMLName xml.Name     `xml:"entry"`
-	Name    string       `xml:"name,attr"`
-	Server  *util.RawXml `xml:"server"`
-	Format  *format_v3   `xml:"format"`
+	XMLName xml.Name   `xml:"entry"`
+	Name    string     `xml:"name,attr"`
+	Server  *servers   `xml:"server"`
+	Format  *format_v3 `xml:"format"`
 }
 
 type format_v3 struct {
@@ -346,8 +469,19 @@ func specify_v3(e Entry) interface{} {
 		Name: e.Name,
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Server = &servers{Entries: list}
 	}
 
 	hasEsc := e.EscapedCharacters != "" || e.EscapeCharacter != ""
@@ -379,11 +513,79 @@ func specify_v3(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 9.0
+type container_v4 struct {
+	Answer []entry_v4 `xml:"entry"`
+}
+
+func (o *container_v4) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v4) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v4) normalize() Entry {
+	ans := Entry{
+		Name: o.Name,
+	}
+
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Servers = list
+	}
+
+	if o.Format != nil {
+		ans.Config = o.Format.Config
+		ans.System = o.Format.System
+		ans.Threat = o.Format.Threat
+		ans.Traffic = o.Format.Traffic
+		ans.HipMatch = o.Format.HipMatch
+		ans.Url = o.Format.Url
+		ans.Data = o.Format.Data
+		ans.Wildfire = o.Format.Wildfire
+		ans.Tunnel = o.Format.Tunnel
+		ans.UserId = o.Format.UserId
+		ans.Gtp = o.Format.Gtp
+		ans.Auth = o.Format.Auth
+		ans.Sctp = o.Format.Sctp
+		ans.Iptag = o.Format.Iptag
+
+		if o.Format.Esc != nil {
+			ans.EscapedCharacters = o.Format.Esc.EscapedCharacters
+			ans.EscapeCharacter = o.Format.Esc.EscapeCharacter
+		}
+	}
+
+	return ans
+}
+
 type entry_v4 struct {
-	XMLName xml.Name     `xml:"entry"`
-	Name    string       `xml:"name,attr"`
-	Server  *util.RawXml `xml:"server"`
-	Format  *format_v4   `xml:"format"`
+	XMLName xml.Name   `xml:"entry"`
+	Name    string     `xml:"name,attr"`
+	Server  *servers   `xml:"server"`
+	Format  *format_v4 `xml:"format"`
 }
 
 type format_v4 struct {
@@ -409,8 +611,19 @@ func specify_v4(e Entry) interface{} {
 		Name: e.Name,
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry{
+				Name:         x.Name,
+				Server:       x.Server,
+				Transport:    x.Transport,
+				Port:         x.Port,
+				SyslogFormat: x.SyslogFormat,
+				Facility:     x.Facility,
+			})
+		}
+		ans.Server = &servers{Entries: list}
 	}
 
 	hasEsc := e.EscapedCharacters != "" || e.EscapeCharacter != ""

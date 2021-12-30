@@ -1,16 +1,19 @@
 package namespace
 
 import (
+	"encoding/xml"
 	"fmt"
 
+	"github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
 )
 
 // Common contains the shared methods every namespace has.
 type Common struct {
-	Singular string
-	Plural   string
-	Client   util.XapiClient
+	Singular   string
+	Plural     string
+	Client     util.XapiClient
+	Predefined bool
 }
 
 /*
@@ -68,9 +71,12 @@ func (n *Common) retrieve(cmd string, path []string, singular bool, singleDesc s
 	var data []byte
 	var tag string
 
-	// Sanity check.
+	// Sanity checks.
 	if cmd != util.Get && cmd != util.Show {
 		return fmt.Errorf("invalid cmd: %s", cmd)
+	}
+	if ans == nil {
+		return fmt.Errorf("ans must be specified")
 	}
 
 	if pErr != nil {
@@ -78,11 +84,15 @@ func (n *Common) retrieve(cmd string, path []string, singular bool, singleDesc s
 	}
 
 	// Do logging and determine the actual path to query.
+	var predef string
+	if n.Predefined {
+		predef = "predefined "
+	}
 	if singular {
 		if singleDesc != "" {
-			n.Client.LogQuery("(%s) %s: %s", cmd, n.Singular, singleDesc)
+			n.Client.LogQuery("(%s) %s%s: %s", cmd, predef, n.Singular, singleDesc)
 		} else {
-			n.Client.LogQuery("(%s) %s", cmd, n.Singular)
+			n.Client.LogQuery("(%s) %s%s", cmd, predef, n.Singular)
 		}
 	} else if plural {
 		tag = path[len(path)-2]
@@ -93,12 +103,12 @@ func (n *Common) retrieve(cmd string, path []string, singular bool, singleDesc s
 			if cmd == util.Get {
 				path = append(path, "@name")
 			}
-			n.Client.LogQuery("(%s) %s names", cmd, n.Singular)
+			n.Client.LogQuery("(%s) %s%s names", cmd, predef, n.Singular)
 		} else {
 			if cmd == util.Get {
 				path = path[:len(path)-1]
 			}
-			n.Client.LogQuery("(%s) list of %s", cmd, n.Plural)
+			n.Client.LogQuery("(%s) list of %s%s", cmd, predef, n.Plural)
 		}
 	}
 
@@ -118,5 +128,62 @@ func (n *Common) retrieve(cmd string, path []string, singular bool, singleDesc s
 
 	// Unmarshal the response into the given struct.
 	data = util.StripPanosPackaging(data, tag)
+	return UnpackageXmlInto(data, ans)
+}
+
+/*
+AllFromPanosConfig returns multiple objects' config from the configuration
+retrieved from PAN-OS and stored in the client's config tree.
+
+path is the xpath function.
+ans is an interface to unmarshal the found config into.
+*/
+func (n *Common) AllFromPanosConfig(pather Pather, ans interface{}) error {
+	path, pErr := pather(nil)
+	return n.loadConfig(path, ans, pErr)
+}
+
+/*
+FromPanosConfig returns a single object's config from the configuration
+retrieved from PAN-OS and stored in the client's config tree.
+
+path is the xpath function.
+name is the name of the object to retrieve.
+ans is an interface to unmarshal the found config into.
+*/
+func (n *Common) FromPanosConfig(pather Pather, name string, ans Namer) error {
+	path, pErr := pather([]string{name})
+	if err := n.loadConfig(path, ans, pErr); err != nil {
+		return err
+	}
+
+	names := ans.Names()
+	if len(names) == 0 {
+		return errors.ObjectNotFound()
+	}
+
+	return nil
+}
+
+func (n *Common) loadConfig(path []string, ans interface{}, pErr error) error {
+	if pErr != nil {
+		return pErr
+	}
+
+	config := n.Client.ConfigTree()
+	if config == nil {
+		return fmt.Errorf("no config tree loaded")
+	}
+
+	elm := util.FindXmlNodeInTree(path, config)
+	if elm == nil {
+		return nil
+	}
+
+	data, err := xml.Marshal(elm)
+	if err != nil {
+		return err
+	}
+
 	return UnpackageXmlInto(data, ans)
 }

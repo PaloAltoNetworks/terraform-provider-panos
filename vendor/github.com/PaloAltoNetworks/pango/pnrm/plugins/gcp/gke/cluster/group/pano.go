@@ -1,128 +1,19 @@
 package group
 
 import (
-	"encoding/xml"
 	"fmt"
 
+	"github.com/PaloAltoNetworks/pango/namespace"
 	"github.com/PaloAltoNetworks/pango/util"
 )
 
-// Group is the client.Panorama.GkeClusterGroup namespace.
-type Group struct {
-	con util.XapiClient
-}
-
-// Initialize is invoked by client.Initialize().
-func (c *Group) Initialize(con util.XapiClient) {
-	c.con = con
-}
-
-// ShowList performs SHOW to retrieve a list of values.
-func (c *Group) ShowList() ([]string, error) {
-	c.con.LogQuery("(show) list of %s", plural)
-	path := c.xpath(nil)
-	return c.con.EntryListUsing(c.con.Show, path[:len(path)-1])
-}
-
-// GetList performs GET to retrieve a list of values.
-func (c *Group) GetList() ([]string, error) {
-	c.con.LogQuery("(get) list of %s", plural)
-	path := c.xpath(nil)
-	return c.con.EntryListUsing(c.con.Get, path[:len(path)-1])
-}
-
-// Get performs GET to retrieve information for the given uid.
-func (c *Group) Get(name string) (Entry, error) {
-	c.con.LogQuery("(get) %s %q", singular, name)
-	return c.details(c.con.Get, name)
-}
-
-// Show performs SHOW to retrieve information for the given uid.
-func (c *Group) Show(name string) (Entry, error) {
-	c.con.LogQuery("(show) %s %q", singular, name)
-	return c.details(c.con.Show, name)
-}
-
-// Set performs SET to create / update one or more objects.
-func (c *Group) Set(e ...Entry) error {
-	var err error
-
-	if len(e) == 0 {
-		return nil
-	}
-
-	_, fn := c.versioning()
-	names := make([]string, len(e))
-
-	// Build up the struct.
-	d := util.BulkElement{XMLName: xml.Name{Local: "temp"}}
-	for i := range e {
-		d.Data = append(d.Data, fn(e[i]))
-		names[i] = e[i].Name
-	}
-	c.con.LogAction("(set) %s: %v", plural, names)
-
-	// Set xpath.
-	path := c.xpath(names)
-	d.XMLName = xml.Name{Local: path[len(path)-2]}
-	if len(e) == 1 {
-		path = path[:len(path)-1]
-	} else {
-		path = path[:len(path)-2]
-	}
-
-	// Create the objects.
-	_, err = c.con.Set(path, d.Config(), nil, nil)
-	return err
-}
-
-// Edit performs EDIT to create / update one object.
-func (c *Group) Edit(e Entry) error {
-	var err error
-
-	_, fn := c.versioning()
-
-	c.con.LogAction("(edit) %s %q", singular, e.Name)
-
-	// Set xpath.
-	path := c.xpath([]string{e.Name})
-
-	// Edit the object.
-	_, err = c.con.Edit(path, fn(e), nil, nil)
-	return err
-}
-
-// Delete removes the given objects.
-//
-// Objects can be a string or an Entry object.
-func (c *Group) Delete(e ...interface{}) error {
-	var err error
-
-	if len(e) == 0 {
-		return nil
-	}
-
-	names := make([]string, len(e))
-	for i := range e {
-		switch v := e[i].(type) {
-		case string:
-			names[i] = v
-		case Entry:
-			names[i] = v.Name
-		default:
-			return fmt.Errorf("Unknown type sent to delete: %s", v)
-		}
-	}
-	c.con.LogAction("(delete) %s: %v", plural, names)
-
-	// Remove the objects.
-	path := c.xpath(names)
-	_, err = c.con.Delete(path, nil, nil)
-	return err
+// Panorama is the client.Panorama.GkeClusterGroup namespace.
+type Panorama struct {
+	ns *namespace.Plugin
 }
 
 // ShowPortMapping returns the service port mappings.
-func (c *Group) ShowPortMapping(group interface{}) ([]map[string]string, error) {
+func (c *Panorama) ShowPortMapping(group interface{}) ([]map[string]string, error) {
 	var name string
 
 	switch v := group.(type) {
@@ -133,36 +24,101 @@ func (c *Group) ShowPortMapping(group interface{}) ([]map[string]string, error) 
 	default:
 		return nil, fmt.Errorf("Unknown type sent to show port mapping: %s", v)
 	}
-	c.con.LogOp("(op) showing gke port mappings for %q", name)
+	c.ns.Client.LogOp("(op) showing gke port mappings for %q", name)
 
 	req := pmReq_v1{Group: name}
-	ans := pmContainer_v1{}
+	var ans pmContainer_v1
 
-	if _, err := c.con.Op(req, "", nil, &ans); err != nil {
+	if _, err := c.ns.Client.Op(req, "", nil, &ans); err != nil {
 		return nil, err
 	}
 
 	return ans.Normalize(), nil
 }
 
-/** Internal functions for this namespace struct **/
-
-func (c *Group) versioning() (normalizer, func(Entry) interface{}) {
-	return &container_v1{}, specify_v1
+// GetList performs GET to retrieve a list of all objects.
+func (c *Panorama) GetList() ([]string, error) {
+	ans, err := c.container()
+	if err != nil {
+		return nil, err
+	}
+	return c.ns.Listing(util.Get, c.pather(), ans)
 }
 
-func (c *Group) details(fn util.Retriever, name string) (Entry, error) {
-	path := c.xpath([]string{name})
-	obj, _ := c.versioning()
-	if _, err := fn(path, nil, obj); err != nil {
+// ShowList performs SHOW to retrieve a list of all objects.
+func (c *Panorama) ShowList() ([]string, error) {
+	ans, err := c.container()
+	if err != nil {
+		return nil, err
+	}
+	return c.ns.Listing(util.Show, c.pather(), ans)
+}
+
+// Get performs GET to retrieve information for the given object.
+func (c *Panorama) Get(name string) (Entry, error) {
+	ans, err := c.container()
+	if err != nil {
 		return Entry{}, err
 	}
-	ans := obj.Normalize()
-
-	return ans, nil
+	err = c.ns.Object(util.Get, c.pather(), name, ans)
+	return first(ans, err)
 }
 
-func (c *Group) xpath(vals []string) []string {
+// Show performs SHOW to retrieve information for the given object.
+func (c *Panorama) Show(name string) (Entry, error) {
+	ans, err := c.container()
+	if err != nil {
+		return Entry{}, err
+	}
+	err = c.ns.Object(util.Show, c.pather(), name, ans)
+	return first(ans, err)
+}
+
+// GetAll performs GET to retrieve all objects configured.
+func (c *Panorama) GetAll() ([]Entry, error) {
+	ans, err := c.container()
+	if err != nil {
+		return nil, err
+	}
+	err = c.ns.Objects(util.Get, c.pather(), ans)
+	return all(ans, err)
+}
+
+// ShowAll performs SHOW to retrieve information for all objects.
+func (c *Panorama) ShowAll() ([]Entry, error) {
+	ans, err := c.container()
+	if err != nil {
+		return nil, err
+	}
+	err = c.ns.Objects(util.Show, c.pather(), ans)
+	return all(ans, err)
+}
+
+// Set performs SET to configure the specified objects.
+func (c *Panorama) Set(e ...Entry) error {
+	return c.ns.Set(c.pather(), specifier(e...))
+}
+
+// Edit performs EDIT to configure the specified object.
+func (c *Panorama) Edit(e Entry) error {
+	return c.ns.Edit(c.pather(), e)
+}
+
+// Delete performs DELETE to remove the specified objects.
+//
+// Objects can be either a string or an Entry object.
+func (c *Panorama) Delete(e ...interface{}) error {
+	names, nErr := toNames(e)
+	return c.ns.Delete(c.pather(), names, nErr)
+}
+
+func (c *Panorama) pather() namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(v)
+	}
+}
+
+func (c *Panorama) xpath(vals []string) ([]string, error) {
 	return []string{
 		"config",
 		"devices",
@@ -171,5 +127,9 @@ func (c *Group) xpath(vals []string) []string {
 		"gcp",
 		"gke",
 		util.AsEntryXpath(vals),
-	}
+	}, nil
+}
+
+func (c *Panorama) container() (normalizer, error) {
+	return container(c.ns.Client.Plugins())
 }

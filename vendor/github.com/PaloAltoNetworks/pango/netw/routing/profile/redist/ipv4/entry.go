@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a redist profile.
@@ -27,54 +28,123 @@ type Entry struct {
 func (o *Entry) Copy(s Entry) {
 	o.Priority = s.Priority
 	o.Action = s.Action
-	o.Types = s.Types
-	o.Interfaces = s.Interfaces
-	o.Destinations = s.Destinations
-	o.NextHops = s.NextHops
-	o.OspfPathTypes = s.OspfPathTypes
-	o.OspfAreas = s.OspfAreas
-	o.OspfTags = s.OspfTags
-	o.BgpCommunities = s.BgpCommunities
-	o.BgpExtendedCommunities = s.BgpExtendedCommunities
+	if s.Types == nil {
+		o.Types = nil
+	} else {
+		o.Types = make([]string, len(s.Types))
+		copy(o.Types, s.Types)
+	}
+	if s.Interfaces == nil {
+		o.Interfaces = nil
+	} else {
+		o.Interfaces = make([]string, len(s.Interfaces))
+		copy(o.Interfaces, s.Interfaces)
+	}
+	if s.Destinations == nil {
+		o.Destinations = nil
+	} else {
+		o.Destinations = make([]string, len(s.Destinations))
+		copy(o.Destinations, s.Destinations)
+	}
+	if s.NextHops == nil {
+		o.NextHops = nil
+	} else {
+		o.NextHops = make([]string, len(s.NextHops))
+		copy(o.NextHops, s.NextHops)
+	}
+	if s.OspfPathTypes == nil {
+		o.OspfPathTypes = nil
+	} else {
+		o.OspfPathTypes = make([]string, len(s.OspfPathTypes))
+		copy(o.OspfPathTypes, s.OspfPathTypes)
+	}
+	if s.OspfAreas == nil {
+		o.OspfAreas = nil
+	} else {
+		o.OspfAreas = make([]string, len(s.OspfAreas))
+		copy(o.OspfAreas, s.OspfAreas)
+	}
+	if s.OspfTags == nil {
+		o.OspfTags = nil
+	} else {
+		o.OspfTags = make([]string, len(s.OspfTags))
+		copy(o.OspfTags, s.OspfTags)
+	}
+	if s.BgpCommunities == nil {
+		o.BgpCommunities = nil
+	} else {
+		o.BgpCommunities = make([]string, len(s.BgpCommunities))
+		copy(o.BgpCommunities, s.BgpCommunities)
+	}
+	if s.BgpExtendedCommunities == nil {
+		o.BgpExtendedCommunities = nil
+	} else {
+		o.BgpExtendedCommunities = make([]string, len(s.BgpExtendedCommunities))
+		copy(o.BgpExtendedCommunities, s.BgpExtendedCommunities)
+	}
 }
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:     o.Answer.Name,
-		Priority: o.Answer.Priority,
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.Action.Redist != nil {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name:     o.Name,
+		Priority: o.Priority,
+	}
+
+	if o.Action.Redist != nil {
 		ans.Action = ActionRedist
-	} else if o.Answer.Action.NoRedist != nil {
+	} else if o.Action.NoRedist != nil {
 		ans.Action = ActionNoRedist
 	}
 
-	if o.Answer.Filter != nil {
-		ans.Types = util.MemToStr(o.Answer.Filter.Types)
-		ans.Interfaces = util.MemToStr(o.Answer.Filter.Interfaces)
-		ans.Destinations = util.MemToStr(o.Answer.Filter.Destinations)
-		ans.NextHops = util.MemToStr(o.Answer.Filter.NextHops)
+	if o.Filter != nil {
+		ans.Types = util.MemToStr(o.Filter.Types)
+		ans.Interfaces = util.MemToStr(o.Filter.Interfaces)
+		ans.Destinations = util.MemToStr(o.Filter.Destinations)
+		ans.NextHops = util.MemToStr(o.Filter.NextHops)
 
-		if o.Answer.Filter.Ospf != nil {
-			ans.OspfPathTypes = util.MemToStr(o.Answer.Filter.Ospf.OspfPathTypes)
-			ans.OspfAreas = util.MemToStr(o.Answer.Filter.Ospf.OspfAreas)
-			ans.OspfTags = util.MemToStr(o.Answer.Filter.Ospf.OspfTags)
+		if o.Filter.Ospf != nil {
+			ans.OspfPathTypes = util.MemToStr(o.Filter.Ospf.OspfPathTypes)
+			ans.OspfAreas = util.MemToStr(o.Filter.Ospf.OspfAreas)
+			ans.OspfTags = util.MemToStr(o.Filter.Ospf.OspfTags)
 		}
 
-		if o.Answer.Filter.Bgp != nil {
-			ans.BgpCommunities = util.MemToStr(o.Answer.Filter.Bgp.BgpCommunities)
-			ans.BgpExtendedCommunities = util.MemToStr(o.Answer.Filter.Bgp.BgpExtendedCommunities)
+		if o.Filter.Bgp != nil {
+			ans.BgpCommunities = util.MemToStr(o.Filter.Bgp.BgpCommunities)
+			ans.BgpExtendedCommunities = util.MemToStr(o.Filter.Bgp.BgpExtendedCommunities)
 		}
 	}
 

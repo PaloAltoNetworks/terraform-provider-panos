@@ -4,35 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
-)
-
-const (
-	TypeAutoKey                = "auto-key"
-	TypeManualKey              = "manual-key"
-	TypeGlobalProtectSatellite = "global-protect-satellite"
-)
-
-const (
-	MkEspEncryptionDes    = "des"
-	MkEspEncryption3des   = "3des"
-	MkEspEncryptionAes128 = "aes-128-cbc"
-	MkEspEncryptionAes192 = "aes-192-cbc"
-	MkEspEncryptionAes256 = "aes-256-cbc"
-	MkEspEncryptionNull   = "null"
-)
-
-const (
-	MkProtocolEsp = "esp"
-	MkProtocolAh  = "ah"
-)
-
-const (
-	MkAuthTypeMd5    = "md5"
-	MkAuthTypeSha1   = "sha1"
-	MkAuthTypeSha256 = "sha256"
-	MkAuthTypeSha384 = "sha384"
-	MkAuthTypeSha512 = "sha512"
-	MkAuthTypeNone   = "none"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an IKE gateway.
@@ -105,7 +77,12 @@ func (o *Entry) Copy(s Entry) {
 	o.GpsInterfaceFloatingIpIpv4 = s.GpsInterfaceFloatingIpIpv4
 	o.GpsInterfaceFloatingIpIpv6 = s.GpsInterfaceFloatingIpIpv6
 	o.GpsPublishConnectedRoutes = s.GpsPublishConnectedRoutes
-	o.GpsPublishRoutes = s.GpsPublishRoutes
+	if s.GpsPublishRoutes == nil {
+		o.GpsPublishRoutes = nil
+	} else {
+		o.GpsPublishRoutes = make([]string, len(s.GpsPublishRoutes))
+		copy(o.GpsPublishRoutes, s.GpsPublishRoutes)
+	}
 	o.GpsLocalCertificate = s.GpsLocalCertificate
 	o.GpsCertificateProfile = s.GpsCertificateProfile
 	o.AntiReplay = s.AntiReplay
@@ -119,168 +96,190 @@ func (o *Entry) Copy(s Entry) {
 	o.Disabled = s.Disabled
 }
 
-// SpecifyEncryption takes normalized encryption values and changes them to the
-// version specific values PAN-OS will be expecting.
-//
-// Param v should be 1 if you're running against PAN-OS 6.1, 2 if you're
-// running against 7.0 or later.
-func (o *Entry) SpecifyEncryption(v int) {
-	switch v {
-	case 2:
-		switch o.MkEspEncryptionType {
-		case MkEspEncryptionDes:
-			o.MkEspEncryptionType = "des"
-		case MkEspEncryption3des:
-			o.MkEspEncryptionType = "3des"
-		case MkEspEncryptionAes128:
-			o.MkEspEncryptionType = "aes-128-cbc"
-		case MkEspEncryptionAes192:
-			o.MkEspEncryptionType = "aes-192-cbc"
-		case MkEspEncryptionAes256:
-			o.MkEspEncryptionType = "aes-256-cbc"
-		case MkEspEncryptionNull:
-			o.MkEspEncryptionType = "null"
-		}
-	case 1:
-		switch o.MkEspEncryptionType {
-		case MkEspEncryptionDes:
-			o.MkEspEncryptionType = "des"
-		case MkEspEncryption3des:
-			o.MkEspEncryptionType = "3des"
-		case MkEspEncryptionAes128:
-			o.MkEspEncryptionType = "aes128"
-		case MkEspEncryptionAes192:
-			o.MkEspEncryptionType = "aes192"
-		case MkEspEncryptionAes256:
-			o.MkEspEncryptionType = "aes256"
-		case MkEspEncryptionNull:
-			o.MkEspEncryptionType = "null"
-		}
-	}
-}
-
-// NormalizeEncryption normalizes the fields in o.MkEspEncryption.
-func (o *Entry) NormalizeEncryption() {
-	switch o.MkEspEncryptionType {
-	case "des":
-		o.MkEspEncryptionType = MkEspEncryptionDes
-	case "3des":
-		o.MkEspEncryptionType = MkEspEncryption3des
-	case "aes-128-cbc", "aes128":
-		o.MkEspEncryptionType = MkEspEncryptionAes128
-	case "aes-192-cbc", "aes192":
-		o.MkEspEncryptionType = MkEspEncryptionAes192
-	case "aes-256-cbc", "aes256":
-		o.MkEspEncryptionType = MkEspEncryptionAes256
-	case "null":
-		o.MkEspEncryptionType = MkEspEncryptionNull
-	}
-}
-
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
+func specifyEncryption(val string, v int) string {
+	switch v {
+	case 2:
+		switch val {
+		case MkEspEncryptionDes:
+			return "des"
+		case MkEspEncryption3des:
+			return "3des"
+		case MkEspEncryptionAes128:
+			return "aes-128-cbc"
+		case MkEspEncryptionAes192:
+			return "aes-192-cbc"
+		case MkEspEncryptionAes256:
+			return "aes-256-cbc"
+		case MkEspEncryptionNull:
+			return "null"
+		}
+	case 1:
+		switch val {
+		case MkEspEncryptionDes:
+			return "des"
+		case MkEspEncryption3des:
+			return "3des"
+		case MkEspEncryptionAes128:
+			return "aes128"
+		case MkEspEncryptionAes192:
+			return "aes192"
+		case MkEspEncryptionAes256:
+			return "aes256"
+		case MkEspEncryptionNull:
+			return "null"
+		}
+	}
+
+	return val
+}
+
+func normalizeEncryption(val string) string {
+	switch val {
+	case "des":
+		return MkEspEncryptionDes
+	case "3des":
+		return MkEspEncryption3des
+	case "aes-128-cbc", "aes128":
+		return MkEspEncryptionAes128
+	case "aes-192-cbc", "aes192":
+		return MkEspEncryptionAes192
+	case "aes-256-cbc", "aes256":
+		return MkEspEncryptionAes256
+	case "null":
+		return MkEspEncryptionNull
+	}
+
+	return val
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:            o.Answer.Name,
-		TunnelInterface: o.Answer.TunnelInterface,
-		AntiReplay:      util.AsBool(o.Answer.AntiReplay),
-		CopyTos:         util.AsBool(o.Answer.CopyTos),
+		Name:            o.Name,
+		TunnelInterface: o.TunnelInterface,
+		AntiReplay:      util.AsBool(o.AntiReplay),
+		CopyTos:         util.AsBool(o.CopyTos),
 	}
 
 	ans.raw = make(map[string]string)
 
-	if o.Answer.Ak != nil {
+	if o.Ak != nil {
 		ans.Type = TypeAutoKey
-		ans.AkIkeGateway = util.EntToOneStr(o.Answer.Ak.AkIkeGateway)
-		ans.AkIpsecCryptoProfile = o.Answer.Ak.AkIpsecCryptoProfile
+		ans.AkIkeGateway = util.EntToOneStr(o.Ak.AkIkeGateway)
+		ans.AkIpsecCryptoProfile = o.Ak.AkIpsecCryptoProfile
 
-		if o.Answer.Ak.ProxyIpv4 != nil {
-			ans.raw["pv4"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv4.Text)
+		if o.Ak.ProxyIpv4 != nil {
+			ans.raw["pv4"] = util.CleanRawXml(o.Ak.ProxyIpv4.Text)
 		}
 
-		if o.Answer.Ak.ProxyIpv6 != nil {
-			ans.raw["pv6"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv6.Text)
+		if o.Ak.ProxyIpv6 != nil {
+			ans.raw["pv6"] = util.CleanRawXml(o.Ak.ProxyIpv6.Text)
 		}
-	} else if o.Answer.Mk != nil {
+	} else if o.Mk != nil {
 		ans.Type = TypeManualKey
-		ans.MkLocalSpi = o.Answer.Mk.MkLocalSpi
-		ans.MkInterface = o.Answer.Mk.Local.MkInterface
-		ans.MkLocalAddressIp = o.Answer.Mk.Local.MkLocalAddressIp
-		ans.MkRemoteAddress = o.Answer.Mk.Peer.MkRemoteAddress
-		ans.MkRemoteSpi = o.Answer.Mk.MkRemoteSpi
+		ans.MkLocalSpi = o.Mk.MkLocalSpi
+		ans.MkInterface = o.Mk.Local.MkInterface
+		ans.MkLocalAddressIp = o.Mk.Local.MkLocalAddressIp
+		ans.MkRemoteAddress = o.Mk.Peer.MkRemoteAddress
+		ans.MkRemoteSpi = o.Mk.MkRemoteSpi
 
-		if o.Answer.Mk.Esp != nil {
+		if o.Mk.Esp != nil {
 			ans.MkProtocol = MkProtocolEsp
-			if o.Answer.Mk.Esp.AuthMd5 != nil {
+			if o.Mk.Esp.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthMd5.Value
-			} else if o.Answer.Mk.Esp.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthMd5.Value
+			} else if o.Mk.Esp.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha1.Value
-			} else if o.Answer.Mk.Esp.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha1.Value
+			} else if o.Mk.Esp.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha256.Value
-			} else if o.Answer.Mk.Esp.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha256.Value
+			} else if o.Mk.Esp.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha384.Value
-			} else if o.Answer.Mk.Esp.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha384.Value
+			} else if o.Mk.Esp.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha512.Value
-			} else if o.Answer.Mk.Esp.AuthNone != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha512.Value
+			} else if o.Mk.Esp.AuthNone != nil {
 				ans.MkAuthType = MkAuthTypeNone
 			}
 
-			ans.MkEspEncryptionType = o.Answer.Mk.Esp.MkEspEncryptionType
-			ans.MkEspEncryptionKey = o.Answer.Mk.Esp.MkEspEncryptionKey
-		} else if o.Answer.Mk.Ah != nil {
+			ans.MkEspEncryptionType = normalizeEncryption(o.Mk.Esp.MkEspEncryptionType)
+			ans.MkEspEncryptionKey = o.Mk.Esp.MkEspEncryptionKey
+		} else if o.Mk.Ah != nil {
 			ans.MkProtocol = MkProtocolAh
-			if o.Answer.Mk.Ah.AuthMd5 != nil {
+			if o.Mk.Ah.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthMd5.Value
-			} else if o.Answer.Mk.Ah.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthMd5.Value
+			} else if o.Mk.Ah.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha1.Value
-			} else if o.Answer.Mk.Ah.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha1.Value
+			} else if o.Mk.Ah.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha256.Value
-			} else if o.Answer.Mk.Ah.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha256.Value
+			} else if o.Mk.Ah.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha384.Value
-			} else if o.Answer.Mk.Ah.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha384.Value
+			} else if o.Mk.Ah.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha512.Value
+				ans.MkAuthKey = o.Mk.Ah.AuthSha512.Value
 			}
 		}
-	} else if o.Answer.Gps != nil {
+	} else if o.Gps != nil {
 		ans.Type = TypeGlobalProtectSatellite
-		ans.GpsPortalAddress = o.Answer.Gps.GpsPortalAddress
-		ans.GpsPublishRoutes = util.MemToStr(o.Answer.Gps.GpsPublishRoutes)
-		ans.GpsInterface = o.Answer.Gps.Local.GpsInterface
-		ans.GpsInterfaceIpIpv4 = o.Answer.Gps.Local.GpsInterfaceIpIpv4
+		ans.GpsPortalAddress = o.Gps.GpsPortalAddress
+		ans.GpsPublishRoutes = util.MemToStr(o.Gps.GpsPublishRoutes)
+		ans.GpsInterface = o.Gps.Local.GpsInterface
+		ans.GpsInterfaceIpIpv4 = o.Gps.Local.GpsInterfaceIpIpv4
 
-		if o.Answer.Gps.Pcr != nil {
-			ans.GpsPublishConnectedRoutes = util.AsBool(o.Answer.Gps.Pcr.GpsPublishConnectedRoutes)
+		if o.Gps.Pcr != nil {
+			ans.GpsPublishConnectedRoutes = util.AsBool(o.Gps.Pcr.GpsPublishConnectedRoutes)
 		}
 
-		if o.Answer.Gps.Ca != nil {
-			ans.GpsLocalCertificate = o.Answer.Gps.Ca.GpsLocalCertificate
-			ans.GpsCertificateProfile = o.Answer.Gps.Ca.GpsCertificateProfile
+		if o.Gps.Ca != nil {
+			ans.GpsLocalCertificate = o.Gps.Ca.GpsLocalCertificate
+			ans.GpsCertificateProfile = o.Gps.Ca.GpsCertificateProfile
 		}
 	}
 
-	if o.Answer.TunnelMonitor != nil {
-		ans.EnableTunnelMonitor = util.AsBool(o.Answer.TunnelMonitor.EnableTunnelMonitor)
-		ans.TunnelMonitorDestinationIp = o.Answer.TunnelMonitor.TunnelMonitorDestinationIp
-		ans.TunnelMonitorSourceIp = o.Answer.TunnelMonitor.TunnelMonitorSourceIp
-		ans.TunnelMonitorProfile = o.Answer.TunnelMonitor.TunnelMonitorProfile
+	if o.TunnelMonitor != nil {
+		ans.EnableTunnelMonitor = util.AsBool(o.TunnelMonitor.EnableTunnelMonitor)
+		ans.TunnelMonitorDestinationIp = o.TunnelMonitor.TunnelMonitorDestinationIp
+		ans.TunnelMonitorSourceIp = o.TunnelMonitor.TunnelMonitorSourceIp
+		ans.TunnelMonitorProfile = o.TunnelMonitor.TunnelMonitorProfile
 	}
 
 	if len(ans.raw) == 0 {
@@ -291,109 +290,127 @@ func (o *container_v1) Normalize() Entry {
 }
 
 type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
+	Answer []entry_v2 `xml:"entry"`
 }
 
-func (o *container_v2) Normalize() Entry {
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
 	ans := Entry{
-		Name:            o.Answer.Name,
-		TunnelInterface: o.Answer.TunnelInterface,
-		AntiReplay:      util.AsBool(o.Answer.AntiReplay),
-		CopyTos:         util.AsBool(o.Answer.CopyTos),
-		EnableIpv6:      util.AsBool(o.Answer.EnableIpv6),
-		Disabled:        util.AsBool(o.Answer.Disabled),
-		CopyFlowLabel:   util.AsBool(o.Answer.CopyFlowLabel),
+		Name:            o.Name,
+		TunnelInterface: o.TunnelInterface,
+		AntiReplay:      util.AsBool(o.AntiReplay),
+		CopyTos:         util.AsBool(o.CopyTos),
+		EnableIpv6:      util.AsBool(o.EnableIpv6),
+		Disabled:        util.AsBool(o.Disabled),
+		CopyFlowLabel:   util.AsBool(o.CopyFlowLabel),
 	}
 
 	ans.raw = make(map[string]string)
 
-	if o.Answer.Ak != nil {
+	if o.Ak != nil {
 		ans.Type = TypeAutoKey
-		ans.AkIkeGateway = util.EntToOneStr(o.Answer.Ak.AkIkeGateway)
-		ans.AkIpsecCryptoProfile = o.Answer.Ak.AkIpsecCryptoProfile
+		ans.AkIkeGateway = util.EntToOneStr(o.Ak.AkIkeGateway)
+		ans.AkIpsecCryptoProfile = o.Ak.AkIpsecCryptoProfile
 
-		if o.Answer.Ak.ProxyIpv4 != nil {
-			ans.raw["pv4"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv4.Text)
+		if o.Ak.ProxyIpv4 != nil {
+			ans.raw["pv4"] = util.CleanRawXml(o.Ak.ProxyIpv4.Text)
 		}
 
-		if o.Answer.Ak.ProxyIpv6 != nil {
-			ans.raw["pv6"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv6.Text)
+		if o.Ak.ProxyIpv6 != nil {
+			ans.raw["pv6"] = util.CleanRawXml(o.Ak.ProxyIpv6.Text)
 		}
-	} else if o.Answer.Mk != nil {
+	} else if o.Mk != nil {
 		ans.Type = TypeManualKey
-		ans.MkLocalSpi = o.Answer.Mk.MkLocalSpi
-		ans.MkInterface = o.Answer.Mk.Local.MkInterface
-		ans.MkLocalAddressIp = o.Answer.Mk.Local.MkLocalAddressIp
-		ans.MkLocalAddressFloatingIp = o.Answer.Mk.Local.MkLocalAddressFloatingIp
-		ans.MkRemoteAddress = o.Answer.Mk.Peer.MkRemoteAddress
-		ans.MkRemoteSpi = o.Answer.Mk.MkRemoteSpi
+		ans.MkLocalSpi = o.Mk.MkLocalSpi
+		ans.MkInterface = o.Mk.Local.MkInterface
+		ans.MkLocalAddressIp = o.Mk.Local.MkLocalAddressIp
+		ans.MkLocalAddressFloatingIp = o.Mk.Local.MkLocalAddressFloatingIp
+		ans.MkRemoteAddress = o.Mk.Peer.MkRemoteAddress
+		ans.MkRemoteSpi = o.Mk.MkRemoteSpi
 
-		if o.Answer.Mk.Esp != nil {
+		if o.Mk.Esp != nil {
 			ans.MkProtocol = MkProtocolEsp
-			if o.Answer.Mk.Esp.AuthMd5 != nil {
+			if o.Mk.Esp.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthMd5.Value
-			} else if o.Answer.Mk.Esp.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthMd5.Value
+			} else if o.Mk.Esp.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha1.Value
-			} else if o.Answer.Mk.Esp.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha1.Value
+			} else if o.Mk.Esp.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha256.Value
-			} else if o.Answer.Mk.Esp.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha256.Value
+			} else if o.Mk.Esp.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha384.Value
-			} else if o.Answer.Mk.Esp.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha384.Value
+			} else if o.Mk.Esp.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha512.Value
-			} else if o.Answer.Mk.Esp.AuthNone != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha512.Value
+			} else if o.Mk.Esp.AuthNone != nil {
 				ans.MkAuthType = MkAuthTypeNone
 			}
 
-			ans.MkEspEncryptionType = o.Answer.Mk.Esp.MkEspEncryptionType
-			ans.MkEspEncryptionKey = o.Answer.Mk.Esp.MkEspEncryptionKey
-		} else if o.Answer.Mk.Ah != nil {
+			ans.MkEspEncryptionType = normalizeEncryption(o.Mk.Esp.MkEspEncryptionType)
+			ans.MkEspEncryptionKey = o.Mk.Esp.MkEspEncryptionKey
+		} else if o.Mk.Ah != nil {
 			ans.MkProtocol = MkProtocolAh
-			if o.Answer.Mk.Ah.AuthMd5 != nil {
+			if o.Mk.Ah.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthMd5.Value
-			} else if o.Answer.Mk.Ah.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthMd5.Value
+			} else if o.Mk.Ah.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha1.Value
-			} else if o.Answer.Mk.Ah.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha1.Value
+			} else if o.Mk.Ah.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha256.Value
-			} else if o.Answer.Mk.Ah.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha256.Value
+			} else if o.Mk.Ah.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha384.Value
-			} else if o.Answer.Mk.Ah.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha384.Value
+			} else if o.Mk.Ah.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha512.Value
+				ans.MkAuthKey = o.Mk.Ah.AuthSha512.Value
 			}
 		}
-	} else if o.Answer.Gps != nil {
+	} else if o.Gps != nil {
 		ans.Type = TypeGlobalProtectSatellite
-		ans.GpsPortalAddress = o.Answer.Gps.GpsPortalAddress
-		ans.GpsPublishRoutes = util.MemToStr(o.Answer.Gps.GpsPublishRoutes)
-		ans.GpsInterface = o.Answer.Gps.Local.GpsInterface
-		ans.GpsInterfaceIpIpv4 = o.Answer.Gps.Local.GpsInterfaceIpIpv4
-		ans.GpsInterfaceFloatingIpIpv4 = o.Answer.Gps.Local.GpsInterfaceFloatingIpIpv4
+		ans.GpsPortalAddress = o.Gps.GpsPortalAddress
+		ans.GpsPublishRoutes = util.MemToStr(o.Gps.GpsPublishRoutes)
+		ans.GpsInterface = o.Gps.Local.GpsInterface
+		ans.GpsInterfaceIpIpv4 = o.Gps.Local.GpsInterfaceIpIpv4
+		ans.GpsInterfaceFloatingIpIpv4 = o.Gps.Local.GpsInterfaceFloatingIpIpv4
 
-		if o.Answer.Gps.Pcr != nil {
-			ans.GpsPublishConnectedRoutes = util.AsBool(o.Answer.Gps.Pcr.GpsPublishConnectedRoutes)
+		if o.Gps.Pcr != nil {
+			ans.GpsPublishConnectedRoutes = util.AsBool(o.Gps.Pcr.GpsPublishConnectedRoutes)
 		}
 
-		if o.Answer.Gps.Ca != nil {
-			ans.GpsLocalCertificate = o.Answer.Gps.Ca.GpsLocalCertificate
-			ans.GpsCertificateProfile = o.Answer.Gps.Ca.GpsCertificateProfile
+		if o.Gps.Ca != nil {
+			ans.GpsLocalCertificate = o.Gps.Ca.GpsLocalCertificate
+			ans.GpsCertificateProfile = o.Gps.Ca.GpsCertificateProfile
 		}
 	}
 
-	if o.Answer.TunnelMonitor != nil {
-		ans.EnableTunnelMonitor = util.AsBool(o.Answer.TunnelMonitor.EnableTunnelMonitor)
-		ans.TunnelMonitorDestinationIp = o.Answer.TunnelMonitor.TunnelMonitorDestinationIp
-		ans.TunnelMonitorSourceIp = o.Answer.TunnelMonitor.TunnelMonitorSourceIp
-		ans.TunnelMonitorProfile = o.Answer.TunnelMonitor.TunnelMonitorProfile
-		ans.TunnelMonitorProxyId = o.Answer.TunnelMonitor.TunnelMonitorProxyId
+	if o.TunnelMonitor != nil {
+		ans.EnableTunnelMonitor = util.AsBool(o.TunnelMonitor.EnableTunnelMonitor)
+		ans.TunnelMonitorDestinationIp = o.TunnelMonitor.TunnelMonitorDestinationIp
+		ans.TunnelMonitorSourceIp = o.TunnelMonitor.TunnelMonitorSourceIp
+		ans.TunnelMonitorProfile = o.TunnelMonitor.TunnelMonitorProfile
+		ans.TunnelMonitorProxyId = o.TunnelMonitor.TunnelMonitorProxyId
 	}
 
 	if len(ans.raw) == 0 {
@@ -404,118 +421,136 @@ func (o *container_v2) Normalize() Entry {
 }
 
 type container_v3 struct {
-	Answer entry_v3 `xml:"result>entry"`
+	Answer []entry_v3 `xml:"entry"`
 }
 
-func (o *container_v3) Normalize() Entry {
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
 	ans := Entry{
-		Name:            o.Answer.Name,
-		TunnelInterface: o.Answer.TunnelInterface,
-		AntiReplay:      util.AsBool(o.Answer.AntiReplay),
-		CopyTos:         util.AsBool(o.Answer.CopyTos),
-		EnableIpv6:      util.AsBool(o.Answer.EnableIpv6),
-		Disabled:        util.AsBool(o.Answer.Disabled),
-		CopyFlowLabel:   util.AsBool(o.Answer.CopyFlowLabel),
+		Name:            o.Name,
+		TunnelInterface: o.TunnelInterface,
+		AntiReplay:      util.AsBool(o.AntiReplay),
+		CopyTos:         util.AsBool(o.CopyTos),
+		EnableIpv6:      util.AsBool(o.EnableIpv6),
+		Disabled:        util.AsBool(o.Disabled),
+		CopyFlowLabel:   util.AsBool(o.CopyFlowLabel),
 	}
 
 	ans.raw = make(map[string]string)
 
-	if o.Answer.Ak != nil {
+	if o.Ak != nil {
 		ans.Type = TypeAutoKey
-		ans.AkIkeGateway = util.EntToOneStr(o.Answer.Ak.AkIkeGateway)
-		ans.AkIpsecCryptoProfile = o.Answer.Ak.AkIpsecCryptoProfile
+		ans.AkIkeGateway = util.EntToOneStr(o.Ak.AkIkeGateway)
+		ans.AkIpsecCryptoProfile = o.Ak.AkIpsecCryptoProfile
 
-		if o.Answer.Ak.ProxyIpv4 != nil {
-			ans.raw["pv4"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv4.Text)
+		if o.Ak.ProxyIpv4 != nil {
+			ans.raw["pv4"] = util.CleanRawXml(o.Ak.ProxyIpv4.Text)
 		}
 
-		if o.Answer.Ak.ProxyIpv6 != nil {
-			ans.raw["pv6"] = util.CleanRawXml(o.Answer.Ak.ProxyIpv6.Text)
+		if o.Ak.ProxyIpv6 != nil {
+			ans.raw["pv6"] = util.CleanRawXml(o.Ak.ProxyIpv6.Text)
 		}
-	} else if o.Answer.Mk != nil {
+	} else if o.Mk != nil {
 		ans.Type = TypeManualKey
-		ans.MkLocalSpi = o.Answer.Mk.MkLocalSpi
-		ans.MkInterface = o.Answer.Mk.Local.MkInterface
-		ans.MkLocalAddressIp = o.Answer.Mk.Local.MkLocalAddressIp
-		ans.MkLocalAddressFloatingIp = o.Answer.Mk.Local.MkLocalAddressFloatingIp
-		ans.MkRemoteAddress = o.Answer.Mk.Peer.MkRemoteAddress
-		ans.MkRemoteSpi = o.Answer.Mk.MkRemoteSpi
+		ans.MkLocalSpi = o.Mk.MkLocalSpi
+		ans.MkInterface = o.Mk.Local.MkInterface
+		ans.MkLocalAddressIp = o.Mk.Local.MkLocalAddressIp
+		ans.MkLocalAddressFloatingIp = o.Mk.Local.MkLocalAddressFloatingIp
+		ans.MkRemoteAddress = o.Mk.Peer.MkRemoteAddress
+		ans.MkRemoteSpi = o.Mk.MkRemoteSpi
 
-		if o.Answer.Mk.Esp != nil {
+		if o.Mk.Esp != nil {
 			ans.MkProtocol = MkProtocolEsp
-			if o.Answer.Mk.Esp.AuthMd5 != nil {
+			if o.Mk.Esp.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthMd5.Value
-			} else if o.Answer.Mk.Esp.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthMd5.Value
+			} else if o.Mk.Esp.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha1.Value
-			} else if o.Answer.Mk.Esp.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha1.Value
+			} else if o.Mk.Esp.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha256.Value
-			} else if o.Answer.Mk.Esp.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha256.Value
+			} else if o.Mk.Esp.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha384.Value
-			} else if o.Answer.Mk.Esp.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha384.Value
+			} else if o.Mk.Esp.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Esp.AuthSha512.Value
-			} else if o.Answer.Mk.Esp.AuthNone != nil {
+				ans.MkAuthKey = o.Mk.Esp.AuthSha512.Value
+			} else if o.Mk.Esp.AuthNone != nil {
 				ans.MkAuthType = MkAuthTypeNone
 			}
 
-			ans.MkEspEncryptionType = o.Answer.Mk.Esp.MkEspEncryptionType
-			ans.MkEspEncryptionKey = o.Answer.Mk.Esp.MkEspEncryptionKey
-		} else if o.Answer.Mk.Ah != nil {
+			ans.MkEspEncryptionType = normalizeEncryption(o.Mk.Esp.MkEspEncryptionType)
+			ans.MkEspEncryptionKey = o.Mk.Esp.MkEspEncryptionKey
+		} else if o.Mk.Ah != nil {
 			ans.MkProtocol = MkProtocolAh
-			if o.Answer.Mk.Ah.AuthMd5 != nil {
+			if o.Mk.Ah.AuthMd5 != nil {
 				ans.MkAuthType = MkAuthTypeMd5
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthMd5.Value
-			} else if o.Answer.Mk.Ah.AuthSha1 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthMd5.Value
+			} else if o.Mk.Ah.AuthSha1 != nil {
 				ans.MkAuthType = MkAuthTypeSha1
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha1.Value
-			} else if o.Answer.Mk.Ah.AuthSha256 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha1.Value
+			} else if o.Mk.Ah.AuthSha256 != nil {
 				ans.MkAuthType = MkAuthTypeSha256
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha256.Value
-			} else if o.Answer.Mk.Ah.AuthSha384 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha256.Value
+			} else if o.Mk.Ah.AuthSha384 != nil {
 				ans.MkAuthType = MkAuthTypeSha384
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha384.Value
-			} else if o.Answer.Mk.Ah.AuthSha512 != nil {
+				ans.MkAuthKey = o.Mk.Ah.AuthSha384.Value
+			} else if o.Mk.Ah.AuthSha512 != nil {
 				ans.MkAuthType = MkAuthTypeSha512
-				ans.MkAuthKey = o.Answer.Mk.Ah.AuthSha512.Value
+				ans.MkAuthKey = o.Mk.Ah.AuthSha512.Value
 			}
 		}
-	} else if o.Answer.Gps != nil {
+	} else if o.Gps != nil {
 		ans.Type = TypeGlobalProtectSatellite
-		ans.GpsPortalAddress = o.Answer.Gps.GpsPortalAddress
-		ans.GpsPreferIpv6 = util.AsBool(o.Answer.Gps.GpsPreferIpv6)
-		ans.GpsPublishRoutes = util.MemToStr(o.Answer.Gps.GpsPublishRoutes)
-		ans.GpsInterface = o.Answer.Gps.Local.GpsInterface
+		ans.GpsPortalAddress = o.Gps.GpsPortalAddress
+		ans.GpsPreferIpv6 = util.AsBool(o.Gps.GpsPreferIpv6)
+		ans.GpsPublishRoutes = util.MemToStr(o.Gps.GpsPublishRoutes)
+		ans.GpsInterface = o.Gps.Local.GpsInterface
 
-		if o.Answer.Gps.Pcr != nil {
-			ans.GpsPublishConnectedRoutes = util.AsBool(o.Answer.Gps.Pcr.GpsPublishConnectedRoutes)
+		if o.Gps.Pcr != nil {
+			ans.GpsPublishConnectedRoutes = util.AsBool(o.Gps.Pcr.GpsPublishConnectedRoutes)
 		}
 
-		if o.Answer.Gps.Local.Ip != nil {
-			ans.GpsInterfaceIpIpv4 = o.Answer.Gps.Local.Ip.Ipv4
-			ans.GpsInterfaceIpIpv6 = o.Answer.Gps.Local.Ip.Ipv6
+		if o.Gps.Local.Ip != nil {
+			ans.GpsInterfaceIpIpv4 = o.Gps.Local.Ip.Ipv4
+			ans.GpsInterfaceIpIpv6 = o.Gps.Local.Ip.Ipv6
 		}
 
-		if o.Answer.Gps.Local.Floating != nil {
-			ans.GpsInterfaceFloatingIpIpv4 = o.Answer.Gps.Local.Floating.Ipv4
-			ans.GpsInterfaceFloatingIpIpv6 = o.Answer.Gps.Local.Floating.Ipv6
+		if o.Gps.Local.Floating != nil {
+			ans.GpsInterfaceFloatingIpIpv4 = o.Gps.Local.Floating.Ipv4
+			ans.GpsInterfaceFloatingIpIpv6 = o.Gps.Local.Floating.Ipv6
 		}
 
-		if o.Answer.Gps.Ca != nil {
-			ans.GpsLocalCertificate = o.Answer.Gps.Ca.GpsLocalCertificate
-			ans.GpsCertificateProfile = o.Answer.Gps.Ca.GpsCertificateProfile
+		if o.Gps.Ca != nil {
+			ans.GpsLocalCertificate = o.Gps.Ca.GpsLocalCertificate
+			ans.GpsCertificateProfile = o.Gps.Ca.GpsCertificateProfile
 		}
 	}
 
-	if o.Answer.TunnelMonitor != nil {
-		ans.EnableTunnelMonitor = util.AsBool(o.Answer.TunnelMonitor.EnableTunnelMonitor)
-		ans.TunnelMonitorDestinationIp = o.Answer.TunnelMonitor.TunnelMonitorDestinationIp
-		ans.TunnelMonitorSourceIp = o.Answer.TunnelMonitor.TunnelMonitorSourceIp
-		ans.TunnelMonitorProfile = o.Answer.TunnelMonitor.TunnelMonitorProfile
-		ans.TunnelMonitorProxyId = o.Answer.TunnelMonitor.TunnelMonitorProxyId
+	if o.TunnelMonitor != nil {
+		ans.EnableTunnelMonitor = util.AsBool(o.TunnelMonitor.EnableTunnelMonitor)
+		ans.TunnelMonitorDestinationIp = o.TunnelMonitor.TunnelMonitorDestinationIp
+		ans.TunnelMonitorSourceIp = o.TunnelMonitor.TunnelMonitorSourceIp
+		ans.TunnelMonitorProfile = o.TunnelMonitor.TunnelMonitorProfile
+		ans.TunnelMonitorProxyId = o.TunnelMonitor.TunnelMonitorProxyId
 	}
 
 	if len(ans.raw) == 0 {
@@ -655,7 +690,7 @@ func specify_v1(e Entry) interface{} {
 		switch e.MkProtocol {
 		case MkProtocolEsp:
 			ans.Mk.Esp = &mkEsp{
-				MkEspEncryptionType: e.MkEspEncryptionType,
+				MkEspEncryptionType: specifyEncryption(e.MkEspEncryptionType, 1),
 				MkEspEncryptionKey:  e.MkEspEncryptionKey,
 			}
 
@@ -819,7 +854,7 @@ func specify_v2(e Entry) interface{} {
 		switch e.MkProtocol {
 		case MkProtocolEsp:
 			ans.Mk.Esp = &mkEsp{
-				MkEspEncryptionType: e.MkEspEncryptionType,
+				MkEspEncryptionType: specifyEncryption(e.MkEspEncryptionType, 2),
 				MkEspEncryptionKey:  e.MkEspEncryptionKey,
 			}
 
@@ -968,7 +1003,7 @@ func specify_v3(e Entry) interface{} {
 		switch e.MkProtocol {
 		case MkProtocolEsp:
 			ans.Mk.Esp = &mkEsp{
-				MkEspEncryptionType: e.MkEspEncryptionType,
+				MkEspEncryptionType: specifyEncryption(e.MkEspEncryptionType, 2),
 				MkEspEncryptionKey:  e.MkEspEncryptionKey,
 			}
 

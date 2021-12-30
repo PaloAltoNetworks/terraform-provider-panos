@@ -4,627 +4,268 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an http profile.
 //
 // PAN-OS 7.1+.
 type Entry struct {
-	Name              string
-	TagRegistration   bool
-	ConfigName        string
-	ConfigUriFormat   string
-	ConfigPayload     string
-	SystemName        string
-	SystemUriFormat   string
-	SystemPayload     string
-	ThreatName        string
-	ThreatUriFormat   string
-	ThreatPayload     string
-	TrafficName       string
-	TrafficUriFormat  string
-	TrafficPayload    string
-	HipMatchName      string
-	HipMatchUriFormat string
-	HipMatchPayload   string
-	UrlName           string
-	UrlUriFormat      string
-	UrlPayload        string
-	DataName          string
-	DataUriFormat     string
-	DataPayload       string
-	WildfireName      string
-	WildfireUriFormat string
-	WildfirePayload   string
-	TunnelName        string
-	TunnelUriFormat   string
-	TunnelPayload     string
-	UserIdName        string
-	UserIdUriFormat   string
-	UserIdPayload     string
-	GtpName           string
-	GtpUriFormat      string
-	GtpPayload        string
-	AuthName          string
-	AuthUriFormat     string
-	AuthPayload       string
-	SctpName          string // 8.1+
-	SctpUriFormat     string // 8.1+
-	SctpPayload       string // 8.1+
-	IptagName         string // 9.0+
-	IptagUriFormat    string // 9.0+
-	IptagPayload      string // 9.0+
+	Name            string
+	TagRegistration bool
+	Servers         []Server
+	Config          *PayloadFormat
+	System          *PayloadFormat
+	Threat          *PayloadFormat
+	Traffic         *PayloadFormat
+	HipMatch        *PayloadFormat
+	Url             *PayloadFormat
+	Data            *PayloadFormat
+	Wildfire        *PayloadFormat
+	Tunnel          *PayloadFormat
+	UserId          *PayloadFormat
+	Gtp             *PayloadFormat
+	Auth            *PayloadFormat
+	Sctp            *PayloadFormat // 8.1+
+	Iptag           *PayloadFormat // 9.0+
+}
 
-	raw map[string]string
+// Server is an HTTP server spec.
+type Server struct {
+	Name               string
+	Address            string
+	Protocol           string
+	Port               int
+	HttpMethod         string
+	Username           string
+	Password           string // encrypted
+	TlsVersion         string // 9.0+
+	CertificateProfile string // 9.0+
+}
+
+// PayloadFormat is payload config for a given log type.
+type PayloadFormat struct {
+	Name       string
+	UriFormat  string
+	Payload    string
+	Headers    []Header
+	Parameters []Parameter
+}
+
+// Header is an HTTP header.
+type Header struct {
+	Name  string
+	Value string
+}
+
+// Parameter is an HTTP parameter.
+type Parameter struct {
+	Name  string
+	Value string
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
 	o.TagRegistration = s.TagRegistration
-	o.ConfigName = s.ConfigName
-	o.ConfigUriFormat = s.ConfigUriFormat
-	o.ConfigPayload = s.ConfigPayload
-	o.SystemName = s.SystemName
-	o.SystemUriFormat = s.SystemUriFormat
-	o.SystemPayload = s.SystemPayload
-	o.ThreatName = s.ThreatName
-	o.ThreatUriFormat = s.ThreatUriFormat
-	o.ThreatPayload = s.ThreatPayload
-	o.TrafficName = s.TrafficName
-	o.TrafficUriFormat = s.TrafficUriFormat
-	o.TrafficPayload = s.TrafficPayload
-	o.HipMatchName = s.HipMatchName
-	o.HipMatchUriFormat = s.HipMatchUriFormat
-	o.HipMatchPayload = s.HipMatchPayload
-	o.UrlName = s.UrlName
-	o.UrlUriFormat = s.UrlUriFormat
-	o.UrlPayload = s.UrlPayload
-	o.DataName = s.DataName
-	o.DataUriFormat = s.DataUriFormat
-	o.DataPayload = s.DataPayload
-	o.WildfireName = s.WildfireName
-	o.WildfireUriFormat = s.WildfireUriFormat
-	o.WildfirePayload = s.WildfirePayload
-	o.TunnelName = s.TunnelName
-	o.TunnelUriFormat = s.TunnelUriFormat
-	o.TunnelPayload = s.TunnelPayload
-	o.UserIdName = s.UserIdName
-	o.UserIdUriFormat = s.UserIdUriFormat
-	o.UserIdPayload = s.UserIdPayload
-	o.GtpName = s.GtpName
-	o.GtpUriFormat = s.GtpUriFormat
-	o.GtpPayload = s.GtpPayload
-	o.AuthName = s.AuthName
-	o.AuthUriFormat = s.AuthUriFormat
-	o.AuthPayload = s.AuthPayload
-	o.SctpName = s.SctpName
-	o.SctpUriFormat = s.SctpUriFormat
-	o.SctpPayload = s.SctpPayload
-	o.IptagName = s.IptagName
-	o.IptagUriFormat = s.IptagUriFormat
-	o.IptagPayload = s.IptagPayload
+	if s.Servers == nil {
+		o.Servers = nil
+	} else {
+		o.Servers = make([]Server, 0, len(s.Servers))
+		for _, x := range s.Servers {
+			o.Servers = append(o.Servers, Server{
+				Name:               x.Name,
+				Address:            x.Address,
+				Protocol:           x.Protocol,
+				Port:               x.Port,
+				HttpMethod:         x.HttpMethod,
+				Username:           x.Username,
+				Password:           x.Password,
+				TlsVersion:         x.TlsVersion,
+				CertificateProfile: x.CertificateProfile,
+			})
+		}
+	}
+	o.Config = copyPayloadFormat(s.Config)
+	o.System = copyPayloadFormat(s.System)
+	o.Threat = copyPayloadFormat(s.Threat)
+	o.Traffic = copyPayloadFormat(s.Traffic)
+	o.HipMatch = copyPayloadFormat(s.HipMatch)
+	o.Url = copyPayloadFormat(s.Url)
+	o.Data = copyPayloadFormat(s.Data)
+	o.Wildfire = copyPayloadFormat(s.Wildfire)
+	o.Tunnel = copyPayloadFormat(s.Tunnel)
+	o.UserId = copyPayloadFormat(s.UserId)
+	o.Gtp = copyPayloadFormat(s.Gtp)
+	o.Auth = copyPayloadFormat(s.Auth)
+	o.Sctp = copyPayloadFormat(s.Sctp)
+	o.Iptag = copyPayloadFormat(s.Iptag)
+}
+
+func copyPayloadFormat(s *PayloadFormat) *PayloadFormat {
+	if s == nil {
+		return nil
+	}
+
+	ans := PayloadFormat{
+		Name:      s.Name,
+		UriFormat: s.UriFormat,
+		Payload:   s.Payload,
+	}
+
+	if len(s.Headers) > 0 {
+		ans.Headers = make([]Header, 0, len(s.Headers))
+		for _, x := range s.Headers {
+			ans.Headers = append(ans.Headers, Header{
+				Name:  x.Name,
+				Value: x.Value,
+			})
+		}
+	}
+
+	if len(s.Parameters) > 0 {
+		ans.Parameters = make([]Parameter, 0, len(s.Parameters))
+		for _, x := range s.Parameters {
+			ans.Parameters = append(ans.Parameters, Parameter{
+				Name:  x.Name,
+				Value: x.Value,
+			})
+		}
+	}
+
+	return &ans
 }
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:            o.Answer.Name,
-		TagRegistration: util.AsBool(o.Answer.TagRegistration),
-	}
-
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Server != nil {
-		ans.raw["srv"] = util.CleanRawXml(o.Answer.Server.Text)
-	}
-
-	if o.Answer.Format != nil {
-		if o.Answer.Format.Config != nil {
-			ans.ConfigName = o.Answer.Format.Config.Name
-			ans.ConfigUriFormat = o.Answer.Format.Config.UriFormat
-			ans.ConfigPayload = o.Answer.Format.Config.Payload
-			if o.Answer.Format.Config.Headers != nil {
-				ans.raw["configh"] = util.CleanRawXml(o.Answer.Format.Config.Headers.Text)
-			}
-			if o.Answer.Format.Config.Params != nil {
-				ans.raw["configp"] = util.CleanRawXml(o.Answer.Format.Config.Params.Text)
-			}
-		}
-		if o.Answer.Format.System != nil {
-			ans.SystemName = o.Answer.Format.System.Name
-			ans.SystemUriFormat = o.Answer.Format.System.UriFormat
-			ans.SystemPayload = o.Answer.Format.System.Payload
-			if o.Answer.Format.System.Headers != nil {
-				ans.raw["systemh"] = util.CleanRawXml(o.Answer.Format.System.Headers.Text)
-			}
-			if o.Answer.Format.System.Params != nil {
-				ans.raw["systemp"] = util.CleanRawXml(o.Answer.Format.System.Params.Text)
-			}
-		}
-		if o.Answer.Format.Threat != nil {
-			ans.ThreatName = o.Answer.Format.Threat.Name
-			ans.ThreatUriFormat = o.Answer.Format.Threat.UriFormat
-			ans.ThreatPayload = o.Answer.Format.Threat.Payload
-			if o.Answer.Format.Threat.Headers != nil {
-				ans.raw["threath"] = util.CleanRawXml(o.Answer.Format.Threat.Headers.Text)
-			}
-			if o.Answer.Format.Threat.Params != nil {
-				ans.raw["threatp"] = util.CleanRawXml(o.Answer.Format.Threat.Params.Text)
-			}
-		}
-		if o.Answer.Format.Traffic != nil {
-			ans.TrafficName = o.Answer.Format.Traffic.Name
-			ans.TrafficUriFormat = o.Answer.Format.Traffic.UriFormat
-			ans.TrafficPayload = o.Answer.Format.Traffic.Payload
-			if o.Answer.Format.Traffic.Headers != nil {
-				ans.raw["traffich"] = util.CleanRawXml(o.Answer.Format.Traffic.Headers.Text)
-			}
-			if o.Answer.Format.Traffic.Params != nil {
-				ans.raw["trafficp"] = util.CleanRawXml(o.Answer.Format.Traffic.Params.Text)
-			}
-		}
-		if o.Answer.Format.HipMatch != nil {
-			ans.HipMatchName = o.Answer.Format.HipMatch.Name
-			ans.HipMatchUriFormat = o.Answer.Format.HipMatch.UriFormat
-			ans.HipMatchPayload = o.Answer.Format.HipMatch.Payload
-			if o.Answer.Format.HipMatch.Headers != nil {
-				ans.raw["hipmatchh"] = util.CleanRawXml(o.Answer.Format.HipMatch.Headers.Text)
-			}
-			if o.Answer.Format.HipMatch.Params != nil {
-				ans.raw["hipmatchp"] = util.CleanRawXml(o.Answer.Format.HipMatch.Params.Text)
-			}
-		}
-		if o.Answer.Format.Url != nil {
-			ans.UrlName = o.Answer.Format.Url.Name
-			ans.UrlUriFormat = o.Answer.Format.Url.UriFormat
-			ans.UrlPayload = o.Answer.Format.Url.Payload
-			if o.Answer.Format.Url.Headers != nil {
-				ans.raw["urlh"] = util.CleanRawXml(o.Answer.Format.Url.Headers.Text)
-			}
-			if o.Answer.Format.Url.Params != nil {
-				ans.raw["urlp"] = util.CleanRawXml(o.Answer.Format.Url.Params.Text)
-			}
-		}
-		if o.Answer.Format.Data != nil {
-			ans.DataName = o.Answer.Format.Data.Name
-			ans.DataUriFormat = o.Answer.Format.Data.UriFormat
-			ans.DataPayload = o.Answer.Format.Data.Payload
-			if o.Answer.Format.Data.Headers != nil {
-				ans.raw["datah"] = util.CleanRawXml(o.Answer.Format.Data.Headers.Text)
-			}
-			if o.Answer.Format.Data.Params != nil {
-				ans.raw["datap"] = util.CleanRawXml(o.Answer.Format.Data.Params.Text)
-			}
-		}
-		if o.Answer.Format.Wildfire != nil {
-			ans.WildfireName = o.Answer.Format.Wildfire.Name
-			ans.WildfireUriFormat = o.Answer.Format.Wildfire.UriFormat
-			ans.WildfirePayload = o.Answer.Format.Wildfire.Payload
-			if o.Answer.Format.Wildfire.Headers != nil {
-				ans.raw["wildfireh"] = util.CleanRawXml(o.Answer.Format.Wildfire.Headers.Text)
-			}
-			if o.Answer.Format.Wildfire.Params != nil {
-				ans.raw["wildfirep"] = util.CleanRawXml(o.Answer.Format.Wildfire.Params.Text)
-			}
-		}
-		if o.Answer.Format.Tunnel != nil {
-			ans.TunnelName = o.Answer.Format.Tunnel.Name
-			ans.TunnelUriFormat = o.Answer.Format.Tunnel.UriFormat
-			ans.TunnelPayload = o.Answer.Format.Tunnel.Payload
-			if o.Answer.Format.Tunnel.Headers != nil {
-				ans.raw["tunnelh"] = util.CleanRawXml(o.Answer.Format.Tunnel.Headers.Text)
-			}
-			if o.Answer.Format.Tunnel.Params != nil {
-				ans.raw["tunnelp"] = util.CleanRawXml(o.Answer.Format.Tunnel.Params.Text)
-			}
-		}
-		if o.Answer.Format.UserId != nil {
-			ans.UserIdName = o.Answer.Format.UserId.Name
-			ans.UserIdUriFormat = o.Answer.Format.UserId.UriFormat
-			ans.UserIdPayload = o.Answer.Format.UserId.Payload
-			if o.Answer.Format.UserId.Headers != nil {
-				ans.raw["useridh"] = util.CleanRawXml(o.Answer.Format.UserId.Headers.Text)
-			}
-			if o.Answer.Format.UserId.Params != nil {
-				ans.raw["useridp"] = util.CleanRawXml(o.Answer.Format.UserId.Params.Text)
-			}
-		}
-		if o.Answer.Format.Gtp != nil {
-			ans.GtpName = o.Answer.Format.Gtp.Name
-			ans.GtpUriFormat = o.Answer.Format.Gtp.UriFormat
-			ans.GtpPayload = o.Answer.Format.Gtp.Payload
-			if o.Answer.Format.Gtp.Headers != nil {
-				ans.raw["gtph"] = util.CleanRawXml(o.Answer.Format.Gtp.Headers.Text)
-			}
-			if o.Answer.Format.Gtp.Params != nil {
-				ans.raw["gtpp"] = util.CleanRawXml(o.Answer.Format.Gtp.Params.Text)
-			}
-		}
-		if o.Answer.Format.Auth != nil {
-			ans.AuthName = o.Answer.Format.Auth.Name
-			ans.AuthUriFormat = o.Answer.Format.Auth.UriFormat
-			ans.AuthPayload = o.Answer.Format.Auth.Payload
-			if o.Answer.Format.Auth.Headers != nil {
-				ans.raw["authh"] = util.CleanRawXml(o.Answer.Format.Auth.Headers.Text)
-			}
-			if o.Answer.Format.Auth.Params != nil {
-				ans.raw["authp"] = util.CleanRawXml(o.Answer.Format.Auth.Params.Text)
-			}
-		}
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
 	return ans
 }
 
-type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
-}
-
-func (o *container_v2) Normalize() Entry {
-	ans := Entry{
-		Name:            o.Answer.Name,
-		TagRegistration: util.AsBool(o.Answer.TagRegistration),
-	}
-
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Server != nil {
-		ans.raw["srv"] = util.CleanRawXml(o.Answer.Server.Text)
-	}
-
-	if o.Answer.Format != nil {
-		if o.Answer.Format.Config != nil {
-			ans.ConfigName = o.Answer.Format.Config.Name
-			ans.ConfigUriFormat = o.Answer.Format.Config.UriFormat
-			ans.ConfigPayload = o.Answer.Format.Config.Payload
-			if o.Answer.Format.Config.Headers != nil {
-				ans.raw["configh"] = util.CleanRawXml(o.Answer.Format.Config.Headers.Text)
-			}
-			if o.Answer.Format.Config.Params != nil {
-				ans.raw["configp"] = util.CleanRawXml(o.Answer.Format.Config.Params.Text)
-			}
-		}
-		if o.Answer.Format.System != nil {
-			ans.SystemName = o.Answer.Format.System.Name
-			ans.SystemUriFormat = o.Answer.Format.System.UriFormat
-			ans.SystemPayload = o.Answer.Format.System.Payload
-			if o.Answer.Format.System.Headers != nil {
-				ans.raw["systemh"] = util.CleanRawXml(o.Answer.Format.System.Headers.Text)
-			}
-			if o.Answer.Format.System.Params != nil {
-				ans.raw["systemp"] = util.CleanRawXml(o.Answer.Format.System.Params.Text)
-			}
-		}
-		if o.Answer.Format.Threat != nil {
-			ans.ThreatName = o.Answer.Format.Threat.Name
-			ans.ThreatUriFormat = o.Answer.Format.Threat.UriFormat
-			ans.ThreatPayload = o.Answer.Format.Threat.Payload
-			if o.Answer.Format.Threat.Headers != nil {
-				ans.raw["threath"] = util.CleanRawXml(o.Answer.Format.Threat.Headers.Text)
-			}
-			if o.Answer.Format.Threat.Params != nil {
-				ans.raw["threatp"] = util.CleanRawXml(o.Answer.Format.Threat.Params.Text)
-			}
-		}
-		if o.Answer.Format.Traffic != nil {
-			ans.TrafficName = o.Answer.Format.Traffic.Name
-			ans.TrafficUriFormat = o.Answer.Format.Traffic.UriFormat
-			ans.TrafficPayload = o.Answer.Format.Traffic.Payload
-			if o.Answer.Format.Traffic.Headers != nil {
-				ans.raw["traffich"] = util.CleanRawXml(o.Answer.Format.Traffic.Headers.Text)
-			}
-			if o.Answer.Format.Traffic.Params != nil {
-				ans.raw["trafficp"] = util.CleanRawXml(o.Answer.Format.Traffic.Params.Text)
-			}
-		}
-		if o.Answer.Format.HipMatch != nil {
-			ans.HipMatchName = o.Answer.Format.HipMatch.Name
-			ans.HipMatchUriFormat = o.Answer.Format.HipMatch.UriFormat
-			ans.HipMatchPayload = o.Answer.Format.HipMatch.Payload
-			if o.Answer.Format.HipMatch.Headers != nil {
-				ans.raw["hipmatchh"] = util.CleanRawXml(o.Answer.Format.HipMatch.Headers.Text)
-			}
-			if o.Answer.Format.HipMatch.Params != nil {
-				ans.raw["hipmatchp"] = util.CleanRawXml(o.Answer.Format.HipMatch.Params.Text)
-			}
-		}
-		if o.Answer.Format.Url != nil {
-			ans.UrlName = o.Answer.Format.Url.Name
-			ans.UrlUriFormat = o.Answer.Format.Url.UriFormat
-			ans.UrlPayload = o.Answer.Format.Url.Payload
-			if o.Answer.Format.Url.Headers != nil {
-				ans.raw["urlh"] = util.CleanRawXml(o.Answer.Format.Url.Headers.Text)
-			}
-			if o.Answer.Format.Url.Params != nil {
-				ans.raw["urlp"] = util.CleanRawXml(o.Answer.Format.Url.Params.Text)
-			}
-		}
-		if o.Answer.Format.Data != nil {
-			ans.DataName = o.Answer.Format.Data.Name
-			ans.DataUriFormat = o.Answer.Format.Data.UriFormat
-			ans.DataPayload = o.Answer.Format.Data.Payload
-			if o.Answer.Format.Data.Headers != nil {
-				ans.raw["datah"] = util.CleanRawXml(o.Answer.Format.Data.Headers.Text)
-			}
-			if o.Answer.Format.Data.Params != nil {
-				ans.raw["datap"] = util.CleanRawXml(o.Answer.Format.Data.Params.Text)
-			}
-		}
-		if o.Answer.Format.Wildfire != nil {
-			ans.WildfireName = o.Answer.Format.Wildfire.Name
-			ans.WildfireUriFormat = o.Answer.Format.Wildfire.UriFormat
-			ans.WildfirePayload = o.Answer.Format.Wildfire.Payload
-			if o.Answer.Format.Wildfire.Headers != nil {
-				ans.raw["wildfireh"] = util.CleanRawXml(o.Answer.Format.Wildfire.Headers.Text)
-			}
-			if o.Answer.Format.Wildfire.Params != nil {
-				ans.raw["wildfirep"] = util.CleanRawXml(o.Answer.Format.Wildfire.Params.Text)
-			}
-		}
-		if o.Answer.Format.Tunnel != nil {
-			ans.TunnelName = o.Answer.Format.Tunnel.Name
-			ans.TunnelUriFormat = o.Answer.Format.Tunnel.UriFormat
-			ans.TunnelPayload = o.Answer.Format.Tunnel.Payload
-			if o.Answer.Format.Tunnel.Headers != nil {
-				ans.raw["tunnelh"] = util.CleanRawXml(o.Answer.Format.Tunnel.Headers.Text)
-			}
-			if o.Answer.Format.Tunnel.Params != nil {
-				ans.raw["tunnelp"] = util.CleanRawXml(o.Answer.Format.Tunnel.Params.Text)
-			}
-		}
-		if o.Answer.Format.UserId != nil {
-			ans.UserIdName = o.Answer.Format.UserId.Name
-			ans.UserIdUriFormat = o.Answer.Format.UserId.UriFormat
-			ans.UserIdPayload = o.Answer.Format.UserId.Payload
-			if o.Answer.Format.UserId.Headers != nil {
-				ans.raw["useridh"] = util.CleanRawXml(o.Answer.Format.UserId.Headers.Text)
-			}
-			if o.Answer.Format.UserId.Params != nil {
-				ans.raw["useridp"] = util.CleanRawXml(o.Answer.Format.UserId.Params.Text)
-			}
-		}
-		if o.Answer.Format.Gtp != nil {
-			ans.GtpName = o.Answer.Format.Gtp.Name
-			ans.GtpUriFormat = o.Answer.Format.Gtp.UriFormat
-			ans.GtpPayload = o.Answer.Format.Gtp.Payload
-			if o.Answer.Format.Gtp.Headers != nil {
-				ans.raw["gtph"] = util.CleanRawXml(o.Answer.Format.Gtp.Headers.Text)
-			}
-			if o.Answer.Format.Gtp.Params != nil {
-				ans.raw["gtpp"] = util.CleanRawXml(o.Answer.Format.Gtp.Params.Text)
-			}
-		}
-		if o.Answer.Format.Auth != nil {
-			ans.AuthName = o.Answer.Format.Auth.Name
-			ans.AuthUriFormat = o.Answer.Format.Auth.UriFormat
-			ans.AuthPayload = o.Answer.Format.Auth.Payload
-			if o.Answer.Format.Auth.Headers != nil {
-				ans.raw["authh"] = util.CleanRawXml(o.Answer.Format.Auth.Headers.Text)
-			}
-			if o.Answer.Format.Auth.Params != nil {
-				ans.raw["authp"] = util.CleanRawXml(o.Answer.Format.Auth.Params.Text)
-			}
-		}
-		if o.Answer.Format.Sctp != nil {
-			ans.SctpName = o.Answer.Format.Sctp.Name
-			ans.SctpUriFormat = o.Answer.Format.Sctp.UriFormat
-			ans.SctpPayload = o.Answer.Format.Sctp.Payload
-			if o.Answer.Format.Sctp.Headers != nil {
-				ans.raw["sctph"] = util.CleanRawXml(o.Answer.Format.Sctp.Headers.Text)
-			}
-			if o.Answer.Format.Sctp.Params != nil {
-				ans.raw["sctpp"] = util.CleanRawXml(o.Answer.Format.Sctp.Params.Text)
-			}
-		}
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+func (o container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
 	return ans
 }
 
-type container_v3 struct {
-	Answer entry_v3 `xml:"result>entry"`
-}
-
-func (o *container_v3) Normalize() Entry {
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:            o.Answer.Name,
-		TagRegistration: util.AsBool(o.Answer.TagRegistration),
+		Name:            o.Name,
+		TagRegistration: util.AsBool(o.TagRegistration),
 	}
 
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Server != nil {
-		ans.raw["srv"] = util.CleanRawXml(o.Answer.Server.Text)
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:       x.Name,
+				Address:    x.Address,
+				Protocol:   x.Protocol,
+				Port:       x.Port,
+				HttpMethod: x.HttpMethod,
+				Username:   x.Username,
+				Password:   x.Password,
+			})
+		}
+		ans.Servers = list
 	}
 
-	if o.Answer.Format != nil {
-		if o.Answer.Format.Config != nil {
-			ans.ConfigName = o.Answer.Format.Config.Name
-			ans.ConfigUriFormat = o.Answer.Format.Config.UriFormat
-			ans.ConfigPayload = o.Answer.Format.Config.Payload
-			if o.Answer.Format.Config.Headers != nil {
-				ans.raw["configh"] = util.CleanRawXml(o.Answer.Format.Config.Headers.Text)
-			}
-			if o.Answer.Format.Config.Params != nil {
-				ans.raw["configp"] = util.CleanRawXml(o.Answer.Format.Config.Params.Text)
-			}
-		}
-		if o.Answer.Format.System != nil {
-			ans.SystemName = o.Answer.Format.System.Name
-			ans.SystemUriFormat = o.Answer.Format.System.UriFormat
-			ans.SystemPayload = o.Answer.Format.System.Payload
-			if o.Answer.Format.System.Headers != nil {
-				ans.raw["systemh"] = util.CleanRawXml(o.Answer.Format.System.Headers.Text)
-			}
-			if o.Answer.Format.System.Params != nil {
-				ans.raw["systemp"] = util.CleanRawXml(o.Answer.Format.System.Params.Text)
-			}
-		}
-		if o.Answer.Format.Threat != nil {
-			ans.ThreatName = o.Answer.Format.Threat.Name
-			ans.ThreatUriFormat = o.Answer.Format.Threat.UriFormat
-			ans.ThreatPayload = o.Answer.Format.Threat.Payload
-			if o.Answer.Format.Threat.Headers != nil {
-				ans.raw["threath"] = util.CleanRawXml(o.Answer.Format.Threat.Headers.Text)
-			}
-			if o.Answer.Format.Threat.Params != nil {
-				ans.raw["threatp"] = util.CleanRawXml(o.Answer.Format.Threat.Params.Text)
-			}
-		}
-		if o.Answer.Format.Traffic != nil {
-			ans.TrafficName = o.Answer.Format.Traffic.Name
-			ans.TrafficUriFormat = o.Answer.Format.Traffic.UriFormat
-			ans.TrafficPayload = o.Answer.Format.Traffic.Payload
-			if o.Answer.Format.Traffic.Headers != nil {
-				ans.raw["traffich"] = util.CleanRawXml(o.Answer.Format.Traffic.Headers.Text)
-			}
-			if o.Answer.Format.Traffic.Params != nil {
-				ans.raw["trafficp"] = util.CleanRawXml(o.Answer.Format.Traffic.Params.Text)
-			}
-		}
-		if o.Answer.Format.HipMatch != nil {
-			ans.HipMatchName = o.Answer.Format.HipMatch.Name
-			ans.HipMatchUriFormat = o.Answer.Format.HipMatch.UriFormat
-			ans.HipMatchPayload = o.Answer.Format.HipMatch.Payload
-			if o.Answer.Format.HipMatch.Headers != nil {
-				ans.raw["hipmatchh"] = util.CleanRawXml(o.Answer.Format.HipMatch.Headers.Text)
-			}
-			if o.Answer.Format.HipMatch.Params != nil {
-				ans.raw["hipmatchp"] = util.CleanRawXml(o.Answer.Format.HipMatch.Params.Text)
-			}
-		}
-		if o.Answer.Format.Url != nil {
-			ans.UrlName = o.Answer.Format.Url.Name
-			ans.UrlUriFormat = o.Answer.Format.Url.UriFormat
-			ans.UrlPayload = o.Answer.Format.Url.Payload
-			if o.Answer.Format.Url.Headers != nil {
-				ans.raw["urlh"] = util.CleanRawXml(o.Answer.Format.Url.Headers.Text)
-			}
-			if o.Answer.Format.Url.Params != nil {
-				ans.raw["urlp"] = util.CleanRawXml(o.Answer.Format.Url.Params.Text)
-			}
-		}
-		if o.Answer.Format.Data != nil {
-			ans.DataName = o.Answer.Format.Data.Name
-			ans.DataUriFormat = o.Answer.Format.Data.UriFormat
-			ans.DataPayload = o.Answer.Format.Data.Payload
-			if o.Answer.Format.Data.Headers != nil {
-				ans.raw["datah"] = util.CleanRawXml(o.Answer.Format.Data.Headers.Text)
-			}
-			if o.Answer.Format.Data.Params != nil {
-				ans.raw["datap"] = util.CleanRawXml(o.Answer.Format.Data.Params.Text)
-			}
-		}
-		if o.Answer.Format.Wildfire != nil {
-			ans.WildfireName = o.Answer.Format.Wildfire.Name
-			ans.WildfireUriFormat = o.Answer.Format.Wildfire.UriFormat
-			ans.WildfirePayload = o.Answer.Format.Wildfire.Payload
-			if o.Answer.Format.Wildfire.Headers != nil {
-				ans.raw["wildfireh"] = util.CleanRawXml(o.Answer.Format.Wildfire.Headers.Text)
-			}
-			if o.Answer.Format.Wildfire.Params != nil {
-				ans.raw["wildfirep"] = util.CleanRawXml(o.Answer.Format.Wildfire.Params.Text)
-			}
-		}
-		if o.Answer.Format.Tunnel != nil {
-			ans.TunnelName = o.Answer.Format.Tunnel.Name
-			ans.TunnelUriFormat = o.Answer.Format.Tunnel.UriFormat
-			ans.TunnelPayload = o.Answer.Format.Tunnel.Payload
-			if o.Answer.Format.Tunnel.Headers != nil {
-				ans.raw["tunnelh"] = util.CleanRawXml(o.Answer.Format.Tunnel.Headers.Text)
-			}
-			if o.Answer.Format.Tunnel.Params != nil {
-				ans.raw["tunnelp"] = util.CleanRawXml(o.Answer.Format.Tunnel.Params.Text)
-			}
-		}
-		if o.Answer.Format.UserId != nil {
-			ans.UserIdName = o.Answer.Format.UserId.Name
-			ans.UserIdUriFormat = o.Answer.Format.UserId.UriFormat
-			ans.UserIdPayload = o.Answer.Format.UserId.Payload
-			if o.Answer.Format.UserId.Headers != nil {
-				ans.raw["useridh"] = util.CleanRawXml(o.Answer.Format.UserId.Headers.Text)
-			}
-			if o.Answer.Format.UserId.Params != nil {
-				ans.raw["useridp"] = util.CleanRawXml(o.Answer.Format.UserId.Params.Text)
-			}
-		}
-		if o.Answer.Format.Gtp != nil {
-			ans.GtpName = o.Answer.Format.Gtp.Name
-			ans.GtpUriFormat = o.Answer.Format.Gtp.UriFormat
-			ans.GtpPayload = o.Answer.Format.Gtp.Payload
-			if o.Answer.Format.Gtp.Headers != nil {
-				ans.raw["gtph"] = util.CleanRawXml(o.Answer.Format.Gtp.Headers.Text)
-			}
-			if o.Answer.Format.Gtp.Params != nil {
-				ans.raw["gtpp"] = util.CleanRawXml(o.Answer.Format.Gtp.Params.Text)
-			}
-		}
-		if o.Answer.Format.Auth != nil {
-			ans.AuthName = o.Answer.Format.Auth.Name
-			ans.AuthUriFormat = o.Answer.Format.Auth.UriFormat
-			ans.AuthPayload = o.Answer.Format.Auth.Payload
-			if o.Answer.Format.Auth.Headers != nil {
-				ans.raw["authh"] = util.CleanRawXml(o.Answer.Format.Auth.Headers.Text)
-			}
-			if o.Answer.Format.Auth.Params != nil {
-				ans.raw["authp"] = util.CleanRawXml(o.Answer.Format.Auth.Params.Text)
-			}
-		}
-		if o.Answer.Format.Sctp != nil {
-			ans.SctpName = o.Answer.Format.Sctp.Name
-			ans.SctpUriFormat = o.Answer.Format.Sctp.UriFormat
-			ans.SctpPayload = o.Answer.Format.Sctp.Payload
-			if o.Answer.Format.Sctp.Headers != nil {
-				ans.raw["sctph"] = util.CleanRawXml(o.Answer.Format.Sctp.Headers.Text)
-			}
-			if o.Answer.Format.Sctp.Params != nil {
-				ans.raw["sctpp"] = util.CleanRawXml(o.Answer.Format.Sctp.Params.Text)
-			}
-		}
-		if o.Answer.Format.Iptag != nil {
-			ans.IptagName = o.Answer.Format.Iptag.Name
-			ans.IptagUriFormat = o.Answer.Format.Iptag.UriFormat
-			ans.IptagPayload = o.Answer.Format.Iptag.Payload
-			if o.Answer.Format.Iptag.Headers != nil {
-				ans.raw["iptagh"] = util.CleanRawXml(o.Answer.Format.Iptag.Headers.Text)
-			}
-			if o.Answer.Format.Iptag.Params != nil {
-				ans.raw["iptagp"] = util.CleanRawXml(o.Answer.Format.Iptag.Params.Text)
-			}
-		}
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+	if o.Format != nil {
+		ans.Config = normalizePayloadFormat(o.Format.Config)
+		ans.System = normalizePayloadFormat(o.Format.System)
+		ans.Threat = normalizePayloadFormat(o.Format.Threat)
+		ans.Traffic = normalizePayloadFormat(o.Format.Traffic)
+		ans.HipMatch = normalizePayloadFormat(o.Format.HipMatch)
+		ans.Url = normalizePayloadFormat(o.Format.Url)
+		ans.Data = normalizePayloadFormat(o.Format.Data)
+		ans.Wildfire = normalizePayloadFormat(o.Format.Wildfire)
+		ans.Tunnel = normalizePayloadFormat(o.Format.Tunnel)
+		ans.UserId = normalizePayloadFormat(o.Format.UserId)
+		ans.Gtp = normalizePayloadFormat(o.Format.Gtp)
+		ans.Auth = normalizePayloadFormat(o.Format.Auth)
 	}
 
 	return ans
+}
+
+func normalizePayloadFormat(val *formatSpec) *PayloadFormat {
+	if val == nil {
+		return nil
+	}
+
+	ans := PayloadFormat{
+		Name:      val.Name,
+		UriFormat: val.UriFormat,
+		Payload:   val.Payload,
+	}
+
+	if val.Header != nil {
+		list := make([]Header, 0, len(val.Header.Entries))
+		for _, x := range val.Header.Entries {
+			list = append(list, Header{
+				Name:  x.Name,
+				Value: x.Value,
+			})
+		}
+		ans.Headers = list
+	}
+
+	if val.Parameter != nil {
+		list := make([]Parameter, 0, len(val.Parameter.Entries))
+		for _, x := range val.Parameter.Entries {
+			list = append(list, Parameter{
+				Name:  x.Name,
+				Value: x.Value,
+			})
+		}
+		ans.Parameters = list
+	}
+
+	return &ans
 }
 
 type entry_v1 struct {
-	XMLName         xml.Name     `xml:"entry"`
-	Name            string       `xml:"name,attr"`
-	TagRegistration string       `xml:"tag-registration"`
-	Format          *format_v1   `xml:"format"`
-	Server          *util.RawXml `xml:"server"`
+	XMLName         xml.Name    `xml:"entry"`
+	Name            string      `xml:"name,attr"`
+	TagRegistration string      `xml:"tag-registration"`
+	Server          *servers_v1 `xml:"server"`
+	Format          *format_v1  `xml:"format"`
+}
+
+type servers_v1 struct {
+	Entries []serverEntry_v1 `xml:"entry"`
+}
+
+type serverEntry_v1 struct {
+	Name       string `xml:"name,attr"`
+	Address    string `xml:"address"`
+	Protocol   string `xml:"protocol,omitempty"`
+	Port       int    `xml:"port,omitempty"`
+	HttpMethod string `xml:"http-method"`
+	Username   string `xml:"username,omitempty"`
+	Password   string `xml:"password,omitempty"`
 }
 
 type format_v1 struct {
@@ -643,245 +284,179 @@ type format_v1 struct {
 }
 
 type formatSpec struct {
-	Name      string       `xml:"name,omitempty"`
-	UriFormat string       `xml:"url-format,omitempty"`
-	Payload   string       `xml:"payload,omitempty"`
-	Headers   *util.RawXml `xml:"headers"`
-	Params    *util.RawXml `xml:"params"`
+	Name      string   `xml:"name,omitempty"`
+	UriFormat string   `xml:"url-format,omitempty"`
+	Payload   string   `xml:"payload,omitempty"`
+	Header    *headers `xml:"headers"`
+	Parameter *params  `xml:"params"`
+}
+
+type headers struct {
+	Entries []headerEntry `xml:"entry"`
+}
+
+type headerEntry struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value"`
+}
+
+type params struct {
+	Entries []paramEntry `xml:"entry"`
+}
+
+type paramEntry struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value"`
 }
 
 func specify_v1(e Entry) interface{} {
-	var hdr, prm string
-
 	ans := entry_v1{
 		Name:            e.Name,
 		TagRegistration: util.YesNo(e.TagRegistration),
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry_v1, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry_v1{
+				Name:       x.Name,
+				Address:    x.Address,
+				Protocol:   x.Protocol,
+				Port:       x.Port,
+				HttpMethod: x.HttpMethod,
+				Username:   x.Username,
+				Password:   x.Password,
+			})
+		}
+		ans.Server = &servers_v1{Entries: list}
 	}
 
-	f := format_v1{}
-	hasData := false
-
-	hdr = e.raw["configh"]
-	prm = e.raw["configp"]
-	if e.ConfigName != "" || e.ConfigUriFormat != "" || e.ConfigPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Config = &formatSpec{
-			Name:      e.ConfigName,
-			UriFormat: e.ConfigUriFormat,
-			Payload:   e.ConfigPayload,
-		}
-		if hdr != "" {
-			f.Config.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Config.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["systemh"]
-	prm = e.raw["systemp"]
-	if e.SystemName != "" || e.SystemUriFormat != "" || e.SystemPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.System = &formatSpec{
-			Name:      e.SystemName,
-			UriFormat: e.SystemUriFormat,
-			Payload:   e.SystemPayload,
-		}
-		if hdr != "" {
-			f.System.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.System.Params = &util.RawXml{prm}
+	if e.Config != nil || e.System != nil || e.Threat != nil || e.Traffic != nil || e.HipMatch != nil || e.Url != nil || e.Data != nil || e.Wildfire != nil || e.Tunnel != nil || e.UserId != nil || e.Gtp != nil || e.Auth != nil {
+		ans.Format = &format_v1{
+			Config:   specifyPayloadFormat(e.Config),
+			System:   specifyPayloadFormat(e.System),
+			Threat:   specifyPayloadFormat(e.Threat),
+			Traffic:  specifyPayloadFormat(e.Traffic),
+			HipMatch: specifyPayloadFormat(e.HipMatch),
+			Url:      specifyPayloadFormat(e.Url),
+			Data:     specifyPayloadFormat(e.Data),
+			Wildfire: specifyPayloadFormat(e.Wildfire),
+			Tunnel:   specifyPayloadFormat(e.Tunnel),
+			UserId:   specifyPayloadFormat(e.UserId),
+			Gtp:      specifyPayloadFormat(e.Gtp),
+			Auth:     specifyPayloadFormat(e.Auth),
 		}
 	}
 
-	hdr = e.raw["threath"]
-	prm = e.raw["threatp"]
-	if e.ThreatName != "" || e.ThreatUriFormat != "" || e.ThreatPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Threat = &formatSpec{
-			Name:      e.ThreatName,
-			UriFormat: e.ThreatUriFormat,
-			Payload:   e.ThreatPayload,
-		}
-		if hdr != "" {
-			f.Threat.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Threat.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+func specifyPayloadFormat(val *PayloadFormat) *formatSpec {
+	if val == nil {
+		return nil
 	}
 
-	hdr = e.raw["traffich"]
-	prm = e.raw["trafficp"]
-	if e.TrafficName != "" || e.TrafficUriFormat != "" || e.TrafficPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Traffic = &formatSpec{
-			Name:      e.TrafficName,
-			UriFormat: e.TrafficUriFormat,
-			Payload:   e.TrafficPayload,
-		}
-		if hdr != "" {
-			f.Traffic.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Traffic.Params = &util.RawXml{prm}
-		}
+	ans := formatSpec{
+		Name:      val.Name,
+		UriFormat: val.UriFormat,
+		Payload:   val.Payload,
 	}
 
-	hdr = e.raw["hipmatchh"]
-	prm = e.raw["hipmatchp"]
-	if e.HipMatchName != "" || e.HipMatchUriFormat != "" || e.HipMatchPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.HipMatch = &formatSpec{
-			Name:      e.HipMatchName,
-			UriFormat: e.HipMatchUriFormat,
-			Payload:   e.HipMatchPayload,
+	if len(val.Headers) > 0 {
+		list := make([]headerEntry, 0, len(val.Headers))
+		for _, x := range val.Headers {
+			list = append(list, headerEntry{
+				Name:  x.Name,
+				Value: x.Value,
+			})
 		}
-		if hdr != "" {
-			f.HipMatch.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.HipMatch.Params = &util.RawXml{prm}
-		}
+		ans.Header = &headers{Entries: list}
 	}
 
-	hdr = e.raw["urlh"]
-	prm = e.raw["urlp"]
-	if e.UrlName != "" || e.UrlUriFormat != "" || e.UrlPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Url = &formatSpec{
-			Name:      e.UrlName,
-			UriFormat: e.UrlUriFormat,
-			Payload:   e.UrlPayload,
+	if len(val.Parameters) > 0 {
+		list := make([]paramEntry, 0, len(val.Parameters))
+		for _, x := range val.Parameters {
+			list = append(list, paramEntry{
+				Name:  x.Name,
+				Value: x.Value,
+			})
 		}
-		if hdr != "" {
-			f.Url.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Url.Params = &util.RawXml{prm}
-		}
+		ans.Parameter = &params{Entries: list}
 	}
 
-	hdr = e.raw["datah"]
-	prm = e.raw["datap"]
-	if e.DataName != "" || e.DataUriFormat != "" || e.DataPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Data = &formatSpec{
-			Name:      e.DataName,
-			UriFormat: e.DataUriFormat,
-			Payload:   e.DataPayload,
-		}
-		if hdr != "" {
-			f.Data.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Data.Params = &util.RawXml{prm}
-		}
+	return &ans
+}
+
+// PAN-OS 8.1
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	hdr = e.raw["wildfireh"]
-	prm = e.raw["wildfirep"]
-	if e.WildfireName != "" || e.WildfireUriFormat != "" || e.WildfirePayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Wildfire = &formatSpec{
-			Name:      e.WildfireName,
-			UriFormat: e.WildfireUriFormat,
-			Payload:   e.WildfirePayload,
-		}
-		if hdr != "" {
-			f.Wildfire.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Wildfire.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+func (o container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
-	hdr = e.raw["tunnelh"]
-	prm = e.raw["tunnelp"]
-	if e.TunnelName != "" || e.TunnelUriFormat != "" || e.TunnelPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Tunnel = &formatSpec{
-			Name:      e.TunnelName,
-			UriFormat: e.TunnelUriFormat,
-			Payload:   e.TunnelPayload,
-		}
-		if hdr != "" {
-			f.Tunnel.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Tunnel.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:            o.Name,
+		TagRegistration: util.AsBool(o.TagRegistration),
 	}
 
-	hdr = e.raw["useridh"]
-	prm = e.raw["useridp"]
-	if e.UserIdName != "" || e.UserIdUriFormat != "" || e.UserIdPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.UserId = &formatSpec{
-			Name:      e.UserIdName,
-			UriFormat: e.UserIdUriFormat,
-			Payload:   e.UserIdPayload,
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:       x.Name,
+				Address:    x.Address,
+				Protocol:   x.Protocol,
+				Port:       x.Port,
+				HttpMethod: x.HttpMethod,
+				Username:   x.Username,
+				Password:   x.Password,
+			})
 		}
-		if hdr != "" {
-			f.UserId.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.UserId.Params = &util.RawXml{prm}
-		}
+		ans.Servers = list
 	}
 
-	hdr = e.raw["gtph"]
-	prm = e.raw["gtpp"]
-	if e.GtpName != "" || e.GtpUriFormat != "" || e.GtpPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Gtp = &formatSpec{
-			Name:      e.GtpName,
-			UriFormat: e.GtpUriFormat,
-			Payload:   e.GtpPayload,
-		}
-		if hdr != "" {
-			f.Gtp.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Gtp.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["authh"]
-	prm = e.raw["authp"]
-	if e.AuthName != "" || e.AuthUriFormat != "" || e.AuthPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Auth = &formatSpec{
-			Name:      e.AuthName,
-			UriFormat: e.AuthUriFormat,
-			Payload:   e.AuthPayload,
-		}
-		if hdr != "" {
-			f.Auth.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Auth.Params = &util.RawXml{prm}
-		}
-	}
-
-	if hasData {
-		ans.Format = &f
+	if o.Format != nil {
+		ans.Config = normalizePayloadFormat(o.Format.Config)
+		ans.System = normalizePayloadFormat(o.Format.System)
+		ans.Threat = normalizePayloadFormat(o.Format.Threat)
+		ans.Traffic = normalizePayloadFormat(o.Format.Traffic)
+		ans.HipMatch = normalizePayloadFormat(o.Format.HipMatch)
+		ans.Url = normalizePayloadFormat(o.Format.Url)
+		ans.Data = normalizePayloadFormat(o.Format.Data)
+		ans.Wildfire = normalizePayloadFormat(o.Format.Wildfire)
+		ans.Tunnel = normalizePayloadFormat(o.Format.Tunnel)
+		ans.UserId = normalizePayloadFormat(o.Format.UserId)
+		ans.Gtp = normalizePayloadFormat(o.Format.Gtp)
+		ans.Auth = normalizePayloadFormat(o.Format.Auth)
+		ans.Sctp = normalizePayloadFormat(o.Format.Sctp)
 	}
 
 	return ans
 }
 
 type entry_v2 struct {
-	XMLName         xml.Name     `xml:"entry"`
-	Name            string       `xml:"name,attr"`
-	TagRegistration string       `xml:"tag-registration"`
-	Format          *format_v2   `xml:"format"`
-	Server          *util.RawXml `xml:"server"`
+	XMLName         xml.Name    `xml:"entry"`
+	Name            string      `xml:"name,attr"`
+	TagRegistration string      `xml:"tag-registration"`
+	Format          *format_v2  `xml:"format"`
+	Server          *servers_v1 `xml:"server"`
 }
 
 type format_v2 struct {
@@ -901,254 +476,151 @@ type format_v2 struct {
 }
 
 func specify_v2(e Entry) interface{} {
-	var hdr, prm string
-
 	ans := entry_v2{
 		Name:            e.Name,
 		TagRegistration: util.YesNo(e.TagRegistration),
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry_v1, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry_v1{
+				Name:       x.Name,
+				Address:    x.Address,
+				Protocol:   x.Protocol,
+				Port:       x.Port,
+				HttpMethod: x.HttpMethod,
+				Username:   x.Username,
+				Password:   x.Password,
+			})
+		}
+		ans.Server = &servers_v1{Entries: list}
 	}
 
-	f := format_v2{}
-	hasData := false
-
-	hdr = e.raw["configh"]
-	prm = e.raw["configp"]
-	if e.ConfigName != "" || e.ConfigUriFormat != "" || e.ConfigPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Config = &formatSpec{
-			Name:      e.ConfigName,
-			UriFormat: e.ConfigUriFormat,
-			Payload:   e.ConfigPayload,
-		}
-		if hdr != "" {
-			f.Config.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Config.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["systemh"]
-	prm = e.raw["systemp"]
-	if e.SystemName != "" || e.SystemUriFormat != "" || e.SystemPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.System = &formatSpec{
-			Name:      e.SystemName,
-			UriFormat: e.SystemUriFormat,
-			Payload:   e.SystemPayload,
-		}
-		if hdr != "" {
-			f.System.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.System.Params = &util.RawXml{prm}
+	if e.Config != nil || e.System != nil || e.Threat != nil || e.Traffic != nil || e.HipMatch != nil || e.Url != nil || e.Data != nil || e.Wildfire != nil || e.Tunnel != nil || e.UserId != nil || e.Gtp != nil || e.Auth != nil || e.Sctp != nil {
+		ans.Format = &format_v2{
+			Config:   specifyPayloadFormat(e.Config),
+			System:   specifyPayloadFormat(e.System),
+			Threat:   specifyPayloadFormat(e.Threat),
+			Traffic:  specifyPayloadFormat(e.Traffic),
+			HipMatch: specifyPayloadFormat(e.HipMatch),
+			Url:      specifyPayloadFormat(e.Url),
+			Data:     specifyPayloadFormat(e.Data),
+			Wildfire: specifyPayloadFormat(e.Wildfire),
+			Tunnel:   specifyPayloadFormat(e.Tunnel),
+			UserId:   specifyPayloadFormat(e.UserId),
+			Gtp:      specifyPayloadFormat(e.Gtp),
+			Auth:     specifyPayloadFormat(e.Auth),
+			Sctp:     specifyPayloadFormat(e.Sctp),
 		}
 	}
 
-	hdr = e.raw["threath"]
-	prm = e.raw["threatp"]
-	if e.ThreatName != "" || e.ThreatUriFormat != "" || e.ThreatPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Threat = &formatSpec{
-			Name:      e.ThreatName,
-			UriFormat: e.ThreatUriFormat,
-			Payload:   e.ThreatPayload,
-		}
-		if hdr != "" {
-			f.Threat.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Threat.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+// PAN-OS 9.0
+type container_v3 struct {
+	Answer []entry_v3 `xml:"entry"`
+}
+
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	hdr = e.raw["traffich"]
-	prm = e.raw["trafficp"]
-	if e.TrafficName != "" || e.TrafficUriFormat != "" || e.TrafficPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Traffic = &formatSpec{
-			Name:      e.TrafficName,
-			UriFormat: e.TrafficUriFormat,
-			Payload:   e.TrafficPayload,
-		}
-		if hdr != "" {
-			f.Traffic.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Traffic.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+func (o container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
-	hdr = e.raw["hipmatchh"]
-	prm = e.raw["hipmatchp"]
-	if e.HipMatchName != "" || e.HipMatchUriFormat != "" || e.HipMatchPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.HipMatch = &formatSpec{
-			Name:      e.HipMatchName,
-			UriFormat: e.HipMatchUriFormat,
-			Payload:   e.HipMatchPayload,
-		}
-		if hdr != "" {
-			f.HipMatch.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.HipMatch.Params = &util.RawXml{prm}
-		}
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name:            o.Name,
+		TagRegistration: util.AsBool(o.TagRegistration),
 	}
 
-	hdr = e.raw["urlh"]
-	prm = e.raw["urlp"]
-	if e.UrlName != "" || e.UrlUriFormat != "" || e.UrlPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Url = &formatSpec{
-			Name:      e.UrlName,
-			UriFormat: e.UrlUriFormat,
-			Payload:   e.UrlPayload,
+	if o.Server != nil {
+		list := make([]Server, 0, len(o.Server.Entries))
+		for _, x := range o.Server.Entries {
+			list = append(list, Server{
+				Name:               x.Name,
+				Address:            x.Address,
+				Protocol:           x.Protocol,
+				Port:               x.Port,
+				HttpMethod:         x.HttpMethod,
+				Username:           x.Username,
+				Password:           x.Password,
+				TlsVersion:         x.TlsVersion,
+				CertificateProfile: x.CertificateProfile,
+			})
 		}
-		if hdr != "" {
-			f.Url.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Url.Params = &util.RawXml{prm}
-		}
+		ans.Servers = list
 	}
 
-	hdr = e.raw["datah"]
-	prm = e.raw["datap"]
-	if e.DataName != "" || e.DataUriFormat != "" || e.DataPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Data = &formatSpec{
-			Name:      e.DataName,
-			UriFormat: e.DataUriFormat,
-			Payload:   e.DataPayload,
-		}
-		if hdr != "" {
-			f.Data.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Data.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["wildfireh"]
-	prm = e.raw["wildfirep"]
-	if e.WildfireName != "" || e.WildfireUriFormat != "" || e.WildfirePayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Wildfire = &formatSpec{
-			Name:      e.WildfireName,
-			UriFormat: e.WildfireUriFormat,
-			Payload:   e.WildfirePayload,
-		}
-		if hdr != "" {
-			f.Wildfire.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Wildfire.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["tunnelh"]
-	prm = e.raw["tunnelp"]
-	if e.TunnelName != "" || e.TunnelUriFormat != "" || e.TunnelPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Tunnel = &formatSpec{
-			Name:      e.TunnelName,
-			UriFormat: e.TunnelUriFormat,
-			Payload:   e.TunnelPayload,
-		}
-		if hdr != "" {
-			f.Tunnel.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Tunnel.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["useridh"]
-	prm = e.raw["useridp"]
-	if e.UserIdName != "" || e.UserIdUriFormat != "" || e.UserIdPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.UserId = &formatSpec{
-			Name:      e.UserIdName,
-			UriFormat: e.UserIdUriFormat,
-			Payload:   e.UserIdPayload,
-		}
-		if hdr != "" {
-			f.UserId.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.UserId.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["gtph"]
-	prm = e.raw["gtpp"]
-	if e.GtpName != "" || e.GtpUriFormat != "" || e.GtpPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Gtp = &formatSpec{
-			Name:      e.GtpName,
-			UriFormat: e.GtpUriFormat,
-			Payload:   e.GtpPayload,
-		}
-		if hdr != "" {
-			f.Gtp.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Gtp.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["authh"]
-	prm = e.raw["authp"]
-	if e.AuthName != "" || e.AuthUriFormat != "" || e.AuthPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Auth = &formatSpec{
-			Name:      e.AuthName,
-			UriFormat: e.AuthUriFormat,
-			Payload:   e.AuthPayload,
-		}
-		if hdr != "" {
-			f.Auth.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Auth.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["sctph"]
-	prm = e.raw["sctpp"]
-	if e.SctpName != "" || e.SctpUriFormat != "" || e.SctpPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Sctp = &formatSpec{
-			Name:      e.SctpName,
-			UriFormat: e.SctpUriFormat,
-			Payload:   e.SctpPayload,
-		}
-		if hdr != "" {
-			f.Sctp.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Sctp.Params = &util.RawXml{prm}
-		}
-	}
-
-	if hasData {
-		ans.Format = &f
+	if o.Format != nil {
+		ans.Config = normalizePayloadFormat(o.Format.Config)
+		ans.System = normalizePayloadFormat(o.Format.System)
+		ans.Threat = normalizePayloadFormat(o.Format.Threat)
+		ans.Traffic = normalizePayloadFormat(o.Format.Traffic)
+		ans.HipMatch = normalizePayloadFormat(o.Format.HipMatch)
+		ans.Url = normalizePayloadFormat(o.Format.Url)
+		ans.Data = normalizePayloadFormat(o.Format.Data)
+		ans.Wildfire = normalizePayloadFormat(o.Format.Wildfire)
+		ans.Tunnel = normalizePayloadFormat(o.Format.Tunnel)
+		ans.UserId = normalizePayloadFormat(o.Format.UserId)
+		ans.Gtp = normalizePayloadFormat(o.Format.Gtp)
+		ans.Auth = normalizePayloadFormat(o.Format.Auth)
+		ans.Sctp = normalizePayloadFormat(o.Format.Sctp)
+		ans.Iptag = normalizePayloadFormat(o.Format.Iptag)
 	}
 
 	return ans
 }
 
 type entry_v3 struct {
-	XMLName         xml.Name     `xml:"entry"`
-	Name            string       `xml:"name,attr"`
-	TagRegistration string       `xml:"tag-registration"`
-	Format          *format_v3   `xml:"format"`
-	Server          *util.RawXml `xml:"server"`
+	XMLName         xml.Name    `xml:"entry"`
+	Name            string      `xml:"name,attr"`
+	TagRegistration string      `xml:"tag-registration"`
+	Format          *format_v3  `xml:"format"`
+	Server          *servers_v2 `xml:"server"`
+}
+
+type servers_v2 struct {
+	Entries []serverEntry_v2 `xml:"entry"`
+}
+
+type serverEntry_v2 struct {
+	XMLName            xml.Name `xml:"entry"`
+	Name               string   `xml:"name,attr"`
+	Address            string   `xml:"address"`
+	Protocol           string   `xml:"protocol,omitempty"`
+	Port               int      `xml:"port,omitempty"`
+	HttpMethod         string   `xml:"http-method"`
+	Username           string   `xml:"username,omitempty"`
+	Password           string   `xml:"password,omitempty"`
+	TlsVersion         string   `xml:"tls-version,omitempty"`
+	CertificateProfile string   `xml:"certificate-profile,omitempty"`
+}
+
+func (e *serverEntry_v2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type local serverEntry_v2
+	ans := local{
+		TlsVersion:         "1.2",
+		CertificateProfile: "None",
+	}
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+	*e = serverEntry_v2(ans)
+	return nil
 }
 
 type format_v3 struct {
@@ -1169,260 +641,46 @@ type format_v3 struct {
 }
 
 func specify_v3(e Entry) interface{} {
-	var hdr, prm string
-
 	ans := entry_v3{
 		Name:            e.Name,
 		TagRegistration: util.YesNo(e.TagRegistration),
 	}
 
-	if text := e.raw["srv"]; text != "" {
-		ans.Server = &util.RawXml{text}
+	if len(e.Servers) > 0 {
+		list := make([]serverEntry_v2, 0, len(e.Servers))
+		for _, x := range e.Servers {
+			list = append(list, serverEntry_v2{
+				Name:               x.Name,
+				Address:            x.Address,
+				Protocol:           x.Protocol,
+				Port:               x.Port,
+				HttpMethod:         x.HttpMethod,
+				Username:           x.Username,
+				Password:           x.Password,
+				TlsVersion:         x.TlsVersion,
+				CertificateProfile: x.CertificateProfile,
+			})
+		}
+		ans.Server = &servers_v2{Entries: list}
 	}
 
-	f := format_v3{}
-	hasData := false
-
-	hdr = e.raw["configh"]
-	prm = e.raw["configp"]
-	if e.ConfigName != "" || e.ConfigUriFormat != "" || e.ConfigPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Config = &formatSpec{
-			Name:      e.ConfigName,
-			UriFormat: e.ConfigUriFormat,
-			Payload:   e.ConfigPayload,
+	if e.Config != nil || e.System != nil || e.Threat != nil || e.Traffic != nil || e.HipMatch != nil || e.Url != nil || e.Data != nil || e.Wildfire != nil || e.Tunnel != nil || e.UserId != nil || e.Gtp != nil || e.Auth != nil || e.Sctp != nil || e.Iptag != nil {
+		ans.Format = &format_v3{
+			Config:   specifyPayloadFormat(e.Config),
+			System:   specifyPayloadFormat(e.System),
+			Threat:   specifyPayloadFormat(e.Threat),
+			Traffic:  specifyPayloadFormat(e.Traffic),
+			HipMatch: specifyPayloadFormat(e.HipMatch),
+			Url:      specifyPayloadFormat(e.Url),
+			Data:     specifyPayloadFormat(e.Data),
+			Wildfire: specifyPayloadFormat(e.Wildfire),
+			Tunnel:   specifyPayloadFormat(e.Tunnel),
+			UserId:   specifyPayloadFormat(e.UserId),
+			Gtp:      specifyPayloadFormat(e.Gtp),
+			Auth:     specifyPayloadFormat(e.Auth),
+			Sctp:     specifyPayloadFormat(e.Sctp),
+			Iptag:    specifyPayloadFormat(e.Iptag),
 		}
-		if hdr != "" {
-			f.Config.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Config.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["systemh"]
-	prm = e.raw["systemp"]
-	if e.SystemName != "" || e.SystemUriFormat != "" || e.SystemPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.System = &formatSpec{
-			Name:      e.SystemName,
-			UriFormat: e.SystemUriFormat,
-			Payload:   e.SystemPayload,
-		}
-		if hdr != "" {
-			f.System.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.System.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["threath"]
-	prm = e.raw["threatp"]
-	if e.ThreatName != "" || e.ThreatUriFormat != "" || e.ThreatPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Threat = &formatSpec{
-			Name:      e.ThreatName,
-			UriFormat: e.ThreatUriFormat,
-			Payload:   e.ThreatPayload,
-		}
-		if hdr != "" {
-			f.Threat.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Threat.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["traffich"]
-	prm = e.raw["trafficp"]
-	if e.TrafficName != "" || e.TrafficUriFormat != "" || e.TrafficPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Traffic = &formatSpec{
-			Name:      e.TrafficName,
-			UriFormat: e.TrafficUriFormat,
-			Payload:   e.TrafficPayload,
-		}
-		if hdr != "" {
-			f.Traffic.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Traffic.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["hipmatchh"]
-	prm = e.raw["hipmatchp"]
-	if e.HipMatchName != "" || e.HipMatchUriFormat != "" || e.HipMatchPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.HipMatch = &formatSpec{
-			Name:      e.HipMatchName,
-			UriFormat: e.HipMatchUriFormat,
-			Payload:   e.HipMatchPayload,
-		}
-		if hdr != "" {
-			f.HipMatch.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.HipMatch.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["urlh"]
-	prm = e.raw["urlp"]
-	if e.UrlName != "" || e.UrlUriFormat != "" || e.UrlPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Url = &formatSpec{
-			Name:      e.UrlName,
-			UriFormat: e.UrlUriFormat,
-			Payload:   e.UrlPayload,
-		}
-		if hdr != "" {
-			f.Url.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Url.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["datah"]
-	prm = e.raw["datap"]
-	if e.DataName != "" || e.DataUriFormat != "" || e.DataPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Data = &formatSpec{
-			Name:      e.DataName,
-			UriFormat: e.DataUriFormat,
-			Payload:   e.DataPayload,
-		}
-		if hdr != "" {
-			f.Data.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Data.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["wildfireh"]
-	prm = e.raw["wildfirep"]
-	if e.WildfireName != "" || e.WildfireUriFormat != "" || e.WildfirePayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Wildfire = &formatSpec{
-			Name:      e.WildfireName,
-			UriFormat: e.WildfireUriFormat,
-			Payload:   e.WildfirePayload,
-		}
-		if hdr != "" {
-			f.Wildfire.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Wildfire.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["tunnelh"]
-	prm = e.raw["tunnelp"]
-	if e.TunnelName != "" || e.TunnelUriFormat != "" || e.TunnelPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Tunnel = &formatSpec{
-			Name:      e.TunnelName,
-			UriFormat: e.TunnelUriFormat,
-			Payload:   e.TunnelPayload,
-		}
-		if hdr != "" {
-			f.Tunnel.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Tunnel.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["useridh"]
-	prm = e.raw["useridp"]
-	if e.UserIdName != "" || e.UserIdUriFormat != "" || e.UserIdPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.UserId = &formatSpec{
-			Name:      e.UserIdName,
-			UriFormat: e.UserIdUriFormat,
-			Payload:   e.UserIdPayload,
-		}
-		if hdr != "" {
-			f.UserId.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.UserId.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["gtph"]
-	prm = e.raw["gtpp"]
-	if e.GtpName != "" || e.GtpUriFormat != "" || e.GtpPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Gtp = &formatSpec{
-			Name:      e.GtpName,
-			UriFormat: e.GtpUriFormat,
-			Payload:   e.GtpPayload,
-		}
-		if hdr != "" {
-			f.Gtp.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Gtp.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["authh"]
-	prm = e.raw["authp"]
-	if e.AuthName != "" || e.AuthUriFormat != "" || e.AuthPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Auth = &formatSpec{
-			Name:      e.AuthName,
-			UriFormat: e.AuthUriFormat,
-			Payload:   e.AuthPayload,
-		}
-		if hdr != "" {
-			f.Auth.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Auth.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["sctph"]
-	prm = e.raw["sctpp"]
-	if e.SctpName != "" || e.SctpUriFormat != "" || e.SctpPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Sctp = &formatSpec{
-			Name:      e.SctpName,
-			UriFormat: e.SctpUriFormat,
-			Payload:   e.SctpPayload,
-		}
-		if hdr != "" {
-			f.Sctp.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Sctp.Params = &util.RawXml{prm}
-		}
-	}
-
-	hdr = e.raw["iptagh"]
-	prm = e.raw["iptagp"]
-	if e.IptagName != "" || e.IptagUriFormat != "" || e.IptagPayload != "" || hdr != "" || prm != "" {
-		hasData = true
-		f.Iptag = &formatSpec{
-			Name:      e.IptagName,
-			UriFormat: e.IptagUriFormat,
-			Payload:   e.IptagPayload,
-		}
-		if hdr != "" {
-			f.Iptag.Headers = &util.RawXml{hdr}
-		}
-		if prm != "" {
-			f.Iptag.Params = &util.RawXml{prm}
-		}
-	}
-
-	if hasData {
-		ans.Format = &f
 	}
 
 	return ans

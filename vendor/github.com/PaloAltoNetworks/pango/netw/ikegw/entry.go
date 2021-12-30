@@ -4,41 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
-)
-
-const (
-	Ikev1          = "ikev1"
-	Ikev2          = "ikev2"
-	Ikev2Preferred = "ikev2-preferred"
-)
-
-const (
-	IdTypeIpAddress = "ipaddr"
-	IdTypeFqdn      = "fqdn"
-	IdTypeUfqdn     = "ufqdn"
-	IdTypeKeyId     = "keyid"
-	IdTypeDn        = "dn"
-)
-
-const (
-	PeerTypeIp      = "ip"
-	PeerTypeDynamic = "dynamic"
-	PeerTypeFqdn    = "fqdn"
-)
-
-const (
-	LocalTypeIp         = "ip"
-	LocalTypeFloatingIp = "floating-ip"
-)
-
-const (
-	AuthPreSharedKey = "pre-shared-key"
-	AuthCertificate  = "certificate"
-)
-
-const (
-	PeerIdCheckExact    = "exact"
-	PeerIdCheckWildcard = "wildcard"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an IKE gateway.
@@ -125,77 +91,101 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:      o.Answer.Name,
-		Version:   Ikev1,
-		Interface: o.Answer.LocalIp.Interface,
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.PeerIp.Dynamic != nil {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name:      o.Name,
+		Version:   Ikev1,
+		Interface: o.LocalIp.Interface,
+	}
+
+	if o.PeerIp.Dynamic != nil {
 		ans.PeerIpType = PeerTypeDynamic
 	} else {
 		ans.PeerIpType = PeerTypeIp
-		ans.PeerIpValue = o.Answer.PeerIp.Static
+		ans.PeerIpValue = o.PeerIp.Static
 	}
 
-	if o.Answer.PeerId != nil {
-		ans.PeerIdType = o.Answer.PeerId.PeerIdType
-		ans.PeerIdValue = o.Answer.PeerId.PeerIdValue
-		ans.PeerIdCheck = o.Answer.PeerId.PeerIdCheck
+	if o.PeerId != nil {
+		ans.PeerIdType = o.PeerId.PeerIdType
+		ans.PeerIdValue = o.PeerId.PeerIdValue
+		ans.PeerIdCheck = o.PeerId.PeerIdCheck
 	}
 
-	if o.Answer.LocalIp.StaticIp != "" {
+	if o.LocalIp.StaticIp != "" {
 		ans.LocalIpAddressType = LocalTypeIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
+		ans.LocalIpAddressValue = o.LocalIp.StaticIp
 	}
 
-	if o.Answer.LocalId != nil {
-		ans.LocalIdType = o.Answer.LocalId.LocalIdType
-		ans.LocalIdValue = o.Answer.LocalId.LocalIdValue
+	if o.LocalId != nil {
+		ans.LocalIdType = o.LocalId.LocalIdType
+		ans.LocalIdValue = o.LocalId.LocalIdValue
 	}
 
-	if o.Answer.PskAuth != nil {
+	if o.PskAuth != nil {
 		ans.AuthType = AuthPreSharedKey
-		ans.PreSharedKey = o.Answer.PskAuth.Key
-	} else if o.Answer.CAuth != nil {
+		ans.PreSharedKey = o.PskAuth.Key
+	} else if o.CAuth != nil {
 		ans.AuthType = AuthCertificate
-		ans.LocalCert = o.Answer.CAuth.LocalCert
-		ans.CertProfile = o.Answer.CAuth.CertProfile
-		ans.CertEnableStrictValidation = util.AsBool(o.Answer.CAuth.CertEnableStrictValidation)
-		ans.CertPermitPayloadMismatch = util.AsBool(o.Answer.CAuth.CertPermitPayloadMismatch)
+		ans.LocalCert = o.CAuth.LocalCert
+		ans.CertProfile = o.CAuth.CertProfile
+		ans.CertEnableStrictValidation = util.AsBool(o.CAuth.CertEnableStrictValidation)
+		ans.CertPermitPayloadMismatch = util.AsBool(o.CAuth.CertPermitPayloadMismatch)
 	}
 
-	if o.Answer.Proto != nil {
-		if o.Answer.Proto.Ikev1 != nil {
-			ans.Ikev1ExchangeMode = o.Answer.Proto.Ikev1.Ikev1ExchangeMode
-			ans.Ikev1CryptoProfile = o.Answer.Proto.Ikev1.Ikev1CryptoProfile
+	if o.Proto != nil {
+		if o.Proto.Ikev1 != nil {
+			ans.Ikev1ExchangeMode = o.Proto.Ikev1.Ikev1ExchangeMode
+			ans.Ikev1CryptoProfile = o.Proto.Ikev1.Ikev1CryptoProfile
 
-			if o.Answer.Proto.Ikev1.Dpd != nil {
-				ans.EnableDeadPeerDetection = util.AsBool(o.Answer.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
-				ans.DeadPeerDetectionInterval = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
-				ans.DeadPeerDetectionRetry = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
+			if o.Proto.Ikev1.Dpd != nil {
+				ans.EnableDeadPeerDetection = util.AsBool(o.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
+				ans.DeadPeerDetectionInterval = o.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
+				ans.DeadPeerDetectionRetry = o.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
 			}
 		}
 	}
 
-	if o.Answer.ProtoCommon != nil {
-		ans.EnablePassiveMode = util.AsBool(o.Answer.ProtoCommon.EnablePassiveMode)
-		if o.Answer.ProtoCommon.Nat != nil {
-			ans.EnableNatTraversal = util.AsBool(o.Answer.ProtoCommon.Nat.EnableNatTraversal)
-			ans.NatTraversalKeepAlive = o.Answer.ProtoCommon.Nat.NatTraversalKeepAlive
-			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.Answer.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
+	if o.ProtoCommon != nil {
+		ans.EnablePassiveMode = util.AsBool(o.ProtoCommon.EnablePassiveMode)
+		if o.ProtoCommon.Nat != nil {
+			ans.EnableNatTraversal = util.AsBool(o.ProtoCommon.Nat.EnableNatTraversal)
+			ans.NatTraversalKeepAlive = o.ProtoCommon.Nat.NatTraversalKeepAlive
+			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
 		}
-		if o.Answer.ProtoCommon.Frag != nil {
-			ans.EnableFragmentation = util.AsBool(o.Answer.ProtoCommon.Frag.EnableFragmentation)
+		if o.ProtoCommon.Frag != nil {
+			ans.EnableFragmentation = util.AsBool(o.ProtoCommon.Frag.EnableFragmentation)
 		}
 	}
 
@@ -203,90 +193,108 @@ func (o *container_v1) Normalize() Entry {
 }
 
 type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
+	Answer []entry_v2 `xml:"entry"`
 }
 
-func (o *container_v2) Normalize() Entry {
-	ans := Entry{
-		Name:       o.Answer.Name,
-		Interface:  o.Answer.LocalIp.Interface,
-		Disabled:   util.AsBool(o.Answer.Disabled),
-		EnableIpv6: util.AsBool(o.Answer.EnableIpv6),
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.PeerIp.Dynamic != nil {
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:       o.Name,
+		Interface:  o.LocalIp.Interface,
+		Disabled:   util.AsBool(o.Disabled),
+		EnableIpv6: util.AsBool(o.EnableIpv6),
+	}
+
+	if o.PeerIp.Dynamic != nil {
 		ans.PeerIpType = PeerTypeDynamic
 	} else {
 		ans.PeerIpType = PeerTypeIp
-		ans.PeerIpValue = o.Answer.PeerIp.Static
+		ans.PeerIpValue = o.PeerIp.Static
 	}
 
-	if o.Answer.PeerId != nil {
-		ans.PeerIdType = o.Answer.PeerId.PeerIdType
-		ans.PeerIdValue = o.Answer.PeerId.PeerIdValue
-		ans.PeerIdCheck = o.Answer.PeerId.PeerIdCheck
+	if o.PeerId != nil {
+		ans.PeerIdType = o.PeerId.PeerIdType
+		ans.PeerIdValue = o.PeerId.PeerIdValue
+		ans.PeerIdCheck = o.PeerId.PeerIdCheck
 	}
 
-	if o.Answer.LocalIp.StaticIp != "" {
+	if o.LocalIp.StaticIp != "" {
 		ans.LocalIpAddressType = LocalTypeIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
+		ans.LocalIpAddressValue = o.LocalIp.StaticIp
 	}
 
-	if o.Answer.LocalId != nil {
-		ans.LocalIdType = o.Answer.LocalId.LocalIdType
-		ans.LocalIdValue = o.Answer.LocalId.LocalIdValue
+	if o.LocalId != nil {
+		ans.LocalIdType = o.LocalId.LocalIdType
+		ans.LocalIdValue = o.LocalId.LocalIdValue
 	}
 
-	if o.Answer.PskAuth != nil {
+	if o.PskAuth != nil {
 		ans.AuthType = AuthPreSharedKey
-		ans.PreSharedKey = o.Answer.PskAuth.Key
-	} else if o.Answer.CAuth != nil {
+		ans.PreSharedKey = o.PskAuth.Key
+	} else if o.CAuth != nil {
 		ans.AuthType = AuthCertificate
-		ans.LocalCert = o.Answer.CAuth.CLocal.LocalCert
-		ans.CertProfile = o.Answer.CAuth.CertProfile
-		ans.CertEnableStrictValidation = util.AsBool(o.Answer.CAuth.CertEnableStrictValidation)
-		ans.CertPermitPayloadMismatch = util.AsBool(o.Answer.CAuth.CertPermitPayloadMismatch)
+		ans.LocalCert = o.CAuth.CLocal.LocalCert
+		ans.CertProfile = o.CAuth.CertProfile
+		ans.CertEnableStrictValidation = util.AsBool(o.CAuth.CertEnableStrictValidation)
+		ans.CertPermitPayloadMismatch = util.AsBool(o.CAuth.CertPermitPayloadMismatch)
 
-		if o.Answer.CAuth.CLocal.Hau != nil {
-			ans.CertEnableHashAndUrl = util.AsBool(o.Answer.CAuth.CLocal.Hau.CertEnableHashAndUrl)
-			ans.CertBaseUrl = o.Answer.CAuth.CLocal.Hau.CertBaseUrl
+		if o.CAuth.CLocal.Hau != nil {
+			ans.CertEnableHashAndUrl = util.AsBool(o.CAuth.CLocal.Hau.CertEnableHashAndUrl)
+			ans.CertBaseUrl = o.CAuth.CLocal.Hau.CertBaseUrl
 		}
 	}
 
-	if o.Answer.Proto != nil {
-		ans.Version = o.Answer.Proto.Version
+	if o.Proto != nil {
+		ans.Version = o.Proto.Version
 
-		if o.Answer.Proto.Ikev1 != nil {
-			ans.Ikev1ExchangeMode = o.Answer.Proto.Ikev1.Ikev1ExchangeMode
-			ans.Ikev1CryptoProfile = o.Answer.Proto.Ikev1.Ikev1CryptoProfile
+		if o.Proto.Ikev1 != nil {
+			ans.Ikev1ExchangeMode = o.Proto.Ikev1.Ikev1ExchangeMode
+			ans.Ikev1CryptoProfile = o.Proto.Ikev1.Ikev1CryptoProfile
 
-			if o.Answer.Proto.Ikev1.Dpd != nil {
-				ans.EnableDeadPeerDetection = util.AsBool(o.Answer.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
-				ans.DeadPeerDetectionInterval = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
-				ans.DeadPeerDetectionRetry = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
+			if o.Proto.Ikev1.Dpd != nil {
+				ans.EnableDeadPeerDetection = util.AsBool(o.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
+				ans.DeadPeerDetectionInterval = o.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
+				ans.DeadPeerDetectionRetry = o.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
 			}
 		}
 
-		if o.Answer.Proto.Ikev2 != nil {
-			ans.Ikev2CryptoProfile = o.Answer.Proto.Ikev2.Ikev2CryptoProfile
-			ans.Ikev2CookieValidation = util.AsBool(o.Answer.Proto.Ikev2.Ikev2CookieValidation)
+		if o.Proto.Ikev2 != nil {
+			ans.Ikev2CryptoProfile = o.Proto.Ikev2.Ikev2CryptoProfile
+			ans.Ikev2CookieValidation = util.AsBool(o.Proto.Ikev2.Ikev2CookieValidation)
 
-			if o.Answer.Proto.Ikev2.Dpd != nil {
-				ans.EnableLivenessCheck = util.AsBool(o.Answer.Proto.Ikev2.Dpd.EnableLivenessCheck)
-				ans.LivenessCheckInterval = o.Answer.Proto.Ikev2.Dpd.LivenessCheckInterval
+			if o.Proto.Ikev2.Dpd != nil {
+				ans.EnableLivenessCheck = util.AsBool(o.Proto.Ikev2.Dpd.EnableLivenessCheck)
+				ans.LivenessCheckInterval = o.Proto.Ikev2.Dpd.LivenessCheckInterval
 			}
 		}
 	}
 
-	if o.Answer.ProtoCommon != nil {
-		ans.EnablePassiveMode = util.AsBool(o.Answer.ProtoCommon.EnablePassiveMode)
-		if o.Answer.ProtoCommon.Nat != nil {
-			ans.EnableNatTraversal = util.AsBool(o.Answer.ProtoCommon.Nat.EnableNatTraversal)
-			ans.NatTraversalKeepAlive = o.Answer.ProtoCommon.Nat.NatTraversalKeepAlive
-			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.Answer.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
+	if o.ProtoCommon != nil {
+		ans.EnablePassiveMode = util.AsBool(o.ProtoCommon.EnablePassiveMode)
+		if o.ProtoCommon.Nat != nil {
+			ans.EnableNatTraversal = util.AsBool(o.ProtoCommon.Nat.EnableNatTraversal)
+			ans.NatTraversalKeepAlive = o.ProtoCommon.Nat.NatTraversalKeepAlive
+			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
 		}
-		if o.Answer.ProtoCommon.Frag != nil {
-			ans.EnableFragmentation = util.AsBool(o.Answer.ProtoCommon.Frag.EnableFragmentation)
+		if o.ProtoCommon.Frag != nil {
+			ans.EnableFragmentation = util.AsBool(o.ProtoCommon.Frag.EnableFragmentation)
 		}
 	}
 
@@ -294,95 +302,113 @@ func (o *container_v2) Normalize() Entry {
 }
 
 type container_v3 struct {
-	Answer entry_v3 `xml:"result>entry"`
+	Answer []entry_v3 `xml:"entry"`
 }
 
-func (o *container_v3) Normalize() Entry {
-	ans := Entry{
-		Name:       o.Answer.Name,
-		Interface:  o.Answer.LocalIp.Interface,
-		Disabled:   util.AsBool(o.Answer.Disabled),
-		EnableIpv6: util.AsBool(o.Answer.EnableIpv6),
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.PeerIp.Dynamic != nil {
+	return ans
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name:       o.Name,
+		Interface:  o.LocalIp.Interface,
+		Disabled:   util.AsBool(o.Disabled),
+		EnableIpv6: util.AsBool(o.EnableIpv6),
+	}
+
+	if o.PeerIp.Dynamic != nil {
 		ans.PeerIpType = PeerTypeDynamic
 	} else {
 		ans.PeerIpType = PeerTypeIp
-		ans.PeerIpValue = o.Answer.PeerIp.Static
+		ans.PeerIpValue = o.PeerIp.Static
 	}
 
-	if o.Answer.PeerId != nil {
-		ans.PeerIdType = o.Answer.PeerId.PeerIdType
-		ans.PeerIdValue = o.Answer.PeerId.PeerIdValue
-		ans.PeerIdCheck = o.Answer.PeerId.PeerIdCheck
+	if o.PeerId != nil {
+		ans.PeerIdType = o.PeerId.PeerIdType
+		ans.PeerIdValue = o.PeerId.PeerIdValue
+		ans.PeerIdCheck = o.PeerId.PeerIdCheck
 	}
 
-	if o.Answer.LocalIp.StaticIp != "" {
+	if o.LocalIp.StaticIp != "" {
 		ans.LocalIpAddressType = LocalTypeIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
+		ans.LocalIpAddressValue = o.LocalIp.StaticIp
 	}
 
-	if o.Answer.LocalIp.FloatingIp != "" {
+	if o.LocalIp.FloatingIp != "" {
 		ans.LocalIpAddressType = LocalTypeFloatingIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+		ans.LocalIpAddressValue = o.LocalIp.FloatingIp
 	}
 
-	if o.Answer.LocalId != nil {
-		ans.LocalIdType = o.Answer.LocalId.LocalIdType
-		ans.LocalIdValue = o.Answer.LocalId.LocalIdValue
+	if o.LocalId != nil {
+		ans.LocalIdType = o.LocalId.LocalIdType
+		ans.LocalIdValue = o.LocalId.LocalIdValue
 	}
 
-	if o.Answer.PskAuth != nil {
+	if o.PskAuth != nil {
 		ans.AuthType = AuthPreSharedKey
-		ans.PreSharedKey = o.Answer.PskAuth.Key
-	} else if o.Answer.CAuth != nil {
+		ans.PreSharedKey = o.PskAuth.Key
+	} else if o.CAuth != nil {
 		ans.AuthType = AuthCertificate
-		ans.LocalCert = o.Answer.CAuth.CLocal.LocalCert
-		ans.CertProfile = o.Answer.CAuth.CertProfile
-		ans.CertEnableStrictValidation = util.AsBool(o.Answer.CAuth.CertEnableStrictValidation)
-		ans.CertPermitPayloadMismatch = util.AsBool(o.Answer.CAuth.CertPermitPayloadMismatch)
+		ans.LocalCert = o.CAuth.CLocal.LocalCert
+		ans.CertProfile = o.CAuth.CertProfile
+		ans.CertEnableStrictValidation = util.AsBool(o.CAuth.CertEnableStrictValidation)
+		ans.CertPermitPayloadMismatch = util.AsBool(o.CAuth.CertPermitPayloadMismatch)
 
-		if o.Answer.CAuth.CLocal.Hau != nil {
-			ans.CertEnableHashAndUrl = util.AsBool(o.Answer.CAuth.CLocal.Hau.CertEnableHashAndUrl)
-			ans.CertBaseUrl = o.Answer.CAuth.CLocal.Hau.CertBaseUrl
+		if o.CAuth.CLocal.Hau != nil {
+			ans.CertEnableHashAndUrl = util.AsBool(o.CAuth.CLocal.Hau.CertEnableHashAndUrl)
+			ans.CertBaseUrl = o.CAuth.CLocal.Hau.CertBaseUrl
 		}
 	}
 
-	if o.Answer.Proto != nil {
-		ans.Version = o.Answer.Proto.Version
+	if o.Proto != nil {
+		ans.Version = o.Proto.Version
 
-		if o.Answer.Proto.Ikev1 != nil {
-			ans.Ikev1ExchangeMode = o.Answer.Proto.Ikev1.Ikev1ExchangeMode
-			ans.Ikev1CryptoProfile = o.Answer.Proto.Ikev1.Ikev1CryptoProfile
+		if o.Proto.Ikev1 != nil {
+			ans.Ikev1ExchangeMode = o.Proto.Ikev1.Ikev1ExchangeMode
+			ans.Ikev1CryptoProfile = o.Proto.Ikev1.Ikev1CryptoProfile
 
-			if o.Answer.Proto.Ikev1.Dpd != nil {
-				ans.EnableDeadPeerDetection = util.AsBool(o.Answer.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
-				ans.DeadPeerDetectionInterval = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
-				ans.DeadPeerDetectionRetry = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
+			if o.Proto.Ikev1.Dpd != nil {
+				ans.EnableDeadPeerDetection = util.AsBool(o.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
+				ans.DeadPeerDetectionInterval = o.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
+				ans.DeadPeerDetectionRetry = o.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
 			}
 		}
 
-		if o.Answer.Proto.Ikev2 != nil {
-			ans.Ikev2CryptoProfile = o.Answer.Proto.Ikev2.Ikev2CryptoProfile
-			ans.Ikev2CookieValidation = util.AsBool(o.Answer.Proto.Ikev2.Ikev2CookieValidation)
+		if o.Proto.Ikev2 != nil {
+			ans.Ikev2CryptoProfile = o.Proto.Ikev2.Ikev2CryptoProfile
+			ans.Ikev2CookieValidation = util.AsBool(o.Proto.Ikev2.Ikev2CookieValidation)
 
-			if o.Answer.Proto.Ikev2.Dpd != nil {
-				ans.EnableLivenessCheck = util.AsBool(o.Answer.Proto.Ikev2.Dpd.EnableLivenessCheck)
-				ans.LivenessCheckInterval = o.Answer.Proto.Ikev2.Dpd.LivenessCheckInterval
+			if o.Proto.Ikev2.Dpd != nil {
+				ans.EnableLivenessCheck = util.AsBool(o.Proto.Ikev2.Dpd.EnableLivenessCheck)
+				ans.LivenessCheckInterval = o.Proto.Ikev2.Dpd.LivenessCheckInterval
 			}
 		}
 	}
 
-	if o.Answer.ProtoCommon != nil {
-		ans.EnablePassiveMode = util.AsBool(o.Answer.ProtoCommon.EnablePassiveMode)
-		if o.Answer.ProtoCommon.Nat != nil {
-			ans.EnableNatTraversal = util.AsBool(o.Answer.ProtoCommon.Nat.EnableNatTraversal)
-			ans.NatTraversalKeepAlive = o.Answer.ProtoCommon.Nat.NatTraversalKeepAlive
-			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.Answer.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
+	if o.ProtoCommon != nil {
+		ans.EnablePassiveMode = util.AsBool(o.ProtoCommon.EnablePassiveMode)
+		if o.ProtoCommon.Nat != nil {
+			ans.EnableNatTraversal = util.AsBool(o.ProtoCommon.Nat.EnableNatTraversal)
+			ans.NatTraversalKeepAlive = o.ProtoCommon.Nat.NatTraversalKeepAlive
+			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
 		}
-		if o.Answer.ProtoCommon.Frag != nil {
-			ans.EnableFragmentation = util.AsBool(o.Answer.ProtoCommon.Frag.EnableFragmentation)
+		if o.ProtoCommon.Frag != nil {
+			ans.EnableFragmentation = util.AsBool(o.ProtoCommon.Frag.EnableFragmentation)
 		}
 	}
 
@@ -390,98 +416,116 @@ func (o *container_v3) Normalize() Entry {
 }
 
 type container_v4 struct {
-	Answer entry_v4 `xml:"result>entry"`
+	Answer []entry_v4 `xml:"entry"`
 }
 
-func (o *container_v4) Normalize() Entry {
-	ans := Entry{
-		Name:       o.Answer.Name,
-		Interface:  o.Answer.LocalIp.Interface,
-		Disabled:   util.AsBool(o.Answer.Disabled),
-		EnableIpv6: util.AsBool(o.Answer.EnableIpv6),
+func (o *container_v4) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.PeerIp.Dynamic != nil {
+	return ans
+}
+
+func (o *container_v4) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v4) normalize() Entry {
+	ans := Entry{
+		Name:       o.Name,
+		Interface:  o.LocalIp.Interface,
+		Disabled:   util.AsBool(o.Disabled),
+		EnableIpv6: util.AsBool(o.EnableIpv6),
+	}
+
+	if o.PeerIp.Dynamic != nil {
 		ans.PeerIpType = PeerTypeDynamic
-	} else if o.Answer.PeerIp.Fqdn != "" {
+	} else if o.PeerIp.Fqdn != "" {
 		ans.PeerIpType = PeerTypeFqdn
-		ans.PeerIpValue = o.Answer.PeerIp.Fqdn
+		ans.PeerIpValue = o.PeerIp.Fqdn
 	} else {
 		ans.PeerIpType = PeerTypeIp
-		ans.PeerIpValue = o.Answer.PeerIp.Static
+		ans.PeerIpValue = o.PeerIp.Static
 	}
 
-	if o.Answer.PeerId != nil {
-		ans.PeerIdType = o.Answer.PeerId.PeerIdType
-		ans.PeerIdValue = o.Answer.PeerId.PeerIdValue
-		ans.PeerIdCheck = o.Answer.PeerId.PeerIdCheck
+	if o.PeerId != nil {
+		ans.PeerIdType = o.PeerId.PeerIdType
+		ans.PeerIdValue = o.PeerId.PeerIdValue
+		ans.PeerIdCheck = o.PeerId.PeerIdCheck
 	}
 
-	if o.Answer.LocalIp.StaticIp != "" {
+	if o.LocalIp.StaticIp != "" {
 		ans.LocalIpAddressType = LocalTypeIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.StaticIp
+		ans.LocalIpAddressValue = o.LocalIp.StaticIp
 	}
 
-	if o.Answer.LocalIp.FloatingIp != "" {
+	if o.LocalIp.FloatingIp != "" {
 		ans.LocalIpAddressType = LocalTypeFloatingIp
-		ans.LocalIpAddressValue = o.Answer.LocalIp.FloatingIp
+		ans.LocalIpAddressValue = o.LocalIp.FloatingIp
 	}
 
-	if o.Answer.LocalId != nil {
-		ans.LocalIdType = o.Answer.LocalId.LocalIdType
-		ans.LocalIdValue = o.Answer.LocalId.LocalIdValue
+	if o.LocalId != nil {
+		ans.LocalIdType = o.LocalId.LocalIdType
+		ans.LocalIdValue = o.LocalId.LocalIdValue
 	}
 
-	if o.Answer.PskAuth != nil {
+	if o.PskAuth != nil {
 		ans.AuthType = AuthPreSharedKey
-		ans.PreSharedKey = o.Answer.PskAuth.Key
-	} else if o.Answer.CAuth != nil {
+		ans.PreSharedKey = o.PskAuth.Key
+	} else if o.CAuth != nil {
 		ans.AuthType = AuthCertificate
-		ans.LocalCert = o.Answer.CAuth.CLocal.LocalCert
-		ans.CertProfile = o.Answer.CAuth.CertProfile
-		ans.CertEnableStrictValidation = util.AsBool(o.Answer.CAuth.CertEnableStrictValidation)
-		ans.CertPermitPayloadMismatch = util.AsBool(o.Answer.CAuth.CertPermitPayloadMismatch)
+		ans.LocalCert = o.CAuth.CLocal.LocalCert
+		ans.CertProfile = o.CAuth.CertProfile
+		ans.CertEnableStrictValidation = util.AsBool(o.CAuth.CertEnableStrictValidation)
+		ans.CertPermitPayloadMismatch = util.AsBool(o.CAuth.CertPermitPayloadMismatch)
 
-		if o.Answer.CAuth.CLocal.Hau != nil {
-			ans.CertEnableHashAndUrl = util.AsBool(o.Answer.CAuth.CLocal.Hau.CertEnableHashAndUrl)
-			ans.CertBaseUrl = o.Answer.CAuth.CLocal.Hau.CertBaseUrl
+		if o.CAuth.CLocal.Hau != nil {
+			ans.CertEnableHashAndUrl = util.AsBool(o.CAuth.CLocal.Hau.CertEnableHashAndUrl)
+			ans.CertBaseUrl = o.CAuth.CLocal.Hau.CertBaseUrl
 		}
 	}
 
-	if o.Answer.Proto != nil {
-		ans.Version = o.Answer.Proto.Version
+	if o.Proto != nil {
+		ans.Version = o.Proto.Version
 
-		if o.Answer.Proto.Ikev1 != nil {
-			ans.Ikev1ExchangeMode = o.Answer.Proto.Ikev1.Ikev1ExchangeMode
-			ans.Ikev1CryptoProfile = o.Answer.Proto.Ikev1.Ikev1CryptoProfile
+		if o.Proto.Ikev1 != nil {
+			ans.Ikev1ExchangeMode = o.Proto.Ikev1.Ikev1ExchangeMode
+			ans.Ikev1CryptoProfile = o.Proto.Ikev1.Ikev1CryptoProfile
 
-			if o.Answer.Proto.Ikev1.Dpd != nil {
-				ans.EnableDeadPeerDetection = util.AsBool(o.Answer.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
-				ans.DeadPeerDetectionInterval = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
-				ans.DeadPeerDetectionRetry = o.Answer.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
+			if o.Proto.Ikev1.Dpd != nil {
+				ans.EnableDeadPeerDetection = util.AsBool(o.Proto.Ikev1.Dpd.EnableDeadPeerDetection)
+				ans.DeadPeerDetectionInterval = o.Proto.Ikev1.Dpd.DeadPeerDetectionInterval
+				ans.DeadPeerDetectionRetry = o.Proto.Ikev1.Dpd.DeadPeerDetectionRetry
 			}
 		}
 
-		if o.Answer.Proto.Ikev2 != nil {
-			ans.Ikev2CryptoProfile = o.Answer.Proto.Ikev2.Ikev2CryptoProfile
-			ans.Ikev2CookieValidation = util.AsBool(o.Answer.Proto.Ikev2.Ikev2CookieValidation)
+		if o.Proto.Ikev2 != nil {
+			ans.Ikev2CryptoProfile = o.Proto.Ikev2.Ikev2CryptoProfile
+			ans.Ikev2CookieValidation = util.AsBool(o.Proto.Ikev2.Ikev2CookieValidation)
 
-			if o.Answer.Proto.Ikev2.Dpd != nil {
-				ans.EnableLivenessCheck = util.AsBool(o.Answer.Proto.Ikev2.Dpd.EnableLivenessCheck)
-				ans.LivenessCheckInterval = o.Answer.Proto.Ikev2.Dpd.LivenessCheckInterval
+			if o.Proto.Ikev2.Dpd != nil {
+				ans.EnableLivenessCheck = util.AsBool(o.Proto.Ikev2.Dpd.EnableLivenessCheck)
+				ans.LivenessCheckInterval = o.Proto.Ikev2.Dpd.LivenessCheckInterval
 			}
 		}
 	}
 
-	if o.Answer.ProtoCommon != nil {
-		ans.EnablePassiveMode = util.AsBool(o.Answer.ProtoCommon.EnablePassiveMode)
-		if o.Answer.ProtoCommon.Nat != nil {
-			ans.EnableNatTraversal = util.AsBool(o.Answer.ProtoCommon.Nat.EnableNatTraversal)
-			ans.NatTraversalKeepAlive = o.Answer.ProtoCommon.Nat.NatTraversalKeepAlive
-			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.Answer.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
+	if o.ProtoCommon != nil {
+		ans.EnablePassiveMode = util.AsBool(o.ProtoCommon.EnablePassiveMode)
+		if o.ProtoCommon.Nat != nil {
+			ans.EnableNatTraversal = util.AsBool(o.ProtoCommon.Nat.EnableNatTraversal)
+			ans.NatTraversalKeepAlive = o.ProtoCommon.Nat.NatTraversalKeepAlive
+			ans.NatTraversalEnableUdpChecksum = util.AsBool(o.ProtoCommon.Nat.NatTraversalEnableUdpChecksum)
 		}
-		if o.Answer.ProtoCommon.Frag != nil {
-			ans.EnableFragmentation = util.AsBool(o.Answer.ProtoCommon.Frag.EnableFragmentation)
+		if o.ProtoCommon.Frag != nil {
+			ans.EnableFragmentation = util.AsBool(o.ProtoCommon.Frag.EnableFragmentation)
 		}
 	}
 

@@ -2,9 +2,13 @@ package account
 
 import (
 	"encoding/xml"
+
+	"github.com/PaloAltoNetworks/pango/plugin"
 )
 
 // Entry is a normalized, version independent representation of GCP account credentials.
+//
+// Note:  GCP Plugin v1.0
 type Entry struct {
 	Name                         string
 	Description                  string
@@ -17,34 +21,62 @@ type Entry struct {
 // Name field relates to the XPATH of this object, this field is not copied.
 func (o *Entry) Copy(s Entry) {
 	o.Description = s.Description
-	o.ServiceAccountCredentialType = s.ServiceAccountCredentialType
 	o.ProjectId = s.ProjectId
+	o.ServiceAccountCredentialType = s.ServiceAccountCredentialType
 	o.CredentialFile = s.CredentialFile
 }
 
 /** Structs / functions for this namespace. **/
 
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
+}
+
+func (o Entry) Specify(list []plugin.Info) (string, interface{}, error) {
+	_, fn, err := versioning(list)
+	if err != nil {
+		return o.Name, nil, err
+	}
+
+	return o.Name, fn(o), nil
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:        o.Answer.Name,
-		Description: o.Answer.Description,
-		ProjectId:   o.Answer.ProjectId,
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.Type.Gcp != nil {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name:        o.Name,
+		Description: o.Description,
+		ProjectId:   o.ProjectId,
+	}
+
+	if o.Type.Gcp != nil {
 		ans.ServiceAccountCredentialType = Project
-		ans.CredentialFile = o.Answer.Type.Gcp.CredentialFile
-	} else if o.Answer.Type.Gke != nil {
+		ans.CredentialFile = o.Type.Gcp.CredentialFile
+	} else if o.Type.Gke != nil {
 		ans.ServiceAccountCredentialType = Gke
-		ans.CredentialFile = o.Answer.Type.Gke.CredentialFile
+		ans.CredentialFile = o.Type.Gke.CredentialFile
 	}
 
 	return ans

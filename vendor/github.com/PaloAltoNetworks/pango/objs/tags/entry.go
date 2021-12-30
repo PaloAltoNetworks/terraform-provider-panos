@@ -3,55 +3,8 @@ package tags
 import (
 	"encoding/xml"
 	"fmt"
-)
 
-// These are the color constants you can use in Entry.SetColor().  Note that
-// each version of PANOS has added colors, so if you are looking for maximum
-// compatibility, only use the first 16 colors (17 including None).
-const (
-	None = iota
-	Red
-	Green
-	Blue
-	Yellow
-	Copper
-	Orange
-	Purple
-	Gray
-	LightGreen
-	Cyan
-	LightGray
-	BlueGray
-	Lime
-	Black
-	Gold
-	Brown
-	Olive
-	_
-	Maroon
-	RedOrange
-	YellowOrange
-	ForestGreen
-	TurquoiseBlue
-	AzureBlue
-	CeruleanBlue
-	MidnightBlue
-	MediumBlue
-	CobaltBlue
-	VioletBlue
-	BlueViolet
-	MediumViolet
-	MediumRose
-	Lavender
-	Orchid
-	Thistle
-	Peach
-	Salmon
-	Magenta
-	RedViolet
-	Mahogany
-	BurntSienna
-	Chestnut
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an
@@ -89,19 +42,43 @@ func (o *Entry) SetColor(v int) {
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:    o.Answer.Name,
-		Color:   o.Answer.Color,
-		Comment: o.Answer.Comment,
+		Name:    o.Name,
+		Color:   o.Color,
+		Comment: o.Comment,
 	}
 
 	return ans

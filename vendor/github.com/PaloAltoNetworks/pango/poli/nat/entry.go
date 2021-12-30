@@ -85,6 +85,8 @@ type Entry struct {
 	Targets                        map[string][]string
 	NegateTarget                   bool
 	Tags                           []string // ordered
+	Uuid                           string   // 9.0+
+	GroupTag                       string   // 9.0+
 }
 
 // Defaults sets params with uninitialized values to their GUI default setting.
@@ -128,23 +130,24 @@ func (o *Entry) Defaults() {
 }
 
 // Copy copies the information from source Entry `s` to this object.  As the
-// Name field relates to the XPATH of this object, this field is not copied.
+// Name and UUID fields relates to the identity of this object, this fields
+// are not copied.
 func (o *Entry) Copy(s Entry) {
 	o.Description = s.Description
 	o.Type = s.Type
-	o.SourceZones = s.SourceZones
+	o.SourceZones = util.CopyStringSlice(s.SourceZones)
 	o.DestinationZone = s.DestinationZone
 	o.ToInterface = s.ToInterface
 	o.Service = s.Service
-	o.SourceAddresses = s.SourceAddresses
-	o.DestinationAddresses = s.DestinationAddresses
+	o.SourceAddresses = util.CopyStringSlice(s.SourceAddresses)
+	o.DestinationAddresses = util.CopyStringSlice(s.DestinationAddresses)
 	o.SatType = s.SatType
 	o.SatAddressType = s.SatAddressType
-	o.SatTranslatedAddresses = s.SatTranslatedAddresses
+	o.SatTranslatedAddresses = util.CopyStringSlice(s.SatTranslatedAddresses)
 	o.SatInterface = s.SatInterface
 	o.SatIpAddress = s.SatIpAddress
 	o.SatFallbackType = s.SatFallbackType
-	o.SatFallbackTranslatedAddresses = s.SatFallbackTranslatedAddresses
+	o.SatFallbackTranslatedAddresses = util.CopyStringSlice(s.SatFallbackTranslatedAddresses)
 	o.SatFallbackInterface = s.SatFallbackInterface
 	o.SatFallbackIpType = s.SatFallbackIpType
 	o.SatFallbackIpAddress = s.SatFallbackIpAddress
@@ -153,11 +156,12 @@ func (o *Entry) Copy(s Entry) {
 	o.DatAddress = s.DatAddress
 	o.DatPort = s.DatPort
 	o.Disabled = s.Disabled
-	o.Targets = s.Targets
+	o.Targets = util.CopyTargets(s.Targets)
 	o.NegateTarget = s.NegateTarget
-	o.Tags = s.Tags
+	o.Tags = util.CopyStringSlice(s.Tags)
 	o.DatType = s.DatType
 	o.DatDynamicDistribution = s.DatDynamicDistribution
+	o.GroupTag = s.GroupTag
 }
 
 /** Structs / functions for normalization. **/
@@ -411,6 +415,7 @@ func specify_v1(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 8.1
 type container_v2 struct {
 	Answer []entry_v2 `xml:"entry"`
 }
@@ -531,6 +536,220 @@ type entry_v2 struct {
 func specify_v2(e Entry) interface{} {
 	ans := entry_v2{
 		Name:                 e.Name,
+		Description:          e.Description,
+		Type:                 e.Type,
+		SourceZones:          util.StrToMem(e.SourceZones),
+		DestinationZone:      e.DestinationZone,
+		ToInterface:          e.ToInterface,
+		Service:              e.Service,
+		SourceAddresses:      util.StrToMem(e.SourceAddresses),
+		DestinationAddresses: util.StrToMem(e.DestinationAddresses),
+		Disabled:             util.YesNo(e.Disabled),
+		Tags:                 util.StrToMem(e.Tags),
+	}
+
+	var sv *srcXlate
+	switch e.SatType {
+	case DynamicIpAndPort:
+		sv = &srcXlate{
+			Diap: &srcXlateDiap{},
+		}
+		switch e.SatAddressType {
+		case TranslatedAddress:
+			sv.Diap.TranslatedAddress = util.StrToMem(e.SatTranslatedAddresses)
+		case InterfaceAddress:
+			sv.Diap.InterfaceAddress = &srcXlateDiapIa{
+				Interface: e.SatInterface,
+				Ip:        e.SatIpAddress,
+			}
+		}
+	case DynamicIp:
+		sv = &srcXlate{
+			Di: &srcXlateDi{
+				TranslatedAddress: util.StrToMem(e.SatTranslatedAddresses),
+			},
+		}
+		switch e.SatFallbackType {
+		case InterfaceAddress:
+			sv.Di.Fallback = &fallback{
+				InterfaceAddress: &fallbackIface{
+					Interface: e.SatFallbackInterface,
+				},
+			}
+			switch e.SatFallbackIpType {
+			case Ip:
+				sv.Di.Fallback.InterfaceAddress.Ip = e.SatFallbackIpAddress
+			case FloatingIp:
+				sv.Di.Fallback.InterfaceAddress.FloatingIp = e.SatFallbackIpAddress
+			}
+		case TranslatedAddress:
+			sv.Di.Fallback = &fallback{TranslatedAddress: util.StrToMem(e.SatFallbackTranslatedAddresses)}
+		}
+	case StaticIp:
+		sv = &srcXlate{
+			Static: &srcXlateStatic{
+				e.SatStaticTranslatedAddress,
+				util.YesNo(e.SatStaticBiDirectional),
+			},
+		}
+	}
+	ans.Sat = sv
+
+	if e.DatType == DatTypeStatic {
+		if e.DatAddress != "" || e.DatPort != 0 {
+			ans.Dat = &dstXlate{
+				e.DatAddress,
+				e.DatPort,
+				"",
+			}
+		}
+	} else if e.DatType == DatTypeDynamic {
+		if e.DatAddress != "" || e.DatPort != 0 || e.DatDynamicDistribution != "" {
+			ans.DatDynamic = &dstXlate{
+				e.DatAddress,
+				e.DatPort,
+				e.DatDynamicDistribution,
+			}
+		}
+	}
+
+	if len(e.Targets) != 0 || e.NegateTarget {
+		ans.Target = &targetInfo{
+			Targets:      util.MapToVsysEnt(e.Targets),
+			NegateTarget: util.YesNo(e.NegateTarget),
+		}
+	}
+
+	return ans
+}
+
+// PAN-OS 9.0
+type container_v3 struct {
+	Answer []entry_v3 `xml:"entry"`
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name:                 o.Name,
+		Uuid:                 o.Uuid,
+		Description:          o.Description,
+		Type:                 o.Type,
+		SourceZones:          util.MemToStr(o.SourceZones),
+		DestinationZone:      o.DestinationZone,
+		ToInterface:          o.ToInterface,
+		Service:              o.Service,
+		SourceAddresses:      util.MemToStr(o.SourceAddresses),
+		DestinationAddresses: util.MemToStr(o.DestinationAddresses),
+		Disabled:             util.AsBool(o.Disabled),
+		Tags:                 util.MemToStr(o.Tags),
+		GroupTag:             o.GroupTag,
+	}
+
+	if o.Sat == nil {
+		ans.SatType = None
+	} else {
+		switch {
+		case o.Sat.Diap != nil:
+			ans.SatType = DynamicIpAndPort
+			if o.Sat.Diap.InterfaceAddress != nil {
+				ans.SatAddressType = InterfaceAddress
+				ans.SatInterface = o.Sat.Diap.InterfaceAddress.Interface
+				ans.SatIpAddress = o.Sat.Diap.InterfaceAddress.Ip
+			} else {
+				ans.SatAddressType = TranslatedAddress
+				ans.SatTranslatedAddresses = util.MemToStr(o.Sat.Diap.TranslatedAddress)
+			}
+		case o.Sat.Di != nil:
+			ans.SatType = DynamicIp
+			ans.SatTranslatedAddresses = util.MemToStr(o.Sat.Di.TranslatedAddress)
+			if o.Sat.Di.Fallback == nil {
+				ans.SatFallbackType = None
+			} else if o.Sat.Di.Fallback.TranslatedAddress != nil {
+				ans.SatFallbackType = TranslatedAddress
+				ans.SatFallbackTranslatedAddresses = util.MemToStr(o.Sat.Di.Fallback.TranslatedAddress)
+			} else if o.Sat.Di.Fallback.InterfaceAddress != nil {
+				ans.SatFallbackType = InterfaceAddress
+				ans.SatFallbackInterface = o.Sat.Di.Fallback.InterfaceAddress.Interface
+				if o.Sat.Di.Fallback.InterfaceAddress.Ip != "" {
+					ans.SatFallbackIpType = Ip
+					ans.SatFallbackIpAddress = o.Sat.Di.Fallback.InterfaceAddress.Ip
+				} else if o.Sat.Di.Fallback.InterfaceAddress.FloatingIp != "" {
+					ans.SatFallbackIpType = FloatingIp
+					ans.SatFallbackIpAddress = o.Sat.Di.Fallback.InterfaceAddress.FloatingIp
+				}
+			}
+		case o.Sat.Static != nil:
+			ans.SatType = StaticIp
+			ans.SatStaticTranslatedAddress = o.Sat.Static.Address
+			ans.SatStaticBiDirectional = util.AsBool(o.Sat.Static.BiDirectional)
+		}
+	}
+
+	if o.Dat != nil {
+		ans.DatType = DatTypeStatic
+		ans.DatAddress = o.Dat.Address
+		ans.DatPort = o.Dat.Port
+	}
+
+	if o.DatDynamic != nil {
+		ans.DatType = DatTypeDynamic
+		ans.DatAddress = o.DatDynamic.Address
+		ans.DatPort = o.DatDynamic.Port
+		ans.DatDynamicDistribution = o.DatDynamic.Distribution
+	}
+
+	if o.Target != nil {
+		ans.Targets = util.VsysEntToMap(o.Target.Targets)
+		ans.NegateTarget = util.AsBool(o.Target.NegateTarget)
+	}
+
+	return ans
+}
+
+type entry_v3 struct {
+	XMLName              xml.Name         `xml:"entry"`
+	Uuid                 string           `xml:"uuid,attr,omitempty"`
+	GroupTag             string           `xml:"group-tag,omitempty"`
+	Name                 string           `xml:"name,attr"`
+	Description          string           `xml:"description"`
+	Type                 string           `xml:"nat-type"`
+	SourceZones          *util.MemberType `xml:"from"`
+	DestinationZone      string           `xml:"to>member"`
+	ToInterface          string           `xml:"to-interface"`
+	Service              string           `xml:"service"`
+	SourceAddresses      *util.MemberType `xml:"source"`
+	DestinationAddresses *util.MemberType `xml:"destination"`
+	Sat                  *srcXlate        `xml:"source-translation"`
+	Dat                  *dstXlate        `xml:"destination-translation"`
+	DatDynamic           *dstXlate        `xml:"dynamic-destination-translation"`
+	Disabled             string           `xml:"disabled"`
+	Target               *targetInfo      `xml:"target"`
+	Tags                 *util.MemberType `xml:"tag"`
+}
+
+func specify_v3(e Entry) interface{} {
+	ans := entry_v3{
+		Name:                 e.Name,
+		Uuid:                 e.Uuid,
+		GroupTag:             e.GroupTag,
 		Description:          e.Description,
 		Type:                 e.Type,
 		SourceZones:          util.StrToMem(e.SourceZones),

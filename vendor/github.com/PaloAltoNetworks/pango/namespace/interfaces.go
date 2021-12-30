@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"github.com/PaloAltoNetworks/pango/plugin"
 	"github.com/PaloAltoNetworks/pango/version"
 )
 
@@ -37,4 +38,17 @@ type Specifier interface {
 // 3) a struct specific to this version PAN-OS representing the desired config
 type ImportSpecifier interface {
 	Specify(version.Number) (string, string, interface{})
+}
+
+/*
+PluginSpecifier is an object that has a Specify function given a list of plugins.
+
+There are three items returned:
+
+1) the unique name of this config element
+2) a struct specific to this version PAN-OS representing the desired config
+3) an error if there is a mismatch between the plugins installed and what is supported
+*/
+type PluginSpecifier interface {
+	Specify([]plugin.Info) (string, interface{}, error)
 }

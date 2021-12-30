@@ -2,6 +2,8 @@ package ipv4
 
 import (
 	"encoding/xml"
+
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of an interface
@@ -33,32 +35,56 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:   o.Answer.Name,
-		Local:  o.Answer.Local,
-		Remote: o.Answer.Remote,
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
-	if o.Answer.Protocol != nil {
-		if o.Answer.Protocol.Any != nil {
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
+	ans := Entry{
+		Name:   o.Name,
+		Local:  o.Local,
+		Remote: o.Remote,
+	}
+
+	if o.Protocol != nil {
+		if o.Protocol.Any != nil {
 			ans.ProtocolAny = true
-		} else if o.Answer.Protocol.Number != 0 {
-			ans.ProtocolNumber = o.Answer.Protocol.Number
-		} else if o.Answer.Protocol.Tcp != nil {
-			ans.ProtocolTcpLocal = o.Answer.Protocol.Tcp.Local
-			ans.ProtocolTcpRemote = o.Answer.Protocol.Tcp.Remote
-		} else if o.Answer.Protocol.Udp != nil {
-			ans.ProtocolUdpLocal = o.Answer.Protocol.Udp.Local
-			ans.ProtocolUdpRemote = o.Answer.Protocol.Udp.Remote
+		} else if o.Protocol.Number != 0 {
+			ans.ProtocolNumber = o.Protocol.Number
+		} else if o.Protocol.Tcp != nil {
+			ans.ProtocolTcpLocal = o.Protocol.Tcp.Local
+			ans.ProtocolTcpRemote = o.Protocol.Tcp.Remote
+		} else if o.Protocol.Udp != nil {
+			ans.ProtocolUdpLocal = o.Protocol.Udp.Local
+			ans.ProtocolUdpRemote = o.Protocol.Udp.Remote
 		}
 	}
 

@@ -10,9 +10,11 @@ import (
 	"github.com/PaloAltoNetworks/pango/licen"
 	"github.com/PaloAltoNetworks/pango/netw"
 	"github.com/PaloAltoNetworks/pango/objs"
+	"github.com/PaloAltoNetworks/pango/panosplugin"
 	"github.com/PaloAltoNetworks/pango/poli"
 	"github.com/PaloAltoNetworks/pango/predefined"
 	"github.com/PaloAltoNetworks/pango/userid"
+	"github.com/PaloAltoNetworks/pango/vsys"
 )
 
 // Firewall is a firewall specific client, providing version safe functions
@@ -31,13 +33,15 @@ type Firewall struct {
 	Client
 
 	// Namespaces
-	Predefined *predefined.Firewall
-	Network    *netw.FwNetw
-	Device     *dev.FwDev
-	Policies   *poli.FwPoli
-	Objects    *objs.FwObjs
-	Licensing  *licen.Licen
-	UserId     *userid.UserId
+	Predefined  *predefined.Firewall
+	Network     *netw.Firewall
+	Device      *dev.Firewall
+	Policies    *poli.Firewall
+	Objects     *objs.FwObjs
+	Licensing   *licen.Licen
+	UserId      *userid.UserId
+	Vsys        *vsys.Firewall
+	PanosPlugin *panosplugin.Firewall
 }
 
 // Initialize does some initial setup of the Firewall connection, retrieves
@@ -150,14 +154,11 @@ func (c *Firewall) GetDhcpInfo(i string) (map[string]string, error) {
 func (c *Firewall) initNamespaces() {
 	c.Predefined = predefined.FirewallNamespace(c)
 
-	c.Network = &netw.FwNetw{}
-	c.Network.Initialize(c)
+	c.Network = netw.FirewallNamespace(c)
 
-	c.Device = &dev.FwDev{}
-	c.Device.Initialize(c)
+	c.Device = dev.FirewallNamespace(c)
 
-	c.Policies = &poli.FwPoli{}
-	c.Policies.Initialize(c)
+	c.Policies = poli.FirewallNamespace(c)
 
 	c.Objects = &objs.FwObjs{}
 	c.Objects.Initialize(c)
@@ -167,4 +168,7 @@ func (c *Firewall) initNamespaces() {
 
 	c.UserId = &userid.UserId{}
 	c.UserId.Initialize(c)
+
+	c.Vsys = vsys.FirewallNamespace(c)
+	c.PanosPlugin = panosplugin.FirewallNamespace(c)
 }

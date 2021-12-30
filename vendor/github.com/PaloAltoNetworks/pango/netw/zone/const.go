@@ -7,6 +7,7 @@ const (
 	ModeVirtualWire = "virtual-wire"
 	ModeTap         = "tap"
 	ModeExternal    = "external"
+	ModeTunnel      = "tunnel" // 8.0+
 )
 
 const (

@@ -1,146 +1,95 @@
 package monitor
 
 import (
-	"encoding/xml"
-	"fmt"
-
+	"github.com/PaloAltoNetworks/pango/namespace"
 	"github.com/PaloAltoNetworks/pango/util"
 )
 
-// FwMonitor is the client.Network.MonitorProfile namespace.
-type FwMonitor struct {
-	con util.XapiClient
+// Firewall is the client.Network.MonitorProfile namespace.
+type Firewall struct {
+	ns *namespace.Standard
 }
 
-// Initialize is invoked by client.Initialize().
-func (c *FwMonitor) Initialize(con util.XapiClient) {
-	c.con = con
+// GetList performs GET to retrieve a list of all objects.
+func (c *Firewall) GetList() ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Get, c.pather(), ans)
 }
 
-// ShowList performs SHOW to retrieve a list of values.
-func (c *FwMonitor) ShowList() ([]string, error) {
-	c.con.LogQuery("(show) list of %s", plural)
-	path := c.xpath(nil)
-	return c.con.EntryListUsing(c.con.Show, path[:len(path)-1])
+// ShowList performs SHOW to retrieve a list of all objects.
+func (c *Firewall) ShowList() ([]string, error) {
+	ans := c.container()
+	return c.ns.Listing(util.Show, c.pather(), ans)
 }
 
-// GetList performs GET to retrieve a list of values.
-func (c *FwMonitor) GetList() ([]string, error) {
-	c.con.LogQuery("(get) list of %s", plural)
-	path := c.xpath(nil)
-	return c.con.EntryListUsing(c.con.Get, path[:len(path)-1])
+// Get performs GET to retrieve information for the given object.
+func (c *Firewall) Get(name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Get, c.pather(), name, ans)
+	return first(ans, err)
 }
 
-// Get performs GET to retrieve information for the given uid.
-func (c *FwMonitor) Get(name string) (Entry, error) {
-	c.con.LogQuery("(get) %s %q", singular, name)
-	return c.details(c.con.Get, name)
+// Show performs SHOW to retrieve information for the given object.
+func (c *Firewall) Show(name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.Object(util.Show, c.pather(), name, ans)
+	return first(ans, err)
 }
 
-// Show performs SHOW to retrieve information for the given uid.
-func (c *FwMonitor) Show(name string) (Entry, error) {
-	c.con.LogQuery("(show) %s %q", singular, name)
-	return c.details(c.con.Show, name)
+// GetAll performs GET to retrieve all objects configured.
+func (c *Firewall) GetAll() ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Get, c.pather(), ans)
+	return all(ans, err)
 }
 
-// Set performs SET to create / update one or more objects.
-func (c *FwMonitor) Set(e ...Entry) error {
-	var err error
-
-	if len(e) == 0 {
-		return nil
-	}
-
-	_, fn := c.versioning()
-	names := make([]string, len(e))
-
-	// Build up the struct.
-	d := util.BulkElement{XMLName: xml.Name{Local: "temp"}}
-	for i := range e {
-		d.Data = append(d.Data, fn(e[i]))
-		names[i] = e[i].Name
-	}
-	c.con.LogAction("(set) %s: %v", plural, names)
-
-	// Set xpath.
-	path := c.xpath(names)
-	d.XMLName = xml.Name{Local: path[len(path)-2]}
-	if len(e) == 1 {
-		path = path[:len(path)-1]
-	} else {
-		path = path[:len(path)-2]
-	}
-
-	// Create the objects.
-	_, err = c.con.Set(path, d.Config(), nil, nil)
-	return err
+// ShowAll performs SHOW to retrieve information for all objects.
+func (c *Firewall) ShowAll() ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.Objects(util.Show, c.pather(), ans)
+	return all(ans, err)
 }
 
-// Edit performs EDIT to create / update one object.
-func (c *FwMonitor) Edit(e Entry) error {
-	var err error
-
-	_, fn := c.versioning()
-
-	c.con.LogAction("(edit) %s %q", singular, e.Name)
-
-	// Set xpath.
-	path := c.xpath([]string{e.Name})
-
-	// Edit the object.
-	_, err = c.con.Edit(path, fn(e), nil, nil)
-	return err
+// Set performs SET to configure the specified objects.
+func (c *Firewall) Set(e ...Entry) error {
+	return c.ns.Set(c.pather(), specifier(e...))
 }
 
-// Delete removes the given objects.
+// Edit performs EDIT to configure the specified object.
+func (c *Firewall) Edit(e Entry) error {
+	return c.ns.Edit(c.pather(), e)
+}
+
+// Delete performs DELETE to remove the specified objects.
 //
-// Objects can be a string or an Entry object.
-func (c *FwMonitor) Delete(e ...interface{}) error {
-	var err error
-
-	if len(e) == 0 {
-		return nil
-	}
-
-	names := make([]string, len(e))
-	for i := range e {
-		switch v := e[i].(type) {
-		case string:
-			names[i] = v
-		case Entry:
-			names[i] = v.Name
-		default:
-			return fmt.Errorf("Unknown type sent to delete: %s", v)
-		}
-	}
-	c.con.LogAction("(delete) %s: %v", plural, names)
-
-	// Remove the objects.
-	path := c.xpath(names)
-	_, err = c.con.Delete(path, nil, nil)
-	return err
+// Objects can be either a string or an Entry object.
+func (c *Firewall) Delete(e ...interface{}) error {
+	names, nErr := toNames(e)
+	return c.ns.Delete(c.pather(), names, nErr)
 }
 
-/** Internal functions for this namespace struct **/
-
-func (c *FwMonitor) versioning() (normalizer, func(Entry) interface{}) {
-	return &container_v1{}, specify_v1
+// FromPanosConfig retrieves the object stored in the retrieved config.
+func (c *Firewall) FromPanosConfig(name string) (Entry, error) {
+	ans := c.container()
+	err := c.ns.FromPanosConfig(c.pather(), name, ans)
+	return first(ans, err)
 }
 
-func (c *FwMonitor) details(fn util.Retriever, name string) (Entry, error) {
-	path := c.xpath([]string{name})
-	obj, _ := c.versioning()
-	if _, err := fn(path, nil, obj); err != nil {
-		return Entry{}, err
+// AllFromPanosConfig retrieves all objects stored in the retrieved config.
+func (c *Firewall) AllFromPanosConfig() ([]Entry, error) {
+	ans := c.container()
+	err := c.ns.AllFromPanosConfig(c.pather(), ans)
+	return all(ans, err)
+}
+
+func (c *Firewall) pather() namespace.Pather {
+	return func(v []string) ([]string, error) {
+		return c.xpath(v)
 	}
-	ans := obj.Normalize()
-
-	return ans, nil
 }
 
-func (c *FwMonitor) xpath(vals []string) []string {
-	ans := make([]string, 0, 7)
-	ans = append(ans,
+func (c *Firewall) xpath(vals []string) ([]string, error) {
+	return []string{
 		"config",
 		"devices",
 		util.AsEntryXpath([]string{"localhost.localdomain"}),
@@ -148,7 +97,9 @@ func (c *FwMonitor) xpath(vals []string) []string {
 		"profiles",
 		"monitor-profile",
 		util.AsEntryXpath(vals),
-	)
+	}, nil
+}
 
-	return ans
+func (c *Firewall) container() normalizer {
+	return container(c.ns.Client.Versioning())
 }

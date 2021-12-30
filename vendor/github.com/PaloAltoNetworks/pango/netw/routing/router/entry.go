@@ -219,6 +219,28 @@ type entry_v1 struct {
 	Routing    *util.RawXml     `xml:"routing-table"`
 }
 
+func (e *entry_v1) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type local entry_v1
+	ans := local{
+		Dist: &dist{
+			StaticDist:     10,
+			StaticIpv6Dist: 10,
+			OspfIntDist:    30,
+			OspfExtDist:    110,
+			Ospfv3IntDist:  30,
+			Ospfv3ExtDist:  110,
+			IbgpDist:       200,
+			EbgpDist:       20,
+			RipDist:        120,
+		},
+	}
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+	*e = entry_v1(ans)
+	return nil
+}
+
 type dist struct {
 	StaticDist     int `xml:"static,omitempty"`
 	StaticIpv6Dist int `xml:"static-ipv6,omitempty"`

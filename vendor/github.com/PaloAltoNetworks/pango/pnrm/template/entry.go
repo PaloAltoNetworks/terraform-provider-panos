@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/PaloAltoNetworks/pango/version"
 )
 
 // Entry is a normalized, version independent representation of a template.
@@ -32,7 +33,19 @@ func (o *Entry) Copy(s Entry) {
 	o.MultiVsys = s.MultiVsys
 	o.Mode = s.Mode
 	o.VpnDisableMode = s.VpnDisableMode
-	o.Devices = s.Devices
+	if s.Devices == nil {
+		o.Devices = nil
+	} else {
+		o.Devices = make(map[string][]string)
+		for key, list := range s.Devices {
+			if list == nil {
+				o.Devices[key] = nil
+			} else {
+				o.Devices[key] = make([]string, len(list))
+				copy(o.Devices[key], list)
+			}
+		}
+	}
 }
 
 // SetConfTree sets the conf internal variable such that the XML contains
@@ -51,96 +64,59 @@ func (o *Entry) SetConfTree() {
 
 /** Structs / functions for normalization. **/
 
+func (o Entry) Specify(v version.Number) (string, interface{}) {
+	_, fn := versioning(v)
+	return o.Name, fn(o)
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
-	ans := Entry{
-		Name:        o.Answer.Name,
-		Description: o.Answer.Description,
-		Devices:     util.VsysEntToMap(o.Answer.Devices),
-	}
-
-	if o.Answer.Settings != nil {
-		ans.MultiVsys = util.AsBool(o.Answer.Settings.MultiVsys)
-		ans.Mode = o.Answer.Settings.Mode
-		ans.VpnDisableMode = util.AsBool(o.Answer.Settings.VpnDisableMode)
-	}
-
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Config != nil {
-		ans.raw["conf"] = util.CleanRawXml(o.Answer.Config.Text)
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
 	}
 
 	return ans
 }
 
-type container_v2 struct {
-	Answer entry_v2 `xml:"result>entry"`
-}
-
-func (o *container_v2) Normalize() Entry {
-	ans := Entry{
-		Name:        o.Answer.Name,
-		Description: o.Answer.Description,
-		Devices:     util.VsysEntToMap(o.Answer.Devices),
-	}
-
-	if o.Answer.Settings != nil {
-		ans.DefaultVsys = o.Answer.Settings.DefaultVsys
-	}
-
-	ans.raw = make(map[string]string)
-
-	if o.Answer.Config != nil {
-		ans.raw["conf"] = util.CleanRawXml(o.Answer.Config.Text)
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
 	}
 
 	return ans
 }
 
-type container_v3 struct {
-	Answer entry_v3 `xml:"result>entry"`
-}
-
-func (o *container_v3) Normalize() Entry {
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:        o.Answer.Name,
-		Description: o.Answer.Description,
-		// TODO(gfreeman) - seems like devices are removed in 8.1..?
-		Devices: util.VsysEntToMap(o.Answer.Devices),
+		Name:        o.Name,
+		Description: o.Description,
+		Devices:     util.VsysEntToMap(o.Devices),
 	}
 
-	if o.Answer.Settings != nil {
-		ans.DefaultVsys = o.Answer.Settings.DefaultVsys
+	if o.Settings != nil {
+		ans.MultiVsys = util.AsBool(o.Settings.MultiVsys)
+		ans.Mode = o.Settings.Mode
+		ans.VpnDisableMode = util.AsBool(o.Settings.VpnDisableMode)
 	}
 
-	ans.raw = make(map[string]string)
+	raw := make(map[string]string)
 
-	if o.Answer.Variables != nil {
-		ans.raw["vars"] = util.CleanRawXml(o.Answer.Variables.Text)
+	if o.Config != nil {
+		raw["conf"] = util.CleanRawXml(o.Config.Text)
 	}
 
-	if o.Answer.Config != nil {
-		ans.raw["conf"] = util.CleanRawXml(o.Answer.Config.Text)
-	}
-
-	if len(ans.raw) == 0 {
-		ans.raw = nil
+	if len(raw) > 0 {
+		ans.raw = raw
 	}
 
 	return ans
@@ -183,6 +159,53 @@ func specify_v1(e Entry) interface{} {
 	return ans
 }
 
+// PAN-OS 7.0.
+type container_v2 struct {
+	Answer []entry_v2 `xml:"entry"`
+}
+
+func (o *container_v2) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v2) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v2) normalize() Entry {
+	ans := Entry{
+		Name:        o.Name,
+		Description: o.Description,
+		Devices:     util.VsysEntToMap(o.Devices),
+	}
+
+	if o.Settings != nil {
+		ans.DefaultVsys = o.Settings.DefaultVsys
+	}
+
+	raw := make(map[string]string)
+
+	if o.Config != nil {
+		raw["conf"] = util.CleanRawXml(o.Config.Text)
+	}
+
+	if len(raw) > 0 {
+		ans.raw = raw
+	}
+
+	return ans
+}
+
 type entry_v2 struct {
 	XMLName     xml.Name            `xml:"entry"`
 	Name        string              `xml:"name,attr"`
@@ -209,6 +232,58 @@ func specify_v2(e Entry) interface{} {
 
 	if text, present := e.raw["conf"]; present {
 		ans.Config = &util.RawXml{text}
+	}
+
+	return ans
+}
+
+// PAN-OS 8.1.
+type container_v3 struct {
+	Answer []entry_v3 `xml:"entry"`
+}
+
+func (o *container_v3) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v3) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v3) normalize() Entry {
+	ans := Entry{
+		Name:        o.Name,
+		Description: o.Description,
+		// TODO(gfreeman) - seems like devices are removed in 8.1..?
+		Devices: util.VsysEntToMap(o.Devices),
+	}
+
+	if o.Settings != nil {
+		ans.DefaultVsys = o.Settings.DefaultVsys
+	}
+
+	raw := make(map[string]string)
+
+	if o.Variables != nil {
+		raw["vars"] = util.CleanRawXml(o.Variables.Text)
+	}
+
+	if o.Config != nil {
+		raw["conf"] = util.CleanRawXml(o.Config.Text)
+	}
+
+	if len(raw) > 0 {
+		ans.raw = raw
 	}
 
 	return ans

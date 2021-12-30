@@ -108,7 +108,12 @@ func (o *container_v1) Normalize() []Config {
 }
 
 func (o *container_v1) Names() []string {
-	return nil
+	ans := make([]string, 0, len(o.Answer))
+	for _ = range o.Answer {
+		ans = append(ans, "")
+	}
+
+	return ans
 }
 
 func (o *entry_v1) normalize() Config {

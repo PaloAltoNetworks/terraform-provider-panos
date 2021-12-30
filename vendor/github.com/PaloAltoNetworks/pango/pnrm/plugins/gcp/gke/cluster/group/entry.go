@@ -2,6 +2,8 @@ package group
 
 import (
 	"encoding/xml"
+
+	"github.com/PaloAltoNetworks/pango/plugin"
 )
 
 // Entry is a normalized, version independent representation of a GKE cluster group.
@@ -24,21 +26,49 @@ func (o *Entry) Copy(s Entry) {
 
 /** Structs / functions for this namespace. **/
 
+func (o Entry) Specify(list []plugin.Info) (string, interface{}, error) {
+	_, fn, err := versioning(list)
+	if err != nil {
+		return o.Name, nil, err
+	}
+
+	return o.Name, fn(o), nil
+}
+
 type normalizer interface {
-	Normalize() Entry
+	Normalize() []Entry
+	Names() []string
 }
 
 type container_v1 struct {
-	Answer entry_v1 `xml:"result>entry"`
+	Answer []entry_v1 `xml:"entry"`
 }
 
-func (o *container_v1) Normalize() Entry {
+func (o *container_v1) Normalize() []Entry {
+	ans := make([]Entry, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].normalize())
+	}
+
+	return ans
+}
+
+func (o *container_v1) Names() []string {
+	ans := make([]string, 0, len(o.Answer))
+	for i := range o.Answer {
+		ans = append(ans, o.Answer[i].Name)
+	}
+
+	return ans
+}
+
+func (o *entry_v1) normalize() Entry {
 	ans := Entry{
-		Name:                 o.Answer.Name,
-		Description:          o.Answer.Description,
-		GcpProjectCredential: o.Answer.GcpProjectCredential,
-		DeviceGroup:          o.Answer.DeviceGroup,
-		TemplateStack:        o.Answer.TemplateStack,
+		Name:                 o.Name,
+		Description:          o.Description,
+		GcpProjectCredential: o.GcpProjectCredential,
+		DeviceGroup:          o.DeviceGroup,
+		TemplateStack:        o.TemplateStack,
 	}
 
 	return ans

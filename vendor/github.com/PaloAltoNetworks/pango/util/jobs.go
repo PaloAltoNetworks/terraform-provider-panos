@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/xml"
+	"strconv"
 	"strings"
 )
 
@@ -14,11 +15,29 @@ type JobResponse struct {
 // BasicJob is a struct for parsing minimal information about a submitted
 // job to PANOS.
 type BasicJob struct {
-	XMLName  xml.Name        `xml:"response"`
-	Result   string          `xml:"result>job>result"`
-	Progress uint            `xml:"result>job>progress"`
-	Details  BasicJobDetails `xml:"result>job>details"`
-	Devices  []devJob        `xml:"result>job>devices>entry"`
+	XMLName     xml.Name        `xml:"response"`
+	Result      string          `xml:"result>job>result"`
+	Progress    uint            `xml:"-"`
+	Details     BasicJobDetails `xml:"result>job>details"`
+	Devices     []devJob        `xml:"result>job>devices>entry"`
+	Status      string          `xml:"result>job>status"` // For log retrieval jobs.
+	ProgressRaw string          `xml:"result>job>progress"`
+}
+
+func (o *BasicJob) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type localBasicJob BasicJob
+	var ans localBasicJob
+	if err := d.DecodeElement(&ans, &start); err != nil {
+		return err
+	}
+
+	val, err := strconv.ParseUint(strings.TrimSpace(ans.ProgressRaw), 10, 32)
+	if err == nil {
+		ans.Progress = uint(val)
+	}
+
+	*o = BasicJob(ans)
+	return nil
 }
 
 type BasicJobDetails struct {
