@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_ipsec_tunnel_proxy_id_ipv4"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_ipsec_tunnel_proxy_id_ipv4
 
 This resource allows you to add/update/delete Panorama IPSec tunnel proxy IDs
 to a parent auto key IPSec tunnel for templates.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_ipsec_tunnel_proxy_id_ipv4"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_ipsec_tunnel_proxy_id_ipv4
 
 This resource allows you to add/update/delete IPSec tunnel proxy IDs to
 a parent auto key IPSec tunnel.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
