@@ -48,15 +48,28 @@ func resourceIkeCryptoProfile() *schema.Resource {
 				Required: true,
 				MinItems: 1,
 				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validateStringIn(ike.EncryptionDes, ike.Encryption3des, ike.EncryptionAes128, ike.EncryptionAes192, ike.EncryptionAes256),
+					Type: schema.TypeString,
+					ValidateFunc: validateStringIn(
+						ike.EncryptionDes,
+						ike.Encryption3des,
+						ike.EncryptionAes128,
+						ike.EncryptionAes192,
+						ike.EncryptionAes256,
+						ike.EncryptionAes128Gcm,
+						ike.EncryptionAes256Gcm,
+					),
 				},
 			},
 			"lifetime_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Default:      ike.TimeHours,
-				ValidateFunc: validateStringIn(ike.TimeSeconds, ike.TimeMinutes, ike.TimeHours, ike.TimeDays),
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  ike.TimeHours,
+				ValidateFunc: validateStringIn(
+					ike.TimeSeconds,
+					ike.TimeMinutes,
+					ike.TimeHours,
+					ike.TimeDays,
+				),
 			},
 			"lifetime_value": {
 				Type:     schema.TypeInt,
@@ -104,8 +117,7 @@ func readIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.IkeCryptoProfile.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -152,8 +164,7 @@ func deleteIkeCryptoProfile(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.IkeCryptoProfile.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
