@@ -114,8 +114,7 @@ func readIpsecTunnelProxyIdIpv4(d *schema.ResourceData, meta interface{}) error 
 
 	o, err := fw.Network.IpsecTunnelProxyId.Get(tun, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -160,8 +159,7 @@ func deleteIpsecTunnelProxyIdIpv4(d *schema.ResourceData, meta interface{}) erro
 
 	err := fw.Network.IpsecTunnelProxyId.Delete(tun, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
