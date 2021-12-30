@@ -23,18 +23,12 @@ func resourceServiceGroup() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"vsys": vsysSchema("vsys1"),
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
 				Description: "The service group's name",
-			},
-			"vsys": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "vsys1",
-				ForceNew:    true,
-				Description: "The vsys to put this service group in",
 			},
 			"services": {
 				Type:     schema.TypeList,
@@ -46,7 +40,6 @@ func resourceServiceGroup() *schema.Resource {
 			"tags": {
 				Type:     schema.TypeSet,
 				Optional: true,
-				MinItems: 1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -96,8 +89,7 @@ func readServiceGroup(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.ServiceGroup.Get(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -140,8 +132,7 @@ func deleteServiceGroup(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Objects.ServiceGroup.Delete(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
