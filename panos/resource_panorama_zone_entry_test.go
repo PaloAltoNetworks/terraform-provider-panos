@@ -50,7 +50,7 @@ func testAccCheckPanosPanoramaZoneEntryExists(n string, o *zone.Entry) resource.
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		tmpl, ts, vsys, zone_name, _, _ := parsePanoramaZoneEntryId(rs.Primary.ID)
+		tmpl, ts, vsys, zone_name, _, _ := parseZoneEntryId(rs.Primary.ID)
 		v, err := pano.Network.Zone.Get(tmpl, ts, vsys, zone_name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -81,7 +81,7 @@ func testAccPanosPanoramaZoneEntryDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			tmpl, ts, vsys, zone_name, _, _ := parsePanoramaZoneEntryId(rs.Primary.ID)
+			tmpl, ts, vsys, zone_name, _, _ := parseZoneEntryId(rs.Primary.ID)
 			_, err := pano.Network.Zone.Get(tmpl, ts, vsys, zone_name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
