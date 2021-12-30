@@ -16,7 +16,7 @@ func dataSourceUserTag() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// Input.
-			"vsys": vsysSchema(),
+			"vsys": vsysSchema("vsys1"),
 			"user": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -64,9 +64,7 @@ func readDataSourceUserTag(d *schema.ResourceData, meta interface{}) error {
 		return nil
 	}
 
-	d.SetId(base64Encode([]interface{}{
-		vsys, su,
-	}))
+	d.SetId(base64Encode([]string{vsys, su}))
 	if len(cur) == 0 {
 		d.Set("entries", nil)
 		return nil
@@ -95,7 +93,7 @@ func resourceUserTag() *schema.Resource {
 		Delete: deleteUserTag,
 
 		Schema: map[string]*schema.Schema{
-			"vsys": vsysSchema(),
+			"vsys": vsysSchema("vsys1"),
 			"user": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -256,7 +254,11 @@ func deleteUserTag(d *schema.ResourceData, meta interface{}) error {
 
 // Id functions.
 func buildUserTagId(a, b string, c []interface{}) string {
-	return strings.Join([]string{a, b, base64Encode(c)}, IdSeparator)
+	list := make([]string, len(c))
+	for i := range c {
+		list[i] = c[i].(string)
+	}
+	return strings.Join([]string{a, b, base64Encode(list)}, IdSeparator)
 }
 
 func parseUserTagId(v string) (string, string, []string) {
