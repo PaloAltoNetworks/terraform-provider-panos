@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_panorama_redistribution_profile_ipv4"
-subcategory: "Panorama Networking"
+subcategory: "Network"
 ---
 
 # panos_panorama_redistribution_profile_ipv4
 
 This resource allows you to add/update/delete Panorama IPv4 redistribution
 profiles on a virtual router.
+
+
+## PAN-OS
+
+Panorama
 
 
 ## Import Name

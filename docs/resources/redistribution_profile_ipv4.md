@@ -1,12 +1,17 @@
 ---
 page_title: "panos: panos_redistribution_profile_ipv4"
-subcategory: "Firewall Networking"
+subcategory: "Network"
 ---
 
 # panos_redistribution_profile_ipv4
 
 This resource allows you to add/update/delete IPv4 redistribution profiles
 on a virtual router.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
