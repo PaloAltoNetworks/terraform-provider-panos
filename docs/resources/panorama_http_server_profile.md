@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_panorama_http_server_profile"
-subcategory: "Panorama Device Config"
+subcategory: "Device"
 ---
 
 # panos_panorama_http_server_profile
 
 This resource allows you to add/update/delete Panorama HTTP server profiles.
 
-**Minimum PAN-OS version**:  7.1
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+Panorama
+
 
 ## Example Usage
 

@@ -1,13 +1,22 @@
 ---
 page_title: "panos: panos_http_server_profile"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_http_server_profile
 
 This resource allows you to add/update/delete HTTP server profiles.
 
-**Minimum PAN-OS version**:  7.1
+
+## Minimum PAN-OS Version
+
+7.1
+
+
+## PAN-OS
+
+NGFW
+
 
 ## Example Usage
 
