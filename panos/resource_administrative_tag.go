@@ -85,8 +85,7 @@ func readAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Objects.Tags.Get(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -124,8 +123,7 @@ func deleteAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Objects.Tags.Delete(vsys, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

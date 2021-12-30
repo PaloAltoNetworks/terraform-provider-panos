@@ -85,8 +85,7 @@ func readPanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) err
 
 	o, err := pano.Objects.Tags.Get(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -124,8 +123,7 @@ func deletePanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) e
 
 	err := pano.Objects.Tags.Delete(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
