@@ -64,8 +64,7 @@ func readPanoramaBgpConditionalAdvAdvertiseFilter(d *schema.ResourceData, meta i
 
 	o, err := pano.Network.BgpConAdvAdvertiseFilter.Get(tmpl, ts, vr, ca, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}

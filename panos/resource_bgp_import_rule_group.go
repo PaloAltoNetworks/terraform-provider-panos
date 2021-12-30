@@ -385,8 +385,7 @@ func deleteBgpImportRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if err := fw.Network.BgpImport.Delete(vr, ilist...); err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
