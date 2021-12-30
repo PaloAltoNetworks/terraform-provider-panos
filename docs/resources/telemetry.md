@@ -1,6 +1,6 @@
 ---
 page_title: "panos: panos_telemetry"
-subcategory: "Firewall Device Config"
+subcategory: "Device"
 ---
 
 # panos_telemetry
@@ -14,6 +14,11 @@ lifecycle. Choose the type of data you share across applications, threat
 intelligence, and device health information to improve the fidelity of the
 protections we deliver. This is an opt-in feature controlled with granular
 policy, and we encourage you to join the community.
+
+
+## PAN-OS
+
+NGFW
 
 
 ## Import Name
