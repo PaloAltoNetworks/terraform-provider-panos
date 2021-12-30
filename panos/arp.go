@@ -62,12 +62,12 @@ func dataSourceArpsRead(d *schema.ResourceData, meta interface{}) error {
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			iType, iName, subName,
 		})
 		listing, err = con.Network.Arp.GetList(iType, iName, subName)
 	case *pango.Panorama:
-		id = base64Encode([]interface{}{
+		id = base64Encode([]string{
 			tmpl, "", iType, iName, subName,
 		})
 		listing, err = con.Network.Arp.GetList(tmpl, "", iType, iName, subName)
