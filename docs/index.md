@@ -12,7 +12,50 @@ policies.
 Use the navigation to the left to read about the available Panorama and NGFW
 resources.
 
-## Resource Naming
+Refer to
+[the changelog](https://github.com/PaloAltoNetworks/terraform-provider-panos/blob/master/CHANGELOG.md)
+to see what's new.
+
+
+## Terraform / PAN-OS Interaction
+
+### `lifecycle.create_before_destroy`
+
+The order of operations that Terraform handles updates / deletes does not by
+default work the way that PAN-OS does things.  In order to make Terraform behave
+properly, inside of **each and every resource** you need to specify a
+[`lifecycle`](https://www.terraform.io/language/meta-arguments/lifecycle) block
+like so:
+
+```hcl
+resource "panos_address_object" "example" {
+    name = "web server 1"
+    # continue with the rest of the definition
+    ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
+}
+```
+
+
+### Parallelism
+
+Terraform uses goroutines to speed up deployment, but the number of parallel
+operations is launches exceeds
+[what is recommended](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-panorama-api/pan-os-xml-api-request-types/apply-user-id-mapping-and-populate-dynamic-address-groups-api.html):
+
+```
+Limit the number of concurrent API calls to five. This limit ensures that there is no performance impact to the firewall web interface as the management plane web server handles requests from both the API and the web interface.
+```
+
+In order to accomplish this, make sure you set the
+[parallelism](https://www.terraform.io/cli/commands/apply#parallelism-n) value at or
+below this limit to prevent performance impacts.
+
+
+## Resource / Data Source Naming
 
 In earlier releases of the `panos` provider, resources for the NGFW had a
 `panos_` prefix, while resources intended for Panorama had a `panos_panorama_`
@@ -21,20 +64,6 @@ provider.  So starting in `panos` provider v1.7, we are doing away with this
 distinction for any resources or data sources added, and will be slowing working to
 retrofit the existing resources to behave this way.
 
-One resource has been retrofitted in this regard, and that's the `panos_address_object`
-resource.  In order to not break existing plans / deployments, the provider has an alias
-for `panos_panorama_address_object` that uses this new approach.  This means that as of
-1.7, you can add an address object to Panorama using the name `panos_address_object` or
-`panos_panorama_address_object`.  This is the only pre-1.7 resource that has been
-modified like this as a trial run.  If you encounter any issues, please open a GitHub
-issue against the provider.
-
-This merging also has an affect on the ID for a resource.  Since NGFW and Panorama
-often require slightly different params, the names will be slightly different based
-on if the provider is acting on a NGFW or a Panorama.  The ID is important when you
-try to import an existing config into Terraform.  So in the documentation for these
-newer style resources, there will be one format for NGFW and another format for
-Panorama.
 
 ## Versioning
 
@@ -66,17 +95,20 @@ data "panos_ethernet_interface" "eth1" {
 }
 ```
 
+
 ## Commits
 
 As of right now, Terraform does not provide native support for commits, so
 commits are handled out-of-band.  Please refer to the commit guide to the left
 for more information.
 
+
 ## AWS / GCP Considerations
 
 If you are launching PAN-OS in AWS or GCP, there are additional considerations
 that you should be aware of with regards to initial configuration.  Please see
 the AWS / GCP Considerations guide off to the left.
+
 
 ## Importing Resources
 
@@ -96,9 +128,6 @@ a Panorama IPv4 static route whose import name is
 template, your import name would be something like
 `myTemplate::myVirtualRouter:myStaticRouteName`.
 
-If the resource is a combined resource (see [Resource
-Naming](#resource-naming) above), then the documentation for that resource
-or data source will have separate entries for NGFW and Panorama naming.
 
 ## Example Provider Usage
 
@@ -109,6 +138,7 @@ provider "panos" {
     json_config_file = "../panos-creds.json"
 }
 ```
+
 
 ## Argument Reference
 
@@ -123,20 +153,22 @@ ignored.  From highest to lowest priority, these ways are:
 
 The following arguments are supported:
 
-* `hostname` - (Optional, env:`PANOS_HOSTNAME`) The hostname / IP address of PAN-OS.
-* `username` - (Optional, env:`PANOS_USERNAME`) The PAN-OS username.  This is ignored
+* `hostname` - (env:`PANOS_HOSTNAME`) The hostname / IP address of PAN-OS.
+* `username` - (env:`PANOS_USERNAME`) The PAN-OS username.  This is ignored
   if the `api_key` is given.
-* `password` - (Optional, env:`PANOS_PASSWORD`) The PAN-OS password.  This is ignored
+* `password` - (env:`PANOS_PASSWORD`) The PAN-OS password.  This is ignored
   if the `api_key` is given.
-* `api_key` - (Optional, env:`PANOS_API_KEY`) The API key for the firewall.
-* `protocol` - (Optional, env:`PANOS_PROTOCOL`) The communication protocol.  Valid
+* `api_key` - (env:`PANOS_API_KEY`) The API key for the firewall.
+* `protocol` - (env:`PANOS_PROTOCOL`) The communication protocol.  Valid
   values are `https` (the default) or `http`.
-* `port` - (Optional, int, env:`PANOS_PORT`) If the port number is non-standard for
+* `port` - (int, env:`PANOS_PORT`) If the port number is non-standard for
   the desired protocol, then the port number to use.
-* `timeout` - (Optional, int, env:`PANOS_TIMEOUT`) The timeout for all communications
+* `timeout` - (int, env:`PANOS_TIMEOUT`) The timeout for all communications
   with PAN-OS (default: `10`).
-* `target` - (Optional, env:`PANOS_TARGET`) The firewall serial number to target
+* `target` - (env:`PANOS_TARGET`) The firewall serial number to target
   configuration commands to (the `hostname` should be a Panorama PAN-OS).
+* `additional_headers` - (env:`PANOS_HEADERS`, added in v1.9.0) Mapping of
+  any additional headers to send with all API requests to PAN-OS.
 * `logging` - (Optional, env:`PANOS_LOGGING`) List of logging options for the
   provider's connection to the API.  If this is unspecified, then it defaults to
   `["action", "uid"]`.  If this is being specified as an environment variable,
@@ -157,11 +189,25 @@ The list of strings supported for `logging` are as follows:
 * `query` - Log `get`.
 * `op` - Log `op`.
 * `uid` - Log user-id envocations.
+* `log` - (v1.9.0) Log `log`.
+* `export` - (v1.9.0) Log `export`.
+* `import` - (v1.9.0) Log `import`.
 * `xpath` - Log the XPATH associated with various actions.
 * `send` - Log the raw request sent to the device.  This is probably
   only useful in development of the provider itself.
 * `receive` - Log the raw response sent back from the device.  This is probably
   only useful in development of the provider itself.
+* `osx_curl` - (v1.9.0) Output the API calls as OSX cURL calls.  Using the provider
+  may uncover issues with PAN-OS itself.  If you believe you have encountered a bug
+  with PAN-OS, enable cURL logging and give TAC the output of that, as the provider
+  itself is still community supported.
+* `curl_with_personal_data` - (v1.9.0) Without this specified, any curl logging will
+  replace the hostname with `HOST`, the API key with `APIKEY`, and will not include
+  any additional headers specified by the `headers` provider param.  If this logging type
+  is specified in the logging, then these modifications are not done, essentially
+  allowing you to copy/paste the cURL command and execute it yourself in your
+  environment.
+
 
 The following is an example of the contents of a JSON config file:
 
@@ -170,10 +216,11 @@ The following is an example of the contents of a JSON config file:
     "hostname": "127.0.0.1",
     "api_key": "secret",
     "timeout": 10,
-    "logging": ["action", "op", "uid"],
+    "logging": ["action", "op", "uid", "osx_curl"],
     "verify_certificate": false
 }
 ```
+
 
 ## Support
 
