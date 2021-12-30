@@ -60,8 +60,7 @@ func readPanoramaApplicationGroup(d *schema.ResourceData, meta interface{}) erro
 
 	o, err := pano.Objects.AppGroup.Get(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -98,8 +97,7 @@ func deletePanoramaApplicationGroup(d *schema.ResourceData, meta interface{}) er
 
 	err := pano.Objects.AppGroup.Delete(dg, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
