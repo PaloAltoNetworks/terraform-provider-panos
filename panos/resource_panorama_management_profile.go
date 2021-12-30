@@ -157,8 +157,7 @@ func readPanoramaManagementProfile(d *schema.ResourceData, meta interface{}) err
 
 	o, err := pano.Network.ManagementProfile.Get(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -209,8 +208,7 @@ func deletePanoramaManagementProfile(d *schema.ResourceData, meta interface{}) e
 
 	err := pano.Network.ManagementProfile.Delete(tmpl, ts, name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}

@@ -132,8 +132,7 @@ func readManagementProfile(d *schema.ResourceData, meta interface{}) error {
 
 	o, err := fw.Network.ManagementProfile.Get(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if ok && e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			d.SetId("")
 			return nil
 		}
@@ -182,8 +181,7 @@ func deleteManagementProfile(d *schema.ResourceData, meta interface{}) error {
 
 	err := fw.Network.ManagementProfile.Delete(name)
 	if err != nil {
-		e2, ok := err.(pango.PanosError)
-		if !ok || !e2.ObjectNotFound() {
+		if isObjectNotFound(err) {
 			return err
 		}
 	}
