@@ -3,11 +3,19 @@ page_title: "panos: panos_address_object"
 subcategory: "Objects"
 ---
 
--> **Note:** `panos_panorama_address_object` is now `panos_address_object`.
-
 # panos_address_object
 
 This resource allows you to add/update/delete address objects.
+
+
+## PAN-OS
+
+NGFW and Panorama.
+
+
+## Aliases
+
+* `panos_panorama_address_object`
 
 
 ## Import Name
