@@ -23,12 +23,12 @@ func dataSourceApiKey() *schema.Resource {
 func dataSourceApiKeyRead(d *schema.ResourceData, meta interface{}) error {
 	switch c := meta.(type) {
 	case *pango.Firewall:
-		d.SetId(base64Encode([]interface{}{
+		d.SetId(base64Encode([]string{
 			c.Hostname, c.Username,
 		}))
 		d.Set("api_key", c.ApiKey)
 	case *pango.Panorama:
-		d.SetId(base64Encode([]interface{}{
+		d.SetId(base64Encode([]string{
 			c.Hostname, c.Username,
 		}))
 		d.Set("api_key", c.ApiKey)
