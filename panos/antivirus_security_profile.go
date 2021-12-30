@@ -13,7 +13,7 @@ import (
 // Data source (listing).
 func dataSourceAntivirusSecurityProfiles() *schema.Resource {
 	s := listingSchema()
-	s["vsys"] = vsysSchema()
+	s["vsys"] = vsysSchema("vsys1")
 	s["device_group"] = deviceGroupSchema()
 
 	return &schema.Resource{
@@ -205,7 +205,7 @@ func deleteAntivirusSecurityProfile(d *schema.ResourceData, meta interface{}) er
 // Schema handling.
 func antivirusSecurityProfileSchema(isResource bool) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
-		"vsys":         vsysSchema(),
+		"vsys":         vsysSchema("vsys1"),
 		"device_group": deviceGroupSchema(),
 		"name": {
 			Type:        schema.TypeString,
