@@ -231,7 +231,7 @@ func certificateImportSchema() map[string]*schema.Schema {
 			Optional:      true,
 			Description:   "PKCS12 certificate specification.",
 			MaxItems:      1,
-			ConflictsWith: []string{"pkcs12"},
+			ConflictsWith: []string{"pem"},
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"certificate": {
