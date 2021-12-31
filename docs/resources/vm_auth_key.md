@@ -14,8 +14,24 @@ Creates a VM auth key you can use to bootstrap a VM NGFW.
 ## Example Usage
 
 ```hcl
-resource "panos_vm_auth_key" "example" {
+# Basic usage.
+resource "panos_vm_auth_key" "example1" {
     hours = 24
+}
+```
+
+```hcl
+# Using time_rotating to keep a VM auth key always valid.
+resource "panos_vm_auth_key" "example2" {
+    hours = time_rotating.tr.rotation_hours
+
+    keepers = {
+        rotate = time_rotating.tr.rotation_rfc3339
+    }
+}
+
+resource "time_rotating" "tr" {
+    rotation_hours = 24
 }
 ```
 
