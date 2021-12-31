@@ -119,10 +119,10 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 									Required: true,
 								},
 								"azure_integration": {
-									Type:          schema.TypeList,
-									MaxItems:      1,
-									Optional:      true,
-									ConflictsWith: []string{"match_list.action.tagging_integration"},
+									Type:     schema.TypeList,
+									MaxItems: 1,
+									Optional: true,
+									//ConflictsWith: []string{"match_list.action.tagging_integration"},
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"azure_integration": {
@@ -134,10 +134,10 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 									},
 								},
 								"tagging_integration": {
-									Type:          schema.TypeList,
-									MaxItems:      1,
-									Optional:      true,
-									ConflictsWith: []string{"match_list.action.azure_integration"},
+									Type:     schema.TypeList,
+									MaxItems: 1,
+									Optional: true,
+									//ConflictsWith: []string{"match_list.action.azure_integration"},
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"action": {
@@ -160,10 +160,12 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"match_list.action.tagging_integration.remote_registration",
-													"match_list.action.tagging_integration.panorama_registration",
-												},
+												/*
+													ConflictsWith: []string{
+														"match_list.action.tagging_integration.remote_registration",
+														"match_list.action.tagging_integration.panorama_registration",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"tags": {
@@ -181,10 +183,12 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"match_list.action.tagging_integration.local_registration",
-													"match_list.action.tagging_integration.panorama_registration",
-												},
+												/*
+													ConflictsWith: []string{
+														"match_list.action.tagging_integration.local_registration",
+														"match_list.action.tagging_integration.panorama_registration",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"http_profile": {
@@ -206,10 +210,12 @@ func logForwardingProfileSchema(p bool) map[string]*schema.Schema {
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"match_list.action.tagging_integration.local_registration",
-													"match_list.action.tagging_integration.remote_registration",
-												},
+												/*
+													ConflictsWith: []string{
+														"match_list.action.tagging_integration.local_registration",
+														"match_list.action.tagging_integration.remote_registration",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"tags": {

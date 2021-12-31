@@ -78,11 +78,13 @@ func applicationSignatureSchema(p bool) map[string]*schema.Schema {
 									Type:     schema.TypeList,
 									MaxItems: 1,
 									Optional: true,
-									ConflictsWith: []string{
-										"and_condition.or_condition.greater_than",
-										"and_condition.or_condition.less_than",
-										"and_condition.or_condition.equal_to",
-									},
+									/*
+										ConflictsWith: []string{
+											"and_condition.or_condition.greater_than",
+											"and_condition.or_condition.less_than",
+											"and_condition.or_condition.equal_to",
+										},
+									*/
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"context": {
@@ -107,11 +109,13 @@ func applicationSignatureSchema(p bool) map[string]*schema.Schema {
 									Type:     schema.TypeList,
 									MaxItems: 1,
 									Optional: true,
-									ConflictsWith: []string{
-										"and_condition.or_condition.pattern_match",
-										"and_condition.or_condition.less_than",
-										"and_condition.or_condition.equal_to",
-									},
+									/*
+										ConflictsWith: []string{
+											"and_condition.or_condition.pattern_match",
+											"and_condition.or_condition.less_than",
+											"and_condition.or_condition.equal_to",
+										},
+									*/
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"context": {
@@ -136,11 +140,13 @@ func applicationSignatureSchema(p bool) map[string]*schema.Schema {
 									Type:     schema.TypeList,
 									MaxItems: 1,
 									Optional: true,
-									ConflictsWith: []string{
-										"and_condition.or_condition.pattern_match",
-										"and_condition.or_condition.greater_than",
-										"and_condition.or_condition.equal_to",
-									},
+									/*
+										ConflictsWith: []string{
+											"and_condition.or_condition.pattern_match",
+											"and_condition.or_condition.greater_than",
+											"and_condition.or_condition.equal_to",
+										},
+									*/
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"context": {
@@ -165,11 +171,13 @@ func applicationSignatureSchema(p bool) map[string]*schema.Schema {
 									Type:     schema.TypeList,
 									MaxItems: 1,
 									Optional: true,
-									ConflictsWith: []string{
-										"and_condition.or_condition.pattern_match",
-										"and_condition.or_condition.greater_than",
-										"and_condition.or_condition.less_than",
-									},
+									/*
+										ConflictsWith: []string{
+											"and_condition.or_condition.pattern_match",
+											"and_condition.or_condition.greater_than",
+											"and_condition.or_condition.less_than",
+										},
+									*/
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"context": {

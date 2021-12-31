@@ -388,17 +388,19 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"rule.translated_packet.source.dynamic_ip",
-													"rule.translated_packet.source.static_ip",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.source.dynamic_ip",
+														"rule.translated_packet.source.static_ip",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"translated_address": {
-															Type:          schema.TypeList,
-															Optional:      true,
-															ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip_and_port.interface_address"},
-															MaxItems:      1,
+															Type:     schema.TypeList,
+															Optional: true,
+															//ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip_and_port.interface_address"},
+															MaxItems: 1,
 															Elem: &schema.Resource{
 																Schema: map[string]*schema.Schema{
 																	"translated_addresses": {
@@ -413,10 +415,10 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 														},
 
 														"interface_address": {
-															Type:          schema.TypeList,
-															Optional:      true,
-															ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip_and_port.translated_address"},
-															MaxItems:      1,
+															Type:     schema.TypeList,
+															Optional: true,
+															//ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip_and_port.translated_address"},
+															MaxItems: 1,
 															Elem: &schema.Resource{
 																Schema: map[string]*schema.Schema{
 																	"interface": {
@@ -438,10 +440,12 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"rule.translated_packet.source.dynamic_ip_and_port",
-													"rule.translated_packet.source.static_ip",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.source.dynamic_ip_and_port",
+														"rule.translated_packet.source.static_ip",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"translated_addresses": {
@@ -459,10 +463,10 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 															Elem: &schema.Resource{
 																Schema: map[string]*schema.Schema{
 																	"translated_address": {
-																		Type:          schema.TypeList,
-																		Optional:      true,
-																		ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip.fallback.interface_address"},
-																		MaxItems:      1,
+																		Type:     schema.TypeList,
+																		Optional: true,
+																		//ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip.fallback.interface_address"},
+																		MaxItems: 1,
 																		Elem: &schema.Resource{
 																			Schema: map[string]*schema.Schema{
 																				"translated_addresses": {
@@ -477,10 +481,10 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 																	},
 
 																	"interface_address": {
-																		Type:          schema.TypeList,
-																		Optional:      true,
-																		ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip.fallback.translated_address"},
-																		MaxItems:      1,
+																		Type:     schema.TypeList,
+																		Optional: true,
+																		//ConflictsWith: []string{"rule.translated_packet.source.dynamic_ip.fallback.translated_address"},
+																		MaxItems: 1,
 																		Elem: &schema.Resource{
 																			Schema: map[string]*schema.Schema{
 																				"interface": {
@@ -511,10 +515,12 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 												Type:     schema.TypeList,
 												Optional: true,
 												MaxItems: 1,
-												ConflictsWith: []string{
-													"rule.translated_packet.source.dynamic_ip_and_port",
-													"rule.translated_packet.source.dynamic_ip",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.source.dynamic_ip_and_port",
+														"rule.translated_packet.source.dynamic_ip",
+													},
+												*/
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
 														"translated_address": {
@@ -541,11 +547,13 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 											"static": {
 												Type:     schema.TypeList,
 												Optional: true,
-												ConflictsWith: []string{
-													"rule.translated_packet.destination.static_translation",
-													"rule.translated_packet.destination.dynamic",
-													"rule.translated_packet.destination.dynamic_translation",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.destination.static_translation",
+														"rule.translated_packet.destination.dynamic",
+														"rule.translated_packet.destination.dynamic_translation",
+													},
+												*/
 												MaxItems:   1,
 												Deprecated: "Use 'static_translation' instead",
 												Elem: &schema.Resource{
@@ -564,11 +572,13 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 											"static_translation": {
 												Type:     schema.TypeList,
 												Optional: true,
-												ConflictsWith: []string{
-													"rule.translated_packet.destination.static",
-													"rule.translated_packet.destination.dynamic",
-													"rule.translated_packet.destination.dynamic_translation",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.destination.static",
+														"rule.translated_packet.destination.dynamic",
+														"rule.translated_packet.destination.dynamic_translation",
+													},
+												*/
 												MaxItems: 1,
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{
@@ -586,11 +596,13 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 											"dynamic": {
 												Type:     schema.TypeList,
 												Optional: true,
-												ConflictsWith: []string{
-													"rule.translated_packet.destination.static",
-													"rule.translated_packet.destination.static_translation",
-													"rule.translated_packet.destination.dynamic_translation",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.destination.static",
+														"rule.translated_packet.destination.static_translation",
+														"rule.translated_packet.destination.dynamic_translation",
+													},
+												*/
 												MaxItems:   1,
 												Deprecated: "Use 'dynamic_translation' instead",
 												Elem: &schema.Resource{
@@ -613,11 +625,13 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 											"dynamic_translation": {
 												Type:     schema.TypeList,
 												Optional: true,
-												ConflictsWith: []string{
-													"rule.translated_packet.destination.static",
-													"rule.translated_packet.destination.static_translation",
-													"rule.translated_packet.destination.dynamic",
-												},
+												/*
+													ConflictsWith: []string{
+														"rule.translated_packet.destination.static",
+														"rule.translated_packet.destination.static_translation",
+														"rule.translated_packet.destination.dynamic",
+													},
+												*/
 												MaxItems: 1,
 												Elem: &schema.Resource{
 													Schema: map[string]*schema.Schema{

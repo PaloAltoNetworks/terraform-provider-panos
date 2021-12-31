@@ -330,9 +330,11 @@ func pbfRuleGroupSchema(isResource bool, rmList []string) map[string]*schema.Sch
 									Type:     schema.TypeSet,
 									Optional: true,
 									MinItems: 1,
-									ConflictsWith: []string{
-										"rule.source.interfaces",
-									},
+									/*
+										ConflictsWith: []string{
+											"rule.source.interfaces",
+										},
+									*/
 									Elem: &schema.Schema{
 										Type: schema.TypeString,
 									},
@@ -341,9 +343,11 @@ func pbfRuleGroupSchema(isResource bool, rmList []string) map[string]*schema.Sch
 									Type:     schema.TypeSet,
 									Optional: true,
 									MinItems: 1,
-									ConflictsWith: []string{
-										"rule.source.zones",
-									},
+									/*
+										ConflictsWith: []string{
+											"rule.source.zones",
+										},
+									*/
 									Elem: &schema.Schema{
 										Type: schema.TypeString,
 									},
