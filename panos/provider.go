@@ -54,6 +54,14 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				Description: "Target setting (NGFW serial number)",
 			},
+			"additional_headers": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "Additional HTTP headers to send with API calls",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"logging": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -83,19 +91,36 @@ func Provider() terraform.ResourceProvider {
 			"panos_antivirus_security_profile":          dataSourceAntivirusSecurityProfile(),
 			"panos_antivirus_security_profiles":         dataSourceAntivirusSecurityProfiles(),
 			"panos_api_key":                             dataSourceApiKey(),
+			"panos_application_object":                  dataSourceApplicationObject(),
+			"panos_application_objects":                 dataSourceApplicationObjects(),
 			"panos_arp":                                 dataSourceArp(),
 			"panos_arps":                                dataSourceArps(),
+			"panos_audit_comment_history":               dataSourceAuditCommentHistory(),
+			"panos_certificate_profile":                 dataSourceCertificateProfile(),
+			"panos_certificate_profiles":                dataSourceCertificateProfiles(),
 			"panos_custom_data_pattern_object":          dataSourceCustomDataPatternObject(),
 			"panos_custom_data_pattern_objects":         dataSourceCustomDataPatternObjects(),
+			"panos_custom_url_category":                 dataSourceCustomUrlCategory(),
+			"panos_custom_url_categories":               dataSourceCustomUrlCategories(),
 			"panos_data_filtering_security_profile":     dataSourceDataFilteringSecurityProfile(),
 			"panos_data_filtering_security_profiles":    dataSourceDataFilteringSecurityProfiles(),
+			"panos_decryption_rule":                     dataSourceDecryptionRule(),
+			"panos_decryption_rules":                    dataSourceDecryptionRules(),
 			"panos_device_group_parent":                 dataSourceDeviceGroupParent(),
 			"panos_dos_protection_profile":              dataSourceDosProtectionProfile(),
 			"panos_dos_protection_profiles":             dataSourceDosProtectionProfiles(),
 			"panos_dynamic_user_group":                  dataSourceDynamicUserGroup(),
 			"panos_dynamic_user_groups":                 dataSourceDynamicUserGroups(),
+			"panos_edl":                                 dataSourceEdl(),
+			"panos_edls":                                dataSourceEdls(),
+			"panos_email_server_profile":                dataSourceEmailServerProfile(),
+			"panos_email_server_profiles":               dataSourceEmailServerProfiles(),
 			"panos_file_blocking_security_profile":      dataSourceFileBlockingSecurityProfile(),
 			"panos_file_blocking_security_profiles":     dataSourceFileBlockingSecurityProfiles(),
+			"panos_local_user_db_group":                 dataSourceLocalUserDbGroup(),
+			"panos_local_user_db_groups":                dataSourceLocalUserDbGroups(),
+			"panos_nat_rule":                            dataSourceNatRule(),
+			"panos_nat_rules":                           dataSourceNatRules(),
 			"panos_ospf":                                dataSourceOspf(),
 			"panos_ospf_area":                           dataSourceOspfArea(),
 			"panos_ospf_areas":                          dataSourceOspfAreas(),
@@ -106,17 +131,31 @@ func Provider() terraform.ResourceProvider {
 			"panos_ospf_auth_profiles":                  dataSourceOspfAuthProfiles(),
 			"panos_ospf_export":                         dataSourceOspfExport(),
 			"panos_ospf_exports":                        dataSourceOspfExports(),
+			"panos_pbf_rule":                            dataSourcePbfRule(),
+			"panos_pbf_rules":                           dataSourcePbfRules(),
 			"panos_plugin":                              dataSourcePlugin(),
 			"panos_predefined_dlp_file_type":            dataSourcePredefinedDlpFileType(),
 			"panos_predefined_tdb_file_type":            dataSourcePredefinedTdbFileType(),
 			"panos_predefined_threat":                   dataSourcePredefinedThreat(),
+			"panos_security_profile_group":              dataSourceSecurityProfileGroup(),
+			"panos_security_profile_groups":             dataSourceSecurityProfileGroups(),
+			"panos_security_rule":                       dataSourceSecurityRule(),
+			"panos_security_rules":                      dataSourceSecurityRules(),
+			"panos_ssl_decrypt":                         dataSourceSslDecrypt(),
+			"panos_syslog_server_profile":               dataSourceSyslogServerProfile(),
+			"panos_syslog_server_profiles":              dataSourceSyslogServerProfiles(),
 			"panos_system_info":                         dataSourceSystemInfo(),
+			"panos_tech_support_file":                   dataSourceTechSupportFile(),
 			"panos_url_filtering_security_profile":      dataSourceUrlFilteringSecurityProfile(),
 			"panos_url_filtering_security_profiles":     dataSourceUrlFilteringSecurityProfiles(),
+			"panos_virtual_router":                      dataSourceVirtualRouter(),
+			"panos_virtual_routers":                     dataSourceVirtualRouters(),
 			"panos_vulnerability_security_profile":      dataSourceVulnerabilitySecurityProfile(),
 			"panos_vulnerability_security_profiles":     dataSourceVulnerabilitySecurityProfiles(),
 			"panos_wildfire_analysis_security_profile":  dataSourceWildfireAnalysisSecurityProfile(),
 			"panos_wildfire_analysis_security_profiles": dataSourceWildfireAnalysisSecurityProfiles(),
+			"panos_zone":                                dataSourceZone(),
+			"panos_zones":                               dataSourceZones(),
 
 			// Firewall data sources.
 			"panos_dhcp_interface_info": dataSourceDhcpInterfaceInfo(),
@@ -124,7 +163,9 @@ func Provider() terraform.ResourceProvider {
 			"panos_user_tag":            dataSourceUserTag(),
 
 			// Panorama data sources.
-			"panos_vm_auth_key": dataSourceVmAuthKey(),
+			"panos_vm_auth_key":   dataSourceVmAuthKey(),
+			"panos_device_group":  dataSourceDeviceGroup(),
+			"panos_device_groups": dataSourceDeviceGroups(),
 
 			// Aliases.
 			"panos_panorama_plugin": dataSourcePlugin(),
@@ -136,22 +177,35 @@ func Provider() terraform.ResourceProvider {
 			"panos_anti_spyware_security_profile":      resourceAntiSpywareSecurityProfile(),
 			"panos_antivirus_security_profile":         resourceAntivirusSecurityProfile(),
 			"panos_arp":                                resourceArp(),
+			"panos_certificate_import":                 resourceCertificateImport(),
+			"panos_certificate_profile":                resourceCertificateProfile(),
 			"panos_custom_data_pattern_object":         resourceCustomDataPatternObject(),
+			"panos_custom_url_category":                resourceCustomUrlCategory(),
+			"panos_custom_url_category_entry":          resourceCustomUrlCategoryEntry(),
 			"panos_data_filtering_security_profile":    resourceDataFilteringSecurityProfile(),
+			"panos_decryption_rule_group":              resourceDecryptionRuleGroup(),
 			"panos_dos_protection_profile":             resourceDosProtectionProfile(),
 			"panos_dynamic_user_group":                 resourceDynamicUserGroup(),
 			"panos_file_blocking_security_profile":     resourceFileBlockingSecurityProfile(),
+			"panos_local_user_db_group":                resourceLocalUserDbGroup(),
+			"panos_local_user_db_user":                 resourceLocalUserDbUser(),
 			"panos_ospf":                               resourceOspf(),
 			"panos_ospf_area":                          resourceOspfArea(),
 			"panos_ospf_area_interface":                resourceOspfAreaInterface(),
 			"panos_ospf_area_virtual_link":             resourceOspfAreaVirtualLink(),
 			"panos_ospf_auth_profile":                  resourceOspfAuthProfile(),
 			"panos_ospf_export":                        resourceOspfExport(),
+			"panos_security_profile_group":             resourceSecurityProfileGroup(),
+			"panos_ssl_decrypt":                        resourceSslDecrypt(),
+			"panos_ssl_decrypt_trusted_root_ca_entry":  resourceSslDecryptTrustedRootCaEntry(),
 			"panos_url_filtering_security_profile":     resourceUrlFilteringSecurityProfile(),
+			"panos_vm_information_source":              resourceVmInformationSource(),
 			"panos_vulnerability_security_profile":     resourceVulnerabilitySecurityProfile(),
 			"panos_wildfire_analysis_security_profile": resourceWildfireAnalysisSecurityProfile(),
 
 			// Panorama resources.
+			"panos_device_group":                                  resourceDeviceGroup(),
+			"panos_device_group_entry":                            resourceDeviceGroupEntry(),
 			"panos_device_group_parent":                           resourceDeviceGroupParent(),
 			"panos_panorama_address_group":                        resourcePanoramaAddressGroup(),
 			"panos_panorama_address_object":                       resourcePanoramaAddressObject(),
@@ -175,8 +229,6 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_bgp_peer":                             resourcePanoramaBgpPeer(),
 			"panos_panorama_bgp_peer_group":                       resourcePanoramaBgpPeerGroup(),
 			"panos_panorama_bgp_redist_rule":                      resourcePanoramaBgpRedistRule(),
-			"panos_panorama_device_group":                         resourcePanoramaDeviceGroup(),
-			"panos_panorama_device_group_entry":                   resourcePanoramaDeviceGroupEntry(),
 			"panos_panorama_edl":                                  resourcePanoramaEdl(),
 			"panos_panorama_email_server_profile":                 resourcePanoramaEmailServerProfile(),
 			"panos_panorama_ethernet_interface":                   resourcePanoramaEthernetInterface(),
@@ -226,6 +278,8 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_nat_policy":            resourcePanoramaNatRule(),
 			"panos_panorama_security_policies":     resourcePanoramaSecurityPolicy(),
 			"panos_panorama_security_policy_group": resourcePanoramaSecurityRuleGroup(),
+			"panos_panorama_device_group":          resourceDeviceGroup(),
+			"panos_panorama_device_group_entry":    resourceDeviceGroupEntry(),
 
 			// Firewall resources.
 			"panos_address_group":                        resourceAddressGroup(),
@@ -234,6 +288,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_application_group":                    resourceApplicationGroup(),
 			"panos_application_object":                   resourceApplicationObject(),
 			"panos_application_signature":                resourceApplicationSignature(),
+			"panos_aws_cloud_watch":                      resourceAwsCloudWatch(),
 			"panos_bfd_profile":                          resourceBfdProfile(),
 			"panos_bgp":                                  resourceBgp(),
 			"panos_bgp_aggregate":                        resourceBgpAggregate(),
@@ -303,18 +358,6 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
-type CredsSpec struct {
-	Hostname          string   `json:"hostname"`
-	Username          string   `json:"username"`
-	Password          string   `json:"password"`
-	ApiKey            string   `json:"api_key"`
-	Protocol          string   `json:"protocol"`
-	Port              uint     `json:"port"`
-	Timeout           int      `json:"timeout"`
-	VerifyCertificate bool     `json:"verify_certificate"`
-	Logging           []string `json:"logging"`
-}
-
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	var (
 		logging uint32
@@ -322,14 +365,28 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	)
 
 	lm := map[string]uint32{
-		"quiet":   pango.LogQuiet,
-		"action":  pango.LogAction,
-		"query":   pango.LogQuery,
-		"op":      pango.LogOp,
-		"uid":     pango.LogUid,
-		"xpath":   pango.LogXpath,
-		"send":    pango.LogSend,
-		"receive": pango.LogReceive,
+		"quiet":                   pango.LogQuiet,
+		"action":                  pango.LogAction,
+		"query":                   pango.LogQuery,
+		"op":                      pango.LogOp,
+		"uid":                     pango.LogUid,
+		"log":                     pango.LogLog,
+		"export":                  pango.LogExport,
+		"import":                  pango.LogImport,
+		"xpath":                   pango.LogXpath,
+		"send":                    pango.LogSend,
+		"receive":                 pango.LogReceive,
+		"osx_curl":                pango.LogOsxCurl,
+		"curl_with_personal_data": pango.LogCurlWithPersonalData,
+	}
+
+	var hdrs map[string]string
+	hconfig := d.Get("additional_headers").(map[string]interface{})
+	if len(hconfig) > 0 {
+		hdrs = make(map[string]string)
+		for key, val := range hconfig {
+			hdrs[key] = val.(string)
+		}
 	}
 
 	if ll := d.Get("logging").([]interface{}); len(ll) > 0 {
@@ -353,6 +410,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			Port:              uint(d.Get("port").(int)),
 			Timeout:           d.Get("timeout").(int),
 			Target:            d.Get("target").(string),
+			Headers:           hdrs,
 			Logging:           logging,
 			VerifyCertificate: d.Get("verify_certificate").(bool),
 		},
