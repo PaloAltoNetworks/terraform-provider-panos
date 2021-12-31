@@ -1,3 +1,74 @@
+## 1.9.0 (December 30, 2021)
+
+NEW UNIVERSAL DATA SOURCES:
+* `panos_application_object` / `panos_application_objects`
+* `panos_audit_comment_history`
+* `panos_certificate_profile` / `panos_certificate_profiles`
+* `panos_custom_url_category` / `panos_custom_url_categories`
+* `panos_decryption_rule` / `panos_decryption_rules`
+* `panos_edl` / `panos_edls`
+* `panos_local_user_db_group` / `panos_local_user_db_groups`
+* `panos_nat_rule` / `panos_nat_rules`
+* `panos_pbf_rule` / `panos_pbf_rules`
+* `panos_security_profile_group` / `panos_security_profile_groups`
+* `panos_security_rule` / `panos_security_rules`
+* `panos_ssl_decrypt`  
+* `panos_tech_support_file`
+* `panos_virtual_router` / `panos_virtual_routers`
+* `panos_zone` / `panos_zones`
+
+NEW PANORAMA DATA SOURCES:
+* `panos_device_group` / `panos_device_groups` ([#284](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/284))
+
+NEW UNIVERSAL RESOURCES:
+* `panos_certificate_import` ([#252](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/252), [#4](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/4))
+* `panos_certificate_profile` 
+* `panos_custom_url_category` / `panos_custom_url_category_entry` ([#157](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/157))
+* `panos_decryption_rule_group` 
+* `panos_local_user_db_group` ([#310](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/310))
+* `panos_local_user_db_user` ([#310](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/310))
+* `panos_security_profile_group` ([#299](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/299))
+* `panos_ssl_decrypt`
+* `panos_ssl_decrypt_trusted_root_ca_entry`
+* `panos_vm_information_source` ([#281](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/281))
+
+NEW FIREWALL SPECIFIC RESOURCES:
+* `panos_aws_cloud_watch` ([#300](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/300))
+
+PROVIDER BLOCK ENHANCEMENTS:
+* Additional HTTP headers can be configured in API calls sent to PAN-OS ([#273](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/273))
+* New logging options added:  `log`, `export`, `import`, `osx_curl`, and `curl_with_personal_data`
+
+POLICY SPECIFIC ENHANCEMENTS:
+* Added `rule.audit_comment` to all policy resources.
+* Added `rule.group_tag` to all Policies resources except `panos_nat_rule` / `panos_panorama_nat_rule`. ([#243](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/243), [#247](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/247))
+* Added the attribute `rule.uuid` to all Policies rule resources except `panos_nat_rule` / `panos_panorama_nat_rule`.
+* Changing positioning or membership no longer deletes all of the rules.  This change was necessary to preserve the opstate for various policy rules (e.g. - hit count and audit comments)
+* All Policies resource timeouts for create/update operations set to 10min. ([#289](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/289))
+
+ENHANCEMENTS:
+* `panos_edl`: Performance improvements
+* `panos_edl`: `value=predefined-url` has been added
+* `panos_email_server_profile`: Performance improvements
+* `panos_http_server_profile`: Performance improvements
+* `panos_ike_crypto_profile` / `panos_panorama_ike_crypto_profile`: Added new GCM encryptions added in PAN-OS 10.0. ([#304](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/304))
+* `panos_log_forwarding_profile` / `panos_panorama_log_forwarding_profile`: `log_type=decryption` has been added ([#305](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/305))
+* `panos_panorama_email_server_profile`: This can now be configured on Panorama
+* `panos_snmptrap_server_profile`: Performance improvements
+* `panos_syslog_server_profile`: Performance improvements
+* Added checking in all Panorama Policy resources and data sources for invalid combinations of `device_group` and `rulebase`. ([#275](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/275))
+
+FIXES:
+* `panos_application_object` / `panos_panorama_application_object`: `ip_protocol.value` is now a string instead of an int
+* `panos_edl`: `value=predefined` is now `value=predefined-ip`
+* `panos_ipsec_crypto_profile` / `panos_panorama_ipsec_crypto_profile`: Removed the validation function to allow `dh_group=no-pfs`. ([#307](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/307))
+* `panos_virtual_router` / `panos_panorama_virtual_router`: Importing a virtual router that has been configured via the GUI now reflects administrative distances left as their default values ([#306](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/306))
+* The `rule.hip_profiles` parameter in all security rule resources is now Optional instead of Required. ([#293](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/293))
+* Fixed the parsing of the `rule.target` parameter for all Policy resources and data sources. ([#242](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/242), [#290](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/290), [#298](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/298))
+* Fixed detecting when a policy rule group is misplaced in certain circumstances.
+* `panos_vlan_entry` / `panos_panorama_vlan_entry`: Fixed removal of this resource.
+* Various documentation fixes.
+
 ## 1.8.3 (April 26, 2021)
 
 ENHANCEMENTS:
