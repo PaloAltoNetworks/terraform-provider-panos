@@ -77,7 +77,7 @@ The following arguments are supported:
 * `name` - (Required) The name.
 * `description` - (Optional) The description.
 * `log_type` - (Optional) The log type.  Valid values are `traffic` (default),
-  `threat`, `wildfire`, `url`, `data`, `gtp`, `tunnel`, `auth`, or `sctp`.
+  `threat`, `wildfire`, `url`, `data`, `gtp`, `tunnel`, `auth`, `sctp`, or `decryption`.
 * `filter` - (Optional) The filter (default: `All Logs`).
 * `send_to_panorama` - (Optional, bool) Set to `true` to send to Panorama.
 * `snmptrap_server_profiles` - (Optional) List of SNMP server profiles.
