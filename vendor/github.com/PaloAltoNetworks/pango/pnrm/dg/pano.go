@@ -196,7 +196,7 @@ func (c *Panorama) AssignParent(child, parent string) error {
 		return err
 	}
 
-	return c.ns.Client.WaitForJob(ans.Id, 0, nil)
+	return c.ns.Client.WaitForJob(ans.Id, 0, nil, nil)
 }
 
 func (c *Panorama) pather() namespace.Pather {

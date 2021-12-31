@@ -345,7 +345,7 @@ func (c *Client) ValidateConfig(sync bool, sleep time.Duration) (uint, error) {
 		return id, nil
 	}
 
-	return id, c.WaitForJob(id, sleep, nil)
+	return id, c.WaitForJob(id, sleep, nil, nil)
 }
 
 // RevertToRunningConfig discards any changes made and reverts to the last
@@ -489,6 +489,9 @@ func (c *Client) UnlockCommits(vsys, admin string) error {
 // The sleep param is the length of time to wait between polling for job
 // completion.
 //
+// The extras param should be either nil or a url.Values{} to be mixed in with
+// the constructed request.
+//
 // If you want to unmarshal the response into a struct, then pass in a
 // pointer to the struct for the "resp" param.  If you just want to know if
 // the job completed with a status other than "FAIL", you only need to check
@@ -496,7 +499,7 @@ func (c *Client) UnlockCommits(vsys, admin string) error {
 //
 // In the case that there are multiple errors returned from the job, the first
 // error is returned as the error string, and no unmarshaling is attempted.
-func (c *Client) WaitForJob(id uint, sleep time.Duration, resp interface{}) error {
+func (c *Client) WaitForJob(id uint, sleep time.Duration, extras, resp interface{}) error {
 	var err error
 	var prev uint
 	var data []byte
@@ -517,7 +520,7 @@ func (c *Client) WaitForJob(id uint, sleep time.Duration, resp interface{}) erro
 		ans = util.BasicJob{}
 
 		// Get current percent complete.
-		data, err = c.Op(req, "", nil, &ans)
+		data, err = c.Op(req, "", extras, &ans)
 		if err != nil {
 			return err
 		}

@@ -14,7 +14,7 @@ github.com/Masterminds/goutils
 github.com/Masterminds/semver
 # github.com/Masterminds/sprig v2.22.0+incompatible
 github.com/Masterminds/sprig
-# github.com/PaloAltoNetworks/pango v0.7.0
+# github.com/PaloAltoNetworks/pango v0.7.1
 github.com/PaloAltoNetworks/pango
 github.com/PaloAltoNetworks/pango/audit
 github.com/PaloAltoNetworks/pango/dev

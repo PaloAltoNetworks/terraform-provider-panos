@@ -44,7 +44,7 @@ type XapiClient interface {
 	EntryListUsing(Retriever, []string) ([]string, error)
 	MemberListUsing(Retriever, []string) ([]string, error)
 	RequestPasswordHash(string) (string, error)
-	WaitForJob(uint, time.Duration, interface{}) error
+	WaitForJob(uint, time.Duration, interface{}, interface{}) error
 	WaitForLogs(uint, time.Duration, time.Duration, interface{}) ([]byte, error)
 	Clock() (time.Time, error)
 	PositionFirstEntity(int, string, string, []string, []string) error
