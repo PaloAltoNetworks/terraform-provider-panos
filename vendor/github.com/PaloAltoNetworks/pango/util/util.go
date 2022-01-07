@@ -274,9 +274,6 @@ func ValidateRulebase(dg, base string) error {
 			return fmt.Errorf("rulebase %q requires \"shared\" device group", base)
 		}
 	case PreRulebase, PostRulebase:
-		if dg == "shared" {
-			return fmt.Errorf("rulebase %q requires a specific device group, not \"shared\"", base)
-		}
 	default:
 		return fmt.Errorf("unknown rulebase %q", base)
 	}
