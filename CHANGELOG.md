@@ -1,3 +1,9 @@
+## 1.9.1 (January 7, 2022)
+
+FIXES:
+
+* Allow pre/post rulebase with "shared" for all Panorama policy resources ([#314](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/314))
+
 ## 1.9.0 (December 30, 2021)
 
 NEW UNIVERSAL DATA SOURCES:
