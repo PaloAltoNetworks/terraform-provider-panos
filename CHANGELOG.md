@@ -1,3 +1,9 @@
+## 1.9.2 (January 10, 2022)
+
+FIXES:
+
+* `panos_ike_crypto_profile` / `panos_panorama_ike_crypto_profile`: Fix for importing this resource. ([#316](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/316))
+
 ## 1.9.1 (January 7, 2022)
 
 FIXES:
