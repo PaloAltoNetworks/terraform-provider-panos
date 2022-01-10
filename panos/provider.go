@@ -237,7 +237,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_gke_cluster_group":                    resourcePanoramaGkeClusterGroup(),
 			"panos_panorama_gre_tunnel":                           resourcePanoramaGreTunnel(),
 			"panos_panorama_http_server_profile":                  resourcePanoramaHttpServerProfile(),
-			"panos_panorama_ike_crypto_profile":                   resourcePanoramaIkeCryptoProfile(),
+			"panos_panorama_ike_crypto_profile":                   resourceIkeCryptoProfile(),
 			"panos_panorama_ike_gateway":                          resourcePanoramaIkeGateway(),
 			"panos_panorama_ipsec_crypto_profile":                 resourcePanoramaIpsecCryptoProfile(),
 			"panos_panorama_ipsec_tunnel":                         resourcePanoramaIpsecTunnel(),

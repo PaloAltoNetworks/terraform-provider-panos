@@ -62,7 +62,7 @@ func testAccCheckPanosIkeCryptoProfileExists(n string, o *ike.Entry) resource.Te
 		}
 
 		fw := testAccProvider.Meta().(*pango.Firewall)
-		name := rs.Primary.ID
+		_, _, name := parseIkeCryptoProfileId(rs.Primary.ID)
 		v, err := fw.Network.IkeCryptoProfile.Get(name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -113,9 +113,10 @@ func testAccPanosIkeCryptoProfileDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			_, err := fw.Network.IkeCryptoProfile.Get(rs.Primary.ID)
+			_, _, name := parseIkeCryptoProfileId(rs.Primary.ID)
+			_, err := fw.Network.IkeCryptoProfile.Get(name)
 			if err == nil {
-				return fmt.Errorf("Object %q still exists", rs.Primary.ID)
+				return fmt.Errorf("Object %q still exists", name)
 			}
 		}
 		return nil
