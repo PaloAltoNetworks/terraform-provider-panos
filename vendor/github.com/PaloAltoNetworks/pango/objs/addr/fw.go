@@ -68,6 +68,78 @@ func (c *Firewall) Delete(vsys string, e ...interface{}) error {
 	return c.ns.Delete(c.pather(vsys), names, nErr)
 }
 
+/*
+ConfigureGroup configures the given address objects on PAN-OS.
+
+Due to caching in the GUI, objects configured via a bulk SET will not show
+up in the dropdowns in the GUI (aka - Security Rules).  Restarting the
+management plane will force the cache to refresh.
+*/
+func (c *Firewall) ConfigureGroup(vsys string, objs []Entry, prevNames []string) error {
+	var err error
+	setList := make([]Entry, 0, len(objs))
+	editList := make([]Entry, 0, len(objs))
+
+	curObjs, err := c.GetAll(vsys)
+	if err != nil {
+		return err
+	}
+
+	// Determine which can be set and which must be edited.
+	for _, x := range objs {
+		var found bool
+		for _, live := range curObjs {
+			if x.Name == live.Name {
+				found = true
+				if !ObjectsMatch(x, live) {
+					editList = append(editList, x)
+				}
+				break
+			}
+		}
+		if !found {
+			setList = append(setList, x)
+		}
+	}
+
+	// Set all objects.
+	if len(setList) > 0 {
+		if err = c.Set(vsys, setList...); err != nil {
+			return err
+		}
+	}
+
+	// Edit each object one by one.
+	for _, x := range editList {
+		if err = c.Edit(vsys, x); err != nil {
+			return err
+		}
+	}
+
+	// Delete rules removed from the group.
+	if len(prevNames) != 0 {
+		rmList := make([]interface{}, 0, len(prevNames))
+		for _, name := range prevNames {
+			var found bool
+			for _, x := range objs {
+				if x.Name == name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				rmList = append(rmList, name)
+			}
+		}
+
+		if err = c.Delete(vsys, rmList...); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (c *Firewall) pather(vsys string) namespace.Pather {
 	return func(v []string) ([]string, error) {
 		return c.xpath(vsys, v)

@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
+	"github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
 )
 
@@ -95,13 +96,71 @@ func (n *Standard) Delete(pather Pather, names []string, nErr error) error {
 		n.Client.LogAction("(delete) %s", n.Singular)
 	}
 
-	path, pErr := pather(names)
-	if pErr != nil {
-		return pErr
+	var err error
+
+	if nameChunk(0, names) == len(names) {
+		// If we don't have to chunk, don't chunk the deletes.
+		path, pErr := pather(names)
+		if pErr != nil {
+			return pErr
+		}
+
+		_, err = n.Client.Delete(path, nil, nil)
+	} else {
+		// After some testing, PAN-OS seems to be able to handle a DELETE API call
+		// with up to 25k characters in around 3.3sec while not under stress, but
+		// this can baloon up to 15sec with PAN-OS under load.  Seems like a timeout
+		// of 30sec is more reliably correct, so will have to document this in the
+		// provider.
+		var start int
+		breaks := nameChunks(names)
+		for i, end := range breaks {
+			n.Client.LogAction("(delete) %d of %d - %d item(s)", i+1, len(breaks), end-start)
+			path, pErr := pather(names[start:end])
+			if pErr != nil {
+				return pErr
+			}
+
+			_, delError := n.Client.Delete(path, nil, nil)
+			if delError != nil {
+				err = delError
+				e2, ok := delError.(errors.Panos)
+				if !ok || !e2.ObjectNotFound() {
+					return err
+				}
+			}
+
+			start = end
+		}
 	}
 
-	_, err := n.Client.Delete(path, nil, nil)
 	return err
+}
+
+func nameChunks(names []string) []int {
+	var start, end int
+	ans := make([]int, 0, len(names)/500+1)
+
+	for {
+		end = nameChunk(start, names)
+		ans = append(ans, end)
+		start = end
+		if start == len(names) {
+			break
+		}
+	}
+
+	return ans
+}
+
+func nameChunk(start int, names []string) int {
+	var path_length, end int
+
+	for end = start; end < len(names) && path_length < 25000; end++ {
+		path_length += len(names[end]) + 8 + 4
+	}
+
+	return end
 }
 
 // MoveGroup places a logical group of objects in the desired location (rulebase

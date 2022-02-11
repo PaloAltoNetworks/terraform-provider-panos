@@ -90,3 +90,11 @@ func PanoramaNamespace(client util.XapiClient) *Panorama {
 		},
 	}
 }
+
+func ObjectsMatch(a, b Entry) bool {
+	return a.Name == b.Name &&
+		a.Type == b.Type &&
+		a.Value == b.Value &&
+		a.Description == b.Description &&
+		util.OrderedListsMatch(a.Tags, b.Tags)
+}
