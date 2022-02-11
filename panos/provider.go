@@ -174,6 +174,7 @@ func Provider() terraform.ResourceProvider {
 		ResourcesMap: map[string]*schema.Resource{
 			// Shared resources.
 			"panos_address_object":                     resourceAddressObject(),
+			"panos_address_objects":                    resourceAddressObjects(),
 			"panos_anti_spyware_security_profile":      resourceAntiSpywareSecurityProfile(),
 			"panos_antivirus_security_profile":         resourceAntivirusSecurityProfile(),
 			"panos_arp":                                resourceArp(),
