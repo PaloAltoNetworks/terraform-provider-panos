@@ -7,6 +7,9 @@ subcategory: "Objects"
 
 This resource allows you to add/update/delete address objects.
 
+If you need hundreds or thousands of address objects, you could consider using
+[`panos_address_objects`](address_objects.html) instead.
+
 
 ## PAN-OS
 
