@@ -1,3 +1,10 @@
+## 1.10.0 (February 11, 2022)
+
+NEW UNIVERSAL RESOURCES:
+
+* `panos_address_objects`
+
+
 ## 1.9.2 (January 10, 2022)
 
 FIXES:
