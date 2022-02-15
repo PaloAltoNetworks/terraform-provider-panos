@@ -15,6 +15,8 @@ to PAN-OS better than numerous individual `panos_address_object` resource
 definitions can.  However, there are a number of additional considerations that
 come with this resource, which are detailed below.
 
+**This resource is only available from version 1.10.0 and up.**
+
 
 ## PAN-OS
 
