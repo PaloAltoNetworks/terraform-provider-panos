@@ -185,6 +185,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_custom_url_category_entry":          resourceCustomUrlCategoryEntry(),
 			"panos_data_filtering_security_profile":    resourceDataFilteringSecurityProfile(),
 			"panos_decryption_rule_group":              resourceDecryptionRuleGroup(),
+			"panos_dhcp_relay":                         resourceDhcpRelay(),
 			"panos_dos_protection_profile":             resourceDosProtectionProfile(),
 			"panos_dynamic_user_group":                 resourceDynamicUserGroup(),
 			"panos_file_blocking_security_profile":     resourceFileBlockingSecurityProfile(),
