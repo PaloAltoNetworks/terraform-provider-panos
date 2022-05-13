@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/tags"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -68,10 +67,14 @@ func buildAdministrativeTagId(a, b string) string {
 }
 
 func createAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	vsys, o := parseAdministrativeTag(d)
 
-	if err := fw.Objects.Tags.Set(vsys, o); err != nil {
+	if err = fw.Objects.Tags.Set(vsys, o); err != nil {
 		return err
 	}
 
@@ -80,7 +83,11 @@ func createAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	vsys, name := parseAdministrativeTagId(d.Id())
 
 	o, err := fw.Objects.Tags.Get(vsys, name)
@@ -101,8 +108,11 @@ func readAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updateAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	var err error
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	vsys, o := parseAdministrativeTag(d)
 
 	lo, err := fw.Objects.Tags.Get(vsys, o.Name)
@@ -118,15 +128,17 @@ func updateAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	vsys, name := parseAdministrativeTagId(d.Id())
 
-	err := fw.Objects.Tags.Delete(vsys, name)
-	if err != nil {
-		if isObjectNotFound(err) {
-			return err
-		}
+	if err = fw.Objects.Tags.Delete(vsys, name); err != nil && !isObjectNotFound(err) {
+		return err
 	}
+
 	d.SetId("")
 	return nil
 }

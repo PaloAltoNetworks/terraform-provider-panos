@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/tags"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -68,10 +67,14 @@ func buildPanoramaAdministrativeTagId(a, b string) string {
 }
 
 func createPanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	dg, o := parsePanoramaAdministrativeTag(d)
 
-	if err := pano.Objects.Tags.Set(dg, o); err != nil {
+	if err = pano.Objects.Tags.Set(dg, o); err != nil {
 		return err
 	}
 
@@ -80,7 +83,11 @@ func createPanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) e
 }
 
 func readPanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	dg, name := parsePanoramaAdministrativeTagId(d.Id())
 
 	o, err := pano.Objects.Tags.Get(dg, name)
@@ -101,8 +108,11 @@ func readPanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) err
 }
 
 func updatePanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	var err error
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	dg, o := parsePanoramaAdministrativeTag(d)
 
 	lo, err := pano.Objects.Tags.Get(dg, o.Name)
@@ -118,15 +128,17 @@ func updatePanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) e
 }
 
 func deletePanoramaAdministrativeTag(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_administrative_tag")
+	if err != nil {
+		return err
+	}
+
 	dg, name := parsePanoramaAdministrativeTagId(d.Id())
 
-	err := pano.Objects.Tags.Delete(dg, name)
-	if err != nil {
-		if isObjectNotFound(err) {
-			return err
-		}
+	if err = pano.Objects.Tags.Delete(dg, name); err != nil && !isObjectNotFound(err) {
+		return err
 	}
+
 	d.SetId("")
 	return nil
 }
