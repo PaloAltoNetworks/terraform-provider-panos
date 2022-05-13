@@ -1,4 +1,4 @@
-## 1.11.0 (May 13, 2022)
+## 1.10.1 (May 13, 2022)
 
 * Various bug fixes
 * Numerous documentation fixes
