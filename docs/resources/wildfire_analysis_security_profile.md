@@ -15,13 +15,13 @@ Manages wildfire_analysis security profiles.
 
 NGFW:
 
-```
+```shell
 <vsys>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <device_group>:<name>
 ```
 

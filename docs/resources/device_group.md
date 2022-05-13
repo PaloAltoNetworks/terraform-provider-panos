@@ -28,7 +28,7 @@ Panorama only.
 
 ## Import Name
 
-```
+```shell
 <device_group>
 ```
 

@@ -25,7 +25,7 @@ NGFW and Panorama
 
 ## Import Names
 
-```
+```shell
 <template>:<template_stack>:<vsys>:<name>
 ```
 

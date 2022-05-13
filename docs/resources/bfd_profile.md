@@ -20,7 +20,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <name>
 ```
 

@@ -25,13 +25,13 @@ NGFW and Panorama.
 
 NGFW:
 
-```
+```shell
 <vsys>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <device_group>:<name>
 ```
 

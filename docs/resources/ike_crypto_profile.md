@@ -20,7 +20,7 @@ NGFW and Panorama
 
 ## Import Name
 
-```
+```shell
 <template>:<template_stack>:<name>
 ```
 

@@ -25,7 +25,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template_stack>:<device>
 ```
 

@@ -16,7 +16,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <ipsec_tunnel>:<name>
 ```
 

@@ -15,7 +15,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>::<interface_type>:<parent_interface>:<parent_mode>:<vsys>:<name>
 ```
 

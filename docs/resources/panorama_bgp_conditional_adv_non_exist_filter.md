@@ -20,7 +20,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>:<template_stack>:<virtual_router>:<bgp_conditional_adv>:<name>
 ```
 

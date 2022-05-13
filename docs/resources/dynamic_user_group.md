@@ -15,13 +15,13 @@ Manages dynamic user groups.
 
 NGFW:
 
-```
+```shell
 <vsys>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <device_group>:<name>
 ```
 

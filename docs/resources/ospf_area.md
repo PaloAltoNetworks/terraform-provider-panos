@@ -12,13 +12,13 @@ Manages an OSPF area config.
 
 NGFW:
 
-```
+```shell
 <virtual_router>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <template>::<virtual_router>:<name>
 ```
 

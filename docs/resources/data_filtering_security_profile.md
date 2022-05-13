@@ -12,13 +12,13 @@ Manages data filtering security profiles.
 
 NGFW:
 
-```
+```shell
 <vsys>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <device_group>:<name>
 ```
 

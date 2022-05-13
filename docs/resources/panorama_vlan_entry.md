@@ -15,7 +15,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>::<vlan>:<interface>
 ```
 

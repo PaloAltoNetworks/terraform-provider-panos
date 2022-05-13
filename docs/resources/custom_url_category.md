@@ -20,7 +20,7 @@ NGFW and Panorama.
 
 ## Import Name
 
-```
+```shell
 <device_group>:<vsys>:<name>
 ```
 

@@ -16,7 +16,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <virtual_router>:<name>
 ```
 

@@ -23,7 +23,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <provider hostname>
 ```
 

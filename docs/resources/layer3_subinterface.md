@@ -15,7 +15,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <interface_type>:<parent_interface>:<vsys>:<name>
 ```
 

@@ -26,7 +26,7 @@ NGFW and Panorama.
 
 ## Import Name
 
-```
+```shell
 <template>:<template_stack>:<virtual_router>:<interface>
 ```
 

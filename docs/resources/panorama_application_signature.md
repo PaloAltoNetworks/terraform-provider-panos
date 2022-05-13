@@ -15,7 +15,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <device_group>:<application_object>:<name>
 ```
 

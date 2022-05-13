@@ -19,7 +19,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <gke_cluster_group>:<name>
 ```
 

@@ -60,7 +60,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <vsys>:<name>
 ```
 

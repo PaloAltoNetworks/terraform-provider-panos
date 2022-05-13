@@ -12,13 +12,13 @@ Manages ARP config attached to an interface.
 
 NGFW:
 
-```
+```shell
 <interface_type>:<interface_name>:<subinterface_name>:<ip>
 ```
 
 Panorama:
 
-```
+```shell
 <template>::<interface_type>:<interface_name>:<subinterface_name>:<ip>
 ```
 

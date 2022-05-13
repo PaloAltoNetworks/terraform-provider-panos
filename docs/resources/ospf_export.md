@@ -12,13 +12,13 @@ Manages OSPF export config attached to a virtual router.
 
 NGFW:
 
-```
+```shell
 <virtual_router>:<name>
 ```
 
 Panorama:
 
-```
+```shell
 <template>::<virtual_router>:<name>
 ```
 

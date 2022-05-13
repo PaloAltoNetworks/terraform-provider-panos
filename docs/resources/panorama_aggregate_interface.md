@@ -15,7 +15,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>::<vsys>:<name>
 ```
 

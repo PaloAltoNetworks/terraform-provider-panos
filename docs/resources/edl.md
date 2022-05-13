@@ -44,7 +44,7 @@ and the version of PAN-OS you're running against:
 
 ## Import Name
 
-```
+```shell
 <device_group>:<vsys>:<name>
 ```
 

@@ -30,7 +30,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>:<serial>
 ```
 

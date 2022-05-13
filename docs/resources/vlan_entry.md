@@ -15,7 +15,7 @@ NGFW
 
 ## Import Name
 
-```
+```shell
 <vlan>:<interface>
 ```
 

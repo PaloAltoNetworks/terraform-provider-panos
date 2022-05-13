@@ -35,7 +35,7 @@ Panorama.
 
 ## Import Name
 
-```
+```shell
 <device_group>:<serial>
 ```
 

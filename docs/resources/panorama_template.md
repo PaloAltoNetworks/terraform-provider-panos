@@ -28,7 +28,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <name>
 ```
 

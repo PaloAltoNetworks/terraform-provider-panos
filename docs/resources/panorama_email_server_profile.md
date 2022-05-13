@@ -15,7 +15,7 @@ Panorama
 
 ## Import Name
 
-```
+```shell
 <template>:<template_stack>:<vsys>:<device_group>:<name>
 ```
 
