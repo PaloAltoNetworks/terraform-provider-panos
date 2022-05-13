@@ -52,7 +52,7 @@ func dataSourceAddressObject() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceAddressObjectRead,
 
-		Schema: addressObjectSchema(false, nil),
+		Schema: addressObjectSchema(false, true, nil),
 	}
 }
 
@@ -100,7 +100,7 @@ func resourceAddressObject() *schema.Resource {
 			{
 				Version: 0,
 				Type: (&schema.Resource{
-					Schema: addressObjectSchema(true, []string{"device_group"}),
+					Schema: addressObjectSchema(true, true, []string{"device_group"}),
 				}).CoreConfigSchema().ImpliedType(),
 				Upgrade: addressObjectUpgradeV0,
 			},
@@ -110,7 +110,7 @@ func resourceAddressObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: addressObjectSchema(true, nil),
+		Schema: addressObjectSchema(true, true, nil),
 	}
 }
 
@@ -126,7 +126,7 @@ func resourcePanoramaAddressObject() *schema.Resource {
 			{
 				Version: 0,
 				Type: (&schema.Resource{
-					Schema: addressObjectSchema(true, []string{"vsys"}),
+					Schema: addressObjectSchema(true, true, []string{"vsys"}),
 				}).CoreConfigSchema().ImpliedType(),
 				Upgrade: addressObjectUpgradeV0,
 			},
@@ -136,7 +136,7 @@ func resourcePanoramaAddressObject() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: addressObjectSchema(true, nil),
+		Schema: addressObjectSchema(true, true, nil),
 	}
 }
 
@@ -367,14 +367,14 @@ func deleteAddressObjects(d *schema.ResourceData, meta interface{}) error {
 }
 
 // Schema handling.
-func addressObjectSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
+func addressObjectSchema(isResource, forceNew bool, rmKeys []string) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
 		"device_group": deviceGroupSchema(),
 		"vsys":         vsysSchema("vsys1"),
 		"name": {
 			Type:     schema.TypeString,
 			Required: true,
-			ForceNew: true,
+			ForceNew: forceNew,
 		},
 		"type": {
 			Type:         schema.TypeString,
@@ -414,7 +414,7 @@ func addressObjectsSchema(isResource bool) map[string]*schema.Schema {
 			MinItems:    1,
 			Required:    true,
 			Elem: &schema.Resource{
-				Schema: addressObjectSchema(true, []string{"device_group", "vsys"}),
+				Schema: addressObjectSchema(true, false, []string{"device_group", "vsys"}),
 			},
 		},
 	}
