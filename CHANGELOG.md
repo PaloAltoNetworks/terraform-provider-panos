@@ -1,3 +1,9 @@
+## 1.11.0 (May 13, 2022)
+
+* Various bug fixes
+* Numerous documentation fixes
+
+
 ## 1.10.0 (February 11, 2022)
 
 NEW UNIVERSAL RESOURCES:
