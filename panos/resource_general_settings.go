@@ -1,7 +1,6 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/dev/general"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -178,7 +177,10 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
 }
 
 func createUpdateGeneralSettings(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 
 	o, err := fw.Device.GeneralSettings.Get()
 	if err != nil {
@@ -202,7 +204,11 @@ func createUpdateGeneralSettings(d *schema.ResourceData, meta interface{}) error
 }
 
 func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
+
 	o, err := fw.Device.GeneralSettings.Get()
 	if err != nil {
 		// I don't think you can delete the general settings from a firewall,
