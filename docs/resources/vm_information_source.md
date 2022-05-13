@@ -5,7 +5,7 @@ subcategory: "Device"
 
 # panos_vm_information_source
 
-This resource allows you to add/update/delete VM infomration sources.
+This resource allows you to add/update/delete VM information sources.
 
 
 ## PAN-OS
