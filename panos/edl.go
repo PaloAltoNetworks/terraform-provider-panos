@@ -200,7 +200,7 @@ func readEdl(d *schema.ResourceData, meta interface{}) error {
 	var err error
 	var o edl.Entry
 
-    // Migrate the ID.
+	// Migrate the ID.
 	tok := strings.Split(d.Id(), IdSeparator)
 	if len(tok) == 2 {
 		switch meta.(type) {
