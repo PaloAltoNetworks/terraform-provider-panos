@@ -200,6 +200,17 @@ func readEdl(d *schema.ResourceData, meta interface{}) error {
 	var err error
 	var o edl.Entry
 
+    // Migrate the ID.
+	tok := strings.Split(d.Id(), IdSeparator)
+	if len(tok) == 2 {
+		switch meta.(type) {
+		case *pango.Firewall:
+			d.SetId(buildEdlId("shared", tok[0], tok[1]))
+		case *pango.Panorama:
+			d.SetId(buildEdlId(tok[0], "vsys1", tok[1]))
+		}
+	}
+
 	dg, vsys, name := parseEdlId(d.Id())
 	d.Set("device_group", dg)
 	d.Set("vsys", vsys)
