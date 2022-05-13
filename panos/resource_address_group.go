@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/addrgrp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -88,7 +87,10 @@ func buildAddressGroupId(a, b string) string {
 }
 
 func createAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_address_group")
+	if err != nil {
+		return err
+	}
 	vsys, o := parseAddressGroup(d)
 
 	if err := fw.Objects.AddressGroup.Set(vsys, o); err != nil {
@@ -100,9 +102,11 @@ func createAddressGroup(d *schema.ResourceData, meta interface{}) error {
 }
 
 func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	fw, err := firewall(meta, "panos_panorama_address_group")
+	if err != nil {
+		return err
+	}
 
-	fw := meta.(*pango.Firewall)
 	vsys, name := parseAddressGroupId(d.Id())
 
 	o, err := fw.Objects.AddressGroup.Get(vsys, name)
@@ -129,9 +133,11 @@ func readAddressGroup(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updateAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	fw, err := firewall(meta, "panos_panorama_address_group")
+	if err != nil {
+		return err
+	}
 
-	fw := meta.(*pango.Firewall)
 	vsys, o := parseAddressGroup(d)
 
 	lo, err := fw.Objects.AddressGroup.Get(vsys, o.Name)
@@ -147,15 +153,16 @@ func updateAddressGroup(d *schema.ResourceData, meta interface{}) error {
 }
 
 func deleteAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	fw := meta.(*pango.Firewall)
+	fw, err := firewall(meta, "panos_panorama_address_group")
+	if err != nil {
+		return err
+	}
 	vsys, name := parseAddressGroupId(d.Id())
 
-	err := fw.Objects.AddressGroup.Delete(vsys, name)
-	if err != nil {
-		if isObjectNotFound(err) {
-			return err
-		}
+	if err = fw.Objects.AddressGroup.Delete(vsys, name); err != nil && !isObjectNotFound(err) {
+		return err
 	}
+
 	d.SetId("")
 	return nil
 }

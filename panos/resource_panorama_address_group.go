@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objs/addrgrp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -88,10 +87,13 @@ func buildPanoramaAddressGroupId(a, b string) string {
 }
 
 func createPanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_address_group")
+	if err != nil {
+		return err
+	}
 	dg, o := parsePanoramaAddressGroup(d)
 
-	if err := pano.Objects.AddressGroup.Set(dg, o); err != nil {
+	if err = pano.Objects.AddressGroup.Set(dg, o); err != nil {
 		return err
 	}
 
@@ -100,9 +102,11 @@ func createPanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error 
 }
 
 func readPanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	pano, err := panorama(meta, "panos_address_group")
+	if err != nil {
+		return err
+	}
 
-	pano := meta.(*pango.Panorama)
 	dg, name := parsePanoramaAddressGroupId(d.Id())
 
 	o, err := pano.Objects.AddressGroup.Get(dg, name)
@@ -129,9 +133,11 @@ func readPanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
 }
 
 func updatePanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	var err error
+	pano, err := panorama(meta, "panos_address_group")
+	if err != nil {
+		return err
+	}
 
-	pano := meta.(*pango.Panorama)
 	dg, o := parsePanoramaAddressGroup(d)
 
 	lo, err := pano.Objects.AddressGroup.Get(dg, o.Name)
@@ -147,15 +153,17 @@ func updatePanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error 
 }
 
 func deletePanoramaAddressGroup(d *schema.ResourceData, meta interface{}) error {
-	pano := meta.(*pango.Panorama)
+	pano, err := panorama(meta, "panos_address_group")
+	if err != nil {
+		return err
+	}
+
 	dg, name := parsePanoramaAddressGroupId(d.Id())
 
-	err := pano.Objects.AddressGroup.Delete(dg, name)
-	if err != nil {
-		if isObjectNotFound(err) {
-			return err
-		}
+	if err = pano.Objects.AddressGroup.Delete(dg, name); err != nil && !isObjectNotFound(err) {
+		return err
 	}
+
 	d.SetId("")
 	return nil
 }
