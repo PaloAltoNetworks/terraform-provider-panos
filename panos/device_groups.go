@@ -414,31 +414,6 @@ func panoramaDeviceGroupSchema(isResource bool) map[string]*schema.Schema {
 	return ans
 }
 
-func deviceGroupEntrySchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"device_group": {
-			Type:        schema.TypeString,
-			Description: "The device group name.",
-			Required:    true,
-			ForceNew:    true,
-		},
-		"serial": {
-			Type:        schema.TypeString,
-			Description: "The NGFW serial number.",
-			Required:    true,
-			ForceNew:    true,
-		},
-		"vsys_list": {
-			Type:        schema.TypeSet,
-			Description: "The vsys list; leave this unspecified if the NGFW is a VM.",
-			Optional:    true,
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-		},
-	}
-}
-
 func loadDeviceGroup(d *schema.ResourceData) dg.Entry {
 	return dg.Entry{
 		Name:        d.Get("name").(string),
