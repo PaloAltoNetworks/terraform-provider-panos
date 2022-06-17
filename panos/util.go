@@ -228,7 +228,7 @@ func dumpTarget(m map[string][]string) *schema.Set {
 	var items []interface{}
 
 	if len(m) > 0 {
-		items := make([]interface{}, 0, len(m))
+		items = make([]interface{}, 0, len(m))
 		for key := range m {
 			items = append(items, map[string]interface{}{
 				"serial":    key,
