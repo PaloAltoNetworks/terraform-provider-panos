@@ -1,3 +1,10 @@
+## 1.10.2 (June 17, 2022)
+
+FIXES:
+
+* Global fix for Panorama `target` and `device` specs in data sources and resources where you can specify the `serial` and `vsys_list` ([#340](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/340))
+
+* Fix for device group `device` param
 ## 1.10.1 (May 13, 2022)
 
 * Various bug fixes
