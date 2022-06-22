@@ -1,8 +1,16 @@
+## 1.10.3 (June 22, 2022)
+
+FIXES:
+
+* `panos_ssl_decrypt.ssl_decrypt_exclude_certificate` param is not properly configured ([#341](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/341))
+
+
 ## 1.10.2 (June 17, 2022)
 
 FIXES:
 
 * Global fix for Panorama `target` and `device` specs in data sources and resources where you can specify the `serial` and `vsys_list` ([#340](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/340))
+
 
 * Fix for device group `device` param
 ## 1.10.1 (May 13, 2022)
