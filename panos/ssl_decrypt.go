@@ -322,7 +322,7 @@ func loadSslDecrypt(d *schema.ResourceData) ssldecrypt.Config {
 	var list []ssldecrypt.SslDecryptExcludeCertificate
 	slist := d.Get("ssl_decrypt_exclude_certificate").([]interface{})
 	if len(slist) > 0 {
-		list := make([]ssldecrypt.SslDecryptExcludeCertificate, 0, len(slist))
+		list = make([]ssldecrypt.SslDecryptExcludeCertificate, 0, len(slist))
 		for i := range slist {
 			x := slist[i].(map[string]interface{})
 			list = append(list, ssldecrypt.SslDecryptExcludeCertificate{
