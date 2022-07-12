@@ -152,6 +152,136 @@ func deleteSslDecryptTrustedRootCaEntry(d *schema.ResourceData, meta interface{}
 	return nil
 }
 
+func resourcesSslDecryptExcludeCertificateEntry() *schema.Resource {
+	return &schema.Resource{
+		Create: createUpdateSslDecryptExcludeCertificateEntry,
+		Read:   readSslDecryptExcludeCertificateEntry,
+		Update: createUpdateSslDecryptExcludeCertificateEntry,
+		Delete: deleteSslDecryptExcludeCertificateEntry,
+
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
+		Schema: map[string]*schema.Schema{
+			"vsys":           vsysSchema("shared"),
+			"template":       templateSchema(true),
+			"template_stack": templateStackSchema(),
+			"ssl_decrypt_exclude_certificate": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"name": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"description": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"exclude": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func createUpdateSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var o ssldecrypt.Config
+
+	list := loadSslDecryptExcludeCertificate(d)
+
+	vsys := d.Get("vsys").(string)
+	tmpl := d.Get("template").(string)
+	ts := d.Get("template_stack").(string)
+
+	d.Set("vsys", vsys)
+	d.Set("template", tmpl)
+	d.Set("template_stack", ts)
+
+	id := buildSslDecryptId(tmpl, ts, vsys)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		o, err = con.Device.SslDecrypt.Get(vsys)
+		o.SslDecryptExcludeCertificates = list
+		err = con.Device.SslDecrypt.Edit(vsys, o)
+	case *pango.Panorama:
+		o, err = con.Device.SslDecrypt.Get(tmpl, ts, vsys)
+		o.SslDecryptExcludeCertificates = list
+		err = con.Device.SslDecrypt.Edit(tmpl, ts, vsys, o)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId(id)
+	return readSslDecryptExcludeCertificateEntry(d, meta)
+}
+
+func readSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var o ssldecrypt.Config
+
+	tmpl, ts, vsys := parseSslDecryptId(d.Id())
+
+	d.Set("template", tmpl)
+	d.Set("template_stack", ts)
+	d.Set("vsys", vsys)
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		o, err = con.Device.SslDecrypt.Get(vsys)
+	case *pango.Panorama:
+		o, err = con.Device.SslDecrypt.Get(tmpl, ts, vsys)
+	}
+
+	if err != nil {
+		if isObjectNotFound(err) {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	saveSslDecryptExcludeCertificates(d, o)
+
+	return nil
+}
+
+func deleteSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta interface{}) error {
+	var err error
+	var o ssldecrypt.Config
+	var list []ssldecrypt.SslDecryptExcludeCertificate
+
+	tmpl, ts, vsys := parseSslDecryptId(d.Id())
+
+	switch con := meta.(type) {
+	case *pango.Firewall:
+		o, err = con.Device.SslDecrypt.Get(vsys)
+		o.SslDecryptExcludeCertificates = list
+		err = con.Device.SslDecrypt.Edit(vsys, o)
+	case *pango.Panorama:
+		o, err = con.Device.SslDecrypt.Get(tmpl, ts, vsys)
+		o.SslDecryptExcludeCertificates = list
+		err = con.Device.SslDecrypt.Edit(tmpl, ts, vsys, o)
+	}
+
+	if err != nil && !isObjectNotFound(err) {
+		return err
+	}
+
+	d.SetId("")
+	return nil
+}
+
 // Resource.
 func resourceSslDecrypt() *schema.Resource {
 	return &schema.Resource{
@@ -318,7 +448,7 @@ func sslDecryptSchema(isResource bool) map[string]*schema.Schema {
 	return ans
 }
 
-func loadSslDecrypt(d *schema.ResourceData) ssldecrypt.Config {
+func loadSslDecryptExcludeCertificate(d *schema.ResourceData) []ssldecrypt.SslDecryptExcludeCertificate {
 	var list []ssldecrypt.SslDecryptExcludeCertificate
 	slist := d.Get("ssl_decrypt_exclude_certificate").([]interface{})
 	if len(slist) > 0 {
@@ -332,6 +462,11 @@ func loadSslDecrypt(d *schema.ResourceData) ssldecrypt.Config {
 			})
 		}
 	}
+	return list
+}
+
+func loadSslDecrypt(d *schema.ResourceData) ssldecrypt.Config {
+	list := loadSslDecryptExcludeCertificate(d)
 
 	return ssldecrypt.Config{
 		ForwardTrustCertificateRsa:            d.Get("forward_trust_certificate_rsa").(string),
@@ -342,6 +477,25 @@ func loadSslDecrypt(d *schema.ResourceData) ssldecrypt.Config {
 		TrustedRootCas:                        setAsList(d.Get("trusted_root_cas").(*schema.Set)),
 		DisabledPredefinedExcludeCertificates: setAsList(d.Get("disabled_predefined_exclude_certificates").(*schema.Set)),
 		SslDecryptExcludeCertificates:         list,
+	}
+}
+
+func saveSslDecryptExcludeCertificates(d *schema.ResourceData, o ssldecrypt.Config) {
+	var err error
+
+	var list []interface{}
+	if len(o.SslDecryptExcludeCertificates) > 0 {
+		list = make([]interface{}, 0, len(o.SslDecryptExcludeCertificates))
+		for _, x := range o.SslDecryptExcludeCertificates {
+			list = append(list, map[string]interface{}{
+				"name":        x.Name,
+				"description": x.Description,
+				"exclude":     x.Exclude,
+			})
+		}
+	}
+	if err = d.Set("ssl_decrypt_exclude_certificate", list); err != nil {
+		log.Printf("[WARN] Error setting 'ssl_decrypt_exclude_certificate' for %q: %s", d.Id(), err)
 	}
 }
 
@@ -362,20 +516,7 @@ func saveSslDecrypt(d *schema.ResourceData, o ssldecrypt.Config) {
 		log.Printf("[WARN] Error setting 'disabled_predefined_exclude_certificates' for %q: %s", d.Id(), err)
 	}
 
-	var list []interface{}
-	if len(o.SslDecryptExcludeCertificates) > 0 {
-		list = make([]interface{}, 0, len(o.SslDecryptExcludeCertificates))
-		for _, x := range o.SslDecryptExcludeCertificates {
-			list = append(list, map[string]interface{}{
-				"name":        x.Name,
-				"description": x.Description,
-				"exclude":     x.Exclude,
-			})
-		}
-	}
-	if err = d.Set("ssl_decrypt_exclude_certificate", list); err != nil {
-		log.Printf("[WARN] Error setting 'ssl_decrypt_exclude_certificate' for %q: %s", d.Id(), err)
-	}
+	saveSslDecryptExcludeCertificates(d, o)
 }
 
 // Id functions.

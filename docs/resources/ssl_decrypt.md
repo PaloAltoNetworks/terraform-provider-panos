@@ -12,6 +12,10 @@ This resource has some overlap with the
 resource.  If you want to use this resource with the other one, then make sure that
 your `trusted_root_cas` param is left undefined.
 
+This resource has some overlap with the
+[`panos_ssl_decrypt_exclude_certificate_entry`](ssl_decrypt_exclude_certificate_entry.html)
+resource.  If you want to use this resource with the other one, then make sure that
+your `ssl_decrypt_exclude_certificate` param is left undefined.
 
 ## Minimum PAN-OS Version
 
