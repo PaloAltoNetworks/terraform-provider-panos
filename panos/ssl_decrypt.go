@@ -196,6 +196,7 @@ func createUpdateSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta 
 	var o ssldecrypt.Config
 
 	list := loadSslDecryptExcludeCertificate(d)
+	o.SslDecryptExcludeCertificates = list
 
 	vsys := d.Get("vsys").(string)
 	tmpl := d.Get("template").(string)
@@ -209,13 +210,9 @@ func createUpdateSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta 
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		o, err = con.Device.SslDecrypt.Get(vsys)
-		o.SslDecryptExcludeCertificates = list
-		err = con.Device.SslDecrypt.Edit(vsys, o)
+		err = con.Device.SslDecrypt.SetSslDecryptExclude(vsys, o)
 	case *pango.Panorama:
-		o, err = con.Device.SslDecrypt.Get(tmpl, ts, vsys)
-		o.SslDecryptExcludeCertificates = list
-		err = con.Device.SslDecrypt.Edit(tmpl, ts, vsys, o)
+		err = con.Device.SslDecrypt.SetSslDecryptExclude(tmpl, ts, vsys, o)
 	}
 
 	if err != nil {
@@ -250,28 +247,21 @@ func readSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta interfac
 		}
 		return err
 	}
-
 	saveSslDecryptExcludeCertificates(d, o)
-
 	return nil
 }
 
 func deleteSslDecryptExcludeCertificateEntry(d *schema.ResourceData, meta interface{}) error {
 	var err error
 	var o ssldecrypt.Config
-	var list []ssldecrypt.SslDecryptExcludeCertificate
 
 	tmpl, ts, vsys := parseSslDecryptId(d.Id())
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		o, err = con.Device.SslDecrypt.Get(vsys)
-		o.SslDecryptExcludeCertificates = list
-		err = con.Device.SslDecrypt.Edit(vsys, o)
+		err = con.Device.SslDecrypt.DeleteSslDecryptExclude(vsys, o)
 	case *pango.Panorama:
-		o, err = con.Device.SslDecrypt.Get(tmpl, ts, vsys)
-		o.SslDecryptExcludeCertificates = list
-		err = con.Device.SslDecrypt.Edit(tmpl, ts, vsys, o)
+		err = con.Device.SslDecrypt.DeleteSslDecryptExclude(tmpl, ts, vsys, o)
 	}
 
 	if err != nil && !isObjectNotFound(err) {
