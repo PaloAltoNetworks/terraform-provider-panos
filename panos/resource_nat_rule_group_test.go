@@ -53,7 +53,7 @@ func testAccCheckPanosNatRuleGroupExists(top, bot string, o1, o2, o3 *nat.Entry)
 		if rTop.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, topList := parseNatRuleGroupId(rTop.Primary.ID)
+		_, _, vsys, _, _, topList := parseNatRuleGroupId(rTop.Primary.ID)
 		if len(topList) != 1 {
 			return fmt.Errorf("top is not len 1")
 		}
@@ -71,7 +71,7 @@ func testAccCheckPanosNatRuleGroupExists(top, bot string, o1, o2, o3 *nat.Entry)
 		if rBot.Primary.ID == "" {
 			return fmt.Errorf("Object label ID is not set")
 		}
-		vsys, _, _, botList := parseNatRuleGroupId(rBot.Primary.ID)
+		_, _, vsys, _, _, botList := parseNatRuleGroupId(rBot.Primary.ID)
 		if len(botList) != 2 {
 			return fmt.Errorf("bot is not len 2")
 		}
@@ -212,7 +212,7 @@ func testAccPanosNatRuleGroupDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			vsys, _, _, list := parseNatRuleGroupId(rs.Primary.ID)
+			_, _, vsys, _, _, list := parseNatRuleGroupId(rs.Primary.ID)
 			for _, rule := range list {
 				_, err := fw.Policies.Nat.Get(vsys, rule)
 				if err == nil {

@@ -65,7 +65,7 @@ func dataSourceNatRule() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceNatRuleRead,
 
-		Schema: natRuleGroupSchema(false, nil),
+		Schema: natRuleGroupSchema(false, 0, []string{"position_keyword", "position_reference"}),
 	}
 }
 
@@ -115,13 +115,38 @@ func resourceNatRuleGroup() *schema.Resource {
 		Update: createUpdateNatRuleGroup,
 		Delete: deleteNatRuleGroup,
 
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: natRuleGroupSchema(true, 1, []string{"device_group", "rulebase", "name"}),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: natRuleUpgradeV0,
+			},
+		},
+
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
 		},
 
-		Schema: natRuleGroupSchema(true, []string{"device_group", "rulebase"}),
+		Schema: natRuleGroupSchema(true, 1, []string{"name"}),
 	}
+}
+
+func natRuleUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+	if _, ok := raw["rulebase"]; !ok {
+		raw["rulebase"] = util.PreRulebase
+	}
+	if _, ok := raw["device_group"]; !ok {
+		raw["device_group"] = "shared"
+	}
+	if _, ok := raw["vsys"]; !ok {
+		raw["vsys"] = "vsys1"
+	}
+
+	return raw, nil
 }
 
 func resourcePanoramaNatRuleGroup() *schema.Resource {
@@ -131,50 +156,56 @@ func resourcePanoramaNatRuleGroup() *schema.Resource {
 		Update: createUpdateNatRuleGroup,
 		Delete: deleteNatRuleGroup,
 
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Version: 0,
+				Type: (&schema.Resource{
+					Schema: natRuleGroupSchema(true, 1, []string{"vsys", "name"}),
+				}).CoreConfigSchema().ImpliedType(),
+				Upgrade: natRuleUpgradeV0,
+			},
+		},
+
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
 		},
-
-		Schema: natRuleGroupSchema(true, []string{"vsys"}),
+		Schema: natRuleGroupSchema(true, 1, []string{"name"}),
 	}
 }
 
 func createUpdateNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
-	var id string
-	var vsys, dg, base string
 	var prevNames []string
 
 	move := movementAtoi(d.Get("position_keyword").(string))
 	oRule := d.Get("position_reference").(string)
+	dg := d.Get("device_group").(string)
+	base := d.Get("rulebase").(string)
+	vsys := d.Get("vsys").(string)
 	rules, auditComments := loadNatRules(d)
-
-	d.Set("position_keyword", movementItoa(move))
-	d.Set("position_reference", oRule)
 
 	if !movementIsRelative(move) && oRule != "" {
 		return fmt.Errorf("'position_reference' must be empty for non-relative movement")
 	}
 
+	d.Set("position_keyword", movementItoa(move))
+	d.Set("position_reference", oRule)
+	d.Set("device_group", dg)
+	d.Set("rulebase", base)
+	d.Set("vsys", vsys)
+
+	if d.Id() != "" {
+		_, _, _, _, _, prevNames = parseNatRuleGroupId(d.Id())
+	}
+
+	id := buildNatRuleGroupId(dg, base, vsys, move, oRule, rules)
+
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		if d.Id() != "" {
-			_, _, _, prevNames = parseNatRuleGroupId(d.Id())
-		}
-		vsys = d.Get("vsys").(string)
-		d.Set("vsys", vsys)
-		id = buildNatRuleGroupId(vsys, move, oRule, rules)
 		err = con.Policies.Nat.ConfigureRules(vsys, rules, auditComments, false, move, oRule, prevNames)
 	case *pango.Panorama:
-		if d.Id() != "" {
-			_, _, _, _, prevNames = parsePanoramaNatRuleGroupId(d.Id())
-		}
-		dg = d.Get("device_group").(string)
-		base = d.Get("rulebase").(string)
-		d.Set("device_group", dg)
-		d.Set("rulebase", base)
-		id = buildPanoramaNatRuleGroupId(dg, base, move, oRule, rules)
 		err = con.Policies.Nat.ConfigureRules(dg, base, rules, auditComments, false, move, oRule, prevNames)
 	}
 
@@ -188,17 +219,27 @@ func createUpdateNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 
 func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
-	var names []string
-	var vsys, dg, base, oRule string
 	var listing []nat.Entry
-	var move int
+
+	tok := strings.Split(d.Id(), IdSeparator)
+	if len(tok) == 4 {
+		d.SetId(strings.Join([]string{
+			"shared", util.PreRulebase, tok[0], tok[1], tok[2], tok[3],
+		}, IdSeparator))
+	} else if len(tok) == 5 {
+		d.SetId(strings.Join([]string{
+			tok[0], tok[1], "vsys1", tok[2], tok[3], tok[4],
+		}, IdSeparator))
+	} else if len(tok) != 6 {
+		return fmt.Errorf("Invalid ID len(%d) encountered: %s", len(tok), d.Id())
+	}
+
+	dg, base, vsys, move, oRule, names := parseNatRuleGroupId(d.Id())
 
 	switch con := meta.(type) {
 	case *pango.Firewall:
-		vsys, move, oRule, names = parseNatRuleGroupId(d.Id())
 		listing, err = con.Policies.Nat.GetAll(vsys)
 	case *pango.Panorama:
-		dg, base, move, oRule, names = parsePanoramaNatRuleGroupId(d.Id())
 		listing, err = con.Policies.Nat.GetAll(dg, base)
 	}
 
@@ -249,15 +290,8 @@ func readNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 
 func deleteNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 	var err error
-	var vsys, dg, base string
-	var names []string
 
-	switch meta.(type) {
-	case *pango.Firewall:
-		vsys, _, _, names = parseNatRuleGroupId(d.Id())
-	case *pango.Panorama:
-		dg, base, _, _, names = parsePanoramaNatRuleGroupId(d.Id())
-	}
+	dg, base, vsys, _, _, names := parseNatRuleGroupId(d.Id())
 
 	ilist := make([]interface{}, 0, len(names))
 	for _, x := range names {
@@ -280,12 +314,7 @@ func deleteNatRuleGroup(d *schema.ResourceData, meta interface{}) error {
 }
 
 // Schema functions.
-func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
-	var minRules int
-	if isResource {
-		minRules = 1
-	}
-
+func natRuleGroupSchema(isResource bool, ruleMin int, rmKeys []string) map[string]*schema.Schema {
 	ans := map[string]*schema.Schema{
 		"vsys":               vsysSchema("vsys1"),
 		"device_group":       deviceGroupSchema(),
@@ -295,7 +324,7 @@ func natRuleGroupSchema(isResource bool, rmKeys []string) map[string]*schema.Sch
 		"rule": {
 			Type:     schema.TypeList,
 			Required: true,
-			MinItems: minRules,
+			MinItems: ruleMin,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -913,12 +942,12 @@ func saveNatRules(d *schema.ResourceData, rules []nat.Entry) {
 }
 
 // Id functions.
-func buildNatRuleGroupId(a string, b int, c string, d []nat.Entry) string {
-	names := make([]string, 0, len(d))
-	for _, x := range d {
+func buildNatRuleGroupId(a, b, c string, d int, e string, f []nat.Entry) string {
+	names := make([]string, 0, len(f))
+	for _, x := range f {
 		names = append(names, x.Name)
 	}
-	return strings.Join([]string{a, strconv.Itoa(b), c, base64Encode(names)}, IdSeparator)
+	return strings.Join([]string{a, b, c, strconv.Itoa(d), e, base64Encode(names)}, IdSeparator)
 }
 
 func buildPanoramaNatRuleGroupId(a, b string, c int, d string, e []nat.Entry) string {
@@ -929,10 +958,10 @@ func buildPanoramaNatRuleGroupId(a, b string, c int, d string, e []nat.Entry) st
 	return strings.Join([]string{a, b, strconv.Itoa(c), d, base64Encode(names)}, IdSeparator)
 }
 
-func parseNatRuleGroupId(v string) (string, int, string, []string) {
+func parseNatRuleGroupId(v string) (string, string, string, int, string, []string) {
 	t := strings.Split(v, IdSeparator)
-	move, _ := strconv.Atoi(t[1])
-	return t[0], move, t[2], base64Decode(t[3])
+	move, _ := strconv.Atoi(t[3])
+	return t[0], t[1], t[2], move, t[4], base64Decode(t[5])
 }
 
 func parsePanoramaNatRuleGroupId(v string) (string, string, int, string, []string) {
