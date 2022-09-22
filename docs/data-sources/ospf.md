@@ -27,15 +27,27 @@ resource "panos_ospf" "x" {
     lsa_interval = 3
     max_neighbor_restart_time = 141
     spf_calculation_delay = 4
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "x" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "x" {
     template = panos_panorama_template.x.name
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }       
 ```
 

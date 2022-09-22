@@ -32,6 +32,10 @@ resource "panos_ipsec_crypto_profile" "example" {
     lifetime_value = 4
     lifesize_type = "mb"
     lifesize_value = 1
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

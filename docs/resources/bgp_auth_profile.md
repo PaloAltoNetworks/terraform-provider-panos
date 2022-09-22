@@ -20,16 +20,28 @@ resource "panos_bgp_auth_profile" "example" {
     virtual_router = panos_bgp.conf.virtual_router
     name = "prof1"
     secret = "secret"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_bgp" "conf" {
     virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "rtr" {
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

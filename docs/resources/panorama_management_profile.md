@@ -29,10 +29,18 @@ resource "panos_panorama_management_profile" "example" {
     name = "allow ping"
     ping = true
     permitted_ips = ["10.1.1.0/24", "192.168.80.0/24"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -33,6 +33,10 @@ resource "panos_email_server_profile" "example" {
         to_email = "alerts@example.com"
         email_gateway = "mail.example.com"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

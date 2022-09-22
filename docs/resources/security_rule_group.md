@@ -109,6 +109,10 @@ resource "panos_security_rule_group" "example1" {
         categories = ["any"]
         action = "deny"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_security_rule_group" "example2" {
@@ -126,26 +130,46 @@ resource "panos_security_rule_group" "example2" {
         categories = ["any"]
         action = "deny"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "bizdev" {
     name = "bizdev"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "dmz" {
     name = "dmz"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "sales" {
     name = "sales"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "eng" {
     name = "eng"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -194,6 +218,10 @@ resource "panos_security_rule_group" "example1" {
             ]
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_security_rule_group" "example2" {
@@ -211,6 +239,10 @@ resource "panos_security_rule_group" "example2" {
         services = ["application-default"]
         categories = ["any"]
         action = "deny"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

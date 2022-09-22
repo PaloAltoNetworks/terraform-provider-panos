@@ -29,10 +29,18 @@ resource "panos_static_route_ipv4" "example" {
     virtual_router = panos_virtual_router.vr1.name
     destination = "10.1.7.0/32"
     next_hop = "10.1.7.4"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "vr1" {
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

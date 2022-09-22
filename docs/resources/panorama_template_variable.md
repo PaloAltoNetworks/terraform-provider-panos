@@ -34,10 +34,18 @@ resource "panos_panorama_template_variable" "example" {
     name = "$example"
     type = "ip-address"
     value = "10.1.1.1/24"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "tmpl1" {
     name = "MyTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -35,10 +35,18 @@ resource "panos_panorama_gre_tunnel" "example" {
     peer_address = "192.168.1.1"
     tunnel_interface = panos_panorama_tunnel_interface.ti.name
     ttl = 42
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "tmpl" {
     name = "My Template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "ei" {
@@ -47,12 +55,20 @@ resource "panos_panorama_ethernet_interface" "ei" {
     vsys = "vsys1"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_tunnel_interface" "ti" {
     template = panos_panorama_template.tmpl.name
     name = "tunnel.7"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

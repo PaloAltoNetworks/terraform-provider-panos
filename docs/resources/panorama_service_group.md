@@ -29,16 +29,28 @@ resource "panos_panorama_service_group" "example" {
         panos_panorama_service_object.o1.name,
         panos_panorama_service_object.o2.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_service_object" "o1" {
     name = "svc1"
     ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_service_object" "o2" {
     name = "svc2"
     ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

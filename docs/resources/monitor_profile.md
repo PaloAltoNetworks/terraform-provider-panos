@@ -31,6 +31,10 @@ resource "panos_monitor_profile" "example" {
     name = "myProfile"
     interval = 5
     threshold = 3
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

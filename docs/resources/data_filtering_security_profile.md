@@ -34,6 +34,10 @@ resource "panos_data_filtering_security_profile" "example" {
         applications = ["any"]
         file_types = ["any"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_custom_data_pattern_object" "my_custom_obj" {
@@ -44,6 +48,10 @@ resource "panos_custom_data_pattern_object" "my_custom_obj" {
         name = "my regex"
         file_types = ["any"]
         regex = "this is my regex"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

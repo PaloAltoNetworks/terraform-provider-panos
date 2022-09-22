@@ -36,10 +36,18 @@ Panorama
 resource "panos_panorama_template_stack_entry" "example1" {
     template_stack = panos_panorama_template_stack.t.name
     device = "00112233"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template_stack" "t" {
     name = "my template stack"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

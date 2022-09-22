@@ -30,10 +30,18 @@ resource "panos_panorama_ike_gateway" "example" {
     peer_id_type = "ipaddr"
     peer_id_value = "10.5.1.1"
     ikev1_crypto_profile = "myIkeProfile"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

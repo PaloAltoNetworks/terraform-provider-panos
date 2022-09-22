@@ -35,6 +35,10 @@ resource "panos_telemetry" "example" {
     threat_prevention_reports = true
     threat_prevention_data = true
     threat_prevention_packet_captures = true
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

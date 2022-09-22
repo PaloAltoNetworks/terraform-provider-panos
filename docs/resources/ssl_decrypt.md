@@ -36,6 +36,10 @@ NGFW and Panorama.
 resource "panos_ssl_decrypt" "example" {
     forward_trust_certificate_rsa = panos_certificate_import.trust.name
     forward_untrust_certificate_rsa = panos_certificate_import.untrust.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_certificate_import" "trust" {
@@ -45,6 +49,10 @@ resource "panos_certificate_import" "trust" {
         private_key = file("key.pem")
         passphrase = "secret"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_certificate_import" "untrust" {
@@ -53,6 +61,10 @@ resource "panos_certificate_import" "untrust" {
         certificate = file("untrust-cert.pem")
         private_key = file("untrust-key.pem")
         passphrase = "foobar"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

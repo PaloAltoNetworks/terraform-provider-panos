@@ -28,14 +28,26 @@ Panorama.
 resource "panos_device_group_parent" "example1" {
     device_group = panos_device_group.b.name
     parent = panos_device_group.a.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "a" {
     name = "Group A"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "b" {
     name = "Group B"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -43,10 +55,18 @@ resource "panos_device_group" "b" {
 # Example 2:  Ensure that "Group C" is under "shared" and has no parent.
 resource "panos_device_group_parent" "example2" {
     device_group = panos_device_group.c.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "c" {
     name = "Group C"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

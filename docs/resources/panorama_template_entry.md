@@ -42,6 +42,10 @@ Panorama
 resource "panos_panorama_template_entry" "example1" {
     template = panos_panorama_template.t.name
     serial = "00112233"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 # Example for a physical firewall with multi-vsys enabled.
@@ -49,10 +53,18 @@ resource "panos_panorama_template_entry" "example2" {
     template = panos_panorama_template.t.name
     serial = "44556677"
     vsys_list = ["vsys1", "vsys2"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -30,12 +30,20 @@ resource "panos_layer3_subinterface" "example" {
     tag = 5
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e" {
     name = "ethernet1/5"
     vsys = "vsys1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

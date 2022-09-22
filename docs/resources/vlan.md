@@ -26,11 +26,19 @@ NGFW
 resource "panos_vlan" "example" {
     name = "myVlan"
     vlan_interface = panos_vlan_interface.vli.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_vlan_interface" "vli" {
     name = "vlan.6"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

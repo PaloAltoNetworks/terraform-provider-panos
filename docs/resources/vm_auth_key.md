@@ -17,6 +17,10 @@ Creates a VM auth key you can use to bootstrap a VM NGFW.
 # Basic usage.
 resource "panos_vm_auth_key" "example1" {
     hours = 24
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -27,6 +31,10 @@ resource "panos_vm_auth_key" "example2" {
 
     keepers = {
         rotate = time_rotating.tr.rotation_rfc3339
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 

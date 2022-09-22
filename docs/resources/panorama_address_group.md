@@ -35,16 +35,28 @@ resource "panos_panorama_address_group" "example" {
         panos_panorama_address_object.o1.name,
         panos_panorama_address_object.o2.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_address_object" "o1" {
     name = "ntp1"
     value = "192.168.1.1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_address_object" "o2" {
     name = "ntp2"
     value = "192.168.1.1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -54,6 +66,10 @@ resource "panos_panorama_address_group" "example" {
     name = "dynamic grp"
     description = "My internal NTP servers"
     dynamic_match = "'internal' and 'ntp'"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

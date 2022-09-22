@@ -19,6 +19,10 @@ NGFW
 resource "panos_userid_login" "example" {
     ip = "10.2.3.4"
     user = "user1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

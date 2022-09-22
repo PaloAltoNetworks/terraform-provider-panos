@@ -26,6 +26,10 @@ resource "panos_licensing" "example" {
         "code1",
         "code2",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -38,10 +38,18 @@ resource "panos_panorama_bgp_aggregate_advertise_filter" "example" {
     address_prefix {
         prefix = "10.1.2.0/24"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_bgp_aggregate" "ag" {
@@ -49,6 +57,10 @@ resource "panos_panorama_bgp_aggregate" "ag" {
     virtual_router = panos_panorama_bgp.conf.virtual_router
     name = "addyAgg1"
     prefix = "192.168.1.0/24"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_bgp" "conf" {
@@ -56,11 +68,19 @@ resource "panos_panorama_bgp" "conf" {
     virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
     template = panos_panorama_template.t.name
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

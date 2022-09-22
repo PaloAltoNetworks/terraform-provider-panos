@@ -24,6 +24,10 @@ data "panos_decryption_rule_group" "example" {
 
 resource "panos_panorama_device_group" "x" {
     name = "my device group"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

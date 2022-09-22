@@ -29,12 +29,20 @@ resource "panos_layer2_subinterface" "example" {
     vsys = "vsys1"
     name = "${panos_ethernet_interface.e.name}.5"
     tag = 5
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e" {
     name = "ethernet1/5"
     vsys = "vsys1"
     mode = "layer2"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

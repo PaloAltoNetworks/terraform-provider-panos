@@ -30,10 +30,18 @@ resource "panos_panorama_bgp_aggregate" "example" {
     name = "myAggRule"
     prefix = "192.168.1.0/24"
     weight = 17
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_templaet" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_bgp" "conf" {
@@ -41,11 +49,19 @@ resource "panos_panorama_bgp" "conf" {
     virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "vr" {
     template = panos_panorama_template.t.name
     name = "my vr"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

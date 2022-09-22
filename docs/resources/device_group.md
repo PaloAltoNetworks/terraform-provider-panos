@@ -49,6 +49,10 @@ resource "panos_device_group" "example" {
             "vsys2",
         ]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

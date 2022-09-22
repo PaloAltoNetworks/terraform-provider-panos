@@ -33,6 +33,10 @@ resource "panos_vm_information_source" "ex1" {
         secret_access_key = "abcd1234abcd12345"
         vpc_id = "myVpcId"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -49,6 +53,10 @@ resource "panos_vm_information_source" "ex2" {
         username = "user"
         password = "pass"
         update_interval = 6
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```
@@ -67,6 +75,10 @@ resource "panos_vm_information_source" "ex3" {
         password = "pass"
         update_interval = 6
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -83,6 +95,10 @@ resource "panos_vm_information_source" "ex4" {
         update_interval = 120
         enable_timeout = true
         timeout = 3
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

@@ -36,15 +36,27 @@ resource "panos_panorama_bgp" "example" {
     virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
     template = panos_panorama_template.t.name
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

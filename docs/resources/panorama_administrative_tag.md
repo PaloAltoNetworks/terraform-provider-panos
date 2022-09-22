@@ -72,6 +72,10 @@ resource "panos_panorama_administrative_tag" "example" {
     name = "tag1"
     color = "color5"
     comment = "Internal resources"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

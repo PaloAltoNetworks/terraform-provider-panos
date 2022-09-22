@@ -38,6 +38,10 @@ resource "panos_ssl_decrypt_trusted_root_ca_entry" "example" {
     template = panos_ssl_decrypt.x.template
     template_stack = panos_ssl_decrypt.x.template_stack
     certificate_name = panos_certificate_import.trust.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ssl_decrypt" "x" {}
@@ -48,6 +52,10 @@ resource "panos_certificate_import" "trust" {
         certificate = file("cert.pem")
         private_key = file("key.pem")
         passphrase = "secret"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

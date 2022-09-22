@@ -94,6 +94,10 @@ resource "panos_address_objects" "ao1" {
         type = "ip-netmask"
         value = "10.1.1.1"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
     ...
 }
 
@@ -102,6 +106,10 @@ resource "panos_address_objects" "ao2" {
         name = "bar"
         type = "ip-netmask"
         value = "10.1.1.2"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
     ...
 }

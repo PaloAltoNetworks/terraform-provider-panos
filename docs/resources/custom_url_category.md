@@ -37,6 +37,10 @@ resource "panos_custom_url_category" "example" {
         "example.com",
     ]
     type = data.panos_system_info.x.version_major >= 9 ? "URL List" : ""
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}

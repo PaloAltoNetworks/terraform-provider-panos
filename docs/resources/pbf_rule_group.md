@@ -60,11 +60,19 @@ resource "panos_pbf_rule_group" "example" {
             action = "discard"
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "foo" {
     name = "myZone"
     mode = "layer2"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

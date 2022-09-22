@@ -30,6 +30,10 @@ NGFW
 ```hcl
 resource "panos_bfd_profile" "example" {
     name = "myBfdProfile"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

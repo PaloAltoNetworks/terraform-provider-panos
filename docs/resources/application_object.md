@@ -40,6 +40,10 @@ resource "panos_application_object" "example" {
     scanning {
         viruses = true
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -29,10 +29,18 @@ resource "panos_panorama_tunnel_interface" "example1" {
     name = "tunnel.5"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "foo"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

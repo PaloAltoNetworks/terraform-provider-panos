@@ -30,6 +30,10 @@ resource "panos_panorama_ipsec_tunnel" "example" {
     anti_replay = true
     ak_ike_gateway = panos_panorama_ike_gateway.gw.name
     ak_ipsec_crypto_profile = panos_panorama_ipsec_crypto_profile.p.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
