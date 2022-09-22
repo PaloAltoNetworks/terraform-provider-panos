@@ -28,6 +28,10 @@ resource "panos_service_group" "example" {
     services = [
         panos_service_object.o1.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_service_object" "o1" {
@@ -35,6 +39,10 @@ resource "panos_service_object" "o1" {
     protocol = "tcp"
     source_port = "2000-2049"
     destination_port = "32123"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

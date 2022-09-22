@@ -40,16 +40,28 @@ resource "panos_zone_entry" "example" {
     zone = panos_zone.z.name
     mode = panos_zone.z.mode
     interface = panos_ethernet_interface.e5.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e5" {
     name = "ethernet1/5"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z" {
     name = "exZone"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

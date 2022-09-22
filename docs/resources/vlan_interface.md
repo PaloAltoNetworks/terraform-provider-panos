@@ -29,6 +29,10 @@ resource "panos_vlan_interface" "example" {
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

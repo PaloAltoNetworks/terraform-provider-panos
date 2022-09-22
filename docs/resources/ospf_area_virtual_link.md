@@ -34,27 +34,47 @@ resource "panos_ospf_area_virtual_link" "example" {
     name = "foo"
     neighbor_id = "10.20.40.80"
     transit_area_id = panos_ospf_area.x.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ospf_area" "x" {
     template = panos_ospf.x.template
     virtual_router = panos_ospf.x.virtual_router
     name = "10.30.40.50"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ospf" "x" {
     template = panos_panorama_virtual_router.x.template
     virtual_router = panos_panorama_virtual_router.x.name
     enable = false
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "x" {
     template = panos_panorama_template.x.name
     name = "vr name here"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "x" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

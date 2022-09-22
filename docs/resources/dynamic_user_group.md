@@ -33,6 +33,10 @@ resource "panos_dynamic_user_group" "example" {
     name = "example"
     description = "made by Terraform"
     filter = "'tomato'"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

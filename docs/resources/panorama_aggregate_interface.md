@@ -30,10 +30,18 @@ resource "panos_panorama_aggregate_interface" "example" {
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t1" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

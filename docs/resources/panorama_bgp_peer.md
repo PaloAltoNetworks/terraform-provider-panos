@@ -48,6 +48,10 @@ resource "panos_panorama_bgp_peer" "example" {
             data.panos_system_info.x.version_minor >= 1 ? 30 : 0
         : 0
     }"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_bgp_peer_group" "pg" {
@@ -55,6 +59,10 @@ resource "panos_panorama_bgp_peer_group" "pg" {
     virtual_router = panos_panorama_bgp.conf.virtual_router
     name = "myName"
     type = "ibgp"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_bgp" "conf" {
@@ -62,12 +70,20 @@ resource "panos_panorama_bgp" "conf" {
     virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
     template = panos_panorama_template.t.name
     name = "my virtual router"
     interfaces = [panos_panorama_ethernet_interface.e.name]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "e" {
@@ -75,10 +91,18 @@ resource "panos_panorama_ethernet_interface" "e" {
     name = "ethernet1/5"
     mode = "layer3"
     static_ips = ["192.168.1.1/24"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

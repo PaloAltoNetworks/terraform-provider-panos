@@ -54,6 +54,10 @@ resource "panos_log_forwarding_profile" "example" {
             azure_integration { }
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_http_server_profile" "h1" {
@@ -61,6 +65,10 @@ resource "panos_http_server_profile" "h1" {
     http_server {
         name = "h1"
         address = "h1.example.com"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 
@@ -70,11 +78,19 @@ resource "panos_http_server_profile" "h2" {
         name = "h2"
         address = "h2.example.com"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_administrative_tag" "t" {
     name = "myTag"
     color = "color12"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

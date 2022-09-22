@@ -59,6 +59,10 @@ resource "panos_edl" "example" {
     source = "https://example.com"
     repeat = "every five minutes"
     exceptions = ["10.1.1.1", "10.1.1.2"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

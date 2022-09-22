@@ -30,15 +30,27 @@ resource "panos_panorama_static_route_ipv4" "example" {
     name = "localnet"
     destination = "10.1.7.0/32"
     next_hop = "10.1.7.4"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "vr1" {
     name = "my virtual router"
     template = panos_panorama_template.t.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "template1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

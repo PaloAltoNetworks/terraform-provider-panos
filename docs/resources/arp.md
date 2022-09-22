@@ -33,10 +33,18 @@ resource "panos_arp" "example1" {
     interface_name = panos_panorama_ethernet_interface.x.name
     ip = "10.5.6.7"
     mac_address = "00:30:48:52:11:22"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "x" {
     name = "template one"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "x" {
@@ -44,6 +52,10 @@ resource "panos_panorama_ethernet_interface" "x" {
     name = "ethernet1/1"
     vsys = "vsys1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 
@@ -54,10 +66,18 @@ resource "panos_arp" "example2" {
     interface_name = panos_panorama_aggregate_interface.y.name
     ip = "10.5.6.7"
     mac_address = "00:30:48:52:22:33"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "y" {
     name = "template two"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_aggregate_interface" "y" {
@@ -65,6 +85,10 @@ resource "panos_panorama_aggregate_interface" "y" {
     name = "ae1"
     vsys = "vsys1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 
@@ -77,16 +101,28 @@ resource "panos_arp" "example3" {
     subinterface_name = panos_panorama_vlan_interface.z.name
     ip = "10.5.6.7"
     mac_address = "00:30:48:52:33:44"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
-resourcee "panos_panorama_template" "z" {
+resource "panos_panorama_template" "z" {
     name = "template three"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_vlan_interface" "z" {
     template = panos_panorama_template.z.name
     name = "vlan.42"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

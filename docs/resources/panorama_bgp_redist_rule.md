@@ -29,6 +29,10 @@ resource "panos_panorama_bgp_redist_rule" "example" {
     route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     name = "192.168.1.0/24"
     set_med = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}
@@ -38,15 +42,27 @@ resource "panos_panorama_bgp" "conf" {
     virtual_router = panos_panorama_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "rtr" {
     template = panos_panorama_template.t.name
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

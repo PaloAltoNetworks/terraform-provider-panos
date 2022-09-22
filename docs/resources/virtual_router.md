@@ -46,18 +46,30 @@ resource "panos_virtual_router" "example" {
         panos_ethernet_interface.e1.name,
         panos_ethernet_interface.e2.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e1" {
     vsys = "vsys1"
     name = "ethernet1/1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e2" {
     vsys = "vsys1"
     name = "ethernet1/2"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

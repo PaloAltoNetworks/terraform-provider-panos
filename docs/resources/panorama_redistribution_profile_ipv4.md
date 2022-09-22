@@ -32,16 +32,28 @@ resource "panos_panorama_redistribution_profile_ipv4" "example" {
     action = "redist"
     types = ["static"]
     interfaces = [panos_panorama_virtual_router.vr.interfaces]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "vr" {
     template = panos_panorama_template.t.name
     name = "my virtual router"
     interfaces = ["ethernet1/2"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

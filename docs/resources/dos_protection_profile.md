@@ -37,6 +37,10 @@ resource "panos_dos_protection_profile" "example"
         max_rate = 999
         block_duration = 42
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

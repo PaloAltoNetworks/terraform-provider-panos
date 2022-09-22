@@ -33,6 +33,10 @@ resource "panos_panorama_gcp_account" "gcp" {
     project_id = "gcp-project-123"
     service_account_credential_type = "gcp"
     credential_file = file("gcp-credentials.json")
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 # A GKE account type (for clusters in a group).
@@ -41,6 +45,10 @@ resource "panos_panorama_gcp_account" "gke" {
     project_id = "gcp-project-123"
     service_account_credential_type = "gke"
     credential_file = file("gcp-credentials.json")
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -31,11 +31,19 @@ resource "panos_redistribution_profile_ipv4" "example" {
     action = "redist"
     types = ["static"]
     interfaces = [panos_virtual_router.vr.interfaces.0]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "vr" {
     name = "my virtual router"
     interfaces = ["ethernet1/2"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

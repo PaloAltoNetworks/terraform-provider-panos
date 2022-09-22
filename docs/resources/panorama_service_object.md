@@ -30,6 +30,10 @@ resource "panos_panorama_service_object" "example" {
     source_port = "2000-2049,2051-2099"
     destination_port = "32123"
     tags = ["internal", "dmz"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

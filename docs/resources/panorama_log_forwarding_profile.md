@@ -54,11 +54,19 @@ resource "panos_panorama_log_forwarding_profile" "example" {
             azure_integration { }
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_administrative_tag" "t" {
     name = "myTag"
     color = "color12"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

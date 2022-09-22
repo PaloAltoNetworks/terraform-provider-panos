@@ -28,6 +28,10 @@ resource "panos_address_object" "x" {
         "internal",
         "dmz",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

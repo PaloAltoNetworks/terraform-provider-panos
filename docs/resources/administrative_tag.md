@@ -73,6 +73,10 @@ resource "panos_administrative_tag" "example" {
     vsys = "vsys2"
     color = "color5"
     comment = "Internal resources"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

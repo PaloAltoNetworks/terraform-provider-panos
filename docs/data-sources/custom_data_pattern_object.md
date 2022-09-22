@@ -24,6 +24,10 @@ resource "panos_custom_data_pattern_object" "predef" {
         name = "social-security-numbers"
         file_types = ["docx", "xlsx"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 
@@ -40,6 +44,10 @@ resource "panos_custom_data_pattern_object" "regex" {
         name = "blah"
         file_types = ["docx", "doc", "text/html"]
         regex = "shin megami tensei"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 
@@ -58,6 +66,10 @@ resource "panos_custom_data_pattern_object" "file_prop" {
         file_type = data.panos_predefined_dlp_file_type.pdf_keywords.name
         file_property = data.panos_predefined_dlp_file_type.pdf_keywords.file_types.0.properties.0.name
         property_value = "foo"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 

@@ -30,6 +30,10 @@ resource "panos_ethernet_interface" "example" {
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -42,6 +46,10 @@ resource "panos_ethernet_interface" "example" {
     enable_dhcp = true
     create_dhcp_default_route = true
     dhcp_default_route_metric = 10
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

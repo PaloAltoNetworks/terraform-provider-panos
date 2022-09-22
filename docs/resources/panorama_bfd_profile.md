@@ -31,10 +31,18 @@ Panorama
 resource "panos_panorama_bfd_profile" "example" {
     template = panos_panorama_template.t.name
     name = "myBfdProfile"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -32,6 +32,10 @@ resource "panos_panorama_gke_cluster" "cluster" {
     name = "cluster1"
     gcp_zone = "us-central-1b"
     cluster_credential = panos_panorama_gcp_account.gke.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_gke_cluster_group" "grp" {
@@ -39,14 +43,26 @@ resource "panos_panorama_gke_cluster_group" "grp" {
     gcp_project_credential = panos_panorama_gcp_account.gcp.name
     device_group = panos_device_group.dg.name
     template_stack = panos_panorama_template_stack.ts.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "dg" {
     name = "my device group"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template_stack" "ts" {
     name = "myTemplateStack"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_gcp_account" "gcp" {
@@ -54,6 +70,10 @@ resource "panos_panorama_gcp_account" "gcp" {
     project_id = "gcp-project-123"
     service_account_credential_type = "gcp"
     credential_file = file("gcp-credentials.json")
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_gcp_account" "gke" {
@@ -61,6 +81,10 @@ resource "panos_panorama_gcp_account" "gke" {
     project_id = "gcp-project-123"
     service_account_credential_type = "gke"
     credential_file = file("gcp-credentials.json")
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

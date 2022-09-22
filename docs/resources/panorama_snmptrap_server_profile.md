@@ -24,6 +24,10 @@ resource "panos_panorama_snmptrap_server_profile" "example" {
         manager = "snmp1.example.com"
         community = "public"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

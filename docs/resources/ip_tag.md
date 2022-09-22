@@ -25,6 +25,10 @@ resource "panos_ip_tag" "example1" {
         "tag1",
         "tag2",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 # It is safe to have multiple resources target the same IP.
@@ -33,6 +37,10 @@ resource "panos_ip_tag" "example2" {
     tags = [
         "tag3",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

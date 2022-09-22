@@ -47,6 +47,10 @@ resource "panos_address_object" "example" {
         "internal",
         "dmz",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

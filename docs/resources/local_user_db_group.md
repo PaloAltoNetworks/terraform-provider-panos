@@ -29,16 +29,28 @@ resource "panos_local_user_db_group" "example" {
         panos_local_user_db_user.one.name,
         panos_local_user_db_user.two.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_local_user_db_user" "one" {
     name = "wu"
     password = "password"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_local_user_db_user" "two" {
     name = "tang"
     password = "drowssap"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

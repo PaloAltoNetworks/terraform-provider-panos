@@ -35,6 +35,10 @@ resource "panos_panorama_http_server_profile" "example" {
         name = "myServer"
         address = "siem.example.com"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

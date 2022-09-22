@@ -31,6 +31,10 @@ resource "panos_panorama_syslog_server_profile" "example" {
         name = "my-server"
         server = "syslog.example.com"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

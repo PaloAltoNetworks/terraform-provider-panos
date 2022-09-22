@@ -43,22 +43,38 @@ resource "panos_nat_rule" "example" {
     sat_type = "none"
     dat_type = "static"
     dat_address = "my dat address object"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z1" {
     name = "zone1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z2" {
     name = "zone2"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e1" {
     name = "ethernet1/3"
     vsys = "vsys1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

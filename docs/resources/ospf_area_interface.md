@@ -34,10 +34,18 @@ resource "panos_ospf_area_interface" "example" {
     name = panos_panorama_ethernet_interface.x.name
     enable = true
     passive = true
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "x" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "x" {
@@ -45,23 +53,39 @@ resource "panos_panorama_ethernet_interface" "x" {
     name = "ethernet1/3"
     mode = "layer3"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 resource "panos_panorama_virtual_router" "x" {
     template = panos_panorama_template.x.name
     interfaces = [panos_panorama_ethernet_interface.x.name]
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ospf" "x" {
     template = panos_panorama_virtual_router.x.template
     virtual_router = panos_panorama_virtual_router.x.name
     enable = false
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ospf_area" "x" {
     template = panos_ospf.x.template
     virtual_router = panos_ospf.x.virtual_router
     name = "10.1.2.3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
