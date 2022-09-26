@@ -15,6 +15,32 @@ const (
 	SkipAggregateTest   = "Skipping test as aggregate ethernet interfaces are not supported by PAN-OS"
 )
 
+func addStringInSliceValidation(desc string, values []string) string {
+	var b strings.Builder
+	b.Grow(len(desc) + 20*len(values))
+	b.WriteString(desc)
+
+	if len(values) > 0 {
+		b.WriteString(" Valid values are")
+
+		for i := range values {
+			if i != 0 && len(values) > 2 {
+				b.WriteString(",")
+			}
+			b.WriteString(" ")
+			if i == len(values)-1 {
+				b.WriteString("or ")
+			}
+			b.WriteString("`")
+			b.WriteString(values[i])
+			b.WriteString("`")
+		}
+		b.WriteString(".")
+	}
+
+	return b.String()
+}
+
 func validateStringIn(vals ...string) schema.SchemaValidateFunc {
 	return func(v interface{}, k string) (ws []string, errors []error) {
 		value := v.(string)
