@@ -7,10 +7,9 @@ subcategory: "Device"
 
 This resource manages the SSL decrypt settings.
 
-This resource has some overlap with the
-[`panos_ssl_decrypt_trusted_root_ca_entry`](ssl_decrypt_trusted_root_ca_entry.html)
-resource.  If you want to use this resource with the other one, then make sure that
-your `trusted_root_cas` param is left undefined.
+This resource has some overlap with the [`panos_ssl_decrypt_trusted_root_ca_entry`](ssl_decrypt_trusted_root_ca_entry.html) resource.  If you want to use this resource with the other one, then make sure that your `trusted_root_cas` param is left undefined.
+
+It also overlaps with the [`panos_ssl_decrypt_exclude_certificate_entry`](ssl_decrypt_exclude_certificate_entry.html) resource.  If you want to use this resource with the other one, then make sure that you don't define any `ssl_decrypt_exclude_certificate` sections.
 
 
 ## Minimum PAN-OS Version
