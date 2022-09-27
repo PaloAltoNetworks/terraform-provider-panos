@@ -27,6 +27,10 @@ NGFW
 resource "panos_license_api_key" "example" {
     key = "secret"
     retain_key = true
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -34,6 +34,10 @@ resource "panos_gre_tunnel" "example" {
     peer_address = "192.168.1.1"
     tunnel_interface = panos_tunnel_interface.ti.name
     ttl = 42
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "ei" {
@@ -41,11 +45,19 @@ resource "panos_ethernet_interface" "ei" {
     vsys = "vsys1"
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_tunnel_interface" "ti" {
     name = "tunnel.7"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

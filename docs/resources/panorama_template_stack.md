@@ -37,6 +37,10 @@ resource "panos_panorama_template_stack" "example" {
     description = "description here"
     templates = ["t1", "t2"]
     devices = ["00112233", "44556677"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

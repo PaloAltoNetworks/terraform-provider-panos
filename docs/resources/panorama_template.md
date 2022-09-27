@@ -48,6 +48,10 @@ resource "panos_panorama_template" "example" {
         serial = "44556677"
         vsys_list = ["vsys1", "vsys2"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -27,6 +27,10 @@ resource "panos_tunnel_interface" "example1" {
     name = "tunnel.5"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -41,6 +41,10 @@ resource "panos_ike_crypto_profile" "example" {
     encryptions = ["des"]
     lifetime_value = 8
     authentication_multiple = 3
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

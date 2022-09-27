@@ -20,6 +20,10 @@ resource "panos_local_user_db_user" "one" {
     name = "wu"
     password = "password"
     disabled = false
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

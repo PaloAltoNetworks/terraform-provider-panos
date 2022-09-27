@@ -31,6 +31,10 @@ resource "panos_certificate_import" "example" {
         private_key = file("key.pem")
         passphrase = "secret"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -41,6 +45,10 @@ resource "panos_certificate_import" "example2" {
     pkcs12 {
         certificate = file("cert.pfx")
         passphrase = "foobar"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

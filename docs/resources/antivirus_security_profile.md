@@ -43,6 +43,10 @@ resource "panos_antivirus_security_profile" "example" {
         application = "hotmail"
         action = "alert"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

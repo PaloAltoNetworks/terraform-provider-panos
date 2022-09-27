@@ -41,6 +41,10 @@ resource "panos_wildfire_analysis_security_profile" "x" {
         applications = ["pop3"]
         file_types = ["pdf"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

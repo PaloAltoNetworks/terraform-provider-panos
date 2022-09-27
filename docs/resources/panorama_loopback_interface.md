@@ -29,10 +29,18 @@ resource "panos_panorama_loopback_interface" "example" {
     template = panos_panorama_template.t.name
     comment = "my loopback interface"
     static_ips = ["10.1.1.1"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

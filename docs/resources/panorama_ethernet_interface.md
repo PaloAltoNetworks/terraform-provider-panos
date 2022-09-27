@@ -32,10 +32,18 @@ resource "panos_panorama_ethernet_interface" "example1" {
     mode = "layer3"
     static_ips = ["10.1.1.1/24"]
     comment = "Configured for internal traffic"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t1" {
     name = "foo"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -48,10 +56,18 @@ resource "panos_panorama_ethernet_interface" "example2" {
     enable_dhcp = true
     create_dhcp_default_route = true
     dhcp_default_route_metric = 10
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t2" {
     name = "bar"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

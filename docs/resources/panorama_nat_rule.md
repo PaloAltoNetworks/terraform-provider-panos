@@ -50,6 +50,10 @@ resource "panos_panorama_nat_rule" "example" {
         serial = "123456"
         vsys_list = ["vsys1", "vsys2"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

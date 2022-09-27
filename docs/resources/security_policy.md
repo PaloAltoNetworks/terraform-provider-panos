@@ -74,6 +74,10 @@ resource "panos_security_policy" "example" {
         categories = ["any"]
         action = "allow"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

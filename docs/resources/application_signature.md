@@ -63,6 +63,10 @@ resource "panos_application_signature" "example" {
             }
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_application_object" "myapp" {
@@ -81,6 +85,10 @@ resource "panos_application_object" "myapp" {
     risk = 4
     scanning {
         viruses = true
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

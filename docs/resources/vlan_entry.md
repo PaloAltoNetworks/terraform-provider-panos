@@ -30,16 +30,28 @@ resource "panos_vlan_entry" "example" {
         "00:30:48:55:66:77",
         "00:30:48:55:66:88",
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_vlan" "vlan1" {
     name = "myVlan"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e1" {
     name = "ethernet1/5"
     mode = "layer2"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

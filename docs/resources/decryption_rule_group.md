@@ -83,10 +83,18 @@ resource "panos_decryption_rule_group" "example1" {
             ]
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "x" {
     name = "my device group"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

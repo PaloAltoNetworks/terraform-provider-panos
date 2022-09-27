@@ -27,6 +27,10 @@ resource "panos_security_profile_group" "example" {
     name = "myGroup"
     antivirus_profile = "default"
     anti_spyware_profile = "anti-spyware1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

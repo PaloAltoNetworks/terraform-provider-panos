@@ -34,10 +34,18 @@ resource "panos_panorama_ipsec_crypto_profile" "example" {
     lifetime_value = 4
     lifesize_type = "mb"
     lifesize_value = 1
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

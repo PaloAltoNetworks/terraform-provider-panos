@@ -39,20 +39,36 @@ resource "panos_ospf_export" "x" {
     name = "10.2.3.0/24"
     tag = "10.5.15.151"
     metric = 42
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ospf" "x" {
     template = panos_panorama_template.x.name
     virtual_router = panos_panorama_virtual_router.x.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "x" {
     template = panos_panorama_template.x.name
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }       
 
 resource "panos_panorama_template" "x" {
     name = "my template"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

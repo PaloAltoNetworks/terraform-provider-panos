@@ -35,16 +35,28 @@ resource "panos_address_group" "example1" {
         panos_address_object.ao1.name,
         panos_address_object.ao2.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_address_object" "ao1" {
     name = "ntp1"
     value = "10.0.0.1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_address_object" "ao2" {
     name = "ntp2"
     value = "10.0.0.2"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -54,6 +66,10 @@ resource "panos_address_group" "example2" {
     name = "dynamic grp"
     description = "My internal NTP servers"
     dynamic_match = "'internal' and 'ntp'"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -27,12 +27,20 @@ resource "panos_custom_url_category_entry" "example" {
     vsys = panos_custom_url_category.x.vsys
     custom_url_category = panos_custom_url_category.x.name
     site = "example.com"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_custom_url_category" "x" {
     name = "myCustomCategory"
     description = "Made by Terraform"
     type = data.panos_system_info.x.version_major >= 9 ? "URL List" : ""
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}

@@ -23,6 +23,10 @@ resource "panos_file_blocking_security_profile" "x"
         applications = ["bbc-streaming"]
         file_types = ["ogg"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

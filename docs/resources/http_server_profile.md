@@ -36,6 +36,10 @@ resource "panos_http_server_profile" "example" {
         certificate_profile = data.panos_system_info.x.version_major >= 9 ? "None" : ""
         tls_version = data.panos_system_info.x.version_major >= 9 ? "1.2" : ""
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}

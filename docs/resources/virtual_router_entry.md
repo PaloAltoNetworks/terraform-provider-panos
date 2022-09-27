@@ -37,15 +37,27 @@ NGFW and Panorama.
 resource "panos_virtual_router_entry" "example" {
     virtual_router = panos_virtual_router.vr.name
     interface = panos_ethernet_interface.e.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "vr" {
     name = "my vr"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e" {
     name = "ethernet1/1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

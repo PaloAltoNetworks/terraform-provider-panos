@@ -29,16 +29,28 @@ resource "panos_application_group" "example" {
         panos_application_object.a1.name,
         panos_application_object.a2.name,
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_application_object" "a1" {
     name = "app1"
     ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_application_object" "a2" {
     name = "app2"
     ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

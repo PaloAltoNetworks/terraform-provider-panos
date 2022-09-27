@@ -30,6 +30,10 @@ resource "panos_panorama_layer2_subinterface" "example" {
     vsys = "vsys1"
     name = "ethernet1/5.5"
     tag = 5
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "e" {
@@ -37,10 +41,18 @@ resource "panos_panorama_ethernet_interface" "e" {
     name = "ethernet1/5"
     vsys = "vsys1"
     mode = "layer2"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "tmpl" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

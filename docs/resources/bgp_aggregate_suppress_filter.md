@@ -37,22 +37,38 @@ resource "panos_bgp_aggregate_suppress_filter" "example" {
     address_prefix {
         prefix = "10.1.2.0/24"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_bgp_aggregate" "ag" {
     virtual_router = panos_bgp.conf.virtual_router
     name = "addyAgg1"
     prefix = "192.168.1.0/24"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_bgp" "conf" {
     virtual_router = panos_virtual_router.rtr.name
     router_id = "5.5.5.5"
     as_number = "42"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "rtr" {
     name = "my virtual router"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

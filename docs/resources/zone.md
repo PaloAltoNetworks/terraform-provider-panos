@@ -44,16 +44,28 @@ resource "panos_zone" "example" {
     ]
     enable_user_id = true
     exclude_acls = ["192.168.0.0/16"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e1" {
     name = "ethernet1/1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "e5" {
     name = "ethernet1/5"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -70,22 +82,38 @@ resource "panos_zone" "example" {
     ]
     enable_user_id = true
     exclude_acls = ["192.168.0.0/16"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "tmpl1" {
     name = "MyTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "e2" {
     template = panos_panorama_template.tmpl1.name
     name = "ethernet1/2"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_ethernet_interface" "e3" {
     template = panos_panorama_template.tmpl1.name
     name = "ethernet1/3"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

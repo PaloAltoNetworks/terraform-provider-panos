@@ -65,6 +65,10 @@ resource "panos_panorama_bgp_import_rule_group" "example" {
         action = "deny"
         match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}
@@ -74,15 +78,27 @@ resource "panos_panorama_bgp" "conf" {
     virtual_router = panos_panorama_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_virtual_router" "vr" {
     template = panos_panorama_template.t.name
     name = "my vr"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

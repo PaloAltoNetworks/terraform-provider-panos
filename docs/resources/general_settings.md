@@ -27,6 +27,10 @@ resource "panos_general_settings" "example" {
     dns_primary = "10.5.1.10"
     ntp_primary = "10.5.1.10"
     ntp_primary_auth_type = "none"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -34,6 +34,10 @@ resource "panos_certificate_profile" "x" {
         ocsp_verify_certificate = ""
         template_name = ""
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

@@ -52,6 +52,10 @@ resource "panos_anti_spyware_security_profile" "example" {
         name = data.panos_predefined_threat.dot_net.threats.0.name
         action = "allow"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_predefined_threat" "dot_net" {

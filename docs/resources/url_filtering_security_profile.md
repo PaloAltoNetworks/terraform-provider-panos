@@ -54,6 +54,10 @@ resource "panos_url_filtering_security_profile" "example" {
             value = "beta"
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}

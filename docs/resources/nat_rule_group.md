@@ -86,6 +86,10 @@ resource "panos_nat_rule_group" "bot" {
             destination {}
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_nat_rule_group" "top" {
@@ -118,6 +122,10 @@ resource "panos_nat_rule_group" "top" {
             }
         }
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_ethernet_interface" "x" {
@@ -125,21 +133,37 @@ resource "panos_ethernet_interface" "x" {
     mode = "layer3"
     vsys = "vsys1"
     static_ips = ["10.5.5.1/24"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z1" {
     name = "z1"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z2" {
     name = "z2"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_zone" "z3" {
     name = "z3"
     mode = "layer3"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

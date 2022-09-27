@@ -30,6 +30,10 @@ resource "panos_ipsec_tunnel_proxy_id_ipv4" "example" {
     local = "10.1.1.1"
     remote = "10.2.1.1"
     protocol_any = true
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

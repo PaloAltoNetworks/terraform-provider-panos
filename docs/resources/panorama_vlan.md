@@ -27,16 +27,28 @@ resource "panos_panorama_vlan" "example" {
     template = panos_panorama_template.t.name
     name = "myVlan"
     vlan_interface = panos_panorama_vlan_interface.vli.name
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_vlan_interface" "vli" {
     template = panos_panorama_template.t.name
     name = "vlan.6"
     vsys = "vsys1"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_panorama_template" "t" {
     name = "myTemplate"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

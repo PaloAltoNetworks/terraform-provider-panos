@@ -29,6 +29,10 @@ resource "panos_security_rule_group" "x" {
         description = "Made by Terraform"
         ...
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -44,6 +48,10 @@ data "panos_audit_comment_history" "example" {
 
 resource "panos_panorama_device_group" "x" {
     name = "my device group"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_security_rule_group" "x" {
@@ -53,6 +61,10 @@ resource "panos_security_rule_group" "x" {
         name = "Allow eng to DMZ"
         description = "Made by Terraform"
         ...
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 ```

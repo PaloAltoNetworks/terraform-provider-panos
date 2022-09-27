@@ -29,16 +29,28 @@ resource "panos_bgp_aggregate" "example" {
     name = "myAggRule"
     prefix = "192.168.1.0/24"
     weight = 17
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_bgp" "conf" {
     virtual_router = panos_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "vr" {
     name = "my vr"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

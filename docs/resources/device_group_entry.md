@@ -47,10 +47,18 @@ Panorama.
 resource "panos_device_group_entry" "example1" {
     device_group = panos_device_group.x.name
     serial = "00112233"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "x" {
     name = "my device group"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
@@ -60,10 +68,18 @@ resource "panos_device_group_entry" "example2" {
     device_group = panos_device_group.y.name
     serial = "44556677"
     vsys_list = ["vsys1", "vsys2"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_device_group" "y" {
     name = "my other dg"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

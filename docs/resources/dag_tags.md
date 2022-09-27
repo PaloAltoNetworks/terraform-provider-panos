@@ -33,6 +33,10 @@ resource "panos_dag_tags" "example" {
         ip = "10.1.1.2"
         tags = ["tag3"]
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

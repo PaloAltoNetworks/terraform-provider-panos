@@ -64,6 +64,10 @@ resource "panos_bgp_export_rule_group" "example" {
         action = "deny"
         match_route_table = "${data.panos_system_info.x.version_major >= 8 ? "unicast" : ""}"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 data "panos_system_info" "x" {}
@@ -72,10 +76,18 @@ resource "panos_bgp" "conf" {
     virtual_router = panos_virtual_router.vr.name
     router_id = "1.2.3.4"
     as_number = 443
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "panos_virtual_router" "vr" {
     name = "my vr"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 

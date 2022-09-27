@@ -27,6 +27,10 @@ resource "panos_loopback_interface" "example1" {
     name = "loopback.2"
     comment = "my loopback interface"
     static_ips = ["10.1.1.1"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 ```
 
