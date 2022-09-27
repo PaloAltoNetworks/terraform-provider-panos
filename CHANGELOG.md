@@ -1,3 +1,33 @@
+## 1.11.0 (September 26, 2022)
+
+NEW DATA SOURCES:
+
+* `panos_authentication_profiles`
+* `panos_globalprotect_ipsec_crypto_profile` / `panos_globalprotect_ipsec_crypto_profiles`
+* `panos_kerberos_profiles`
+* `panos_ldap_profiles`
+* `panos_radius_profiles`
+* `panos_saml_profile` / `panos_saml_profiles`
+* `panos_ssl_tls_service_profile` / `panos_ssl_tls_service_profiles`
+* `panos_tacacs_plus_profiles`
+
+NEW RESOURCES:
+
+* `panos_authentication_profile`
+* `panos_globalprotect_ipsec_crypto_profile`
+* `panos_kerberos_profile`
+* `panos_ldap_profile`
+* `panos_radius_profile`
+* `panos_saml_profile`
+* `panos_ssl_decrypt_exclude_certificate_entry`
+* `panos_ssl_tls_service_profile`
+* `panos_tacacs_plus_profile`
+
+FIXES:
+
+* `panos_dhcp_interface_info` won't crash when using this NGFW data source against Panorama ([#357](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/357))
+
+
 ## 1.10.3 (June 22, 2022)
 
 FIXES:
