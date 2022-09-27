@@ -1,8 +1,6 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -84,9 +82,11 @@ func dataSourceDhcpInterfaceInfo() *schema.Resource {
 }
 
 func dataSourceDhcpInterfaceInfoRead(d *schema.ResourceData, meta interface{}) error {
-	var err error
+    c, err := firewall(meta, "")
+    if err != nil {
+        return err
+    }
 
-	c := meta.(*pango.Firewall)
 	i := d.Get("interface").(string)
 
 	info, err := c.GetDhcpInfo(i)

@@ -8,6 +8,12 @@ subcategory: "Operational State"
 Use this data source to retrieve DHCP client information about the given
 firewall interface.
 
+
+## PAN-OS
+
+NGFW
+
+
 ## Example Usage
 
 ```hcl
