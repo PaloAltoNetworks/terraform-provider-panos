@@ -82,10 +82,10 @@ func dataSourceDhcpInterfaceInfo() *schema.Resource {
 }
 
 func dataSourceDhcpInterfaceInfoRead(d *schema.ResourceData, meta interface{}) error {
-    c, err := firewall(meta, "")
-    if err != nil {
-        return err
-    }
+	c, err := firewall(meta, "")
+	if err != nil {
+		return err
+	}
 
 	i := d.Get("interface").(string)
 
