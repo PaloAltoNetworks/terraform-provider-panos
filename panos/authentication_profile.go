@@ -331,7 +331,7 @@ func authenticationProfileSchema() map[string]*schema.Schema {
 					"saml": {
 						Type:        schema.TypeList,
 						Optional:    true,
-						Description: "LDAP authentication.",
+						Description: "SAML authentication.",
 						MaxItems:    1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
