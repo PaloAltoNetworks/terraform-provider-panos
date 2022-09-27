@@ -9,4 +9,4 @@ require (
 
 //replace github.com/PaloAltoNetworks/pango => ../pango
 
-go 1.13
+go 1.17
