@@ -74,7 +74,8 @@ The following attributes are supported:
 * `url_categories` - List of URL categories.
 * `action` - Action to take.
 * `decryption_type` - The decryption type.
-* `ssl_certificate` - The SSL certificate.
+* `ssl_certificate` - (PAN-OS 10.1 and below) The SSL certificate.
+* `ssl_certificates` - (PAN-OS 10.2+) List of SSL certificate.
 * `decryption_profile` - The decryption profile.
 * `forwarding_profile` - Forwarding profile.
 * `group_tag` - The group tag.
