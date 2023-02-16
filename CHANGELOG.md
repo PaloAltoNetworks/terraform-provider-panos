@@ -1,3 +1,20 @@
+## 1.11.1 (February 16, 2022)
+
+ENHANCEMENTS:
+
+* Added new `ssl_certificates` parameter to all data sources and resources concerning Decryption Rules.
+
+FIXES:
+
+* PAN-OS 10.1.5 and above removed usage of `" or "` in the XPATH, which broke the provider's ability to delete multiple items in resources such as `panos_security_rule_group` or `panos_address_objects`.  If the provider sees PAN-OS 10.1.5 or later, then deletes happen one at a time, which will of course negatively affect plan deployment speed.  If the provider sees PAN-OS <= 10.1.4, since it still supports `" or "` in the XPATH, delete performance and implementation is unchanged.
+
+DOCUMENTATION:
+
+* Added `Provider v2` documentation section to the main documentation page.
+* Updated the build instructions for the firewall commit script.
+* Other docs fixes.
+
+
 ## 1.11.0 (September 26, 2022)
 
 NEW DATA SOURCES:
