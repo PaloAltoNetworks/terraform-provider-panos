@@ -17,6 +17,33 @@ Refer to
 to see what's new.
 
 
+## Provider v2
+
+The `panos` provider has been around a while, and most of the releases have been
+concerned with trying to cover a split between missing PAN-OS features and PAN-OS
+updates that cause regressions in the provider.  Provider code itself has also
+undergone a few shifts in philosophy.  In addition to this, the `panos` provider
+is still using v1 of the
+[terraform provider sdk](https://github.com/hashicorp/terraform-plugin-sdk),
+which affects users ability to control provider logging as well as being the source 
+[of issues](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/359)
+with the provider itself.
+
+All of this means that it's time for the `panos` provider to undergo a v2 update.  This
+update will:
+
+* Update the underlying HashiCorp libraries
+* Include major performance improvements for all `_group` resources
+* Converge the firewall and panorama resources across the whole provider
+* Remove old resource aliases and deprecated parameters
+
+These updates will take time.  Once the development effort begines, a new branch will
+be created for the new v2 provider, allowing users to download the code, build it locally,
+and provide feedback to the development team.
+
+Please report any issues found with the v2 provider in github as usual.
+
+
 ## Terraform / PAN-OS Interaction
 
 ### `lifecycle.create_before_destroy`
