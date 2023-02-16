@@ -126,6 +126,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: securityRuleSchema(true, 1, []string{"name"}),
@@ -167,6 +168,7 @@ func resourcePanoramaSecurityRuleGroup() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: securityRuleSchema(true, 1, []string{"name"}),
@@ -338,6 +340,7 @@ func resourceSecurityPolicy() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: securityRuleSchema(true, 0, []string{"position_keyword", "position_reference", "name"}),
@@ -369,6 +372,7 @@ func resourcePanoramaSecurityPolicy() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: securityRuleSchema(true, 0, []string{"position_keyword", "position_reference", "name"}),

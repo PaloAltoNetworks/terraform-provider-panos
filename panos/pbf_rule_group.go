@@ -118,6 +118,7 @@ func resourcePbfRuleGroup() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: pbfRuleGroupSchema(true, []string{"device_group", "rulebase"}),
@@ -134,6 +135,7 @@ func resourcePanoramaPbfRuleGroup() *schema.Resource {
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(10 * time.Minute),
 			Update: schema.DefaultTimeout(10 * time.Minute),
+			Delete: schema.DefaultTimeout(10 * time.Minute),
 		},
 
 		Schema: pbfRuleGroupSchema(true, []string{"vsys"}),
