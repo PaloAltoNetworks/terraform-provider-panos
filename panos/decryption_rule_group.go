@@ -375,8 +375,16 @@ func decryptionRuleGroupSchema(isResource bool) map[string]*schema.Schema {
 					},
 					"ssl_certificate": {
 						Type:        schema.TypeString,
-						Description: "The SSL certificate.",
+						Description: "(PAN-OS 10.1 and below) The SSL certificate.",
 						Optional:    true,
+					},
+					"ssl_certificates": {
+						Type:        schema.TypeSet,
+						Description: "(PAN-OS 10.2+) List of SSL decryption certs.",
+						Optional:    true,
+						Elem: &schema.Schema{
+							Type: schema.TypeString,
+						},
 					},
 					"decryption_profile": {
 						Type:        schema.TypeString,
@@ -467,6 +475,7 @@ func loadDecryptionRules(d *schema.ResourceData) ([]decryption.Entry, map[string
 			Action:                     x["action"].(string),
 			DecryptionType:             x["decryption_type"].(string),
 			SslCertificate:             x["ssl_certificate"].(string),
+			SslCertificates:            setAsList(x["ssl_certificates"].(*schema.Set)),
 			DecryptionProfile:          x["decryption_profile"].(string),
 			Targets:                    loadTarget(x["target"]),
 			NegateTarget:               x["negate_target"].(bool),
@@ -501,6 +510,7 @@ func dumpDecryptionRule(o decryption.Entry) map[string]interface{} {
 		"action":                        o.Action,
 		"decryption_type":               o.DecryptionType,
 		"ssl_certificate":               o.SslCertificate,
+		"ssl_certificates":              listAsSet(o.SslCertificates),
 		"decryption_profile":            o.DecryptionProfile,
 		"target":                        dumpTarget(o.Targets),
 		"negate_target":                 o.NegateTarget,
