@@ -18,7 +18,7 @@ Compile the source code and put it somewhere in your `$PATH` (such as
 `$HOME/bin`):
 
 ```bash
-$ curl https://raw.githubusercontent.com/PaloAltoNetworks/terraform-provider-panos/master/docs/guides/firewall-commit.go > firewall-commit.go
+$ curl https://raw.githubusercontent.com/PaloAltoNetworks/terraform-provider-panos/master/scripts/firewall-commit.go > firewall-commit.go
 $ go mod init example/user/panos-commit
 $ go mod tidy
 $ go build firewall-commit.go
