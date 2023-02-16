@@ -18,7 +18,9 @@ Compile the source code and put it somewhere in your `$PATH` (such as
 `$HOME/bin`):
 
 ```bash
-$ go get github.com/PaloAltoNetworks/pango
+$ curl https://raw.githubusercontent.com/PaloAltoNetworks/terraform-provider-panos/master/scripts/firewall-commit.go > firewall-commit.go
+$ go mod init example/user/panos-commit
+$ go mod tidy
 $ go build firewall-commit.go
 $ mv firewall-commit ~/bin
 $ firewall-commit -h
@@ -44,5 +46,5 @@ is not recommended.
 2. Environment variables
 3. JSON authentication credential file
 
-Refer to the panos provider argument reference documentation for more
+Refer to the [panos provider argument reference documentation](https://registry.terraform.io/providers/PaloAltoNetworks/panos/latest/docs#argument-reference) for more
 information on the JSON config file and the environment variables that are used.

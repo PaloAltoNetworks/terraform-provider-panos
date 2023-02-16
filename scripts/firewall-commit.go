@@ -1,9 +1,3 @@
----
-page_title: "Firewall Commits"
-subcategory: "Commits"
----
-
-```go
 package main
 
 import (
@@ -23,7 +17,7 @@ func main() {
 		edan, eso, epao, force                                   bool
 		jobId                                                    uint
 		sleep                                                    int64
-        timeout                                                  int
+		timeout                                                  int
 	)
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds)
@@ -39,7 +33,7 @@ func main() {
 	flag.BoolVar(&epao, "exclude-policy-and-objects", false, "Exclude policy and objects")
 	flag.BoolVar(&force, "force", false, "Force a commit even if one isn't needed")
 	flag.Int64Var(&sleep, "sleep", 1, "Seconds to sleep between checks for commit completion")
-    flag.IntVar(&timeout, "timeout", 10, "The timeout for all PAN-OS API calls")
+	flag.IntVar(&timeout, "timeout", 10, "The timeout for all PAN-OS API calls")
 	flag.Parse()
 
 	// Connect to the firewall.
@@ -49,7 +43,7 @@ func main() {
 		Password: password,
 		ApiKey:   apiKey,
 		Logging:  pango.LogOp | pango.LogAction,
-        Timeout:  timeout,
+		Timeout:  timeout,
 	}}
 	if err = fw.InitializeUsing(configFile, true); err != nil {
 		log.Fatalf("Failed: %s", err)
@@ -82,4 +76,3 @@ func main() {
 		log.Printf("Committed config successfully")
 	}
 }
-```
