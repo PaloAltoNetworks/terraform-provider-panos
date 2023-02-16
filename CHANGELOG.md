@@ -7,6 +7,7 @@ ENHANCEMENTS:
 FIXES:
 
 * PAN-OS 10.1.5 and above removed usage of `" or "` in the XPATH, which broke the provider's ability to delete multiple items in resources such as `panos_security_rule_group` or `panos_address_objects`.  If the provider sees PAN-OS 10.1.5 or later, then deletes happen one at a time, which will of course negatively affect plan deployment speed.  If the provider sees PAN-OS <= 10.1.4, since it still supports `" or "` in the XPATH, delete performance and implementation is unchanged.
+* `panos_certificate_import` now works against Panorama ([#329](https://github.com/PaloAltoNetworks/terraform-provider-panos/issues/329))
 
 DOCUMENTATION:
 
