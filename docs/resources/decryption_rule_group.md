@@ -46,7 +46,7 @@ NGFW and Panorama
 ## Example Usage
 
 ```hcl
-# Panorama Example
+# Panorama Example for PAN-OS 10.1 and below
 resource "panos_decryption_rule_group" "example1" {
     device_group = panos_device_group.x.name
     rulebase = "pre-rulebase"
@@ -145,7 +145,8 @@ The following arguments are valid for each `rule` section:
   `decrypt`, or `decrypt-and-forward`.
 * `decryption_type` - The decryption type.  Valid values are `ssl-forward-proxy`,
   `ssh-proxy`, or `ssl-inbound-inspection`.
-* `ssl_certificate` - The SSL certificate.
+* `ssl_certificate` - (PAN-OS 10.1 and below) The SSL certificate.
+* `ssl_certificates` - (PAN-OS 10.2+) List of SSL certificates.
 * `decryption_profile` - The decryption profile.
 * `forwarding_profile` - Forwarding profile.
 * `group_tag` - The group tag.
