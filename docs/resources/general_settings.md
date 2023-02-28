@@ -43,6 +43,7 @@ The following arguments are supported:
 * `domain` - The domain.
 * `update_server` - The update server (Default: `updates.paloaltonetworks.com`).
 * `verify_update_server` - Verify update server identity (Default: `true`).
+* `login_banner` - Login banner that is shown during the login page
 * `proxy_server` - (1.5+) Specify a proxy server.
 * `proxy_port` - (int, 1.5+) Proxy's port number.
 * `proxy_username` - (1.5+) Proxy's username.
