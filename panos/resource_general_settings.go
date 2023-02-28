@@ -146,6 +146,12 @@ func resourceGeneralSettings() *schema.Resource {
 				Computed:    true,
 				Description: "NTP symmetric-key auth key",
 			},
+			"login_banner": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "Banner shown in login page",
+			},
 		},
 	}
 }
@@ -173,6 +179,7 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
 		NtpSecondaryKeyId:     d.Get("ntp_secondary_key_id").(int),
 		NtpSecondaryAlgorithm: d.Get("ntp_secondary_algorithm").(string),
 		NtpSecondaryAuthKey:   d.Get("ntp_secondary_auth_key").(string),
+		LoginBanner:           d.Get("login_banner").(string),
 	}
 }
 
@@ -239,6 +246,7 @@ func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
 	d.Set("ntp_secondary_key_id", o.NtpSecondaryKeyId)
 	d.Set("ntp_secondary_algorithm", o.NtpSecondaryAlgorithm)
 	d.Set("ntp_secondary_auth_key", o.NtpSecondaryAuthKey)
+	d.Set("login_banner", o.LoginBanner)
 
 	return nil
 }
