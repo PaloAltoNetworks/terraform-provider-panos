@@ -23,17 +23,17 @@ func TestAccPanosGeneralSettings_basic(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccGeneralSettingsConfig("acctest", "10.5.5.5", "10.10.10.10", "autokey"),
+				Config: testAccGeneralSettingsConfig("acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosGeneralSettingsExists("panos_general_settings.test", &o),
-					testAccCheckPanosGeneralSettingsAttributes(&o, "acctest", "10.5.5.5", "10.10.10.10", "autokey"),
+					testAccCheckPanosGeneralSettingsAttributes(&o, "acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey"),
 				),
 			},
 			{
-				Config: testAccGeneralSettingsConfig("ngfw", "10.15.15.15", "10.20.20.20", "none"),
+				Config: testAccGeneralSettingsConfig("ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosGeneralSettingsExists("panos_general_settings.test", &o),
-					testAccCheckPanosGeneralSettingsAttributes(&o, "ngfw", "10.15.15.15", "10.20.20.20", "none"),
+					testAccCheckPanosGeneralSettingsAttributes(&o, "ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none"),
 				),
 			},
 		},
@@ -63,10 +63,14 @@ func testAccCheckPanosGeneralSettingsExists(n string, o *general.Config) resourc
 	}
 }
 
-func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ds, nsa, nsat string) resource.TestCheckFunc {
+func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ps, ds, nsa, nsat string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Hostname != h {
 			return fmt.Errorf("Hostname is %s, expected %s", o.Hostname, h)
+		}
+
+		if o.PanoramaSecondary != ds {
+			return fmt.Errorf("Secondary Panorama is %s, expected %s", o.PanoramaSecondary, ps)
 		}
 
 		if o.DnsSecondary != ds {
@@ -85,13 +89,14 @@ func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ds, nsa, n
 	}
 }
 
-func testAccGeneralSettingsConfig(h, ds, nsa, nsat string) string {
+func testAccGeneralSettingsConfig(h, ps, ds, nsa, nsat string) string {
 	return fmt.Sprintf(`
 resource "panos_general_settings" "test" {
     hostname = "%s"
+    panorama_secondary = "%s"
     dns_secondary = "%s"
     ntp_secondary_address = "%s"
     ntp_secondary_auth_type = "%s"
 }
-`, h, ds, nsa, nsat)
+`, h, ps, ds, nsa, nsat)
 }

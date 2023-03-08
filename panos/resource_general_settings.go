@@ -70,6 +70,18 @@ func resourceGeneralSettings() *schema.Resource {
 				Computed:  true,
 				Sensitive: true,
 			},
+			"panorama_primary": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				Description: "Primary Panorama server address",
+			},
+			"panorama_secondary": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				Description: "Secondary Panorama server address",
+			},
 			"dns_primary": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -161,6 +173,8 @@ func parseGeneralSettings(d *schema.ResourceData) general.Config {
 		ProxyPort:             d.Get("proxy_port").(int),
 		ProxyUser:             d.Get("proxy_user").(string),
 		ProxyPassword:         d.Get("proxy_password").(string),
+		PanoramaPrimary:       d.Get("panorama_primary").(string),
+		PanoramaSecondary:     d.Get("panorama_secondary").(string),
 		DnsPrimary:            d.Get("dns_primary").(string),
 		DnsSecondary:          d.Get("dns_secondary").(string),
 		NtpPrimaryAddress:     d.Get("ntp_primary_address").(string),
@@ -227,6 +241,8 @@ func readGeneralSettings(d *schema.ResourceData, meta interface{}) error {
 	if d.Get("proxy_password_enc").(string) != o.ProxyPassword {
 		d.Set("proxy_password", "(incorrect proxy password)")
 	}
+	d.Set("panorama_primary", o.PanoramaPrimary)
+	d.Set("panorama_secondary", o.PanoramaSecondary)
 	d.Set("dns_primary", o.DnsPrimary)
 	d.Set("dns_secondary", o.DnsSecondary)
 	d.Set("ntp_primary_address", o.NtpPrimaryAddress)
