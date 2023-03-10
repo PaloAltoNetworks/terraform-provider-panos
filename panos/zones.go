@@ -505,6 +505,12 @@ func zoneSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
 				Type: schema.TypeString,
 			},
 		},
+		"enable_packet_buffer_protection": {
+			Type:        schema.TypeBool,
+			Description: "Boolean to enable packet buffer protection.",
+			Optional:    true,
+			Default:     true,
+		},
 	}
 
 	for _, rmKey := range rmKeys {
@@ -560,14 +566,15 @@ func zoneEntrySchema(withTmpl, withTs bool) map[string]*schema.Schema {
 
 func loadZone(d *schema.ResourceData) zone.Entry {
 	return zone.Entry{
-		Name:         d.Get("name").(string),
-		Mode:         d.Get("mode").(string),
-		ZoneProfile:  d.Get("zone_profile").(string),
-		LogSetting:   d.Get("log_setting").(string),
-		EnableUserId: d.Get("enable_user_id").(bool),
-		Interfaces:   asStringList(d.Get("interfaces").([]interface{})),
-		IncludeAcls:  asStringList(d.Get("include_acls").([]interface{})),
-		ExcludeAcls:  asStringList(d.Get("exclude_acls").([]interface{})),
+		Name:                         d.Get("name").(string),
+		Mode:                         d.Get("mode").(string),
+		ZoneProfile:                  d.Get("zone_profile").(string),
+		LogSetting:                   d.Get("log_setting").(string),
+		EnableUserId:                 d.Get("enable_user_id").(bool),
+		Interfaces:                   asStringList(d.Get("interfaces").([]interface{})),
+		IncludeAcls:                  asStringList(d.Get("include_acls").([]interface{})),
+		ExcludeAcls:                  asStringList(d.Get("exclude_acls").([]interface{})),
+		EnablePacketBufferProtection: d.Get("enable_packet_buffer_protection").(bool),
 	}
 }
 
@@ -586,7 +593,7 @@ func saveZone(d *schema.ResourceData, o zone.Entry) {
 	if err := d.Set("exclude_acls", o.ExcludeAcls); err != nil {
 		log.Printf("[WARN] Error setting 'exclude_acls' param for %q: %s", d.Id(), err)
 	}
-
+	d.Set("enable_packet_buffer_protection", o.EnablePacketBufferProtection)
 }
 
 // Id functions.
