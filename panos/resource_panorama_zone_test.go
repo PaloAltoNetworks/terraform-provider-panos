@@ -27,17 +27,17 @@ func TestAccPanosPanoramaZone_basic(t *testing.T) {
 		CheckDestroy: testAccPanosPanoramaZoneDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccPanosPanoramaZoneConfig(ts, name, "10.1.1.0/24", "192.168.1.0/24", true),
+				Config: testAccPanosPanoramaZoneConfig(ts, name, "10.1.1.0/24", "192.168.1.0/24", true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaZoneExists("panos_panorama_zone.test", &o),
-					testAccCheckPanosPanoramaZoneAttributes(&o, name, "10.1.1.0/24", "192.168.1.0/24", true),
+					testAccCheckPanosPanoramaZoneAttributes(&o, name, "10.1.1.0/24", "192.168.1.0/24", true, true),
 				),
 			},
 			{
-				Config: testAccPanosPanoramaZoneConfig(ts, name, "192.168.3.0/24", "10.1.3.0/24", false),
+				Config: testAccPanosPanoramaZoneConfig(ts, name, "192.168.3.0/24", "10.1.3.0/24", false, false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaZoneExists("panos_panorama_zone.test", &o),
-					testAccCheckPanosPanoramaZoneAttributes(&o, name, "192.168.3.0/24", "10.1.3.0/24", false),
+					testAccCheckPanosPanoramaZoneAttributes(&o, name, "192.168.3.0/24", "10.1.3.0/24", false, false),
 				),
 			},
 		},
@@ -68,7 +68,7 @@ func testAccCheckPanosPanoramaZoneExists(n string, o *zone.Entry) resource.TestC
 	}
 }
 
-func testAccCheckPanosPanoramaZoneAttributes(o *zone.Entry, name, inc, exc string, eui bool) resource.TestCheckFunc {
+func testAccCheckPanosPanoramaZoneAttributes(o *zone.Entry, name, inc, exc string, eui bool, pbp bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Name != name {
 			return fmt.Errorf("Name is %s, expected %s", o.Name, name)
@@ -84,6 +84,10 @@ func testAccCheckPanosPanoramaZoneAttributes(o *zone.Entry, name, inc, exc strin
 
 		if o.EnableUserId != eui {
 			return fmt.Errorf("Enable User Id is %t, expected %t", o.EnableUserId, eui)
+		}
+
+		if o.EnablePacketBufferProtection != pbp {
+			return fmt.Errorf("Enable packet buffer protiection is %t, expected %t", o.EnablePacketBufferProtection, pbp)
 		}
 
 		return nil
@@ -111,7 +115,7 @@ func testAccPanosPanoramaZoneDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccPanosPanoramaZoneConfig(ts, name, inc, exc string, eui bool) string {
+func testAccPanosPanoramaZoneConfig(ts, name, inc, exc string, eui bool, pbp bool) string {
 	return fmt.Sprintf(`
 resource "panos_panorama_template_stack" "x" {
     name = %q
@@ -124,6 +128,7 @@ resource "panos_panorama_zone" "test" {
     include_acls = [%q]
     exclude_acls = [%q]
     enable_user_id = %t
+	enable_packet_buffer_protection = %t
 }
-`, ts, name, inc, exc, eui)
+`, ts, name, inc, exc, eui, pbp)
 }

@@ -145,3 +145,4 @@ The following arguments are supported:
 * `exclude_acls` - Users from these addresses/subnets will not
   be identified.  This can be an address object, an address group, a single
   IP address, or an IP address subnet.
+* `enable_packet_buffer_protection` - Boolean to enable packet buffer protection. Defaults to true.
