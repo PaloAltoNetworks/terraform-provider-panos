@@ -23,17 +23,17 @@ func TestAccPanosGeneralSettings_basic(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccGeneralSettingsConfig("acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey"),
+				Config: testAccGeneralSettingsConfig("acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey", "testing_banner"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosGeneralSettingsExists("panos_general_settings.test", &o),
-					testAccCheckPanosGeneralSettingsAttributes(&o, "acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey"),
+					testAccCheckPanosGeneralSettingsAttributes(&o, "acctest", "10.15.15.15", "10.5.5.5", "10.10.10.10", "autokey", "testing_banner"),
 				),
 			},
 			{
-				Config: testAccGeneralSettingsConfig("ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none"),
+				Config: testAccGeneralSettingsConfig("ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none", "testing_banner"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosGeneralSettingsExists("panos_general_settings.test", &o),
-					testAccCheckPanosGeneralSettingsAttributes(&o, "ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none"),
+					testAccCheckPanosGeneralSettingsAttributes(&o, "ngfw", "10.25.25.25", "10.15.15.15", "10.20.20.20", "none", "testing_banner"),
 				),
 			},
 		},
@@ -63,7 +63,7 @@ func testAccCheckPanosGeneralSettingsExists(n string, o *general.Config) resourc
 	}
 }
 
-func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ps, ds, nsa, nsat string) resource.TestCheckFunc {
+func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ps, ds, nsa, nsat, loginBanner string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if o.Hostname != h {
 			return fmt.Errorf("Hostname is %s, expected %s", o.Hostname, h)
@@ -85,11 +85,15 @@ func testAccCheckPanosGeneralSettingsAttributes(o *general.Config, h, ps, ds, ns
 			return fmt.Errorf("Hostname is %s, expected %s", o.NtpSecondaryAuthType, nsat)
 		}
 
+		if o.LoginBanner != loginBanner {
+			return fmt.Errorf("Login Banner is %s, expected %s", o.LoginBanner, loginBanner)
+		}
+
 		return nil
 	}
 }
 
-func testAccGeneralSettingsConfig(h, ps, ds, nsa, nsat string) string {
+func testAccGeneralSettingsConfig(h, ps, ds, nsa, nsat, loginBanner string) string {
 	return fmt.Sprintf(`
 resource "panos_general_settings" "test" {
     hostname = "%s"
@@ -97,6 +101,7 @@ resource "panos_general_settings" "test" {
     dns_secondary = "%s"
     ntp_secondary_address = "%s"
     ntp_secondary_auth_type = "%s"
+		login_banner = "%s"
 }
-`, h, ps, ds, nsa, nsat)
+`, h, ps, ds, nsa, nsat, loginBanner)
 }
