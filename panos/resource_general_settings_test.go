@@ -103,5 +103,5 @@ resource "panos_general_settings" "test" {
     ntp_secondary_auth_type = "%s"
 		login_banner = "%s"
 }
-`, h, ds, nsa, nsat, loginBanner)
+`, h, ps, ds, nsa, nsat, loginBanner)
 }
