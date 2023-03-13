@@ -63,7 +63,7 @@ func testAccCheckPanosPanoramaIkeCryptoProfileExists(n string, o *ike.Entry) res
 		}
 
 		pano := testAccProvider.Meta().(*pango.Panorama)
-		tmpl, ts, name := parsePanoramaIkeCryptoProfileId(rs.Primary.ID)
+		tmpl, ts, name := parseIkeCryptoProfileId(rs.Primary.ID)
 		v, err := pano.Network.IkeCryptoProfile.Get(tmpl, ts, name)
 		if err != nil {
 			return fmt.Errorf("Error in get: %s", err)
@@ -114,7 +114,7 @@ func testAccPanosPanoramaIkeCryptoProfileDestroy(s *terraform.State) error {
 		}
 
 		if rs.Primary.ID != "" {
-			tmpl, ts, name := parsePanoramaIkeCryptoProfileId(rs.Primary.ID)
+			tmpl, ts, name := parseIkeCryptoProfileId(rs.Primary.ID)
 			_, err := pano.Network.IkeCryptoProfile.Get(tmpl, ts, name)
 			if err == nil {
 				return fmt.Errorf("Object %q still exists", name)
