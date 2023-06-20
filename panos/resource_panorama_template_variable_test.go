@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/pnrm/template/variable"
-	"github.com/PaloAltoNetworks/pango/version"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/pnrm/template/variable"
+	"github.com/fpluchorg/pango/version"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -67,6 +67,13 @@ func TestAccPanosPanoramaTemplateVariable_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPanosPanoramaTemplateVariableExists("panos_panorama_template_variable.test", &o),
 					testAccCheckPanosPanoramaTemplateVariableAttributes(&o, name, variable.TypeInterface, "ethernet1/1"),
+				),
+			},
+			{
+				Config: testAccPanoramaTemplateVariableConfig(tmpl, name, variable.TypeDevicePriority, "100"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPanosPanoramaTemplateVariableExists("panos_panorama_template_variable.test", &o),
+					testAccCheckPanosPanoramaTemplateVariableAttributes(&o, name, variable.TypeInterface, "100"),
 				),
 			},
 		},

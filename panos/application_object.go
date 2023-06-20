@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objs/app"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/objs/app"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

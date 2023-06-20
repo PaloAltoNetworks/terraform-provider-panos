@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objs/app/signature"
-	"github.com/PaloAltoNetworks/pango/objs/app/signature/andcond"
-	"github.com/PaloAltoNetworks/pango/objs/app/signature/orcond"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/objs/app/signature"
+	"github.com/fpluchorg/pango/objs/app/signature/andcond"
+	"github.com/fpluchorg/pango/objs/app/signature/orcond"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

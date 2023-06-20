@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango/objs/tags"
+	"github.com/fpluchorg/pango/objs/tags"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

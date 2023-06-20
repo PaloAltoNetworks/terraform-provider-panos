@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objs/profile/security/url"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/objs/profile/security/url"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

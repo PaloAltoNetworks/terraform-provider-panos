@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/audit"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/audit"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

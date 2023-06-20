@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/poli/security"
-	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/poli/security"
+	"github.com/fpluchorg/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

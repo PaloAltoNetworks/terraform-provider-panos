@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
+	"github.com/fpluchorg/pango"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"

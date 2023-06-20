@@ -4,12 +4,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
-	"github.com/PaloAltoNetworks/pango/netw/interface/vlan"
-	"github.com/PaloAltoNetworks/pango/pnrm/template"
-	"github.com/PaloAltoNetworks/pango/predefined/threat"
-	"github.com/PaloAltoNetworks/pango/version"
+	"github.com/fpluchorg/pango"
+	agg "github.com/fpluchorg/pango/netw/interface/aggregate"
+	"github.com/fpluchorg/pango/netw/interface/vlan"
+	"github.com/fpluchorg/pango/pnrm/template"
+	"github.com/fpluchorg/pango/predefined/threat"
+	"github.com/fpluchorg/pango/version"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"

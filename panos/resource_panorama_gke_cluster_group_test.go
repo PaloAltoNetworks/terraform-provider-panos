@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster/group"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/pnrm/plugins/gcp/gke/cluster/group"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

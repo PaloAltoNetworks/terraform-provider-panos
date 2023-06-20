@@ -3,8 +3,8 @@ package panos
 import (
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/routing/protocol/ospf/exp"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/routing/protocol/ospf/exp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/aggregate/filter/suppress"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/routing/protocol/bgp/aggregate/filter/suppress"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

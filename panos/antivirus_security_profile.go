@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	av "github.com/PaloAltoNetworks/pango/objs/profile/security/virus"
+	"github.com/fpluchorg/pango"
+	av "github.com/fpluchorg/pango/objs/profile/security/virus"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

@@ -1,7 +1,7 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango/dev/general"
+	"github.com/fpluchorg/pango/dev/general"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -71,15 +71,15 @@ func resourceGeneralSettings() *schema.Resource {
 				Sensitive: true,
 			},
 			"panorama_primary": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
 				Description: "Primary Panorama server address",
 			},
 			"panorama_secondary": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
 				Description: "Secondary Panorama server address",
 			},
 			"dns_primary": {

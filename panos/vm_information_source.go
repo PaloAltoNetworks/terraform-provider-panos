@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	vis "github.com/PaloAltoNetworks/pango/dev/vminfosource"
+	"github.com/fpluchorg/pango"
+	vis "github.com/fpluchorg/pango/dev/vminfosource"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

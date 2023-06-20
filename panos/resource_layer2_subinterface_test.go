@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/interface/subinterface/layer2"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

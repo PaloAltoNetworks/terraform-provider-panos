@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/commit"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/commit"
 )
 
 func main() {

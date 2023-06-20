@@ -3,8 +3,8 @@ package panos
 import (
 	"encoding/base64"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/account"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/pnrm/plugins/gcp/account"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

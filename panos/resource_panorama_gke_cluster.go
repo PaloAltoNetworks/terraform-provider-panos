@@ -3,8 +3,8 @@ package panos
 import (
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/pnrm/plugins/gcp/gke/cluster"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/pnrm/plugins/gcp/gke/cluster"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

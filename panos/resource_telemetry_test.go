@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/dev/telemetry"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/dev/telemetry"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"

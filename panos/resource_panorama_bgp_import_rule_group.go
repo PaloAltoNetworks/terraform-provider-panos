@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/routing/protocol/bgp/imp"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/routing/protocol/bgp/imp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/predefined/threat"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/predefined/threat"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

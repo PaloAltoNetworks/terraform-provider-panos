@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objs/profile/logfwd"
-	"github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist"
-	"github.com/PaloAltoNetworks/pango/objs/profile/logfwd/matchlist/action"
-	"github.com/PaloAltoNetworks/pango/version"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/objs/profile/logfwd"
+	"github.com/fpluchorg/pango/objs/profile/logfwd/matchlist"
+	"github.com/fpluchorg/pango/objs/profile/logfwd/matchlist/action"
+	"github.com/fpluchorg/pango/version"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

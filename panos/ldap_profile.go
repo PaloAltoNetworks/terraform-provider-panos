@@ -5,8 +5,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/dev/profile/ldap"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/dev/profile/ldap"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

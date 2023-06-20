@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objs/custom/data"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/objs/custom/data"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

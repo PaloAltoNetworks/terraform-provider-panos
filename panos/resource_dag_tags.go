@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/userid"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/userid"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

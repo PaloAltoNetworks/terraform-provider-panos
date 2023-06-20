@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/routing/route/static/ipv4"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/routing/route/static/ipv4"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

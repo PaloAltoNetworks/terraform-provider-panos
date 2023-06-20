@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
-	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/fpluchorg/pango"
+	agg "github.com/fpluchorg/pango/netw/interface/aggregate"
+	"github.com/fpluchorg/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

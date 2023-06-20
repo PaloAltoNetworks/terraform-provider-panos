@@ -5,8 +5,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/profile/ike"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/profile/ike"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

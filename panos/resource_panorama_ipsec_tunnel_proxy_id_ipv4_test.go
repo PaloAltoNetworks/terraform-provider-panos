@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/ipsectunnel"
-	"github.com/PaloAltoNetworks/pango/netw/ipsectunnel/proxyid/ipv4"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/ipsectunnel"
+	"github.com/fpluchorg/pango/netw/ipsectunnel/proxyid/ipv4"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

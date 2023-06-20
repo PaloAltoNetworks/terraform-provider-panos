@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/errors"
+	"github.com/fpluchorg/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

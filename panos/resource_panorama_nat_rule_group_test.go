@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/poli/nat"
-	"github.com/PaloAltoNetworks/pango/util"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/poli/nat"
+	"github.com/fpluchorg/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

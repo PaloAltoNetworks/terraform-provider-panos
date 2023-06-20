@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango/userid"
+	"github.com/fpluchorg/pango/userid"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

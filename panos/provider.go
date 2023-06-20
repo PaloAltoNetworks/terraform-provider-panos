@@ -3,7 +3,7 @@ package panos
 import (
 	"fmt"
 
-	"github.com/PaloAltoNetworks/pango"
+	"github.com/fpluchorg/pango"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
@@ -254,6 +254,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_panorama_edl":                                  resourcePanoramaEdl(),
 			"panos_panorama_email_server_profile":                 resourcePanoramaEmailServerProfile(),
 			"panos_panorama_ethernet_interface":                   resourcePanoramaEthernetInterface(),
+			"panos_panorama_hac":                                  resourcePanoramaHa(),
 			"panos_panorama_gcp_account":                          resourcePanoramaGcpAccount(),
 			"panos_panorama_gke_cluster":                          resourcePanoramaGkeCluster(),
 			"panos_panorama_gke_cluster_group":                    resourcePanoramaGkeClusterGroup(),

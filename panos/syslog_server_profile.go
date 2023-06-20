@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/dev/profile/syslog"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/dev/profile/syslog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

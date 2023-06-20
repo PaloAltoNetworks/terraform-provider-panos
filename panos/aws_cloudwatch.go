@@ -1,7 +1,7 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango/panosplugin/cloudwatch"
+	"github.com/fpluchorg/pango/panosplugin/cloudwatch"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

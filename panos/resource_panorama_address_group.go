@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango/objs/addrgrp"
+	"github.com/fpluchorg/pango/objs/addrgrp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

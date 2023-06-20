@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/pnrm/template/variable"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/pnrm/template/variable"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -44,7 +44,7 @@ func resourcePanoramaTemplateVariable() *schema.Resource {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      variable.TypeIpNetmask,
-				ValidateFunc: validateStringIn(variable.TypeIpNetmask, variable.TypeIpRange, variable.TypeFqdn, variable.TypeGroupId, variable.TypeInterface),
+				ValidateFunc: validateStringIn(variable.TypeIpNetmask, variable.TypeIpRange, variable.TypeFqdn, variable.TypeGroupId, variable.TypeInterface, variable.TypeDevicePriority),
 			},
 			"value": {
 				Type:     schema.TypeString,

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaloAltoNetworks/pango/objs/srvc"
+	"github.com/fpluchorg/pango/objs/srvc"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

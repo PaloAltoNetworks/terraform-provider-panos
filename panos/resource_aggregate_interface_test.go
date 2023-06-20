@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/PaloAltoNetworks/pango"
-	agg "github.com/PaloAltoNetworks/pango/netw/interface/aggregate"
+	"github.com/fpluchorg/pango"
+	agg "github.com/fpluchorg/pango/netw/interface/aggregate"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

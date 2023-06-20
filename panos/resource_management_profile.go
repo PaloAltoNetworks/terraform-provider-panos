@@ -3,8 +3,8 @@ package panos
 import (
 	"log"
 
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/profile/mngtprof"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/profile/mngtprof"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

@@ -1,8 +1,8 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/netw/ikegw"
+	"github.com/fpluchorg/pango"
+	"github.com/fpluchorg/pango/netw/ikegw"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

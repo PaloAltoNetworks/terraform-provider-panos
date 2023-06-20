@@ -1,7 +1,7 @@
 package panos
 
 import (
-	"github.com/PaloAltoNetworks/pango/dev/telemetry"
+	"github.com/fpluchorg/pango/dev/telemetry"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
