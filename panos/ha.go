@@ -304,6 +304,18 @@ func haSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
 
 	return ans
 }
+
+func haUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+	if _, ok := raw["template"]; !ok {
+		raw["template"] = ""
+	}
+	if _, ok := raw["template_stack"]; !ok {
+		raw["template_stack"] = ""
+	}
+
+	return raw, nil
+}
+
 func resourceHa() *schema.Resource {
 	return &schema.Resource{
 		Create: createHa,
@@ -316,9 +328,9 @@ func resourceHa() *schema.Resource {
 			{
 				Version: 0,
 				Type: (&schema.Resource{
-					Schema: virtualRouterSchema(true, []string{"template", "template_stack", "vsys"}),
+					Schema: haSchema(true, []string{"template", "template_stack", "vsys"}),
 				}).CoreConfigSchema().ImpliedType(),
-				Upgrade: virtualRouterUpgradeV0,
+				Upgrade: haUpgradeV0,
 			},
 		},
 
@@ -326,7 +338,7 @@ func resourceHa() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: virtualRouterSchema(true, nil),
+		Schema: haSchema(true, nil),
 	}
 }
 
@@ -342,9 +354,9 @@ func resourcePanoramaHa() *schema.Resource {
 			{
 				Version: 0,
 				Type: (&schema.Resource{
-					Schema: virtualRouterSchema(true, []string{}),
+					Schema: haSchema(true, []string{}),
 				}).CoreConfigSchema().ImpliedType(),
-				Upgrade: virtualRouterUpgradeV0,
+				Upgrade: haUpgradeV0,
 			},
 		},
 
@@ -352,7 +364,7 @@ func resourcePanoramaHa() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: virtualRouterSchema(true, nil),
+		Schema: haSchema(true, nil),
 	}
 }
 
