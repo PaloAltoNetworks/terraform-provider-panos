@@ -66,6 +66,16 @@ func haSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
 			Optional:    true,
 			Description: "Configuration synchroniation between ha peers",
 		},
+		"passive_link_state": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Active/Passive Mode Passive link state",
+		},
+		"monitor_fail_hold_down_time": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Description: "Active/Passive Mode Monitor fail hold down time (min)",
+		},
 		"ha1": {
 			Type:     schema.TypeList,
 			Optional: true,
@@ -434,13 +444,15 @@ func parseHa(d *schema.ResourceData) ha.Config {
 	}
 
 	o := ha.Config{
-		Enable:                 d.Get("enable").(bool),
-		GroupId:                d.Get("group_id").(int),
-		Description:            d.Get("description").(string),
-		Mode:                   d.Get("mode").(string),
-		PeerHa1IpAddress:       d.Get("peer_ha1_ip_address").(string),
-		BackupPeerHa1IpAddress: d.Get("backup_peer_ha1_ip_address").(string),
-		ConfigSyncEnable:       d.Get("config_sync_enable").(bool),
+		Enable:                    d.Get("enable").(bool),
+		GroupId:                   d.Get("group_id").(int),
+		Description:               d.Get("description").(string),
+		Mode:                      d.Get("mode").(string),
+		PeerHa1IpAddress:          d.Get("peer_ha1_ip_address").(string),
+		BackupPeerHa1IpAddress:    d.Get("backup_peer_ha1_ip_address").(string),
+		ConfigSyncEnable:          d.Get("config_sync_enable").(bool),
+		ApPassiveLinkState:        d.Get("passive_link_state").(string),
+		ApMonitorFailHoldDownTime: d.Get("monitor_fail_hold_down_time").(int),
 
 		Ha1:       &ha1,
 		Ha1Backup: &ha1_backup,
@@ -515,6 +527,8 @@ func saveHa(d *schema.ResourceData, o ha.Config) error {
 	d.Set("peer_ha1_ip_address", o.PeerHa1IpAddress)
 	d.Set("backup_peer_ha1_ip_address", o.BackupPeerHa1IpAddress)
 	d.Set("config_sync_enable", o.ConfigSyncEnable)
+	d.Set("passive_link_state", o.ApPassiveLinkState)
+	d.Set("monitor_fail_hold_down_time", o.ApMonitorFailHoldDownTime)
 	d.Set("ha2_state_sync_enable", o.Ha2StateSyncEnable)
 	d.Set("ha2_state_sync_transport", o.Ha2StateSyncTransport)
 	d.Set("ha2_state_sync_keepalive_enable", o.Ha2StateSyncKeepAliveEnable)
