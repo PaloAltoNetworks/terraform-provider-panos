@@ -30,8 +30,8 @@ $ make build
 ```
 
 Using the provider
-
 ----------------------
+
 If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin) After placing it into your plugins directory,  run `terraform init` to initialize it.
 
 See the [Palo Alto Networks PANOS Provider documentation](https://www.terraform.io/docs/providers/panos/index.html) to get started using the provider.
