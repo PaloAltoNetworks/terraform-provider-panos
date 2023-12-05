@@ -9,9 +9,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-// Provider returns a terraform.ResourceProvider.
-func Provider() terraform.ResourceProvider {
-	return &schema.Provider{
+// Provider returns a schema.Provider.
+func Provider() schema.Provider {
+	return schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"hostname": {
 				Type:        schema.TypeString,

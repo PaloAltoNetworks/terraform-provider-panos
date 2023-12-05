@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	testAccProviders                                      map[string]terraform.ResourceProvider
+	testAccProviders                                      map[string]schema.Provider
 	testAccProvider                                       *schema.Provider
 	testAccIsFirewall, testAccIsPanorama                  bool
 	testAccSupportsL2, testAccSupportsAggregateInterfaces bool
@@ -30,7 +30,7 @@ func init() {
 	var err error
 
 	testAccProvider = Provider().(*schema.Provider)
-	testAccProviders = map[string]terraform.ResourceProvider{
+	testAccProviders = map[string]schema.Provider{
 		"panos": testAccProvider,
 	}
 
@@ -120,7 +120,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ terraform.ResourceProvider = Provider()
+	var _ schema.Provider = Provider()
 }
 
 func testAccPreCheck(t *testing.T) {
