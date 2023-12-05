@@ -3,6 +3,7 @@ package panos
 import (
 	"bytes"
 	"fmt"
+	"hash/crc32"
 )
 
 // From https://developer.hashicorp.com/terraform/plugin/sdkv2/guides/v2-upgrade-guide#removal-of-helper-hashcode-package
