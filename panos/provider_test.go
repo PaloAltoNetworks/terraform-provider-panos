@@ -12,11 +12,10 @@ import (
 	"github.com/PaloAltoNetworks/pango/version"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var (
-	testAccProviders                                      map[string]schema.Provider
+	testAccProviders                                      map[string]*schema.Provider
 	testAccProvider                                       *schema.Provider
 	testAccIsFirewall, testAccIsPanorama                  bool
 	testAccSupportsL2, testAccSupportsAggregateInterfaces bool
@@ -29,8 +28,8 @@ var (
 func init() {
 	var err error
 
-	testAccProvider = Provider().(*schema.Provider)
-	testAccProviders = map[string]schema.Provider{
+	testAccProvider = Provider()
+	testAccProviders = map[string]*schema.Provider{
 		"panos": testAccProvider,
 	}
 
@@ -114,13 +113,13 @@ func init() {
 }
 
 func TestProvider(t *testing.T) {
-	if err := Provider().(*schema.Provider).InternalValidate(); err != nil {
+	if err := Provider().InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
 	}
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ schema.Provider = Provider()
+	var _ *schema.Provider = Provider()
 }
 
 func testAccPreCheck(t *testing.T) {
