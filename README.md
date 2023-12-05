@@ -1,17 +1,15 @@
 Terraform Provider for Palo Alto Networks PANOS
 ===============================================
 
-- Website: https://www.terraform.io
-- Documentation: https://www.terraform.io/docs/providers/panos/index.html
+- Website: [https://www.terraform.io](https://www.terraform.io)
+- Documentation: [https://www.terraform.io/docs/providers/panos/index.html](https://www.terraform.io/docs/providers/panos/index.html)
 - [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
 - Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
-
-<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="600px">
 
 Requirements
 ------------
 
-- [Terraform](https://www.terraform.io/downloads.html) 0.10.x
+- [Terraform](https://www.terraform.io/downloads.html) 0.12.x+
 - [Go](https://golang.org/doc/install) 1.11 (to build the provider plugin)
 
 Building The Provider
@@ -32,6 +30,7 @@ $ make build
 ```
 
 Using the provider
+
 ----------------------
 If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin) After placing it into your plugins directory,  run `terraform init` to initialize it.
 
