@@ -8,7 +8,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	auth "github.com/PaloAltoNetworks/pango/dev/profile/authentication"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Data source (listing).

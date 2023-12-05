@@ -3,7 +3,7 @@ package panos
 import (
 	"github.com/PaloAltoNetworks/pango/dev/telemetry"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceTelemetry() *schema.Resource {

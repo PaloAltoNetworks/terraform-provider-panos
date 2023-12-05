@@ -9,8 +9,8 @@ import (
 	"github.com/PaloAltoNetworks/pango/poli/nat"
 	"github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func resourceNatRule() *schema.Resource {

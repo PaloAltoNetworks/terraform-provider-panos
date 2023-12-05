@@ -8,7 +8,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/objs/app/signature/andcond"
 	"github.com/PaloAltoNetworks/pango/objs/app/signature/orcond"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourcePanoramaApplicationSignature() *schema.Resource {

@@ -8,7 +8,7 @@ import (
 	"github.com/PaloAltoNetworks/pango/netw/interface/subinterface/layer2"
 	"github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceLayer2Subinterface() *schema.Resource {

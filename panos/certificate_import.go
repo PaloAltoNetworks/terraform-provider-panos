@@ -7,7 +7,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	cert "github.com/PaloAltoNetworks/pango/dev/certificate"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Resource.

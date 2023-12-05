@@ -6,7 +6,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango/objs/tags"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceAdministrativeTag() *schema.Resource {

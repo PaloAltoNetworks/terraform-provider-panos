@@ -7,7 +7,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	vis "github.com/PaloAltoNetworks/pango/dev/vminfosource"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Resource.

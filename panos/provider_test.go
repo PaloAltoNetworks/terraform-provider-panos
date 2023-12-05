@@ -11,8 +11,8 @@ import (
 	"github.com/PaloAltoNetworks/pango/predefined/threat"
 	"github.com/PaloAltoNetworks/pango/version"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var (

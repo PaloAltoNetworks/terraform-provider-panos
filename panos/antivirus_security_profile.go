@@ -7,7 +7,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	av "github.com/PaloAltoNetworks/pango/objs/profile/security/virus"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Data source (listing).

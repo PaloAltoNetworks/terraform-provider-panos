@@ -5,7 +5,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceSystemInfo() *schema.Resource {
