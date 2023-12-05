@@ -1,6 +1,7 @@
 package panos
 
 import (
+	"context"
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -145,7 +146,7 @@ func resourcePanoramaEdl() *schema.Resource {
 	}
 }
 
-func edlUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func edlUpgradeV0(ctx context.Context, raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
 	if _, ok := raw["vsys"]; !ok {
 		raw["vsys"] = "vsys1"
 	}
