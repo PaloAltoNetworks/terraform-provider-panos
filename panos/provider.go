@@ -6,12 +6,11 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 // Provider returns a schema.Provider.
-func Provider() schema.Provider {
-	return schema.Provider{
+func Provider() *schema.Provider {
+	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"hostname": {
 				Type:        schema.TypeString,
