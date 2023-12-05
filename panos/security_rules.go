@@ -1,6 +1,7 @@
 package panos
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -133,7 +134,7 @@ func resourceSecurityRuleGroup() *schema.Resource {
 	}
 }
 
-func securityRuleUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func securityRuleUpgradeV0(ctx context.Context, raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
 	if _, ok := raw["rulebase"]; !ok {
 		raw["rulebase"] = util.PreRulebase
 	}

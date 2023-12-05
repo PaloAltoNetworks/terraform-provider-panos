@@ -1,6 +1,7 @@
 package panos
 
 import (
+	"context"
 	"log"
 	"strconv"
 	"strings"
@@ -143,7 +144,7 @@ func resourcePanoramaApplicationObject() *schema.Resource {
 	}
 }
 
-func applicationObjectUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func applicationObjectUpgradeV0(ctx context.Context, raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
 	if _, ok := raw["vsys"]; !ok {
 		raw["vsys"] = "vsys1"
 	}

@@ -1,6 +1,7 @@
 package panos
 
 import (
+	"context"
 	"log"
 	"strings"
 	"time"
@@ -140,7 +141,7 @@ func resourcePanoramaAddressObject() *schema.Resource {
 	}
 }
 
-func addressObjectUpgradeV0(raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func addressObjectUpgradeV0(ctx context.Context, raw map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
 	if _, ok := raw["vsys"]; ok {
 		raw["device_group"] = "shared"
 	}
