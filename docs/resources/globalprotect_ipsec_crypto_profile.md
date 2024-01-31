@@ -1,9 +1,9 @@
 ---
-page_title: "panos: panos_globalprotect_ipsec_crypto_profiles"
+page_title: "panos: panos_globalprotect_ipsec_crypto_profile"
 subcategory: "Network"
 ---
 
-# panos_globalprotect_ipsec_crypto_profiles
+# panos_globalprotect_ipsec_crypto_profile
 
 Manages a GlobalProtect IPSec crypto profile.
 
@@ -12,11 +12,21 @@ Manages a GlobalProtect IPSec crypto profile.
 
 NGFW and Panorama.
 
+## Import Name
+
+```
+<template>:<template_stack>:<name>
+```
+
+If `template` and `template_stack` are empty, use:
+```
+::<name>
+```
 
 ## Example Usage
 
 ```hcl
-resource "panos_globalprotect_ipsec_crypto_profiles" "example" {
+resource "panos_globalprotect_ipsec_crypto_profile" "example" {
     name = "fromTerraform"
     encryptions = [
         "aes-128-gcm",
