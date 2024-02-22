@@ -1,0 +1,96 @@
+---
+page_title: "Provider: panos"
+description: |-
+    The Terraform provider for Palo Alto Networks PAN-OS.
+---
+
+# Provider panos
+
+PAN-OS&reg; is the operating system for Palo Alto Networks&reg; NGFWs and Panorama&trade;. The panos provider allows you to manage various aspects of a firewall's or a Panorama's config, such as data interfaces and security policies.
+
+Use the navigation to the left to read about the available Panorama and NGFW resources.
+
+Refer to [the changelog](https://github.com/PaloAltoNetworks/terraform-provider-panos/blob/master/CHANGELOG.md) to see what's new.
+
+
+## Terraform / PAN-OS Interaction
+
+### `lifecycle.create_before_destroy`
+
+The order of operations that Terraform handles updates / deletes does not by default work the way that PAN-OS does things.  In order to make Terraform behave properly, inside of **each and every resource** you need to specify a [`lifecycle`](https://www.terraform.io/language/meta-arguments/lifecycle) block like so:
+
+```hcl
+resource "panos_address_object" "example" {
+    name = "web server 1"
+    # continue with the rest of the definition
+    ...
+
+    lifecycle {
+        create_before_destroy = true
+    }
+}
+```
+
+
+### Parallelism
+
+Terraform uses goroutines to speed up deployment, but the number of parallel operations is launches exceeds [what is recommended](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-panorama-api/pan-os-xml-api-request-types/apply-user-id-mapping-and-populate-dynamic-address-groups-api.html):
+
+```
+Limit the number of concurrent API calls to five. This limit ensures that there is no performance impact to the firewall web interface as the management plane web server handles requests from both the API and the web interface.
+```
+
+In order to accomplish this, make sure you set the [parallelism](https://www.terraform.io/cli/commands/apply#parallelism-n) value at or below this limit to prevent performance impacts.
+
+
+## Versioning
+
+The minimum version of PAN-OS is PAN-OS 10.1 and onwards.  In PAN-OS 10.1.5 a change was made with regards to the XML API that removed the provider's easy access to remove multiple config objects in a single API call.
+
+To compensate for this loss of functionality, the provider now does multi-config API calls against PAN-OS when multiple `type=config` API calls must be run.
+
+With regards to data sources and resources, the minimum version for any given data source or resource will be present in the documentation if the version is higher than PAN-OS 10.1.
+
+If you need to work with multiple versions of PAN-OS where some versions have a new parameter and some don't, then make sure to use [conditionals](https://www.terraform.io/docs/configuration/expressions/conditionals.html) along with the `panos_system_info` data source to only set these variables when the version of PAN-OS is appropriate.
+
+
+## Commits
+
+As of right now, Terraform does not provide native support for commits, so commits are handled out-of-band.  Please refer to the commit guide to the left for more information.
+
+
+## AWS / GCP Considerations
+
+If you are launching PAN-OS in AWS or GCP, there are additional considerations that you should be aware of with regards to initial configuration.  Please see the AWS / GCP Considerations guide off to the left.
+
+
+## Example Provider Usage
+
+{{tffile "examples/provider/provider.tf"}}
+
+
+## Provider Parameter Priority
+
+There are multiple ways to specify the provider's parameters.  If overlapping values are configured for the provider, then this is the resolution order:
+
+1. Directly in the `provider` block
+2. Environment variable (where applicable)
+3. From the JSON config file
+
+
+{{ .SchemaMarkdown | trimspace }}
+
+The following is an example of the contents of a JSON config file:
+
+```json
+{
+    "hostname": "127.0.0.1",
+    "api_key": "secret",
+    "skip_verify_certificate": true
+}
+```
+
+
+## Support
+
+This template/script/solution is released “as-is”, with no warranty and no support. These should be seen as community supported and Palo Alto Networks may contribute its expertise at its discretion. Palo Alto Networks, including through its Authorized Support Centers (ASC) partners and backline support options, will not provide technical support or help in using or troubleshooting this template/script/solution. The underlying product used by this template/script/solution will still be supported in accordance with the product’s applicable support policy and the customer’s entitlements.
