@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/paloaltonetworks/terraform-provider-scm/internal/provider"
+	"github.com/paloaltonetworks/terraform-provider-panos/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
@@ -18,7 +18,7 @@ import (
 
 // Run the docs generation tool, check its repository for more information on how it works and how docs
 // can be customized.
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name scm
+//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name panos
 
 var (
 	// these will be set by the goreleaser configuration
