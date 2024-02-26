@@ -60,10 +60,10 @@ resource "panos_nested_address_object" "example3" {
 ### Optional
 
 - `description` (String) The description.
-- `fqdn` (String) The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
-- `ip_netmask` (String) The IpNetmask param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
-- `ip_range` (String) The IpRange param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
-- `ip_wildcard` (String) The IpWildcard param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
+- `fqdn` (String) The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
+- `ip_netmask` (String) The IpNetmask param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
+- `ip_range` (String) The IpRange param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
+- `ip_wildcard` (String) The IpWildcard param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`
 - `tags` (List of String) Tags for address object. List must contain at most 64 elements. Individual elements in this list are subject to additional validation. String length must not exceed 127 characters.
 
 ### Read-Only
@@ -75,10 +75,10 @@ resource "panos_nested_address_object" "example3" {
 
 Optional:
 
-- `device_group` (Attributes) (Panorama) In the given device group. (see [below for nested schema](#nestedatt--location--device_group))
-- `from_panorama` (Boolean) (NGFW) Pushed from Panorama. This is a read-only location and only suitable for data sources.
-- `shared` (Boolean) (NGFW and Panorama) Located in shared.
-- `vsys` (Attributes) (NGFW) In the given vsys. (see [below for nested schema](#nestedatt--location--vsys))
+- `device_group` (Attributes) (Panorama) In the given device group. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`. (see [below for nested schema](#nestedatt--location--device_group))
+- `from_panorama` (Boolean) (NGFW) Pushed from Panorama. This is a read-only location and only suitable for data sources. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.
+- `shared` (Boolean) (NGFW and Panorama) Located in shared. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.
+- `vsys` (Attributes) (NGFW) In the given vsys. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`. (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
