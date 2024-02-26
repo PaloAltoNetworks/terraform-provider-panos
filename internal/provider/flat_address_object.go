@@ -81,7 +81,7 @@ func (r *flatAddressObjectResource) Schema(_ context.Context, _ resource.SchemaR
         Attributes: map[string] rsschema.Attribute{
             // Location params.
             "from_panorama": rsschema.BoolAttribute{
-                Description: "(Location param; NGFW only) Pushed from Panorama. This is a read-only location and only suitable for data sources.",
+                Description: "(Location param; NGFW only) Pushed from Panorama. This is a read-only location and only suitable for data sources. One of the following must be specified: `from_panorama`, `device_group`, `shared`, or `vsys`.",
                 Optional: true,
                 Validators: []validator.Bool{
                     boolvalidator.ExactlyOneOf(
@@ -96,21 +96,21 @@ func (r *flatAddressObjectResource) Schema(_ context.Context, _ resource.SchemaR
                 },
             },
             "device_group": rsschema.StringAttribute{
-                Description: "(Location param; Panorama only) The device group name.",
+                Description: "(Location param; Panorama only) The device group name. One of the following must be specified: `from_panorama`, `device_group`, `shared`, or `vsys`.",
                 Optional: true,
                 PlanModifiers: []planmodifier.String{
                     stringplanmodifier.RequiresReplace(),
                 },
             },
             "shared": rsschema.BoolAttribute{
-                Description: "(Location param; NGFW and Panorama) Located in shared.",
+                Description: "(Location param; NGFW and Panorama) Located in shared. One of the following must be specified: `from_panorama`, `device_group`, `shared`, or `vsys`.",
                 Optional: true,
                 PlanModifiers: []planmodifier.Bool{
                     boolplanmodifier.RequiresReplace(),
                 },
             },
             "vsys": rsschema.StringAttribute{
-                Description: "(Location param; NGFW only) The vsys name.",
+                Description: "(Location param; NGFW only) The vsys name. One of the following must be specified: `from_panorama`, `device_group`, `shared`, or `vsys`.",
                 Optional: true,
                 PlanModifiers: []planmodifier.String{
                     stringplanmodifier.RequiresReplace(),
@@ -126,7 +126,7 @@ func (r *flatAddressObjectResource) Schema(_ context.Context, _ resource.SchemaR
                 },
             },
             "fqdn": rsschema.StringAttribute{
-                Description: "The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
                 Validators: []validator.String{
                     stringvalidator.LengthBetween(1, 255),
@@ -140,15 +140,15 @@ func (r *flatAddressObjectResource) Schema(_ context.Context, _ resource.SchemaR
                 },
             },
             "ip_netmask": rsschema.StringAttribute{
-                Description: "The IpNetmask param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpNetmask param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "ip_range": rsschema.StringAttribute{
-                Description: "The IpRange param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpRange param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "ip_wildcard": rsschema.StringAttribute{
-                Description: "The IpWildcard param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpWildcard param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "name": rsschema.StringAttribute{

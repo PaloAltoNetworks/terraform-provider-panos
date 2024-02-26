@@ -100,7 +100,7 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                 },
             },
             "fqdn": rsschema.StringAttribute{
-                Description: "The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The Fqdn param. String length must be between 1 and 255 characters. String validation regex: `^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$`. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
                 Validators: []validator.String{
                     stringvalidator.LengthBetween(1, 255),
@@ -114,15 +114,15 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                 },
             },
             "ip_netmask": rsschema.StringAttribute{
-                Description: "The IpNetmask param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpNetmask param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "ip_range": rsschema.StringAttribute{
-                Description: "The IpRange param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpRange param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "ip_wildcard": rsschema.StringAttribute{
-                Description: "The IpWildcard param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
+                Description: "The IpWildcard param. One of the following must be specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
             },
             "location": rsschema.SingleNestedAttribute{
@@ -130,7 +130,7 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                 Required: true,
                 Attributes: map[string] rsschema.Attribute{
                     "device_group": rsschema.SingleNestedAttribute{
-                        Description: "(Panorama) In the given device group.",
+                        Description: "(Panorama) In the given device group. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.",
                         Optional: true,
                         Attributes: map[string] rsschema.Attribute{
                             "name": rsschema.StringAttribute{
@@ -152,7 +152,7 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                         },
                     },
                     "from_panorama": rsschema.BoolAttribute{
-                        Description: "(NGFW) Pushed from Panorama. This is a read-only location and only suitable for data sources.",
+                        Description: "(NGFW) Pushed from Panorama. This is a read-only location and only suitable for data sources. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.",
                         Optional: true,
                         Validators: []validator.Bool{
                             boolvalidator.ExactlyOneOf(
@@ -167,14 +167,14 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                         },
                     },
                     "shared": rsschema.BoolAttribute{
-                        Description: "(NGFW and Panorama) Located in shared.",
+                        Description: "(NGFW and Panorama) Located in shared. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.",
                         Optional: true,
                         PlanModifiers: []planmodifier.Bool{
                             boolplanmodifier.RequiresReplace(),
                         },
                     },
                     "vsys": rsschema.SingleNestedAttribute{
-                        Description: "(NGFW) In the given vsys.",
+                        Description: "(NGFW) In the given vsys. One of the following must be specified: `device_group`, `from_panorama`, `shared`, or `vsys`.",
                         Optional: true,
                         Attributes: map[string] rsschema.Attribute{
                             "name": rsschema.StringAttribute{
