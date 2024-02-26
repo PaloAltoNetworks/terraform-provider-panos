@@ -15,7 +15,6 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/resource"
     rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
     "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-    "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
     "github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
     "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
     "github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -25,25 +24,25 @@ import (
 
 // Resource.
 var (
-    _ resource.Resource = &nestedAddressObjectResource{}
-    _ resource.ResourceWithConfigure = &nestedAddressObjectResource{}
-    _ resource.ResourceWithImportState = &nestedAddressObjectResource{}
+    _ resource.Resource = &flatAddressObjectResource{}
+    _ resource.ResourceWithConfigure = &flatAddressObjectResource{}
+    _ resource.ResourceWithImportState = &flatAddressObjectResource{}
 )
 
-func NewNestedAddressObjectResource() resource.Resource {
-    return &nestedAddressObjectResource{}
+func NewFlatAddressObjectResource() resource.Resource {
+    return &flatAddressObjectResource{}
 }
 
-type nestedAddressObjectResource struct {
+type flatAddressObjectResource struct {
     client *pango.XmlApiClient
 }
 
-type nestedAddressObjectLocation struct {
+type flatAddressObjectLocation struct {
     Name string `json:"name"`
     Location address.Location `json:"location"`
 }
 
-func (o *nestedAddressObjectLocation) IsValid() error {
+func (o *flatAddressObjectLocation) IsValid() error {
     if o.Name == "" {
         return fmt.Errorf("name is unspecified")
     }
@@ -51,11 +50,16 @@ func (o *nestedAddressObjectLocation) IsValid() error {
     return o.Location.IsValid()
 }
 
-type nestedEntryModel struct {
+type flatEntryModel struct {
     Tfid types.String `tfsdk:"tfid"`
 
+    // Location.
+    Shared types.Bool `tfsdk:"shared"`
+    FromPanorama types.Bool `tfsdk:"from_panorama"`
+    Vsys types.String `tfsdk:"vsys"`
+    DeviceGroup types.String `tfsdk:"device_group"`
+
     // Input.
-    Location nestedLocationModel `tfsdk:"location"`
 
     Name types.String `tfsdk:"name"`
     Description types.String `tfsdk:"description"`
@@ -66,32 +70,54 @@ type nestedEntryModel struct {
     IpWildcard types.String `tfsdk:"ip_wildcard"`
 }
 
-type nestedLocationModel struct {
-    Shared types.Bool `tfsdk:"shared"`
-    FromPanorama types.Bool `tfsdk:"from_panorama"`
-    Vsys *nestedVsysLocation `tfsdk:"vsys"`
-    DeviceGroup *nestedDeviceGroupLocation `tfsdk:"device_group"`
+func (r *flatAddressObjectResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+    resp.TypeName = req.ProviderTypeName + "_flat_address_object"
 }
 
-type nestedVsysLocation struct {
-    Name types.String `tfsdk:"name"`
-    NgfwDevice types.String `tfsdk:"ngfw_device"`
-}
-
-type nestedDeviceGroupLocation struct {
-    Name types.String `tfsdk:"name"`
-    PanoramaDevice types.String `tfsdk:"panorama_device"`
-}
-
-func (r *nestedAddressObjectResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-    resp.TypeName = req.ProviderTypeName + "_nested_address_object"
-}
-
-func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *flatAddressObjectResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
     resp.Schema = rsschema.Schema{
-        Description: "Manages an address object.  This is the \"nested\" style where the location is a struct.",
+        Description: "Manages an address object.  This is the \"flat\" style where the location is mixed in with the params for the object itself.",
 
         Attributes: map[string] rsschema.Attribute{
+            // Location params.
+            "from_panorama": rsschema.BoolAttribute{
+                Description: "(Location param; NGFW only) Pushed from Panorama. This is a read-only location and only suitable for data sources.",
+                Optional: true,
+                Validators: []validator.Bool{
+                    boolvalidator.ExactlyOneOf(
+                        path.MatchRoot("from_panorama"),
+                        path.MatchRoot("device_group"),
+                        path.MatchRoot("shared"),
+                        path.MatchRoot("vsys"),
+                    ),
+                },
+                PlanModifiers: []planmodifier.Bool{
+                    boolplanmodifier.RequiresReplace(),
+                },
+            },
+            "device_group": rsschema.StringAttribute{
+                Description: "(Location param; Panorama only) The device group name.",
+                Optional: true,
+                PlanModifiers: []planmodifier.String{
+                    stringplanmodifier.RequiresReplace(),
+                },
+            },
+            "shared": rsschema.BoolAttribute{
+                Description: "(Location param; NGFW and Panorama) Located in shared.",
+                Optional: true,
+                PlanModifiers: []planmodifier.Bool{
+                    boolplanmodifier.RequiresReplace(),
+                },
+            },
+            "vsys": rsschema.StringAttribute{
+                Description: "(Location param; NGFW only) The vsys name.",
+                Optional: true,
+                PlanModifiers: []planmodifier.String{
+                    stringplanmodifier.RequiresReplace(),
+                },
+            },
+
+            // Params.
             "description": rsschema.StringAttribute{
                 Description: "The description.",
                 Optional: true,
@@ -106,7 +132,7 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
                     stringvalidator.LengthBetween(1, 255),
                     stringvalidator.RegexMatches(regexp.MustCompile("^[a-zA-Z0-9_]([a-zA-Z0-9._-])+[a-zA-Z0-9]$"), ""),
                     stringvalidator.ExactlyOneOf(
-                        path.MatchRoot("fqdn"),
+                        path.MatchRelative(),
                         path.MatchRoot("ip_netmask"),
                         path.MatchRoot("ip_range"),
                         path.MatchRoot("ip_wildcard"),
@@ -124,80 +150,6 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
             "ip_wildcard": rsschema.StringAttribute{
                 Description: "The IpWildcard param. Ensure that only one of the following is specified: `fqdn`, `ip_netmask`, `ip_range`, `ip_wildcard`",
                 Optional:    true,
-            },
-            "location": rsschema.SingleNestedAttribute{
-                Description: "The location of this object.",
-                Required: true,
-                Attributes: map[string] rsschema.Attribute{
-                    "device_group": rsschema.SingleNestedAttribute{
-                        Description: "(Panorama) In the given device group.",
-                        Optional: true,
-                        Attributes: map[string] rsschema.Attribute{
-                            "name": rsschema.StringAttribute{
-                                Description: "The device group name.",
-                                Required: true,
-                                PlanModifiers: []planmodifier.String{
-                                    stringplanmodifier.RequiresReplace(),
-                                },
-                            },
-                            "panorama_device": rsschema.StringAttribute{
-                                Description: "The Panorama device.",
-                                Optional: true,
-                                Computed: true,
-                                Default: stringdefault.StaticString("localhost.localdomain"),
-                                PlanModifiers: []planmodifier.String{
-                                    stringplanmodifier.RequiresReplace(),
-                                },
-                            },
-                        },
-                    },
-                    "from_panorama": rsschema.BoolAttribute{
-                        Description: "(NGFW) Pushed from Panorama. This is a read-only location and only suitable for data sources.",
-                        Optional: true,
-                        Validators: []validator.Bool{
-                            boolvalidator.ExactlyOneOf(
-                                path.MatchRoot("location").AtName("from_panorama"),
-                                path.MatchRoot("location").AtName("device_group"),
-                                path.MatchRoot("location").AtName("vsys"),
-                                path.MatchRoot("location").AtName("shared"),
-                            ),
-                        },
-                        PlanModifiers: []planmodifier.Bool{
-                            boolplanmodifier.RequiresReplace(),
-                        },
-                    },
-                    "shared": rsschema.BoolAttribute{
-                        Description: "(NGFW and Panorama) Located in shared.",
-                        Optional: true,
-                        PlanModifiers: []planmodifier.Bool{
-                            boolplanmodifier.RequiresReplace(),
-                        },
-                    },
-                    "vsys": rsschema.SingleNestedAttribute{
-                        Description: "(NGFW) In the given vsys.",
-                        Optional: true,
-                        Attributes: map[string] rsschema.Attribute{
-                            "name": rsschema.StringAttribute{
-                                Description: "The vsys name.",
-                                Optional: true,
-                                Computed: true,
-                                Default: stringdefault.StaticString("vsys1"),
-                                PlanModifiers: []planmodifier.String{
-                                    stringplanmodifier.RequiresReplace(),
-                                },
-                            },
-                            "ngfw_device": rsschema.StringAttribute{
-                                Description: "The NGFW device.",
-                                Optional: true,
-                                Computed: true,
-                                Default: stringdefault.StaticString("localhost.localdomain"),
-                                PlanModifiers: []planmodifier.String{
-                                    stringplanmodifier.RequiresReplace(),
-                                },
-                            },
-                        },
-                    },
-                },
             },
             "name": rsschema.StringAttribute{
                 Description: "Alphanumeric string [ 0-9a-zA-Z._-]. String length must not exceed 63 characters.",
@@ -228,7 +180,7 @@ func (r *nestedAddressObjectResource) Schema(_ context.Context, _ resource.Schem
     }
 }
 
-func (r *nestedAddressObjectResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *flatAddressObjectResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
     if req.ProviderData == nil {
         return
     }
@@ -236,8 +188,8 @@ func (r *nestedAddressObjectResource) Configure(_ context.Context, req resource.
     r.client = req.ProviderData.(*pango.XmlApiClient)
 }
 
-func (r *nestedAddressObjectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-    var state nestedEntryModel
+func (r *flatAddressObjectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+    var state flatEntryModel
     resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
     if resp.Diagnostics.HasError() {
         return
@@ -245,7 +197,7 @@ func (r *nestedAddressObjectResource) Create(ctx context.Context, req resource.C
 
     // Basic logging.
     tflog.Info(ctx, "performing resource create", map[string] any{
-        "resource_name": "panos_nested_address_object",
+        "resource_name": "panos_flat_address_object",
         "function": "Create",
         "name": state.Name.ValueString(),
     })
@@ -254,19 +206,19 @@ func (r *nestedAddressObjectResource) Create(ctx context.Context, req resource.C
     svc := address.NewService(r.client)
 
     // Determine the location.
-    loc := nestedAddressObjectLocation{Name: state.Name.ValueString()}
-    if state.Location.Shared.ValueBool() {
+    loc := flatAddressObjectLocation{Name: state.Name.ValueString()}
+    if !state.Shared.IsNull() && state.Shared.ValueBool() {
         loc.Location.Shared = true
-    } else if state.Location.FromPanorama.ValueBool() {
+    } else if !state.FromPanorama.IsNull() && state.FromPanorama.ValueBool() {
         loc.Location.FromPanorama = true
-    } else if state.Location.Vsys != nil {
+    } else if !state.Vsys.IsNull() && state.Vsys.ValueString() != "" {
         loc.Location.Vsys = &address.VsysLocation{}
-        loc.Location.Vsys.Name = state.Location.Vsys.Name.ValueString()
-        loc.Location.Vsys.NgfwDevice = state.Location.Vsys.NgfwDevice.ValueString()
-    } else if state.Location.DeviceGroup != nil {
+        loc.Location.Vsys.Name = state.Vsys.ValueString()
+        loc.Location.Vsys.NgfwDevice = "localhost.localdomain"
+    } else if !state.DeviceGroup.IsNull() && state.DeviceGroup.ValueString() != "" {
         loc.Location.DeviceGroup = &address.DeviceGroupLocation{}
-        loc.Location.DeviceGroup.Name = state.Location.DeviceGroup.Name.ValueString()
-        loc.Location.DeviceGroup.PanoramaDevice = state.Location.DeviceGroup.PanoramaDevice.ValueString()
+        loc.Location.DeviceGroup.Name = state.DeviceGroup.ValueString()
+        loc.Location.DeviceGroup.PanoramaDevice = "localhost.localdomain"
     } else {
         resp.Diagnostics.AddError("Unknown location", "Location for object is unknown")
         return
@@ -315,15 +267,15 @@ func (r *nestedAddressObjectResource) Create(ctx context.Context, req resource.C
 }
 
 // Read performs Read for the struct.
-func (r *nestedAddressObjectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-    var savestate, state nestedEntryModel
+func (r *flatAddressObjectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+    var savestate, state flatEntryModel
     resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
     if resp.Diagnostics.HasError() {
         return
     }
 
     // Parse the location from tfid.
-    var loc nestedAddressObjectLocation
+    var loc flatAddressObjectLocation
     if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
         resp.Diagnostics.AddError("error parsing tfid", err.Error())
         return
@@ -331,7 +283,7 @@ func (r *nestedAddressObjectResource) Read(ctx context.Context, req resource.Rea
 
     // Basic logging.
     tflog.Info(ctx, "performing resource read", map[string] any{
-        "resource_name": "panos_nested_address_object",
+        "resource_name": "panos_flat_address_object",
         "function": "Read",
         "name": loc.Name,
     })
@@ -352,17 +304,13 @@ func (r *nestedAddressObjectResource) Read(ctx context.Context, req resource.Rea
 
     // Save location to state.
     if loc.Location.Shared {
-        state.Location.Shared = types.BoolValue(true)
+        state.Shared = types.BoolValue(true)
     } else if loc.Location.FromPanorama {
-        state.Location.FromPanorama = types.BoolValue(true)
+        state.FromPanorama = types.BoolValue(true)
     } else if loc.Location.Vsys != nil {
-        state.Location.Vsys = &nestedVsysLocation{}
-        state.Location.Vsys.Name = types.StringValue(loc.Location.Vsys.Name)
-        state.Location.Vsys.NgfwDevice = types.StringValue(loc.Location.Vsys.NgfwDevice)
+        state.Vsys = types.StringValue(loc.Location.Vsys.Name)
     } else if loc.Location.DeviceGroup != nil {
-        state.Location.DeviceGroup = &nestedDeviceGroupLocation{}
-        state.Location.DeviceGroup.Name = types.StringValue(loc.Location.DeviceGroup.Name)
-        state.Location.DeviceGroup.PanoramaDevice = types.StringValue(loc.Location.DeviceGroup.PanoramaDevice)
+        state.DeviceGroup = types.StringValue(loc.Location.DeviceGroup.Name)
     }
 
     // Save the answer to state.
@@ -381,15 +329,15 @@ func (r *nestedAddressObjectResource) Read(ctx context.Context, req resource.Rea
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *nestedAddressObjectResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-    var plan, state nestedEntryModel
+func (r *flatAddressObjectResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+    var plan, state flatEntryModel
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     if resp.Diagnostics.HasError() {
         return
     }
 
-    var loc nestedAddressObjectLocation
+    var loc flatAddressObjectLocation
     if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
         resp.Diagnostics.AddError("error parsing tfid", err.Error())
         return
@@ -397,7 +345,7 @@ func (r *nestedAddressObjectResource) Update(ctx context.Context, req resource.U
 
     // Basic logging.
     tflog.Info(ctx, "performing resource update", map[string] any{
-        "resource_name": "panos_nested_address_object",
+        "resource_name": "panos_flat_address_object",
         "function": "Update",
         "tfid": state.Tfid.ValueString(),
     })
@@ -433,8 +381,13 @@ func (r *nestedAddressObjectResource) Update(ctx context.Context, req resource.U
     }
     state.Tfid = types.StringValue(tfidstr)
 
+    // Save the location.
+    state.Shared = plan.Shared
+    state.FromPanorama = plan.FromPanorama
+    state.Vsys = plan.Vsys
+    state.DeviceGroup = plan.DeviceGroup
+
     // Save the state.
-    state.Location = plan.Location
     state.Name = types.StringValue(ans.Name)
     state.Description = types.StringPointerValue(ans.Description)
     state.IpNetmask = types.StringPointerValue(ans.IpNetmask)
@@ -449,7 +402,7 @@ func (r *nestedAddressObjectResource) Update(ctx context.Context, req resource.U
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *nestedAddressObjectResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *flatAddressObjectResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
     var idType types.String
     resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("tfid"), &idType)...)
     if resp.Diagnostics.HasError() {
@@ -457,7 +410,7 @@ func (r *nestedAddressObjectResource) Delete(ctx context.Context, req resource.D
     }
 
     // Parse the location from tfid.
-    var loc nestedAddressObjectLocation
+    var loc flatAddressObjectLocation
     if err := DecodeLocation(idType.ValueString(), &loc); err != nil {
         resp.Diagnostics.AddError("error parsing tfid", err.Error())
         return
@@ -465,7 +418,7 @@ func (r *nestedAddressObjectResource) Delete(ctx context.Context, req resource.D
 
     // Basic logging.
     tflog.Info(ctx, "performing resource delete", map[string] any{
-        "resource_name": "panos_nested_address_object",
+        "resource_name": "panos_flat_address_object",
         "function": "Delete",
         "name": loc.Name,
     })
@@ -479,6 +432,6 @@ func (r *nestedAddressObjectResource) Delete(ctx context.Context, req resource.D
     }
 }
 
-func (r *nestedAddressObjectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *flatAddressObjectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
     resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
 }
