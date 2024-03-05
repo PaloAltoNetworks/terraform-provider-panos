@@ -25,17 +25,19 @@ type PanosProvider struct {
 
 // PanosProviderModel maps provider schema data to a Go type.
 type PanosProviderModel struct {
-	Hostname types.String `tfsdk:"hostname"`
-    Username types.String `tfsdk:"username"`
-    Password types.String `tfsdk:"password"`
-    ApiKey types.String `tfsdk:"api_key"`
-    Protocol types.String `tfsdk:"protocol"`
-    Port types.Int64 `tfsdk:"port"`
-    Target types.String `tfsdk:"target"`
-    ApiKeyInRequest types.Bool `tfsdk:"api_key_in_request"`
-    AdditionalHeaders types.Map `tfsdk:"additional_headers"`
-    SkipVerifyCertificate types.Bool `tfsdk:"skip_verify_certificate"`
-    AuthFile types.String `tfsdk:"auth_file"`
+	Hostname              types.String `tfsdk:"hostname"`
+	Username              types.String `tfsdk:"username"`
+	Password              types.String `tfsdk:"password"`
+	ApiKey                types.String `tfsdk:"api_key"`
+	Protocol              types.String `tfsdk:"protocol"`
+	Port                  types.Int64  `tfsdk:"port"`
+	Target                types.String `tfsdk:"target"`
+	ApiKeyInRequest       types.Bool   `tfsdk:"api_key_in_request"`
+	AdditionalHeaders     types.Map    `tfsdk:"additional_headers"`
+	SkipVerifyCertificate types.Bool   `tfsdk:"skip_verify_certificate"`
+	AuthFile              types.String `tfsdk:"auth_file"`
+	ConfigFile            types.String `tfsdk:"config_file"`
+	TheVersion            types.String `tfsdk:"the_version"`
 }
 
 // Metadata returns the provider type name.
@@ -74,8 +76,8 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 					"PANOS_PASSWORD",
 					"password",
 				),
-				Optional: true,
-                Sensitive: true,
+				Optional:  true,
+				Sensitive: true,
 			},
 			"api_key": schema.StringAttribute{
 				Description: ProviderParamDescription(
@@ -95,15 +97,15 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				),
 				Optional: true,
 			},
-            "port": schema.Int64Attribute{
-                Description: ProviderParamDescription(
-                    "If the port is non-standard for the protocol, the port number to use.",
-                    "",
-                    "PANOS_PORT",
-                    "port",
-                ),
-                Optional: true,
-            },
+			"port": schema.Int64Attribute{
+				Description: ProviderParamDescription(
+					"If the port is non-standard for the protocol, the port number to use.",
+					"",
+					"PANOS_PORT",
+					"port",
+				),
+				Optional: true,
+			},
 			"target": schema.StringAttribute{
 				Description: ProviderParamDescription(
 					"Target setting (NGFW serial number).",
@@ -113,26 +115,26 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				),
 				Optional: true,
 			},
-            "api_key_in_request": schema.BoolAttribute{
-                Description: ProviderParamDescription(
-                    "Send the API key in the request body instead of using the authentication header.",
-                    "",
-                    "PANOS_API_KEY_IN_REQUEST",
-                    "api_key_in_request",
-                ),
-                Optional: true,
-            },
-            "additional_headers": schema.MapAttribute{
-                Description: ProviderParamDescription(
-                    "Additional HTTP headers to send with API calls",
-                    "",
-                    "PANOS_HEADERS",
-                    "additional_headers",
-                ),
-                Optional: true,
-                ElementType: types.StringType,
-            },
-            "skip_verify_certificate": schema.BoolAttribute{
+			"api_key_in_request": schema.BoolAttribute{
+				Description: ProviderParamDescription(
+					"Send the API key in the request body instead of using the authentication header.",
+					"",
+					"PANOS_API_KEY_IN_REQUEST",
+					"api_key_in_request",
+				),
+				Optional: true,
+			},
+			"additional_headers": schema.MapAttribute{
+				Description: ProviderParamDescription(
+					"Additional HTTP headers to send with API calls",
+					"",
+					"PANOS_HEADERS",
+					"additional_headers",
+				),
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"skip_verify_certificate": schema.BoolAttribute{
 				Description: ProviderParamDescription(
 					"(For https protocol) Skip verifying the HTTPS certificate.",
 					"",
@@ -140,7 +142,7 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 					"skip_verify_certificate",
 				),
 				Optional: true,
-            },
+			},
 			"auth_file": schema.StringAttribute{
 				Description: ProviderParamDescription(
 					"Filesystem path to a JSON config file that specifies the provider's params.",
@@ -150,13 +152,23 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				),
 				Optional: true,
 			},
+
+			// Variables for local inspection.
+			"config_file": schema.StringAttribute{
+				Description: "(Local inspection mode) The PAN-OS config file to load read in using `file()`",
+				Optional:    true,
+			},
+			"the_version": schema.StringAttribute{
+				Description: "(Local inspection mode) The version of PAN-OS that exported the config file. Example: `10.2.3`.",
+				Optional:    true,
+			},
 		},
 	}
 }
 
 // Configure prepares the provider.
 func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	tflog.Info(ctx, "Configuring the provider client")
+	tflog.Info(ctx, "Configuring the provider client...")
 
 	var config PanosProviderModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
@@ -164,33 +176,44 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		return
 	}
 
-	// Configure the client.
-	con := &sdk.XmlApiClient{
-		Hostname: config.Hostname.ValueString(),
-        Username: config.Username.ValueString(),
-        Password: config.Password.ValueString(),
-        ApiKey: config.ApiKey.ValueString(),
-        Protocol: config.Protocol.ValueString(),
-        Port: int(config.Port.ValueInt64()),
-        Target: config.Target.ValueString(),
-        ApiKeyInRequest: config.ApiKeyInRequest.ValueBool(),
-        // Headers from AdditionalHeaders
-        SkipVerifyCertificate: config.SkipVerifyCertificate.ValueBool(),
-        AuthFile: config.AuthFile.ValueString(),
-		CheckEnvironment: true,
-		//Agent:            fmt.Sprintf("Terraform/%s Provider/scm Version/%s", req.TerraformVersion, p.version),
-	}
+	var con *sdk.XmlApiClient
 
-	if err := con.Setup(); err != nil {
-		resp.Diagnostics.AddError("Provider parameter value error", err.Error())
-		return
-	}
+	if config.ConfigFile.ValueString() != "" && config.TheVersion.ValueString() != "" {
+		tflog.Info(ctx, "Configuring client for local inspection mode")
+		con = &sdk.XmlApiClient{}
+		if err := con.SetupLocalInspection(config.ConfigFile.ValueString(), config.TheVersion.ValueString()); err != nil {
+			resp.Diagnostics.AddError("Error setting up local inspection mode", err.Error())
+			return
+		}
+	} else {
+		tflog.Info(ctx, "Configuring client for API mode")
+		con = &sdk.XmlApiClient{
+			Hostname:        config.Hostname.ValueString(),
+			Username:        config.Username.ValueString(),
+			Password:        config.Password.ValueString(),
+			ApiKey:          config.ApiKey.ValueString(),
+			Protocol:        config.Protocol.ValueString(),
+			Port:            int(config.Port.ValueInt64()),
+			Target:          config.Target.ValueString(),
+			ApiKeyInRequest: config.ApiKeyInRequest.ValueBool(),
+			// Headers from AdditionalHeaders
+			SkipVerifyCertificate: config.SkipVerifyCertificate.ValueBool(),
+			AuthFile:              config.AuthFile.ValueString(),
+			CheckEnvironment:      true,
+			//Agent:            fmt.Sprintf("Terraform/%s Provider/scm Version/%s", req.TerraformVersion, p.version),
+		}
 
-	//con.HttpClient.Transport = sdkapi.NewTransport(con.HttpClient.Transport, con)
+		if err := con.Setup(); err != nil {
+			resp.Diagnostics.AddError("Provider parameter value error", err.Error())
+			return
+		}
 
-    if err := con.Initialize(ctx); err != nil {
-		resp.Diagnostics.AddError("Initialization error", err.Error())
-		return
+		//con.HttpClient.Transport = sdkapi.NewTransport(con.HttpClient.Transport, con)
+
+		if err := con.Initialize(ctx); err != nil {
+			resp.Diagnostics.AddError("Initialization error", err.Error())
+			return
+		}
 	}
 
 	resp.DataSourceData = con
@@ -203,7 +226,8 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 // DataSources defines the data sources for this provider.
 func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-        NewTfidDataSource,
+		NewTfidDataSource,
+		NewNestedAddressObjectListDataSource,
 	}
 }
 
@@ -223,4 +247,3 @@ func New(version string) func() provider.Provider {
 		}
 	}
 }
-
