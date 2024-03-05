@@ -49,7 +49,7 @@ func (p *PanosProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 // Schema defines the provider-level schema for configuration data.
 func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Terraform provider to interact with Palo Alto Networks Strata Cloud Manager API.",
+		Description: "Terraform provider to interact with Palo Alto Networks PAN-OS.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: ProviderParamDescription(
