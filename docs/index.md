@@ -13,10 +13,17 @@ Terraform provider to interact with Palo Alto Networks Strata Cloud Manager API.
 ## Example Usage
 
 ```terraform
+# Traditional provider example.
 provider "panos" {
   hostname = "10.1.1.1"
   username = "admin"
   password = "secret"
+}
+
+# Local inspection mode provider example.
+provider "panos" {
+  config_file   = file("/tmp/candidate-config.xml")
+  panos_version = "10.2.0"
 }
 
 terraform {
@@ -38,7 +45,9 @@ terraform {
 - `api_key` (String) The API key for PAN-OS. Either specify this or give both username and password. Environment variable: `PANOS_API`. JSON config file variable: `api_key`.
 - `api_key_in_request` (Boolean) Send the API key in the request body instead of using the authentication header. Environment variable: `PANOS_API_KEY_IN_REQUEST`. JSON config file variable: `api_key_in_request`.
 - `auth_file` (String) Filesystem path to a JSON config file that specifies the provider's params.
+- `config_file` (String) (Local inspection mode) The PAN-OS config file to load read in using `file()`
 - `hostname` (String) The hostname or IP address of the PAN-OS instance (NGFW or Panorama). Environment variable: `PANOS_HOST`. JSON config file variable: `hostname`.
+- `panos_version` (String) (Local inspection mode) The version of PAN-OS that exported the config file. Example: `10.2.3`.
 - `password` (String, Sensitive) The password.  This is required if the api_key is not configured. Environment variable: `PANOS_PASSWORD`. JSON config file variable: `password`.
 - `port` (Number) If the port is non-standard for the protocol, the port number to use. Environment variable: `PANOS_PORT`. JSON config file variable: `port`.
 - `protocol` (String) The protocol (https or http). Default: `https`. Environment variable: `PANOS_PROTOCOL`. JSON config file variable: `protocol`.

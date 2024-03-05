@@ -7,8 +7,8 @@ provider "panos" {
 
 # Local inspection mode provider example.
 provider "panos" {
-    config_file = file("/tmp/candidate-config.xml")
-    panos_version = "10.2.0"
+  config_file   = file("/tmp/candidate-config.xml")
+  panos_version = "10.2.0"
 }
 
 terraform {
