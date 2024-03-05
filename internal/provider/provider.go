@@ -37,7 +37,7 @@ type PanosProviderModel struct {
 	SkipVerifyCertificate types.Bool   `tfsdk:"skip_verify_certificate"`
 	AuthFile              types.String `tfsdk:"auth_file"`
 	ConfigFile            types.String `tfsdk:"config_file"`
-	TheVersion            types.String `tfsdk:"the_version"`
+	PanosVersion          types.String `tfsdk:"panos_version"`
 }
 
 // Metadata returns the provider type name.
@@ -158,7 +158,7 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				Description: "(Local inspection mode) The PAN-OS config file to load read in using `file()`",
 				Optional:    true,
 			},
-			"the_version": schema.StringAttribute{
+			"panos_version": schema.StringAttribute{
 				Description: "(Local inspection mode) The version of PAN-OS that exported the config file. Example: `10.2.3`.",
 				Optional:    true,
 			},
@@ -178,10 +178,10 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	var con *sdk.XmlApiClient
 
-	if config.ConfigFile.ValueString() != "" && config.TheVersion.ValueString() != "" {
+	if config.ConfigFile.ValueStringPointer() != nil && config.PanosVersion.ValueStringPointer() != nil {
 		tflog.Info(ctx, "Configuring client for local inspection mode")
 		con = &sdk.XmlApiClient{}
-		if err := con.SetupLocalInspection(config.ConfigFile.ValueString(), config.TheVersion.ValueString()); err != nil {
+		if err := con.SetupLocalInspection(config.ConfigFile.ValueString(), config.PanosVersion.ValueString()); err != nil {
 			resp.Diagnostics.AddError("Error setting up local inspection mode", err.Error())
 			return
 		}
