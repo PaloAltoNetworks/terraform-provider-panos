@@ -13,6 +13,31 @@ Use the navigation to the left to read about the available Panorama and NGFW res
 Refer to [the changelog](https://github.com/PaloAltoNetworks/terraform-provider-panos/blob/master/CHANGELOG.md) to see what's new.
 
 
+## Versioning
+
+The minimum version of PAN-OS is PAN-OS 10.1 and onwards.  In PAN-OS 10.1.5 a change was made with regards to the XML API that removed the provider's easy access to remove multiple config objects in a single API call.
+
+To compensate for this loss of functionality, the provider now does multi-config API calls against PAN-OS when multiple `type=config` API calls must be run.
+
+With regards to data sources and resources, the minimum version for any given data source or resource will be present in the documentation if the version is higher than PAN-OS 10.1.
+
+If you need to work with multiple versions of PAN-OS where some versions have a new parameter and some don't, then make sure to use [conditionals](https://www.terraform.io/docs/configuration/expressions/conditionals.html) along with the `panos_system_info` data source to only set these variables when the version of PAN-OS is appropriate.
+
+
+## List Filtering
+
+Data sources that return a list of objects now supports filtering.  Please refer to the guide on the side for more information on how to use filtering.
+
+
+## Provider Modes
+
+The provider features two distinct modes:  API and local inspection.
+
+The API mode is the standard mode where the provider connects to a running PAN-OS instance and executes API commands against it.  This mode can be used across both data sources and resources.
+
+The local inspection mode in contrast allows users to use Terraform to inspect a locally saved XML schema that was previously exported from PAN-OS. Interaction with the exported XML schema is limited to data sources only, but there may still be some types of data sources that are incompatible with this (aka - User-ID data sources or exporting the tech support file). This combined with data source list filtering should enable users to quickly inspect previously saved configs from the comfort of Terraform. The versions of PAN-OS that pango supports determines the versions that the provider can successfully function in local inspection mode.
+
+
 ## Terraform / PAN-OS Interaction
 
 ### `lifecycle.create_before_destroy`
@@ -41,17 +66,6 @@ Limit the number of concurrent API calls to five. This limit ensures that there 
 ```
 
 In order to accomplish this, make sure you set the [parallelism](https://www.terraform.io/cli/commands/apply#parallelism-n) value at or below this limit to prevent performance impacts.
-
-
-## Versioning
-
-The minimum version of PAN-OS is PAN-OS 10.1 and onwards.  In PAN-OS 10.1.5 a change was made with regards to the XML API that removed the provider's easy access to remove multiple config objects in a single API call.
-
-To compensate for this loss of functionality, the provider now does multi-config API calls against PAN-OS when multiple `type=config` API calls must be run.
-
-With regards to data sources and resources, the minimum version for any given data source or resource will be present in the documentation if the version is higher than PAN-OS 10.1.
-
-If you need to work with multiple versions of PAN-OS where some versions have a new parameter and some don't, then make sure to use [conditionals](https://www.terraform.io/docs/configuration/expressions/conditionals.html) along with the `panos_system_info` data source to only set these variables when the version of PAN-OS is appropriate.
 
 
 ## Commits
