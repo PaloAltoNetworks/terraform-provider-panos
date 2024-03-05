@@ -38,6 +38,13 @@ The API mode is the standard mode where the provider connects to a running PAN-O
 The local inspection mode in contrast allows users to use Terraform to inspect a locally saved XML schema that was previously exported from PAN-OS. Interaction with the exported XML schema is limited to data sources only, but there may still be some types of data sources that are incompatible with this (aka - User-ID data sources or exporting the tech support file). This combined with data source list filtering should enable users to quickly inspect previously saved configs from the comfort of Terraform. The versions of PAN-OS that pango supports determines the versions that the provider can successfully function in local inspection mode.
 
 
+## Candidate vs Running Config
+
+Most data sources (aka - those that are `type=config`) now support querying both the candidate config as well as the running config.  The default is to query candidate config (`get`), but if the data source supports the `action` param then this can be set to `show` to query the running config instead.
+
+If the provider is in local inspection mode, then the `action` is ignored as the provider is getting answers direction from the given XML schema.
+
+
 ## Terraform / PAN-OS Interaction
 
 ### `lifecycle.create_before_destroy`
