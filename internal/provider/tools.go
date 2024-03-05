@@ -1,37 +1,37 @@
 package provider
 
 import (
-    "bytes"
-    "encoding/base64"
-    "encoding/json"
-    "fmt"
-    "strings"
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"strings"
 )
 
 type Locationer interface {
-    IsValid() error
+	IsValid() error
 }
 
 func EncodeLocation(loc Locationer) (string, error) {
-    b, err := json.Marshal(loc)
-    if err != nil {
-        return "", err
-    }
+	b, err := json.Marshal(loc)
+	if err != nil {
+		return "", err
+	}
 
-    return base64.StdEncoding.EncodeToString(b), nil
+	return base64.StdEncoding.EncodeToString(b), nil
 }
 
 func DecodeLocation(s string, loc Locationer) error {
-    b, err := base64.StdEncoding.DecodeString(s)
-    if err != nil {
-        return err
-    }
+	b, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return err
+	}
 
-    if err = json.Unmarshal(b, loc); err != nil {
-        return err
-    }
+	if err = json.Unmarshal(b, loc); err != nil {
+		return err
+	}
 
-    return loc.IsValid()
+	return loc.IsValid()
 }
 
 func base64Encode(v []string) string {
@@ -57,21 +57,21 @@ func base64Decode(v string) []string {
 }
 
 func ProviderParamDescription(desc, defaultValue, envName, jsonName string) string {
-    var b strings.Builder
+	var b strings.Builder
 
-    b.WriteString(desc)
+	b.WriteString(desc)
 
-    if defaultValue != "" {
-        b.WriteString(fmt.Sprintf(" Default: `%s`.", defaultValue))
-    }
+	if defaultValue != "" {
+		b.WriteString(fmt.Sprintf(" Default: `%s`.", defaultValue))
+	}
 
-    if envName != "" {
-        b.WriteString(fmt.Sprintf(" Environment variable: `%s`.", envName))
-    }
+	if envName != "" {
+		b.WriteString(fmt.Sprintf(" Environment variable: `%s`.", envName))
+	}
 
-    if jsonName != "" {
-        b.WriteString(fmt.Sprintf(" JSON config file variable: `%s`.", jsonName))
-    }
+	if jsonName != "" {
+		b.WriteString(fmt.Sprintf(" JSON config file variable: `%s`.", jsonName))
+	}
 
-    return b.String()
+	return b.String()
 }
