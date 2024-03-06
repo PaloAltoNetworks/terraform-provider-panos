@@ -41,17 +41,17 @@ type nestedAddressObjectListDataSource struct {
 
 type nestedAddressObjectListDsModel struct {
 	// Input.
-    QueryControl nestedAddressObjectListQueryControl `tfsdk:"query_control"`
-	Location nestedLocationModel `tfsdk:"location"`
+	Filter   *nestedAddressObjectListFilter `tfsdk:"filter"`
+	Location nestedLocationModel            `tfsdk:"location"`
 
 	// Output.
 	Data []dsListEntry `tfsdk:"data"`
 }
 
-type nestedAddressObjectListQueryControl struct {
-	Read   types.String        `tfsdk:"read"`
-	Filter   types.String        `tfsdk:"filter"`
-	Quote    types.String        `tfsdk:"quote"`
+type nestedAddressObjectListFilter struct {
+	Config types.String `tfsdk:"config"`
+	Value  types.String `tfsdk:"value"`
+	Quote  types.String `tfsdk:"quote"`
 }
 
 type dsListEntry struct {
@@ -72,24 +72,24 @@ func (d *nestedAddressObjectListDataSource) Schema(_ context.Context, _ datasour
 	resp.Schema = dsschema.Schema{
 		Description: "Returns a list of address objects.",
 		Attributes: map[string]dsschema.Attribute{
-            "query_control": dsschema.SingleNestedAttribute{
-                Description: "Specify various aspects about the read operation.",
-                Optional: true,
-                Attributes: map[string] dsschema.Attribute{
-                    "read": dsschema.StringAttribute{
-                        Description: "Which type of config the data source should read from. Valid values are \"running\" or \"candidate\". Default: `\"candidate\"`.",
-                        Optional:    true,
-                    },
-                    "filter": dsschema.StringAttribute{
-                        Description: "A filter to limit which objects are returned in the listing.",
-                        Optional:    true,
-                    },
-                    "quote": dsschema.StringAttribute{
-                        Description: "The quote character for the given filter. Default: `\"`",
-                        Optional:    true,
-                    },
-                },
-            },
+			"filter": dsschema.SingleNestedAttribute{
+				Description: "Specify various properties about the read operation.",
+				Optional:    true,
+				Attributes: map[string]dsschema.Attribute{
+					"config": dsschema.StringAttribute{
+						Description: "Which type of config the data source should read from. If the provider is in local inspection mode, this param is ignored. Valid values are \"running\" or \"candidate\". Default: `\"candidate\"`.",
+						Optional:    true,
+					},
+					"value": dsschema.StringAttribute{
+						Description: "A filter to limit which objects are returned in the listing. Refer to the filter guide for more information.",
+						Optional:    true,
+					},
+					"quote": dsschema.StringAttribute{
+						Description: "The quote character for the given filter. Default: `'`.",
+						Optional:    true,
+					},
+				},
+			},
 			"location": dsschema.SingleNestedAttribute{
 				Description: "The location of this object. One and only one of the locations should be specified.",
 				Required:    true,
@@ -226,21 +226,26 @@ func (d *nestedAddressObjectListDataSource) Read(ctx context.Context, req dataso
 	}
 
 	var action string
-    if state.QueryControl.Read.ValueStringPointer() == nil || state.QueryControl.Read.ValueString() == "candidate" {
+	if state.Filter == nil || state.Filter.Config.ValueStringPointer() == nil {
 		action = "get"
-    } else if state.QueryControl.Read.ValueString() == "running" {
-        action = "show"
-    } else {
-		resp.Diagnostics.AddError("Invalid action", "The 'action' must be \"get\" or \"show\"")
+	} else if state.Filter.Config.ValueString() == "candidate" {
+		action = "get"
+	} else if state.Filter.Config.ValueString() == "running" {
+		action = "show"
+	} else {
+		resp.Diagnostics.AddError("Invalid action", "The 'config' must be \"candidate\" or \"running\"")
 		return
-    }
+	}
 
-	filter := state.QueryControl.Filter.ValueString()
+	var filter string
+	if state.Filter != nil {
+		filter = state.Filter.Value.ValueString()
+	}
 
-    quote := `"`
-    if state.QueryControl.Quote.ValueStringPointer() != nil {
-        quote = state.QueryControl.Quote.ValueString()
-    }
+	quote := "'"
+	if state.Filter != nil && state.Filter.Quote.ValueStringPointer() != nil {
+		quote = state.Filter.Quote.ValueString()
+	}
 
 	var err error
 	var list []address.Entry
