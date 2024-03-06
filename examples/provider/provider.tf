@@ -7,7 +7,10 @@ provider "panos" {
 
 # Local inspection mode provider example.
 provider "panos" {
-  config_file   = file("/tmp/candidate-config.xml")
+  config_file = file("/tmp/candidate-config.xml")
+
+  # This is only used if a "detail-version" attribute is not present in
+  # the exported XML schema. If it's there, this can be omitted.
   panos_version = "10.2.0"
 }
 

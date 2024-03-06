@@ -159,7 +159,7 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				Optional:    true,
 			},
 			"panos_version": schema.StringAttribute{
-				Description: "(Local inspection mode) The version of PAN-OS that exported the config file. Example: `10.2.3`.",
+				Description: "(Local inspection mode) The version of PAN-OS that exported the config file. This is only used if the root \"config\" block does not contain the \"detail-version\" attribute. Example: `10.2.3`.",
 				Optional:    true,
 			},
 		},

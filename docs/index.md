@@ -97,7 +97,10 @@ provider "panos" {
 
 # Local inspection mode provider example.
 provider "panos" {
-  config_file   = file("/tmp/candidate-config.xml")
+  config_file = file("/tmp/candidate-config.xml")
+
+  # This is only used if a "detail-version" attribute is not present in
+  # the exported XML schema. If it's there, this can be omitted.
   panos_version = "10.2.0"
 }
 
@@ -132,7 +135,7 @@ There are multiple ways to specify the provider's parameters.  If overlapping va
 - `auth_file` (String) Filesystem path to a JSON config file that specifies the provider's params.
 - `config_file` (String) (Local inspection mode) The PAN-OS config file to load read in using `file()`
 - `hostname` (String) The hostname or IP address of the PAN-OS instance (NGFW or Panorama). Environment variable: `PANOS_HOST`. JSON config file variable: `hostname`.
-- `panos_version` (String) (Local inspection mode) The version of PAN-OS that exported the config file. Example: `10.2.3`.
+- `panos_version` (String) (Local inspection mode) The version of PAN-OS that exported the config file. This is only used if the root "config" block does not contain the "detail-version" attribute. Example: `10.2.3`.
 - `password` (String, Sensitive) The password.  This is required if the api_key is not configured. Environment variable: `PANOS_PASSWORD`. JSON config file variable: `password`.
 - `port` (Number) If the port is non-standard for the protocol, the port number to use. Environment variable: `PANOS_PORT`. JSON config file variable: `port`.
 - `protocol` (String) The protocol (https or http). Default: `https`. Environment variable: `PANOS_PROTOCOL`. JSON config file variable: `protocol`.
