@@ -23,10 +23,9 @@ data "panos_nested_address_object_list" "example" {
 # Returns all running config IP Netmask address objects in vsys2
 # that end in "_DMZ".
 data "panos_nested_address_object_list" "example" {
-  query_control = {
-    read   = "running"
-    filter = "ip_netmask is-not-nil && name ends-with '_DMZ'"
-    quote  = "'"
+  filter = {
+    config = "running"
+    value  = "ip_netmask is-not-nil && name ends-with ' DMZ'"
   }
 
   location = {
@@ -46,7 +45,7 @@ data "panos_nested_address_object_list" "example" {
 
 ### Optional
 
-- `query_control` (Attributes) Specify various aspects about the read operation. (see [below for nested schema](#nestedatt--query_control))
+- `filter` (Attributes) Specify various properties about the read operation. (see [below for nested schema](#nestedatt--filter))
 
 ### Read-Only
 
@@ -84,14 +83,14 @@ Optional:
 
 
 
-<a id="nestedatt--query_control"></a>
-### Nested Schema for `query_control`
+<a id="nestedatt--filter"></a>
+### Nested Schema for `filter`
 
 Optional:
 
-- `filter` (String) A filter to limit which objects are returned in the listing.
-- `quote` (String) The quote character for the given filter. Default: `"`
-- `read` (String) Which type of config the data source should read from. Valid values are "running" or "candidate". Default: `"candidate"`.
+- `config` (String) Which type of config the data source should read from. If the provider is in local inspection mode, this param is ignored. Valid values are "running" or "candidate". Default: `"candidate"`.
+- `quote` (String) The quote character for the given filter. Default: `'`.
+- `value` (String) A filter to limit which objects are returned in the listing. Refer to the filter guide for more information.
 
 
 <a id="nestedatt--data"></a>
