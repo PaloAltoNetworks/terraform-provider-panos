@@ -23,15 +23,17 @@ data "panos_nested_address_object_list" "example" {
 # Returns all running config IP Netmask address objects in vsys2
 # that end in "_DMZ".
 data "panos_nested_address_object_list" "example" {
-  action = "show"
+  query_control = {
+    read   = "running"
+    filter = "ip_netmask is-not-nil && name ends-with '_DMZ'"
+    quote  = "'"
+  }
+
   location = {
     vsys = {
       name = "vsys2"
     }
   }
-
-  filter = "ip_netmask is-not-nil && name ends-with '_DMZ'"
-  quote  = "'"
 }
 ```
 
@@ -44,9 +46,7 @@ data "panos_nested_address_object_list" "example" {
 
 ### Optional
 
-- `action` (String) The API action to take.  Should get "get" or "show". Default: "get".
-- `filter` (String) A filter to limit which objects are returned in the listing.
-- `quote` (String) The quote character for the given filter. Default: `"`
+- `query_control` (Attributes) Specify various aspects about the read operation. (see [below for nested schema](#nestedatt--query_control))
 
 ### Read-Only
 
@@ -82,6 +82,16 @@ Optional:
 - `name` (String) The vsys name.
 - `ngfw_device` (String) The NGFW device.
 
+
+
+<a id="nestedatt--query_control"></a>
+### Nested Schema for `query_control`
+
+Optional:
+
+- `filter` (String) A filter to limit which objects are returned in the listing.
+- `quote` (String) The quote character for the given filter. Default: `"`
+- `read` (String) Which type of config the data source should read from. Valid values are "running" or "candidate". Default: `"candidate"`.
 
 
 <a id="nestedatt--data"></a>
