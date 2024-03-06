@@ -178,7 +178,7 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	var con *sdk.XmlApiClient
 
-	if config.ConfigFile.ValueStringPointer() != nil && config.PanosVersion.ValueStringPointer() != nil {
+	if config.ConfigFile.ValueStringPointer() != nil {
 		tflog.Info(ctx, "Configuring client for local inspection mode")
 		con = &sdk.XmlApiClient{}
 		if err := con.SetupLocalInspection(config.ConfigFile.ValueString(), config.PanosVersion.ValueString()); err != nil {

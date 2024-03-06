@@ -41,13 +41,17 @@ type nestedAddressObjectListDataSource struct {
 
 type nestedAddressObjectListDsModel struct {
 	// Input.
+    QueryControl nestedAddressObjectListQueryControl `tfsdk:"query_control"`
 	Location nestedLocationModel `tfsdk:"location"`
-	Action   types.String        `tfsdk:"action"`
-	Filter   types.String        `tfsdk:"filter"`
-	Quote    types.String        `tfsdk:"quote"`
 
 	// Output.
 	Data []dsListEntry `tfsdk:"data"`
+}
+
+type nestedAddressObjectListQueryControl struct {
+	Read   types.String        `tfsdk:"read"`
+	Filter   types.String        `tfsdk:"filter"`
+	Quote    types.String        `tfsdk:"quote"`
 }
 
 type dsListEntry struct {
@@ -68,55 +72,24 @@ func (d *nestedAddressObjectListDataSource) Schema(_ context.Context, _ datasour
 	resp.Schema = dsschema.Schema{
 		Description: "Returns a list of address objects.",
 		Attributes: map[string]dsschema.Attribute{
-			"action": dsschema.StringAttribute{
-				Description: "The API action to take.  Should get \"get\" or \"show\". Default: \"get\".",
-				Optional:    true,
-			},
-			"filter": dsschema.StringAttribute{
-				Description: "A filter to limit which objects are returned in the listing.",
-				Optional:    true,
-			},
-			"quote": dsschema.StringAttribute{
-				Description: "The quote character for the given filter. Default: `\"`",
-				Optional:    true,
-			},
-			"data": dsschema.ListNestedAttribute{
-				Description: "The list of objects.",
-				Computed:    true,
-				NestedObject: dsschema.NestedAttributeObject{
-					Attributes: map[string]dsschema.Attribute{
-						"description": dsschema.StringAttribute{
-							Description: "The description.",
-							Computed:    true,
-						},
-						"fqdn": dsschema.StringAttribute{
-							Description: "The Fqdn param.",
-							Computed:    true,
-						},
-						"ip_netmask": dsschema.StringAttribute{
-							Description: "The IpNetmask param.",
-							Computed:    true,
-						},
-						"ip_range": dsschema.StringAttribute{
-							Description: "The IpRange param.",
-							Computed:    true,
-						},
-						"ip_wildcard": dsschema.StringAttribute{
-							Description: "The IpWildcard param.",
-							Computed:    true,
-						},
-						"name": dsschema.StringAttribute{
-							Description: "Alphanumeric string [ 0-9a-zA-Z._-].",
-							Computed:    true,
-						},
-						"tags": dsschema.ListAttribute{
-							Description: "Tags for address object.",
-							Computed:    true,
-							ElementType: types.StringType,
-						},
-					},
-				},
-			},
+            "query_control": dsschema.SingleNestedAttribute{
+                Description: "Specify various aspects about the read operation.",
+                Optional: true,
+                Attributes: map[string] dsschema.Attribute{
+                    "read": dsschema.StringAttribute{
+                        Description: "Which type of config the data source should read from. Valid values are \"running\" or \"candidate\". Default: `\"candidate\"`.",
+                        Optional:    true,
+                    },
+                    "filter": dsschema.StringAttribute{
+                        Description: "A filter to limit which objects are returned in the listing.",
+                        Optional:    true,
+                    },
+                    "quote": dsschema.StringAttribute{
+                        Description: "The quote character for the given filter. Default: `\"`",
+                        Optional:    true,
+                    },
+                },
+            },
 			"location": dsschema.SingleNestedAttribute{
 				Description: "The location of this object. One and only one of the locations should be specified.",
 				Required:    true,
@@ -158,6 +131,43 @@ func (d *nestedAddressObjectListDataSource) Schema(_ context.Context, _ datasour
 								Optional:    true,
 								Computed:    true,
 							},
+						},
+					},
+				},
+			},
+			"data": dsschema.ListNestedAttribute{
+				Description: "The list of objects.",
+				Computed:    true,
+				NestedObject: dsschema.NestedAttributeObject{
+					Attributes: map[string]dsschema.Attribute{
+						"description": dsschema.StringAttribute{
+							Description: "The description.",
+							Computed:    true,
+						},
+						"fqdn": dsschema.StringAttribute{
+							Description: "The Fqdn param.",
+							Computed:    true,
+						},
+						"ip_netmask": dsschema.StringAttribute{
+							Description: "The IpNetmask param.",
+							Computed:    true,
+						},
+						"ip_range": dsschema.StringAttribute{
+							Description: "The IpRange param.",
+							Computed:    true,
+						},
+						"ip_wildcard": dsschema.StringAttribute{
+							Description: "The IpWildcard param.",
+							Computed:    true,
+						},
+						"name": dsschema.StringAttribute{
+							Description: "Alphanumeric string [ 0-9a-zA-Z._-].",
+							Computed:    true,
+						},
+						"tags": dsschema.ListAttribute{
+							Description: "Tags for address object.",
+							Computed:    true,
+							ElementType: types.StringType,
 						},
 					},
 				},
@@ -216,24 +226,21 @@ func (d *nestedAddressObjectListDataSource) Read(ctx context.Context, req dataso
 	}
 
 	var action string
-	if state.Action.ValueStringPointer() == nil {
+    if state.QueryControl.Read.ValueStringPointer() == nil || state.QueryControl.Read.ValueString() == "candidate" {
 		action = "get"
-	} else {
-		action = state.Action.ValueString()
-	}
-
-	if action != "get" && action != "show" {
+    } else if state.QueryControl.Read.ValueString() == "running" {
+        action = "show"
+    } else {
 		resp.Diagnostics.AddError("Invalid action", "The 'action' must be \"get\" or \"show\"")
 		return
-	}
+    }
 
-	var quote string
-	filter := state.Filter.ValueString()
-	if state.Quote.ValueStringPointer() == nil {
-		quote = `"`
-	} else {
-		quote = state.Quote.ValueString()
-	}
+	filter := state.QueryControl.Filter.ValueString()
+
+    quote := `"`
+    if state.QueryControl.Quote.ValueStringPointer() != nil {
+        quote = state.QueryControl.Quote.ValueString()
+    }
 
 	var err error
 	var list []address.Entry
