@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-panos
 
 require (
-	github.com/fpluchorg/pango v0.10.4
+	github.com/fpluchorg/pango v0.10.9
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 )
@@ -84,7 +84,5 @@ require (
 	google.golang.org/grpc v1.32.0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 )
-
-//replace github.com/fpluchorg/pango => ../pango
 
 go 1.17
