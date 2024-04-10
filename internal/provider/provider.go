@@ -228,6 +228,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 	return []func() datasource.DataSource{
 		NewTfidDataSource,
 		NewNestedAddressObjectListDataSource,
+		NewNestedAddressObjectDataSource,
 	}
 }
 

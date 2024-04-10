@@ -284,6 +284,220 @@ func (d *nestedAddressObjectListDataSource) Read(ctx context.Context, req dataso
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
+// Data source.
+var (
+	_ datasource.DataSource              = &nestedAddressObjectDataSource{}
+	_ datasource.DataSourceWithConfigure = &nestedAddressObjectDataSource{}
+)
+
+func NewNestedAddressObjectDataSource() datasource.DataSource {
+	return &nestedAddressObjectDataSource{}
+}
+
+type nestedAddressObjectDataSource struct {
+	client *pango.XmlApiClient
+}
+
+type nestedAddressObjectDsModel struct {
+	// Input.
+	Location nestedLocationModel          `tfsdk:"location"`
+	Filter   *nestedAddressObjectDsFilter `tfsdk:"filter"`
+	Name     types.String                 `tfsdk:"name"`
+
+	// Output.
+	Description types.String `tfsdk:"description"`
+	Tags        types.List   `tfsdk:"tags"`
+	IpNetmask   types.String `tfsdk:"ip_netmask"`
+	IpRange     types.String `tfsdk:"ip_range"`
+	Fqdn        types.String `tfsdk:"fqdn"`
+	IpWildcard  types.String `tfsdk:"ip_wildcard"`
+}
+
+type nestedAddressObjectDsFilter struct {
+	Config types.String `tfsdk:"config"`
+}
+
+func (d *nestedAddressObjectDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_nested_address_object"
+}
+
+func (d *nestedAddressObjectDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = dsschema.Schema{
+		Description: "Returns information about the given address object.",
+		Attributes: map[string]dsschema.Attribute{
+			"filter": dsschema.SingleNestedAttribute{
+				Description: "Specify various properties about the read operation.",
+				Optional:    true,
+				Attributes: map[string]dsschema.Attribute{
+					"config": dsschema.StringAttribute{
+						Description: "Which type of config the data source should read from. If the provider is in local inspection mode, this param is ignored. Valid values are \"running\" or \"candidate\". Default: `\"candidate\"`.",
+						Optional:    true,
+					},
+				},
+			},
+			"location": dsschema.SingleNestedAttribute{
+				Description: "The location of this object. One and only one of the locations should be specified.",
+				Required:    true,
+				Attributes: map[string]dsschema.Attribute{
+					"device_group": dsschema.SingleNestedAttribute{
+						Description: "(Panorama) The given device group.",
+						Optional:    true,
+						Attributes: map[string]dsschema.Attribute{
+							"name": dsschema.StringAttribute{
+								Description: "The device group name.",
+								Required:    true,
+							},
+							"panorama_device": dsschema.StringAttribute{
+								Description: "The Panorama device.",
+								Optional:    true,
+								Computed:    true,
+							},
+						},
+					},
+					"from_panorama": dsschema.BoolAttribute{
+						Description: "(NGFW) Pushed from Panorama.",
+						Optional:    true,
+					},
+					"shared": dsschema.BoolAttribute{
+						Description: "(NGFW and Panorama) Located in shared.",
+						Optional:    true,
+					},
+					"vsys": dsschema.SingleNestedAttribute{
+						Description: "(NGFW) The given vsys.",
+						Optional:    true,
+						Attributes: map[string]dsschema.Attribute{
+							"name": dsschema.StringAttribute{
+								Description: "The vsys name.",
+								Optional:    true,
+								Computed:    true,
+							},
+							"ngfw_device": dsschema.StringAttribute{
+								Description: "The NGFW device.",
+								Optional:    true,
+								Computed:    true,
+							},
+						},
+					},
+				},
+			},
+			"description": dsschema.StringAttribute{
+				Description: "The description.",
+				Computed:    true,
+			},
+			"fqdn": dsschema.StringAttribute{
+				Description: "The Fqdn param.",
+				Computed:    true,
+			},
+			"ip_netmask": dsschema.StringAttribute{
+				Description: "The IpNetmask param.",
+				Computed:    true,
+			},
+			"ip_range": dsschema.StringAttribute{
+				Description: "The IpRange param.",
+				Computed:    true,
+			},
+			"ip_wildcard": dsschema.StringAttribute{
+				Description: "The IpWildcard param.",
+				Computed:    true,
+			},
+			"name": dsschema.StringAttribute{
+				Description: "Alphanumeric string [ 0-9a-zA-Z._-].",
+				Required:    true,
+			},
+			"tags": dsschema.ListAttribute{
+				Description: "Tags for address object.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (d *nestedAddressObjectDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	d.client = req.ProviderData.(*pango.XmlApiClient)
+}
+
+func (d *nestedAddressObjectDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state nestedAddressObjectDsModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Create the service.
+	svc := address.NewService(d.client)
+
+	// Determine the location.
+	var loc nestedAddressObjectLocation
+	if state.Location.Shared.ValueBool() {
+		loc.Location.Shared = true
+	} else if state.Location.FromPanorama.ValueBool() {
+		loc.Location.FromPanorama = true
+	} else if state.Location.Vsys != nil {
+		loc.Location.Vsys = &address.VsysLocation{}
+		if state.Location.Vsys.Name.ValueStringPointer() == nil {
+			loc.Location.Vsys.Name = "vsys1"
+		} else {
+			loc.Location.Vsys.Name = state.Location.Vsys.Name.ValueString()
+		}
+		if state.Location.Vsys.NgfwDevice.ValueStringPointer() == nil {
+			loc.Location.Vsys.NgfwDevice = "localhost.localdomain"
+		} else {
+			loc.Location.Vsys.NgfwDevice = state.Location.Vsys.NgfwDevice.ValueString()
+		}
+	} else if state.Location.DeviceGroup != nil {
+		loc.Location.DeviceGroup = &address.DeviceGroupLocation{}
+		loc.Location.DeviceGroup.Name = state.Location.DeviceGroup.Name.ValueString()
+		if state.Location.DeviceGroup.PanoramaDevice.ValueStringPointer() == nil {
+			loc.Location.DeviceGroup.PanoramaDevice = "localhost.localdomain"
+		} else {
+			loc.Location.DeviceGroup.PanoramaDevice = state.Location.DeviceGroup.PanoramaDevice.ValueString()
+		}
+	} else {
+		resp.Diagnostics.AddError("Unknown location", "Location for object is unknown")
+		return
+	}
+
+	var action string
+	if state.Filter == nil || state.Filter.Config.ValueStringPointer() == nil || state.Filter.Config.ValueString() == "candidate" {
+		action = "get"
+	} else if state.Filter.Config.ValueString() == "running" {
+		action = "show"
+	} else {
+		resp.Diagnostics.AddError("Invalid action", "The 'config' must be \"candidate\" or \"running\"")
+		return
+	}
+
+	var err error
+	var ans *address.Entry
+	if d.client.Hostname != "" {
+		ans, err = svc.Read(ctx, loc.Location, state.Name.ValueString(), action)
+	} else {
+		ans, err = svc.ReadFromConfig(ctx, loc.Location, state.Name.ValueString())
+	}
+
+	if err != nil {
+		resp.Diagnostics.AddError("Error in read", err.Error())
+		return
+	}
+
+	state.Name = types.StringValue(ans.Name)
+	state.Description = types.StringPointerValue(ans.Description)
+	var1, var2 := types.ListValueFrom(ctx, types.StringType, ans.Tags)
+	state.Tags = var1
+	resp.Diagnostics.Append(var2.Errors()...)
+	state.IpNetmask = types.StringPointerValue(ans.IpNetmask)
+	state.IpRange = types.StringPointerValue(ans.IpRange)
+	state.Fqdn = types.StringPointerValue(ans.Fqdn)
+	state.IpWildcard = types.StringPointerValue(ans.IpWildcard)
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+}
+
 // Resource.
 var (
 	_ resource.Resource                = &nestedAddressObjectResource{}
