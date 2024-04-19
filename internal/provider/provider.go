@@ -238,6 +238,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAddressObjectResource,
+		NewSecurityPolicyRulesResource,
 	}
 }
 

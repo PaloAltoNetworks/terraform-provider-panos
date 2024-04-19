@@ -75,3 +75,8 @@ func ProviderParamDescription(desc, defaultValue, envName, jsonName string) stri
 
 	return b.String()
 }
+
+type RuleInfo struct {
+	Name string `json:"name"`
+	Uuid string `json:"uuid"`
+}
