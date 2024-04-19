@@ -13,9 +13,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
-const IdSeparator string = ":"
-const WrongPanosWithoutAltError string = "This is a %s resource, but encountered a %s system"
-const WrongPanosWithAltError string = "This is a %s resource, but encountered a %s system - Please use %s instead"
+const (
+	IdSeparator               string = ":"
+	EmptyString                      = ""
+	WrongPanosWithoutAltError string = "This is a %s resource, but encountered a %s system"
+	WrongPanosWithAltError    string = "This is a %s resource, but encountered a %s system - Please use %s instead"
+)
 
 func getMovementMap() map[int]string {
 	return map[int]string{
