@@ -14,6 +14,7 @@ import (
 type genericTfid struct {
 	Name     *string        `json:"name,omitempty"`
 	Names    []string       `json:"names,omitempty"`
+	Rules    []RuleInfo     `json:"rules,omitempty"`
 	Location map[string]any `json:"location"`
 }
 
@@ -34,12 +35,18 @@ type tfidDataSource struct {
 }
 
 type tfidDsModel struct {
-	Location  types.String `tfsdk:"location"`
-	Variables types.Map    `tfsdk:"variables"`
-	Name      types.String `tfsdk:"name"`
-	Names     types.List   `tfsdk:"names"`
+	Location  types.String   `tfsdk:"location"`
+	Variables types.Map      `tfsdk:"variables"`
+	Name      types.String   `tfsdk:"name"`
+	Names     types.List     `tfsdk:"names"`
+	Rules     []tfidRuleInfo `tfsdk:"rules"`
 
 	Tfid types.String `tfsdk:"tfid"`
+}
+
+type tfidRuleInfo struct {
+	Name types.String `tfsdk:"name"`
+	Uuid types.String `tfsdk:"uuid"`
 }
 
 func (d *tfidDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -72,6 +79,22 @@ func (d *tfidDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"tfid": dsschema.StringAttribute{
 				Description: "The tfid created from the given parts.",
 				Computed:    true,
+			},
+			"rules": dsschema.ListNestedAttribute{
+				Description: "(UUID enabled resources) The ordered list of rule names paried with their respective UUIDs.",
+				Optional:    true,
+				NestedObject: dsschema.NestedAttributeObject{
+					Attributes: map[string]dsschema.Attribute{
+						"name": dsschema.StringAttribute{
+							Description: "The rule name.",
+							Required:    true,
+						},
+						"uuid": dsschema.StringAttribute{
+							Description: "The rule UUID.",
+							Required:    true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -107,13 +130,13 @@ func (d *tfidDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	loc := genericTfid{
+	tfid := genericTfid{
 		Name:  state.Name.ValueStringPointer(),
 		Names: append([]string(nil), names...),
 	}
 
 	if len(vars) == 0 {
-		loc.Location = map[string]any{
+		tfid.Location = map[string]any{
 			state.Location.ValueString(): true,
 		}
 	} else {
@@ -121,13 +144,23 @@ func (d *tfidDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		for key, value := range vars {
 			content[key] = value.ValueString()
 		}
-		loc.Location = map[string]any{
+		tfid.Location = map[string]any{
 			state.Location.ValueString(): content,
 		}
 	}
 
+	if len(state.Rules) > 0 {
+		tfid.Rules = make([]RuleInfo, 0, len(state.Rules))
+		for _, x := range state.Rules {
+			tfid.Rules = append(tfid.Rules, RuleInfo{
+				Name: x.Name.ValueString(),
+				Uuid: x.Uuid.ValueString(),
+			})
+		}
+	}
+
 	// Encode the tfid from the info given.
-	idstr, err := EncodeLocation(loc)
+	idstr, err := EncodeLocation(tfid)
 	if err != nil {
 		resp.Diagnostics.AddError("error encoding tfid", err.Error())
 		return
