@@ -239,6 +239,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 	return []func() resource.Resource{
 		NewAddressObjectResource,
 		NewSecurityPolicyRulesResource,
+		NewServiceObjectsResource,
 	}
 }
 
