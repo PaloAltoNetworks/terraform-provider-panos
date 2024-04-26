@@ -1235,7 +1235,7 @@ type SecurityPolicyRulesResource struct {
 }
 
 type SecurityPolicyRulesTfid struct {
-	Rules    []RuleInfo        `json:"uuids"`
+	Rules    []RuleInfo        `json:"rules"`
 	Position rule.Position     `json:"position"`
 	Location security.Location `json:"location"`
 }
