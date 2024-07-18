@@ -58,7 +58,7 @@ func parseAdministrativeTag(d *schema.ResourceData) (string, tags.Entry) {
 }
 
 func parseAdministrativeTagId(v string) (string, string) {
-	t := strings.Split(v, IdSeparator)
+	t := strings.SplitN(v, IdSeparator, 2)
 	return t[0], t[1]
 }
 
