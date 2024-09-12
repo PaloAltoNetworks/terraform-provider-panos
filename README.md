@@ -10,6 +10,12 @@ Terraform Provider for Palo Alto Networks PANOS
 - Website: https://www.terraform.io
 - Documentation: https://www.terraform.io/docs/providers/panos/index.html
 
+
+> [!TIP]
+> ### Getting Started
+> [Guide on Wiki](https://github.com/PaloAltoNetworks/pan-os-codegen/wiki/Getting-Started)
+
+
 Requirements
 ------------
 
