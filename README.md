@@ -1,6 +1,12 @@
 Terraform Provider for Palo Alto Networks PANOS
 ===============================================
 
+> [!NOTE]  
+> This provider is auto-generated via [pan-os-codegen](https://github.com/PaloAltoNetworks/pan-os-codegen)
+
+> [!CAUTION]
+> This software is currently in alpha development stage. It is strongly recommended not to use this package in production environments. If you choose to use it for experimental or developmental purposes, please do so with caution.
+
 - Website: https://www.terraform.io
 - Documentation: https://www.terraform.io/docs/providers/panos/index.html
 
