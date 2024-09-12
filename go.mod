@@ -3,7 +3,7 @@ module github.com/PaloAltoNetworks/terraform-provider-panos
 go 1.22.5
 
 require (
-	github.com/PaloAltoNetworks/pango v0.10.3-0.20240912175803-0dfc3cd08469
+	github.com/PaloAltoNetworks/pango v0.10.3-0.20240912180645-a5a40a9a535e
 	github.com/hashicorp/terraform-plugin-framework v1.10.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.13.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
@@ -12,7 +12,7 @@ require (
 )
 
 require (
-	github.com/fatih/color v1.16.0 // indirect
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -25,8 +25,8 @@ require (
 	github.com/hashicorp/terraform-registry-address v0.2.3 // indirect
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/oklog/run v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
