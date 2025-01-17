@@ -5,6 +5,8 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -25,6 +27,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -48,41 +51,30 @@ type TemplateVariableDataSource struct {
 type TemplateVariableDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type TemplateVariableDataSourceTfid struct {
-	Name     string                     `json:"name"`
-	Location template_variable.Location `json:"location"`
-}
-
-func (o *TemplateVariableDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type TemplateVariableDataSourceModel struct {
-	Tfid        types.String                          `tfsdk:"tfid"`
 	Location    TemplateVariableLocation              `tfsdk:"location"`
 	Name        types.String                          `tfsdk:"name"`
 	Description types.String                          `tfsdk:"description"`
 	Type        *TemplateVariableDataSourceTypeObject `tfsdk:"type"`
 }
 type TemplateVariableDataSourceTypeObject struct {
-	Fqdn           types.String `tfsdk:"fqdn"`
-	DevicePriority types.String `tfsdk:"device_priority"`
-	AsNumber       types.String `tfsdk:"as_number"`
-	IpRange        types.String `tfsdk:"ip_range"`
-	GroupId        types.String `tfsdk:"group_id"`
-	DeviceId       types.String `tfsdk:"device_id"`
-	Interface      types.String `tfsdk:"interface"`
 	QosProfile     types.String `tfsdk:"qos_profile"`
 	EgressMax      types.String `tfsdk:"egress_max"`
 	LinkTag        types.String `tfsdk:"link_tag"`
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
+	DevicePriority types.String `tfsdk:"device_priority"`
+	DeviceId       types.String `tfsdk:"device_id"`
+	Interface      types.String `tfsdk:"interface"`
+	IpRange        types.String `tfsdk:"ip_range"`
+	Fqdn           types.String `tfsdk:"fqdn"`
+	GroupId        types.String `tfsdk:"group_id"`
+	AsNumber       types.String `tfsdk:"as_number"`
 }
 
 func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj **template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
 	if o.Type != nil {
 		if *obj != nil && (*obj).Type != nil {
@@ -96,45 +88,44 @@ func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj *
 			return diags
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_entry
 	(*obj).Description = description_value
+	(*obj).Type = type_entry
 
 	return diags
 }
 func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	linkTag_value := o.LinkTag.ValueStringPointer()
+	ipNetmask_value := o.IpNetmask.ValueStringPointer()
+	devicePriority_value := o.DevicePriority.ValueStringPointer()
 	deviceId_value := o.DeviceId.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
 	qosProfile_value := o.QosProfile.ValueStringPointer()
 	egressMax_value := o.EgressMax.ValueStringPointer()
-	linkTag_value := o.LinkTag.ValueStringPointer()
-	ipNetmask_value := o.IpNetmask.ValueStringPointer()
-	groupId_value := o.GroupId.ValueStringPointer()
-	devicePriority_value := o.DevicePriority.ValueStringPointer()
-	asNumber_value := o.AsNumber.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
+	groupId_value := o.GroupId.ValueStringPointer()
+	asNumber_value := o.AsNumber.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Type)
 	}
+	(*obj).LinkTag = linkTag_value
+	(*obj).IpNetmask = ipNetmask_value
+	(*obj).DevicePriority = devicePriority_value
 	(*obj).DeviceId = deviceId_value
 	(*obj).Interface = interface_value
 	(*obj).QosProfile = qosProfile_value
 	(*obj).EgressMax = egressMax_value
-	(*obj).LinkTag = linkTag_value
-	(*obj).IpNetmask = ipNetmask_value
-	(*obj).GroupId = groupId_value
-	(*obj).DevicePriority = devicePriority_value
-	(*obj).AsNumber = asNumber_value
 	(*obj).IpRange = ipRange_value
 	(*obj).Fqdn = fqdn_value
+	(*obj).GroupId = groupId_value
+	(*obj).AsNumber = asNumber_value
 
 	return diags
 }
@@ -150,6 +141,7 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj
 			return diags
 		}
 	}
+
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -163,6 +155,11 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj
 
 func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	var groupId_value types.String
+	if obj.GroupId != nil {
+		groupId_value = types.StringValue(*obj.GroupId)
+	}
 	var asNumber_value types.String
 	if obj.AsNumber != nil {
 		asNumber_value = types.StringValue(*obj.AsNumber)
@@ -175,9 +172,9 @@ func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context
 	if obj.Fqdn != nil {
 		fqdn_value = types.StringValue(*obj.Fqdn)
 	}
-	var devicePriority_value types.String
-	if obj.DevicePriority != nil {
-		devicePriority_value = types.StringValue(*obj.DevicePriority)
+	var deviceId_value types.String
+	if obj.DeviceId != nil {
+		deviceId_value = types.StringValue(*obj.DeviceId)
 	}
 	var interface_value types.String
 	if obj.Interface != nil {
@@ -199,25 +196,21 @@ func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
-	var groupId_value types.String
-	if obj.GroupId != nil {
-		groupId_value = types.StringValue(*obj.GroupId)
+	var devicePriority_value types.String
+	if obj.DevicePriority != nil {
+		devicePriority_value = types.StringValue(*obj.DevicePriority)
 	}
-	var deviceId_value types.String
-	if obj.DeviceId != nil {
-		deviceId_value = types.StringValue(*obj.DeviceId)
-	}
+	o.GroupId = groupId_value
 	o.AsNumber = asNumber_value
 	o.IpRange = ipRange_value
 	o.Fqdn = fqdn_value
-	o.DevicePriority = devicePriority_value
+	o.DeviceId = deviceId_value
 	o.Interface = interface_value
 	o.QosProfile = qosProfile_value
 	o.EgressMax = egressMax_value
 	o.LinkTag = linkTag_value
 	o.IpNetmask = ipNetmask_value
-	o.GroupId = groupId_value
-	o.DeviceId = deviceId_value
+	o.DevicePriority = devicePriority_value
 
 	return diags
 }
@@ -227,14 +220,6 @@ func TemplateVariableDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": TemplateVariableDataSourceLocationSchema(),
-
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": dsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -284,39 +269,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"as_number": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-
-				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("link_tag"),
-						path.MatchRelative().AtParent().AtName("ip_netmask"),
-						path.MatchRelative().AtParent().AtName("group_id"),
-						path.MatchRelative().AtParent().AtName("device_id"),
-						path.MatchRelative().AtParent().AtName("interface"),
-						path.MatchRelative().AtParent().AtName("qos_profile"),
-						path.MatchRelative().AtParent().AtName("egress_max"),
-						path.MatchRelative().AtParent().AtName("ip_range"),
-						path.MatchRelative().AtParent().AtName("fqdn"),
-						path.MatchRelative().AtParent().AtName("device_priority"),
-						path.MatchRelative().AtParent().AtName("as_number"),
-					}...),
-				},
-			},
-
-			"ip_range": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"fqdn": dsschema.StringAttribute{
+			"ip_netmask": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -325,6 +278,14 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 			},
 
 			"device_priority": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"device_id": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -364,7 +325,15 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"ip_netmask": dsschema.StringAttribute{
+			"ip_range": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"fqdn": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -380,7 +349,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"device_id": dsschema.StringAttribute{
+			"as_number": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -445,11 +414,11 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc TemplateVariableDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
+
+	var location template_variable.Location
 
 	if savestate.Location.Template != nil {
-		loc.Location.Template = &template_variable.TemplateLocation{
+		location.Template = &template_variable.TemplateLocation{
 
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
@@ -460,13 +429,12 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -485,10 +453,6 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -503,6 +467,11 @@ var (
 )
 
 func NewTemplateVariableResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_template_variable"]; !found {
+		resourceFuncMap["panos_template_variable"] = resourceFuncs{
+			CreateImportId: TemplateVariableImportStateCreator,
+		}
+	}
 	return &TemplateVariableResource{}
 }
 
@@ -510,41 +479,29 @@ type TemplateVariableResource struct {
 	client  *pango.Client
 	manager *sdkmanager.EntryObjectManager[*template_variable.Entry, template_variable.Location, *template_variable.Service]
 }
-type TemplateVariableResourceTfid struct {
-	Name     string                     `json:"name"`
-	Location template_variable.Location `json:"location"`
-}
-
-func (o *TemplateVariableResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 func TemplateVariableResourceLocationSchema() rsschema.Attribute {
 	return TemplateVariableLocationSchema()
 }
 
 type TemplateVariableResourceModel struct {
-	Tfid        types.String                        `tfsdk:"tfid"`
 	Location    TemplateVariableLocation            `tfsdk:"location"`
 	Name        types.String                        `tfsdk:"name"`
 	Description types.String                        `tfsdk:"description"`
 	Type        *TemplateVariableResourceTypeObject `tfsdk:"type"`
 }
 type TemplateVariableResourceTypeObject struct {
-	DevicePriority types.String `tfsdk:"device_priority"`
-	AsNumber       types.String `tfsdk:"as_number"`
-	IpRange        types.String `tfsdk:"ip_range"`
-	Fqdn           types.String `tfsdk:"fqdn"`
-	DeviceId       types.String `tfsdk:"device_id"`
-	Interface      types.String `tfsdk:"interface"`
 	QosProfile     types.String `tfsdk:"qos_profile"`
 	EgressMax      types.String `tfsdk:"egress_max"`
 	LinkTag        types.String `tfsdk:"link_tag"`
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
+	DevicePriority types.String `tfsdk:"device_priority"`
+	DeviceId       types.String `tfsdk:"device_id"`
+	Interface      types.String `tfsdk:"interface"`
+	IpRange        types.String `tfsdk:"ip_range"`
+	Fqdn           types.String `tfsdk:"fqdn"`
 	GroupId        types.String `tfsdk:"group_id"`
+	AsNumber       types.String `tfsdk:"as_number"`
 }
 
 func (r *TemplateVariableResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -561,14 +518,6 @@ func TemplateVariableResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": TemplateVariableResourceLocationSchema(),
-
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": rsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -618,7 +567,7 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"link_tag": rsschema.StringAttribute{
+			"ip_netmask": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -627,30 +576,22 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("group_id"),
 						path.MatchRelative().AtParent().AtName("device_id"),
 						path.MatchRelative().AtParent().AtName("interface"),
 						path.MatchRelative().AtParent().AtName("qos_profile"),
 						path.MatchRelative().AtParent().AtName("egress_max"),
 						path.MatchRelative().AtParent().AtName("link_tag"),
 						path.MatchRelative().AtParent().AtName("ip_netmask"),
-						path.MatchRelative().AtParent().AtName("fqdn"),
 						path.MatchRelative().AtParent().AtName("device_priority"),
+						path.MatchRelative().AtParent().AtName("group_id"),
 						path.MatchRelative().AtParent().AtName("as_number"),
 						path.MatchRelative().AtParent().AtName("ip_range"),
+						path.MatchRelative().AtParent().AtName("fqdn"),
 					}...),
 				},
 			},
 
-			"ip_netmask": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"group_id": rsschema.StringAttribute{
+			"device_priority": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -690,6 +631,14 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
+			"link_tag": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ip_range": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -706,7 +655,7 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"device_priority": rsschema.StringAttribute{
+			"group_id": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -792,32 +741,32 @@ func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **t
 }
 func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	asNumber_value := o.AsNumber.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
-	devicePriority_value := o.DevicePriority.ValueStringPointer()
-	interface_value := o.Interface.ValueStringPointer()
+	groupId_value := o.GroupId.ValueStringPointer()
+	asNumber_value := o.AsNumber.ValueStringPointer()
 	qosProfile_value := o.QosProfile.ValueStringPointer()
 	egressMax_value := o.EgressMax.ValueStringPointer()
 	linkTag_value := o.LinkTag.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
-	groupId_value := o.GroupId.ValueStringPointer()
+	devicePriority_value := o.DevicePriority.ValueStringPointer()
 	deviceId_value := o.DeviceId.ValueStringPointer()
+	interface_value := o.Interface.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Type)
 	}
-	(*obj).AsNumber = asNumber_value
 	(*obj).IpRange = ipRange_value
 	(*obj).Fqdn = fqdn_value
-	(*obj).DevicePriority = devicePriority_value
-	(*obj).Interface = interface_value
+	(*obj).GroupId = groupId_value
+	(*obj).AsNumber = asNumber_value
 	(*obj).QosProfile = qosProfile_value
 	(*obj).EgressMax = egressMax_value
 	(*obj).LinkTag = linkTag_value
 	(*obj).IpNetmask = ipNetmask_value
-	(*obj).GroupId = groupId_value
+	(*obj).DevicePriority = devicePriority_value
 	(*obj).DeviceId = deviceId_value
+	(*obj).Interface = interface_value
 
 	return diags
 }
@@ -833,6 +782,7 @@ func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, obj *
 			return diags
 		}
 	}
+
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -846,29 +796,26 @@ func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, obj *
 
 func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ipRange_value types.String
-	if obj.IpRange != nil {
-		ipRange_value = types.StringValue(*obj.IpRange)
-	}
+
 	var fqdn_value types.String
 	if obj.Fqdn != nil {
 		fqdn_value = types.StringValue(*obj.Fqdn)
 	}
-	var devicePriority_value types.String
-	if obj.DevicePriority != nil {
-		devicePriority_value = types.StringValue(*obj.DevicePriority)
+	var groupId_value types.String
+	if obj.GroupId != nil {
+		groupId_value = types.StringValue(*obj.GroupId)
 	}
 	var asNumber_value types.String
 	if obj.AsNumber != nil {
 		asNumber_value = types.StringValue(*obj.AsNumber)
 	}
-	var ipNetmask_value types.String
-	if obj.IpNetmask != nil {
-		ipNetmask_value = types.StringValue(*obj.IpNetmask)
+	var ipRange_value types.String
+	if obj.IpRange != nil {
+		ipRange_value = types.StringValue(*obj.IpRange)
 	}
-	var groupId_value types.String
-	if obj.GroupId != nil {
-		groupId_value = types.StringValue(*obj.GroupId)
+	var devicePriority_value types.String
+	if obj.DevicePriority != nil {
+		devicePriority_value = types.StringValue(*obj.DevicePriority)
 	}
 	var deviceId_value types.String
 	if obj.DeviceId != nil {
@@ -890,17 +837,21 @@ func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, 
 	if obj.LinkTag != nil {
 		linkTag_value = types.StringValue(*obj.LinkTag)
 	}
-	o.IpRange = ipRange_value
+	var ipNetmask_value types.String
+	if obj.IpNetmask != nil {
+		ipNetmask_value = types.StringValue(*obj.IpNetmask)
+	}
 	o.Fqdn = fqdn_value
-	o.DevicePriority = devicePriority_value
-	o.AsNumber = asNumber_value
-	o.IpNetmask = ipNetmask_value
 	o.GroupId = groupId_value
+	o.AsNumber = asNumber_value
+	o.IpRange = ipRange_value
+	o.DevicePriority = devicePriority_value
 	o.DeviceId = deviceId_value
 	o.Interface = interface_value
 	o.QosProfile = qosProfile_value
 	o.EgressMax = egressMax_value
 	o.LinkTag = linkTag_value
+	o.IpNetmask = ipNetmask_value
 
 	return diags
 }
@@ -926,19 +877,18 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	// Determine the location.
-	loc := TemplateVariableResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location template_variable.Location
 
 	if state.Location.Template != nil {
-		loc.Location.Template = &template_variable.TemplateLocation{
+		location.Template = &template_variable.TemplateLocation{
 
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 		}
 	}
 
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
@@ -958,21 +908,11 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -991,24 +931,27 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc TemplateVariableResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location template_variable.Location
+
+	if savestate.Location.Template != nil {
+		location.Template = &template_variable.TemplateLocation{
+
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -1027,10 +970,6 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1046,17 +985,20 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	var loc TemplateVariableResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location template_variable.Location
+
+	if state.Location.Template != nil {
+		location.Template = &template_variable.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -1064,7 +1006,7 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1076,7 +1018,7 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1089,15 +1031,6 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -1118,18 +1051,11 @@ func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.Dele
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc TemplateVariableResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -1137,15 +1063,87 @@ func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.Dele
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location template_variable.Location
+
+	if state.Location.Template != nil {
+		location.Template = &template_variable.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type TemplateVariableImportState struct {
+	Location TemplateVariableLocation `json:"location"`
+	Name     string                   `json:"name"`
+}
+
+func TemplateVariableImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location TemplateVariableLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := TemplateVariableImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *TemplateVariableResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj TemplateVariableImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type TemplateVariableTemplateLocation struct {
@@ -1190,4 +1188,55 @@ func TemplateVariableLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o TemplateVariableTemplateLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplateVariableTemplateLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
+func (o TemplateVariableLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Template *TemplateVariableTemplateLocation `json:"template"`
+	}{
+		Template: o.Template,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplateVariableLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Template *TemplateVariableTemplateLocation `json:"template"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Template = shadow.Template
+
+	return nil
 }

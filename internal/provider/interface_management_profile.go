@@ -5,6 +5,8 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -25,6 +27,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -48,71 +51,84 @@ type InterfaceManagementProfileDataSource struct {
 type InterfaceManagementProfileDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type InterfaceManagementProfileDataSourceTfid struct {
-	Name     string                        `json:"name"`
-	Location interface_management.Location `json:"location"`
-}
-
-func (o *InterfaceManagementProfileDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type InterfaceManagementProfileDataSourceModel struct {
-	Tfid                    types.String                       `tfsdk:"tfid"`
 	Location                InterfaceManagementProfileLocation `tfsdk:"location"`
 	Name                    types.String                       `tfsdk:"name"`
-	Ssh                     types.Bool                         `tfsdk:"ssh"`
-	HttpOcsp                types.Bool                         `tfsdk:"http_ocsp"`
-	PermittedIps            types.List                         `tfsdk:"permitted_ips"`
-	Http                    types.Bool                         `tfsdk:"http"`
-	Https                   types.Bool                         `tfsdk:"https"`
-	Ping                    types.Bool                         `tfsdk:"ping"`
-	UseridService           types.Bool                         `tfsdk:"userid_service"`
-	Snmp                    types.Bool                         `tfsdk:"snmp"`
 	ResponsePages           types.Bool                         `tfsdk:"response_pages"`
+	Snmp                    types.Bool                         `tfsdk:"snmp"`
 	UseridSyslogListenerSsl types.Bool                         `tfsdk:"userid_syslog_listener_ssl"`
-	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
+	Ssh                     types.Bool                         `tfsdk:"ssh"`
 	Telnet                  types.Bool                         `tfsdk:"telnet"`
+	UseridService           types.Bool                         `tfsdk:"userid_service"`
+	Http                    types.Bool                         `tfsdk:"http"`
+	HttpOcsp                types.Bool                         `tfsdk:"http_ocsp"`
+	Https                   types.Bool                         `tfsdk:"https"`
+	PermittedIps            types.List                         `tfsdk:"permitted_ips"`
+	Ping                    types.Bool                         `tfsdk:"ping"`
+	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
+}
+type InterfaceManagementProfileDataSourcePermittedIpsObject struct {
+	Name types.String `tfsdk:"name"`
 }
 
 func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
-	permittedIps_pango_entries := make([]string, 0)
-	diags.Append(o.PermittedIps.ElementsAs(ctx, &permittedIps_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	http_value := o.Http.ValueBoolPointer()
-	https_value := o.Https.ValueBoolPointer()
-	ping_value := o.Ping.ValueBoolPointer()
-	useridService_value := o.UseridService.ValueBoolPointer()
-	ssh_value := o.Ssh.ValueBoolPointer()
 	responsePages_value := o.ResponsePages.ValueBoolPointer()
-	useridSyslogListenerSsl_value := o.UseridSyslogListenerSsl.ValueBoolPointer()
-	useridSyslogListenerUdp_value := o.UseridSyslogListenerUdp.ValueBoolPointer()
-	telnet_value := o.Telnet.ValueBoolPointer()
 	snmp_value := o.Snmp.ValueBoolPointer()
+	useridSyslogListenerSsl_value := o.UseridSyslogListenerSsl.ValueBoolPointer()
+	http_value := o.Http.ValueBoolPointer()
+	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
+	https_value := o.Https.ValueBoolPointer()
+	var permittedIps_tf_entries []InterfaceManagementProfileDataSourcePermittedIpsObject
+	var permittedIps_pango_entries []interface_management.PermittedIp
+	{
+		d := o.PermittedIps.ElementsAs(ctx, &permittedIps_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range permittedIps_tf_entries {
+			var entry *interface_management.PermittedIp
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			permittedIps_pango_entries = append(permittedIps_pango_entries, *entry)
+		}
+	}
+	ping_value := o.Ping.ValueBoolPointer()
+	ssh_value := o.Ssh.ValueBoolPointer()
+	telnet_value := o.Telnet.ValueBoolPointer()
+	useridService_value := o.UseridService.ValueBoolPointer()
+	useridSyslogListenerUdp_value := o.UseridSyslogListenerUdp.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(interface_management.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).HttpOcsp = httpOcsp_value
-	(*obj).PermittedIps = permittedIps_pango_entries
-	(*obj).Http = http_value
-	(*obj).Https = https_value
-	(*obj).Ping = ping_value
-	(*obj).UseridService = useridService_value
-	(*obj).Ssh = ssh_value
 	(*obj).ResponsePages = responsePages_value
-	(*obj).UseridSyslogListenerSsl = useridSyslogListenerSsl_value
-	(*obj).UseridSyslogListenerUdp = useridSyslogListenerUdp_value
-	(*obj).Telnet = telnet_value
 	(*obj).Snmp = snmp_value
+	(*obj).UseridSyslogListenerSsl = useridSyslogListenerSsl_value
+	(*obj).Http = http_value
+	(*obj).HttpOcsp = httpOcsp_value
+	(*obj).Https = https_value
+	(*obj).PermittedIp = permittedIps_pango_entries
+	(*obj).Ping = ping_value
+	(*obj).Ssh = ssh_value
+	(*obj).Telnet = telnet_value
+	(*obj).UseridService = useridService_value
+	(*obj).UseridSyslogListenerUdp = useridSyslogListenerUdp_value
+
+	return diags
+}
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx context.Context, obj **interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(interface_management.PermittedIp)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -121,13 +137,26 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Co
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
+		var permittedIps_tf_entries []InterfaceManagementProfileDataSourcePermittedIpsObject
+		for _, elt := range obj.PermittedIp {
+			var entry InterfaceManagementProfileDataSourcePermittedIpsObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+		}
 		var list_diags diag.Diagnostics
-		permittedIps_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PermittedIps)
+		schemaType := o.getTypeFor("permitted_ips")
+		permittedIps_list, list_diags = types.ListValueFrom(ctx, schemaType, permittedIps_tf_entries)
 		diags.Append(list_diags...)
 	}
+
 	var http_value types.Bool
 	if obj.Http != nil {
 		http_value = types.BoolValue(*obj.Http)
+	}
+	var httpOcsp_value types.Bool
+	if obj.HttpOcsp != nil {
+		httpOcsp_value = types.BoolValue(*obj.HttpOcsp)
 	}
 	var https_value types.Bool
 	if obj.Https != nil {
@@ -137,51 +166,54 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Co
 	if obj.Ping != nil {
 		ping_value = types.BoolValue(*obj.Ping)
 	}
-	var useridService_value types.Bool
-	if obj.UseridService != nil {
-		useridService_value = types.BoolValue(*obj.UseridService)
-	}
 	var ssh_value types.Bool
 	if obj.Ssh != nil {
 		ssh_value = types.BoolValue(*obj.Ssh)
-	}
-	var httpOcsp_value types.Bool
-	if obj.HttpOcsp != nil {
-		httpOcsp_value = types.BoolValue(*obj.HttpOcsp)
-	}
-	var responsePages_value types.Bool
-	if obj.ResponsePages != nil {
-		responsePages_value = types.BoolValue(*obj.ResponsePages)
-	}
-	var useridSyslogListenerSsl_value types.Bool
-	if obj.UseridSyslogListenerSsl != nil {
-		useridSyslogListenerSsl_value = types.BoolValue(*obj.UseridSyslogListenerSsl)
-	}
-	var useridSyslogListenerUdp_value types.Bool
-	if obj.UseridSyslogListenerUdp != nil {
-		useridSyslogListenerUdp_value = types.BoolValue(*obj.UseridSyslogListenerUdp)
 	}
 	var telnet_value types.Bool
 	if obj.Telnet != nil {
 		telnet_value = types.BoolValue(*obj.Telnet)
 	}
+	var useridService_value types.Bool
+	if obj.UseridService != nil {
+		useridService_value = types.BoolValue(*obj.UseridService)
+	}
+	var useridSyslogListenerUdp_value types.Bool
+	if obj.UseridSyslogListenerUdp != nil {
+		useridSyslogListenerUdp_value = types.BoolValue(*obj.UseridSyslogListenerUdp)
+	}
+	var responsePages_value types.Bool
+	if obj.ResponsePages != nil {
+		responsePages_value = types.BoolValue(*obj.ResponsePages)
+	}
 	var snmp_value types.Bool
 	if obj.Snmp != nil {
 		snmp_value = types.BoolValue(*obj.Snmp)
 	}
+	var useridSyslogListenerSsl_value types.Bool
+	if obj.UseridSyslogListenerSsl != nil {
+		useridSyslogListenerSsl_value = types.BoolValue(*obj.UseridSyslogListenerSsl)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.Http = http_value
-	o.Https = https_value
-	o.Ping = ping_value
-	o.UseridService = useridService_value
-	o.Ssh = ssh_value
 	o.HttpOcsp = httpOcsp_value
+	o.Https = https_value
 	o.PermittedIps = permittedIps_list
-	o.ResponsePages = responsePages_value
-	o.UseridSyslogListenerSsl = useridSyslogListenerSsl_value
-	o.UseridSyslogListenerUdp = useridSyslogListenerUdp_value
+	o.Ping = ping_value
+	o.Ssh = ssh_value
 	o.Telnet = telnet_value
+	o.UseridService = useridService_value
+	o.UseridSyslogListenerUdp = useridSyslogListenerUdp_value
+	o.ResponsePages = responsePages_value
 	o.Snmp = snmp_value
+	o.UseridSyslogListenerSsl = useridSyslogListenerSsl_value
+
+	return diags
+}
+
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyFromPango(ctx context.Context, obj *interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -192,23 +224,15 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 
 			"location": InterfaceManagementProfileDataSourceLocationSchema(),
 
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": dsschema.StringAttribute{
-				Description: "The name of the interface management profile.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"userid_syslog_listener_udp": dsschema.BoolAttribute{
+			"http_ocsp": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -216,7 +240,7 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"telnet": dsschema.BoolAttribute{
+			"https": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -224,39 +248,16 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"snmp": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"response_pages": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"userid_syslog_listener_ssl": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+			"permitted_ips": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: InterfaceManagementProfileDataSourcePermittedIpsSchema(),
 			},
 
 			"ping": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"userid_service": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -272,7 +273,7 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"http_ocsp": dsschema.BoolAttribute{
+			"telnet": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -280,13 +281,12 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"permitted_ips": dsschema.ListAttribute{
+			"userid_service": dsschema.BoolAttribute{
 				Description: "",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
-				Computed:    true,
 				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"http": dsschema.BoolAttribute{
@@ -297,7 +297,31 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"https": dsschema.BoolAttribute{
+			"userid_syslog_listener_udp": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"snmp": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"userid_syslog_listener_ssl": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"response_pages": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -310,6 +334,39 @@ func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
 
 func (o *InterfaceManagementProfileDataSourceModel) getTypeFor(name string) attr.Type {
 	schema := InterfaceManagementProfileDataSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func InterfaceManagementProfileDataSourcePermittedIpsSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) getTypeFor(name string) attr.Type {
+	schema := InterfaceManagementProfileDataSourcePermittedIpsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -362,17 +419,17 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc InterfaceManagementProfileDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
+
+	var location interface_management.Location
 
 	if savestate.Location.Ngfw != nil {
-		loc.Location.Ngfw = &interface_management.NgfwLocation{
+		location.Ngfw = &interface_management.NgfwLocation{
 
 			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.Template != nil {
-		loc.Location.Template = &interface_management.TemplateLocation{
+		location.Template = &interface_management.TemplateLocation{
 
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
@@ -380,11 +437,11 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
-		loc.Location.TemplateStack = &interface_management.TemplateStackLocation{
+		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -392,13 +449,12 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -417,10 +473,6 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -435,6 +487,11 @@ var (
 )
 
 func NewInterfaceManagementProfileResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_interface_management_profile"]; !found {
+		resourceFuncMap["panos_interface_management_profile"] = resourceFuncs{
+			CreateImportId: InterfaceManagementProfileImportStateCreator,
+		}
+	}
 	return &InterfaceManagementProfileResource{}
 }
 
@@ -442,38 +499,29 @@ type InterfaceManagementProfileResource struct {
 	client  *pango.Client
 	manager *sdkmanager.EntryObjectManager[*interface_management.Entry, interface_management.Location, *interface_management.Service]
 }
-type InterfaceManagementProfileResourceTfid struct {
-	Name     string                        `json:"name"`
-	Location interface_management.Location `json:"location"`
-}
-
-func (o *InterfaceManagementProfileResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 func InterfaceManagementProfileResourceLocationSchema() rsschema.Attribute {
 	return InterfaceManagementProfileLocationSchema()
 }
 
 type InterfaceManagementProfileResourceModel struct {
-	Tfid                    types.String                       `tfsdk:"tfid"`
 	Location                InterfaceManagementProfileLocation `tfsdk:"location"`
 	Name                    types.String                       `tfsdk:"name"`
-	ResponsePages           types.Bool                         `tfsdk:"response_pages"`
-	UseridSyslogListenerSsl types.Bool                         `tfsdk:"userid_syslog_listener_ssl"`
-	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
-	Telnet                  types.Bool                         `tfsdk:"telnet"`
-	Snmp                    types.Bool                         `tfsdk:"snmp"`
-	Http                    types.Bool                         `tfsdk:"http"`
-	Https                   types.Bool                         `tfsdk:"https"`
-	Ping                    types.Bool                         `tfsdk:"ping"`
-	UseridService           types.Bool                         `tfsdk:"userid_service"`
 	Ssh                     types.Bool                         `tfsdk:"ssh"`
+	Telnet                  types.Bool                         `tfsdk:"telnet"`
+	UseridService           types.Bool                         `tfsdk:"userid_service"`
+	Http                    types.Bool                         `tfsdk:"http"`
 	HttpOcsp                types.Bool                         `tfsdk:"http_ocsp"`
+	Https                   types.Bool                         `tfsdk:"https"`
 	PermittedIps            types.List                         `tfsdk:"permitted_ips"`
+	Ping                    types.Bool                         `tfsdk:"ping"`
+	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
+	ResponsePages           types.Bool                         `tfsdk:"response_pages"`
+	Snmp                    types.Bool                         `tfsdk:"snmp"`
+	UseridSyslogListenerSsl types.Bool                         `tfsdk:"userid_syslog_listener_ssl"`
+}
+type InterfaceManagementProfileResourcePermittedIpsObject struct {
+	Name types.String `tfsdk:"name"`
 }
 
 func (r *InterfaceManagementProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -491,55 +539,15 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 
 			"location": InterfaceManagementProfileResourceLocationSchema(),
 
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": rsschema.StringAttribute{
-				Description: "The name of the interface management profile.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"snmp": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"response_pages": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"userid_syslog_listener_ssl": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"userid_syslog_listener_udp": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"telnet": rsschema.BoolAttribute{
+			"ping": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -555,7 +563,7 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"http_ocsp": rsschema.BoolAttribute{
+			"telnet": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -563,16 +571,23 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"permitted_ips": rsschema.ListAttribute{
+			"userid_service": rsschema.BoolAttribute{
 				Description: "",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
-				Computed:    false,
 				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"http": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"http_ocsp": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -588,7 +603,16 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"ping": rsschema.BoolAttribute{
+			"permitted_ips": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: InterfaceManagementProfileResourcePermittedIpsSchema(),
+			},
+
+			"userid_syslog_listener_udp": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -596,7 +620,23 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"userid_service": rsschema.BoolAttribute{
+			"response_pages": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"snmp": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"userid_syslog_listener_ssl": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -609,6 +649,39 @@ func InterfaceManagementProfileResourceSchema() rsschema.Schema {
 
 func (o *InterfaceManagementProfileResourceModel) getTypeFor(name string) attr.Type {
 	schema := InterfaceManagementProfileResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func InterfaceManagementProfileResourcePermittedIpsSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) getTypeFor(name string) attr.Type {
+	schema := InterfaceManagementProfileResourcePermittedIpsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -648,39 +721,61 @@ func (r *InterfaceManagementProfileResource) Configure(ctx context.Context, req 
 
 func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	telnet_value := o.Telnet.ValueBoolPointer()
-	snmp_value := o.Snmp.ValueBoolPointer()
 	responsePages_value := o.ResponsePages.ValueBoolPointer()
+	snmp_value := o.Snmp.ValueBoolPointer()
 	useridSyslogListenerSsl_value := o.UseridSyslogListenerSsl.ValueBoolPointer()
-	useridSyslogListenerUdp_value := o.UseridSyslogListenerUdp.ValueBoolPointer()
-	useridService_value := o.UseridService.ValueBoolPointer()
-	ssh_value := o.Ssh.ValueBoolPointer()
-	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
-	permittedIps_pango_entries := make([]string, 0)
-	diags.Append(o.PermittedIps.ElementsAs(ctx, &permittedIps_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var permittedIps_tf_entries []InterfaceManagementProfileResourcePermittedIpsObject
+	var permittedIps_pango_entries []interface_management.PermittedIp
+	{
+		d := o.PermittedIps.ElementsAs(ctx, &permittedIps_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range permittedIps_tf_entries {
+			var entry *interface_management.PermittedIp
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			permittedIps_pango_entries = append(permittedIps_pango_entries, *entry)
+		}
 	}
-	http_value := o.Http.ValueBoolPointer()
-	https_value := o.Https.ValueBoolPointer()
 	ping_value := o.Ping.ValueBoolPointer()
+	ssh_value := o.Ssh.ValueBoolPointer()
+	telnet_value := o.Telnet.ValueBoolPointer()
+	useridService_value := o.UseridService.ValueBoolPointer()
+	http_value := o.Http.ValueBoolPointer()
+	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
+	https_value := o.Https.ValueBoolPointer()
+	useridSyslogListenerUdp_value := o.UseridSyslogListenerUdp.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(interface_management.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Telnet = telnet_value
-	(*obj).Snmp = snmp_value
 	(*obj).ResponsePages = responsePages_value
+	(*obj).Snmp = snmp_value
 	(*obj).UseridSyslogListenerSsl = useridSyslogListenerSsl_value
-	(*obj).UseridSyslogListenerUdp = useridSyslogListenerUdp_value
-	(*obj).UseridService = useridService_value
-	(*obj).Ssh = ssh_value
-	(*obj).HttpOcsp = httpOcsp_value
-	(*obj).PermittedIps = permittedIps_pango_entries
-	(*obj).Http = http_value
-	(*obj).Https = https_value
+	(*obj).PermittedIp = permittedIps_pango_entries
 	(*obj).Ping = ping_value
+	(*obj).Ssh = ssh_value
+	(*obj).Telnet = telnet_value
+	(*obj).UseridService = useridService_value
+	(*obj).Http = http_value
+	(*obj).HttpOcsp = httpOcsp_value
+	(*obj).Https = https_value
+	(*obj).UseridSyslogListenerUdp = useridSyslogListenerUdp_value
+
+	return diags
+}
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx context.Context, obj **interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(interface_management.PermittedIp)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -689,17 +784,34 @@ func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Cont
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
+		var permittedIps_tf_entries []InterfaceManagementProfileResourcePermittedIpsObject
+		for _, elt := range obj.PermittedIp {
+			var entry InterfaceManagementProfileResourcePermittedIpsObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+		}
 		var list_diags diag.Diagnostics
-		permittedIps_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PermittedIps)
+		schemaType := o.getTypeFor("permitted_ips")
+		permittedIps_list, list_diags = types.ListValueFrom(ctx, schemaType, permittedIps_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var httpOcsp_value types.Bool
-	if obj.HttpOcsp != nil {
-		httpOcsp_value = types.BoolValue(*obj.HttpOcsp)
+
+	var telnet_value types.Bool
+	if obj.Telnet != nil {
+		telnet_value = types.BoolValue(*obj.Telnet)
+	}
+	var useridService_value types.Bool
+	if obj.UseridService != nil {
+		useridService_value = types.BoolValue(*obj.UseridService)
 	}
 	var http_value types.Bool
 	if obj.Http != nil {
 		http_value = types.BoolValue(*obj.Http)
+	}
+	var httpOcsp_value types.Bool
+	if obj.HttpOcsp != nil {
+		httpOcsp_value = types.BoolValue(*obj.HttpOcsp)
 	}
 	var https_value types.Bool
 	if obj.Https != nil {
@@ -709,47 +821,46 @@ func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Cont
 	if obj.Ping != nil {
 		ping_value = types.BoolValue(*obj.Ping)
 	}
-	var useridService_value types.Bool
-	if obj.UseridService != nil {
-		useridService_value = types.BoolValue(*obj.UseridService)
-	}
 	var ssh_value types.Bool
 	if obj.Ssh != nil {
 		ssh_value = types.BoolValue(*obj.Ssh)
-	}
-	var responsePages_value types.Bool
-	if obj.ResponsePages != nil {
-		responsePages_value = types.BoolValue(*obj.ResponsePages)
-	}
-	var useridSyslogListenerSsl_value types.Bool
-	if obj.UseridSyslogListenerSsl != nil {
-		useridSyslogListenerSsl_value = types.BoolValue(*obj.UseridSyslogListenerSsl)
 	}
 	var useridSyslogListenerUdp_value types.Bool
 	if obj.UseridSyslogListenerUdp != nil {
 		useridSyslogListenerUdp_value = types.BoolValue(*obj.UseridSyslogListenerUdp)
 	}
-	var telnet_value types.Bool
-	if obj.Telnet != nil {
-		telnet_value = types.BoolValue(*obj.Telnet)
+	var responsePages_value types.Bool
+	if obj.ResponsePages != nil {
+		responsePages_value = types.BoolValue(*obj.ResponsePages)
 	}
 	var snmp_value types.Bool
 	if obj.Snmp != nil {
 		snmp_value = types.BoolValue(*obj.Snmp)
 	}
+	var useridSyslogListenerSsl_value types.Bool
+	if obj.UseridSyslogListenerSsl != nil {
+		useridSyslogListenerSsl_value = types.BoolValue(*obj.UseridSyslogListenerSsl)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.HttpOcsp = httpOcsp_value
-	o.PermittedIps = permittedIps_list
-	o.Http = http_value
-	o.Https = https_value
-	o.Ping = ping_value
-	o.UseridService = useridService_value
-	o.Ssh = ssh_value
-	o.ResponsePages = responsePages_value
-	o.UseridSyslogListenerSsl = useridSyslogListenerSsl_value
-	o.UseridSyslogListenerUdp = useridSyslogListenerUdp_value
 	o.Telnet = telnet_value
+	o.UseridService = useridService_value
+	o.Http = http_value
+	o.HttpOcsp = httpOcsp_value
+	o.Https = https_value
+	o.PermittedIps = permittedIps_list
+	o.Ping = ping_value
+	o.Ssh = ssh_value
+	o.UseridSyslogListenerUdp = useridSyslogListenerUdp_value
+	o.ResponsePages = responsePages_value
 	o.Snmp = snmp_value
+	o.UseridSyslogListenerSsl = useridSyslogListenerSsl_value
+
+	return diags
+}
+
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyFromPango(ctx context.Context, obj *interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -775,12 +886,17 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 	}
 
 	// Determine the location.
-	loc := InterfaceManagementProfileResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location interface_management.Location
 
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &interface_management.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
-		loc.Location.Template = &interface_management.TemplateLocation{
+		location.Template = &interface_management.TemplateLocation{
 
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
@@ -788,21 +904,15 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 		}
 	}
 	if state.Location.TemplateStack != nil {
-		loc.Location.TemplateStack = &interface_management.TemplateStackLocation{
+		location.TemplateStack = &interface_management.TemplateStackLocation{
 
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
-	if state.Location.Ngfw != nil {
-		loc.Location.Ngfw = &interface_management.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
-
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
@@ -822,21 +932,11 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -855,24 +955,42 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc InterfaceManagementProfileResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location interface_management.Location
+
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &interface_management.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.Template != nil {
+		location.Template = &interface_management.TemplateLocation{
+
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &interface_management.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -891,10 +1009,6 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -910,17 +1024,35 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		return
 	}
 
-	var loc InterfaceManagementProfileResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location interface_management.Location
+
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &interface_management.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &interface_management.TemplateLocation{
+
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &interface_management.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -928,7 +1060,7 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -940,7 +1072,7 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -953,15 +1085,6 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -982,18 +1105,11 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc InterfaceManagementProfileResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -1001,15 +1117,102 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location interface_management.Location
+
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &interface_management.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &interface_management.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &interface_management.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type InterfaceManagementProfileImportState struct {
+	Location InterfaceManagementProfileLocation `json:"location"`
+	Name     string                             `json:"name"`
+}
+
+func InterfaceManagementProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location InterfaceManagementProfileLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := InterfaceManagementProfileImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *InterfaceManagementProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj InterfaceManagementProfileImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type InterfaceManagementProfileTemplateStackLocation struct {
@@ -1037,11 +1240,11 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"ngfw": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific NGFW.",
+				Description: "Located in a specific NGFW device",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -1056,18 +1259,18 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("template_stack"),
 						path.MatchRelative().AtParent().AtName("ngfw"),
 						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
 					}...),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template.",
+				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -1076,7 +1279,7 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template.",
+						Description: "Specific Panorama template",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -1085,7 +1288,7 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -1099,11 +1302,20 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack.",
+				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -1112,19 +1324,10 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template stack.",
+						Description: "Specific Panorama template stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1136,4 +1339,121 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o InterfaceManagementProfileNgfwLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *InterfaceManagementProfileNgfwLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o InterfaceManagementProfileTemplateLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *InterfaceManagementProfileTemplateLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o InterfaceManagementProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *InterfaceManagementProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o InterfaceManagementProfileLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw"`
+		Template      *InterfaceManagementProfileTemplateLocation      `json:"template"`
+		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack"`
+	}{
+		Ngfw:          o.Ngfw,
+		Template:      o.Template,
+		TemplateStack: o.TemplateStack,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *InterfaceManagementProfileLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw"`
+		Template      *InterfaceManagementProfileTemplateLocation      `json:"template"`
+		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Ngfw = shadow.Ngfw
+	o.Template = shadow.Template
+	o.TemplateStack = shadow.TemplateStack
+
+	return nil
 }

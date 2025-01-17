@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -19,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -48,54 +50,46 @@ type DnsSettingsDataSource struct {
 type DnsSettingsDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type DnsSettingsDataSourceTfid struct {
-	Location dns.Location `json:"location"`
-}
-
-func (o *DnsSettingsDataSourceTfid) IsValid() error {
-	return o.Location.IsValid()
-}
 
 type DnsSettingsDataSourceModel struct {
-	Tfid            types.String                           `tfsdk:"tfid"`
-	Location        DnsSettingsLocation                    `tfsdk:"location"`
-	FqdnRefreshTime types.Int64                            `tfsdk:"fqdn_refresh_time"`
-	DnsSetting      *DnsSettingsDataSourceDnsSettingObject `tfsdk:"dns_setting"`
+	Location        DnsSettingsLocation                     `tfsdk:"location"`
+	DnsSettings     *DnsSettingsDataSourceDnsSettingsObject `tfsdk:"dns_settings"`
+	FqdnRefreshTime types.Int64                             `tfsdk:"fqdn_refresh_time"`
 }
-type DnsSettingsDataSourceDnsSettingObject struct {
-	Servers *DnsSettingsDataSourceDnsSettingServersObject `tfsdk:"servers"`
+type DnsSettingsDataSourceDnsSettingsObject struct {
+	Servers *DnsSettingsDataSourceDnsSettingsServersObject `tfsdk:"servers"`
 }
-type DnsSettingsDataSourceDnsSettingServersObject struct {
+type DnsSettingsDataSourceDnsSettingsServersObject struct {
 	Primary   types.String `tfsdk:"primary"`
 	Secondary types.String `tfsdk:"secondary"`
 }
 
 func (o *DnsSettingsDataSourceModel) CopyToPango(ctx context.Context, obj **dns.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	fqdnRefreshTime_value := o.FqdnRefreshTime.ValueInt64Pointer()
-	var dnsSetting_entry *dns.DnsSetting
-	if o.DnsSetting != nil {
+	var dnsSettings_entry *dns.DnsSetting
+	if o.DnsSettings != nil {
 		if *obj != nil && (*obj).DnsSetting != nil {
-			dnsSetting_entry = (*obj).DnsSetting
+			dnsSettings_entry = (*obj).DnsSetting
 		} else {
-			dnsSetting_entry = new(dns.DnsSetting)
+			dnsSettings_entry = new(dns.DnsSetting)
 		}
 
-		diags.Append(o.DnsSetting.CopyToPango(ctx, &dnsSetting_entry, encrypted)...)
+		diags.Append(o.DnsSettings.CopyToPango(ctx, &dnsSettings_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	fqdnRefreshTime_value := o.FqdnRefreshTime.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(dns.Config)
 	}
+	(*obj).DnsSetting = dnsSettings_entry
 	(*obj).FqdnRefreshTime = fqdnRefreshTime_value
-	(*obj).DnsSetting = dnsSetting_entry
 
 	return diags
 }
-func (o *DnsSettingsDataSourceDnsSettingObject) CopyToPango(ctx context.Context, obj **dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsObject) CopyToPango(ctx context.Context, obj **dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_entry *dns.DnsSettingServers
 	if o.Servers != nil {
@@ -118,7 +112,7 @@ func (o *DnsSettingsDataSourceDnsSettingObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *DnsSettingsDataSourceDnsSettingServersObject) CopyToPango(ctx context.Context, obj **dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyToPango(ctx context.Context, obj **dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -134,53 +128,56 @@ func (o *DnsSettingsDataSourceDnsSettingServersObject) CopyToPango(ctx context.C
 
 func (o *DnsSettingsDataSourceModel) CopyFromPango(ctx context.Context, obj *dns.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSetting_object *DnsSettingsDataSourceDnsSettingObject
+	var dnsSettings_object *DnsSettingsDataSourceDnsSettingsObject
 	if obj.DnsSetting != nil {
-		dnsSetting_object = new(DnsSettingsDataSourceDnsSettingObject)
+		dnsSettings_object = new(DnsSettingsDataSourceDnsSettingsObject)
 
-		diags.Append(dnsSetting_object.CopyFromPango(ctx, obj.DnsSetting, encrypted)...)
+		diags.Append(dnsSettings_object.CopyFromPango(ctx, obj.DnsSetting, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+
 	var fqdnRefreshTime_value types.Int64
 	if obj.FqdnRefreshTime != nil {
 		fqdnRefreshTime_value = types.Int64Value(*obj.FqdnRefreshTime)
 	}
+	o.DnsSettings = dnsSettings_object
 	o.FqdnRefreshTime = fqdnRefreshTime_value
-	o.DnsSetting = dnsSetting_object
 
 	return diags
 }
 
-func (o *DnsSettingsDataSourceDnsSettingObject) CopyFromPango(ctx context.Context, obj *dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsObject) CopyFromPango(ctx context.Context, obj *dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var servers_object *DnsSettingsDataSourceDnsSettingServersObject
+	var servers_object *DnsSettingsDataSourceDnsSettingsServersObject
 	if obj.Servers != nil {
-		servers_object = new(DnsSettingsDataSourceDnsSettingServersObject)
+		servers_object = new(DnsSettingsDataSourceDnsSettingsServersObject)
 
 		diags.Append(servers_object.CopyFromPango(ctx, obj.Servers, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+
 	o.Servers = servers_object
 
 	return diags
 }
 
-func (o *DnsSettingsDataSourceDnsSettingServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var secondary_value types.String
-	if obj.Secondary != nil {
-		secondary_value = types.StringValue(*obj.Secondary)
-	}
+
 	var primary_value types.String
 	if obj.Primary != nil {
 		primary_value = types.StringValue(*obj.Primary)
 	}
-	o.Secondary = secondary_value
+	var secondary_value types.String
+	if obj.Secondary != nil {
+		secondary_value = types.StringValue(*obj.Secondary)
+	}
 	o.Primary = primary_value
+	o.Secondary = secondary_value
 
 	return diags
 }
@@ -191,13 +188,7 @@ func DnsSettingsDataSourceSchema() dsschema.Schema {
 
 			"location": DnsSettingsDataSourceLocationSchema(),
 
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
+			"dns_settings": DnsSettingsDataSourceDnsSettingsSchema(),
 
 			"fqdn_refresh_time": dsschema.Int64Attribute{
 				Description: "Seconds for Periodic Timer to refresh expired FQDN object entries",
@@ -206,8 +197,6 @@ func DnsSettingsDataSourceSchema() dsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"dns_setting": DnsSettingsDataSourceDnsSettingSchema(),
 		},
 	}
 }
@@ -230,7 +219,7 @@ func (o *DnsSettingsDataSourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func DnsSettingsDataSourceDnsSettingSchema() dsschema.SingleNestedAttribute {
+func DnsSettingsDataSourceDnsSettingsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -239,13 +228,13 @@ func DnsSettingsDataSourceDnsSettingSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"servers": DnsSettingsDataSourceDnsSettingServersSchema(),
+			"servers": DnsSettingsDataSourceDnsSettingsServersSchema(),
 		},
 	}
 }
 
-func (o *DnsSettingsDataSourceDnsSettingObject) getTypeFor(name string) attr.Type {
-	schema := DnsSettingsDataSourceDnsSettingSchema()
+func (o *DnsSettingsDataSourceDnsSettingsObject) getTypeFor(name string) attr.Type {
+	schema := DnsSettingsDataSourceDnsSettingsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -262,7 +251,7 @@ func (o *DnsSettingsDataSourceDnsSettingObject) getTypeFor(name string) attr.Typ
 	panic("unreachable")
 }
 
-func DnsSettingsDataSourceDnsSettingServersSchema() dsschema.SingleNestedAttribute {
+func DnsSettingsDataSourceDnsSettingsServersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -290,8 +279,8 @@ func DnsSettingsDataSourceDnsSettingServersSchema() dsschema.SingleNestedAttribu
 	}
 }
 
-func (o *DnsSettingsDataSourceDnsSettingServersObject) getTypeFor(name string) attr.Type {
-	schema := DnsSettingsDataSourceDnsSettingServersSchema()
+func (o *DnsSettingsDataSourceDnsSettingsServersObject) getTypeFor(name string) attr.Type {
+	schema := DnsSettingsDataSourceDnsSettingsServersSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -344,16 +333,17 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc DnsSettingsDataSourceTfid
+
+	var location dns.Location
 
 	if savestate.Location.System != nil {
-		loc.Location.System = &dns.SystemLocation{
+		location.System = &dns.SystemLocation{
 
 			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.Template != nil {
-		loc.Location.Template = &dns.TemplateLocation{
+		location.Template = &dns.TemplateLocation{
 
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
@@ -361,7 +351,7 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
-		loc.Location.TemplateStack = &dns.TemplateStackLocation{
+		location.TemplateStack = &dns.TemplateStackLocation{
 
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
@@ -376,9 +366,8 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location)
+	object, err := o.manager.Read(ctx, location)
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -397,10 +386,6 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -422,28 +407,20 @@ type DnsSettingsResource struct {
 	client  *pango.Client
 	manager *sdkmanager.ConfigObjectManager[*dns.Config, dns.Location, *dns.Service]
 }
-type DnsSettingsResourceTfid struct {
-	Location dns.Location `json:"location"`
-}
-
-func (o *DnsSettingsResourceTfid) IsValid() error {
-	return o.Location.IsValid()
-}
 
 func DnsSettingsResourceLocationSchema() rsschema.Attribute {
 	return DnsSettingsLocationSchema()
 }
 
 type DnsSettingsResourceModel struct {
-	Tfid            types.String                         `tfsdk:"tfid"`
-	Location        DnsSettingsLocation                  `tfsdk:"location"`
-	FqdnRefreshTime types.Int64                          `tfsdk:"fqdn_refresh_time"`
-	DnsSetting      *DnsSettingsResourceDnsSettingObject `tfsdk:"dns_setting"`
+	Location        DnsSettingsLocation                   `tfsdk:"location"`
+	DnsSettings     *DnsSettingsResourceDnsSettingsObject `tfsdk:"dns_settings"`
+	FqdnRefreshTime types.Int64                           `tfsdk:"fqdn_refresh_time"`
 }
-type DnsSettingsResourceDnsSettingObject struct {
-	Servers *DnsSettingsResourceDnsSettingServersObject `tfsdk:"servers"`
+type DnsSettingsResourceDnsSettingsObject struct {
+	Servers *DnsSettingsResourceDnsSettingsServersObject `tfsdk:"servers"`
 }
-type DnsSettingsResourceDnsSettingServersObject struct {
+type DnsSettingsResourceDnsSettingsServersObject struct {
 	Primary   types.String `tfsdk:"primary"`
 	Secondary types.String `tfsdk:"secondary"`
 }
@@ -463,22 +440,15 @@ func DnsSettingsResourceSchema() rsschema.Schema {
 
 			"location": DnsSettingsResourceLocationSchema(),
 
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"dns_setting": DnsSettingsResourceDnsSettingSchema(),
+			"dns_settings": DnsSettingsResourceDnsSettingsSchema(),
 
 			"fqdn_refresh_time": rsschema.Int64Attribute{
 				Description: "Seconds for Periodic Timer to refresh expired FQDN object entries",
-				Computed:    false,
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+				Default:     int64default.StaticInt64(1800),
 			},
 		},
 	}
@@ -502,7 +472,7 @@ func (o *DnsSettingsResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func DnsSettingsResourceDnsSettingSchema() rsschema.SingleNestedAttribute {
+func DnsSettingsResourceDnsSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -511,13 +481,13 @@ func DnsSettingsResourceDnsSettingSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"servers": DnsSettingsResourceDnsSettingServersSchema(),
+			"servers": DnsSettingsResourceDnsSettingsServersSchema(),
 		},
 	}
 }
 
-func (o *DnsSettingsResourceDnsSettingObject) getTypeFor(name string) attr.Type {
-	schema := DnsSettingsResourceDnsSettingSchema()
+func (o *DnsSettingsResourceDnsSettingsObject) getTypeFor(name string) attr.Type {
+	schema := DnsSettingsResourceDnsSettingsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -534,7 +504,7 @@ func (o *DnsSettingsResourceDnsSettingObject) getTypeFor(name string) attr.Type 
 	panic("unreachable")
 }
 
-func DnsSettingsResourceDnsSettingServersSchema() rsschema.SingleNestedAttribute {
+func DnsSettingsResourceDnsSettingsServersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -562,8 +532,8 @@ func DnsSettingsResourceDnsSettingServersSchema() rsschema.SingleNestedAttribute
 	}
 }
 
-func (o *DnsSettingsResourceDnsSettingServersObject) getTypeFor(name string) attr.Type {
-	schema := DnsSettingsResourceDnsSettingServersSchema()
+func (o *DnsSettingsResourceDnsSettingsServersObject) getTypeFor(name string) attr.Type {
+	schema := DnsSettingsResourceDnsSettingsServersSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -604,15 +574,15 @@ func (r *DnsSettingsResource) Configure(ctx context.Context, req resource.Config
 func (o *DnsSettingsResourceModel) CopyToPango(ctx context.Context, obj **dns.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	fqdnRefreshTime_value := o.FqdnRefreshTime.ValueInt64Pointer()
-	var dnsSetting_entry *dns.DnsSetting
-	if o.DnsSetting != nil {
+	var dnsSettings_entry *dns.DnsSetting
+	if o.DnsSettings != nil {
 		if *obj != nil && (*obj).DnsSetting != nil {
-			dnsSetting_entry = (*obj).DnsSetting
+			dnsSettings_entry = (*obj).DnsSetting
 		} else {
-			dnsSetting_entry = new(dns.DnsSetting)
+			dnsSettings_entry = new(dns.DnsSetting)
 		}
 
-		diags.Append(o.DnsSetting.CopyToPango(ctx, &dnsSetting_entry, encrypted)...)
+		diags.Append(o.DnsSettings.CopyToPango(ctx, &dnsSettings_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -622,11 +592,11 @@ func (o *DnsSettingsResourceModel) CopyToPango(ctx context.Context, obj **dns.Co
 		*obj = new(dns.Config)
 	}
 	(*obj).FqdnRefreshTime = fqdnRefreshTime_value
-	(*obj).DnsSetting = dnsSetting_entry
+	(*obj).DnsSetting = dnsSettings_entry
 
 	return diags
 }
-func (o *DnsSettingsResourceDnsSettingObject) CopyToPango(ctx context.Context, obj **dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsObject) CopyToPango(ctx context.Context, obj **dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_entry *dns.DnsSettingServers
 	if o.Servers != nil {
@@ -649,7 +619,7 @@ func (o *DnsSettingsResourceDnsSettingObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *DnsSettingsResourceDnsSettingServersObject) CopyToPango(ctx context.Context, obj **dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsServersObject) CopyToPango(ctx context.Context, obj **dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -665,53 +635,56 @@ func (o *DnsSettingsResourceDnsSettingServersObject) CopyToPango(ctx context.Con
 
 func (o *DnsSettingsResourceModel) CopyFromPango(ctx context.Context, obj *dns.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSetting_object *DnsSettingsResourceDnsSettingObject
+	var dnsSettings_object *DnsSettingsResourceDnsSettingsObject
 	if obj.DnsSetting != nil {
-		dnsSetting_object = new(DnsSettingsResourceDnsSettingObject)
+		dnsSettings_object = new(DnsSettingsResourceDnsSettingsObject)
 
-		diags.Append(dnsSetting_object.CopyFromPango(ctx, obj.DnsSetting, encrypted)...)
+		diags.Append(dnsSettings_object.CopyFromPango(ctx, obj.DnsSetting, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+
 	var fqdnRefreshTime_value types.Int64
 	if obj.FqdnRefreshTime != nil {
 		fqdnRefreshTime_value = types.Int64Value(*obj.FqdnRefreshTime)
 	}
+	o.DnsSettings = dnsSettings_object
 	o.FqdnRefreshTime = fqdnRefreshTime_value
-	o.DnsSetting = dnsSetting_object
 
 	return diags
 }
 
-func (o *DnsSettingsResourceDnsSettingObject) CopyFromPango(ctx context.Context, obj *dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsObject) CopyFromPango(ctx context.Context, obj *dns.DnsSetting, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var servers_object *DnsSettingsResourceDnsSettingServersObject
+	var servers_object *DnsSettingsResourceDnsSettingsServersObject
 	if obj.Servers != nil {
-		servers_object = new(DnsSettingsResourceDnsSettingServersObject)
+		servers_object = new(DnsSettingsResourceDnsSettingsServersObject)
 
 		diags.Append(servers_object.CopyFromPango(ctx, obj.Servers, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+
 	o.Servers = servers_object
 
 	return diags
 }
 
-func (o *DnsSettingsResourceDnsSettingServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var secondary_value types.String
-	if obj.Secondary != nil {
-		secondary_value = types.StringValue(*obj.Secondary)
-	}
+
 	var primary_value types.String
 	if obj.Primary != nil {
 		primary_value = types.StringValue(*obj.Primary)
 	}
-	o.Secondary = secondary_value
+	var secondary_value types.String
+	if obj.Secondary != nil {
+		secondary_value = types.StringValue(*obj.Secondary)
+	}
 	o.Primary = primary_value
+	o.Secondary = secondary_value
 
 	return diags
 }
@@ -736,12 +709,17 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	// Determine the location.
-	loc := DnsSettingsResourceTfid{}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location dns.Location
 
+	if state.Location.System != nil {
+		location.System = &dns.SystemLocation{
+
+			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
-		loc.Location.Template = &dns.TemplateLocation{
+		location.Template = &dns.TemplateLocation{
 
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
@@ -749,21 +727,15 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 		}
 	}
 	if state.Location.TemplateStack != nil {
-		loc.Location.TemplateStack = &dns.TemplateStackLocation{
+		location.TemplateStack = &dns.TemplateStackLocation{
 
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
-	if state.Location.System != nil {
-		loc.Location.System = &dns.SystemLocation{
 
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
-		}
-	}
-
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
@@ -783,21 +755,11 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -815,11 +777,30 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc DnsSettingsResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location dns.Location
+
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &dns.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.System != nil {
+		location.System = &dns.SystemLocation{
+
+			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.Template != nil {
+		location.Template = &dns.TemplateLocation{
+
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
@@ -829,9 +810,8 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location)
+	object, err := o.manager.Read(ctx, location)
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -850,10 +830,6 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -869,17 +845,35 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	var loc DnsSettingsResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location dns.Location
+
+	if state.Location.System != nil {
+		location.System = &dns.SystemLocation{
+
+			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &dns.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &dns.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_dns_settings_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -887,7 +881,7 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location)
+	obj, err := r.manager.Read(ctx, location)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -899,7 +893,7 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj)
+	updated, err := r.manager.Update(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -912,14 +906,6 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -940,13 +926,6 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc DnsSettingsResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_dns_settings_resource",
@@ -958,13 +937,39 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
+
+	var location dns.Location
+
+	if state.Location.System != nil {
+		location.System = &dns.SystemLocation{
+
+			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &dns.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &dns.TemplateStackLocation{
+
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+		}
+	}
+
 	var obj *dns.Config
 	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	err := r.manager.Delete(ctx, loc.Location, obj)
+	err := r.manager.Delete(ctx, location, obj)
 	if err != nil && errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
@@ -972,16 +977,16 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 }
 
 func (r *DnsSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
 }
 
 type DnsSettingsSystemLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type DnsSettingsTemplateLocation struct {
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type DnsSettingsTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -1019,9 +1024,9 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("system"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
-						path.MatchRelative().AtParent().AtName("system"),
 					}...),
 				},
 			},
@@ -1065,15 +1070,6 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template stack.",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "The panorama device.",
 						Optional:    true,
@@ -1092,6 +1088,15 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
@@ -1099,4 +1104,121 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o DnsSettingsSystemLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DnsSettingsSystemLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o DnsSettingsTemplateLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DnsSettingsTemplateLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o DnsSettingsTemplateStackLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DnsSettingsTemplateStackLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o DnsSettingsLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		System        *DnsSettingsSystemLocation        `json:"system"`
+		Template      *DnsSettingsTemplateLocation      `json:"template"`
+		TemplateStack *DnsSettingsTemplateStackLocation `json:"template_stack"`
+	}{
+		System:        o.System,
+		Template:      o.Template,
+		TemplateStack: o.TemplateStack,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DnsSettingsLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		System        *DnsSettingsSystemLocation        `json:"system"`
+		Template      *DnsSettingsTemplateLocation      `json:"template"`
+		TemplateStack *DnsSettingsTemplateStackLocation `json:"template_stack"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.System = shadow.System
+	o.Template = shadow.Template
+	o.TemplateStack = shadow.TemplateStack
+
+	return nil
 }

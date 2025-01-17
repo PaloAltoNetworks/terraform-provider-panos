@@ -5,11 +5,13 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/panorama/device_group"
+	"github.com/PaloAltoNetworks/pango/panorama/devicegroup"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -23,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -40,26 +43,14 @@ func NewDeviceGroupDataSource() datasource.DataSource {
 
 type DeviceGroupDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*device_group.Entry, device_group.Location, *device_group.Service]
+	manager *sdkmanager.EntryObjectManager[*devicegroup.Entry, devicegroup.Location, *devicegroup.Service]
 }
 
 type DeviceGroupDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type DeviceGroupDataSourceTfid struct {
-	Name     string                `json:"name"`
-	Location device_group.Location `json:"location"`
-}
-
-func (o *DeviceGroupDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type DeviceGroupDataSourceModel struct {
-	Tfid              types.String        `tfsdk:"tfid"`
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
 	Description       types.String        `tfsdk:"description"`
@@ -72,9 +63,8 @@ type DeviceGroupDataSourceDevicesObject struct {
 	Vsys types.List   `tfsdk:"vsys"`
 }
 
-func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **device_group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
@@ -82,7 +72,7 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 		return diags
 	}
 	var devices_tf_entries []DeviceGroupDataSourceDevicesObject
-	var devices_pango_entries []device_group.Devices
+	var devices_pango_entries []devicegroup.Devices
 	{
 		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
 		diags.Append(d...)
@@ -90,7 +80,7 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 			return diags
 		}
 		for _, elt := range devices_tf_entries {
-			var entry *device_group.Devices
+			var entry *devicegroup.Devices
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
@@ -98,19 +88,20 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
+	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(device_group.Entry)
+		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).AuthorizationCode = authorizationCode_value
 	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
+	(*obj).AuthorizationCode = authorizationCode_value
 
 	return diags
 }
-func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, obj **device_group.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, obj **devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	vsys_pango_entries := make([]string, 0)
 	diags.Append(o.Vsys.ElementsAs(ctx, &vsys_pango_entries, false)...)
@@ -119,7 +110,7 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, ob
 	}
 
 	if (*obj) == nil {
-		*obj = new(device_group.Devices)
+		*obj = new(devicegroup.Devices)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Vsys = vsys_pango_entries
@@ -127,14 +118,8 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *device_group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var templates_list types.List
-	{
-		var list_diags diag.Diagnostics
-		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
-		diags.Append(list_diags...)
-	}
 	var devices_list types.List
 	{
 		var devices_tf_entries []DeviceGroupDataSourceDevicesObject
@@ -149,6 +134,13 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var templates_list types.List
+	{
+		var list_diags diag.Diagnostics
+		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
+		diags.Append(list_diags...)
+	}
+
 	var authorizationCode_value types.String
 	if obj.AuthorizationCode != nil {
 		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
@@ -158,15 +150,15 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 		description_value = types.StringValue(*obj.Description)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Templates = templates_list
 	o.Devices = devices_list
 	o.AuthorizationCode = authorizationCode_value
 	o.Description = description_value
+	o.Templates = templates_list
 
 	return diags
 }
 
-func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, obj *device_group.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, obj *devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
@@ -174,6 +166,7 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, 
 		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vsys)
 		diags.Append(list_diags...)
 	}
+
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
 
@@ -185,14 +178,6 @@ func DeviceGroupDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": DeviceGroupDataSourceLocationSchema(),
-
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": dsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -320,12 +305,12 @@ func (d *DeviceGroupDataSource) Configure(_ context.Context, req datasource.Conf
 	}
 
 	d.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := device_group.Versioning(d.client.Versioning())
+	specifier, _, err := devicegroup.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, device_group.NewService(d.client), specifier, device_group.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, devicegroup.NewService(d.client), specifier, devicegroup.SpecMatches)
 }
 
 func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
@@ -335,11 +320,11 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc DeviceGroupDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
+
+	var location devicegroup.Location
 
 	if savestate.Location.Panorama != nil {
-		loc.Location.Panorama = &device_group.PanoramaLocation{
+		location.Panorama = &devicegroup.PanoramaLocation{
 
 			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
 		}
@@ -349,13 +334,12 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_device_group_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -374,10 +358,6 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -392,23 +372,17 @@ var (
 )
 
 func NewDeviceGroupResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_device_group"]; !found {
+		resourceFuncMap["panos_device_group"] = resourceFuncs{
+			CreateImportId: DeviceGroupImportStateCreator,
+		}
+	}
 	return &DeviceGroupResource{}
 }
 
 type DeviceGroupResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*device_group.Entry, device_group.Location, *device_group.Service]
-}
-type DeviceGroupResourceTfid struct {
-	Name     string                `json:"name"`
-	Location device_group.Location `json:"location"`
-}
-
-func (o *DeviceGroupResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
+	manager *sdkmanager.EntryObjectManager[*devicegroup.Entry, devicegroup.Location, *devicegroup.Service]
 }
 
 func DeviceGroupResourceLocationSchema() rsschema.Attribute {
@@ -416,7 +390,6 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 }
 
 type DeviceGroupResourceModel struct {
-	Tfid              types.String        `tfsdk:"tfid"`
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
 	Description       types.String        `tfsdk:"description"`
@@ -443,14 +416,6 @@ func DeviceGroupResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": DeviceGroupResourceLocationSchema(),
-
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": rsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -570,17 +535,16 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 	}
 
 	r.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := device_group.Versioning(r.client.Versioning())
+	specifier, _, err := devicegroup.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, device_group.NewService(r.client), specifier, device_group.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, devicegroup.NewService(r.client), specifier, devicegroup.SpecMatches)
 }
 
-func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device_group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
@@ -588,7 +552,7 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 		return diags
 	}
 	var devices_tf_entries []DeviceGroupResourceDevicesObject
-	var devices_pango_entries []device_group.Devices
+	var devices_pango_entries []devicegroup.Devices
 	{
 		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
 		diags.Append(d...)
@@ -596,7 +560,7 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 			return diags
 		}
 		for _, elt := range devices_tf_entries {
-			var entry *device_group.Devices
+			var entry *devicegroup.Devices
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
@@ -604,19 +568,20 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
+	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(device_group.Entry)
+		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).AuthorizationCode = authorizationCode_value
 	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
+	(*obj).AuthorizationCode = authorizationCode_value
 
 	return diags
 }
-func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj **device_group.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj **devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	vsys_pango_entries := make([]string, 0)
 	diags.Append(o.Vsys.ElementsAs(ctx, &vsys_pango_entries, false)...)
@@ -625,7 +590,7 @@ func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj 
 	}
 
 	if (*obj) == nil {
-		*obj = new(device_group.Devices)
+		*obj = new(devicegroup.Devices)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Vsys = vsys_pango_entries
@@ -633,7 +598,7 @@ func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *device_group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
@@ -655,24 +620,25 @@ func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devic
 		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
+
 	var authorizationCode_value types.String
 	if obj.AuthorizationCode != nil {
 		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
 	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.AuthorizationCode = authorizationCode_value
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
-	o.AuthorizationCode = authorizationCode_value
 
 	return diags
 }
 
-func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, obj *device_group.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, obj *devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
@@ -680,6 +646,7 @@ func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, ob
 		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vsys)
 		diags.Append(list_diags...)
 	}
+
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
 
@@ -707,24 +674,23 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	// Determine the location.
-	loc := DeviceGroupResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location devicegroup.Location
 
 	if state.Location.Panorama != nil {
-		loc.Location.Panorama = &device_group.PanoramaLocation{
+		location.Panorama = &devicegroup.PanoramaLocation{
 
 			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
 		}
 	}
 
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
 
 	// Load the desired config.
-	var obj *device_group.Entry
+	var obj *devicegroup.Entry
 
 	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -738,21 +704,11 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -771,24 +727,26 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc DeviceGroupResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location devicegroup.Location
+
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &devicegroup.PanoramaLocation{
+
+			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_device_group_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -807,10 +765,6 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -826,17 +780,19 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	var loc DeviceGroupResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location devicegroup.Location
+
+	if state.Location.Panorama != nil {
+		location.Panorama = &devicegroup.PanoramaLocation{
+
+			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_device_group_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -844,7 +800,7 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -856,7 +812,7 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -869,15 +825,6 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -898,18 +845,11 @@ func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc DeviceGroupResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_device_group_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -917,15 +857,86 @@ func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location devicegroup.Location
+
+	if state.Location.Panorama != nil {
+		location.Panorama = &devicegroup.PanoramaLocation{
+
+			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type DeviceGroupImportState struct {
+	Location DeviceGroupLocation `json:"location"`
+	Name     string              `json:"name"`
+}
+
+func DeviceGroupImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location DeviceGroupLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := DeviceGroupImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *DeviceGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj DeviceGroupImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type DeviceGroupPanoramaLocation struct {
@@ -960,4 +971,51 @@ func DeviceGroupLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o DeviceGroupPanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DeviceGroupPanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+
+	return nil
+}
+func (o DeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Panorama *DeviceGroupPanoramaLocation `json:"panorama"`
+	}{
+		Panorama: o.Panorama,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Panorama *DeviceGroupPanoramaLocation `json:"panorama"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Panorama = shadow.Panorama
+
+	return nil
 }

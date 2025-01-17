@@ -2,6 +2,9 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"log/slog"
+	"strings"
 
 	sdk "github.com/PaloAltoNetworks/pango"
 
@@ -36,6 +39,8 @@ type PanosProviderModel struct {
 	Password              types.String `tfsdk:"password"`
 	Port                  types.Int64  `tfsdk:"port"`
 	Protocol              types.String `tfsdk:"protocol"`
+	SdkLogCategories      types.String `tfsdk:"sdk_log_categories"`
+	SdkLogLevel           types.String `tfsdk:"sdk_log_level"`
 	SkipVerifyCertificate types.Bool   `tfsdk:"skip_verify_certificate"`
 	Target                types.String `tfsdk:"target"`
 	Username              types.String `tfsdk:"username"`
@@ -144,6 +149,24 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				),
 				Optional: true,
 			},
+			"sdk_log_categories": schema.StringAttribute{
+				Description: ProviderParamDescription(
+					"Log categories to configure for the PAN-OS SDK library",
+					"",
+					"PANOS_LOG_CATEGORIES",
+					"sdk_log_categories",
+				),
+				Optional: true,
+			},
+			"sdk_log_level": schema.StringAttribute{
+				Description: ProviderParamDescription(
+					"SDK logging Level for categories",
+					"INFO",
+					"PANOS_LOG_LEVEL",
+					"sdk_log_level",
+				),
+				Optional: true,
+			},
 			"skip_verify_certificate": schema.BoolAttribute{
 				Description: ProviderParamDescription(
 					"(For https protocol) Skip verifying the HTTPS certificate.",
@@ -196,6 +219,28 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		}
 	} else {
 		tflog.Info(ctx, "Configuring client for API mode")
+		var logCategories sdk.LogCategory
+		if !config.SdkLogCategories.IsNull() {
+			categories := strings.Split(config.SdkLogCategories.ValueString(), ",")
+			var err error
+			logCategories, err = sdk.LogCategoryFromStrings(categories)
+			if err != nil {
+				resp.Diagnostics.AddError("Failed to configure Terraform provider", err.Error())
+				return
+			}
+		}
+
+		var logLevel slog.Level
+		if !config.SdkLogLevel.IsNull() {
+			levelStr := config.SdkLogLevel.ValueString()
+			err := logLevel.UnmarshalText([]byte(levelStr))
+			if err != nil {
+				resp.Diagnostics.AddError("Failed to configure Terraform provider", fmt.Sprintf("Invalid Log Level: %s", levelStr))
+			}
+		} else {
+			logLevel = slog.LevelInfo
+		}
+
 		con = &sdk.Client{
 			Hostname:        config.Hostname.ValueString(),
 			Username:        config.Username.ValueString(),
@@ -209,6 +254,10 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 			SkipVerifyCertificate: config.SkipVerifyCertificate.ValueBool(),
 			AuthFile:              config.AuthFile.ValueString(),
 			CheckEnvironment:      true,
+			Logging: sdk.LoggingInfo{
+				LogLevel:      logLevel,
+				LogCategories: logCategories,
+			},
 			//Agent:            fmt.Sprintf("Terraform/%s Provider/scm Version/%s", req.TerraformVersion, p.version),
 		}
 
@@ -235,18 +284,35 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 // DataSources defines the data sources for this provider.
 func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewTfidDataSource,
+		NewAdminRoleDataSource,
 		NewDnsSettingsDataSource,
+		NewDynamicUpdatesDataSource,
 		NewNtpSettingsDataSource,
+		NewAggregateInterfaceDataSource,
 		NewEthernetInterfaceDataSource,
 		NewLoopbackInterfaceDataSource,
+		NewTunnelInterfaceDataSource,
+		NewVlanInterfaceDataSource,
+		NewAntiSpywareSecurityProfileDataSource,
 		NewInterfaceManagementProfileDataSource,
+		NewIpsecTunnelDataSource,
 		NewVirtualRouterDataSource,
 		NewZoneDataSource,
 		NewAddressGroupDataSource,
 		NewAddressesDataSource,
 		NewAdministrativeTagDataSource,
 		NewCustomUrlCategoryDataSource,
+		NewExternalDynamicListDataSource,
+		NewIkeGatewayDataSource,
+		NewSecurityProfileAntivirusDataSource,
+		NewFileBlockingProfileDataSource,
+		NewIkeCryptoProfileDataSource,
+		NewIpsecCryptoProfileDataSource,
+		NewLogForwardingProfileDataSource,
+		NewSecurityProfileGroupDataSource,
+		NewUrlFilteringSecurityProfileDataSource,
+		NewVulnerabilitySecurityProfileDataSource,
+		NewWildfireAnalysisSecurityProfileDataSource,
 		NewServiceGroupDataSource,
 		NewServiceDataSource,
 		NewDeviceGroupParentDataSource,
@@ -254,6 +320,10 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewTemplateStackDataSource,
 		NewTemplateVariableDataSource,
 		NewTemplateDataSource,
+		NewDecryptionPolicyDataSource,
+		NewDecryptionPolicyRulesDataSource,
+		NewNatPolicyDataSource,
+		NewNatPolicyRulesDataSource,
 		NewSecurityPolicyDataSource,
 		NewSecurityPolicyRulesDataSource,
 	}
@@ -262,17 +332,35 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 // Resources defines the data sources for this provider.
 func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewAdminRoleResource,
 		NewDnsSettingsResource,
+		NewDynamicUpdatesResource,
 		NewNtpSettingsResource,
+		NewAggregateInterfaceResource,
 		NewEthernetInterfaceResource,
 		NewLoopbackInterfaceResource,
+		NewTunnelInterfaceResource,
+		NewVlanInterfaceResource,
+		NewAntiSpywareSecurityProfileResource,
 		NewInterfaceManagementProfileResource,
+		NewIpsecTunnelResource,
 		NewVirtualRouterResource,
 		NewZoneResource,
 		NewAddressGroupResource,
 		NewAddressesResource,
 		NewAdministrativeTagResource,
 		NewCustomUrlCategoryResource,
+		NewExternalDynamicListResource,
+		NewIkeGatewayResource,
+		NewSecurityProfileAntivirusResource,
+		NewFileBlockingProfileResource,
+		NewIkeCryptoProfileResource,
+		NewIpsecCryptoProfileResource,
+		NewLogForwardingProfileResource,
+		NewSecurityProfileGroupResource,
+		NewUrlFilteringSecurityProfileResource,
+		NewVulnerabilitySecurityProfileResource,
+		NewWildfireAnalysisSecurityProfileResource,
 		NewServiceGroupResource,
 		NewServiceResource,
 		NewDeviceGroupParentResource,
@@ -280,6 +368,10 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewTemplateStackResource,
 		NewTemplateVariableResource,
 		NewTemplateResource,
+		NewDecryptionPolicyResource,
+		NewDecryptionPolicyRulesResource,
+		NewNatPolicyResource,
+		NewNatPolicyRulesResource,
 		NewSecurityPolicyResource,
 		NewSecurityPolicyRulesResource,
 	}
@@ -288,6 +380,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 func (p *PanosProvider) Functions(_ context.Context) []func() function.Function {
 	return []func() function.Function{
 		NewAddressValueFunction,
+		NewCreateImportIdFunction,
 	}
 }
 
@@ -298,4 +391,106 @@ func New(version string) func() provider.Provider {
 			version: version,
 		}
 	}
+}
+
+type CreateResourceIdFunc func(context.Context, types.Object) ([]byte, error)
+
+type resourceFuncs struct {
+	CreateImportId CreateResourceIdFunc
+}
+
+var resourceFuncMap = map[string]resourceFuncs{
+	"panos_aggregate_interface": resourceFuncs{
+		CreateImportId: AggregateInterfaceImportStateCreator,
+	},
+	"panos_external_dynamic_list": resourceFuncs{
+		CreateImportId: ExternalDynamicListImportStateCreator,
+	},
+	"panos_service_group": resourceFuncs{
+		CreateImportId: ServiceGroupImportStateCreator,
+	},
+	"panos_tunnel_interface": resourceFuncs{
+		CreateImportId: TunnelInterfaceImportStateCreator,
+	},
+	"panos_vlan_interface": resourceFuncs{
+		CreateImportId: VlanInterfaceImportStateCreator,
+	},
+	"panos_ike_gateway": resourceFuncs{
+		CreateImportId: IkeGatewayImportStateCreator,
+	},
+	"panos_security_profile_antivirus": resourceFuncs{
+		CreateImportId: SecurityProfileAntivirusImportStateCreator,
+	},
+	"panos_file_blocking_profile": resourceFuncs{
+		CreateImportId: FileBlockingProfileImportStateCreator,
+	},
+	"panos_template_stack": resourceFuncs{
+		CreateImportId: TemplateStackImportStateCreator,
+	},
+	"panos_ipsec_tunnel": resourceFuncs{
+		CreateImportId: IpsecTunnelImportStateCreator,
+	},
+	"panos_log_forwarding_profile": resourceFuncs{
+		CreateImportId: LogForwardingProfileImportStateCreator,
+	},
+	"panos_vulnerability_security_profile": resourceFuncs{
+		CreateImportId: VulnerabilitySecurityProfileImportStateCreator,
+	},
+	"panos_service": resourceFuncs{
+		CreateImportId: ServiceImportStateCreator,
+	},
+	"panos_ethernet_interface": resourceFuncs{
+		CreateImportId: EthernetInterfaceImportStateCreator,
+	},
+	"panos_loopback_interface": resourceFuncs{
+		CreateImportId: LoopbackInterfaceImportStateCreator,
+	},
+	"panos_zone": resourceFuncs{
+		CreateImportId: ZoneImportStateCreator,
+	},
+	"panos_custom_url_category": resourceFuncs{
+		CreateImportId: CustomUrlCategoryImportStateCreator,
+	},
+	"panos_security_profile_group": resourceFuncs{
+		CreateImportId: SecurityProfileGroupImportStateCreator,
+	},
+	"panos_url_filtering_security_profile": resourceFuncs{
+		CreateImportId: UrlFilteringSecurityProfileImportStateCreator,
+	},
+	"panos_interface_management_profile": resourceFuncs{
+		CreateImportId: InterfaceManagementProfileImportStateCreator,
+	},
+	"panos_ipsec_crypto_profile": resourceFuncs{
+		CreateImportId: IpsecCryptoProfileImportStateCreator,
+	},
+	"panos_wildfire_analysis_security_profile": resourceFuncs{
+		CreateImportId: WildfireAnalysisSecurityProfileImportStateCreator,
+	},
+	"panos_template_variable": resourceFuncs{
+		CreateImportId: TemplateVariableImportStateCreator,
+	},
+	"panos_admin_role": resourceFuncs{
+		CreateImportId: AdminRoleImportStateCreator,
+	},
+	"panos_virtual_router": resourceFuncs{
+		CreateImportId: VirtualRouterImportStateCreator,
+	},
+	"panos_administrative_tag": resourceFuncs{
+		CreateImportId: AdministrativeTagImportStateCreator,
+	},
+	"panos_device_group": resourceFuncs{
+		CreateImportId: DeviceGroupImportStateCreator,
+	},
+	"panos_anti_spyware_security_profile": resourceFuncs{
+		CreateImportId: AntiSpywareSecurityProfileImportStateCreator,
+	},
+	"panos_address_group": resourceFuncs{
+		CreateImportId: AddressGroupImportStateCreator,
+	},
+	"panos_ike_crypto_profile": resourceFuncs{
+		CreateImportId: IkeCryptoProfileImportStateCreator,
+	},
+	"panos_template": resourceFuncs{
+		CreateImportId: TemplateImportStateCreator,
+	},
 }

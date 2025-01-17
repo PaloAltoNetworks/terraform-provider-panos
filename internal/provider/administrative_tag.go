@@ -5,13 +5,16 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objects/tag"
+	"github.com/PaloAltoNetworks/pango/objects/admintag"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -26,6 +29,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -43,60 +47,57 @@ func NewAdministrativeTagDataSource() datasource.DataSource {
 
 type AdministrativeTagDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*tag.Entry, tag.Location, *tag.Service]
+	manager *sdkmanager.EntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service]
 }
 
 type AdministrativeTagDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type AdministrativeTagDataSourceTfid struct {
-	Name     string       `json:"name"`
-	Location tag.Location `json:"location"`
-}
-
-func (o *AdministrativeTagDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type AdministrativeTagDataSourceModel struct {
-	Tfid     types.String              `tfsdk:"tfid"`
-	Location AdministrativeTagLocation `tfsdk:"location"`
-	Name     types.String              `tfsdk:"name"`
-	Color    types.String              `tfsdk:"color"`
-	Comments types.String              `tfsdk:"comments"`
+	Location        AdministrativeTagLocation `tfsdk:"location"`
+	Name            types.String              `tfsdk:"name"`
+	Color           types.String              `tfsdk:"color"`
+	Comments        types.String              `tfsdk:"comments"`
+	DisableOverride types.String              `tfsdk:"disable_override"`
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **tag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(tag.Entry)
+		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Color = color_value
 	(*obj).Comments = comments_value
+	(*obj).DisableOverride = disableOverride_value
 
 	return diags
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, obj *tag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, obj *admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var comments_value types.String
-	if obj.Comments != nil {
-		comments_value = types.StringValue(*obj.Comments)
-	}
+
 	var color_value types.String
 	if obj.Color != nil {
 		color_value = types.StringValue(*obj.Color)
 	}
+	var comments_value types.String
+	if obj.Comments != nil {
+		comments_value = types.StringValue(*obj.Comments)
+	}
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Comments = comments_value
 	o.Color = color_value
+	o.Comments = comments_value
+	o.DisableOverride = disableOverride_value
 
 	return diags
 }
@@ -107,16 +108,8 @@ func AdministrativeTagDataSourceSchema() dsschema.Schema {
 
 			"location": AdministrativeTagDataSourceLocationSchema(),
 
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": dsschema.StringAttribute{
-				Description: "The name of the tag.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
@@ -124,7 +117,7 @@ func AdministrativeTagDataSourceSchema() dsschema.Schema {
 			},
 
 			"color": dsschema.StringAttribute{
-				Description: "The color.",
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -132,7 +125,15 @@ func AdministrativeTagDataSourceSchema() dsschema.Schema {
 			},
 
 			"comments": dsschema.StringAttribute{
-				Description: "Comments.",
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_override": dsschema.StringAttribute{
+				Description: "disable object override in child device groups",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -181,12 +182,12 @@ func (d *AdministrativeTagDataSource) Configure(_ context.Context, req datasourc
 	}
 
 	d.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := tag.Versioning(d.client.Versioning())
+	specifier, _, err := admintag.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, tag.NewService(d.client), specifier, tag.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, admintag.NewService(d.client), specifier, admintag.SpecMatches)
 }
 
 func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
@@ -196,47 +197,37 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc AdministrativeTagDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		loc.Location.Shared = true
-	}
+	var location admintag.Location
+
 	if savestate.Location.Vsys != nil {
-		loc.Location.Vsys = &tag.VsysLocation{
+		location.Vsys = &admintag.VsysLocation{
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
-	if !savestate.Location.FromPanoramaShared.IsNull() && savestate.Location.FromPanoramaShared.ValueBool() {
-		loc.Location.FromPanoramaShared = true
-	}
-	if savestate.Location.FromPanoramaVsys != nil {
-		loc.Location.FromPanoramaVsys = &tag.FromPanoramaVsysLocation{
-
-			Vsys: savestate.Location.FromPanoramaVsys.Vsys.ValueString(),
-		}
-	}
 	if savestate.Location.DeviceGroup != nil {
-		loc.Location.DeviceGroup = &tag.DeviceGroupLocation{
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -255,10 +246,6 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -273,23 +260,17 @@ var (
 )
 
 func NewAdministrativeTagResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_administrative_tag"]; !found {
+		resourceFuncMap["panos_administrative_tag"] = resourceFuncs{
+			CreateImportId: AdministrativeTagImportStateCreator,
+		}
+	}
 	return &AdministrativeTagResource{}
 }
 
 type AdministrativeTagResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*tag.Entry, tag.Location, *tag.Service]
-}
-type AdministrativeTagResourceTfid struct {
-	Name     string       `json:"name"`
-	Location tag.Location `json:"location"`
-}
-
-func (o *AdministrativeTagResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
+	manager *sdkmanager.EntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service]
 }
 
 func AdministrativeTagResourceLocationSchema() rsschema.Attribute {
@@ -297,11 +278,11 @@ func AdministrativeTagResourceLocationSchema() rsschema.Attribute {
 }
 
 type AdministrativeTagResourceModel struct {
-	Tfid     types.String              `tfsdk:"tfid"`
-	Location AdministrativeTagLocation `tfsdk:"location"`
-	Name     types.String              `tfsdk:"name"`
-	Color    types.String              `tfsdk:"color"`
-	Comments types.String              `tfsdk:"comments"`
+	Location        AdministrativeTagLocation `tfsdk:"location"`
+	Name            types.String              `tfsdk:"name"`
+	Color           types.String              `tfsdk:"color"`
+	Comments        types.String              `tfsdk:"comments"`
+	DisableOverride types.String              `tfsdk:"disable_override"`
 }
 
 func (r *AdministrativeTagResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -319,16 +300,8 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 			"location": AdministrativeTagResourceLocationSchema(),
 
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": rsschema.StringAttribute{
-				Description: "The name of the tag.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
@@ -336,19 +309,80 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 			},
 
 			"color": rsschema.StringAttribute{
-				Description: "The color.",
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"color6",
+						"color31",
+						"color40",
+						"color9",
+						"color13",
+						"color14",
+						"color28",
+						"color33",
+						"color36",
+						"color38",
+						"color2",
+						"color3",
+						"color19",
+						"color23",
+						"color10",
+						"color11",
+						"color15",
+						"color26",
+						"color29",
+						"color30",
+						"color21",
+						"color27",
+						"color39",
+						"color41",
+						"color22",
+						"color34",
+						"color35",
+						"color37",
+						"color1",
+						"color7",
+						"color16",
+						"color20",
+						"color25",
+						"color32",
+						"color42",
+						"color4",
+						"color5",
+						"color8",
+						"color12",
+						"color17",
+						"color24",
+					}...),
+				},
+			},
+
+			"comments": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"comments": rsschema.StringAttribute{
-				Description: "Comments.",
-				Computed:    false,
+			"disable_override": rsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"no",
+					}...),
+				},
 			},
 		},
 	}
@@ -385,31 +419,38 @@ func (r *AdministrativeTagResource) Configure(ctx context.Context, req resource.
 	}
 
 	r.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := tag.Versioning(r.client.Versioning())
+	specifier, _, err := admintag.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, tag.NewService(r.client), specifier, tag.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, admintag.NewService(r.client), specifier, admintag.SpecMatches)
 }
 
-func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **tag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(tag.Entry)
+		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Color = color_value
 	(*obj).Comments = comments_value
+	(*obj).DisableOverride = disableOverride_value
 
 	return diags
 }
 
-func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj *tag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj *admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
+	}
 	var color_value types.String
 	if obj.Color != nil {
 		color_value = types.StringValue(*obj.Color)
@@ -419,6 +460,7 @@ func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj 
 		comments_value = types.StringValue(*obj.Comments)
 	}
 	o.Name = types.StringValue(obj.Name)
+	o.DisableOverride = disableOverride_value
 	o.Color = color_value
 	o.Comments = comments_value
 
@@ -446,44 +488,34 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	// Determine the location.
-	loc := AdministrativeTagResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location admintag.Location
 
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		loc.Location.Shared = true
+		location.Shared = true
 	}
 	if state.Location.Vsys != nil {
-		loc.Location.Vsys = &tag.VsysLocation{
+		location.Vsys = &admintag.VsysLocation{
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
-	if !state.Location.FromPanoramaShared.IsNull() && state.Location.FromPanoramaShared.ValueBool() {
-		loc.Location.FromPanoramaShared = true
-	}
-	if state.Location.FromPanoramaVsys != nil {
-		loc.Location.FromPanoramaVsys = &tag.FromPanoramaVsysLocation{
-
-			Vsys: state.Location.FromPanoramaVsys.Vsys.ValueString(),
-		}
-	}
 	if state.Location.DeviceGroup != nil {
-		loc.Location.DeviceGroup = &tag.DeviceGroupLocation{
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
 
 	// Load the desired config.
-	var obj *tag.Entry
+	var obj *admintag.Entry
 
 	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -497,21 +529,11 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -530,24 +552,37 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc AdministrativeTagResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location admintag.Location
+
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &admintag.VsysLocation{
+
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -566,10 +601,6 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -585,17 +616,30 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	var loc AdministrativeTagResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location admintag.Location
+
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &admintag.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -603,7 +647,7 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -615,7 +659,7 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -628,15 +672,6 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -657,18 +692,11 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc AdministrativeTagResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -676,34 +704,111 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location admintag.Location
+
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &admintag.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type AdministrativeTagImportState struct {
+	Location AdministrativeTagLocation `json:"location"`
+	Name     string                    `json:"name"`
+}
+
+func AdministrativeTagImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location AdministrativeTagLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := AdministrativeTagImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *AdministrativeTagResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj AdministrativeTagImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type AdministrativeTagVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
-}
-type AdministrativeTagFromPanoramaVsysLocation struct {
-	Vsys types.String `tfsdk:"vsys"`
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type AdministrativeTagDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type AdministrativeTagLocation struct {
-	Vsys               *AdministrativeTagVsysLocation             `tfsdk:"vsys"`
-	FromPanoramaShared types.Bool                                 `tfsdk:"from_panorama_shared"`
-	FromPanoramaVsys   *AdministrativeTagFromPanoramaVsysLocation `tfsdk:"from_panorama_vsys"`
-	DeviceGroup        *AdministrativeTagDeviceGroupLocation      `tfsdk:"device_group"`
-	Shared             types.Bool                                 `tfsdk:"shared"`
+	Shared      types.Bool                            `tfsdk:"shared"`
+	Vsys        *AdministrativeTagVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *AdministrativeTagDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func AdministrativeTagLocationSchema() rsschema.Attribute {
@@ -711,12 +816,36 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"from_panorama_vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys in the config pushed from Panorama.",
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
+					}...),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"vsys": rsschema.StringAttribute{
-						Description: "The vsys.",
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
@@ -728,23 +857,22 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("from_panorama_shared"),
-						path.MatchRelative().AtParent().AtName("from_panorama_vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
-					}...),
-				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific device group.",
+				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"name": rsschema.StringAttribute{
-						Description: "The device group.",
+						Description: "Device Group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -752,61 +880,97 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
-					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"shared": rsschema.BoolAttribute{
-				Description: "Located in shared.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-			},
-			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys.",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The vsys.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"from_panorama_shared": rsschema.BoolAttribute{
-				Description: "Located in shared in the config pushed from Panorama.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 		},
 	}
+}
+
+func (o AdministrativeTagVsysLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AdministrativeTagVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
+func (o AdministrativeTagDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device"`
+	}{
+		Name:           o.Name.ValueStringPointer(),
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AdministrativeTagDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+
+	return nil
+}
+func (o AdministrativeTagLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Shared      *bool                                 `json:"shared"`
+		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
+		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
+	}{
+		Shared:      o.Shared.ValueBoolPointer(),
+		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AdministrativeTagLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Shared      *bool                                 `json:"shared"`
+		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
+		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
+
+	return nil
 }

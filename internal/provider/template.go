@@ -5,6 +5,8 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -23,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -46,20 +49,8 @@ type TemplateDataSource struct {
 type TemplateDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type TemplateDataSourceTfid struct {
-	Name     string            `json:"name"`
-	Location template.Location `json:"location"`
-}
-
-func (o *TemplateDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type TemplateDataSourceModel struct {
-	Tfid        types.String     `tfsdk:"tfid"`
 	Location    TemplateLocation `tfsdk:"location"`
 	Name        types.String     `tfsdk:"name"`
 	Description types.String     `tfsdk:"description"`
@@ -80,6 +71,7 @@ func (o *TemplateDataSourceModel) CopyToPango(ctx context.Context, obj **templat
 
 func (o *TemplateDataSourceModel) CopyFromPango(ctx context.Context, obj *template.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -95,14 +87,6 @@ func TemplateDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": TemplateDataSourceLocationSchema(),
-
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": dsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -177,11 +161,11 @@ func (o *TemplateDataSource) Read(ctx context.Context, req datasource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc TemplateDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
+
+	var location template.Location
 
 	if savestate.Location.Panorama != nil {
-		loc.Location.Panorama = &template.PanoramaLocation{
+		location.Panorama = &template.PanoramaLocation{
 
 			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
 		}
@@ -191,13 +175,12 @@ func (o *TemplateDataSource) Read(ctx context.Context, req datasource.ReadReques
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -216,10 +199,6 @@ func (o *TemplateDataSource) Read(ctx context.Context, req datasource.ReadReques
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -234,6 +213,11 @@ var (
 )
 
 func NewTemplateResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_template"]; !found {
+		resourceFuncMap["panos_template"] = resourceFuncs{
+			CreateImportId: TemplateImportStateCreator,
+		}
+	}
 	return &TemplateResource{}
 }
 
@@ -241,24 +225,12 @@ type TemplateResource struct {
 	client  *pango.Client
 	manager *sdkmanager.EntryObjectManager[*template.Entry, template.Location, *template.Service]
 }
-type TemplateResourceTfid struct {
-	Name     string            `json:"name"`
-	Location template.Location `json:"location"`
-}
-
-func (o *TemplateResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 func TemplateResourceLocationSchema() rsschema.Attribute {
 	return TemplateLocationSchema()
 }
 
 type TemplateResourceModel struct {
-	Tfid        types.String     `tfsdk:"tfid"`
 	Location    TemplateLocation `tfsdk:"location"`
 	Name        types.String     `tfsdk:"name"`
 	Description types.String     `tfsdk:"description"`
@@ -278,14 +250,6 @@ func TemplateResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": TemplateResourceLocationSchema(),
-
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"name": rsschema.StringAttribute{
 				Description: "The name of the service.",
@@ -360,6 +324,7 @@ func (o *TemplateResourceModel) CopyToPango(ctx context.Context, obj **template.
 
 func (o *TemplateResourceModel) CopyFromPango(ctx context.Context, obj *template.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -391,18 +356,17 @@ func (r *TemplateResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	// Determine the location.
-	loc := TemplateResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location template.Location
 
 	if state.Location.Panorama != nil {
-		loc.Location.Panorama = &template.PanoramaLocation{
+		location.Panorama = &template.PanoramaLocation{
 
 			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
 		}
 	}
 
-	if err := loc.IsValid(); err != nil {
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
@@ -422,21 +386,11 @@ func (r *TemplateResource) Create(ctx context.Context, req resource.CreateReques
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -455,24 +409,26 @@ func (o *TemplateResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc TemplateResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location template.Location
+
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &template.PanoramaLocation{
+
+			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -491,10 +447,6 @@ func (o *TemplateResource) Read(ctx context.Context, req resource.ReadRequest, r
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -510,17 +462,19 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	var loc TemplateResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location template.Location
+
+	if state.Location.Panorama != nil {
+		location.Panorama = &template.PanoramaLocation{
+
+			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_template_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -528,7 +482,7 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -540,7 +494,7 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -553,15 +507,6 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -582,18 +527,11 @@ func (r *TemplateResource) Delete(ctx context.Context, req resource.DeleteReques
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc TemplateResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_template_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -601,15 +539,86 @@ func (r *TemplateResource) Delete(ctx context.Context, req resource.DeleteReques
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location template.Location
+
+	if state.Location.Panorama != nil {
+		location.Panorama = &template.PanoramaLocation{
+
+			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type TemplateImportState struct {
+	Location TemplateLocation `json:"location"`
+	Name     string           `json:"name"`
+}
+
+func TemplateImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location TemplateLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := TemplateImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *TemplateResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj TemplateImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type TemplatePanoramaLocation struct {
@@ -644,4 +653,51 @@ func TemplateLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o TemplatePanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplatePanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+
+	return nil
+}
+func (o TemplateLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Panorama *TemplatePanoramaLocation `json:"panorama"`
+	}{
+		Panorama: o.Panorama,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplateLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Panorama *TemplatePanoramaLocation `json:"panorama"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Panorama = shadow.Panorama
+
+	return nil
 }

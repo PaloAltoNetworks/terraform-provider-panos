@@ -5,13 +5,16 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/service/group"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -26,6 +29,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -49,30 +53,18 @@ type ServiceGroupDataSource struct {
 type ServiceGroupDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
-type ServiceGroupDataSourceTfid struct {
-	Name     string         `json:"name"`
-	Location group.Location `json:"location"`
-}
-
-func (o *ServiceGroupDataSourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 type ServiceGroupDataSourceModel struct {
-	Tfid        types.String         `tfsdk:"tfid"`
-	Location    ServiceGroupLocation `tfsdk:"location"`
-	Name        types.String         `tfsdk:"name"`
-	Tags        types.List           `tfsdk:"tags"`
-	Description types.String         `tfsdk:"description"`
-	Members     types.List           `tfsdk:"members"`
+	Location        ServiceGroupLocation `tfsdk:"location"`
+	Name            types.String         `tfsdk:"name"`
+	Tags            types.List           `tfsdk:"tags"`
+	DisableOverride types.String         `tfsdk:"disable_override"`
+	Members         types.List           `tfsdk:"members"`
 }
 
 func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	members_pango_entries := make([]string, 0)
 	diags.Append(o.Members.ElementsAs(ctx, &members_pango_entries, false)...)
 	if diags.HasError() {
@@ -88,9 +80,9 @@ func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 		*obj = new(group.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
+	(*obj).DisableOverride = disableOverride_value
 	(*obj).Members = members_pango_entries
-	(*obj).Tags = tags_pango_entries
+	(*obj).Tag = tags_pango_entries
 
 	return diags
 }
@@ -100,7 +92,7 @@ func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *gr
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
 	var members_list types.List
@@ -109,13 +101,14 @@ func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *gr
 		members_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Members)
 		diags.Append(list_diags...)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
+
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Tags = tags_list
-	o.Description = description_value
+	o.DisableOverride = disableOverride_value
 	o.Members = members_list
 
 	return diags
@@ -127,24 +120,16 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 
 			"location": ServiceGroupDataSourceLocationSchema(),
 
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": dsschema.StringAttribute{
-				Description: "The name of the service.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"description": dsschema.StringAttribute{
-				Description: "The description.",
+			"disable_override": dsschema.StringAttribute{
+				Description: "disable object override in child device groups",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -152,7 +137,7 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 			},
 
 			"members": dsschema.ListAttribute{
-				Description: "Service group members.",
+				Description: "",
 				Required:    false,
 				Optional:    true,
 				Computed:    true,
@@ -161,7 +146,7 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 			},
 
 			"tags": dsschema.ListAttribute{
-				Description: "The administrative tags.",
+				Description: "",
 				Required:    false,
 				Optional:    true,
 				Computed:    true,
@@ -226,30 +211,21 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc ServiceGroupDataSourceTfid
-	loc.Name = *savestate.Name.ValueStringPointer()
+
+	var location group.Location
 
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		loc.Location.Shared = true
+		location.Shared = true
 	}
 	if savestate.Location.Vsys != nil {
-		loc.Location.Vsys = &group.VsysLocation{
+		location.Vsys = &group.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if !savestate.Location.FromPanoramaShared.IsNull() && savestate.Location.FromPanoramaShared.ValueBool() {
-		loc.Location.FromPanoramaShared = true
-	}
-	if savestate.Location.FromPanoramaVsys != nil {
-		loc.Location.FromPanoramaVsys = &group.FromPanoramaVsysLocation{
-
-			Vsys: savestate.Location.FromPanoramaVsys.Vsys.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
-		loc.Location.DeviceGroup = &group.DeviceGroupLocation{
+		location.DeviceGroup = &group.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
@@ -260,13 +236,12 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_service_group_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
 		} else {
@@ -285,10 +260,6 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -303,6 +274,11 @@ var (
 )
 
 func NewServiceGroupResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_service_group"]; !found {
+		resourceFuncMap["panos_service_group"] = resourceFuncs{
+			CreateImportId: ServiceGroupImportStateCreator,
+		}
+	}
 	return &ServiceGroupResource{}
 }
 
@@ -310,29 +286,17 @@ type ServiceGroupResource struct {
 	client  *pango.Client
 	manager *sdkmanager.EntryObjectManager[*group.Entry, group.Location, *group.Service]
 }
-type ServiceGroupResourceTfid struct {
-	Name     string         `json:"name"`
-	Location group.Location `json:"location"`
-}
-
-func (o *ServiceGroupResourceTfid) IsValid() error {
-	if o.Name == "" {
-		return fmt.Errorf("name is unspecified")
-	}
-	return o.Location.IsValid()
-}
 
 func ServiceGroupResourceLocationSchema() rsschema.Attribute {
 	return ServiceGroupLocationSchema()
 }
 
 type ServiceGroupResourceModel struct {
-	Tfid        types.String         `tfsdk:"tfid"`
-	Location    ServiceGroupLocation `tfsdk:"location"`
-	Name        types.String         `tfsdk:"name"`
-	Description types.String         `tfsdk:"description"`
-	Members     types.List           `tfsdk:"members"`
-	Tags        types.List           `tfsdk:"tags"`
+	Location        ServiceGroupLocation `tfsdk:"location"`
+	Name            types.String         `tfsdk:"name"`
+	DisableOverride types.String         `tfsdk:"disable_override"`
+	Members         types.List           `tfsdk:"members"`
+	Tags            types.List           `tfsdk:"tags"`
 }
 
 func (r *ServiceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -350,32 +314,31 @@ func ServiceGroupResourceSchema() rsschema.Schema {
 
 			"location": ServiceGroupResourceLocationSchema(),
 
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
 			"name": rsschema.StringAttribute{
-				Description: "The name of the service.",
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"description": rsschema.StringAttribute{
-				Description: "The description.",
-				Computed:    false,
+			"disable_override": rsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"no",
+					}...),
+				},
 			},
 
 			"members": rsschema.ListAttribute{
-				Description: "Service group members.",
+				Description: "",
 				Required:    false,
 				Optional:    true,
 				Computed:    false,
@@ -384,7 +347,7 @@ func ServiceGroupResourceSchema() rsschema.Schema {
 			},
 
 			"tags": rsschema.ListAttribute{
-				Description: "The administrative tags.",
+				Description: "",
 				Required:    false,
 				Optional:    true,
 				Computed:    false,
@@ -436,6 +399,7 @@ func (r *ServiceGroupResource) Configure(ctx context.Context, req resource.Confi
 
 func (o *ServiceGroupResourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	members_pango_entries := make([]string, 0)
 	diags.Append(o.Members.ElementsAs(ctx, &members_pango_entries, false)...)
 	if diags.HasError() {
@@ -446,41 +410,41 @@ func (o *ServiceGroupResourceModel) CopyToPango(ctx context.Context, obj **group
 	if diags.HasError() {
 		return diags
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(group.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).DisableOverride = disableOverride_value
 	(*obj).Members = members_pango_entries
-	(*obj).Tags = tags_pango_entries
-	(*obj).Description = description_value
+	(*obj).Tag = tags_pango_entries
 
 	return diags
 }
 
 func (o *ServiceGroupResourceModel) CopyFromPango(ctx context.Context, obj *group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+		diags.Append(list_diags...)
+	}
 	var members_list types.List
 	{
 		var list_diags diag.Diagnostics
 		members_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Members)
 		diags.Append(list_diags...)
 	}
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
-		diags.Append(list_diags...)
-	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
+
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-	o.Members = members_list
 	o.Tags = tags_list
+	o.DisableOverride = disableOverride_value
+	o.Members = members_list
 
 	return diags
 }
@@ -506,38 +470,28 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Determine the location.
-	loc := ServiceGroupResourceTfid{Name: state.Name.ValueString()}
 
-	// TODO: this needs to handle location structure for UUID style shared has nested structure type
+	var location group.Location
 
-	if !state.Location.FromPanoramaShared.IsNull() && state.Location.FromPanoramaShared.ValueBool() {
-		loc.Location.FromPanoramaShared = true
-	}
-	if state.Location.FromPanoramaVsys != nil {
-		loc.Location.FromPanoramaVsys = &group.FromPanoramaVsysLocation{
-
-			Vsys: state.Location.FromPanoramaVsys.Vsys.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		loc.Location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		loc.Location.Shared = true
+		location.Shared = true
 	}
 	if state.Location.Vsys != nil {
-		loc.Location.Vsys = &group.VsysLocation{
+		location.Vsys = &group.VsysLocation{
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
 
-	if err := loc.IsValid(); err != nil {
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+
+	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
 		return
 	}
@@ -557,21 +511,11 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, loc.Location, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
-
-	// Tfid handling.
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating tfid", err.Error())
-		return
-	}
-
-	// Save the state.
-	state.Tfid = types.StringValue(tfid)
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -590,24 +534,37 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var loc ServiceGroupResourceTfid
-	// Parse the location from tfid.
-	if err := DecodeLocation(savestate.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+
+	var location group.Location
+
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &group.VsysLocation{
+
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_service_group_resource",
 		"function":      "Read",
-		"name":          loc.Name,
+		"name":          savestate.Name.ValueString(),
 	})
 
 	// Perform the operation.
-	object, err := o.manager.Read(ctx, loc.Location, loc.Name)
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
-		tflog.Warn(ctx, "KK: HERE3-1", map[string]any{"Error": err.Error()})
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
 		} else {
@@ -626,10 +583,6 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 	*/
 
 	state.Location = savestate.Location
-	// Save tfid to state.
-	state.Tfid = savestate.Tfid
-
-	// Save the answer to state.
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -645,17 +598,30 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	var loc ServiceGroupResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("Error parsing tfid", err.Error())
-		return
+	var location group.Location
+
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &group.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
 		"resource_name": "panos_service_group_resource",
 		"function":      "Update",
-		"tfid":          state.Tfid.ValueString(),
 	})
 
 	// Verify mode.
@@ -663,7 +629,7 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, loc.Location, loc.Name)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -675,7 +641,7 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Perform the operation.
-	updated, err := r.manager.Update(ctx, loc.Location, obj, loc.Name)
+	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -688,15 +654,6 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
-
-	// Save the tfid.
-	loc.Name = obj.Name
-	tfid, err := EncodeLocation(&loc)
-	if err != nil {
-		resp.Diagnostics.AddError("error creating tfid", err.Error())
-		return
-	}
-	state.Tfid = types.StringValue(tfid)
 
 	copy_diags := state.CopyFromPango(ctx, updated, nil)
 	resp.Diagnostics.Append(copy_diags...)
@@ -717,18 +674,11 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 		return
 	}
 
-	// Parse the location from tfid.
-	var loc ServiceGroupResourceTfid
-	if err := DecodeLocation(state.Tfid.ValueString(), &loc); err != nil {
-		resp.Diagnostics.AddError("error parsing tfid", err.Error())
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
 		"resource_name": "panos_service_group_resource",
 		"function":      "Delete",
-		"name":          loc.Name,
+		"name":          state.Name.ValueString(),
 	})
 
 	// Verify mode.
@@ -736,34 +686,111 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	err := r.manager.Delete(ctx, loc.Location, []string{loc.Name})
+
+	var location group.Location
+
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &group.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+
+	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
 
 }
 
+type ServiceGroupImportState struct {
+	Location ServiceGroupLocation `json:"location"`
+	Name     string               `json:"name"`
+}
+
+func ServiceGroupImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location ServiceGroupLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	nameAttr, ok := attrs["name"]
+	if !ok {
+		return nil, fmt.Errorf("name attribute missing")
+	}
+
+	var name string
+	switch value := nameAttr.(type) {
+	case types.String:
+		name = value.ValueString()
+	default:
+		return nil, fmt.Errorf("name attribute expected to be a string")
+	}
+
+	importStruct := ServiceGroupImportState{
+		Location: location,
+		Name:     name,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *ServiceGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
+	var obj ServiceGroupImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
+
 }
 
 type ServiceGroupVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
-type ServiceGroupFromPanoramaVsysLocation struct {
-	Vsys types.String `tfsdk:"vsys"`
-}
 type ServiceGroupDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type ServiceGroupLocation struct {
-	Shared             types.Bool                            `tfsdk:"shared"`
-	Vsys               *ServiceGroupVsysLocation             `tfsdk:"vsys"`
-	FromPanoramaShared types.Bool                            `tfsdk:"from_panorama_shared"`
-	FromPanoramaVsys   *ServiceGroupFromPanoramaVsysLocation `tfsdk:"from_panorama_vsys"`
-	DeviceGroup        *ServiceGroupDeviceGroupLocation      `tfsdk:"device_group"`
+	Shared      types.Bool                       `tfsdk:"shared"`
+	Vsys        *ServiceGroupVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *ServiceGroupDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func ServiceGroupLocationSchema() rsschema.Attribute {
@@ -771,12 +798,36 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"from_panorama_vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys in the config pushed from Panorama.",
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
+					}...),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"vsys": rsschema.StringAttribute{
-						Description: "The vsys.",
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
@@ -788,23 +839,13 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("from_panorama_shared"),
-						path.MatchRelative().AtParent().AtName("from_panorama_vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
-				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific device group.",
+				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Panorama device name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -813,7 +854,7 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The device group.",
+						Description: "Device Group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -826,47 +867,92 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"shared": rsschema.BoolAttribute{
-				Description: "Located in shared.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-			},
-			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys.",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The vsys.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"from_panorama_shared": rsschema.BoolAttribute{
-				Description: "Located in shared in the config pushed from Panorama.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-			},
 		},
 	}
+}
+
+func (o ServiceGroupVsysLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceGroupVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
+func (o ServiceGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
+func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Shared      *bool                            `json:"shared"`
+		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
+	}{
+		Shared:      o.Shared.ValueBoolPointer(),
+		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Shared      *bool                            `json:"shared"`
+		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
+
+	return nil
 }

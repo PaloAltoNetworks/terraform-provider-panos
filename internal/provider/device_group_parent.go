@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -13,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
@@ -51,7 +51,6 @@ type DeviceGroupParentDataSourceFilter struct {
 }
 
 type DeviceGroupParentDataSourceModel struct {
-	Tfid        types.String              `tfsdk:"tfid"`
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
 	DeviceGroup types.String              `tfsdk:"device_group"`
 	Parent      types.String              `tfsdk:"parent"`
@@ -62,14 +61,6 @@ func DeviceGroupParentDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": DeviceGroupParentDataSourceLocationSchema(),
-
-			"tfid": dsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"device_group": dsschema.StringAttribute{
 				Description: "The device group whose parent is being set",
@@ -181,7 +172,6 @@ func DeviceGroupParentResourceLocationSchema() rsschema.Attribute {
 }
 
 type DeviceGroupParentResourceModel struct {
-	Tfid        types.String              `tfsdk:"tfid"`
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
 	DeviceGroup types.String              `tfsdk:"device_group"`
 	Parent      types.String              `tfsdk:"parent"`
@@ -201,14 +191,6 @@ func DeviceGroupParentResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": DeviceGroupParentResourceLocationSchema(),
-
-			"tfid": rsschema.StringAttribute{
-				Description: "The Terraform ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    false,
-				Sensitive:   false,
-			},
 
 			"device_group": rsschema.StringAttribute{
 				Description: "The device group whose parent is being set",
@@ -277,7 +259,6 @@ func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
-	state.Tfid = types.StringValue("")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
@@ -327,7 +308,6 @@ func (r *DeviceGroupParentResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	state.Tfid = types.StringValue("")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
@@ -364,7 +344,7 @@ func (r *DeviceGroupParentResource) Delete(ctx context.Context, req resource.Del
 }
 
 func (r *DeviceGroupParentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("tfid"), req, resp)
+
 }
 
 type DeviceGroupParentPanoramaLocation struct {
@@ -399,6 +379,53 @@ func DeviceGroupParentLocationSchema() rsschema.Attribute {
 			},
 		},
 	}
+}
+
+func (o DeviceGroupParentPanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DeviceGroupParentPanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+
+	return nil
+}
+func (o DeviceGroupParentLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama"`
+	}{
+		Panorama: o.Panorama,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DeviceGroupParentLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Panorama = shadow.Panorama
+
+	return nil
 }
 
 var _ = tflog.Warn

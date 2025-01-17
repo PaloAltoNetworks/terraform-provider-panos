@@ -160,7 +160,7 @@ var _ = Describe("Server", func() {
 				manager = sdkmanager.NewUuidObjectManager(client, service, MockUuidSpecifier, MockUuidMatcher)
 
 			})
-			FIt("should move the entries in order", func() {
+			It("should move the entries in order", func() {
 				entries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}, {Name: "2", Value: "B"}}
 
 				processed, err := manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
@@ -173,7 +173,7 @@ var _ = Describe("Server", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
 
-				Expect(processed).NotTo(Equal(entries))
+				Expect(processed).To(Equal(entries))
 			})
 		})
 	})

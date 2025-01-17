@@ -313,13 +313,13 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 		}
 	}
 
-	for name, elt := range planEntriesByName {
-		path, err := location.XpathWithEntryName(o.client.Versioning(), name)
+	for _, elt := range planEntries {
+		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.EntryName())
 		if err != nil {
 			return nil, ErrMarshaling
 		}
 
-		xmlEntry, err := o.specifier(elt.Entry)
+		xmlEntry, err := o.specifier(elt)
 		if err != nil {
 			diags.AddError("Failed to transform entry into XML document", err.Error())
 			return nil, ErrMarshaling
