@@ -28,10 +28,6 @@ description: |-
 - `templates` (List of String) List of templates
 - `user_group_source` (Attributes) (see [below for nested schema](#nestedatt--user_group_source))
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 

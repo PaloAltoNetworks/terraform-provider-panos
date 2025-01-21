@@ -27,6 +27,8 @@ Terraform provider to interact with Palo Alto Networks PAN-OS.
 - `password` (String, Sensitive) The password.  This is required if the api_key is not configured. Environment variable: `PANOS_PASSWORD`. JSON config file variable: `password`.
 - `port` (Number) If the port is non-standard for the protocol, the port number to use. Environment variable: `PANOS_PORT`. JSON config file variable: `port`.
 - `protocol` (String) The protocol (https or http). Default: `https`. Environment variable: `PANOS_PROTOCOL`. JSON config file variable: `protocol`.
+- `sdk_log_categories` (String) Log categories to configure for the PAN-OS SDK library Environment variable: `PANOS_LOG_CATEGORIES`. JSON config file variable: `sdk_log_categories`.
+- `sdk_log_level` (String) SDK logging Level for categories Default: `INFO`. Environment variable: `PANOS_LOG_LEVEL`. JSON config file variable: `sdk_log_level`.
 - `skip_verify_certificate` (Boolean) (For https protocol) Skip verifying the HTTPS certificate. Environment variable: `PANOS_SKIP_VERIFY_CERTIFICATE`. JSON config file variable: `skip_verify_certificate`.
 - `target` (String) Target setting (NGFW serial number). Environment variable: `PANOS_TARGET`. JSON config file variable: `target`.
 - `username` (String) The username.  This is required if api_key is not configured. Environment variable: `PANOS_USERNAME`. JSON config file variable: `username`.

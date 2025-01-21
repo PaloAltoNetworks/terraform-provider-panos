@@ -26,7 +26,6 @@ description: |-
 ### Read-Only
 
 - `encrypted_values` (Map of String, Sensitive)
-- `tfid` (String) The Terraform ID.
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
@@ -79,41 +78,60 @@ Optional:
 
 Optional:
 
-- `authentication_type` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type))
 - `ntp_server_address` (String) NTP Server IP Address or Domain Name
+
+Read-Only:
+
+- `authentication_type` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type))
 
 <a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type"></a>
 ### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type`
 
 Optional:
 
-- `autokey` (String) Autokey Authentication
-- `none` (String) No NTP Authentication
+- `autokey` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--autokey))
+- `none` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--none))
 - `symmetric_key` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key))
+
+<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--autokey"></a>
+### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.autokey`
+
+
+<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--none"></a>
+### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.none`
+
 
 <a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key"></a>
 ### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key`
 
 Optional:
 
+- `algorithm` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm))
 - `key_id` (Number) Symmetric Key Number
-- `md5` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--md5))
-- `sha1` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--sha1))
 
-<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--md5"></a>
-### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key.md5`
+<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm"></a>
+### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key.algorithm`
+
+Optional:
+
+- `md5` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm--md5))
+- `sha1` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm--sha1))
+
+<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm--md5"></a>
+### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key.algorithm.md5`
 
 Optional:
 
 - `authentication_key` (String, Sensitive) Symmetric Key MD5 String
 
 
-<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--sha1"></a>
-### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key.sha1`
+<a id="nestedatt--ntp_servers--primary_ntp_server--authentication_type--symmetric_key--algorithm--sha1"></a>
+### Nested Schema for `ntp_servers.primary_ntp_server.authentication_type.symmetric_key.algorithm.sha1`
 
 Optional:
 
 - `authentication_key` (String, Sensitive) Symmetric Key SHA1 Hexadecimal
+
 
 
 
@@ -132,30 +150,45 @@ Optional:
 
 Optional:
 
-- `autokey` (String) Autokey Authentication
-- `none` (String) No NTP Authentication
+- `autokey` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--autokey))
+- `none` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--none))
 - `symmetric_key` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key))
+
+<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--autokey"></a>
+### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.autokey`
+
+
+<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--none"></a>
+### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.none`
+
 
 <a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key"></a>
 ### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key`
 
 Optional:
 
+- `algorithm` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm))
 - `key_id` (Number) Symmetric Key Number
-- `md5` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--md5))
-- `sha1` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--sha1))
 
-<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--md5"></a>
-### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key.md5`
+<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm"></a>
+### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key.algorithm`
 
 Optional:
 
-- `authentication_key` (String) Symmetric Key MD5 String
+- `md5` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm--md5))
+- `sha1` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm--sha1))
 
-
-<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--sha1"></a>
-### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key.sha1`
+<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm--md5"></a>
+### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key.algorithm.md5`
 
 Optional:
 
-- `authentication_key` (String) Symmetric Key SHA1 Hexadecimal
+- `authentication_key` (String, Sensitive) Symmetric Key MD5 String
+
+
+<a id="nestedatt--ntp_servers--secondary_ntp_server--authentication_type--symmetric_key--algorithm--sha1"></a>
+### Nested Schema for `ntp_servers.secondary_ntp_server.authentication_type.symmetric_key.algorithm.sha1`
+
+Optional:
+
+- `authentication_key` (String, Sensitive) Symmetric Key SHA1 Hexadecimal

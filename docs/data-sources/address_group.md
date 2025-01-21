@@ -18,45 +18,32 @@ description: |-
 ### Required
 
 - `location` (Attributes) The location of this object. (see [below for nested schema](#nestedatt--location))
-- `name` (String) The name of the address group.
+- `name` (String)
 
 ### Optional
 
-- `description` (String) The description.
-- `dynamic` (String)
+- `description` (String)
+- `disable_override` (String) disable object override in child device groups
+- `dynamic` (Attributes) (see [below for nested schema](#nestedatt--dynamic))
 - `static` (List of String)
-- `tags` (List of String) The administrative tags.
-
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
+- `tag` (List of String)
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
-- `device_group` (Attributes) Located in a specific device group. (see [below for nested schema](#nestedatt--location--device_group))
-- `from_panorama_shared` (Boolean) Located in shared in the config pushed from Panorama.
-- `from_panorama_vsys` (Attributes) Located in a specific vsys in the config pushed from Panorama. (see [below for nested schema](#nestedatt--location--from_panorama_vsys))
-- `shared` (Boolean) Located in shared.
-- `vsys` (Attributes) Located in a specific vsys. (see [below for nested schema](#nestedatt--location--vsys))
+- `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
+- `shared` (Boolean) Location in Shared Panorama
+- `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
 
 Optional:
 
-- `name` (String) The device group.
-- `panorama_device` (String) The panorama device.
-
-
-<a id="nestedatt--location--from_panorama_vsys"></a>
-### Nested Schema for `location.from_panorama_vsys`
-
-Optional:
-
-- `vsys` (String) The vsys.
+- `name` (String) Device Group name
+- `panorama_device` (String) Panorama device name
 
 
 <a id="nestedatt--location--vsys"></a>
@@ -64,5 +51,14 @@ Optional:
 
 Optional:
 
-- `name` (String) The vsys.
-- `ngfw_device` (String) The NGFW device.
+- `name` (String) The Virtual System name
+- `ngfw_device` (String) The NGFW device name
+
+
+
+<a id="nestedatt--dynamic"></a>
+### Nested Schema for `dynamic`
+
+Optional:
+
+- `filter` (String) tag-based filter

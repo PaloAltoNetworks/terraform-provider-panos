@@ -24,10 +24,6 @@ description: |-
 - `device_group` (String) The device group whose parent is being set
 - `parent` (String) The parent device group. Leaving it empty moves 'device-group' under 'shared'.
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 

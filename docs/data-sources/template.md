@@ -24,10 +24,6 @@ description: |-
 
 - `description` (String) The description.
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 

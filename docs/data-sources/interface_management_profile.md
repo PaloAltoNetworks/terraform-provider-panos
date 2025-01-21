@@ -18,14 +18,14 @@ description: |-
 ### Required
 
 - `location` (Attributes) The location of this object. (see [below for nested schema](#nestedatt--location))
-- `name` (String) The name of the interface management profile.
+- `name` (String)
 
 ### Optional
 
 - `http` (Boolean)
 - `http_ocsp` (Boolean)
 - `https` (Boolean)
-- `permitted_ips` (List of String)
+- `permitted_ips` (Attributes List) (see [below for nested schema](#nestedatt--permitted_ips))
 - `ping` (Boolean)
 - `response_pages` (Boolean)
 - `snmp` (Boolean)
@@ -35,25 +35,21 @@ description: |-
 - `userid_syslog_listener_ssl` (Boolean)
 - `userid_syslog_listener_udp` (Boolean)
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
-- `ngfw` (Attributes) Located in a specific NGFW. (see [below for nested schema](#nestedatt--location--ngfw))
-- `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
+- `ngfw` (Attributes) Located in a specific NGFW device (see [below for nested schema](#nestedatt--location--ngfw))
+- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
 
 <a id="nestedatt--location--ngfw"></a>
 ### Nested Schema for `location.ngfw`
 
 Optional:
 
-- `ngfw_device` (String) The NGFW device.
+- `ngfw_device` (String) The NGFW device
 
 
 <a id="nestedatt--location--template"></a>
@@ -61,9 +57,9 @@ Optional:
 
 Optional:
 
-- `name` (String) The template.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--template_stack"></a>
@@ -71,6 +67,15 @@ Optional:
 
 Optional:
 
-- `name` (String) The template stack.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template stack
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
+
+
+
+<a id="nestedatt--permitted_ips"></a>
+### Nested Schema for `permitted_ips`
+
+Required:
+
+- `name` (String)

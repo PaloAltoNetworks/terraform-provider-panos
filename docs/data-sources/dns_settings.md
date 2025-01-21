@@ -21,12 +21,8 @@ description: |-
 
 ### Optional
 
-- `dns_setting` (Attributes) (see [below for nested schema](#nestedatt--dns_setting))
+- `dns_settings` (Attributes) (see [below for nested schema](#nestedatt--dns_settings))
 - `fqdn_refresh_time` (Number) Seconds for Periodic Timer to refresh expired FQDN object entries
-
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
@@ -66,15 +62,15 @@ Optional:
 
 
 
-<a id="nestedatt--dns_setting"></a>
-### Nested Schema for `dns_setting`
+<a id="nestedatt--dns_settings"></a>
+### Nested Schema for `dns_settings`
 
 Optional:
 
-- `servers` (Attributes) (see [below for nested schema](#nestedatt--dns_setting--servers))
+- `servers` (Attributes) (see [below for nested schema](#nestedatt--dns_settings--servers))
 
-<a id="nestedatt--dns_setting--servers"></a>
-### Nested Schema for `dns_setting.servers`
+<a id="nestedatt--dns_settings--servers"></a>
+### Nested Schema for `dns_settings.servers`
 
 Optional:
 

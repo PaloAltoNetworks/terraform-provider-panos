@@ -18,38 +18,41 @@ description: |-
 ### Required
 
 - `location` (Attributes) The location of this object. (see [below for nested schema](#nestedatt--location))
-- `name` (String) The name of the ethernet interface.
+- `name` (String)
 
 ### Optional
 
+- `aggregate_group` (String) Aggregate interface group
 - `comment` (String)
+- `decrypt_mirror` (Attributes) (see [below for nested schema](#nestedatt--decrypt_mirror))
 - `ha` (Attributes) (see [below for nested schema](#nestedatt--ha))
+- `lacp` (Attributes) (see [below for nested schema](#nestedatt--lacp))
+- `layer2` (Attributes) (see [below for nested schema](#nestedatt--layer2))
 - `layer3` (Attributes) (see [below for nested schema](#nestedatt--layer3))
 - `link_duplex` (String) Interface link duplex
 - `link_speed` (String) Interface link speed
-- `link_state` (String)
+- `link_state` (String) Interface link state
+- `log_card` (Attributes) (see [below for nested schema](#nestedatt--log_card))
 - `poe` (Attributes) (see [below for nested schema](#nestedatt--poe))
 - `tap` (Attributes) (see [below for nested schema](#nestedatt--tap))
-
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
+- `virtual_wire` (Attributes) (see [below for nested schema](#nestedatt--virtual_wire))
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
-- `ngfw` (Attributes) Located in a specific NGFW. (see [below for nested schema](#nestedatt--location--ngfw))
-- `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
+- `ngfw` (Attributes) Located in a specific NGFW device (see [below for nested schema](#nestedatt--location--ngfw))
+- `shared` (Boolean) Location in Shared Panorama
+- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
 
 <a id="nestedatt--location--ngfw"></a>
 ### Nested Schema for `location.ngfw`
 
 Optional:
 
-- `ngfw_device` (String) The NGFW device.
+- `ngfw_device` (String) The NGFW device
 
 
 <a id="nestedatt--location--template"></a>
@@ -61,9 +64,9 @@ Required:
 
 Optional:
 
-- `name` (String) The template.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--template_stack"></a>
@@ -71,14 +74,53 @@ Optional:
 
 Optional:
 
-- `name` (String) The template stack.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template stack
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
+
+
+<a id="nestedatt--decrypt_mirror"></a>
+### Nested Schema for `decrypt_mirror`
 
 
 <a id="nestedatt--ha"></a>
 ### Nested Schema for `ha`
+
+
+<a id="nestedatt--lacp"></a>
+### Nested Schema for `lacp`
+
+Optional:
+
+- `port_priority` (Number) port priority in LACP
+
+
+<a id="nestedatt--layer2"></a>
+### Nested Schema for `layer2`
+
+Optional:
+
+- `lldp` (Attributes) (see [below for nested schema](#nestedatt--layer2--lldp))
+- `netflow_profile` (String) Netflow Server Profile
+
+<a id="nestedatt--layer2--lldp"></a>
+### Nested Schema for `layer2.lldp`
+
+Optional:
+
+- `enable` (Boolean)
+- `high_availability` (Attributes) (see [below for nested schema](#nestedatt--layer2--lldp--high_availability))
+- `profile` (String) LLDP profile
+
+<a id="nestedatt--layer2--lldp--high_availability"></a>
+### Nested Schema for `layer2.lldp.high_availability`
+
+Optional:
+
+- `passive_pre_negotiation` (Boolean) Enable LLDP pre-negotiation in HA passive state
+
+
 
 
 <a id="nestedatt--layer3"></a>
@@ -89,15 +131,21 @@ Optional:
 - `adjust_tcp_mss` (Attributes) (see [below for nested schema](#nestedatt--layer3--adjust_tcp_mss))
 - `arp` (Attributes List) ARP configuration (see [below for nested schema](#nestedatt--layer3--arp))
 - `bonjour` (Attributes) (see [below for nested schema](#nestedatt--layer3--bonjour))
+- `cluster_interconnect` (Boolean)
+- `ddns_config` (Attributes) (see [below for nested schema](#nestedatt--layer3--ddns_config))
+- `decrypt_forward` (Boolean)
+- `df_ignore` (Boolean)
 - `dhcp_client` (Attributes) (see [below for nested schema](#nestedatt--layer3--dhcp_client))
-- `interface_management_profile` (String)
-- `ips` (Attributes List) IP addresses or address objects names (see [below for nested schema](#nestedatt--layer3--ips))
+- `interface_management_profile` (String) Interface management profile
+- `ips` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ips))
 - `ipv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6))
 - `lldp` (Attributes) (see [below for nested schema](#nestedatt--layer3--lldp))
 - `mtu` (Number) Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise
-- `ndp_proxy` (Boolean)
-- `netflow_profile` (String)
+- `ndp_proxy` (Attributes) (see [below for nested schema](#nestedatt--layer3--ndp_proxy))
+- `netflow_profile` (String) Netflow Server Profile
+- `pppoe` (Attributes) (see [below for nested schema](#nestedatt--layer3--pppoe))
 - `sdwan_link_settings` (Attributes) (see [below for nested schema](#nestedatt--layer3--sdwan_link_settings))
+- `traffic_interconnect` (Boolean)
 - `untagged_sub_interface` (Boolean) Enable untagged sub-interface
 
 <a id="nestedatt--layer3--adjust_tcp_mss"></a>
@@ -105,9 +153,9 @@ Optional:
 
 Optional:
 
-- `enable` (Boolean)
-- `ipv4_mss_adjustment` (Number)
-- `ipv6_mss_adjustment` (Number)
+- `enable` (Boolean) Set if TCP MSS value should be reduced based on mtu
+- `ipv4_mss_adjustment` (Number) IPv4 MSS adjustment size (in bytes)
+- `ipv6_mss_adjustment` (Number) IPv6 MSS adjustment size (in bytes)
 
 
 <a id="nestedatt--layer3--arp"></a>
@@ -128,6 +176,35 @@ Optional:
 Optional:
 
 - `enable` (Boolean) Set to support Bonjour service
+- `group_id` (Number) default 0: NO-Group
+- `ttl_check` (Boolean) Set to check and update TTL
+
+
+<a id="nestedatt--layer3--ddns_config"></a>
+### Nested Schema for `layer3.ddns_config`
+
+Optional:
+
+- `ddns_cert_profile` (String)
+- `ddns_enabled` (Boolean)
+- `ddns_hostname` (String) ddns hostname variable or real address
+- `ddns_ip` (List of String)
+- `ddns_ipv6` (List of String)
+- `ddns_update_interval` (Number)
+- `ddns_vendor` (String) Vendor and product type
+- `ddns_vendor_config` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ddns_config--ddns_vendor_config))
+
+<a id="nestedatt--layer3--ddns_config--ddns_vendor_config"></a>
+### Nested Schema for `layer3.ddns_config.ddns_vendor_config`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `value` (String)
+
 
 
 <a id="nestedatt--layer3--dhcp_client"></a>
@@ -135,8 +212,8 @@ Optional:
 
 Optional:
 
-- `create_default_route` (Boolean)
-- `default_route_metric` (Number)
+- `create_default_route` (Boolean) Automatically create default route pointing to default gateway provided by server
+- `default_route_metric` (Number) Metric of the default route created
 - `enable` (Boolean)
 - `send_hostname` (Attributes) (see [below for nested schema](#nestedatt--layer3--dhcp_client--send_hostname))
 
@@ -146,7 +223,7 @@ Optional:
 Optional:
 
 - `enable` (Boolean)
-- `hostname` (String)
+- `hostname` (String) Set Interface Hostname
 
 
 
@@ -159,7 +236,7 @@ Required:
 
 Optional:
 
-- `sdwan_gateway` (String)
+- `sdwan_gateway` (String) Gateway IPv4 Address
 
 
 <a id="nestedatt--layer3--ipv6"></a>
@@ -168,8 +245,9 @@ Optional:
 Optional:
 
 - `addresses` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--addresses))
-- `dns_server` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server))
-- `enabled` (Boolean)
+- `dhcp_client` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client))
+- `enabled` (Boolean) Enable IPv6 on the interface
+- `inherited` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited))
 - `interface_id` (String)
 - `neighbor_discovery` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--neighbor_discovery))
 
@@ -183,9 +261,9 @@ Required:
 Optional:
 
 - `advertise` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--addresses--advertise))
-- `anycast` (String) anycast address
+- `anycast` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--addresses--anycast))
 - `enable_on_interface` (Boolean) configure this address on interface
-- `prefix` (String) use this as prefix to form full address with interface id/EUI-64
+- `prefix` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--addresses--prefix))
 
 <a id="nestedatt--layer3--ipv6--addresses--advertise"></a>
 ### Nested Schema for `layer3.ipv6.addresses.advertise`
@@ -196,30 +274,116 @@ Optional:
 - `enable` (Boolean) enable advertising this prefix in router advertisements
 - `onlink_flag` (Boolean) Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages
 - `preferred_lifetime` (String) Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages
-- `valid_lifetime` (String) Valid Lifetime (in seconds) of the prefix adverised in Router Advertisement messages
+- `valid_lifetime` (String) Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages
+
+
+<a id="nestedatt--layer3--ipv6--addresses--anycast"></a>
+### Nested Schema for `layer3.ipv6.addresses.anycast`
+
+
+<a id="nestedatt--layer3--ipv6--addresses--prefix"></a>
+### Nested Schema for `layer3.ipv6.addresses.prefix`
 
 
 
-<a id="nestedatt--layer3--ipv6--dns_server"></a>
-### Nested Schema for `layer3.ipv6.dns_server`
+<a id="nestedatt--layer3--ipv6--dhcp_client"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client`
 
 Optional:
 
-- `dns_support` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--dns_support))
-- `enable` (Boolean)
-- `source` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--source))
+- `accept_ra_route` (Boolean) Accept Router Advertised Default Route
+- `default_route_metric` (Number) Metric of the default route created
+- `enable` (Boolean) Enable DHCPv6 Client
+- `neighbor_discovery` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery))
+- `preference` (String) Select Low/Medium/High
+- `prefix_delegation` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--prefix_delegation))
+- `v6_options` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--v6_options))
 
-<a id="nestedatt--layer3--ipv6--dns_server--dns_support"></a>
-### Nested Schema for `layer3.ipv6.dns_server.dns_support`
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery`
+
+Optional:
+
+- `dad_attempts` (Number) Number of consecutive neighbor solicitation messages sent for duplicate address detection
+- `dns_server` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server))
+- `dns_suffix` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix))
+- `enable_dad` (Boolean) Enable Duplicate ADdress Detection (DAD)
+- `enable_ndp_monitor` (Boolean) Enable NDP Monitoring
+- `neighbor` (Attributes List) Static entries in neighbor cache (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--neighbor))
+- `ns_interval` (Number) Interval (in seconds) between consecutive neighbor solicitation messages
+- `reachable_time` (Number) Time (in seconds) that the Reachable status for a neighbor can be maintained
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_server`
 
 Optional:
 
 - `enable` (Boolean)
-- `server` (Attributes List) DNS Recusrive Name Server (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--dns_support--server))
-- `suffix` (Attributes List) Domain Search List (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--dns_support--suffix))
+- `source` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source))
 
-<a id="nestedatt--layer3--ipv6--dns_server--dns_support--server"></a>
-### Nested Schema for `layer3.ipv6.dns_server.dns_support.server`
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_server.source`
+
+Optional:
+
+- `dhcpv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--dhcpv6))
+- `manual` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--manual))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--dhcpv6"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_server.source.dhcpv6`
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--manual"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_server.source.manual`
+
+Optional:
+
+- `server` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--manual--server))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_server--source--manual--server"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_server.source.manual.server`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `lifetime` (Number) (4-3600) Lifetime in Seconds
+
+
+
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_suffix`
+
+Optional:
+
+- `enable` (Boolean)
+- `source` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_suffix.source`
+
+Optional:
+
+- `dhcpv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--dhcpv6))
+- `manual` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--manual))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--dhcpv6"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_suffix.source.dhcpv6`
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--manual"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_suffix.source.manual`
+
+Optional:
+
+- `suffix` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--manual--suffix))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--dns_suffix--source--manual--suffix"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.dns_suffix.source.manual.suffix`
 
 Required:
 
@@ -230,8 +394,11 @@ Optional:
 - `lifetime` (Number) (4-3600) lifetime in seconds
 
 
-<a id="nestedatt--layer3--ipv6--dns_server--dns_support--suffix"></a>
-### Nested Schema for `layer3.ipv6.dns_server.dns_support.suffix`
+
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--neighbor_discovery--neighbor"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.neighbor_discovery.neighbor`
 
 Required:
 
@@ -239,35 +406,265 @@ Required:
 
 Optional:
 
-- `lifetime` (Number) (4-3600) lifetime in seconds
+- `hw_address` (String) MAC address (format xx:xx:xx:xx:xx:xx)
 
 
 
-<a id="nestedatt--layer3--ipv6--dns_server--source"></a>
-### Nested Schema for `layer3.ipv6.dns_server.source`
+<a id="nestedatt--layer3--ipv6--dhcp_client--prefix_delegation"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.prefix_delegation`
 
 Optional:
 
-- `dhcpv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--source--dhcpv6))
-- `manual` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--source--manual))
+- `enable` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable))
 
-<a id="nestedatt--layer3--ipv6--dns_server--source--dhcpv6"></a>
-### Nested Schema for `layer3.ipv6.dns_server.source.dhcpv6`
+<a id="nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.prefix_delegation.enable`
+
+Optional:
+
+- `no` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable--no))
+- `yes` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable--yes))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable--no"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.prefix_delegation.enable.no`
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--prefix_delegation--enable--yes"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.prefix_delegation.enable.yes`
+
+Optional:
+
+- `pfx_pool_name` (String) Configure unique Prefix Pool Name
+- `prefix_len` (Number) Hint DHCP Prefix Length (bits)
+- `prefix_len_hint` (Boolean) Send prefix length hint to server
+
+
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--v6_options"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.v6_options`
+
+Optional:
+
+- `duid_type` (String) Select DUID-LLT/DUID-LL
+- `enable` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--v6_options--enable))
+- `rapid_commit` (Boolean) Enable Rapid Commit
+- `support_srvr_reconfig` (Boolean) Enable DHCPv6 Server Re-Configuration Support
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--v6_options--enable"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.v6_options.enable`
+
+Optional:
+
+- `no` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--v6_options--enable--no))
+- `yes` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--dhcp_client--v6_options--enable--yes))
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--v6_options--enable--no"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.v6_options.enable.no`
+
+
+<a id="nestedatt--layer3--ipv6--dhcp_client--v6_options--enable--yes"></a>
+### Nested Schema for `layer3.ipv6.dhcp_client.v6_options.enable.yes`
+
+Optional:
+
+- `non_temp_addr` (Boolean) Request Non-Temporary Address Type
+- `temp_addr` (Boolean) Request Temporary Address Type
+
+
+
+
+
+<a id="nestedatt--layer3--ipv6--inherited"></a>
+### Nested Schema for `layer3.ipv6.inherited`
+
+Optional:
+
+- `assign_addr` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr))
+- `enable` (Boolean) Enable Inherited Interface
+- `neighbor_discovery` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery))
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `type` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type))
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type`
+
+Optional:
+
+- `gua` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--gua))
+- `ula` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--ula))
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--gua"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.gua`
+
+Optional:
+
+- `advertise` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--advertise))
+- `enable_on_interface` (Boolean) Enable on Interface
+- `pool_type` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type))
+- `prefix_pool` (String) Prefix-Pool Name
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--advertise"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.gua.advertise`
+
+Optional:
+
+- `auto_config_flag` (Boolean) Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages
+- `enable` (Boolean) Enable advertising this prefix in router advertisements
+- `onlink_flag` (Boolean) Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages
+
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.gua.pool_type`
+
+Optional:
+
+- `dynamic` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type--dynamic))
+- `dynamic_id` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type--dynamic_id))
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type--dynamic"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.gua.pool_type.dynamic`
+
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--gua--pool_type--dynamic_id"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.gua.pool_type.dynamic_id`
+
+Optional:
+
+- `identifier` (Number) Range [0-4095] must be unqiue for this prefix-pool
+
+
+
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--ula"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.ula`
+
+Optional:
+
+- `addresses` (String) Configure ULA (Unique Local Address)
+- `advertise` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--assign_addr--type--ula--advertise))
+- `anycast` (Boolean) Anycast Address
+- `enable_on_interface` (Boolean) Configure this address on Interface
+- `prefix` (Boolean) Use this as prefix to form full address with interface id/EUI-64
+
+<a id="nestedatt--layer3--ipv6--inherited--assign_addr--type--ula--advertise"></a>
+### Nested Schema for `layer3.ipv6.inherited.assign_addr.type.ula.advertise`
+
+Optional:
+
+- `auto_config_flag` (Boolean) Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages
+- `enable` (Boolean) enable advertising this prefix in router advertisements
+- `onlink_flag` (Boolean) Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages
+- `preferred_lifetime` (String) Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages
+- `valid_lifetime` (String) Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages
+
+
+
+
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery`
+
+Optional:
+
+- `dad_attempts` (Number) Number of consecutive neighbor solicitation messages sent for duplicate address detection
+- `dns_server` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server))
+- `dns_suffix` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix))
+- `enable_dad` (Boolean) Enable Duplicate ADdress Detection (DAD)
+- `enable_ndp_monitor` (Boolean) Enable NDP Monitoring
+- `neighbor` (Attributes List) Static entries in neighbor cache (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--neighbor))
+- `ns_interval` (Number) Interval (in seconds) between consecutive neighbor solicitation messages
+- `reachable_time` (Number) Time (in seconds) that the Reachable status for a neighbor can be maintained
+- `router_advertisement` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--router_advertisement))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_server`
+
+Optional:
+
+- `enable` (Boolean)
+- `source` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_server.source`
+
+Optional:
+
+- `dhcpv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--dhcpv6))
+- `manual` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--manual))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--dhcpv6"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_server.source.dhcpv6`
 
 Optional:
 
 - `prefix_pool` (String) Prefix-Pool Name
 
 
-<a id="nestedatt--layer3--ipv6--dns_server--source--manual"></a>
-### Nested Schema for `layer3.ipv6.dns_server.source.manual`
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--manual"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_server.source.manual`
 
 Optional:
 
-- `suffix` (Attributes List) DNS suffixes (see [below for nested schema](#nestedatt--layer3--ipv6--dns_server--source--manual--suffix))
+- `server` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--manual--server))
 
-<a id="nestedatt--layer3--ipv6--dns_server--source--manual--suffix"></a>
-### Nested Schema for `layer3.ipv6.dns_server.source.manual.suffix`
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_server--source--manual--server"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_server.source.manual.server`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `lifetime` (Number) (4-3600) Lifetime in Seconds
+
+
+
+
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_suffix`
+
+Optional:
+
+- `enable` (Boolean)
+- `source` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_suffix.source`
+
+Optional:
+
+- `dhcpv6` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--dhcpv6))
+- `manual` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--manual))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--dhcpv6"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_suffix.source.dhcpv6`
+
+Optional:
+
+- `prefix_pool` (String) Prefix-Pool Name
+
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--manual"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_suffix.source.manual`
+
+Optional:
+
+- `suffix` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--manual--suffix))
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--dns_suffix--source--manual--suffix"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.dns_suffix.source.manual.suffix`
 
 Required:
 
@@ -277,6 +674,39 @@ Optional:
 
 - `lifetime` (Number) (4-3600) lifetime in seconds
 
+
+
+
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--neighbor"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.neighbor`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `hw_address` (String) MAC address (format xx:xx:xx:xx:xx:xx)
+
+
+<a id="nestedatt--layer3--ipv6--inherited--neighbor_discovery--router_advertisement"></a>
+### Nested Schema for `layer3.ipv6.inherited.neighbor_discovery.router_advertisement`
+
+Optional:
+
+- `enable` (Boolean)
+- `enable_consistency_check` (Boolean) check consistency of RA messages from other routers.
+- `hop_limit` (String) Current Hop Limit advertised in Router Advertisement messages
+- `lifetime` (Number) Router Lifetime (in seconds) advertised in Router Advertisement messages
+- `link_mtu` (String) value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise
+- `managed_flag` (Boolean) Set the Managed Configuration Flag (M-bit) in Router Advertisement messages
+- `max_interval` (Number) Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages
+- `min_interval` (Number) Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages
+- `other_flag` (Boolean) Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages
+- `reachable_time` (String) Reachable Time (in milliseconds) advertised in Router Advertisement messages
+- `retransmission_timer` (String) Retransmission Timer (in milliseconds) advertised in Router Advertisement messages
+- `router_preference` (String) Router Preference
 
 
 
@@ -311,6 +741,7 @@ Optional:
 
 Optional:
 
+- `dns_support` (Attributes) (see [below for nested schema](#nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support))
 - `enable` (Boolean)
 - `enable_consistency_check` (Boolean) check consistency of RA messages from other routers.
 - `hop_limit` (String) Current Hop Limit advertised in Router Advertisement messages
@@ -324,6 +755,40 @@ Optional:
 - `retransmission_timer` (String) Retransmission Timer (in milliseconds) advertised in Router Advertisement messages
 - `router_preference` (String) Router Preference
 
+<a id="nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support"></a>
+### Nested Schema for `layer3.ipv6.neighbor_discovery.router_advertisement.dns_support`
+
+Optional:
+
+- `enable` (Boolean)
+- `server` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support--server))
+- `suffix` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support--suffix))
+
+<a id="nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support--server"></a>
+### Nested Schema for `layer3.ipv6.neighbor_discovery.router_advertisement.dns_support.server`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `lifetime` (Number) Router Lifetime (in seconds) advertised in Router Advertisement messages
+
+
+<a id="nestedatt--layer3--ipv6--neighbor_discovery--router_advertisement--dns_support--suffix"></a>
+### Nested Schema for `layer3.ipv6.neighbor_discovery.router_advertisement.dns_support.suffix`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `lifetime` (Number) Router Lifetime (in seconds) advertised in Router Advertisement messages
+
+
+
 
 
 
@@ -333,7 +798,70 @@ Optional:
 Optional:
 
 - `enable` (Boolean)
-- `profile` (String)
+- `high_availability` (Attributes) (see [below for nested schema](#nestedatt--layer3--lldp--high_availability))
+- `profile` (String) LLDP profile
+
+<a id="nestedatt--layer3--lldp--high_availability"></a>
+### Nested Schema for `layer3.lldp.high_availability`
+
+Optional:
+
+- `passive_pre_negotiation` (Boolean) Enable LLDP pre-negotiation in HA passive state
+
+
+
+<a id="nestedatt--layer3--ndp_proxy"></a>
+### Nested Schema for `layer3.ndp_proxy`
+
+Optional:
+
+- `addresses` (Attributes List) (see [below for nested schema](#nestedatt--layer3--ndp_proxy--addresses))
+- `enabled` (Boolean) Enable proxy NDP on the interface
+
+<a id="nestedatt--layer3--ndp_proxy--addresses"></a>
+### Nested Schema for `layer3.ndp_proxy.addresses`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `negate` (Boolean) put the prefix or address on a block list
+
+
+
+<a id="nestedatt--layer3--pppoe"></a>
+### Nested Schema for `layer3.pppoe`
+
+Optional:
+
+- `access_concentrator` (String) desired access concentrator
+- `authentication` (String) authentication protocol
+- `create_default_route` (Boolean) automatically create default route pointing to peer
+- `default_route_metric` (Number) metric of the default route created
+- `enable` (Boolean)
+- `passive` (Attributes) (see [below for nested schema](#nestedatt--layer3--pppoe--passive))
+- `password` (String) password for ppp autentication
+- `service` (String) desired service
+- `static_address` (Attributes) (see [below for nested schema](#nestedatt--layer3--pppoe--static_address))
+- `username` (String) username for ppp authentication
+
+<a id="nestedatt--layer3--pppoe--passive"></a>
+### Nested Schema for `layer3.pppoe.passive`
+
+Optional:
+
+- `enable` (Boolean)
+
+
+<a id="nestedatt--layer3--pppoe--static_address"></a>
+### Nested Schema for `layer3.pppoe.static_address`
+
+Optional:
+
+- `ips` (String) static ip address
+
 
 
 <a id="nestedatt--layer3--sdwan_link_settings"></a>
@@ -341,8 +869,8 @@ Optional:
 
 Optional:
 
-- `enable` (Boolean)
-- `sdwan_interface_profile` (String)
+- `enable` (Boolean) Enable sdwan on this ethernet interface
+- `sdwan_interface_profile` (String) Sdwan link characteristics
 - `upstream_nat` (Attributes) (see [below for nested schema](#nestedatt--layer3--sdwan_link_settings--upstream_nat))
 
 <a id="nestedatt--layer3--sdwan_link_settings--upstream_nat"></a>
@@ -350,10 +878,36 @@ Optional:
 
 Optional:
 
-- `enable` (Boolean)
-- `static_ip` (String)
+- `ddns` (Attributes) (see [below for nested schema](#nestedatt--layer3--sdwan_link_settings--upstream_nat--ddns))
+- `enable` (Boolean) Enable upstream NAT IP config
+- `static_ip` (Attributes) (see [below for nested schema](#nestedatt--layer3--sdwan_link_settings--upstream_nat--static_ip))
+
+<a id="nestedatt--layer3--sdwan_link_settings--upstream_nat--ddns"></a>
+### Nested Schema for `layer3.sdwan_link_settings.upstream_nat.ddns`
 
 
+<a id="nestedatt--layer3--sdwan_link_settings--upstream_nat--static_ip"></a>
+### Nested Schema for `layer3.sdwan_link_settings.upstream_nat.static_ip`
+
+Optional:
+
+- `fqdn` (String) Upstream NAT address FQDN name configuration
+- `ip_address` (String) Upstream NAT IP address
+
+
+
+
+
+<a id="nestedatt--log_card"></a>
+### Nested Schema for `log_card`
+
+Optional:
+
+- `default_gateway` (String) log forwarding card default gateway
+- `ip_address` (String) IP address for the log card forwarding interface
+- `ipv6_address` (String) IPv6 address for the log card forwarding interface
+- `ipv6_default_gateway` (String) log forwarding IPv6 card default gateway
+- `netmask` (String) IP netmask for the log card forwarding interface
 
 
 <a id="nestedatt--poe"></a>
@@ -362,7 +916,7 @@ Optional:
 Optional:
 
 - `enabled` (Boolean) PoE Enable
-- `reserved_power` (Number) Reserved Power
+- `poe_reserved_power` (Number) Reserved Power
 
 
 <a id="nestedatt--tap"></a>
@@ -370,4 +924,46 @@ Optional:
 
 Optional:
 
-- `netflow_profile` (String)
+- `netflow_profile` (String) Netflow Server Profile
+
+
+<a id="nestedatt--virtual_wire"></a>
+### Nested Schema for `virtual_wire`
+
+Optional:
+
+- `lacp` (Attributes) (see [below for nested schema](#nestedatt--virtual_wire--lacp))
+- `lldp` (Attributes) (see [below for nested schema](#nestedatt--virtual_wire--lldp))
+- `netflow_profile` (String) Netflow Server Profile
+
+<a id="nestedatt--virtual_wire--lacp"></a>
+### Nested Schema for `virtual_wire.lacp`
+
+Optional:
+
+- `high_availability` (Attributes) (see [below for nested schema](#nestedatt--virtual_wire--lacp--high_availability))
+
+<a id="nestedatt--virtual_wire--lacp--high_availability"></a>
+### Nested Schema for `virtual_wire.lacp.high_availability`
+
+Optional:
+
+- `passive_pre_negotiation` (Boolean) Allow LACP traffic to traverse this device in HA passive state
+
+
+
+<a id="nestedatt--virtual_wire--lldp"></a>
+### Nested Schema for `virtual_wire.lldp`
+
+Optional:
+
+- `enable` (Boolean)
+- `high_availability` (Attributes) (see [below for nested schema](#nestedatt--virtual_wire--lldp--high_availability))
+- `profile` (String) LLDP profile
+
+<a id="nestedatt--virtual_wire--lldp--high_availability"></a>
+### Nested Schema for `virtual_wire.lldp.high_availability`
+
+Optional:
+
+- `passive_pre_negotiation` (Boolean) Enable LLDP pre-negotiation in HA passive state

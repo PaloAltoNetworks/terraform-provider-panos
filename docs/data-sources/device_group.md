@@ -27,10 +27,6 @@ description: |-
 - `devices` (Attributes List) List of devices (see [below for nested schema](#nestedatt--devices))
 - `templates` (List of String) List of reference templates
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 

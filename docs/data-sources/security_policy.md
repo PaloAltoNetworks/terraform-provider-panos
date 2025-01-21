@@ -26,8 +26,7 @@ description: |-
 Optional:
 
 - `device_group` (Attributes) Located in a specific device group. (see [below for nested schema](#nestedatt--location--device_group))
-- `from_panorama_vsys` (Attributes) Located in a specific vsys in the config pushed from Panorama. (see [below for nested schema](#nestedatt--location--from_panorama_vsys))
-- `shared` (Attributes) Located in shared. (see [below for nested schema](#nestedatt--location--shared))
+- `shared` (Attributes) Located in a shared rulebase (see [below for nested schema](#nestedatt--location--shared))
 - `vsys` (Attributes) Located in a specific vsys. (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
@@ -40,20 +39,12 @@ Optional:
 - `rulebase` (String) The rulebase.
 
 
-<a id="nestedatt--location--from_panorama_vsys"></a>
-### Nested Schema for `location.from_panorama_vsys`
-
-Optional:
-
-- `vsys` (String) The vsys.
-
-
 <a id="nestedatt--location--shared"></a>
 ### Nested Schema for `location.shared`
 
 Optional:
 
-- `rulebase` (String) The rulebase.
+- `rulebase` (String) Rulebase name
 
 
 <a id="nestedatt--location--vsys"></a>
@@ -61,9 +52,8 @@ Optional:
 
 Optional:
 
-- `name` (String) The vsys.
-- `ngfw_device` (String) The NGFW device.
-- `rulebase` (String) The rulebase.
+- `name` (String) The vsys name
+- `ngfw_device` (String) The NGFW device
 
 
 
@@ -72,41 +62,49 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the security policy rule.
+- `name` (String)
 
 Optional:
 
-- `action` (String) Action
-- `applications` (List of String) Applications
-- `categories` (List of String) Categories
-- `description` (String) The description.
-- `destination_addresses` (List of String) Destination addresses
-- `destination_hips` (List of String) Destination HIPs
-- `destination_zones` (List of String) Destination zones
-- `disable_server_response_inspection` (Boolean) Disable Server Response Inspection
+- `action` (String)
+- `applications` (List of String)
+- `category` (List of String)
+- `description` (String)
+- `destination_addresses` (List of String)
+- `destination_hip` (List of String)
+- `destination_zone` (String)
+- `disable_inspect` (Boolean)
+- `disable_server_response_inspection` (Boolean) Disable inspection of server side traffic
 - `disabled` (Boolean) Disable the rule
-- `icmp_unreachable` (Boolean) Send ICMP unreachable
-- `log_end` (Boolean) Log at session end
-- `log_setting` (String) Log forwarding
+- `group_tag` (String)
+- `icmp_unreachable` (Boolean) Send ICMP unreachable error when action is drop or reset
+- `log_end` (Boolean) Log at session end (required for certain ACC tables)
+- `log_setting` (String)
 - `log_start` (Boolean) Log at session start
-- `negate_destination` (Boolean) Negate destination address
-- `negate_source` (Boolean) Negate source address
+- `negate_destination` (Boolean)
+- `negate_source` (Boolean)
 - `profile_setting` (Attributes) (see [below for nested schema](#nestedatt--rules--profile_setting))
-- `rule_type` (String) Rule type
-- `services` (List of String) Services
-- `source_addresses` (List of String) Source addresses
-- `source_hips` (List of String) Source HIPs
-- `source_users` (List of String) Source users
-- `source_zones` (List of String) Source zones
-- `tags` (List of String) The administrative tags.
-- `uuid` (String) The UUID value.
+- `qos` (Attributes) (see [below for nested schema](#nestedatt--rules--qos))
+- `rule_type` (String)
+- `schedule` (String)
+- `services` (List of String)
+- `source_addresses` (List of String)
+- `source_hip` (List of String)
+- `source_imei` (List of String)
+- `source_imsi` (List of String)
+- `source_nw_slice` (List of String)
+- `source_users` (List of String)
+- `source_zones` (List of String)
+- `tag` (List of String)
+- `target` (Attributes) (see [below for nested schema](#nestedatt--rules--target))
+- `uuid` (String) Entry UUID value
 
 <a id="nestedatt--rules--profile_setting"></a>
 ### Nested Schema for `rules.profile_setting`
 
 Optional:
 
-- `group` (String)
+- `group` (List of String)
 - `profiles` (Attributes) (see [below for nested schema](#nestedatt--rules--profile_setting--profiles))
 
 <a id="nestedatt--rules--profile_setting--profiles"></a>
@@ -114,10 +112,63 @@ Optional:
 
 Optional:
 
-- `data_filtering` (List of String) Data filtering profile
-- `file_blocking` (List of String) File blocking profile
-- `spyware` (List of String) Anti-Spyware profile
-- `url_filtering` (List of String) URL filtering profile
-- `virus` (List of String) Antivirus profile
-- `vulnerability` (List of String) Vulnerability Protection profile
-- `wildfire_analysis` (List of String) WildFire analysis profile
+- `data_filtering` (List of String)
+- `file_blocking` (List of String)
+- `gtp` (List of String)
+- `sctp` (List of String)
+- `spyware` (List of String)
+- `url_filtering` (List of String)
+- `virus` (List of String)
+- `vulnerability` (List of String)
+- `wildfire_analysis` (List of String)
+
+
+
+<a id="nestedatt--rules--qos"></a>
+### Nested Schema for `rules.qos`
+
+Optional:
+
+- `marking` (Attributes) (see [below for nested schema](#nestedatt--rules--qos--marking))
+
+<a id="nestedatt--rules--qos--marking"></a>
+### Nested Schema for `rules.qos.marking`
+
+Optional:
+
+- `follow_c2s_flow` (Attributes) (see [below for nested schema](#nestedatt--rules--qos--marking--follow_c2s_flow))
+- `ip_dscp` (String) IP DSCP
+- `ip_precedence` (String) IP Precedence
+
+<a id="nestedatt--rules--qos--marking--follow_c2s_flow"></a>
+### Nested Schema for `rules.qos.marking.follow_c2s_flow`
+
+
+
+
+<a id="nestedatt--rules--target"></a>
+### Nested Schema for `rules.target`
+
+Optional:
+
+- `devices` (Attributes List) (see [below for nested schema](#nestedatt--rules--target--devices))
+- `negate` (Boolean) Target to all but these specified devices and tags
+- `tags` (List of String)
+
+<a id="nestedatt--rules--target--devices"></a>
+### Nested Schema for `rules.target.devices`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `vsys` (Attributes List) (see [below for nested schema](#nestedatt--rules--target--devices--vsys))
+
+<a id="nestedatt--rules--target--devices--vsys"></a>
+### Nested Schema for `rules.target.devices.vsys`
+
+Required:
+
+- `name` (String)

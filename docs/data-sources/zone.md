@@ -18,7 +18,7 @@ description: |-
 ### Required
 
 - `location` (Attributes) The location of this object. (see [below for nested schema](#nestedatt--location))
-- `name` (String) The name of the zone.
+- `name` (String)
 
 ### Optional
 
@@ -28,36 +28,23 @@ description: |-
 - `network` (Attributes) (see [below for nested schema](#nestedatt--network))
 - `user_acl` (Attributes) (see [below for nested schema](#nestedatt--user_acl))
 
-### Read-Only
-
-- `tfid` (String) The Terraform ID.
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
-- `from_panorama_vsys` (Attributes) Located in a specific vsys in the config pushed from Panorama. (see [below for nested schema](#nestedatt--location--from_panorama_vsys))
-- `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
-- `vsys` (Attributes) Located in a specific vsys. (see [below for nested schema](#nestedatt--location--vsys))
-
-<a id="nestedatt--location--from_panorama_vsys"></a>
-### Nested Schema for `location.from_panorama_vsys`
-
-Optional:
-
-- `vsys` (String) The vsys.
-
+- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
+- `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--template"></a>
 ### Nested Schema for `location.template`
 
 Optional:
 
-- `name` (String) The template.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 - `vsys` (String) The vsys.
 
 
@@ -66,10 +53,9 @@ Optional:
 
 Optional:
 
-- `name` (String) The template stack.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
-- `vsys` (String) The vsys.
+- `name` (String) Specific Panorama template stack
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--vsys"></a>
@@ -77,8 +63,8 @@ Optional:
 
 Optional:
 
-- `name` (String) The vsys.
-- `ngfw_device` (String) The NGFW device.
+- `name` (String) The Virtual System name
+- `ngfw_device` (String) The NGFW device name
 
 
 
@@ -97,12 +83,19 @@ Optional:
 Optional:
 
 - `enable_packet_buffer_protection` (Boolean)
+- `external` (List of String)
 - `layer2` (List of String)
 - `layer3` (List of String)
-- `log_setting` (List of String)
+- `log_setting` (String) Log setting for forwarding scan logs
+- `net_inspection` (Boolean)
 - `tap` (List of String)
+- `tunnel` (Attributes) (see [below for nested schema](#nestedatt--network--tunnel))
 - `virtual_wire` (List of String)
-- `zone_protection_profile` (List of String)
+- `zone_protection_profile` (String) Zone protection profile
+
+<a id="nestedatt--network--tunnel"></a>
+### Nested Schema for `network.tunnel`
+
 
 
 <a id="nestedatt--user_acl"></a>
