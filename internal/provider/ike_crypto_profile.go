@@ -57,11 +57,11 @@ type IkeCryptoProfileDataSourceFilter struct {
 type IkeCryptoProfileDataSourceModel struct {
 	Location               IkeCryptoProfileLocation                  `tfsdk:"location"`
 	Name                   types.String                              `tfsdk:"name"`
+	AuthenticationMultiple types.Int64                               `tfsdk:"authentication_multiple"`
 	DhGroup                types.List                                `tfsdk:"dh_group"`
 	Encryption             types.List                                `tfsdk:"encryption"`
 	Hash                   types.List                                `tfsdk:"hash"`
 	Lifetime               *IkeCryptoProfileDataSourceLifetimeObject `tfsdk:"lifetime"`
-	AuthenticationMultiple types.Int64                               `tfsdk:"authentication_multiple"`
 }
 type IkeCryptoProfileDataSourceLifetimeObject struct {
 	Days    types.Int64 `tfsdk:"days"`
@@ -72,6 +72,12 @@ type IkeCryptoProfileDataSourceLifetimeObject struct {
 
 func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
+	dhGroup_pango_entries := make([]string, 0)
+	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	encryption_pango_entries := make([]string, 0)
 	diags.Append(o.Encryption.ElementsAs(ctx, &encryption_pango_entries, false)...)
 	if diags.HasError() {
@@ -95,22 +101,16 @@ func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj *
 			return diags
 		}
 	}
-	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
-	dhGroup_pango_entries := make([]string, 0)
-	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(ikecrypto.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).AuthenticationMultiple = authenticationMultiple_value
+	(*obj).DhGroup = dhGroup_pango_entries
 	(*obj).Encryption = encryption_pango_entries
 	(*obj).Hash = hash_pango_entries
 	(*obj).Lifetime = lifetime_entry
-	(*obj).AuthenticationMultiple = authenticationMultiple_value
-	(*obj).DhGroup = dhGroup_pango_entries
 
 	return diags
 }
@@ -167,11 +167,11 @@ func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, obj
 		authenticationMultiple_value = types.Int64Value(*obj.AuthenticationMultiple)
 	}
 	o.Name = types.StringValue(obj.Name)
+	o.AuthenticationMultiple = authenticationMultiple_value
 	o.DhGroup = dhGroup_list
 	o.Encryption = encryption_list
 	o.Hash = hash_list
 	o.Lifetime = lifetime_object
-	o.AuthenticationMultiple = authenticationMultiple_value
 
 	return diags
 }
@@ -217,17 +217,6 @@ func IkeCryptoProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"hash": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"lifetime": IkeCryptoProfileDataSourceLifetimeSchema(),
-
 			"authentication_multiple": dsschema.Int64Attribute{
 				Description: "IKEv2 SA reauthentication interval equals authetication-multiple * rekey-lifetime; 0 means reauthentication disabled",
 				Computed:    true,
@@ -253,6 +242,17 @@ func IkeCryptoProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
+
+			"hash": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"lifetime": IkeCryptoProfileDataSourceLifetimeSchema(),
 		},
 	}
 }
@@ -284,22 +284,6 @@ func IkeCryptoProfileDataSourceLifetimeSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"days": dsschema.Int64Attribute{
-				Description: "specify lifetime in days",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hours": dsschema.Int64Attribute{
-				Description: "specify lifetime in hours",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"minutes": dsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
 				Computed:    true,
@@ -310,6 +294,22 @@ func IkeCryptoProfileDataSourceLifetimeSchema() dsschema.SingleNestedAttribute {
 
 			"seconds": dsschema.Int64Attribute{
 				Description: "specify lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"days": dsschema.Int64Attribute{
+				Description: "specify lifetime in days",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hours": dsschema.Int64Attribute{
+				Description: "specify lifetime in hours",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -376,6 +376,14 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 
 	var location ikecrypto.Location
 
+	if savestate.Location.Template != nil {
+		location.Template = &ikecrypto.TemplateLocation{
+
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
@@ -388,14 +396,6 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 		location.Ngfw = &ikecrypto.NgfwLocation{
 
 			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -461,17 +461,17 @@ func IkeCryptoProfileResourceLocationSchema() rsschema.Attribute {
 type IkeCryptoProfileResourceModel struct {
 	Location               IkeCryptoProfileLocation                `tfsdk:"location"`
 	Name                   types.String                            `tfsdk:"name"`
+	Encryption             types.List                              `tfsdk:"encryption"`
 	Hash                   types.List                              `tfsdk:"hash"`
 	Lifetime               *IkeCryptoProfileResourceLifetimeObject `tfsdk:"lifetime"`
 	AuthenticationMultiple types.Int64                             `tfsdk:"authentication_multiple"`
 	DhGroup                types.List                              `tfsdk:"dh_group"`
-	Encryption             types.List                              `tfsdk:"encryption"`
 }
 type IkeCryptoProfileResourceLifetimeObject struct {
+	Seconds types.Int64 `tfsdk:"seconds"`
 	Days    types.Int64 `tfsdk:"days"`
 	Hours   types.Int64 `tfsdk:"hours"`
 	Minutes types.Int64 `tfsdk:"minutes"`
-	Seconds types.Int64 `tfsdk:"seconds"`
 }
 
 func (r *IkeCryptoProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -497,6 +497,24 @@ func IkeCryptoProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"encryption": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"hash": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"lifetime": IkeCryptoProfileResourceLifetimeSchema(),
 
 			"authentication_multiple": rsschema.Int64Attribute{
@@ -509,24 +527,6 @@ func IkeCryptoProfileResourceSchema() rsschema.Schema {
 			},
 
 			"dh_group": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"encryption": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"hash": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -650,6 +650,16 @@ func (r *IkeCryptoProfileResource) Configure(ctx context.Context, req resource.C
 
 func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	dhGroup_pango_entries := make([]string, 0)
+	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	encryption_pango_entries := make([]string, 0)
+	diags.Append(o.Encryption.ElementsAs(ctx, &encryption_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	hash_pango_entries := make([]string, 0)
 	diags.Append(o.Hash.ElementsAs(ctx, &hash_pango_entries, false)...)
 	if diags.HasError() {
@@ -669,43 +679,33 @@ func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **i
 		}
 	}
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
-	dhGroup_pango_entries := make([]string, 0)
-	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	encryption_pango_entries := make([]string, 0)
-	diags.Append(o.Encryption.ElementsAs(ctx, &encryption_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(ikecrypto.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).DhGroup = dhGroup_pango_entries
+	(*obj).Encryption = encryption_pango_entries
 	(*obj).Hash = hash_pango_entries
 	(*obj).Lifetime = lifetime_entry
 	(*obj).AuthenticationMultiple = authenticationMultiple_value
-	(*obj).DhGroup = dhGroup_pango_entries
-	(*obj).Encryption = encryption_pango_entries
 
 	return diags
 }
 func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, obj **ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	seconds_value := o.Seconds.ValueInt64Pointer()
-	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
 	minutes_value := o.Minutes.ValueInt64Pointer()
+	seconds_value := o.Seconds.ValueInt64Pointer()
+	days_value := o.Days.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(ikecrypto.Lifetime)
 	}
-	(*obj).Seconds = seconds_value
-	(*obj).Days = days_value
 	(*obj).Hours = hours_value
 	(*obj).Minutes = minutes_value
+	(*obj).Seconds = seconds_value
+	(*obj).Days = days_value
 
 	return diags
 }
@@ -757,14 +757,6 @@ func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj *
 func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, obj *ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var seconds_value types.Int64
-	if obj.Seconds != nil {
-		seconds_value = types.Int64Value(*obj.Seconds)
-	}
-	var days_value types.Int64
-	if obj.Days != nil {
-		days_value = types.Int64Value(*obj.Days)
-	}
 	var hours_value types.Int64
 	if obj.Hours != nil {
 		hours_value = types.Int64Value(*obj.Hours)
@@ -773,10 +765,18 @@ func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Conte
 	if obj.Minutes != nil {
 		minutes_value = types.Int64Value(*obj.Minutes)
 	}
-	o.Seconds = seconds_value
-	o.Days = days_value
+	var seconds_value types.Int64
+	if obj.Seconds != nil {
+		seconds_value = types.Int64Value(*obj.Seconds)
+	}
+	var days_value types.Int64
+	if obj.Days != nil {
+		days_value = types.Int64Value(*obj.Days)
+	}
 	o.Hours = hours_value
 	o.Minutes = minutes_value
+	o.Seconds = seconds_value
+	o.Days = days_value
 
 	return diags
 }
@@ -805,12 +805,6 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 
 	var location ikecrypto.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 	if state.Location.Template != nil {
 		location.Template = &ikecrypto.TemplateLocation{
 
@@ -822,9 +816,15 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &ikecrypto.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -874,6 +874,12 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 
 	var location ikecrypto.Location
 
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &ikecrypto.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if savestate.Location.Template != nil {
 		location.Template = &ikecrypto.TemplateLocation{
 
@@ -885,15 +891,9 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -942,14 +942,6 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 
 	var location ikecrypto.Location
 
-	if state.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
-
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-		}
-	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
@@ -962,6 +954,14 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 		location.Ngfw = &ikecrypto.NgfwLocation{
 
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &ikecrypto.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1036,6 +1036,14 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 
 	var location ikecrypto.Location
 
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &ikecrypto.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Ngfw != nil {
 		location.Ngfw = &ikecrypto.NgfwLocation{
 
@@ -1045,17 +1053,9 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 	if state.Location.Template != nil {
 		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -1131,6 +1131,11 @@ func (r *IkeCryptoProfileResource) ImportState(ctx context.Context, req resource
 
 }
 
+type IkeCryptoProfileTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+}
 type IkeCryptoProfileNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
@@ -1139,15 +1144,10 @@ type IkeCryptoProfileTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
-type IkeCryptoProfileTemplateStackLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-}
 type IkeCryptoProfileLocation struct {
+	TemplateStack *IkeCryptoProfileTemplateStackLocation `tfsdk:"template_stack"`
 	Ngfw          *IkeCryptoProfileNgfwLocation          `tfsdk:"ngfw"`
 	Template      *IkeCryptoProfileTemplateLocation      `tfsdk:"template"`
-	TemplateStack *IkeCryptoProfileTemplateStackLocation `tfsdk:"template_stack"`
 }
 
 func IkeCryptoProfileLocationSchema() rsschema.Attribute {
@@ -1159,15 +1159,6 @@ func IkeCryptoProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -1182,6 +1173,15 @@ func IkeCryptoProfileLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1203,15 +1203,6 @@ func IkeCryptoProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -1226,6 +1217,15 @@ func IkeCryptoProfileLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1282,13 +1282,13 @@ func (o *IkeCryptoProfileNgfwLocation) UnmarshalJSON(data []byte) error {
 }
 func (o IkeCryptoProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
 	}{
-		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1296,18 +1296,18 @@ func (o IkeCryptoProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeCryptoProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }

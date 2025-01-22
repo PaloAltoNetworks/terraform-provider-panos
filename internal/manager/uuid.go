@@ -353,7 +353,7 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	}
 
 	existing, err = o.service.List(ctx, location, "get", "", "")
-	if err != nil {
+	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
 
@@ -535,6 +535,8 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		}
 	}
 
+	createOps := make([]*xmlapi.Config, len(planEntries))
+
 	for _, elt := range processedStateEntries {
 		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.Entry.EntryName())
 		if err != nil {
@@ -547,7 +549,14 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		}
 
 		switch elt.State {
-		case entryMissing, entryOutdated:
+		case entryMissing:
+			createOps[elt.StateIdx] = &xmlapi.Config{
+				Action:  "edit",
+				Xpath:   util.AsXpath(path),
+				Element: xmlEntry,
+				Target:  o.client.GetTarget(),
+			}
+		case entryOutdated:
 			updates.Add(&xmlapi.Config{
 				Action:  "edit",
 				Xpath:   util.AsXpath(path),
@@ -582,6 +591,12 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		}
 	}
 
+	for _, elt := range createOps {
+		if elt != nil {
+			updates.Add(elt)
+		}
+	}
+
 	if len(updates.Operations) > 0 {
 		if _, _, _, err := o.client.MultiConfig(ctx, updates, false, nil); err != nil {
 			return nil, &Error{err: err, message: "failed to execute MultiConfig command"}
@@ -602,7 +617,7 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	}
 
 	existing, err = o.service.List(ctx, location, "get", "", "")
-	if err != nil {
+	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
 

@@ -56,31 +56,31 @@ type ZoneDataSourceFilter struct {
 type ZoneDataSourceModel struct {
 	Location                   ZoneLocation                   `tfsdk:"location"`
 	Name                       types.String                   `tfsdk:"name"`
+	DeviceAcl                  *ZoneDataSourceDeviceAclObject `tfsdk:"device_acl"`
+	EnableDeviceIdentification types.Bool                     `tfsdk:"enable_device_identification"`
 	EnableUserIdentification   types.Bool                     `tfsdk:"enable_user_identification"`
 	Network                    *ZoneDataSourceNetworkObject   `tfsdk:"network"`
 	UserAcl                    *ZoneDataSourceUserAclObject   `tfsdk:"user_acl"`
-	DeviceAcl                  *ZoneDataSourceDeviceAclObject `tfsdk:"device_acl"`
-	EnableDeviceIdentification types.Bool                     `tfsdk:"enable_device_identification"`
+}
+type ZoneDataSourceDeviceAclObject struct {
+	ExcludeList types.List `tfsdk:"exclude_list"`
+	IncludeList types.List `tfsdk:"include_list"`
 }
 type ZoneDataSourceNetworkObject struct {
 	EnablePacketBufferProtection types.Bool                         `tfsdk:"enable_packet_buffer_protection"`
 	LogSetting                   types.String                       `tfsdk:"log_setting"`
 	ZoneProtectionProfile        types.String                       `tfsdk:"zone_protection_profile"`
 	NetInspection                types.Bool                         `tfsdk:"net_inspection"`
+	VirtualWire                  types.List                         `tfsdk:"virtual_wire"`
 	External                     types.List                         `tfsdk:"external"`
 	Layer2                       types.List                         `tfsdk:"layer2"`
 	Layer3                       types.List                         `tfsdk:"layer3"`
 	Tap                          types.List                         `tfsdk:"tap"`
 	Tunnel                       *ZoneDataSourceNetworkTunnelObject `tfsdk:"tunnel"`
-	VirtualWire                  types.List                         `tfsdk:"virtual_wire"`
 }
 type ZoneDataSourceNetworkTunnelObject struct {
 }
 type ZoneDataSourceUserAclObject struct {
-	IncludeList types.List `tfsdk:"include_list"`
-	ExcludeList types.List `tfsdk:"exclude_list"`
-}
-type ZoneDataSourceDeviceAclObject struct {
 	ExcludeList types.List `tfsdk:"exclude_list"`
 	IncludeList types.List `tfsdk:"include_list"`
 }
@@ -141,36 +141,15 @@ func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry,
 
 	return diags
 }
-func (o *ZoneDataSourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	excludeList_pango_entries := make([]string, 0)
-	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	includeList_pango_entries := make([]string, 0)
-	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(zone.UserAcl)
-	}
-	(*obj).ExcludeList = excludeList_pango_entries
-	(*obj).IncludeList = includeList_pango_entries
-
-	return diags
-}
 func (o *ZoneDataSourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	includeList_pango_entries := make([]string, 0)
-	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
+	excludeList_pango_entries := make([]string, 0)
+	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	excludeList_pango_entries := make([]string, 0)
-	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
+	includeList_pango_entries := make([]string, 0)
+	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -178,17 +157,27 @@ func (o *ZoneDataSourceDeviceAclObject) CopyToPango(ctx context.Context, obj **z
 	if (*obj) == nil {
 		*obj = new(zone.DeviceAcl)
 	}
-	(*obj).IncludeList = includeList_pango_entries
 	(*obj).ExcludeList = excludeList_pango_entries
+	(*obj).IncludeList = includeList_pango_entries
 
 	return diags
 }
 func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enablePacketBufferProtection_value := o.EnablePacketBufferProtection.ValueBoolPointer()
 	logSetting_value := o.LogSetting.ValueStringPointer()
 	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	netInspection_value := o.NetInspection.ValueBoolPointer()
-	enablePacketBufferProtection_value := o.EnablePacketBufferProtection.ValueBoolPointer()
+	virtualWire_pango_entries := make([]string, 0)
+	diags.Append(o.VirtualWire.ElementsAs(ctx, &virtualWire_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	external_pango_entries := make([]string, 0)
+	diags.Append(o.External.ElementsAs(ctx, &external_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	layer2_pango_entries := make([]string, 0)
 	diags.Append(o.Layer2.ElementsAs(ctx, &layer2_pango_entries, false)...)
 	if diags.HasError() {
@@ -217,30 +206,20 @@ func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zon
 			return diags
 		}
 	}
-	virtualWire_pango_entries := make([]string, 0)
-	diags.Append(o.VirtualWire.ElementsAs(ctx, &virtualWire_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	external_pango_entries := make([]string, 0)
-	diags.Append(o.External.ElementsAs(ctx, &external_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(zone.Network)
 	}
+	(*obj).EnablePacketBufferProtection = enablePacketBufferProtection_value
 	(*obj).LogSetting = logSetting_value
 	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).NetInspection = netInspection_value
-	(*obj).EnablePacketBufferProtection = enablePacketBufferProtection_value
+	(*obj).VirtualWire = virtualWire_pango_entries
+	(*obj).External = external_pango_entries
 	(*obj).Layer2 = layer2_pango_entries
 	(*obj).Layer3 = layer3_pango_entries
 	(*obj).Tap = tap_pango_entries
 	(*obj).Tunnel = tunnel_entry
-	(*obj).VirtualWire = virtualWire_pango_entries
-	(*obj).External = external_pango_entries
 
 	return diags
 }
@@ -250,6 +229,27 @@ func (o *ZoneDataSourceNetworkTunnelObject) CopyToPango(ctx context.Context, obj
 	if (*obj) == nil {
 		*obj = new(zone.NetworkTunnel)
 	}
+
+	return diags
+}
+func (o *ZoneDataSourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	excludeList_pango_entries := make([]string, 0)
+	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	includeList_pango_entries := make([]string, 0)
+	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+
+	if (*obj) == nil {
+		*obj = new(zone.UserAcl)
+	}
+	(*obj).ExcludeList = excludeList_pango_entries
+	(*obj).IncludeList = includeList_pango_entries
 
 	return diags
 }
@@ -298,27 +298,6 @@ func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry
 	o.Network = network_object
 	o.UserAcl = userAcl_object
 	o.DeviceAcl = deviceAcl_object
-
-	return diags
-}
-
-func (o *ZoneDataSourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var excludeList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
-		diags.Append(list_diags...)
-	}
-	var includeList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
-		diags.Append(list_diags...)
-	}
-
-	o.ExcludeList = excludeList_list
-	o.IncludeList = includeList_list
 
 	return diags
 }
@@ -422,6 +401,27 @@ func (o *ZoneDataSourceUserAclObject) CopyFromPango(ctx context.Context, obj *zo
 	return diags
 }
 
+func (o *ZoneDataSourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var excludeList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
+		diags.Append(list_diags...)
+	}
+	var includeList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
+		diags.Append(list_diags...)
+	}
+
+	o.ExcludeList = excludeList_list
+	o.IncludeList = includeList_list
+
+	return diags
+}
+
 func ZoneDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -433,6 +433,14 @@ func ZoneDataSourceSchema() dsschema.Schema {
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"enable_device_identification": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
 				Sensitive:   false,
 			},
 
@@ -449,14 +457,6 @@ func ZoneDataSourceSchema() dsschema.Schema {
 			"user_acl": ZoneDataSourceUserAclSchema(),
 
 			"device_acl": ZoneDataSourceDeviceAclSchema(),
-
-			"enable_device_identification": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
@@ -520,15 +520,6 @@ func ZoneDataSourceNetworkSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"external": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"layer2": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -559,6 +550,15 @@ func ZoneDataSourceNetworkSchema() dsschema.SingleNestedAttribute {
 			"tunnel": ZoneDataSourceNetworkTunnelSchema(),
 
 			"virtual_wire": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"external": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -598,12 +598,12 @@ func ZoneDataSourceNetworkTunnelSchema() dsschema.SingleNestedAttribute {
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("external"),
 				path.MatchRelative().AtParent().AtName("layer2"),
 				path.MatchRelative().AtParent().AtName("layer3"),
 				path.MatchRelative().AtParent().AtName("tap"),
 				path.MatchRelative().AtParent().AtName("tunnel"),
 				path.MatchRelative().AtParent().AtName("virtual_wire"),
+				path.MatchRelative().AtParent().AtName("external"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -782,9 +782,9 @@ func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &zone.TemplateStackLocation{
 
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -850,33 +850,33 @@ func ZoneResourceLocationSchema() rsschema.Attribute {
 type ZoneResourceModel struct {
 	Location                   ZoneLocation                 `tfsdk:"location"`
 	Name                       types.String                 `tfsdk:"name"`
+	UserAcl                    *ZoneResourceUserAclObject   `tfsdk:"user_acl"`
 	DeviceAcl                  *ZoneResourceDeviceAclObject `tfsdk:"device_acl"`
 	EnableDeviceIdentification types.Bool                   `tfsdk:"enable_device_identification"`
 	EnableUserIdentification   types.Bool                   `tfsdk:"enable_user_identification"`
 	Network                    *ZoneResourceNetworkObject   `tfsdk:"network"`
-	UserAcl                    *ZoneResourceUserAclObject   `tfsdk:"user_acl"`
+}
+type ZoneResourceUserAclObject struct {
+	ExcludeList types.List `tfsdk:"exclude_list"`
+	IncludeList types.List `tfsdk:"include_list"`
 }
 type ZoneResourceDeviceAclObject struct {
 	ExcludeList types.List `tfsdk:"exclude_list"`
 	IncludeList types.List `tfsdk:"include_list"`
 }
 type ZoneResourceNetworkObject struct {
+	ZoneProtectionProfile        types.String                     `tfsdk:"zone_protection_profile"`
 	NetInspection                types.Bool                       `tfsdk:"net_inspection"`
 	EnablePacketBufferProtection types.Bool                       `tfsdk:"enable_packet_buffer_protection"`
 	LogSetting                   types.String                     `tfsdk:"log_setting"`
-	ZoneProtectionProfile        types.String                     `tfsdk:"zone_protection_profile"`
-	Layer3                       types.List                       `tfsdk:"layer3"`
-	Tap                          types.List                       `tfsdk:"tap"`
-	Tunnel                       *ZoneResourceNetworkTunnelObject `tfsdk:"tunnel"`
 	VirtualWire                  types.List                       `tfsdk:"virtual_wire"`
 	External                     types.List                       `tfsdk:"external"`
 	Layer2                       types.List                       `tfsdk:"layer2"`
+	Layer3                       types.List                       `tfsdk:"layer3"`
+	Tap                          types.List                       `tfsdk:"tap"`
+	Tunnel                       *ZoneResourceNetworkTunnelObject `tfsdk:"tunnel"`
 }
 type ZoneResourceNetworkTunnelObject struct {
-}
-type ZoneResourceUserAclObject struct {
-	ExcludeList types.List `tfsdk:"exclude_list"`
-	IncludeList types.List `tfsdk:"include_list"`
 }
 
 func (r *ZoneResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -902,8 +902,6 @@ func ZoneResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"device_acl": ZoneResourceDeviceAclSchema(),
-
 			"enable_device_identification": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -923,60 +921,14 @@ func ZoneResourceSchema() rsschema.Schema {
 			"network": ZoneResourceNetworkSchema(),
 
 			"user_acl": ZoneResourceUserAclSchema(),
+
+			"device_acl": ZoneResourceDeviceAclSchema(),
 		},
 	}
 }
 
 func (o *ZoneResourceModel) getTypeFor(name string) attr.Type {
 	schema := ZoneResourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ZoneResourceDeviceAclSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"exclude_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"include_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *ZoneResourceDeviceAclObject) getTypeFor(name string) attr.Type {
-	schema := ZoneResourceDeviceAclSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1034,7 +986,7 @@ func ZoneResourceNetworkSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"layer2": rsschema.ListAttribute{
+			"external": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1044,14 +996,23 @@ func ZoneResourceNetworkSchema() rsschema.SingleNestedAttribute {
 
 				Validators: []validator.List{
 					listvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("virtual_wire"),
 						path.MatchRelative().AtParent().AtName("external"),
 						path.MatchRelative().AtParent().AtName("layer2"),
 						path.MatchRelative().AtParent().AtName("layer3"),
 						path.MatchRelative().AtParent().AtName("tap"),
 						path.MatchRelative().AtParent().AtName("tunnel"),
-						path.MatchRelative().AtParent().AtName("virtual_wire"),
 					}...),
 				},
+			},
+
+			"layer2": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 
 			"layer3": rsschema.ListAttribute{
@@ -1075,15 +1036,6 @@ func ZoneResourceNetworkSchema() rsschema.SingleNestedAttribute {
 			"tunnel": ZoneResourceNetworkTunnelSchema(),
 
 			"virtual_wire": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"external": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1123,12 +1075,12 @@ func ZoneResourceNetworkTunnelSchema() rsschema.SingleNestedAttribute {
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("virtual_wire"),
 				path.MatchRelative().AtParent().AtName("external"),
 				path.MatchRelative().AtParent().AtName("layer2"),
 				path.MatchRelative().AtParent().AtName("layer3"),
 				path.MatchRelative().AtParent().AtName("tap"),
 				path.MatchRelative().AtParent().AtName("tunnel"),
-				path.MatchRelative().AtParent().AtName("virtual_wire"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -1201,6 +1153,54 @@ func (o *ZoneResourceUserAclObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func ZoneResourceDeviceAclSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"exclude_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"include_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *ZoneResourceDeviceAclObject) getTypeFor(name string) attr.Type {
+	schema := ZoneResourceDeviceAclSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func (r *ZoneResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = ZoneResourceSchema()
 }
@@ -1224,6 +1224,19 @@ func (r *ZoneResource) Configure(ctx context.Context, req resource.ConfigureRequ
 
 func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var network_entry *zone.Network
+	if o.Network != nil {
+		if *obj != nil && (*obj).Network != nil {
+			network_entry = (*obj).Network
+		} else {
+			network_entry = new(zone.Network)
+		}
+
+		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var userAcl_entry *zone.UserAcl
 	if o.UserAcl != nil {
 		if *obj != nil && (*obj).UserAcl != nil {
@@ -1252,50 +1265,16 @@ func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, e
 	}
 	enableDeviceIdentification_value := o.EnableDeviceIdentification.ValueBoolPointer()
 	enableUserIdentification_value := o.EnableUserIdentification.ValueBoolPointer()
-	var network_entry *zone.Network
-	if o.Network != nil {
-		if *obj != nil && (*obj).Network != nil {
-			network_entry = (*obj).Network
-		} else {
-			network_entry = new(zone.Network)
-		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(zone.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Network = network_entry
 	(*obj).UserAcl = userAcl_entry
 	(*obj).DeviceAcl = deviceAcl_entry
 	(*obj).EnableDeviceIdentification = enableDeviceIdentification_value
 	(*obj).EnableUserIdentification = enableUserIdentification_value
-	(*obj).Network = network_entry
-
-	return diags
-}
-func (o *ZoneResourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	excludeList_pango_entries := make([]string, 0)
-	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	includeList_pango_entries := make([]string, 0)
-	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(zone.DeviceAcl)
-	}
-	(*obj).ExcludeList = excludeList_pango_entries
-	(*obj).IncludeList = includeList_pango_entries
 
 	return diags
 }
@@ -1305,11 +1284,6 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 	logSetting_value := o.LogSetting.ValueStringPointer()
 	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	netInspection_value := o.NetInspection.ValueBoolPointer()
-	layer2_pango_entries := make([]string, 0)
-	diags.Append(o.Layer2.ElementsAs(ctx, &layer2_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	layer3_pango_entries := make([]string, 0)
 	diags.Append(o.Layer3.ElementsAs(ctx, &layer3_pango_entries, false)...)
 	if diags.HasError() {
@@ -1343,6 +1317,11 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 	if diags.HasError() {
 		return diags
 	}
+	layer2_pango_entries := make([]string, 0)
+	diags.Append(o.Layer2.ElementsAs(ctx, &layer2_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(zone.Network)
@@ -1351,12 +1330,12 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 	(*obj).LogSetting = logSetting_value
 	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).NetInspection = netInspection_value
-	(*obj).Layer2 = layer2_pango_entries
 	(*obj).Layer3 = layer3_pango_entries
 	(*obj).Tap = tap_pango_entries
 	(*obj).Tunnel = tunnel_entry
 	(*obj).VirtualWire = virtualWire_pango_entries
 	(*obj).External = external_pango_entries
+	(*obj).Layer2 = layer2_pango_entries
 
 	return diags
 }
@@ -1387,6 +1366,27 @@ func (o *ZoneResourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.
 	}
 	(*obj).ExcludeList = excludeList_pango_entries
 	(*obj).IncludeList = includeList_pango_entries
+
+	return diags
+}
+func (o *ZoneResourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	includeList_pango_entries := make([]string, 0)
+	diags.Append(o.IncludeList.ElementsAs(ctx, &includeList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	excludeList_pango_entries := make([]string, 0)
+	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+
+	if (*obj) == nil {
+		*obj = new(zone.DeviceAcl)
+	}
+	(*obj).IncludeList = includeList_pango_entries
+	(*obj).ExcludeList = excludeList_pango_entries
 
 	return diags
 }
@@ -1441,6 +1441,18 @@ func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, 
 
 func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var virtualWire_list types.List
+	{
+		var list_diags diag.Diagnostics
+		virtualWire_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.VirtualWire)
+		diags.Append(list_diags...)
+	}
+	var external_list types.List
+	{
+		var list_diags diag.Diagnostics
+		external_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.External)
+		diags.Append(list_diags...)
+	}
 	var layer2_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -1457,18 +1469,6 @@ func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone
 	{
 		var list_diags diag.Diagnostics
 		tap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tap)
-		diags.Append(list_diags...)
-	}
-	var virtualWire_list types.List
-	{
-		var list_diags diag.Diagnostics
-		virtualWire_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.VirtualWire)
-		diags.Append(list_diags...)
-	}
-	var external_list types.List
-	{
-		var list_diags diag.Diagnostics
-		external_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.External)
 		diags.Append(list_diags...)
 	}
 	var tunnel_object *ZoneResourceNetworkTunnelObject
@@ -1501,12 +1501,12 @@ func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone
 	o.LogSetting = logSetting_value
 	o.ZoneProtectionProfile = zoneProtectionProfile_value
 	o.NetInspection = netInspection_value
-	o.Layer2 = layer2_list
-	o.Layer3 = layer3_list
-	o.Tap = tap_list
 	o.Tunnel = tunnel_object
 	o.VirtualWire = virtualWire_list
 	o.External = external_list
+	o.Layer2 = layer2_list
+	o.Layer3 = layer3_list
+	o.Tap = tap_list
 
 	return diags
 }
@@ -1593,18 +1593,18 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if state.Location.Template != nil {
 		location.Template = &zone.TemplateLocation{
 
-			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 			Vsys:           state.Location.Template.Vsys.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &zone.TemplateStackLocation{
 
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -1673,9 +1673,9 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &zone.TemplateStackLocation{
 
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1830,18 +1830,18 @@ func (r *ZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	if state.Location.Template != nil {
 		location.Template = &zone.TemplateLocation{
 
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 			Vsys:           state.Location.Template.Vsys.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &zone.TemplateStackLocation{
 
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1917,25 +1917,25 @@ func (r *ZoneResource) ImportState(ctx context.Context, req resource.ImportState
 
 }
 
-type ZoneVsysLocation struct {
-	Name       types.String `tfsdk:"name"`
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
-}
-type ZoneTemplateLocation struct {
-	Vsys           types.String `tfsdk:"vsys"`
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-}
 type ZoneTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
+type ZoneVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
+type ZoneTemplateLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+	Vsys           types.String `tfsdk:"vsys"`
+}
 type ZoneLocation struct {
+	TemplateStack *ZoneTemplateStackLocation `tfsdk:"template_stack"`
 	Vsys          *ZoneVsysLocation          `tfsdk:"vsys"`
 	Template      *ZoneTemplateLocation      `tfsdk:"template"`
-	TemplateStack *ZoneTemplateStackLocation `tfsdk:"template_stack"`
 }
 
 func ZoneLocationSchema() rsschema.Attribute {
@@ -1943,50 +1943,6 @@ func ZoneLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Specific Panorama device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "Specific Panorama template stack",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-					}...),
-				},
-			},
 			"vsys": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
@@ -2012,6 +1968,14 @@ func ZoneLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+					}...),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
@@ -2059,6 +2023,42 @@ func ZoneLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
+			"template_stack": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific template stack",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Specific Panorama device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Specific Panorama template stack",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
 		},
 	}
 }
@@ -2092,15 +2092,15 @@ func (o *ZoneVsysLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ZoneTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
 		NgfwDevice     *string `json:"ngfw_device"`
 		Vsys           *string `json:"vsys"`
-		PanoramaDevice *string `json:"panorama_device"`
 	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		Vsys:           o.Vsys.ValueStringPointer(),
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -2108,32 +2108,32 @@ func (o ZoneTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
 		NgfwDevice     *string `json:"ngfw_device"`
 		Vsys           *string `json:"vsys"`
-		PanoramaDevice *string `json:"panorama_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.Vsys = types.StringPointerValue(shadow.Vsys)
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 
 	return nil
 }
 func (o ZoneTemplateStackLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
 	}{
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
-		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -2141,18 +2141,18 @@ func (o ZoneTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }

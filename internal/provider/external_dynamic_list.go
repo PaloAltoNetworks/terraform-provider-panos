@@ -70,24 +70,123 @@ type ExternalDynamicListDataSourceTypeObject struct {
 	PredefinedUrl *ExternalDynamicListDataSourceTypePredefinedUrlObject `tfsdk:"predefined_url"`
 	Url           *ExternalDynamicListDataSourceTypeUrlObject           `tfsdk:"url"`
 }
+type ExternalDynamicListDataSourceTypeDomainObject struct {
+	ExpandDomain       types.Bool                                              `tfsdk:"expand_domain"`
+	Recurring          *ExternalDynamicListDataSourceTypeDomainRecurringObject `tfsdk:"recurring"`
+	Url                types.String                                            `tfsdk:"url"`
+	Auth               *ExternalDynamicListDataSourceTypeDomainAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                            `tfsdk:"certificate_profile"`
+	Description        types.String                                            `tfsdk:"description"`
+	ExceptionList      types.List                                              `tfsdk:"exception_list"`
+}
+type ExternalDynamicListDataSourceTypeDomainAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringObject struct {
+	Monthly    *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject    `tfsdk:"monthly"`
+	Weekly     *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject     `tfsdk:"weekly"`
+	Daily      *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject      `tfsdk:"daily"`
+	FiveMinute *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject `tfsdk:"five_minute"`
+	Hourly     *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject     `tfsdk:"hourly"`
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject struct {
+	At         types.String `tfsdk:"at"`
+	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject struct {
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject struct {
+}
+type ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject struct {
+}
+type ExternalDynamicListDataSourceTypeImeiObject struct {
+	Recurring          *ExternalDynamicListDataSourceTypeImeiRecurringObject `tfsdk:"recurring"`
+	Url                types.String                                          `tfsdk:"url"`
+	Auth               *ExternalDynamicListDataSourceTypeImeiAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
+	Description        types.String                                          `tfsdk:"description"`
+	ExceptionList      types.List                                            `tfsdk:"exception_list"`
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringObject struct {
+	FiveMinute *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject `tfsdk:"five_minute"`
+	Hourly     *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject     `tfsdk:"hourly"`
+	Monthly    *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject    `tfsdk:"monthly"`
+	Weekly     *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject     `tfsdk:"weekly"`
+	Daily      *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject      `tfsdk:"daily"`
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject struct {
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject struct {
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject struct {
+	At         types.String `tfsdk:"at"`
+	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
+}
+type ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject struct {
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+	At        types.String `tfsdk:"at"`
+}
+type ExternalDynamicListDataSourceTypeImeiAuthObject struct {
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
+}
+type ExternalDynamicListDataSourceTypeImsiObject struct {
+	Auth               *ExternalDynamicListDataSourceTypeImsiAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
+	Description        types.String                                          `tfsdk:"description"`
+	ExceptionList      types.List                                            `tfsdk:"exception_list"`
+	Recurring          *ExternalDynamicListDataSourceTypeImsiRecurringObject `tfsdk:"recurring"`
+	Url                types.String                                          `tfsdk:"url"`
+}
+type ExternalDynamicListDataSourceTypeImsiAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringObject struct {
+	FiveMinute *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject `tfsdk:"five_minute"`
+	Hourly     *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject     `tfsdk:"hourly"`
+	Monthly    *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject    `tfsdk:"monthly"`
+	Weekly     *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject     `tfsdk:"weekly"`
+	Daily      *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject      `tfsdk:"daily"`
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject struct {
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject struct {
+	At         types.String `tfsdk:"at"`
+	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject struct {
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
+}
+type ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject struct {
+}
 type ExternalDynamicListDataSourceTypeIpObject struct {
-	Description        types.String                                        `tfsdk:"description"`
-	ExceptionList      types.List                                          `tfsdk:"exception_list"`
 	Recurring          *ExternalDynamicListDataSourceTypeIpRecurringObject `tfsdk:"recurring"`
 	Url                types.String                                        `tfsdk:"url"`
 	Auth               *ExternalDynamicListDataSourceTypeIpAuthObject      `tfsdk:"auth"`
 	CertificateProfile types.String                                        `tfsdk:"certificate_profile"`
-}
-type ExternalDynamicListDataSourceTypeIpAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
+	Description        types.String                                        `tfsdk:"description"`
+	ExceptionList      types.List                                          `tfsdk:"exception_list"`
 }
 type ExternalDynamicListDataSourceTypeIpRecurringObject struct {
+	Weekly     *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject     `tfsdk:"weekly"`
+	Daily      *ExternalDynamicListDataSourceTypeIpRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject     `tfsdk:"hourly"`
 	Monthly    *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject    `tfsdk:"monthly"`
-	Weekly     *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject     `tfsdk:"weekly"`
-	Daily      *ExternalDynamicListDataSourceTypeIpRecurringDailyObject      `tfsdk:"daily"`
 }
 type ExternalDynamicListDataSourceTypeIpRecurringDailyObject struct {
 	At types.String `tfsdk:"at"`
@@ -104,39 +203,38 @@ type ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
+type ExternalDynamicListDataSourceTypeIpAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
+}
 type ExternalDynamicListDataSourceTypePredefinedIpObject struct {
 	Url           types.String `tfsdk:"url"`
 	Description   types.String `tfsdk:"description"`
 	ExceptionList types.List   `tfsdk:"exception_list"`
 }
 type ExternalDynamicListDataSourceTypePredefinedUrlObject struct {
-	Description   types.String `tfsdk:"description"`
 	ExceptionList types.List   `tfsdk:"exception_list"`
 	Url           types.String `tfsdk:"url"`
+	Description   types.String `tfsdk:"description"`
 }
 type ExternalDynamicListDataSourceTypeUrlObject struct {
+	Url                types.String                                         `tfsdk:"url"`
+	Auth               *ExternalDynamicListDataSourceTypeUrlAuthObject      `tfsdk:"auth"`
 	CertificateProfile types.String                                         `tfsdk:"certificate_profile"`
 	Description        types.String                                         `tfsdk:"description"`
 	ExceptionList      types.List                                           `tfsdk:"exception_list"`
 	Recurring          *ExternalDynamicListDataSourceTypeUrlRecurringObject `tfsdk:"recurring"`
-	Url                types.String                                         `tfsdk:"url"`
-	Auth               *ExternalDynamicListDataSourceTypeUrlAuthObject      `tfsdk:"auth"`
 }
 type ExternalDynamicListDataSourceTypeUrlAuthObject struct {
 	Password types.String `tfsdk:"password"`
 	Username types.String `tfsdk:"username"`
 }
 type ExternalDynamicListDataSourceTypeUrlRecurringObject struct {
+	Weekly     *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject     `tfsdk:"weekly"`
 	Daily      *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject     `tfsdk:"hourly"`
 	Monthly    *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject    `tfsdk:"monthly"`
-	Weekly     *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject     `tfsdk:"weekly"`
-}
-type ExternalDynamicListDataSourceTypeUrlRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
-}
-type ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject struct {
 }
 type ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject struct {
 }
@@ -148,108 +246,10 @@ type ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
-type ExternalDynamicListDataSourceTypeDomainObject struct {
-	Auth               *ExternalDynamicListDataSourceTypeDomainAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                            `tfsdk:"certificate_profile"`
-	Description        types.String                                            `tfsdk:"description"`
-	ExceptionList      types.List                                              `tfsdk:"exception_list"`
-	ExpandDomain       types.Bool                                              `tfsdk:"expand_domain"`
-	Recurring          *ExternalDynamicListDataSourceTypeDomainRecurringObject `tfsdk:"recurring"`
-	Url                types.String                                            `tfsdk:"url"`
-}
-type ExternalDynamicListDataSourceTypeDomainRecurringObject struct {
-	Daily      *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject      `tfsdk:"daily"`
-	FiveMinute *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject `tfsdk:"five_minute"`
-	Hourly     *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject     `tfsdk:"hourly"`
-	Monthly    *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject    `tfsdk:"monthly"`
-	Weekly     *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject     `tfsdk:"weekly"`
-}
-type ExternalDynamicListDataSourceTypeDomainRecurringDailyObject struct {
+type ExternalDynamicListDataSourceTypeUrlRecurringDailyObject struct {
 	At types.String `tfsdk:"at"`
 }
-type ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject struct {
-}
-type ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject struct {
-}
-type ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject struct {
-	At         types.String `tfsdk:"at"`
-	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
-}
-type ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject struct {
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type ExternalDynamicListDataSourceTypeDomainAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
-}
-type ExternalDynamicListDataSourceTypeImeiObject struct {
-	ExceptionList      types.List                                            `tfsdk:"exception_list"`
-	Recurring          *ExternalDynamicListDataSourceTypeImeiRecurringObject `tfsdk:"recurring"`
-	Url                types.String                                          `tfsdk:"url"`
-	Auth               *ExternalDynamicListDataSourceTypeImeiAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
-	Description        types.String                                          `tfsdk:"description"`
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringObject struct {
-	Weekly     *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject     `tfsdk:"weekly"`
-	Daily      *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject      `tfsdk:"daily"`
-	FiveMinute *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject `tfsdk:"five_minute"`
-	Hourly     *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject     `tfsdk:"hourly"`
-	Monthly    *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject    `tfsdk:"monthly"`
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject struct {
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject struct {
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject struct {
-}
-type ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject struct {
-	At         types.String `tfsdk:"at"`
-	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
-}
-type ExternalDynamicListDataSourceTypeImeiAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
-}
-type ExternalDynamicListDataSourceTypeImsiObject struct {
-	Url                types.String                                          `tfsdk:"url"`
-	Auth               *ExternalDynamicListDataSourceTypeImsiAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
-	Description        types.String                                          `tfsdk:"description"`
-	ExceptionList      types.List                                            `tfsdk:"exception_list"`
-	Recurring          *ExternalDynamicListDataSourceTypeImsiRecurringObject `tfsdk:"recurring"`
-}
-type ExternalDynamicListDataSourceTypeImsiAuthObject struct {
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringObject struct {
-	Monthly    *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject    `tfsdk:"monthly"`
-	Weekly     *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject     `tfsdk:"weekly"`
-	Daily      *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject      `tfsdk:"daily"`
-	FiveMinute *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject `tfsdk:"five_minute"`
-	Hourly     *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject     `tfsdk:"hourly"`
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject struct {
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject struct {
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject struct {
-	At         types.String `tfsdk:"at"`
-	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
-}
-type ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject struct {
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-	At        types.String `tfsdk:"at"`
+type ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject struct {
 }
 
 func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -280,19 +280,6 @@ func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, ob
 }
 func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Context, obj **extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var domain_entry *extdynlist.TypeDomain
-	if o.Domain != nil {
-		if *obj != nil && (*obj).Domain != nil {
-			domain_entry = (*obj).Domain
-		} else {
-			domain_entry = new(extdynlist.TypeDomain)
-		}
-
-		diags.Append(o.Domain.CopyToPango(ctx, &domain_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var imei_entry *extdynlist.TypeImei
 	if o.Imei != nil {
 		if *obj != nil && (*obj).Imei != nil {
@@ -371,17 +358,30 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 			return diags
 		}
 	}
+	var domain_entry *extdynlist.TypeDomain
+	if o.Domain != nil {
+		if *obj != nil && (*obj).Domain != nil {
+			domain_entry = (*obj).Domain
+		} else {
+			domain_entry = new(extdynlist.TypeDomain)
+		}
+
+		diags.Append(o.Domain.CopyToPango(ctx, &domain_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.Type)
 	}
-	(*obj).Domain = domain_entry
 	(*obj).Imei = imei_entry
 	(*obj).Imsi = imsi_entry
 	(*obj).Ip = ip_entry
 	(*obj).PredefinedIp = predefinedIp_entry
 	(*obj).PredefinedUrl = predefinedUrl_entry
 	(*obj).Url = url_entry
+	(*obj).Domain = domain_entry
 
 	return diags
 }
@@ -451,19 +451,6 @@ func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyToPango(ctx cont
 }
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var monthly_entry *extdynlist.TypeDomainRecurringMonthly
-	if o.Monthly != nil {
-		if *obj != nil && (*obj).Monthly != nil {
-			monthly_entry = (*obj).Monthly
-		} else {
-			monthly_entry = new(extdynlist.TypeDomainRecurringMonthly)
-		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var weekly_entry *extdynlist.TypeDomainRecurringWeekly
 	if o.Weekly != nil {
 		if *obj != nil && (*obj).Weekly != nil {
@@ -516,15 +503,39 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 			return diags
 		}
 	}
+	var monthly_entry *extdynlist.TypeDomainRecurringMonthly
+	if o.Monthly != nil {
+		if *obj != nil && (*obj).Monthly != nil {
+			monthly_entry = (*obj).Monthly
+		} else {
+			monthly_entry = new(extdynlist.TypeDomainRecurringMonthly)
+		}
+
+		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeDomainRecurring)
 	}
-	(*obj).Monthly = monthly_entry
 	(*obj).Weekly = weekly_entry
 	(*obj).Daily = daily_entry
 	(*obj).FiveMinute = fiveMinute_entry
 	(*obj).Hourly = hourly_entry
+	(*obj).Monthly = monthly_entry
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeDomainRecurringDaily)
+	}
+	(*obj).At = at_value
 
 	return diags
 }
@@ -572,19 +583,23 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeDomainRecurringDaily)
-	}
-	(*obj).At = at_value
-
-	return diags
-}
 func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var auth_entry *extdynlist.TypeImeiAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeImeiAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
 	if diags.HasError() {
@@ -604,36 +619,47 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Co
 		}
 	}
 	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeImeiAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeImeiAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeImei)
 	}
-	(*obj).ExceptionList = exceptionList_pango_entries
-	(*obj).Recurring = recurring_entry
-	(*obj).Url = url_value
 	(*obj).Auth = auth_entry
 	(*obj).CertificateProfile = certificateProfile_value
 	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Recurring = recurring_entry
+	(*obj).Url = url_value
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
 
 	return diags
 }
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var weekly_entry *extdynlist.TypeImeiRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var daily_entry *extdynlist.TypeImeiRecurringDaily
 	if o.Daily != nil {
 		if *obj != nil && (*obj).Daily != nil {
@@ -686,28 +712,50 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 			return diags
 		}
 	}
-	var weekly_entry *extdynlist.TypeImeiRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeImeiRecurring)
 	}
+	(*obj).Weekly = weekly_entry
 	(*obj).Daily = daily_entry
 	(*obj).FiveMinute = fiveMinute_entry
 	(*obj).Hourly = hourly_entry
 	(*obj).Monthly = monthly_entry
-	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringHourly)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringMonthly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringWeekly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -731,71 +779,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyToP
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringHourly)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringMonthly)
-	}
-	(*obj).DayOfMonth = dayOfMonth_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
-
-	return diags
-}
 func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var auth_entry *extdynlist.TypeImsiAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeImsiAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
 	if diags.HasError() {
@@ -815,16 +800,44 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Co
 		}
 	}
 	url_value := o.Url.ValueStringPointer()
+	var auth_entry *extdynlist.TypeImsiAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeImsiAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeImsi)
 	}
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
-	(*obj).Description = description_value
 	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).Recurring = recurring_entry
 	(*obj).Url = url_value
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).Description = description_value
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
 
 	return diags
 }
@@ -907,6 +920,32 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 
 	return diags
 }
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringMonthly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringWeekly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
@@ -936,47 +975,22 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringMonthly)
-	}
-	(*obj).DayOfMonth = dayOfMonth_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
-
-	return diags
-}
 func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var auth_entry *extdynlist.TypeIpAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeIpAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
@@ -997,61 +1011,34 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Cont
 		}
 	}
 	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeIpAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeIpAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeIp)
 	}
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
 	(*obj).Description = description_value
 	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).Recurring = recurring_entry
 	(*obj).Url = url_value
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
+
+	return diags
+}
+func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
 
 	return diags
 }
 func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_entry *extdynlist.TypeIpRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(extdynlist.TypeIpRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var fiveMinute_entry *extdynlist.TypeIpRecurringFiveMinute
-	if o.FiveMinute != nil {
-		if *obj != nil && (*obj).FiveMinute != nil {
-			fiveMinute_entry = (*obj).FiveMinute
-		} else {
-			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
-		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var hourly_entry *extdynlist.TypeIpRecurringHourly
 	if o.Hourly != nil {
 		if *obj != nil && (*obj).Hourly != nil {
@@ -1091,24 +1078,41 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 			return diags
 		}
 	}
+	var daily_entry *extdynlist.TypeIpRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(extdynlist.TypeIpRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_entry *extdynlist.TypeIpRecurringFiveMinute
+	if o.FiveMinute != nil {
+		if *obj != nil && (*obj).FiveMinute != nil {
+			fiveMinute_entry = (*obj).FiveMinute
+		} else {
+			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
+		}
+
+		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeIpRecurring)
 	}
-	(*obj).Daily = daily_entry
-	(*obj).FiveMinute = fiveMinute_entry
 	(*obj).Hourly = hourly_entry
 	(*obj).Monthly = monthly_entry
 	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringFiveMinute)
-	}
+	(*obj).Daily = daily_entry
+	(*obj).FiveMinute = fiveMinute_entry
 
 	return diags
 }
@@ -1158,16 +1162,12 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpAuth)
+		*obj = new(extdynlist.TypeIpRecurringFiveMinute)
 	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
 
 	return diags
 }
@@ -1192,39 +1192,25 @@ func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyToPango(ctx co
 }
 func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	url_value := o.Url.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	url_value := o.Url.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypePredefinedUrl)
 	}
-	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).Url = url_value
 	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
 
 	return diags
 }
 func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var auth_entry *extdynlist.TypeUrlAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeUrlAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
@@ -1245,16 +1231,30 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Con
 		}
 	}
 	url_value := o.Url.ValueStringPointer()
+	var auth_entry *extdynlist.TypeUrlAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeUrlAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeUrl)
 	}
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
 	(*obj).Description = description_value
 	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).Recurring = recurring_entry
 	(*obj).Url = url_value
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
 
 	return diags
 }
@@ -1381,14 +1381,14 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyToPango
 }
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeUrlRecurringWeekly)
 	}
-	(*obj).At = at_value
 	(*obj).DayOfWeek = dayOfWeek_value
+	(*obj).At = at_value
 
 	return diags
 }
@@ -1431,6 +1431,33 @@ func (o *ExternalDynamicListDataSourceModel) CopyFromPango(ctx context.Context, 
 
 func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Context, obj *extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var predefinedIp_object *ExternalDynamicListDataSourceTypePredefinedIpObject
+	if obj.PredefinedIp != nil {
+		predefinedIp_object = new(ExternalDynamicListDataSourceTypePredefinedIpObject)
+
+		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var predefinedUrl_object *ExternalDynamicListDataSourceTypePredefinedUrlObject
+	if obj.PredefinedUrl != nil {
+		predefinedUrl_object = new(ExternalDynamicListDataSourceTypePredefinedUrlObject)
+
+		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var url_object *ExternalDynamicListDataSourceTypeUrlObject
+	if obj.Url != nil {
+		url_object = new(ExternalDynamicListDataSourceTypeUrlObject)
+
+		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var domain_object *ExternalDynamicListDataSourceTypeDomainObject
 	if obj.Domain != nil {
 		domain_object = new(ExternalDynamicListDataSourceTypeDomainObject)
@@ -1467,41 +1494,38 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 			return diags
 		}
 	}
-	var predefinedIp_object *ExternalDynamicListDataSourceTypePredefinedIpObject
-	if obj.PredefinedIp != nil {
-		predefinedIp_object = new(ExternalDynamicListDataSourceTypePredefinedIpObject)
 
-		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var predefinedUrl_object *ExternalDynamicListDataSourceTypePredefinedUrlObject
-	if obj.PredefinedUrl != nil {
-		predefinedUrl_object = new(ExternalDynamicListDataSourceTypePredefinedUrlObject)
-
-		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var url_object *ExternalDynamicListDataSourceTypeUrlObject
-	if obj.Url != nil {
-		url_object = new(ExternalDynamicListDataSourceTypeUrlObject)
-
-		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.PredefinedIp = predefinedIp_object
+	o.PredefinedUrl = predefinedUrl_object
+	o.Url = url_object
 	o.Domain = domain_object
 	o.Imei = imei_object
 	o.Imsi = imsi_object
 	o.Ip = ip_object
-	o.PredefinedIp = predefinedIp_object
-	o.PredefinedUrl = predefinedUrl_object
-	o.Url = url_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var exceptionList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
+		diags.Append(list_diags...)
+	}
+
+	var url_value types.String
+	if obj.Url != nil {
+		url_value = types.StringValue(*obj.Url)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	o.Url = url_value
+	o.Description = description_value
+	o.ExceptionList = exceptionList_list
 
 	return diags
 }
@@ -1514,20 +1538,20 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.C
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
 	}
-	var auth_object *ExternalDynamicListDataSourceTypeUrlAuthObject
-	if obj.Auth != nil {
-		auth_object = new(ExternalDynamicListDataSourceTypeUrlAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var recurring_object *ExternalDynamicListDataSourceTypeUrlRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeUrlRecurringObject)
 
 		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var auth_object *ExternalDynamicListDataSourceTypeUrlAuthObject
+	if obj.Auth != nil {
+		auth_object = new(ExternalDynamicListDataSourceTypeUrlAuthObject)
+
+		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1545,12 +1569,29 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.C
 	if obj.Url != nil {
 		url_value = types.StringValue(*obj.Url)
 	}
-	o.Auth = auth_object
 	o.CertificateProfile = certificateProfile_value
 	o.Description = description_value
 	o.ExceptionList = exceptionList_list
 	o.Recurring = recurring_object
 	o.Url = url_value
+	o.Auth = auth_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var username_value types.String
+	if obj.Username != nil {
+		username_value = types.StringValue(*obj.Username)
+	}
+	var password_value types.String
+	if obj.Password != nil {
+		password_value = types.StringValue(*obj.Password)
+	}
+	o.Username = username_value
+	o.Password = password_value
 
 	return diags
 }
@@ -1612,6 +1653,23 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	return diags
 }
 
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -1649,40 +1707,6 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyFromPan
 	}
 	o.At = at_value
 	o.DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var password_value types.String
-	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
-	}
-	var username_value types.String
-	if obj.Username != nil {
-		username_value = types.StringValue(*obj.Username)
-	}
-	o.Password = password_value
-	o.Username = username_value
 
 	return diags
 }
@@ -1743,6 +1767,15 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyFromPango(ctx contex
 
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var weekly_object *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject)
+
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var daily_object *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeDomainRecurringDailyObject)
@@ -1779,38 +1812,12 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 			return diags
 		}
 	}
-	var weekly_object *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject)
 
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Weekly = weekly_object
 	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
-	o.Weekly = weekly_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -1852,6 +1859,23 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyFrom
 	}
 	o.At = at_value
 	o.DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -1900,6 +1924,10 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.
 		}
 	}
 
+	var url_value types.String
+	if obj.Url != nil {
+		url_value = types.StringValue(*obj.Url)
+	}
 	var certificateProfile_value types.String
 	if obj.CertificateProfile != nil {
 		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
@@ -1908,16 +1936,12 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
-	var url_value types.String
-	if obj.Url != nil {
-		url_value = types.StringValue(*obj.Url)
-	}
+	o.Url = url_value
 	o.Auth = auth_object
 	o.CertificateProfile = certificateProfile_value
 	o.Description = description_value
 	o.ExceptionList = exceptionList_list
 	o.Recurring = recurring_object
-	o.Url = url_value
 
 	return diags
 }
@@ -1941,15 +1965,6 @@ func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyFromPango(ctx cont
 
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var weekly_object *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_object *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeImeiRecurringDailyObject)
@@ -1986,12 +2001,21 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 			return diags
 		}
 	}
+	var weekly_object *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject)
 
-	o.Weekly = weekly_object
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
+	o.Weekly = weekly_object
 
 	return diags
 }
@@ -2023,16 +2047,16 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyFromPan
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var dayOfMonth_value types.Int64
-	if obj.DayOfMonth != nil {
-		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
-	}
 	var at_value types.String
 	if obj.At != nil {
 		at_value = types.StringValue(*obj.At)
 	}
-	o.DayOfMonth = dayOfMonth_value
+	var dayOfMonth_value types.Int64
+	if obj.DayOfMonth != nil {
+		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
+	}
 	o.At = at_value
+	o.DayOfMonth = dayOfMonth_value
 
 	return diags
 }
@@ -2062,15 +2086,6 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
 	}
-	var recurring_object *ExternalDynamicListDataSourceTypeImsiRecurringObject
-	if obj.Recurring != nil {
-		recurring_object = new(ExternalDynamicListDataSourceTypeImsiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var auth_object *ExternalDynamicListDataSourceTypeImsiAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeImsiAuthObject)
@@ -2080,7 +2095,20 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.
 			return diags
 		}
 	}
+	var recurring_object *ExternalDynamicListDataSourceTypeImsiRecurringObject
+	if obj.Recurring != nil {
+		recurring_object = new(ExternalDynamicListDataSourceTypeImsiRecurringObject)
 
+		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -2089,16 +2117,12 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.
 	if obj.Url != nil {
 		url_value = types.StringValue(*obj.Url)
 	}
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
+	o.Auth = auth_object
+	o.CertificateProfile = certificateProfile_value
 	o.Description = description_value
 	o.ExceptionList = exceptionList_list
 	o.Recurring = recurring_object
 	o.Url = url_value
-	o.Auth = auth_object
-	o.CertificateProfile = certificateProfile_value
 
 	return diags
 }
@@ -2122,15 +2146,6 @@ func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyFromPango(ctx cont
 
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var weekly_object *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_object *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeImsiRecurringDailyObject)
@@ -2167,29 +2182,21 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 			return diags
 		}
 	}
+	var weekly_object *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject)
 
-	o.Weekly = weekly_object
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.DayOfWeek = dayOfWeek_value
-	o.At = at_value
+	o.Weekly = weekly_object
 
 	return diags
 }
@@ -2231,6 +2238,23 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyFromPa
 	}
 	o.At = at_value
 	o.DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -2303,15 +2327,6 @@ func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyFromPango(ctx contex
 
 func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var weekly_object *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_object *ExternalDynamicListDataSourceTypeIpRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeIpRecurringDailyObject)
@@ -2348,12 +2363,33 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 			return diags
 		}
 	}
+	var weekly_object *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject)
 
-	o.Weekly = weekly_object
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
+	o.Weekly = weekly_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	o.At = at_value
 
 	return diags
 }
@@ -2404,43 +2440,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.At = at_value
-
-	return diags
-}
-
 func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var exceptionList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
-		diags.Append(list_diags...)
-	}
-
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	var url_value types.String
-	if obj.Url != nil {
-		url_value = types.StringValue(*obj.Url)
-	}
-	o.Description = description_value
-	o.ExceptionList = exceptionList_list
-	o.Url = url_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
@@ -2478,8 +2478,6 @@ func ExternalDynamicListDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"type": ExternalDynamicListDataSourceTypeSchema(),
-
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -2487,6 +2485,8 @@ func ExternalDynamicListDataSourceSchema() dsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"type": ExternalDynamicListDataSourceTypeSchema(),
 		},
 	}
 }
@@ -2518,6 +2518,8 @@ func ExternalDynamicListDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"domain": ExternalDynamicListDataSourceTypeDomainSchema(),
+
 			"imei": ExternalDynamicListDataSourceTypeImeiSchema(),
 
 			"imsi": ExternalDynamicListDataSourceTypeImsiSchema(),
@@ -2529,8 +2531,6 @@ func ExternalDynamicListDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 			"predefined_url": ExternalDynamicListDataSourceTypePredefinedUrlSchema(),
 
 			"url": ExternalDynamicListDataSourceTypeUrlSchema(),
-
-			"domain": ExternalDynamicListDataSourceTypeDomainSchema(),
 		},
 	}
 }
@@ -2563,18 +2563,16 @@ func ExternalDynamicListDataSourceTypeImeiSchema() dsschema.SingleNestedAttribut
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
-
-			"auth": ExternalDynamicListDataSourceTypeImeiAuthSchema(),
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
@@ -2610,6 +2608,8 @@ func ExternalDynamicListDataSourceTypeImeiSchema() dsschema.SingleNestedAttribut
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"auth": ExternalDynamicListDataSourceTypeImeiAuthSchema(),
 		},
 	}
 }
@@ -2641,6 +2641,8 @@ func ExternalDynamicListDataSourceTypeImeiRecurringSchema() dsschema.SingleNeste
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"daily": ExternalDynamicListDataSourceTypeImeiRecurringDailySchema(),
+
 			"five_minute": ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema(),
 
 			"hourly": ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema(),
@@ -2648,14 +2650,138 @@ func ExternalDynamicListDataSourceTypeImeiRecurringSchema() dsschema.SingleNeste
 			"monthly": ExternalDynamicListDataSourceTypeImeiRecurringMonthlySchema(),
 
 			"weekly": ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema(),
-
-			"daily": ExternalDynamicListDataSourceTypeImeiRecurringDailySchema(),
 		},
 	}
 }
 
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeImeiRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeImeiRecurringDailySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeImeiRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2682,11 +2808,11 @@ func ExternalDynamicListDataSourceTypeImeiRecurringMonthlySchema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -2738,11 +2864,11 @@ func ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -2768,132 +2894,6 @@ func ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema() dsschema.Singl
 
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeImeiRecurringDailySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeImeiRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2966,13 +2966,13 @@ func ExternalDynamicListDataSourceTypeImsiSchema() dsschema.SingleNestedAttribut
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3121,54 +3121,6 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func ExternalDynamicListDataSourceTypeImsiRecurringDailySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeImsiRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -3179,11 +3131,11 @@ func ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteSchema() dsschema.S
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3218,11 +3170,11 @@ func ExternalDynamicListDataSourceTypeImsiRecurringHourlySchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3257,25 +3209,25 @@ func ExternalDynamicListDataSourceTypeImsiRecurringMonthlySchema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"day_of_month": dsschema.Int64Attribute{
-				Description: "",
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
+			"day_of_month": dsschema.Int64Attribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -3313,11 +3265,11 @@ func ExternalDynamicListDataSourceTypeImsiRecurringWeeklySchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3359,6 +3311,54 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) getTypeFor(
 	panic("unreachable")
 }
 
+func ExternalDynamicListDataSourceTypeImsiRecurringDailySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeImsiRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func ExternalDynamicListDataSourceTypeIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -3369,13 +3369,13 @@ func ExternalDynamicListDataSourceTypeIpSchema() dsschema.SingleNestedAttribute 
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3478,62 +3478,6 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) getTypeFor(name str
 	panic("unreachable")
 }
 
-func ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func ExternalDynamicListDataSourceTypeIpRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -3544,11 +3488,11 @@ func ExternalDynamicListDataSourceTypeIpRecurringDailySchema() dsschema.SingleNe
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3592,11 +3536,11 @@ func ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteSchema() dsschema.Sin
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3631,11 +3575,11 @@ func ExternalDynamicListDataSourceTypeIpRecurringHourlySchema() dsschema.SingleN
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3670,11 +3614,11 @@ func ExternalDynamicListDataSourceTypeIpRecurringMonthlySchema() dsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3700,6 +3644,62 @@ func ExternalDynamicListDataSourceTypeIpRecurringMonthlySchema() dsschema.Single
 
 func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeIpRecurringMonthlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3772,13 +3772,13 @@ func ExternalDynamicListDataSourceTypePredefinedIpSchema() dsschema.SingleNested
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3839,13 +3839,13 @@ func ExternalDynamicListDataSourceTypePredefinedUrlSchema() dsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3906,16 +3906,24 @@ func ExternalDynamicListDataSourceTypeUrlSchema() dsschema.SingleNestedAttribute
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
+
+			"url": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"auth": ExternalDynamicListDataSourceTypeUrlAuthSchema(),
 
@@ -3945,298 +3953,12 @@ func ExternalDynamicListDataSourceTypeUrlSchema() dsschema.SingleNestedAttribute
 			},
 
 			"recurring": ExternalDynamicListDataSourceTypeUrlRecurringSchema(),
-
-			"url": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
 
 func (o *ExternalDynamicListDataSourceTypeUrlObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeUrlSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"monthly": ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema(),
-
-			"weekly": ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema(),
-
-			"daily": ExternalDynamicListDataSourceTypeUrlRecurringDailySchema(),
-
-			"five_minute": ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema(),
-
-			"hourly": ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema(),
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_month": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringDailySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4299,6 +4021,284 @@ func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
+func ExternalDynamicListDataSourceTypeUrlRecurringSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"daily": ExternalDynamicListDataSourceTypeUrlRecurringDailySchema(),
+
+			"five_minute": ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema(),
+
+			"hourly": ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema(),
+
+			"monthly": ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema(),
+
+			"weekly": ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeUrlRecurringDailySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_month": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func ExternalDynamicListDataSourceTypeDomainSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -4309,18 +4309,16 @@ func ExternalDynamicListDataSourceTypeDomainSchema() dsschema.SingleNestedAttrib
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
 				path.MatchRelative().AtParent().AtName("imsi"),
 				path.MatchRelative().AtParent().AtName("ip"),
 				path.MatchRelative().AtParent().AtName("predefined_ip"),
 				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
-
-			"auth": ExternalDynamicListDataSourceTypeDomainAuthSchema(),
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
@@ -4364,12 +4362,60 @@ func ExternalDynamicListDataSourceTypeDomainSchema() dsschema.SingleNestedAttrib
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"auth": ExternalDynamicListDataSourceTypeDomainAuthSchema(),
 		},
 	}
 }
 
 func (o *ExternalDynamicListDataSourceTypeDomainObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeDomainSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeDomainAuthSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"password": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"username": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeDomainAuthSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4395,125 +4441,21 @@ func ExternalDynamicListDataSourceTypeDomainRecurringSchema() dsschema.SingleNes
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"monthly": ExternalDynamicListDataSourceTypeDomainRecurringMonthlySchema(),
-
-			"weekly": ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema(),
-
 			"daily": ExternalDynamicListDataSourceTypeDomainRecurringDailySchema(),
 
 			"five_minute": ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteSchema(),
 
 			"hourly": ExternalDynamicListDataSourceTypeDomainRecurringHourlySchema(),
+
+			"monthly": ExternalDynamicListDataSourceTypeDomainRecurringMonthlySchema(),
+
+			"weekly": ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema(),
 		},
 	}
 }
 
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListDataSourceTypeDomainRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListDataSourceTypeDomainRecurringDailySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeDomainRecurringDailySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4664,24 +4606,34 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) getTypeF
 	panic("unreachable")
 }
 
-func ExternalDynamicListDataSourceTypeDomainAuthSchema() dsschema.SingleNestedAttribute {
+func ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    true,
 		Optional:    true,
 		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"password": dsschema.StringAttribute{
-				Description: "",
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"username": dsschema.StringAttribute{
+			"day_of_week": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -4692,8 +4644,56 @@ func ExternalDynamicListDataSourceTypeDomainAuthSchema() dsschema.SingleNestedAt
 	}
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListDataSourceTypeDomainAuthSchema()
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListDataSourceTypeDomainRecurringDailySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListDataSourceTypeDomainRecurringDailySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4822,25 +4822,25 @@ func ExternalDynamicListResourceLocationSchema() rsschema.Attribute {
 type ExternalDynamicListResourceModel struct {
 	Location        ExternalDynamicListLocation            `tfsdk:"location"`
 	Name            types.String                           `tfsdk:"name"`
-	DisableOverride types.String                           `tfsdk:"disable_override"`
 	Type            *ExternalDynamicListResourceTypeObject `tfsdk:"type"`
+	DisableOverride types.String                           `tfsdk:"disable_override"`
 }
 type ExternalDynamicListResourceTypeObject struct {
+	Ip            *ExternalDynamicListResourceTypeIpObject            `tfsdk:"ip"`
+	PredefinedIp  *ExternalDynamicListResourceTypePredefinedIpObject  `tfsdk:"predefined_ip"`
+	PredefinedUrl *ExternalDynamicListResourceTypePredefinedUrlObject `tfsdk:"predefined_url"`
 	Url           *ExternalDynamicListResourceTypeUrlObject           `tfsdk:"url"`
 	Domain        *ExternalDynamicListResourceTypeDomainObject        `tfsdk:"domain"`
 	Imei          *ExternalDynamicListResourceTypeImeiObject          `tfsdk:"imei"`
 	Imsi          *ExternalDynamicListResourceTypeImsiObject          `tfsdk:"imsi"`
-	Ip            *ExternalDynamicListResourceTypeIpObject            `tfsdk:"ip"`
-	PredefinedIp  *ExternalDynamicListResourceTypePredefinedIpObject  `tfsdk:"predefined_ip"`
-	PredefinedUrl *ExternalDynamicListResourceTypePredefinedUrlObject `tfsdk:"predefined_url"`
 }
 type ExternalDynamicListResourceTypeImsiObject struct {
-	Auth               *ExternalDynamicListResourceTypeImsiAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                        `tfsdk:"certificate_profile"`
-	Description        types.String                                        `tfsdk:"description"`
 	ExceptionList      types.List                                          `tfsdk:"exception_list"`
 	Recurring          *ExternalDynamicListResourceTypeImsiRecurringObject `tfsdk:"recurring"`
 	Url                types.String                                        `tfsdk:"url"`
+	Auth               *ExternalDynamicListResourceTypeImsiAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                        `tfsdk:"certificate_profile"`
+	Description        types.String                                        `tfsdk:"description"`
 }
 type ExternalDynamicListResourceTypeImsiRecurringObject struct {
 	Weekly     *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject     `tfsdk:"weekly"`
@@ -4848,6 +4848,9 @@ type ExternalDynamicListResourceTypeImsiRecurringObject struct {
 	FiveMinute *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListResourceTypeImsiRecurringHourlyObject     `tfsdk:"hourly"`
 	Monthly    *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject    `tfsdk:"monthly"`
+}
+type ExternalDynamicListResourceTypeImsiRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
 }
 type ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject struct {
 }
@@ -4858,30 +4861,34 @@ type ExternalDynamicListResourceTypeImsiRecurringMonthlyObject struct {
 	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
 }
 type ExternalDynamicListResourceTypeImsiRecurringWeeklyObject struct {
-	DayOfWeek types.String `tfsdk:"day_of_week"`
 	At        types.String `tfsdk:"at"`
-}
-type ExternalDynamicListResourceTypeImsiRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type ExternalDynamicListResourceTypeImsiAuthObject struct {
-	Password types.String `tfsdk:"password"`
 	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
 }
 type ExternalDynamicListResourceTypeIpObject struct {
-	ExceptionList      types.List                                        `tfsdk:"exception_list"`
 	Recurring          *ExternalDynamicListResourceTypeIpRecurringObject `tfsdk:"recurring"`
 	Url                types.String                                      `tfsdk:"url"`
 	Auth               *ExternalDynamicListResourceTypeIpAuthObject      `tfsdk:"auth"`
 	CertificateProfile types.String                                      `tfsdk:"certificate_profile"`
 	Description        types.String                                      `tfsdk:"description"`
+	ExceptionList      types.List                                        `tfsdk:"exception_list"`
+}
+type ExternalDynamicListResourceTypeIpAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
 }
 type ExternalDynamicListResourceTypeIpRecurringObject struct {
-	Weekly     *ExternalDynamicListResourceTypeIpRecurringWeeklyObject     `tfsdk:"weekly"`
 	Daily      *ExternalDynamicListResourceTypeIpRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListResourceTypeIpRecurringHourlyObject     `tfsdk:"hourly"`
 	Monthly    *ExternalDynamicListResourceTypeIpRecurringMonthlyObject    `tfsdk:"monthly"`
+	Weekly     *ExternalDynamicListResourceTypeIpRecurringWeeklyObject     `tfsdk:"weekly"`
+}
+type ExternalDynamicListResourceTypeIpRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
 }
 type ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject struct {
 }
@@ -4895,13 +4902,6 @@ type ExternalDynamicListResourceTypeIpRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
-type ExternalDynamicListResourceTypeIpRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
-}
-type ExternalDynamicListResourceTypeIpAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
-}
 type ExternalDynamicListResourceTypePredefinedIpObject struct {
 	Description   types.String `tfsdk:"description"`
 	ExceptionList types.List   `tfsdk:"exception_list"`
@@ -4913,27 +4913,19 @@ type ExternalDynamicListResourceTypePredefinedUrlObject struct {
 	Url           types.String `tfsdk:"url"`
 }
 type ExternalDynamicListResourceTypeUrlObject struct {
+	Auth               *ExternalDynamicListResourceTypeUrlAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                       `tfsdk:"certificate_profile"`
 	Description        types.String                                       `tfsdk:"description"`
 	ExceptionList      types.List                                         `tfsdk:"exception_list"`
 	Recurring          *ExternalDynamicListResourceTypeUrlRecurringObject `tfsdk:"recurring"`
 	Url                types.String                                       `tfsdk:"url"`
-	Auth               *ExternalDynamicListResourceTypeUrlAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                       `tfsdk:"certificate_profile"`
-}
-type ExternalDynamicListResourceTypeUrlAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
 }
 type ExternalDynamicListResourceTypeUrlRecurringObject struct {
+	Monthly    *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject    `tfsdk:"monthly"`
 	Weekly     *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject     `tfsdk:"weekly"`
 	Daily      *ExternalDynamicListResourceTypeUrlRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListResourceTypeUrlRecurringHourlyObject     `tfsdk:"hourly"`
-	Monthly    *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject    `tfsdk:"monthly"`
-}
-type ExternalDynamicListResourceTypeUrlRecurringWeeklyObject struct {
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type ExternalDynamicListResourceTypeUrlRecurringDailyObject struct {
 	At types.String `tfsdk:"at"`
@@ -4946,26 +4938,29 @@ type ExternalDynamicListResourceTypeUrlRecurringMonthlyObject struct {
 	At         types.String `tfsdk:"at"`
 	DayOfMonth types.Int64  `tfsdk:"day_of_month"`
 }
+type ExternalDynamicListResourceTypeUrlRecurringWeeklyObject struct {
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+type ExternalDynamicListResourceTypeUrlAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
+}
 type ExternalDynamicListResourceTypeDomainObject struct {
-	Url                types.String                                          `tfsdk:"url"`
-	Auth               *ExternalDynamicListResourceTypeDomainAuthObject      `tfsdk:"auth"`
-	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
 	Description        types.String                                          `tfsdk:"description"`
 	ExceptionList      types.List                                            `tfsdk:"exception_list"`
 	ExpandDomain       types.Bool                                            `tfsdk:"expand_domain"`
 	Recurring          *ExternalDynamicListResourceTypeDomainRecurringObject `tfsdk:"recurring"`
+	Url                types.String                                          `tfsdk:"url"`
+	Auth               *ExternalDynamicListResourceTypeDomainAuthObject      `tfsdk:"auth"`
+	CertificateProfile types.String                                          `tfsdk:"certificate_profile"`
 }
 type ExternalDynamicListResourceTypeDomainRecurringObject struct {
+	Monthly    *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject    `tfsdk:"monthly"`
+	Weekly     *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject     `tfsdk:"weekly"`
 	Daily      *ExternalDynamicListResourceTypeDomainRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject `tfsdk:"five_minute"`
 	Hourly     *ExternalDynamicListResourceTypeDomainRecurringHourlyObject     `tfsdk:"hourly"`
-	Monthly    *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject    `tfsdk:"monthly"`
-	Weekly     *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject     `tfsdk:"weekly"`
-}
-type ExternalDynamicListResourceTypeDomainRecurringDailyObject struct {
-	At types.String `tfsdk:"at"`
-}
-type ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject struct {
 }
 type ExternalDynamicListResourceTypeDomainRecurringHourlyObject struct {
 }
@@ -4977,24 +4972,33 @@ type ExternalDynamicListResourceTypeDomainRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
+type ExternalDynamicListResourceTypeDomainRecurringDailyObject struct {
+	At types.String `tfsdk:"at"`
+}
+type ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject struct {
+}
 type ExternalDynamicListResourceTypeDomainAuthObject struct {
-	Username types.String `tfsdk:"username"`
 	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
 }
 type ExternalDynamicListResourceTypeImeiObject struct {
-	Recurring          *ExternalDynamicListResourceTypeImeiRecurringObject `tfsdk:"recurring"`
 	Url                types.String                                        `tfsdk:"url"`
 	Auth               *ExternalDynamicListResourceTypeImeiAuthObject      `tfsdk:"auth"`
 	CertificateProfile types.String                                        `tfsdk:"certificate_profile"`
 	Description        types.String                                        `tfsdk:"description"`
 	ExceptionList      types.List                                          `tfsdk:"exception_list"`
+	Recurring          *ExternalDynamicListResourceTypeImeiRecurringObject `tfsdk:"recurring"`
+}
+type ExternalDynamicListResourceTypeImeiAuthObject struct {
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
 }
 type ExternalDynamicListResourceTypeImeiRecurringObject struct {
+	Hourly     *ExternalDynamicListResourceTypeImeiRecurringHourlyObject     `tfsdk:"hourly"`
 	Monthly    *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject    `tfsdk:"monthly"`
 	Weekly     *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject     `tfsdk:"weekly"`
 	Daily      *ExternalDynamicListResourceTypeImeiRecurringDailyObject      `tfsdk:"daily"`
 	FiveMinute *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject `tfsdk:"five_minute"`
-	Hourly     *ExternalDynamicListResourceTypeImeiRecurringHourlyObject     `tfsdk:"hourly"`
 }
 type ExternalDynamicListResourceTypeImeiRecurringDailyObject struct {
 	At types.String `tfsdk:"at"`
@@ -5010,10 +5014,6 @@ type ExternalDynamicListResourceTypeImeiRecurringMonthlyObject struct {
 type ExternalDynamicListResourceTypeImeiRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type ExternalDynamicListResourceTypeImeiAuthObject struct {
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
 }
 
 func (r *ExternalDynamicListResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -5049,8 +5049,8 @@ func ExternalDynamicListResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
-						"no",
 						"yes",
+						"no",
 					}...),
 				},
 			},
@@ -5087,6 +5087,12 @@ func ExternalDynamicListResourceTypeSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"imei": ExternalDynamicListResourceTypeImeiSchema(),
+
+			"imsi": ExternalDynamicListResourceTypeImsiSchema(),
+
+			"ip": ExternalDynamicListResourceTypeIpSchema(),
+
 			"predefined_ip": ExternalDynamicListResourceTypePredefinedIpSchema(),
 
 			"predefined_url": ExternalDynamicListResourceTypePredefinedUrlSchema(),
@@ -5094,968 +5100,12 @@ func ExternalDynamicListResourceTypeSchema() rsschema.SingleNestedAttribute {
 			"url": ExternalDynamicListResourceTypeUrlSchema(),
 
 			"domain": ExternalDynamicListResourceTypeDomainSchema(),
-
-			"imei": ExternalDynamicListResourceTypeImeiSchema(),
-
-			"imsi": ExternalDynamicListResourceTypeImsiSchema(),
-
-			"ip": ExternalDynamicListResourceTypeIpSchema(),
 		},
 	}
 }
 
 func (o *ExternalDynamicListResourceTypeObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListResourceTypeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("predefined_ip"),
-				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
-				path.MatchRelative().AtParent().AtName("imsi"),
-				path.MatchRelative().AtParent().AtName("ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"exception_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"recurring": ExternalDynamicListResourceTypeIpRecurringSchema(),
-
-			"url": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("http://"),
-			},
-
-			"auth": ExternalDynamicListResourceTypeIpAuthSchema(),
-
-			"certificate_profile": rsschema.StringAttribute{
-				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("None"),
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"hourly": ExternalDynamicListResourceTypeIpRecurringHourlySchema(),
-
-			"monthly": ExternalDynamicListResourceTypeIpRecurringMonthlySchema(),
-
-			"weekly": ExternalDynamicListResourceTypeIpRecurringWeeklySchema(),
-
-			"daily": ExternalDynamicListResourceTypeIpRecurringDailySchema(),
-
-			"five_minute": ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema(),
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringMonthlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-
-			"day_of_month": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringMonthlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeIpAuthSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"password": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"username": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeIpAuthObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeIpAuthSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypePredefinedIpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("predefined_ip"),
-				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
-				path.MatchRelative().AtParent().AtName("imsi"),
-				path.MatchRelative().AtParent().AtName("ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"exception_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"url": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypePredefinedIpObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypePredefinedIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypePredefinedUrlSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("predefined_ip"),
-				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
-				path.MatchRelative().AtParent().AtName("imsi"),
-				path.MatchRelative().AtParent().AtName("ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"exception_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"url": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypePredefinedUrlObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypePredefinedUrlSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("predefined_ip"),
-				path.MatchRelative().AtParent().AtName("predefined_url"),
-				path.MatchRelative().AtParent().AtName("url"),
-				path.MatchRelative().AtParent().AtName("domain"),
-				path.MatchRelative().AtParent().AtName("imei"),
-				path.MatchRelative().AtParent().AtName("imsi"),
-				path.MatchRelative().AtParent().AtName("ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"exception_list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"recurring": ExternalDynamicListResourceTypeUrlRecurringSchema(),
-
-			"url": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("http://"),
-			},
-
-			"auth": ExternalDynamicListResourceTypeUrlAuthSchema(),
-
-			"certificate_profile": rsschema.StringAttribute{
-				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("None"),
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"five_minute": ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema(),
-
-			"hourly": ExternalDynamicListResourceTypeUrlRecurringHourlySchema(),
-
-			"monthly": ExternalDynamicListResourceTypeUrlRecurringMonthlySchema(),
-
-			"weekly": ExternalDynamicListResourceTypeUrlRecurringWeeklySchema(),
-
-			"daily": ExternalDynamicListResourceTypeUrlRecurringDailySchema(),
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringMonthlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-
-			"day_of_month": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringMonthlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeUrlAuthSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"password": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"username": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeUrlAuthObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeUrlAuthSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6093,25 +5143,6 @@ func ExternalDynamicListResourceTypeDomainSchema() rsschema.SingleNestedAttribut
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"auth": ExternalDynamicListResourceTypeDomainAuthSchema(),
-
-			"certificate_profile": rsschema.StringAttribute{
-				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("None"),
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -6138,6 +5169,25 @@ func ExternalDynamicListResourceTypeDomainSchema() rsschema.SingleNestedAttribut
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("http://"),
+			},
+
+			"auth": ExternalDynamicListResourceTypeDomainAuthSchema(),
+
+			"certificate_profile": rsschema.StringAttribute{
+				Description: "Profile for authenticating client certificates",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("None"),
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -6201,6 +5251,63 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) getTypeFor(name s
 	panic("unreachable")
 }
 
+func ExternalDynamicListResourceTypeDomainRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeDomainRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func ExternalDynamicListResourceTypeDomainRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -6211,11 +5318,11 @@ func ExternalDynamicListResourceTypeDomainRecurringDailySchema() rsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6260,11 +5367,11 @@ func ExternalDynamicListResourceTypeDomainRecurringFiveMinuteSchema() rsschema.S
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -6299,11 +5406,11 @@ func ExternalDynamicListResourceTypeDomainRecurringHourlySchema() rsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -6338,11 +5445,11 @@ func ExternalDynamicListResourceTypeDomainRecurringMonthlySchema() rsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6369,63 +5476,6 @@ func ExternalDynamicListResourceTypeDomainRecurringMonthlySchema() rsschema.Sing
 
 func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListResourceTypeDomainRecurringMonthlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeDomainRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeDomainRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6578,7 +5628,7 @@ func ExternalDynamicListResourceTypeImeiAuthSchema() rsschema.SingleNestedAttrib
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"password": rsschema.StringAttribute{
+			"username": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -6586,7 +5636,7 @@ func ExternalDynamicListResourceTypeImeiAuthSchema() rsschema.SingleNestedAttrib
 				Sensitive:   false,
 			},
 
-			"username": rsschema.StringAttribute{
+			"password": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -6624,21 +5674,148 @@ func ExternalDynamicListResourceTypeImeiRecurringSchema() rsschema.SingleNestedA
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"five_minute": ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema(),
-
-			"hourly": ExternalDynamicListResourceTypeImeiRecurringHourlySchema(),
-
 			"monthly": ExternalDynamicListResourceTypeImeiRecurringMonthlySchema(),
 
 			"weekly": ExternalDynamicListResourceTypeImeiRecurringWeeklySchema(),
 
 			"daily": ExternalDynamicListResourceTypeImeiRecurringDailySchema(),
+
+			"five_minute": ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema(),
+
+			"hourly": ExternalDynamicListResourceTypeImeiRecurringHourlySchema(),
 		},
 	}
 }
 
 func (o *ExternalDynamicListResourceTypeImeiRecurringObject) getTypeFor(name string) attr.Type {
 	schema := ExternalDynamicListResourceTypeImeiRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeImeiRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeImeiRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeImeiRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeImeiRecurringHourlySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6665,11 +5842,11 @@ func ExternalDynamicListResourceTypeImeiRecurringMonthlySchema() rsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6722,11 +5899,11 @@ func ExternalDynamicListResourceTypeImeiRecurringWeeklySchema() rsschema.SingleN
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("five_minute"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("monthly"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6769,133 +5946,6 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) getTypeFor(na
 	panic("unreachable")
 }
 
-func ExternalDynamicListResourceTypeImeiRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("00"),
-			},
-		},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeImeiRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ExternalDynamicListResourceTypeImeiRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("five_minute"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("monthly"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := ExternalDynamicListResourceTypeImeiRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -6916,8 +5966,6 @@ func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute 
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
-
-			"auth": ExternalDynamicListResourceTypeImsiAuthSchema(),
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
@@ -6955,6 +6003,8 @@ func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute 
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("http://"),
 			},
+
+			"auth": ExternalDynamicListResourceTypeImsiAuthSchema(),
 		},
 	}
 }
@@ -7032,15 +6082,15 @@ func ExternalDynamicListResourceTypeImsiRecurringSchema() rsschema.SingleNestedA
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"five_minute": ExternalDynamicListResourceTypeImsiRecurringFiveMinuteSchema(),
+
+			"hourly": ExternalDynamicListResourceTypeImsiRecurringHourlySchema(),
+
 			"monthly": ExternalDynamicListResourceTypeImsiRecurringMonthlySchema(),
 
 			"weekly": ExternalDynamicListResourceTypeImsiRecurringWeeklySchema(),
 
 			"daily": ExternalDynamicListResourceTypeImsiRecurringDailySchema(),
-
-			"five_minute": ExternalDynamicListResourceTypeImsiRecurringFiveMinuteSchema(),
-
-			"hourly": ExternalDynamicListResourceTypeImsiRecurringHourlySchema(),
 		},
 	}
 }
@@ -7304,6 +6354,956 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) getTypeFor(na
 	panic("unreachable")
 }
 
+func ExternalDynamicListResourceTypeIpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("predefined_ip"),
+				path.MatchRelative().AtParent().AtName("predefined_url"),
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
+				path.MatchRelative().AtParent().AtName("imsi"),
+				path.MatchRelative().AtParent().AtName("ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"exception_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"recurring": ExternalDynamicListResourceTypeIpRecurringSchema(),
+
+			"url": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("http://"),
+			},
+
+			"auth": ExternalDynamicListResourceTypeIpAuthSchema(),
+
+			"certificate_profile": rsschema.StringAttribute{
+				Description: "Profile for authenticating client certificates",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("None"),
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"daily": ExternalDynamicListResourceTypeIpRecurringDailySchema(),
+
+			"five_minute": ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema(),
+
+			"hourly": ExternalDynamicListResourceTypeIpRecurringHourlySchema(),
+
+			"monthly": ExternalDynamicListResourceTypeIpRecurringMonthlySchema(),
+
+			"weekly": ExternalDynamicListResourceTypeIpRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringMonthlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+
+			"day_of_month": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringMonthlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeIpAuthSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"username": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"password": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpAuthObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeIpAuthSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypePredefinedIpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("predefined_ip"),
+				path.MatchRelative().AtParent().AtName("predefined_url"),
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
+				path.MatchRelative().AtParent().AtName("imsi"),
+				path.MatchRelative().AtParent().AtName("ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"url": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"exception_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypePredefinedIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypePredefinedUrlSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("predefined_ip"),
+				path.MatchRelative().AtParent().AtName("predefined_url"),
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
+				path.MatchRelative().AtParent().AtName("imsi"),
+				path.MatchRelative().AtParent().AtName("ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"url": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"exception_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypePredefinedUrlSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("predefined_ip"),
+				path.MatchRelative().AtParent().AtName("predefined_url"),
+				path.MatchRelative().AtParent().AtName("url"),
+				path.MatchRelative().AtParent().AtName("domain"),
+				path.MatchRelative().AtParent().AtName("imei"),
+				path.MatchRelative().AtParent().AtName("imsi"),
+				path.MatchRelative().AtParent().AtName("ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"exception_list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"recurring": ExternalDynamicListResourceTypeUrlRecurringSchema(),
+
+			"url": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("http://"),
+			},
+
+			"auth": ExternalDynamicListResourceTypeUrlAuthSchema(),
+
+			"certificate_profile": rsschema.StringAttribute{
+				Description: "Profile for authenticating client certificates",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("None"),
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"daily": ExternalDynamicListResourceTypeUrlRecurringDailySchema(),
+
+			"five_minute": ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema(),
+
+			"hourly": ExternalDynamicListResourceTypeUrlRecurringHourlySchema(),
+
+			"monthly": ExternalDynamicListResourceTypeUrlRecurringMonthlySchema(),
+
+			"weekly": ExternalDynamicListResourceTypeUrlRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringMonthlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+
+			"day_of_month": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringMonthlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("five_minute"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("monthly"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh (e.g. 20)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("00"),
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ExternalDynamicListResourceTypeUrlAuthSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"username": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"password": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) getTypeFor(name string) attr.Type {
+	schema := ExternalDynamicListResourceTypeUrlAuthSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func (r *ExternalDynamicListResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = ExternalDynamicListResourceSchema()
 }
@@ -7353,6 +7353,19 @@ func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj 
 }
 func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context, obj **extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var url_entry *extdynlist.TypeUrl
+	if o.Url != nil {
+		if *obj != nil && (*obj).Url != nil {
+			url_entry = (*obj).Url
+		} else {
+			url_entry = new(extdynlist.TypeUrl)
+		}
+
+		diags.Append(o.Url.CopyToPango(ctx, &url_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var domain_entry *extdynlist.TypeDomain
 	if o.Domain != nil {
 		if *obj != nil && (*obj).Domain != nil {
@@ -7431,668 +7444,22 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 			return diags
 		}
 	}
-	var url_entry *extdynlist.TypeUrl
-	if o.Url != nil {
-		if *obj != nil && (*obj).Url != nil {
-			url_entry = (*obj).Url
-		} else {
-			url_entry = new(extdynlist.TypeUrl)
-		}
-
-		diags.Append(o.Url.CopyToPango(ctx, &url_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.Type)
 	}
+	(*obj).Url = url_entry
 	(*obj).Domain = domain_entry
 	(*obj).Imei = imei_entry
 	(*obj).Imsi = imsi_entry
 	(*obj).Ip = ip_entry
 	(*obj).PredefinedIp = predefinedIp_entry
 	(*obj).PredefinedUrl = predefinedUrl_entry
-	(*obj).Url = url_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var recurring_entry *extdynlist.TypeImeiRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(extdynlist.TypeImeiRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeImeiAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeImeiAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImei)
-	}
-	(*obj).CertificateProfile = certificateProfile_value
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
-	(*obj).Recurring = recurring_entry
-	(*obj).Url = url_value
-	(*obj).Auth = auth_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var daily_entry *extdynlist.TypeImeiRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(extdynlist.TypeImeiRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var fiveMinute_entry *extdynlist.TypeImeiRecurringFiveMinute
-	if o.FiveMinute != nil {
-		if *obj != nil && (*obj).FiveMinute != nil {
-			fiveMinute_entry = (*obj).FiveMinute
-		} else {
-			fiveMinute_entry = new(extdynlist.TypeImeiRecurringFiveMinute)
-		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *extdynlist.TypeImeiRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(extdynlist.TypeImeiRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var monthly_entry *extdynlist.TypeImeiRecurringMonthly
-	if o.Monthly != nil {
-		if *obj != nil && (*obj).Monthly != nil {
-			monthly_entry = (*obj).Monthly
-		} else {
-			monthly_entry = new(extdynlist.TypeImeiRecurringMonthly)
-		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *extdynlist.TypeImeiRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurring)
-	}
-	(*obj).Daily = daily_entry
-	(*obj).FiveMinute = fiveMinute_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).Monthly = monthly_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringDaily)
-	}
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringFiveMinute)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringHourly)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringMonthly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImeiRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var recurring_entry *extdynlist.TypeImsiRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(extdynlist.TypeImsiRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeImsiAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeImsiAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsi)
-	}
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
-	(*obj).Recurring = recurring_entry
-	(*obj).Url = url_value
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var monthly_entry *extdynlist.TypeImsiRecurringMonthly
-	if o.Monthly != nil {
-		if *obj != nil && (*obj).Monthly != nil {
-			monthly_entry = (*obj).Monthly
-		} else {
-			monthly_entry = new(extdynlist.TypeImsiRecurringMonthly)
-		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *extdynlist.TypeImsiRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(extdynlist.TypeImsiRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_entry *extdynlist.TypeImsiRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(extdynlist.TypeImsiRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var fiveMinute_entry *extdynlist.TypeImsiRecurringFiveMinute
-	if o.FiveMinute != nil {
-		if *obj != nil && (*obj).FiveMinute != nil {
-			fiveMinute_entry = (*obj).FiveMinute
-		} else {
-			fiveMinute_entry = new(extdynlist.TypeImsiRecurringFiveMinute)
-		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *extdynlist.TypeImsiRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(extdynlist.TypeImsiRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurring)
-	}
-	(*obj).Monthly = monthly_entry
-	(*obj).Weekly = weekly_entry
-	(*obj).Daily = daily_entry
-	(*obj).FiveMinute = fiveMinute_entry
-	(*obj).Hourly = hourly_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringDaily)
-	}
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringFiveMinute)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringHourly)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringMonthly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeImsiRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *extdynlist.TypeIpRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(extdynlist.TypeIpRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeIpAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeIpAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIp)
-	}
-	(*obj).Recurring = recurring_entry
-	(*obj).Url = url_value
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var fiveMinute_entry *extdynlist.TypeIpRecurringFiveMinute
-	if o.FiveMinute != nil {
-		if *obj != nil && (*obj).FiveMinute != nil {
-			fiveMinute_entry = (*obj).FiveMinute
-		} else {
-			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
-		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *extdynlist.TypeIpRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(extdynlist.TypeIpRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var monthly_entry *extdynlist.TypeIpRecurringMonthly
-	if o.Monthly != nil {
-		if *obj != nil && (*obj).Monthly != nil {
-			monthly_entry = (*obj).Monthly
-		} else {
-			monthly_entry = new(extdynlist.TypeIpRecurringMonthly)
-		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *extdynlist.TypeIpRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(extdynlist.TypeIpRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_entry *extdynlist.TypeIpRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(extdynlist.TypeIpRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurring)
-	}
-	(*obj).FiveMinute = fiveMinute_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).Monthly = monthly_entry
-	(*obj).Weekly = weekly_entry
-	(*obj).Daily = daily_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringFiveMinute)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringHourly)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringMonthly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeIpRecurringDaily)
-	}
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	url_value := o.Url.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypePredefinedIp)
-	}
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
-	(*obj).Url = url_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	url_value := o.Url.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypePredefinedUrl)
-	}
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
-	(*obj).Url = url_value
 
 	return diags
 }
 func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	exceptionList_pango_entries := make([]string, 0)
-	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var recurring_entry *extdynlist.TypeUrlRecurring
 	if o.Recurring != nil {
 		if *obj != nil && (*obj).Recurring != nil {
@@ -8120,16 +7487,23 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeUrl)
 	}
-	(*obj).CertificateProfile = certificateProfile_value
-	(*obj).Description = description_value
-	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).Recurring = recurring_entry
 	(*obj).Url = url_value
 	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
 
 	return diags
 }
@@ -8212,6 +7586,26 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 
 	return diags
 }
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeUrlRecurringDaily)
+	}
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeUrlRecurringFiveMinute)
+	}
+
+	return diags
+}
 func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -8247,26 +7641,6 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeUrlRecurringDaily)
-	}
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeUrlRecurringFiveMinute)
-	}
-
-	return diags
-}
 func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	password_value := o.Password.ValueStringPointer()
@@ -8282,6 +7656,20 @@ func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyToPango(ctx context.C
 }
 func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var auth_entry *extdynlist.TypeDomainAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeDomainAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
 	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
@@ -8303,75 +7691,22 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Co
 		}
 	}
 	url_value := o.Url.ValueStringPointer()
-	var auth_entry *extdynlist.TypeDomainAuth
-	if o.Auth != nil {
-		if *obj != nil && (*obj).Auth != nil {
-			auth_entry = (*obj).Auth
-		} else {
-			auth_entry = new(extdynlist.TypeDomainAuth)
-		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeDomain)
 	}
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
 	(*obj).Description = description_value
 	(*obj).ExceptionList = exceptionList_pango_entries
 	(*obj).ExpandDomain = expandDomain_value
 	(*obj).Recurring = recurring_entry
 	(*obj).Url = url_value
-	(*obj).Auth = auth_entry
-	(*obj).CertificateProfile = certificateProfile_value
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	password_value := o.Password.ValueStringPointer()
-	username_value := o.Username.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeDomainAuth)
-	}
-	(*obj).Password = password_value
-	(*obj).Username = username_value
 
 	return diags
 }
 func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_entry *extdynlist.TypeDomainRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(extdynlist.TypeDomainRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var fiveMinute_entry *extdynlist.TypeDomainRecurringFiveMinute
-	if o.FiveMinute != nil {
-		if *obj != nil && (*obj).FiveMinute != nil {
-			fiveMinute_entry = (*obj).FiveMinute
-		} else {
-			fiveMinute_entry = new(extdynlist.TypeDomainRecurringFiveMinute)
-		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var hourly_entry *extdynlist.TypeDomainRecurringHourly
 	if o.Hourly != nil {
 		if *obj != nil && (*obj).Hourly != nil {
@@ -8411,33 +7746,41 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 			return diags
 		}
 	}
+	var daily_entry *extdynlist.TypeDomainRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(extdynlist.TypeDomainRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_entry *extdynlist.TypeDomainRecurringFiveMinute
+	if o.FiveMinute != nil {
+		if *obj != nil && (*obj).FiveMinute != nil {
+			fiveMinute_entry = (*obj).FiveMinute
+		} else {
+			fiveMinute_entry = new(extdynlist.TypeDomainRecurringFiveMinute)
+		}
+
+		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(extdynlist.TypeDomainRecurring)
 	}
-	(*obj).Daily = daily_entry
-	(*obj).FiveMinute = fiveMinute_entry
 	(*obj).Hourly = hourly_entry
 	(*obj).Monthly = monthly_entry
 	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeDomainRecurringFiveMinute)
-	}
-
-	return diags
-}
-func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(extdynlist.TypeDomainRecurringHourly)
-	}
+	(*obj).Daily = daily_entry
+	(*obj).FiveMinute = fiveMinute_entry
 
 	return diags
 }
@@ -8478,6 +7821,663 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyToPango(
 
 	return diags
 }
+func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeDomainRecurringFiveMinute)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeDomainRecurringHourly)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeDomainAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var auth_entry *extdynlist.TypeImeiAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeImeiAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var recurring_entry *extdynlist.TypeImeiRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(extdynlist.TypeImeiRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	url_value := o.Url.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImei)
+	}
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Recurring = recurring_entry
+	(*obj).Url = url_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var monthly_entry *extdynlist.TypeImeiRecurringMonthly
+	if o.Monthly != nil {
+		if *obj != nil && (*obj).Monthly != nil {
+			monthly_entry = (*obj).Monthly
+		} else {
+			monthly_entry = new(extdynlist.TypeImeiRecurringMonthly)
+		}
+
+		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *extdynlist.TypeImeiRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_entry *extdynlist.TypeImeiRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(extdynlist.TypeImeiRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_entry *extdynlist.TypeImeiRecurringFiveMinute
+	if o.FiveMinute != nil {
+		if *obj != nil && (*obj).FiveMinute != nil {
+			fiveMinute_entry = (*obj).FiveMinute
+		} else {
+			fiveMinute_entry = new(extdynlist.TypeImeiRecurringFiveMinute)
+		}
+
+		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *extdynlist.TypeImeiRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(extdynlist.TypeImeiRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurring)
+	}
+	(*obj).Monthly = monthly_entry
+	(*obj).Weekly = weekly_entry
+	(*obj).Daily = daily_entry
+	(*obj).FiveMinute = fiveMinute_entry
+	(*obj).Hourly = hourly_entry
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringDaily)
+	}
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringFiveMinute)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringHourly)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringMonthly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiRecurringWeekly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	username_value := o.Username.ValueStringPointer()
+	password_value := o.Password.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImeiAuth)
+	}
+	(*obj).Username = username_value
+	(*obj).Password = password_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	url_value := o.Url.ValueStringPointer()
+	var auth_entry *extdynlist.TypeImsiAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeImsiAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var recurring_entry *extdynlist.TypeImsiRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(extdynlist.TypeImsiRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsi)
+	}
+	(*obj).Url = url_value
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var weekly_entry *extdynlist.TypeImsiRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(extdynlist.TypeImsiRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_entry *extdynlist.TypeImsiRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(extdynlist.TypeImsiRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_entry *extdynlist.TypeImsiRecurringFiveMinute
+	if o.FiveMinute != nil {
+		if *obj != nil && (*obj).FiveMinute != nil {
+			fiveMinute_entry = (*obj).FiveMinute
+		} else {
+			fiveMinute_entry = new(extdynlist.TypeImsiRecurringFiveMinute)
+		}
+
+		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *extdynlist.TypeImsiRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(extdynlist.TypeImsiRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var monthly_entry *extdynlist.TypeImsiRecurringMonthly
+	if o.Monthly != nil {
+		if *obj != nil && (*obj).Monthly != nil {
+			monthly_entry = (*obj).Monthly
+		} else {
+			monthly_entry = new(extdynlist.TypeImsiRecurringMonthly)
+		}
+
+		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurring)
+	}
+	(*obj).Weekly = weekly_entry
+	(*obj).Daily = daily_entry
+	(*obj).FiveMinute = fiveMinute_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).Monthly = monthly_entry
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringDaily)
+	}
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringFiveMinute)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringHourly)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringMonthly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiRecurringWeekly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeImsiAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	url_value := o.Url.ValueStringPointer()
+	var auth_entry *extdynlist.TypeIpAuth
+	if o.Auth != nil {
+		if *obj != nil && (*obj).Auth != nil {
+			auth_entry = (*obj).Auth
+		} else {
+			auth_entry = new(extdynlist.TypeIpAuth)
+		}
+
+		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var recurring_entry *extdynlist.TypeIpRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(extdynlist.TypeIpRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIp)
+	}
+	(*obj).Url = url_value
+	(*obj).Auth = auth_entry
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	password_value := o.Password.ValueStringPointer()
+	username_value := o.Username.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpAuth)
+	}
+	(*obj).Password = password_value
+	(*obj).Username = username_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var weekly_entry *extdynlist.TypeIpRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(extdynlist.TypeIpRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_entry *extdynlist.TypeIpRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(extdynlist.TypeIpRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_entry *extdynlist.TypeIpRecurringFiveMinute
+	if o.FiveMinute != nil {
+		if *obj != nil && (*obj).FiveMinute != nil {
+			fiveMinute_entry = (*obj).FiveMinute
+		} else {
+			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
+		}
+
+		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *extdynlist.TypeIpRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(extdynlist.TypeIpRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var monthly_entry *extdynlist.TypeIpRecurringMonthly
+	if o.Monthly != nil {
+		if *obj != nil && (*obj).Monthly != nil {
+			monthly_entry = (*obj).Monthly
+		} else {
+			monthly_entry = new(extdynlist.TypeIpRecurringMonthly)
+		}
+
+		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurring)
+	}
+	(*obj).Weekly = weekly_entry
+	(*obj).Daily = daily_entry
+	(*obj).FiveMinute = fiveMinute_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).Monthly = monthly_entry
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurringDaily)
+	}
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurringFiveMinute)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurringHourly)
+	}
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurringMonthly)
+	}
+	(*obj).DayOfMonth = dayOfMonth_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypeIpRecurringWeekly)
+	}
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	url_value := o.Url.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypePredefinedIp)
+	}
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Url = url_value
+
+	return diags
+}
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	exceptionList_pango_entries := make([]string, 0)
+	diags.Append(o.ExceptionList.ElementsAs(ctx, &exceptionList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	url_value := o.Url.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(extdynlist.TypePredefinedUrl)
+	}
+	(*obj).Description = description_value
+	(*obj).ExceptionList = exceptionList_pango_entries
+	(*obj).Url = url_value
+
+	return diags
+}
 
 func (o *ExternalDynamicListResourceModel) CopyFromPango(ctx context.Context, obj *extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -8504,6 +8504,33 @@ func (o *ExternalDynamicListResourceModel) CopyFromPango(ctx context.Context, ob
 
 func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Context, obj *extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var predefinedIp_object *ExternalDynamicListResourceTypePredefinedIpObject
+	if obj.PredefinedIp != nil {
+		predefinedIp_object = new(ExternalDynamicListResourceTypePredefinedIpObject)
+
+		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var predefinedUrl_object *ExternalDynamicListResourceTypePredefinedUrlObject
+	if obj.PredefinedUrl != nil {
+		predefinedUrl_object = new(ExternalDynamicListResourceTypePredefinedUrlObject)
+
+		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var url_object *ExternalDynamicListResourceTypeUrlObject
+	if obj.Url != nil {
+		url_object = new(ExternalDynamicListResourceTypeUrlObject)
+
+		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var domain_object *ExternalDynamicListResourceTypeDomainObject
 	if obj.Domain != nil {
 		domain_object = new(ExternalDynamicListResourceTypeDomainObject)
@@ -8540,41 +8567,400 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 			return diags
 		}
 	}
-	var predefinedIp_object *ExternalDynamicListResourceTypePredefinedIpObject
-	if obj.PredefinedIp != nil {
-		predefinedIp_object = new(ExternalDynamicListResourceTypePredefinedIpObject)
 
-		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var predefinedUrl_object *ExternalDynamicListResourceTypePredefinedUrlObject
-	if obj.PredefinedUrl != nil {
-		predefinedUrl_object = new(ExternalDynamicListResourceTypePredefinedUrlObject)
-
-		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var url_object *ExternalDynamicListResourceTypeUrlObject
-	if obj.Url != nil {
-		url_object = new(ExternalDynamicListResourceTypeUrlObject)
-
-		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.PredefinedIp = predefinedIp_object
+	o.PredefinedUrl = predefinedUrl_object
+	o.Url = url_object
 	o.Domain = domain_object
 	o.Imei = imei_object
 	o.Imsi = imsi_object
 	o.Ip = ip_object
-	o.PredefinedIp = predefinedIp_object
-	o.PredefinedUrl = predefinedUrl_object
-	o.Url = url_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var exceptionList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
+		diags.Append(list_diags...)
+	}
+	var recurring_object *ExternalDynamicListResourceTypeImsiRecurringObject
+	if obj.Recurring != nil {
+		recurring_object = new(ExternalDynamicListResourceTypeImsiRecurringObject)
+
+		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var auth_object *ExternalDynamicListResourceTypeImsiAuthObject
+	if obj.Auth != nil {
+		auth_object = new(ExternalDynamicListResourceTypeImsiAuthObject)
+
+		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	var url_value types.String
+	if obj.Url != nil {
+		url_value = types.StringValue(*obj.Url)
+	}
+	o.CertificateProfile = certificateProfile_value
+	o.Description = description_value
+	o.ExceptionList = exceptionList_list
+	o.Recurring = recurring_object
+	o.Url = url_value
+	o.Auth = auth_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var weekly_object *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListResourceTypeImsiRecurringWeeklyObject)
+
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_object *ExternalDynamicListResourceTypeImsiRecurringDailyObject
+	if obj.Daily != nil {
+		daily_object = new(ExternalDynamicListResourceTypeImsiRecurringDailyObject)
+
+		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_object *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject
+	if obj.FiveMinute != nil {
+		fiveMinute_object = new(ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject)
+
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_object *ExternalDynamicListResourceTypeImsiRecurringHourlyObject
+	if obj.Hourly != nil {
+		hourly_object = new(ExternalDynamicListResourceTypeImsiRecurringHourlyObject)
+
+		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var monthly_object *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject
+	if obj.Monthly != nil {
+		monthly_object = new(ExternalDynamicListResourceTypeImsiRecurringMonthlyObject)
+
+		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Weekly = weekly_object
+	o.Daily = daily_object
+	o.FiveMinute = fiveMinute_object
+	o.Hourly = hourly_object
+	o.Monthly = monthly_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfMonth_value types.Int64
+	if obj.DayOfMonth != nil {
+		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
+	}
+	o.At = at_value
+	o.DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	o.At = at_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var password_value types.String
+	if obj.Password != nil {
+		password_value = types.StringValue(*obj.Password)
+	}
+	var username_value types.String
+	if obj.Username != nil {
+		username_value = types.StringValue(*obj.Username)
+	}
+	o.Password = password_value
+	o.Username = username_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var exceptionList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
+		diags.Append(list_diags...)
+	}
+	var recurring_object *ExternalDynamicListResourceTypeIpRecurringObject
+	if obj.Recurring != nil {
+		recurring_object = new(ExternalDynamicListResourceTypeIpRecurringObject)
+
+		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var auth_object *ExternalDynamicListResourceTypeIpAuthObject
+	if obj.Auth != nil {
+		auth_object = new(ExternalDynamicListResourceTypeIpAuthObject)
+
+		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	var url_value types.String
+	if obj.Url != nil {
+		url_value = types.StringValue(*obj.Url)
+	}
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
+	o.Description = description_value
+	o.ExceptionList = exceptionList_list
+	o.Recurring = recurring_object
+	o.Url = url_value
+	o.Auth = auth_object
+	o.CertificateProfile = certificateProfile_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var password_value types.String
+	if obj.Password != nil {
+		password_value = types.StringValue(*obj.Password)
+	}
+	var username_value types.String
+	if obj.Username != nil {
+		username_value = types.StringValue(*obj.Username)
+	}
+	o.Password = password_value
+	o.Username = username_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var monthly_object *ExternalDynamicListResourceTypeIpRecurringMonthlyObject
+	if obj.Monthly != nil {
+		monthly_object = new(ExternalDynamicListResourceTypeIpRecurringMonthlyObject)
+
+		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_object *ExternalDynamicListResourceTypeIpRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListResourceTypeIpRecurringWeeklyObject)
+
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_object *ExternalDynamicListResourceTypeIpRecurringDailyObject
+	if obj.Daily != nil {
+		daily_object = new(ExternalDynamicListResourceTypeIpRecurringDailyObject)
+
+		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fiveMinute_object *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject
+	if obj.FiveMinute != nil {
+		fiveMinute_object = new(ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject)
+
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_object *ExternalDynamicListResourceTypeIpRecurringHourlyObject
+	if obj.Hourly != nil {
+		hourly_object = new(ExternalDynamicListResourceTypeIpRecurringHourlyObject)
+
+		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Monthly = monthly_object
+	o.Weekly = weekly_object
+	o.Daily = daily_object
+	o.FiveMinute = fiveMinute_object
+	o.Hourly = hourly_object
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	o.At = at_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var dayOfMonth_value types.Int64
+	if obj.DayOfMonth != nil {
+		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
+	}
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	o.DayOfMonth = dayOfMonth_value
+	o.At = at_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var exceptionList_list types.List
+	{
+		var list_diags diag.Diagnostics
+		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
+		diags.Append(list_diags...)
+	}
+
+	var url_value types.String
+	if obj.Url != nil {
+		url_value = types.StringValue(*obj.Url)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	o.Url = url_value
+	o.Description = description_value
+	o.ExceptionList = exceptionList_list
 
 	return diags
 }
@@ -8652,34 +9038,8 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var password_value types.String
-	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
-	}
-	var username_value types.String
-	if obj.Username != nil {
-		username_value = types.StringValue(*obj.Username)
-	}
-	o.Password = password_value
-	o.Username = username_value
-
-	return diags
-}
-
 func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var weekly_object *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListResourceTypeUrlRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_object *ExternalDynamicListResourceTypeUrlRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeUrlRecurringDailyObject)
@@ -8716,12 +9076,21 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 			return diags
 		}
 	}
+	var weekly_object *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListResourceTypeUrlRecurringWeeklyObject)
 
-	o.Weekly = weekly_object
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
+	o.Weekly = weekly_object
 
 	return diags
 }
@@ -8784,6 +9153,23 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyFromPango(
 	return diags
 }
 
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var password_value types.String
+	if obj.Password != nil {
+		password_value = types.StringValue(*obj.Password)
+	}
+	var username_value types.String
+	if obj.Username != nil {
+		username_value = types.StringValue(*obj.Username)
+	}
+	o.Password = password_value
+	o.Username = username_value
+
+	return diags
+}
+
 func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
@@ -8811,6 +9197,10 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.
 		}
 	}
 
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	var expandDomain_value types.Bool
 	if obj.ExpandDomain != nil {
 		expandDomain_value = types.BoolValue(*obj.ExpandDomain)
@@ -8823,23 +9213,37 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.
 	if obj.CertificateProfile != nil {
 		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
+	o.Description = description_value
+	o.ExceptionList = exceptionList_list
 	o.ExpandDomain = expandDomain_value
 	o.Recurring = recurring_object
 	o.Url = url_value
 	o.Auth = auth_object
 	o.CertificateProfile = certificateProfile_value
-	o.Description = description_value
-	o.ExceptionList = exceptionList_list
 
 	return diags
 }
 
 func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var weekly_object *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(ExternalDynamicListResourceTypeDomainRecurringWeeklyObject)
+
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var daily_object *ExternalDynamicListResourceTypeDomainRecurringDailyObject
+	if obj.Daily != nil {
+		daily_object = new(ExternalDynamicListResourceTypeDomainRecurringDailyObject)
+
+		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var fiveMinute_object *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject)
@@ -8867,64 +9271,12 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 			return diags
 		}
 	}
-	var weekly_object *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListResourceTypeDomainRecurringWeeklyObject)
 
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_object *ExternalDynamicListResourceTypeDomainRecurringDailyObject
-	if obj.Daily != nil {
-		daily_object = new(ExternalDynamicListResourceTypeDomainRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Weekly = weekly_object
+	o.Daily = daily_object
 	o.FiveMinute = fiveMinute_object
 	o.Hourly = hourly_object
 	o.Monthly = monthly_object
-	o.Weekly = weekly_object
-	o.Daily = daily_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var dayOfMonth_value types.Int64
-	if obj.DayOfMonth != nil {
-		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
-	}
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.DayOfMonth = dayOfMonth_value
-	o.At = at_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -8949,6 +9301,40 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyFro
 
 func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfMonth_value types.Int64
+	if obj.DayOfMonth != nil {
+		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
+	}
+	o.At = at_value
+	o.DayOfMonth = dayOfMonth_value
+
+	return diags
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -8997,10 +9383,6 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Co
 		}
 	}
 
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -9009,29 +9391,16 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Co
 	if obj.Url != nil {
 		url_value = types.StringValue(*obj.Url)
 	}
-	o.CertificateProfile = certificateProfile_value
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
 	o.Description = description_value
 	o.ExceptionList = exceptionList_list
 	o.Recurring = recurring_object
 	o.Url = url_value
 	o.Auth = auth_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var password_value types.String
-	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
-	}
-	var username_value types.String
-	if obj.Username != nil {
-		username_value = types.StringValue(*obj.Username)
-	}
-	o.Password = password_value
-	o.Username = username_value
+	o.CertificateProfile = certificateProfile_value
 
 	return diags
 }
@@ -9093,12 +9462,6 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
 func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -9151,171 +9514,13 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyFromP
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var exceptionList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
-		diags.Append(list_diags...)
-	}
-	var recurring_object *ExternalDynamicListResourceTypeImsiRecurringObject
-	if obj.Recurring != nil {
-		recurring_object = new(ExternalDynamicListResourceTypeImsiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var auth_object *ExternalDynamicListResourceTypeImsiAuthObject
-	if obj.Auth != nil {
-		auth_object = new(ExternalDynamicListResourceTypeImsiAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	var url_value types.String
-	if obj.Url != nil {
-		url_value = types.StringValue(*obj.Url)
-	}
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
-	o.Description = description_value
-	o.ExceptionList = exceptionList_list
-	o.Recurring = recurring_object
-	o.Url = url_value
-	o.Auth = auth_object
-	o.CertificateProfile = certificateProfile_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var daily_object *ExternalDynamicListResourceTypeImsiRecurringDailyObject
-	if obj.Daily != nil {
-		daily_object = new(ExternalDynamicListResourceTypeImsiRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var fiveMinute_object *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject
-	if obj.FiveMinute != nil {
-		fiveMinute_object = new(ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_object *ExternalDynamicListResourceTypeImsiRecurringHourlyObject
-	if obj.Hourly != nil {
-		hourly_object = new(ExternalDynamicListResourceTypeImsiRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var monthly_object *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject
-	if obj.Monthly != nil {
-		monthly_object = new(ExternalDynamicListResourceTypeImsiRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_object *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListResourceTypeImsiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Daily = daily_object
-	o.FiveMinute = fiveMinute_object
-	o.Hourly = hourly_object
-	o.Monthly = monthly_object
-	o.Weekly = weekly_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.At = at_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfMonth_value types.Int64
-	if obj.DayOfMonth != nil {
-		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
-	}
-	o.At = at_value
-	o.DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
@@ -9328,211 +9533,6 @@ func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx contex
 	}
 	o.Password = password_value
 	o.Username = username_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var exceptionList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
-		diags.Append(list_diags...)
-	}
-	var recurring_object *ExternalDynamicListResourceTypeIpRecurringObject
-	if obj.Recurring != nil {
-		recurring_object = new(ExternalDynamicListResourceTypeIpRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var auth_object *ExternalDynamicListResourceTypeIpAuthObject
-	if obj.Auth != nil {
-		auth_object = new(ExternalDynamicListResourceTypeIpAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var url_value types.String
-	if obj.Url != nil {
-		url_value = types.StringValue(*obj.Url)
-	}
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	o.ExceptionList = exceptionList_list
-	o.Recurring = recurring_object
-	o.Url = url_value
-	o.Auth = auth_object
-	o.CertificateProfile = certificateProfile_value
-	o.Description = description_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var password_value types.String
-	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
-	}
-	var username_value types.String
-	if obj.Username != nil {
-		username_value = types.StringValue(*obj.Username)
-	}
-	o.Password = password_value
-	o.Username = username_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var fiveMinute_object *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject
-	if obj.FiveMinute != nil {
-		fiveMinute_object = new(ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_object *ExternalDynamicListResourceTypeIpRecurringHourlyObject
-	if obj.Hourly != nil {
-		hourly_object = new(ExternalDynamicListResourceTypeIpRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var monthly_object *ExternalDynamicListResourceTypeIpRecurringMonthlyObject
-	if obj.Monthly != nil {
-		monthly_object = new(ExternalDynamicListResourceTypeIpRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_object *ExternalDynamicListResourceTypeIpRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(ExternalDynamicListResourceTypeIpRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_object *ExternalDynamicListResourceTypeIpRecurringDailyObject
-	if obj.Daily != nil {
-		daily_object = new(ExternalDynamicListResourceTypeIpRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.FiveMinute = fiveMinute_object
-	o.Hourly = hourly_object
-	o.Monthly = monthly_object
-	o.Weekly = weekly_object
-	o.Daily = daily_object
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.At = at_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfMonth_value types.Int64
-	if obj.DayOfMonth != nil {
-		dayOfMonth_value = types.Int64Value(*obj.DayOfMonth)
-	}
-	o.At = at_value
-	o.DayOfMonth = dayOfMonth_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-
-func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var exceptionList_list types.List
-	{
-		var list_diags diag.Diagnostics
-		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
-		diags.Append(list_diags...)
-	}
-
-	var url_value types.String
-	if obj.Url != nil {
-		url_value = types.StringValue(*obj.Url)
-	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	o.Url = url_value
-	o.Description = description_value
-	o.ExceptionList = exceptionList_list
 
 	return diags
 }
@@ -9567,8 +9567,8 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -9762,8 +9762,8 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 

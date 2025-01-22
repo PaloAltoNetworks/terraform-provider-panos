@@ -220,7 +220,7 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 		return found, true
 	}
 
-	for _, elt := range planEntries {
+	for idx, elt := range planEntries {
 		eltEntryName := elt.EntryName()
 		var processedEntry *entryObjectWithState[E]
 
@@ -257,11 +257,13 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 			processedStateEntriesByName[processedEntry.Entry.EntryName()] = *processedEntry
 		} else {
 			processedEntry = &entryObjectWithState[E]{
-				Entry: elt,
-				State: entryMissing,
+				Entry:    elt,
+				StateIdx: idx,
 			}
 
-			if !o.matcher(elt, stateElt.Entry) {
+			if o.matcher(elt, stateElt.Entry) {
+				processedEntry.State = entryOk
+			} else {
 				processedEntry.State = entryOutdated
 			}
 			processedStateEntriesByName[elt.EntryName()] = *processedEntry
@@ -271,6 +273,13 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, &Error{err: err, message: "failed to get a list of existing entries from the server"}
+	}
+
+	for name, elt := range stateEntriesByName {
+		if _, processedEntryFound := processedStateEntriesByName[name]; !processedEntryFound {
+			elt.State = entryDeleted
+			processedStateEntriesByName[name] = elt
+		}
 	}
 
 	updates := xmlapi.NewMultiConfig(len(planEntries))
@@ -353,6 +362,12 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 			delete(processedStateEntriesByName, elt.Entry.EntryName())
 			elt.Entry.SetEntryName(elt.NewName)
 			processedStateEntriesByName[elt.NewName] = elt
+		case entryDeleted:
+			updates.Add(&xmlapi.Config{
+				Action: "delete",
+				Xpath:  util.AsXpath(path),
+				Target: o.client.GetTarget(),
+			})
 		case entryUnknown:
 			slog.Warn("Entry state is still unknown after reconciliation", "Name", elt.Entry.EntryName())
 		case entryOk:
@@ -367,9 +382,16 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 		}
 	}
 
-	entries := make([]E, len(processedStateEntriesByName))
-	for _, elt := range processedStateEntriesByName {
-		entries[elt.StateIdx] = elt.Entry
+	existing, err = o.service.List(ctx, location, "get", "", "")
+	if err != nil && !sdkerrors.IsObjectNotFound(err) {
+		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
+	}
+
+	entries := make([]E, len(planEntries))
+	for _, elt := range existing {
+		if planEntry, found := planEntriesByName[elt.EntryName()]; found {
+			entries[planEntry.StateIdx] = elt
+		}
 	}
 
 	return entries, nil

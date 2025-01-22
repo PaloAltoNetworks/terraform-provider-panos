@@ -63,10 +63,10 @@ type FileBlockingProfileDataSourceModel struct {
 }
 type FileBlockingProfileDataSourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
-	Application types.List   `tfsdk:"application"`
 	FileType    types.List   `tfsdk:"file_type"`
 	Direction   types.String `tfsdk:"direction"`
 	Action      types.String `tfsdk:"action"`
+	Application types.List   `tfsdk:"application"`
 }
 
 func (o *FileBlockingProfileDataSourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -103,7 +103,6 @@ func (o *FileBlockingProfileDataSourceModel) CopyToPango(ctx context.Context, ob
 }
 func (o *FileBlockingProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
 	if diags.HasError() {
@@ -115,15 +114,16 @@ func (o *FileBlockingProfileDataSourceRulesObject) CopyToPango(ctx context.Conte
 		return diags
 	}
 	direction_value := o.Direction.ValueStringPointer()
+	action_value := o.Action.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(fileblocking.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Action = action_value
 	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
+	(*obj).Action = action_value
 
 	return diags
 }
@@ -154,9 +154,9 @@ func (o *FileBlockingProfileDataSourceModel) CopyFromPango(ctx context.Context, 
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Rules = rules_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Rules = rules_list
 
 	return diags
 }
@@ -265,6 +265,15 @@ func FileBlockingProfileDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
+			"application": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"file_type": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -288,15 +297,6 @@ func FileBlockingProfileDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"application": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 		},
 	}
@@ -612,7 +612,6 @@ func (r *FileBlockingProfileResource) Configure(ctx context.Context, req resourc
 
 func (o *FileBlockingProfileResourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var rules_tf_entries []FileBlockingProfileResourceRulesObject
 	var rules_pango_entries []fileblocking.Rules
@@ -631,20 +630,20 @@ func (o *FileBlockingProfileResourceModel) CopyToPango(ctx context.Context, obj 
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(fileblocking.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Rules = rules_pango_entries
+	(*obj).Description = description_value
 
 	return diags
 }
 func (o *FileBlockingProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	direction_value := o.Direction.ValueStringPointer()
 	action_value := o.Action.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
@@ -656,15 +655,16 @@ func (o *FileBlockingProfileResourceRulesObject) CopyToPango(ctx context.Context
 	if diags.HasError() {
 		return diags
 	}
+	direction_value := o.Direction.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(fileblocking.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Direction = direction_value
 	(*obj).Action = action_value
 	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
+	(*obj).Direction = direction_value
 
 	return diags
 }
@@ -695,9 +695,9 @@ func (o *FileBlockingProfileResourceModel) CopyFromPango(ctx context.Context, ob
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Rules = rules_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Rules = rules_list
 
 	return diags
 }
@@ -717,19 +717,19 @@ func (o *FileBlockingProfileResourceRulesObject) CopyFromPango(ctx context.Conte
 		diags.Append(list_diags...)
 	}
 
-	var direction_value types.String
-	if obj.Direction != nil {
-		direction_value = types.StringValue(*obj.Direction)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
 	}
+	var direction_value types.String
+	if obj.Direction != nil {
+		direction_value = types.StringValue(*obj.Direction)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Action = action_value
 	o.Application = application_list
 	o.FileType = fileType_list
 	o.Direction = direction_value
-	o.Action = action_value
 
 	return diags
 }
@@ -818,8 +818,8 @@ func (o *FileBlockingProfileResource) Read(ctx context.Context, req resource.Rea
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
@@ -871,15 +871,15 @@ func (r *FileBlockingProfileResource) Update(ctx context.Context, req resource.U
 
 	var location fileblocking.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -953,15 +953,15 @@ func (r *FileBlockingProfileResource) Delete(ctx context.Context, req resource.D
 
 	var location fileblocking.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -1059,8 +1059,8 @@ func FileBlockingProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
 				},
 			},

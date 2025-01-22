@@ -57,15 +57,14 @@ type CustomUrlCategoryDataSourceFilter struct {
 type CustomUrlCategoryDataSourceModel struct {
 	Location        CustomUrlCategoryLocation `tfsdk:"location"`
 	Name            types.String              `tfsdk:"name"`
+	Type            types.String              `tfsdk:"type"`
 	Description     types.String              `tfsdk:"description"`
 	DisableOverride types.String              `tfsdk:"disable_override"`
 	List            types.List                `tfsdk:"list"`
-	Type            types.String              `tfsdk:"type"`
 }
 
 func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	type_value := o.Type.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	list_pango_entries := make([]string, 0)
@@ -73,15 +72,16 @@ func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj 
 	if diags.HasError() {
 		return diags
 	}
+	type_value := o.Type.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(customurlcategory.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_value
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).List = list_pango_entries
+	(*obj).Type = type_value
 
 	return diags
 }
@@ -95,6 +95,10 @@ func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ob
 		diags.Append(list_diags...)
 	}
 
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
@@ -103,15 +107,11 @@ func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ob
 	if obj.Type != nil {
 		type_value = types.StringValue(*obj.Type)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.List = list_list
 	o.Type = type_value
-	o.Description = description_value
 
 	return diags
 }
@@ -223,14 +223,11 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 
 	var location customurlcategory.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -239,6 +236,9 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -417,7 +417,6 @@ func (r *CustomUrlCategoryResource) Configure(ctx context.Context, req resource.
 
 func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	list_pango_entries := make([]string, 0)
 	diags.Append(o.List.ElementsAs(ctx, &list_pango_entries, false)...)
@@ -425,15 +424,16 @@ func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, obj **
 		return diags
 	}
 	type_value := o.Type.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(customurlcategory.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).List = list_pango_entries
 	(*obj).Type = type_value
+	(*obj).Description = description_value
 
 	return diags
 }
@@ -447,6 +447,10 @@ func (o *CustomUrlCategoryResourceModel) CopyFromPango(ctx context.Context, obj 
 		diags.Append(list_diags...)
 	}
 
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -455,15 +459,11 @@ func (o *CustomUrlCategoryResourceModel) CopyFromPango(ctx context.Context, obj 
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-	o.DisableOverride = disableOverride_value
 	o.List = list_list
 	o.Type = type_value
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
 
 	return diags
 }
@@ -492,13 +492,6 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 
 	var location customurlcategory.Location
 
-	if state.Location.Vsys != nil {
-		location.Vsys = &customurlcategory.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &customurlcategory.DeviceGroupLocation{
 
@@ -508,6 +501,13 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &customurlcategory.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -556,21 +556,21 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 
 	var location customurlcategory.Location
 
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &customurlcategory.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &customurlcategory.DeviceGroupLocation{
-
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -826,9 +826,9 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
@@ -892,11 +892,11 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 
 func (o CustomUrlCategoryVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Name       *string `json:"name"`
 		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
 	}{
-		Name:       o.Name.ValueStringPointer(),
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -904,16 +904,16 @@ func (o CustomUrlCategoryVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CustomUrlCategoryVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Name       *string `json:"name"`
 		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }

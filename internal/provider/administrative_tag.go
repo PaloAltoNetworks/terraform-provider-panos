@@ -57,24 +57,24 @@ type AdministrativeTagDataSourceFilter struct {
 type AdministrativeTagDataSourceModel struct {
 	Location        AdministrativeTagLocation `tfsdk:"location"`
 	Name            types.String              `tfsdk:"name"`
-	Color           types.String              `tfsdk:"color"`
 	Comments        types.String              `tfsdk:"comments"`
 	DisableOverride types.String              `tfsdk:"disable_override"`
+	Color           types.String              `tfsdk:"color"`
 }
 
 func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).DisableOverride = disableOverride_value
 	(*obj).Color = color_value
 	(*obj).Comments = comments_value
-	(*obj).DisableOverride = disableOverride_value
 
 	return diags
 }
@@ -200,13 +200,6 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 
 	var location admintag.Location
 
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &admintag.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &admintag.DeviceGroupLocation{
 
@@ -216,6 +209,13 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
+	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &admintag.VsysLocation{
+
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
@@ -317,47 +317,47 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
-						"color6",
-						"color31",
-						"color40",
-						"color9",
-						"color13",
-						"color14",
-						"color28",
-						"color33",
-						"color36",
-						"color38",
-						"color2",
-						"color3",
-						"color19",
 						"color23",
-						"color10",
-						"color11",
-						"color15",
-						"color26",
-						"color29",
 						"color30",
-						"color21",
-						"color27",
-						"color39",
-						"color41",
-						"color22",
-						"color34",
-						"color35",
-						"color37",
+						"color31",
 						"color1",
-						"color7",
-						"color16",
+						"color10",
+						"color17",
 						"color20",
+						"color37",
+						"color42",
+						"color3",
+						"color8",
+						"color28",
+						"color29",
+						"color34",
+						"color38",
+						"color5",
+						"color11",
+						"color2",
+						"color13",
+						"color19",
 						"color25",
 						"color32",
-						"color42",
-						"color4",
-						"color5",
-						"color8",
+						"color9",
 						"color12",
-						"color17",
+						"color33",
+						"color35",
+						"color36",
+						"color39",
+						"color40",
+						"color7",
+						"color14",
+						"color21",
+						"color22",
+						"color26",
+						"color27",
+						"color41",
+						"color4",
+						"color15",
 						"color24",
+						"color6",
+						"color16",
 					}...),
 				},
 			},
@@ -491,6 +491,13 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 	var location admintag.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -499,13 +506,6 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &admintag.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -561,8 +561,8 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -707,9 +707,6 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 
 	var location admintag.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
@@ -723,6 +720,9 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -797,18 +797,18 @@ func (r *AdministrativeTagResource) ImportState(ctx context.Context, req resourc
 
 }
 
-type AdministrativeTagVsysLocation struct {
-	Name       types.String `tfsdk:"name"`
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
-}
 type AdministrativeTagDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type AdministrativeTagVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
 type AdministrativeTagLocation struct {
+	DeviceGroup *AdministrativeTagDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                            `tfsdk:"shared"`
 	Vsys        *AdministrativeTagVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *AdministrativeTagDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func AdministrativeTagLocationSchema() rsschema.Attribute {
@@ -918,11 +918,11 @@ func (o *AdministrativeTagVsysLocation) UnmarshalJSON(data []byte) error {
 }
 func (o AdministrativeTagDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}{
-		Name:           o.Name.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -930,28 +930,28 @@ func (o AdministrativeTagDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AdministrativeTagDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Name = types.StringPointerValue(shadow.Name)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }
 func (o AdministrativeTagLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                 `json:"shared"`
 		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
 		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
+		Shared      *bool                                 `json:"shared"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
+		Shared:      o.Shared.ValueBoolPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -959,18 +959,18 @@ func (o AdministrativeTagLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AdministrativeTagLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                 `json:"shared"`
 		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
 		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
+		Shared      *bool                                 `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
+	o.Shared = types.BoolPointerValue(shadow.Shared)
 
 	return nil
 }

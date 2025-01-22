@@ -192,16 +192,16 @@ func DeviceGroupParentResourceSchema() rsschema.Schema {
 
 			"location": DeviceGroupParentResourceLocationSchema(),
 
-			"device_group": rsschema.StringAttribute{
-				Description: "The device group whose parent is being set",
+			"parent": rsschema.StringAttribute{
+				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"parent": rsschema.StringAttribute{
-				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
+			"device_group": rsschema.StringAttribute{
+				Description: "The device group whose parent is being set",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,

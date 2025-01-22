@@ -141,16 +141,26 @@ var _ = Describe("Entry", func() {
 	Context("UpdateMany()", func() {
 		Context("when entries from the plan are missing from the server", func() {
 			It("should recreate them, and return back list of all managed entries", func() {
-				entries := []*MockEntryObject{{Name: "4", Value: "D"}}
-				processed, err := sdk.UpdateMany(ctx, location, entries, entries)
+				expected := append(existing, &MockEntryObject{Name: "4", Value: "D"})
+				processed, err := sdk.UpdateMany(ctx, location, existing, expected)
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(processed).To(HaveExactElements(entries))
-
-				expected := append(existing, entries...)
+				Expect(processed).To(HaveExactElements(expected))
 				Expect(client.list()).To(HaveExactElements(expected))
 			})
 
+		})
+
+		Context("when some entries are removed from the plan", func() {
+			It("should properly remove deleted entries from the server and return back updated list", func() {
+				stateEntries := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
+				planEntries := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}}
+				processed, err := sdk.UpdateMany(ctx, location, stateEntries, planEntries)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(processed).To(HaveExactElements(planEntries))
+				Expect(client.list()).To(HaveExactElements(planEntries))
+			})
 		})
 	})
 

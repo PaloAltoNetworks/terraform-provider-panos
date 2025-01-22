@@ -57,9 +57,9 @@ type WildfireAnalysisSecurityProfileDataSourceFilter struct {
 type WildfireAnalysisSecurityProfileDataSourceModel struct {
 	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
 	Name            types.String                            `tfsdk:"name"`
-	Description     types.String                            `tfsdk:"description"`
 	DisableOverride types.String                            `tfsdk:"disable_override"`
 	Rules           types.List                              `tfsdk:"rules"`
+	Description     types.String                            `tfsdk:"description"`
 }
 type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -103,7 +103,6 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 }
 func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	analysis_value := o.Analysis.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
 	if diags.HasError() {
@@ -115,15 +114,16 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx c
 		return diags
 	}
 	direction_value := o.Direction.ValueStringPointer()
+	analysis_value := o.Analysis.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Analysis = analysis_value
 	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
+	(*obj).Analysis = analysis_value
 
 	return diags
 }
@@ -185,10 +185,10 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx
 		analysis_value = types.StringValue(*obj.Analysis)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Application = application_list
-	o.FileType = fileType_list
 	o.Direction = direction_value
 	o.Analysis = analysis_value
+	o.Application = application_list
+	o.FileType = fileType_list
 
 	return diags
 }
@@ -207,6 +207,14 @@ func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"description": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -222,14 +230,6 @@ func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
 				Computed:     true,
 				Sensitive:    false,
 				NestedObject: WildfireAnalysisSecurityProfileDataSourceRulesSchema(),
-			},
-
-			"description": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -265,6 +265,14 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Sensitive:   false,
 			},
 
+			"direction": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"analysis": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -289,14 +297,6 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"direction": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -432,16 +432,16 @@ func WildfireAnalysisSecurityProfileResourceLocationSchema() rsschema.Attribute 
 type WildfireAnalysisSecurityProfileResourceModel struct {
 	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
 	Name            types.String                            `tfsdk:"name"`
+	Rules           types.List                              `tfsdk:"rules"`
 	Description     types.String                            `tfsdk:"description"`
 	DisableOverride types.String                            `tfsdk:"disable_override"`
-	Rules           types.List                              `tfsdk:"rules"`
 }
 type WildfireAnalysisSecurityProfileResourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
-	FileType    types.List   `tfsdk:"file_type"`
 	Direction   types.String `tfsdk:"direction"`
 	Analysis    types.String `tfsdk:"analysis"`
 	Application types.List   `tfsdk:"application"`
+	FileType    types.List   `tfsdk:"file_type"`
 }
 
 func (r *WildfireAnalysisSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -533,15 +533,6 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 				Sensitive:   false,
 			},
 
-			"application": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"file_type": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -566,6 +557,15 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("public-cloud"),
+			},
+
+			"application": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -612,7 +612,6 @@ func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context,
 
 func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
 	var rules_pango_entries []wildfireanalysis.Rules
@@ -631,19 +630,22 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Rules = rules_pango_entries
+	(*obj).Description = description_value
 
 	return diags
 }
 func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	direction_value := o.Direction.ValueStringPointer()
+	analysis_value := o.Analysis.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
 	if diags.HasError() {
@@ -654,17 +656,15 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx con
 	if diags.HasError() {
 		return diags
 	}
-	direction_value := o.Direction.ValueStringPointer()
-	analysis_value := o.Analysis.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Application = application_pango_entries
-	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
 	(*obj).Analysis = analysis_value
+	(*obj).Application = application_pango_entries
+	(*obj).FileType = fileType_pango_entries
 
 	return diags
 }
@@ -871,15 +871,15 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -1041,8 +1041,8 @@ type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type WildfireAnalysisSecurityProfileLocation struct {
-	Shared      types.Bool                                          `tfsdk:"shared"`
 	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Bool                                          `tfsdk:"shared"`
 }
 
 func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {

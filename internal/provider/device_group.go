@@ -65,7 +65,6 @@ type DeviceGroupDataSourceDevicesObject struct {
 
 func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
 	if diags.HasError() {
@@ -89,15 +88,16 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 		}
 	}
 	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
 	(*obj).AuthorizationCode = authorizationCode_value
+	(*obj).Description = description_value
 
 	return diags
 }
@@ -120,6 +120,12 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, ob
 
 func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var templates_list types.List
+	{
+		var list_diags diag.Diagnostics
+		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
+		diags.Append(list_diags...)
+	}
 	var devices_list types.List
 	{
 		var devices_tf_entries []DeviceGroupDataSourceDevicesObject
@@ -134,26 +140,20 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var templates_list types.List
-	{
-		var list_diags diag.Diagnostics
-		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
-		diags.Append(list_diags...)
-	}
 
-	var authorizationCode_value types.String
-	if obj.AuthorizationCode != nil {
-		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var authorizationCode_value types.String
+	if obj.AuthorizationCode != nil {
+		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Devices = devices_list
-	o.AuthorizationCode = authorizationCode_value
 	o.Description = description_value
 	o.Templates = templates_list
+	o.Devices = devices_list
+	o.AuthorizationCode = authorizationCode_value
 
 	return diags
 }
@@ -187,23 +187,6 @@ func DeviceGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"devices": dsschema.ListNestedAttribute{
-				Description:  "List of devices",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: DeviceGroupDataSourceDevicesSchema(),
-			},
-
-			"authorization_code": dsschema.StringAttribute{
-				Description: "Authorization code",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
 				Computed:    true,
@@ -219,6 +202,23 @@ func DeviceGroupDataSourceSchema() dsschema.Schema {
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"devices": dsschema.ListNestedAttribute{
+				Description:  "List of devices",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: DeviceGroupDataSourceDevicesSchema(),
+			},
+
+			"authorization_code": dsschema.StringAttribute{
+				Description: "Authorization code",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -392,10 +392,10 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 type DeviceGroupResourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
+	AuthorizationCode types.String        `tfsdk:"authorization_code"`
 	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
 	Devices           types.List          `tfsdk:"devices"`
-	AuthorizationCode types.String        `tfsdk:"authorization_code"`
 }
 type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -545,12 +545,6 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 
 func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var devices_tf_entries []DeviceGroupResourceDevicesObject
 	var devices_pango_entries []devicegroup.Devices
 	{
@@ -569,15 +563,21 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 		}
 	}
 	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	templates_pango_entries := make([]string, 0)
+	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
-	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
 	(*obj).AuthorizationCode = authorizationCode_value
+	(*obj).Description = description_value
+	(*obj).Templates = templates_pango_entries
 
 	return diags
 }
@@ -621,19 +621,19 @@ func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devic
 		diags.Append(list_diags...)
 	}
 
-	var authorizationCode_value types.String
-	if obj.AuthorizationCode != nil {
-		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var authorizationCode_value types.String
+	if obj.AuthorizationCode != nil {
+		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.AuthorizationCode = authorizationCode_value
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
+	o.AuthorizationCode = authorizationCode_value
 
 	return diags
 }

@@ -59,16 +59,16 @@ type TemplateVariableDataSourceModel struct {
 	Type        *TemplateVariableDataSourceTypeObject `tfsdk:"type"`
 }
 type TemplateVariableDataSourceTypeObject struct {
-	QosProfile     types.String `tfsdk:"qos_profile"`
-	EgressMax      types.String `tfsdk:"egress_max"`
 	LinkTag        types.String `tfsdk:"link_tag"`
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
-	DevicePriority types.String `tfsdk:"device_priority"`
+	IpRange        types.String `tfsdk:"ip_range"`
+	GroupId        types.String `tfsdk:"group_id"`
 	DeviceId       types.String `tfsdk:"device_id"`
 	Interface      types.String `tfsdk:"interface"`
-	IpRange        types.String `tfsdk:"ip_range"`
+	QosProfile     types.String `tfsdk:"qos_profile"`
+	EgressMax      types.String `tfsdk:"egress_max"`
 	Fqdn           types.String `tfsdk:"fqdn"`
-	GroupId        types.String `tfsdk:"group_id"`
+	DevicePriority types.String `tfsdk:"device_priority"`
 	AsNumber       types.String `tfsdk:"as_number"`
 }
 
@@ -100,31 +100,31 @@ func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj *
 }
 func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	egressMax_value := o.EgressMax.ValueStringPointer()
 	linkTag_value := o.LinkTag.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
-	devicePriority_value := o.DevicePriority.ValueStringPointer()
+	ipRange_value := o.IpRange.ValueStringPointer()
+	groupId_value := o.GroupId.ValueStringPointer()
 	deviceId_value := o.DeviceId.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
 	qosProfile_value := o.QosProfile.ValueStringPointer()
-	egressMax_value := o.EgressMax.ValueStringPointer()
-	ipRange_value := o.IpRange.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
-	groupId_value := o.GroupId.ValueStringPointer()
+	devicePriority_value := o.DevicePriority.ValueStringPointer()
 	asNumber_value := o.AsNumber.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Type)
 	}
+	(*obj).EgressMax = egressMax_value
 	(*obj).LinkTag = linkTag_value
 	(*obj).IpNetmask = ipNetmask_value
-	(*obj).DevicePriority = devicePriority_value
+	(*obj).IpRange = ipRange_value
+	(*obj).GroupId = groupId_value
 	(*obj).DeviceId = deviceId_value
 	(*obj).Interface = interface_value
 	(*obj).QosProfile = qosProfile_value
-	(*obj).EgressMax = egressMax_value
-	(*obj).IpRange = ipRange_value
 	(*obj).Fqdn = fqdn_value
-	(*obj).GroupId = groupId_value
+	(*obj).DevicePriority = devicePriority_value
 	(*obj).AsNumber = asNumber_value
 
 	return diags
@@ -147,8 +147,8 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj
 		description_value = types.StringValue(*obj.Description)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Type = type_object
 	o.Description = description_value
+	o.Type = type_object
 
 	return diags
 }
@@ -156,21 +156,21 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj
 func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var groupId_value types.String
-	if obj.GroupId != nil {
-		groupId_value = types.StringValue(*obj.GroupId)
-	}
 	var asNumber_value types.String
 	if obj.AsNumber != nil {
 		asNumber_value = types.StringValue(*obj.AsNumber)
 	}
-	var ipRange_value types.String
-	if obj.IpRange != nil {
-		ipRange_value = types.StringValue(*obj.IpRange)
-	}
 	var fqdn_value types.String
 	if obj.Fqdn != nil {
 		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
+	var devicePriority_value types.String
+	if obj.DevicePriority != nil {
+		devicePriority_value = types.StringValue(*obj.DevicePriority)
+	}
+	var groupId_value types.String
+	if obj.GroupId != nil {
+		groupId_value = types.StringValue(*obj.GroupId)
 	}
 	var deviceId_value types.String
 	if obj.DeviceId != nil {
@@ -196,21 +196,21 @@ func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
-	var devicePriority_value types.String
-	if obj.DevicePriority != nil {
-		devicePriority_value = types.StringValue(*obj.DevicePriority)
+	var ipRange_value types.String
+	if obj.IpRange != nil {
+		ipRange_value = types.StringValue(*obj.IpRange)
 	}
-	o.GroupId = groupId_value
 	o.AsNumber = asNumber_value
-	o.IpRange = ipRange_value
 	o.Fqdn = fqdn_value
+	o.DevicePriority = devicePriority_value
+	o.GroupId = groupId_value
 	o.DeviceId = deviceId_value
 	o.Interface = interface_value
 	o.QosProfile = qosProfile_value
 	o.EgressMax = egressMax_value
 	o.LinkTag = linkTag_value
 	o.IpNetmask = ipNetmask_value
-	o.DevicePriority = devicePriority_value
+	o.IpRange = ipRange_value
 
 	return diags
 }
@@ -269,7 +269,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"ip_netmask": dsschema.StringAttribute{
+			"fqdn": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -285,7 +285,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"device_id": dsschema.StringAttribute{
+			"as_number": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -325,7 +325,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"ip_range": dsschema.StringAttribute{
+			"ip_netmask": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -333,7 +333,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"fqdn": dsschema.StringAttribute{
+			"ip_range": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -349,7 +349,7 @@ func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"as_number": dsschema.StringAttribute{
+			"device_id": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -491,17 +491,17 @@ type TemplateVariableResourceModel struct {
 	Type        *TemplateVariableResourceTypeObject `tfsdk:"type"`
 }
 type TemplateVariableResourceTypeObject struct {
+	Fqdn           types.String `tfsdk:"fqdn"`
+	DevicePriority types.String `tfsdk:"device_priority"`
+	AsNumber       types.String `tfsdk:"as_number"`
 	QosProfile     types.String `tfsdk:"qos_profile"`
 	EgressMax      types.String `tfsdk:"egress_max"`
 	LinkTag        types.String `tfsdk:"link_tag"`
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
-	DevicePriority types.String `tfsdk:"device_priority"`
+	IpRange        types.String `tfsdk:"ip_range"`
+	GroupId        types.String `tfsdk:"group_id"`
 	DeviceId       types.String `tfsdk:"device_id"`
 	Interface      types.String `tfsdk:"interface"`
-	IpRange        types.String `tfsdk:"ip_range"`
-	Fqdn           types.String `tfsdk:"fqdn"`
-	GroupId        types.String `tfsdk:"group_id"`
-	AsNumber       types.String `tfsdk:"as_number"`
 }
 
 func (r *TemplateVariableResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -567,7 +567,7 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"ip_netmask": rsschema.StringAttribute{
+			"fqdn": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -576,22 +576,30 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("fqdn"),
+						path.MatchRelative().AtParent().AtName("device_priority"),
+						path.MatchRelative().AtParent().AtName("as_number"),
+						path.MatchRelative().AtParent().AtName("link_tag"),
+						path.MatchRelative().AtParent().AtName("ip_netmask"),
+						path.MatchRelative().AtParent().AtName("ip_range"),
+						path.MatchRelative().AtParent().AtName("group_id"),
 						path.MatchRelative().AtParent().AtName("device_id"),
 						path.MatchRelative().AtParent().AtName("interface"),
 						path.MatchRelative().AtParent().AtName("qos_profile"),
 						path.MatchRelative().AtParent().AtName("egress_max"),
-						path.MatchRelative().AtParent().AtName("link_tag"),
-						path.MatchRelative().AtParent().AtName("ip_netmask"),
-						path.MatchRelative().AtParent().AtName("device_priority"),
-						path.MatchRelative().AtParent().AtName("group_id"),
-						path.MatchRelative().AtParent().AtName("as_number"),
-						path.MatchRelative().AtParent().AtName("ip_range"),
-						path.MatchRelative().AtParent().AtName("fqdn"),
 					}...),
 				},
 			},
 
 			"device_priority": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"as_number": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -639,6 +647,14 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
+			"ip_netmask": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ip_range": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -647,23 +663,7 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"fqdn": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"group_id": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"as_number": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -715,7 +715,6 @@ func (r *TemplateVariableResource) Configure(ctx context.Context, req resource.C
 
 func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
 	if o.Type != nil {
 		if *obj != nil && (*obj).Type != nil {
@@ -729,44 +728,45 @@ func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **t
 			return diags
 		}
 	}
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).Type = type_entry
+	(*obj).Description = description_value
 
 	return diags
 }
 func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipRange_value := o.IpRange.ValueStringPointer()
-	fqdn_value := o.Fqdn.ValueStringPointer()
 	groupId_value := o.GroupId.ValueStringPointer()
-	asNumber_value := o.AsNumber.ValueStringPointer()
+	deviceId_value := o.DeviceId.ValueStringPointer()
+	interface_value := o.Interface.ValueStringPointer()
 	qosProfile_value := o.QosProfile.ValueStringPointer()
 	egressMax_value := o.EgressMax.ValueStringPointer()
 	linkTag_value := o.LinkTag.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	devicePriority_value := o.DevicePriority.ValueStringPointer()
-	deviceId_value := o.DeviceId.ValueStringPointer()
-	interface_value := o.Interface.ValueStringPointer()
+	asNumber_value := o.AsNumber.ValueStringPointer()
+	fqdn_value := o.Fqdn.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_variable.Type)
 	}
 	(*obj).IpRange = ipRange_value
-	(*obj).Fqdn = fqdn_value
 	(*obj).GroupId = groupId_value
-	(*obj).AsNumber = asNumber_value
+	(*obj).DeviceId = deviceId_value
+	(*obj).Interface = interface_value
 	(*obj).QosProfile = qosProfile_value
 	(*obj).EgressMax = egressMax_value
 	(*obj).LinkTag = linkTag_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).DevicePriority = devicePriority_value
-	(*obj).DeviceId = deviceId_value
-	(*obj).Interface = interface_value
+	(*obj).AsNumber = asNumber_value
+	(*obj).Fqdn = fqdn_value
 
 	return diags
 }
@@ -797,25 +797,21 @@ func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, obj *
 func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
+	var linkTag_value types.String
+	if obj.LinkTag != nil {
+		linkTag_value = types.StringValue(*obj.LinkTag)
 	}
-	var groupId_value types.String
-	if obj.GroupId != nil {
-		groupId_value = types.StringValue(*obj.GroupId)
-	}
-	var asNumber_value types.String
-	if obj.AsNumber != nil {
-		asNumber_value = types.StringValue(*obj.AsNumber)
+	var ipNetmask_value types.String
+	if obj.IpNetmask != nil {
+		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
 	var ipRange_value types.String
 	if obj.IpRange != nil {
 		ipRange_value = types.StringValue(*obj.IpRange)
 	}
-	var devicePriority_value types.String
-	if obj.DevicePriority != nil {
-		devicePriority_value = types.StringValue(*obj.DevicePriority)
+	var groupId_value types.String
+	if obj.GroupId != nil {
+		groupId_value = types.StringValue(*obj.GroupId)
 	}
 	var deviceId_value types.String
 	if obj.DeviceId != nil {
@@ -833,25 +829,29 @@ func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, 
 	if obj.EgressMax != nil {
 		egressMax_value = types.StringValue(*obj.EgressMax)
 	}
-	var linkTag_value types.String
-	if obj.LinkTag != nil {
-		linkTag_value = types.StringValue(*obj.LinkTag)
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
 	}
-	var ipNetmask_value types.String
-	if obj.IpNetmask != nil {
-		ipNetmask_value = types.StringValue(*obj.IpNetmask)
+	var devicePriority_value types.String
+	if obj.DevicePriority != nil {
+		devicePriority_value = types.StringValue(*obj.DevicePriority)
 	}
-	o.Fqdn = fqdn_value
-	o.GroupId = groupId_value
-	o.AsNumber = asNumber_value
+	var asNumber_value types.String
+	if obj.AsNumber != nil {
+		asNumber_value = types.StringValue(*obj.AsNumber)
+	}
+	o.LinkTag = linkTag_value
+	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
-	o.DevicePriority = devicePriority_value
+	o.GroupId = groupId_value
 	o.DeviceId = deviceId_value
 	o.Interface = interface_value
 	o.QosProfile = qosProfile_value
 	o.EgressMax = egressMax_value
-	o.LinkTag = linkTag_value
-	o.IpNetmask = ipNetmask_value
+	o.Fqdn = fqdn_value
+	o.DevicePriority = devicePriority_value
+	o.AsNumber = asNumber_value
 
 	return diags
 }

@@ -10,7 +10,6 @@ import (
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/objects/address"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
@@ -58,39 +57,39 @@ type AddressesDataSourceModel struct {
 	Addresses types.Map         `tfsdk:"addresses"`
 }
 type AddressesDataSourceAddressesObject struct {
+	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
-	Description     types.String `tfsdk:"description"`
-	IpRange         types.String `tfsdk:"ip_range"`
 	IpWildcard      types.String `tfsdk:"ip_wildcard"`
 	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
+	IpRange         types.String `tfsdk:"ip_range"`
 }
 
 func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	tags_pango_entries := make([]string, 0)
 	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	ipRange_value := o.IpRange.ValueStringPointer()
-	ipWildcard_value := o.IpWildcard.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
+	ipRange_value := o.IpRange.ValueStringPointer()
+	ipWildcard_value := o.IpWildcard.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(address.Entry)
 	}
-	(*obj).Tag = tags_pango_entries
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).IpRange = ipRange_value
-	(*obj).IpWildcard = ipWildcard_value
+	(*obj).Tag = tags_pango_entries
 	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
+	(*obj).IpRange = ipRange_value
+	(*obj).IpWildcard = ipWildcard_value
 
 	return diags
 }
@@ -128,9 +127,9 @@ func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, 
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
 	}
-	o.Tags = tags_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Tags = tags_list
 	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
@@ -204,14 +203,6 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"ip_wildcard": dsschema.StringAttribute{
-				Description: "The IP wildcard value.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"fqdn": dsschema.StringAttribute{
 				Description: "The FQDN value.",
 				Computed:    true,
@@ -230,6 +221,14 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 
 			"ip_range": dsschema.StringAttribute{
 				Description: "The IP range value.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_wildcard": dsschema.StringAttribute{
+				Description: "The IP wildcard value.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -323,7 +322,7 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	elements := make(map[string]AddressesDataSourceAddressesObject)
 	resp.Diagnostics.Append(state.Addresses.ElementsAs(ctx, &elements, false)...)
-	if resp.Diagnostics.HasError() {
+	if len(elements) == 0 || resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -394,9 +393,9 @@ type AddressesResourceModel struct {
 	Addresses types.Map         `tfsdk:"addresses"`
 }
 type AddressesResourceAddressesObject struct {
+	Tags            types.List   `tfsdk:"tags"`
 	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
-	Tags            types.List   `tfsdk:"tags"`
 	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
 	IpRange         types.String `tfsdk:"ip_range"`
@@ -485,8 +484,8 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"ip_range": rsschema.StringAttribute{
-				Description: "The IP range value.",
+			"fqdn": rsschema.StringAttribute{
+				Description: "The FQDN value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -502,24 +501,24 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 				},
 			},
 
-			"ip_wildcard": rsschema.StringAttribute{
-				Description: "The IP wildcard value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"fqdn": rsschema.StringAttribute{
-				Description: "The FQDN value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"ip_netmask": rsschema.StringAttribute{
 				Description: "The IP netmask value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_range": rsschema.StringAttribute{
+				Description: "The IP range value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_wildcard": rsschema.StringAttribute{
+				Description: "The IP wildcard value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -577,10 +576,10 @@ func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj 
 	if diags.HasError() {
 		return diags
 	}
+	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
 	ipWildcard_value := o.IpWildcard.ValueStringPointer()
-	fqdn_value := o.Fqdn.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(address.Entry)
@@ -588,10 +587,10 @@ func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj 
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tags_pango_entries
+	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).IpRange = ipRange_value
 	(*obj).IpWildcard = ipWildcard_value
-	(*obj).Fqdn = fqdn_value
 
 	return diags
 }
@@ -613,10 +612,6 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
-	}
 	var ipNetmask_value types.String
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
@@ -629,13 +624,17 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
 	}
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
+	o.Fqdn = fqdn_value
 
 	return diags
 }
@@ -740,6 +739,16 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	var location address.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &address.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &address.DeviceGroupLocation{
 
@@ -747,20 +756,10 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &address.VsysLocation{
-
-			Vsys:       state.Location.Vsys.Name.ValueString(),
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-		}
-	}
 
 	elements := make(map[string]AddressesResourceAddressesObject)
 	resp.Diagnostics.Append(state.Addresses.ElementsAs(ctx, &elements, false)...)
-	if resp.Diagnostics.HasError() {
+	if len(elements) == 0 || resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -863,7 +862,7 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	existing, err := r.manager.ReadMany(ctx, location, stateEntries)
-	if err != nil && !sdkerrors.IsObjectNotFound(err) {
+	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
 	}
@@ -997,9 +996,9 @@ func AddressesLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
@@ -1034,20 +1033,20 @@ func AddressesLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Panorama device name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1090,11 +1089,11 @@ func (o *AddressesVsysLocation) UnmarshalJSON(data []byte) error {
 }
 func (o AddressesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}{
-		Name:           o.Name.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1102,16 +1101,16 @@ func (o AddressesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Name = types.StringPointerValue(shadow.Name)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }

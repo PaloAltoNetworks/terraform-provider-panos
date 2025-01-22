@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address/group"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -61,8 +60,8 @@ type AddressGroupDataSourceModel struct {
 	Description     types.String                         `tfsdk:"description"`
 	DisableOverride types.String                         `tfsdk:"disable_override"`
 	Tag             types.List                           `tfsdk:"tag"`
-	Dynamic         *AddressGroupDataSourceDynamicObject `tfsdk:"dynamic"`
 	Static          types.List                           `tfsdk:"static"`
+	Dynamic         *AddressGroupDataSourceDynamicObject `tfsdk:"dynamic"`
 }
 type AddressGroupDataSourceDynamicObject struct {
 	Filter types.String `tfsdk:"filter"`
@@ -74,6 +73,11 @@ func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	tag_pango_entries := make([]string, 0)
 	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	static_pango_entries := make([]string, 0)
+	diags.Append(o.Static.ElementsAs(ctx, &static_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -90,11 +94,6 @@ func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 			return diags
 		}
 	}
-	static_pango_entries := make([]string, 0)
-	diags.Append(o.Static.ElementsAs(ctx, &static_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(group.Entry)
@@ -103,8 +102,8 @@ func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tag_pango_entries
-	(*obj).Dynamic = dynamic_entry
 	(*obj).Static = static_pango_entries
+	(*obj).Dynamic = dynamic_entry
 
 	return diags
 }
@@ -328,8 +327,8 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -650,9 +649,9 @@ func (o *AddressGroupResourceModel) CopyFromPango(ctx context.Context, obj *grou
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Tag = tag_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Tag = tag_list
 	o.Static = static_list
 	o.Dynamic = dynamic_object
 
@@ -695,21 +694,21 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 
 	var location group.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -759,13 +758,6 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -774,6 +766,13 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -1002,8 +1001,8 @@ func (r *AddressGroupResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 type AddressGroupVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type AddressGroupDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -1020,21 +1019,6 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
-				},
-			},
 			"vsys": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
@@ -1060,6 +1044,14 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
+					}...),
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
@@ -1087,6 +1079,13 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
 				},
 			},
 		},

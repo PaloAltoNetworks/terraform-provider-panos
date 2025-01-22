@@ -33,6 +33,20 @@ func TestAccAddresses(t *testing.T) {
 			{
 				Config: testAccAddressesResourceTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":    config.StringVariable(prefix),
+					"addresses": config.MapVariable(map[string]config.Variable{})},
+			},
+			{
+				Config: testAccAddressesResourceTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":    config.StringVariable(prefix),
+					"addresses": config.MapVariable(map[string]config.Variable{})},
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: false,
+			},
+			{
+				Config: testAccAddressesResourceTmpl,
+				ConfigVariables: map[string]config.Variable{
 					"prefix": config.StringVariable(prefix),
 					"addresses": config.MapVariable(map[string]config.Variable{
 						fmt.Sprintf("%s-ip-netmask", prefix): config.ObjectVariable(map[string]config.Variable{
@@ -55,54 +69,105 @@ func TestAccAddresses(t *testing.T) {
 					statecheck.ExpectKnownValue(
 						"panos_addresses.addresses",
 						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-ip-netmask", prefix)).
-							AtMapKey("ip_netmask"),
-						knownvalue.StringExact("172.16.0.1/32"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_addresses.addresses",
-						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-ip-netmask", prefix)).
-							AtMapKey("tags"),
-						knownvalue.ListExact([]knownvalue.Check{
-							knownvalue.StringExact(fmt.Sprintf("%s-tag", prefix)),
+							New("addresses"),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							fmt.Sprintf("%s-ip-netmask", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags": knownvalue.ListExact([]knownvalue.Check{
+									knownvalue.StringExact(fmt.Sprintf("%s-tag", prefix)),
+								}),
+								"description":      knownvalue.Null(),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.StringExact("172.16.0.1/32"),
+								"ip_range":         knownvalue.Null(),
+								"ip_wildcard":      knownvalue.Null(),
+								"fqdn":             knownvalue.Null(),
+							}),
+							fmt.Sprintf("%s-ip-range", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags":             knownvalue.Null(),
+								"description":      knownvalue.StringExact("description"),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.Null(),
+								"ip_range":         knownvalue.StringExact("172.16.0.1-172.16.0.255"),
+								"ip_wildcard":      knownvalue.Null(),
+								"fqdn":             knownvalue.Null(),
+							}),
+							fmt.Sprintf("%s-ip-wildcard", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags":             knownvalue.Null(),
+								"description":      knownvalue.Null(),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.Null(),
+								"ip_range":         knownvalue.Null(),
+								"ip_wildcard":      knownvalue.StringExact("172.16.0.0/0.0.0.255"),
+								"fqdn":             knownvalue.Null(),
+							}),
+							fmt.Sprintf("%s-fqdn", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags":             knownvalue.Null(),
+								"description":      knownvalue.Null(),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.Null(),
+								"ip_range":         knownvalue.Null(),
+								"ip_wildcard":      knownvalue.Null(),
+								"fqdn":             knownvalue.StringExact("example.com"),
+							}),
 						}),
 					),
+				},
+			},
+			{
+				Config: testAccAddressesResourceTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+					"addresses": config.MapVariable(map[string]config.Variable{
+						fmt.Sprintf("%s-ip-range", prefix): config.ObjectVariable(map[string]config.Variable{
+							"description": config.StringVariable("description"),
+							"ip_range":    config.StringVariable("172.16.0.1-172.16.0.255"),
+						}),
+						fmt.Sprintf("%s-fqdn", prefix): config.ObjectVariable(map[string]config.Variable{
+							"fqdn": config.StringVariable("example.com"),
+						}),
+					}),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
 						"panos_addresses.addresses",
 						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-ip-range", prefix)).
-							AtMapKey("description"),
-						knownvalue.StringExact("description"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_addresses.addresses",
-						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-ip-range", prefix)).
-							AtMapKey("ip_range"),
-						knownvalue.StringExact("172.16.0.1-172.16.0.255"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_addresses.addresses",
-						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-ip-wildcard", prefix)).
-							AtMapKey("ip_wildcard"),
-						knownvalue.StringExact("172.16.0.0/0.0.0.255"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_addresses.addresses",
-						tfjsonpath.
-							New("addresses").
-							AtMapKey(fmt.Sprintf("%s-fqdn", prefix)).
-							AtMapKey("fqdn"),
-						knownvalue.StringExact("example.com"),
+							New("addresses"),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							fmt.Sprintf("%s-ip-range", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags":             knownvalue.Null(),
+								"description":      knownvalue.StringExact("description"),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.Null(),
+								"ip_range":         knownvalue.StringExact("172.16.0.1-172.16.0.255"),
+								"ip_wildcard":      knownvalue.Null(),
+								"fqdn":             knownvalue.Null(),
+							}),
+							fmt.Sprintf("%s-fqdn", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"tags":             knownvalue.Null(),
+								"description":      knownvalue.Null(),
+								"disable_override": knownvalue.StringExact("no"),
+								"ip_netmask":       knownvalue.Null(),
+								"ip_range":         knownvalue.Null(),
+								"ip_wildcard":      knownvalue.Null(),
+								"fqdn":             knownvalue.StringExact("example.com"),
+							}),
+						}),
 					),
 				},
+			},
+			{
+				Config: testAccAddressesResourceTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":    config.StringVariable(prefix),
+					"addresses": config.MapVariable(map[string]config.Variable{})},
+			},
+			{
+				Config: testAccAddressesResourceTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":    config.StringVariable(prefix),
+					"addresses": config.MapVariable(map[string]config.Variable{})},
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: false,
 			},
 		},
 	})

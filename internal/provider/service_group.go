@@ -57,21 +57,21 @@ type ServiceGroupDataSourceFilter struct {
 type ServiceGroupDataSourceModel struct {
 	Location        ServiceGroupLocation `tfsdk:"location"`
 	Name            types.String         `tfsdk:"name"`
-	Tags            types.List           `tfsdk:"tags"`
 	DisableOverride types.String         `tfsdk:"disable_override"`
 	Members         types.List           `tfsdk:"members"`
+	Tags            types.List           `tfsdk:"tags"`
 }
 
 func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	members_pango_entries := make([]string, 0)
-	diags.Append(o.Members.ElementsAs(ctx, &members_pango_entries, false)...)
+	tags_pango_entries := make([]string, 0)
+	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	members_pango_entries := make([]string, 0)
+	diags.Append(o.Members.ElementsAs(ctx, &members_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -80,25 +80,25 @@ func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 		*obj = new(group.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Tag = tags_pango_entries
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Members = members_pango_entries
-	(*obj).Tag = tags_pango_entries
 
 	return diags
 }
 
 func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
-		diags.Append(list_diags...)
-	}
 	var members_list types.List
 	{
 		var list_diags diag.Diagnostics
 		members_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Members)
+		diags.Append(list_diags...)
+	}
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
 
@@ -107,9 +107,9 @@ func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *gr
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Tags = tags_list
 	o.DisableOverride = disableOverride_value
 	o.Members = members_list
+	o.Tags = tags_list
 
 	return diags
 }
@@ -128,6 +128,15 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"tags": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -137,15 +146,6 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 			},
 
 			"members": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"tags": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -220,8 +220,8 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -424,16 +424,16 @@ func (o *ServiceGroupResourceModel) CopyToPango(ctx context.Context, obj **group
 
 func (o *ServiceGroupResourceModel) CopyFromPango(ctx context.Context, obj *group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
-		diags.Append(list_diags...)
-	}
 	var members_list types.List
 	{
 		var list_diags diag.Diagnostics
 		members_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Members)
+		diags.Append(list_diags...)
+	}
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
 
@@ -442,9 +442,9 @@ func (o *ServiceGroupResourceModel) CopyFromPango(ctx context.Context, obj *grou
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Tags = tags_list
 	o.DisableOverride = disableOverride_value
 	o.Members = members_list
+	o.Tags = tags_list
 
 	return diags
 }
@@ -537,6 +537,13 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &group.VsysLocation{
+
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
@@ -546,13 +553,6 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
 	}
 
 	// Basic logging.
@@ -600,6 +600,13 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 	var location group.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -608,13 +615,6 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -689,21 +689,21 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	var location group.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -807,9 +807,9 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
