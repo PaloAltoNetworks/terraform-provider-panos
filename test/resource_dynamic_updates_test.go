@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
-func TestAccDynamicUpdates(t *testing.T) {
+func TestAccDynamicUpdates_1(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
@@ -303,9 +303,13 @@ func TestAccDynamicUpdates(t *testing.T) {
 			},
 		},
 	})
+}
 
-	nameSuffix = acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
-	prefix = fmt.Sprintf("test-acc-%s", nameSuffix)
+func TestAccDynamicUpdates_2(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
@@ -510,8 +514,13 @@ func TestAccDynamicUpdates(t *testing.T) {
 		},
 	})
 
-	nameSuffix = acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
-	prefix = fmt.Sprintf("test-acc-%s", nameSuffix)
+}
+
+func TestAccDynamicUpdates_3(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
@@ -637,9 +646,13 @@ func TestAccDynamicUpdates(t *testing.T) {
 			},
 		},
 	})
+}
 
-	nameSuffix = acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
-	prefix = fmt.Sprintf("test-acc-%s", nameSuffix)
+func TestAccDynamicUpdates_4(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
@@ -804,9 +817,13 @@ func TestAccDynamicUpdates(t *testing.T) {
 			},
 		},
 	})
+}
 
-	nameSuffix = acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
-	prefix = fmt.Sprintf("test-acc-%s", nameSuffix)
+func TestAccDynamicUpdates_5(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
@@ -843,9 +860,13 @@ func TestAccDynamicUpdates(t *testing.T) {
 			},
 		},
 	})
+}
 
-	nameSuffix = acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
-	prefix = fmt.Sprintf("test-acc-%s", nameSuffix)
+func TestAccDynamicUpdates_6(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
@@ -890,7 +911,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     anti_virus = {
@@ -981,7 +1002,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     anti_virus = {
@@ -1058,7 +1079,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     anti_virus = {
@@ -1124,7 +1145,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     anti_virus = {
@@ -1187,7 +1208,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     wf_private = {
@@ -1219,7 +1240,7 @@ resource "panos_template" "template" {
 }
 
 resource "panos_dynamic_updates" "updates" {
-  location = { template = { name = local.template_name } }
+  location = { template = { name = panos_template.template.name } }
 
   update_schedule = {
     wildfire = {

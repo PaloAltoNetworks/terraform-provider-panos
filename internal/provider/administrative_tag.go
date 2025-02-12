@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/admintag"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -57,24 +58,24 @@ type AdministrativeTagDataSourceFilter struct {
 type AdministrativeTagDataSourceModel struct {
 	Location        AdministrativeTagLocation `tfsdk:"location"`
 	Name            types.String              `tfsdk:"name"`
-	Comments        types.String              `tfsdk:"comments"`
 	DisableOverride types.String              `tfsdk:"disable_override"`
 	Color           types.String              `tfsdk:"color"`
+	Comments        types.String              `tfsdk:"comments"`
 }
 
 func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	comments_value := o.Comments.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	color_value := o.Color.ValueStringPointer()
-	comments_value := o.Comments.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Comments = comments_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Color = color_value
-	(*obj).Comments = comments_value
 
 	return diags
 }
@@ -100,6 +101,14 @@ func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, ob
 	o.DisableOverride = disableOverride_value
 
 	return diags
+}
+
+func (o *AdministrativeTagDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func AdministrativeTagDataSourceSchema() dsschema.Schema {
@@ -189,7 +198,6 @@ func (d *AdministrativeTagDataSource) Configure(_ context.Context, req datasourc
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, admintag.NewService(d.client), specifier, admintag.SpecMatches)
 }
-
 func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AdministrativeTagDataSourceModel
@@ -200,13 +208,6 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 
 	var location admintag.Location
 
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &admintag.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -217,6 +218,13 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -225,8 +233,13 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -285,10 +298,6 @@ type AdministrativeTagResourceModel struct {
 	DisableOverride types.String              `tfsdk:"disable_override"`
 }
 
-func (r *AdministrativeTagResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_administrative_tag"
-}
-
 func (r *AdministrativeTagResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
@@ -317,47 +326,47 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
-						"color23",
-						"color30",
-						"color31",
-						"color1",
-						"color10",
-						"color17",
-						"color20",
-						"color37",
-						"color42",
-						"color3",
-						"color8",
+						"color26",
 						"color28",
-						"color29",
-						"color34",
-						"color38",
 						"color5",
-						"color11",
-						"color2",
-						"color13",
+						"color9",
 						"color19",
+						"color23",
+						"color24",
+						"color36",
+						"color10",
+						"color21",
+						"color33",
+						"color38",
+						"color39",
+						"color41",
+						"color40",
+						"color2",
+						"color3",
+						"color6",
+						"color8",
+						"color17",
+						"color31",
+						"color20",
+						"color34",
+						"color42",
+						"color11",
+						"color12",
+						"color13",
+						"color14",
 						"color25",
 						"color32",
-						"color9",
-						"color12",
-						"color33",
-						"color35",
-						"color36",
-						"color39",
-						"color40",
-						"color7",
-						"color14",
-						"color21",
-						"color22",
-						"color26",
-						"color27",
-						"color41",
 						"color4",
-						"color15",
-						"color24",
-						"color6",
 						"color16",
+						"color22",
+						"color27",
+						"color35",
+						"color37",
+						"color1",
+						"color7",
+						"color15",
+						"color29",
+						"color30",
 					}...),
 				},
 			},
@@ -406,6 +415,10 @@ func (o *AdministrativeTagResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func (r *AdministrativeTagResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_administrative_tag"
+}
+
 func (r *AdministrativeTagResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AdministrativeTagResourceSchema()
 }
@@ -447,10 +460,6 @@ func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **
 func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj *admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var disableOverride_value types.String
-	if obj.DisableOverride != nil {
-		disableOverride_value = types.StringValue(*obj.DisableOverride)
-	}
 	var color_value types.String
 	if obj.Color != nil {
 		color_value = types.StringValue(*obj.Color)
@@ -459,12 +468,24 @@ func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj 
 	if obj.Comments != nil {
 		comments_value = types.StringValue(*obj.Comments)
 	}
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.DisableOverride = disableOverride_value
 	o.Color = color_value
 	o.Comments = comments_value
+	o.DisableOverride = disableOverride_value
 
 	return diags
+}
+
+func (o *AdministrativeTagResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -491,13 +512,6 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 	var location admintag.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &admintag.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -506,6 +520,13 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -529,7 +550,13 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -544,7 +571,6 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state AdministrativeTagResourceModel
@@ -561,8 +587,8 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -580,8 +606,13 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -606,7 +637,6 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AdministrativeTagResourceModel
@@ -624,8 +654,8 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -647,7 +677,14 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -683,7 +720,6 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AdministrativeTagResourceModel
@@ -707,11 +743,14 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 
 	var location admintag.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -720,9 +759,6 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -797,18 +833,18 @@ func (r *AdministrativeTagResource) ImportState(ctx context.Context, req resourc
 
 }
 
-type AdministrativeTagDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-}
 type AdministrativeTagVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type AdministrativeTagDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type AdministrativeTagLocation struct {
+	Vsys        *AdministrativeTagVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *AdministrativeTagDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                            `tfsdk:"shared"`
-	Vsys        *AdministrativeTagVsysLocation        `tfsdk:"vsys"`
 }
 
 func AdministrativeTagLocationSchema() rsschema.Attribute {
@@ -825,9 +861,9 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
@@ -835,20 +871,20 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -945,13 +981,13 @@ func (o *AdministrativeTagDeviceGroupLocation) UnmarshalJSON(data []byte) error 
 }
 func (o AdministrativeTagLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Shared      *bool                                 `json:"shared"`
 		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
 		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                                 `json:"shared"`
 	}{
+		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
-		Shared:      o.Shared.ValueBoolPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -959,18 +995,18 @@ func (o AdministrativeTagLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AdministrativeTagLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Shared      *bool                                 `json:"shared"`
 		Vsys        *AdministrativeTagVsysLocation        `json:"vsys"`
 		DeviceGroup *AdministrativeTagDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                                 `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
-	o.Shared = types.BoolPointerValue(shadow.Shared)
 
 	return nil
 }

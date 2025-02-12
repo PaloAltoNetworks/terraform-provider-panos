@@ -11,10 +11,10 @@ import (
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/objects/profiles/wildfireanalysis"
+	"github.com/PaloAltoNetworks/pango/objects/profiles/fileblocking"
 	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -38,44 +38,42 @@ import (
 
 // Generate Terraform Data Source object.
 var (
-	_ datasource.DataSource              = &WildfireAnalysisSecurityProfileDataSource{}
-	_ datasource.DataSourceWithConfigure = &WildfireAnalysisSecurityProfileDataSource{}
+	_ datasource.DataSource              = &FileBlockingSecurityProfileDataSource{}
+	_ datasource.DataSourceWithConfigure = &FileBlockingSecurityProfileDataSource{}
 )
 
-func NewWildfireAnalysisSecurityProfileDataSource() datasource.DataSource {
-	return &WildfireAnalysisSecurityProfileDataSource{}
+func NewFileBlockingSecurityProfileDataSource() datasource.DataSource {
+	return &FileBlockingSecurityProfileDataSource{}
 }
 
-type WildfireAnalysisSecurityProfileDataSource struct {
+type FileBlockingSecurityProfileDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service]
+	manager *sdkmanager.EntryObjectManager[*fileblocking.Entry, fileblocking.Location, *fileblocking.Service]
 }
 
-type WildfireAnalysisSecurityProfileDataSourceFilter struct {
+type FileBlockingSecurityProfileDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
 
-type WildfireAnalysisSecurityProfileDataSourceModel struct {
-	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
-	Name            types.String                            `tfsdk:"name"`
-	Rules           types.List                              `tfsdk:"rules"`
-	Description     types.String                            `tfsdk:"description"`
-	DisableOverride types.String                            `tfsdk:"disable_override"`
+type FileBlockingSecurityProfileDataSourceModel struct {
+	Location        FileBlockingSecurityProfileLocation `tfsdk:"location"`
+	Name            types.String                        `tfsdk:"name"`
+	Description     types.String                        `tfsdk:"description"`
+	DisableOverride types.String                        `tfsdk:"disable_override"`
+	Rules           types.List                          `tfsdk:"rules"`
 }
-type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
-	Name        types.String `tfsdk:"name"`
-	Application types.List   `tfsdk:"application"`
-	FileType    types.List   `tfsdk:"file_type"`
-	Direction   types.String `tfsdk:"direction"`
-	Analysis    types.String `tfsdk:"analysis"`
+type FileBlockingSecurityProfileDataSourceRulesObject struct {
+	Name         types.String `tfsdk:"name"`
+	Direction    types.String `tfsdk:"direction"`
+	Action       types.String `tfsdk:"action"`
+	Applications types.List   `tfsdk:"applications"`
+	FileTypes    types.List   `tfsdk:"file_types"`
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	var rules_tf_entries []WildfireAnalysisSecurityProfileDataSourceRulesObject
-	var rules_pango_entries []wildfireanalysis.Rules
+	var rules_tf_entries []FileBlockingSecurityProfileDataSourceRulesObject
+	var rules_pango_entries []fileblocking.Rules
 	{
 		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
 		diags.Append(d...)
@@ -83,7 +81,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 			return diags
 		}
 		for _, elt := range rules_tf_entries {
-			var entry *wildfireanalysis.Rules
+			var entry *fileblocking.Rules
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
@@ -91,51 +89,53 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
+	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(wildfireanalysis.Entry)
+		*obj = new(fileblocking.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Rules = rules_pango_entries
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).Rules = rules_pango_entries
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
+	action_value := o.Action.ValueStringPointer()
+	applications_pango_entries := make([]string, 0)
+	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	fileType_pango_entries := make([]string, 0)
-	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
+	fileTypes_pango_entries := make([]string, 0)
+	diags.Append(o.FileTypes.ElementsAs(ctx, &fileTypes_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
 	direction_value := o.Direction.ValueStringPointer()
-	analysis_value := o.Analysis.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(wildfireanalysis.Rules)
+		*obj = new(fileblocking.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Application = application_pango_entries
-	(*obj).FileType = fileType_pango_entries
+	(*obj).Action = action_value
+	(*obj).Application = applications_pango_entries
+	(*obj).FileType = fileTypes_pango_entries
 	(*obj).Direction = direction_value
-	(*obj).Analysis = analysis_value
 
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
-		var rules_tf_entries []WildfireAnalysisSecurityProfileDataSourceRulesObject
+		var rules_tf_entries []FileBlockingSecurityProfileDataSourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry WildfireAnalysisSecurityProfileDataSourceRulesObject
+			var entry FileBlockingSecurityProfileDataSourceRulesObject
 			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
 			diags.Append(entry_diags...)
 			rules_tf_entries = append(rules_tf_entries, entry)
@@ -162,18 +162,18 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var application_list types.List
+	var fileTypes_list types.List
 	{
 		var list_diags diag.Diagnostics
-		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
+		fileTypes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
 	}
-	var fileType_list types.List
+	var applications_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
+		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
 	}
 
@@ -181,20 +181,20 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx
 	if obj.Direction != nil {
 		direction_value = types.StringValue(*obj.Direction)
 	}
-	var analysis_value types.String
-	if obj.Analysis != nil {
-		analysis_value = types.StringValue(*obj.Analysis)
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Application = application_list
-	o.FileType = fileType_list
+	o.FileTypes = fileTypes_list
 	o.Direction = direction_value
-	o.Analysis = analysis_value
+	o.Action = action_value
+	o.Applications = applications_list
 
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
+func (o *FileBlockingSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
 	var components []string
 	components = append(components, pangoutil.AsEntryXpath(
 		[]string{o.Name.ValueString()},
@@ -202,11 +202,11 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) resourceXpathComponents
 	return components, nil
 }
 
-func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
+func FileBlockingSecurityProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
 
-			"location": WildfireAnalysisSecurityProfileDataSourceLocationSchema(),
+			"location": FileBlockingSecurityProfileDataSourceLocationSchema(),
 
 			"name": dsschema.StringAttribute{
 				Description: "",
@@ -216,17 +216,8 @@ func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"rules": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: WildfireAnalysisSecurityProfileDataSourceRulesSchema(),
-			},
-
 			"description": dsschema.StringAttribute{
-				Description: "",
+				Description: "Profile description.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -234,18 +225,27 @@ func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
 			},
 
 			"disable_override": dsschema.StringAttribute{
-				Description: "disable object override in child device groups",
+				Description: "Disable object override in child device groups.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"rules": dsschema.ListNestedAttribute{
+				Description:  "List of rules.",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: FileBlockingSecurityProfileDataSourceRulesSchema(),
+			},
 		},
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) getTypeFor(name string) attr.Type {
-	schema := WildfireAnalysisSecurityProfileDataSourceSchema()
+func (o *FileBlockingSecurityProfileDataSourceModel) getTypeFor(name string) attr.Type {
+	schema := FileBlockingSecurityProfileDataSourceSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -262,7 +262,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttributeObject {
+func FileBlockingSecurityProfileDataSourceRulesSchema() dsschema.NestedAttributeObject {
 	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
 
@@ -274,8 +274,8 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Sensitive:   false,
 			},
 
-			"application": dsschema.ListAttribute{
-				Description: "",
+			"applications": dsschema.ListAttribute{
+				Description: "List of applications.",
 				Required:    false,
 				Optional:    true,
 				Computed:    true,
@@ -283,8 +283,8 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				ElementType: types.StringType,
 			},
 
-			"file_type": dsschema.ListAttribute{
-				Description: "",
+			"file_types": dsschema.ListAttribute{
+				Description: "List of file types.",
 				Required:    false,
 				Optional:    true,
 				Computed:    true,
@@ -293,15 +293,15 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 			},
 
 			"direction": dsschema.StringAttribute{
-				Description: "",
+				Description: "File transfer direction.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"analysis": dsschema.StringAttribute{
-				Description: "",
+			"action": dsschema.StringAttribute{
+				Description: "Action to take on matching files.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -311,8 +311,8 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) getTypeFor(name string) attr.Type {
-	schema := WildfireAnalysisSecurityProfileDataSourceRulesSchema()
+func (o *FileBlockingSecurityProfileDataSourceRulesObject) getTypeFor(name string) attr.Type {
+	schema := FileBlockingSecurityProfileDataSourceRulesSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -329,58 +329,65 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func WildfireAnalysisSecurityProfileDataSourceLocationSchema() rsschema.Attribute {
-	return WildfireAnalysisSecurityProfileLocationSchema()
+func FileBlockingSecurityProfileDataSourceLocationSchema() rsschema.Attribute {
+	return FileBlockingSecurityProfileLocationSchema()
 }
 
 // Metadata returns the data source type name.
-func (d *WildfireAnalysisSecurityProfileDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_wildfire_analysis_security_profile"
+func (d *FileBlockingSecurityProfileDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_file_blocking_security_profile"
 }
 
 // Schema defines the schema for this data source.
-func (d *WildfireAnalysisSecurityProfileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = WildfireAnalysisSecurityProfileDataSourceSchema()
+func (d *FileBlockingSecurityProfileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = FileBlockingSecurityProfileDataSourceSchema()
 }
 
 // Configure prepares the struct.
-func (d *WildfireAnalysisSecurityProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *FileBlockingSecurityProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 
 	d.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := wildfireanalysis.Versioning(d.client.Versioning())
+	specifier, _, err := fileblocking.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, wildfireanalysis.NewService(d.client), specifier, wildfireanalysis.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, fileblocking.NewService(d.client), specifier, fileblocking.SpecMatches)
 }
-func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state WildfireAnalysisSecurityProfileDataSourceModel
+	var savestate, state FileBlockingSecurityProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	var location wildfireanalysis.Location
+	var location fileblocking.Location
 
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &fileblocking.VsysLocation{
+
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
-		"resource_name": "panos_wildfire_analysis_security_profile_resource",
+		"resource_name": "panos_file_blocking_security_profile_resource",
 		"function":      "Read",
 		"name":          savestate.Name.ValueString(),
 	})
@@ -419,54 +426,54 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 // Generate Terraform Resource object
 var (
-	_ resource.Resource                = &WildfireAnalysisSecurityProfileResource{}
-	_ resource.ResourceWithConfigure   = &WildfireAnalysisSecurityProfileResource{}
-	_ resource.ResourceWithImportState = &WildfireAnalysisSecurityProfileResource{}
+	_ resource.Resource                = &FileBlockingSecurityProfileResource{}
+	_ resource.ResourceWithConfigure   = &FileBlockingSecurityProfileResource{}
+	_ resource.ResourceWithImportState = &FileBlockingSecurityProfileResource{}
 )
 
-func NewWildfireAnalysisSecurityProfileResource() resource.Resource {
-	if _, found := resourceFuncMap["panos_wildfire_analysis_security_profile"]; !found {
-		resourceFuncMap["panos_wildfire_analysis_security_profile"] = resourceFuncs{
-			CreateImportId: WildfireAnalysisSecurityProfileImportStateCreator,
+func NewFileBlockingSecurityProfileResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_file_blocking_security_profile"]; !found {
+		resourceFuncMap["panos_file_blocking_security_profile"] = resourceFuncs{
+			CreateImportId: FileBlockingSecurityProfileImportStateCreator,
 		}
 	}
-	return &WildfireAnalysisSecurityProfileResource{}
+	return &FileBlockingSecurityProfileResource{}
 }
 
-type WildfireAnalysisSecurityProfileResource struct {
+type FileBlockingSecurityProfileResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service]
+	manager *sdkmanager.EntryObjectManager[*fileblocking.Entry, fileblocking.Location, *fileblocking.Service]
 }
 
-func WildfireAnalysisSecurityProfileResourceLocationSchema() rsschema.Attribute {
-	return WildfireAnalysisSecurityProfileLocationSchema()
+func FileBlockingSecurityProfileResourceLocationSchema() rsschema.Attribute {
+	return FileBlockingSecurityProfileLocationSchema()
 }
 
-type WildfireAnalysisSecurityProfileResourceModel struct {
-	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
-	Name            types.String                            `tfsdk:"name"`
-	Rules           types.List                              `tfsdk:"rules"`
-	Description     types.String                            `tfsdk:"description"`
-	DisableOverride types.String                            `tfsdk:"disable_override"`
+type FileBlockingSecurityProfileResourceModel struct {
+	Location        FileBlockingSecurityProfileLocation `tfsdk:"location"`
+	Name            types.String                        `tfsdk:"name"`
+	DisableOverride types.String                        `tfsdk:"disable_override"`
+	Rules           types.List                          `tfsdk:"rules"`
+	Description     types.String                        `tfsdk:"description"`
 }
-type WildfireAnalysisSecurityProfileResourceRulesObject struct {
-	Name        types.String `tfsdk:"name"`
-	Application types.List   `tfsdk:"application"`
-	FileType    types.List   `tfsdk:"file_type"`
-	Direction   types.String `tfsdk:"direction"`
-	Analysis    types.String `tfsdk:"analysis"`
+type FileBlockingSecurityProfileResourceRulesObject struct {
+	Name         types.String `tfsdk:"name"`
+	FileTypes    types.List   `tfsdk:"file_types"`
+	Direction    types.String `tfsdk:"direction"`
+	Action       types.String `tfsdk:"action"`
+	Applications types.List   `tfsdk:"applications"`
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (r *FileBlockingSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
 
-func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
+func FileBlockingSecurityProfileResourceSchema() rsschema.Schema {
 	return rsschema.Schema{
 		Attributes: map[string]rsschema.Attribute{
 
-			"location": WildfireAnalysisSecurityProfileResourceLocationSchema(),
+			"location": FileBlockingSecurityProfileResourceLocationSchema(),
 
 			"name": rsschema.StringAttribute{
 				Description: "",
@@ -476,17 +483,8 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"rules": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: WildfireAnalysisSecurityProfileResourceRulesSchema(),
-			},
-
 			"description": rsschema.StringAttribute{
-				Description: "",
+				Description: "Profile description.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -494,7 +492,7 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 			},
 
 			"disable_override": rsschema.StringAttribute{
-				Description: "disable object override in child device groups",
+				Description: "Disable object override in child device groups.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -508,12 +506,21 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 					}...),
 				},
 			},
+
+			"rules": rsschema.ListNestedAttribute{
+				Description:  "List of rules.",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: FileBlockingSecurityProfileResourceRulesSchema(),
+			},
 		},
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) getTypeFor(name string) attr.Type {
-	schema := WildfireAnalysisSecurityProfileResourceSchema()
+func (o *FileBlockingSecurityProfileResourceModel) getTypeFor(name string) attr.Type {
+	schema := FileBlockingSecurityProfileResourceSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -530,7 +537,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) getTypeFor(name string) a
 	panic("unreachable")
 }
 
-func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttributeObject {
+func FileBlockingSecurityProfileResourceRulesSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
 
@@ -542,17 +549,8 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 				Sensitive:   false,
 			},
 
-			"application": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"file_type": rsschema.ListAttribute{
-				Description: "",
+			"file_types": rsschema.ListAttribute{
+				Description: "List of file types.",
 				Required:    false,
 				Optional:    true,
 				Computed:    false,
@@ -561,27 +559,36 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 			},
 
 			"direction": rsschema.StringAttribute{
-				Description: "",
+				Description: "File transfer direction.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"analysis": rsschema.StringAttribute{
-				Description: "",
+			"action": rsschema.StringAttribute{
+				Description: "Action to take on matching files.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("public-cloud"),
+				Default:     stringdefault.StaticString("alert"),
+			},
+
+			"applications": rsschema.ListAttribute{
+				Description: "List of applications.",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) getTypeFor(name string) attr.Type {
-	schema := WildfireAnalysisSecurityProfileResourceRulesSchema()
+func (o *FileBlockingSecurityProfileResourceRulesObject) getTypeFor(name string) attr.Type {
+	schema := FileBlockingSecurityProfileResourceRulesSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -598,36 +605,37 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) getTypeFor(name str
 	panic("unreachable")
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_wildfire_analysis_security_profile"
+func (r *FileBlockingSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_file_blocking_security_profile"
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = WildfireAnalysisSecurityProfileResourceSchema()
+func (r *FileBlockingSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = FileBlockingSecurityProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *FileBlockingSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	r.client = req.ProviderData.(*pango.Client)
-	specifier, _, err := wildfireanalysis.Versioning(r.client.Versioning())
+	specifier, _, err := fileblocking.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, wildfireanalysis.NewService(r.client), specifier, wildfireanalysis.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, fileblocking.NewService(r.client), specifier, fileblocking.SpecMatches)
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
-	var rules_pango_entries []wildfireanalysis.Rules
+	var rules_tf_entries []FileBlockingSecurityProfileResourceRulesObject
+	var rules_pango_entries []fileblocking.Rules
 	{
 		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
 		diags.Append(d...)
@@ -635,7 +643,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 			return diags
 		}
 		for _, elt := range rules_tf_entries {
-			var entry *wildfireanalysis.Rules
+			var entry *fileblocking.Rules
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
@@ -643,52 +651,51 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(wildfireanalysis.Entry)
+		*obj = new(fileblocking.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Rules = rules_pango_entries
-	(*obj).Description = description_value
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	fileType_pango_entries := make([]string, 0)
-	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
+	applications_pango_entries := make([]string, 0)
+	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	fileTypes_pango_entries := make([]string, 0)
+	diags.Append(o.FileTypes.ElementsAs(ctx, &fileTypes_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
 	direction_value := o.Direction.ValueStringPointer()
-	analysis_value := o.Analysis.ValueStringPointer()
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
+	action_value := o.Action.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(wildfireanalysis.Rules)
+		*obj = new(fileblocking.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).FileType = fileType_pango_entries
+	(*obj).Application = applications_pango_entries
+	(*obj).FileType = fileTypes_pango_entries
 	(*obj).Direction = direction_value
-	(*obj).Analysis = analysis_value
-	(*obj).Application = application_pango_entries
+	(*obj).Action = action_value
 
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
-		var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
+		var rules_tf_entries []FileBlockingSecurityProfileResourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry WildfireAnalysisSecurityProfileResourceRulesObject
+			var entry FileBlockingSecurityProfileResourceRulesObject
 			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
 			diags.Append(entry_diags...)
 			rules_tf_entries = append(rules_tf_entries, entry)
@@ -715,18 +722,18 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var application_list types.List
+	var applications_list types.List
 	{
 		var list_diags diag.Diagnostics
-		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
+		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
 	}
-	var fileType_list types.List
+	var fileTypes_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
+		fileTypes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
 	}
 
@@ -734,20 +741,20 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx c
 	if obj.Direction != nil {
 		direction_value = types.StringValue(*obj.Direction)
 	}
-	var analysis_value types.String
-	if obj.Analysis != nil {
-		analysis_value = types.StringValue(*obj.Analysis)
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Application = application_list
-	o.FileType = fileType_list
+	o.Applications = applications_list
+	o.FileTypes = fileTypes_list
 	o.Direction = direction_value
-	o.Analysis = analysis_value
+	o.Action = action_value
 
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
+func (o *FileBlockingSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
 	var components []string
 	components = append(components, pangoutil.AsEntryXpath(
 		[]string{o.Name.ValueString()},
@@ -755,8 +762,8 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) resourceXpathComponents()
 	return components, nil
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var state WildfireAnalysisSecurityProfileResourceModel
+func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -764,7 +771,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource create", map[string]any{
-		"resource_name": "panos_wildfire_analysis_security_profile_resource",
+		"resource_name": "panos_file_blocking_security_profile_resource",
 		"function":      "Create",
 		"name":          state.Name.ValueString(),
 	})
@@ -777,16 +784,23 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	// Determine the location.
 
-	var location wildfireanalysis.Location
+	var location fileblocking.Location
 
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &fileblocking.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 
@@ -796,7 +810,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	}
 
 	// Load the desired config.
-	var obj *wildfireanalysis.Entry
+	var obj *fileblocking.Entry
 
 	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
 	if resp.Diagnostics.HasError() {
@@ -831,30 +845,37 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state WildfireAnalysisSecurityProfileResourceModel
+	var savestate, state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	var location wildfireanalysis.Location
+	var location fileblocking.Location
 
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &fileblocking.VsysLocation{
+
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
-		"resource_name": "panos_wildfire_analysis_security_profile_resource",
+		"resource_name": "panos_file_blocking_security_profile_resource",
 		"function":      "Read",
 		"name":          savestate.Name.ValueString(),
 	})
@@ -890,31 +911,38 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
-	var plan, state WildfireAnalysisSecurityProfileResourceModel
+	var plan, state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	var location wildfireanalysis.Location
+	var location fileblocking.Location
 
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &fileblocking.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
-		"resource_name": "panos_wildfire_analysis_security_profile_resource",
+		"resource_name": "panos_file_blocking_security_profile_resource",
 		"function":      "Update",
 	})
 
@@ -966,9 +994,9 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *FileBlockingSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state WildfireAnalysisSecurityProfileResourceModel
+	var state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -976,7 +1004,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
-		"resource_name": "panos_wildfire_analysis_security_profile_resource",
+		"resource_name": "panos_file_blocking_security_profile_resource",
 		"function":      "Delete",
 		"name":          state.Name.ValueString(),
 	})
@@ -987,13 +1015,20 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 		return
 	}
 
-	var location wildfireanalysis.Location
+	var location fileblocking.Location
 
 	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &fileblocking.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
@@ -1007,12 +1042,12 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 
 }
 
-type WildfireAnalysisSecurityProfileImportState struct {
-	Location WildfireAnalysisSecurityProfileLocation `json:"location"`
-	Name     string                                  `json:"name"`
+type FileBlockingSecurityProfileImportState struct {
+	Location FileBlockingSecurityProfileLocation `json:"location"`
+	Name     string                              `json:"name"`
 }
 
-func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+func FileBlockingSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
 	attrs := resource.Attributes()
 	if attrs == nil {
 		return nil, fmt.Errorf("Object has no attributes")
@@ -1023,7 +1058,7 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location WildfireAnalysisSecurityProfileLocation
+	var location FileBlockingSecurityProfileLocation
 	switch value := locationAttr.(type) {
 	case types.Object:
 		value.As(ctx, &location, basetypes.ObjectAsOptions{})
@@ -1044,7 +1079,7 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
 
-	importStruct := WildfireAnalysisSecurityProfileImportState{
+	importStruct := FileBlockingSecurityProfileImportState{
 		Location: location,
 		Name:     name,
 	}
@@ -1052,9 +1087,9 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 	return json.Marshal(importStruct)
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *FileBlockingSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
-	var obj WildfireAnalysisSecurityProfileImportState
+	var obj FileBlockingSecurityProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
@@ -1072,34 +1107,25 @@ func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Contex
 
 }
 
-type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
+type FileBlockingSecurityProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
-type WildfireAnalysisSecurityProfileLocation struct {
-	Shared      types.Bool                                          `tfsdk:"shared"`
-	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+type FileBlockingSecurityProfileVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
+type FileBlockingSecurityProfileLocation struct {
+	DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Vsys        *FileBlockingSecurityProfileVsysLocation        `tfsdk:"vsys"`
+	Shared      types.Bool                                      `tfsdk:"shared"`
 }
 
-func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
+func FileBlockingSecurityProfileLocationSchema() rsschema.Attribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
-				},
-			},
 			"device_group": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Device Group",
 				Optional:    true,
@@ -1126,12 +1152,54 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+					}...),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"shared": rsschema.BoolAttribute{
+				Description: "Panorama shared object",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 		},
 	}
 }
 
-func (o WildfireAnalysisSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+func (o FileBlockingSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
@@ -1143,7 +1211,7 @@ func (o WildfireAnalysisSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byt
 	return json.Marshal(obj)
 }
 
-func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+func (o *FileBlockingSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
@@ -1158,22 +1226,52 @@ func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) UnmarshalJSON(data 
 
 	return nil
 }
-func (o WildfireAnalysisSecurityProfileLocation) MarshalJSON() ([]byte, error) {
+func (o FileBlockingSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                               `json:"shared"`
-		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
-		DeviceGroup: o.DeviceGroup,
+		Name:       o.Name.ValueStringPointer(),
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
 }
 
-func (o *WildfireAnalysisSecurityProfileLocation) UnmarshalJSON(data []byte) error {
+func (o *FileBlockingSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                               `json:"shared"`
-		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
+func (o FileBlockingSecurityProfileLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Shared      *bool                                           `json:"shared"`
+		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
+	}{
+		Shared:      o.Shared.ValueBoolPointer(),
+		DeviceGroup: o.DeviceGroup,
+		Vsys:        o.Vsys,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *FileBlockingSecurityProfileLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Shared      *bool                                           `json:"shared"`
+		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1182,6 +1280,7 @@ func (o *WildfireAnalysisSecurityProfileLocation) UnmarshalJSON(data []byte) err
 	}
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.DeviceGroup = shadow.DeviceGroup
+	o.Vsys = shadow.Vsys
 
 	return nil
 }

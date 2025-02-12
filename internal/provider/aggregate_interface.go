@@ -12,7 +12,9 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/aggregate"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -59,39 +61,16 @@ type AggregateInterfaceDataSourceModel struct {
 	Location      AggregateInterfaceLocation                       `tfsdk:"location"`
 	Name          types.String                                     `tfsdk:"name"`
 	Comment       types.String                                     `tfsdk:"comment"`
-	Ha            *AggregateInterfaceDataSourceHaObject            `tfsdk:"ha"`
 	Layer2        *AggregateInterfaceDataSourceLayer2Object        `tfsdk:"layer2"`
 	Layer3        *AggregateInterfaceDataSourceLayer3Object        `tfsdk:"layer3"`
 	VirtualWire   *AggregateInterfaceDataSourceVirtualWireObject   `tfsdk:"virtual_wire"`
 	DecryptMirror *AggregateInterfaceDataSourceDecryptMirrorObject `tfsdk:"decrypt_mirror"`
-}
-type AggregateInterfaceDataSourceHaObject struct {
-	Lacp *AggregateInterfaceDataSourceHaLacpObject `tfsdk:"lacp"`
-}
-type AggregateInterfaceDataSourceHaLacpObject struct {
-	Enable           types.Bool   `tfsdk:"enable"`
-	FastFailover     types.Bool   `tfsdk:"fast_failover"`
-	MaxPorts         types.Int64  `tfsdk:"max_ports"`
-	Mode             types.String `tfsdk:"mode"`
-	SystemPriority   types.Int64  `tfsdk:"system_priority"`
-	TransmissionRate types.String `tfsdk:"transmission_rate"`
+	Ha            *AggregateInterfaceDataSourceHaObject            `tfsdk:"ha"`
 }
 type AggregateInterfaceDataSourceLayer2Object struct {
 	Lacp           *AggregateInterfaceDataSourceLayer2LacpObject `tfsdk:"lacp"`
 	Lldp           *AggregateInterfaceDataSourceLayer2LldpObject `tfsdk:"lldp"`
 	NetflowProfile types.String                                  `tfsdk:"netflow_profile"`
-}
-type AggregateInterfaceDataSourceLayer2LacpObject struct {
-	MaxPorts         types.Int64                                                   `tfsdk:"max_ports"`
-	Mode             types.String                                                  `tfsdk:"mode"`
-	SystemPriority   types.Int64                                                   `tfsdk:"system_priority"`
-	TransmissionRate types.String                                                  `tfsdk:"transmission_rate"`
-	Enable           types.Bool                                                    `tfsdk:"enable"`
-	FastFailover     types.Bool                                                    `tfsdk:"fast_failover"`
-	HighAvailability *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject `tfsdk:"high_availability"`
-}
-type AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject struct {
-	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
 }
 type AggregateInterfaceDataSourceLayer2LldpObject struct {
 	Enable           types.Bool                                                    `tfsdk:"enable"`
@@ -101,27 +80,106 @@ type AggregateInterfaceDataSourceLayer2LldpObject struct {
 type AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
 }
+type AggregateInterfaceDataSourceLayer2LacpObject struct {
+	HighAvailability *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject `tfsdk:"high_availability"`
+	MaxPorts         types.Int64                                                   `tfsdk:"max_ports"`
+	Mode             types.String                                                  `tfsdk:"mode"`
+	SystemPriority   types.Int64                                                   `tfsdk:"system_priority"`
+	TransmissionRate types.String                                                  `tfsdk:"transmission_rate"`
+	Enable           types.Bool                                                    `tfsdk:"enable"`
+	FastFailover     types.Bool                                                    `tfsdk:"fast_failover"`
+}
+type AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject struct {
+	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
 type AggregateInterfaceDataSourceLayer3Object struct {
-	Ipv6                       *AggregateInterfaceDataSourceLayer3Ipv6Object              `tfsdk:"ipv6"`
-	Lacp                       *AggregateInterfaceDataSourceLayer3LacpObject              `tfsdk:"lacp"`
-	SdwanLinkSettings          *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
-	AdjustTcpMss               *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
-	Arp                        types.List                                                 `tfsdk:"arp"`
-	DhcpClient                 *AggregateInterfaceDataSourceLayer3DhcpClientObject        `tfsdk:"dhcp_client"`
-	Lldp                       *AggregateInterfaceDataSourceLayer3LldpObject              `tfsdk:"lldp"`
-	NdpProxy                   *AggregateInterfaceDataSourceLayer3NdpProxyObject          `tfsdk:"ndp_proxy"`
-	Bonjour                    *AggregateInterfaceDataSourceLayer3BonjourObject           `tfsdk:"bonjour"`
+	DecryptForward             types.Bool                                                 `tfsdk:"decrypt_forward"`
 	DfIgnore                   types.Bool                                                 `tfsdk:"df_ignore"`
 	Ip                         types.List                                                 `tfsdk:"ip"`
-	DdnsConfig                 *AggregateInterfaceDataSourceLayer3DdnsConfigObject        `tfsdk:"ddns_config"`
-	DecryptForward             types.Bool                                                 `tfsdk:"decrypt_forward"`
+	Ipv6                       *AggregateInterfaceDataSourceLayer3Ipv6Object              `tfsdk:"ipv6"`
+	Arp                        types.List                                                 `tfsdk:"arp"`
+	Bonjour                    *AggregateInterfaceDataSourceLayer3BonjourObject           `tfsdk:"bonjour"`
 	InterfaceManagementProfile types.String                                               `tfsdk:"interface_management_profile"`
+	Lacp                       *AggregateInterfaceDataSourceLayer3LacpObject              `tfsdk:"lacp"`
+	Lldp                       *AggregateInterfaceDataSourceLayer3LldpObject              `tfsdk:"lldp"`
+	SdwanLinkSettings          *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
+	DhcpClient                 *AggregateInterfaceDataSourceLayer3DhcpClientObject        `tfsdk:"dhcp_client"`
 	Mtu                        types.Int64                                                `tfsdk:"mtu"`
+	NdpProxy                   *AggregateInterfaceDataSourceLayer3NdpProxyObject          `tfsdk:"ndp_proxy"`
+	AdjustTcpMss               *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
+	DdnsConfig                 *AggregateInterfaceDataSourceLayer3DdnsConfigObject        `tfsdk:"ddns_config"`
 	NetflowProfile             types.String                                               `tfsdk:"netflow_profile"`
 	UntaggedSubInterface       types.Bool                                                 `tfsdk:"untagged_sub_interface"`
 }
+type AggregateInterfaceDataSourceLayer3ArpObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceDataSourceLayer3BonjourObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	GroupId  types.Int64 `tfsdk:"group_id"`
+	TtlCheck types.Bool  `tfsdk:"ttl_check"`
+}
+type AggregateInterfaceDataSourceLayer3LacpObject struct {
+	FastFailover     types.Bool                                                    `tfsdk:"fast_failover"`
+	HighAvailability *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject `tfsdk:"high_availability"`
+	MaxPorts         types.Int64                                                   `tfsdk:"max_ports"`
+	Mode             types.String                                                  `tfsdk:"mode"`
+	SystemPriority   types.Int64                                                   `tfsdk:"system_priority"`
+	TransmissionRate types.String                                                  `tfsdk:"transmission_rate"`
+	Enable           types.Bool                                                    `tfsdk:"enable"`
+}
+type AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject struct {
+	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
+type AggregateInterfaceDataSourceLayer3LldpObject struct {
+	Enable           types.Bool                                                    `tfsdk:"enable"`
+	HighAvailability *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject `tfsdk:"high_availability"`
+	Profile          types.String                                                  `tfsdk:"profile"`
+}
+type AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject struct {
+	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
+type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject struct {
+	SdwanInterfaceProfile types.String                                                          `tfsdk:"sdwan_interface_profile"`
+	UpstreamNat           *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject `tfsdk:"upstream_nat"`
+	Enable                types.Bool                                                            `tfsdk:"enable"`
+}
+type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject struct {
+	Enable   types.Bool                                                                    `tfsdk:"enable"`
+	Ddns     *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject     `tfsdk:"ddns"`
+	StaticIp *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject `tfsdk:"static_ip"`
+}
+type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject struct {
+}
+type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject struct {
+	Fqdn      types.String `tfsdk:"fqdn"`
+	IpAddress types.String `tfsdk:"ip_address"`
+}
+type AggregateInterfaceDataSourceLayer3DhcpClientObject struct {
+	CreateDefaultRoute types.Bool                                                      `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64                                                     `tfsdk:"default_route_metric"`
+	Enable             types.Bool                                                      `tfsdk:"enable"`
+	SendHostname       *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject `tfsdk:"send_hostname"`
+}
+type AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject struct {
+	Enable   types.Bool   `tfsdk:"enable"`
+	Hostname types.String `tfsdk:"hostname"`
+}
+type AggregateInterfaceDataSourceLayer3NdpProxyObject struct {
+	Address types.List `tfsdk:"address"`
+	Enabled types.Bool `tfsdk:"enabled"`
+}
+type AggregateInterfaceDataSourceLayer3NdpProxyAddressObject struct {
+	Name   types.String `tfsdk:"name"`
+	Negate types.Bool   `tfsdk:"negate"`
+}
+type AggregateInterfaceDataSourceLayer3AdjustTcpMssObject struct {
+	Enable            types.Bool  `tfsdk:"enable"`
+	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
+}
 type AggregateInterfaceDataSourceLayer3DdnsConfigObject struct {
-	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
 	DdnsCertProfile    types.String `tfsdk:"ddns_cert_profile"`
 	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
 	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
@@ -129,10 +187,15 @@ type AggregateInterfaceDataSourceLayer3DdnsConfigObject struct {
 	DdnsIpv6           types.List   `tfsdk:"ddns_ipv6"`
 	DdnsUpdateInterval types.Int64  `tfsdk:"ddns_update_interval"`
 	DdnsVendor         types.String `tfsdk:"ddns_vendor"`
+	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
 }
 type AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
+}
+type AggregateInterfaceDataSourceLayer3IpObject struct {
+	Name         types.String `tfsdk:"name"`
+	SdwanGateway types.String `tfsdk:"sdwan_gateway"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6Object struct {
 	DhcpClient        *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
@@ -142,32 +205,50 @@ type AggregateInterfaceDataSourceLayer3Ipv6Object struct {
 	InterfaceId       types.String                                                   `tfsdk:"interface_id"`
 	NeighborDiscovery *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
 }
+type AggregateInterfaceDataSourceLayer3Ipv6AddressObject struct {
+	Name              types.String                                                  `tfsdk:"name"`
+	EnableOnInterface types.Bool                                                    `tfsdk:"enable_on_interface"`
+	Prefix            *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject    `tfsdk:"prefix"`
+	Anycast           *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject   `tfsdk:"anycast"`
+	Advertise         *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject `tfsdk:"advertise"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject struct {
+}
+type AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject struct {
+}
+type AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject struct {
+	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
+	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
+	Enable            types.Bool   `tfsdk:"enable"`
+	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
+	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
+}
 type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject struct {
+	ReachableTime       types.Int64                                                                       `tfsdk:"reachable_time"`
 	RouterAdvertisement *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
 	DadAttempts         types.Int64                                                                       `tfsdk:"dad_attempts"`
 	EnableDad           types.Bool                                                                        `tfsdk:"enable_dad"`
 	EnableNdpMonitor    types.Bool                                                                        `tfsdk:"enable_ndp_monitor"`
 	Neighbor            types.List                                                                        `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                                       `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                       `tfsdk:"reachable_time"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
+	LinkMtu                types.String                                                                                `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool                                                                                  `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64                                                                                 `tfsdk:"max_interval"`
+	RouterPreference       types.String                                                                                `tfsdk:"router_preference"`
+	DnsSupport             *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
 	EnableConsistencyCheck types.Bool                                                                                  `tfsdk:"enable_consistency_check"`
 	HopLimit               types.String                                                                                `tfsdk:"hop_limit"`
 	Lifetime               types.Int64                                                                                 `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                                `tfsdk:"link_mtu"`
-	OtherFlag              types.Bool                                                                                  `tfsdk:"other_flag"`
-	RetransmissionTimer    types.String                                                                                `tfsdk:"retransmission_timer"`
-	DnsSupport             *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	ManagedFlag            types.Bool                                                                                  `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                                 `tfsdk:"max_interval"`
 	MinInterval            types.Int64                                                                                 `tfsdk:"min_interval"`
+	OtherFlag              types.Bool                                                                                  `tfsdk:"other_flag"`
 	ReachableTime          types.String                                                                                `tfsdk:"reachable_time"`
-	RouterPreference       types.String                                                                                `tfsdk:"router_preference"`
+	RetransmissionTimer    types.String                                                                                `tfsdk:"retransmission_timer"`
 	Enable                 types.Bool                                                                                  `tfsdk:"enable"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
@@ -184,29 +265,13 @@ type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementD
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject struct {
-	AcceptRaRoute      types.Bool                                                               `tfsdk:"accept_ra_route"`
 	DefaultRouteMetric types.Int64                                                              `tfsdk:"default_route_metric"`
 	Enable             types.Bool                                                               `tfsdk:"enable"`
 	NeighborDiscovery  *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
 	Preference         types.String                                                             `tfsdk:"preference"`
 	PrefixDelegation   *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
 	V6Options          *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject struct {
-	RapidCommit         types.Bool                                                             `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                             `tfsdk:"support_srvr_reconfig"`
-	DuidType            types.String                                                           `tfsdk:"duid_type"`
-	Enable              *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject struct {
-	No  *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
-	Yes *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject struct {
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject struct {
-	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
-	TempAddr    types.Bool `tfsdk:"temp_addr"`
+	AcceptRaRoute      types.Bool                                                               `tfsdk:"accept_ra_route"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject struct {
 	DnsSuffix        *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
@@ -217,27 +282,6 @@ type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject str
 	ReachableTime    types.Int64                                                                       `tfsdk:"reachable_time"`
 	DadAttempts      types.Int64                                                                       `tfsdk:"dad_attempts"`
 	DnsServer        *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                              `tfsdk:"enable"`
-	Source *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject struct {
-	Server types.List `tfsdk:"server"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject struct {
 	Enable types.Bool                                                                              `tfsdk:"enable"`
@@ -256,6 +300,27 @@ type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixS
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject struct {
+	Enable types.Bool                                                                              `tfsdk:"enable"`
+	Source *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
+	Dhcpv6 *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
+	Manual *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject struct {
+	Server types.List `tfsdk:"server"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
+}
 type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject struct {
 	Enable *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
 }
@@ -269,6 +334,22 @@ type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesOb
 	PfxPoolName   types.String `tfsdk:"pfx_pool_name"`
 	PrefixLen     types.Int64  `tfsdk:"prefix_len"`
 	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject struct {
+	RapidCommit         types.Bool                                                             `tfsdk:"rapid_commit"`
+	SupportSrvrReconfig types.Bool                                                             `tfsdk:"support_srvr_reconfig"`
+	DuidType            types.String                                                           `tfsdk:"duid_type"`
+	Enable              *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject struct {
+	No  *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
+	Yes *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject struct {
+}
+type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject struct {
+	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
+	TempAddr    types.Bool `tfsdk:"temp_addr"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedObject struct {
 	AssignAddr        types.List                                                              `tfsdk:"assign_addr"`
@@ -290,8 +371,8 @@ type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject stru
 	PrefixPool        types.String                                                                     `tfsdk:"prefix_pool"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject struct {
-	DynamicId *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
 	Dynamic   *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
+	DynamicId *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
 }
@@ -299,34 +380,34 @@ type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDyn
 	Identifier types.Int64 `tfsdk:"identifier"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
-	Enable         types.Bool `tfsdk:"enable"`
 	OnlinkFlag     types.Bool `tfsdk:"onlink_flag"`
 	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
+	Enable         types.Bool `tfsdk:"enable"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject struct {
-	EnableOnInterface types.Bool                                                                       `tfsdk:"enable_on_interface"`
-	Address           types.String                                                                     `tfsdk:"address"`
 	Prefix            types.Bool                                                                       `tfsdk:"prefix"`
 	Anycast           types.Bool                                                                       `tfsdk:"anycast"`
 	Advertise         *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool                                                                       `tfsdk:"enable_on_interface"`
+	Address           types.String                                                                     `tfsdk:"address"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
+	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 	Enable            types.Bool   `tfsdk:"enable"`
 	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
 	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
-	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject struct {
-	DnsServer           *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
+	DadAttempts         types.Int64                                                                                `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool                                                                                 `tfsdk:"enable_dad"`
+	Neighbor            types.List                                                                                 `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                                                `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                                                `tfsdk:"reachable_time"`
-	DadAttempts         types.Int64                                                                                `tfsdk:"dad_attempts"`
-	DnsSuffix           *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	EnableDad           types.Bool                                                                                 `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                                 `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                                 `tfsdk:"neighbor"`
 	RouterAdvertisement *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DnsServer           *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
+	DnsSuffix           *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
+	EnableNdpMonitor    types.Bool                                                                                 `tfsdk:"enable_ndp_monitor"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject struct {
 	Enable types.Bool                                                                             `tfsdk:"enable"`
@@ -346,31 +427,16 @@ type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSo
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
-	LinkMtu                types.String `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64  `tfsdk:"max_interval"`
-	RouterPreference       types.String `tfsdk:"router_preference"`
-	Enable                 types.Bool   `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
-	MinInterval            types.Int64  `tfsdk:"min_interval"`
-	OtherFlag              types.Bool   `tfsdk:"other_flag"`
-	ReachableTime          types.String `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
-	HopLimit               types.String `tfsdk:"hop_limit"`
-	Lifetime               types.Int64  `tfsdk:"lifetime"`
-}
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                             `tfsdk:"enable"`
 	Source *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+	Enable types.Bool                                                                             `tfsdk:"enable"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject struct {
 	Dhcpv6 *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
 	Manual *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
+	PrefixPool types.String `tfsdk:"prefix_pool"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject struct {
 	Suffix types.List `tfsdk:"suffix"`
@@ -379,143 +445,53 @@ type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSo
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
-	PrefixPool types.String `tfsdk:"prefix_pool"`
+type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
+	RouterPreference       types.String `tfsdk:"router_preference"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
 }
-type AggregateInterfaceDataSourceLayer3Ipv6AddressObject struct {
-	Name              types.String                                                  `tfsdk:"name"`
-	EnableOnInterface types.Bool                                                    `tfsdk:"enable_on_interface"`
-	Prefix            *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject    `tfsdk:"prefix"`
-	Anycast           *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject   `tfsdk:"anycast"`
-	Advertise         *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject `tfsdk:"advertise"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject struct {
-}
-type AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject struct {
-}
-type AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject struct {
-	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
-	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
-	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
-	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-	Enable            types.Bool   `tfsdk:"enable"`
-}
-type AggregateInterfaceDataSourceLayer3LacpObject struct {
-	MaxPorts         types.Int64                                                   `tfsdk:"max_ports"`
-	Mode             types.String                                                  `tfsdk:"mode"`
-	SystemPriority   types.Int64                                                   `tfsdk:"system_priority"`
-	TransmissionRate types.String                                                  `tfsdk:"transmission_rate"`
-	Enable           types.Bool                                                    `tfsdk:"enable"`
-	FastFailover     types.Bool                                                    `tfsdk:"fast_failover"`
-	HighAvailability *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject `tfsdk:"high_availability"`
-}
-type AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject struct {
-	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
-}
-type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject struct {
-	SdwanInterfaceProfile types.String                                                          `tfsdk:"sdwan_interface_profile"`
-	UpstreamNat           *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject `tfsdk:"upstream_nat"`
-	Enable                types.Bool                                                            `tfsdk:"enable"`
-}
-type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject struct {
-	Enable   types.Bool                                                                    `tfsdk:"enable"`
-	Ddns     *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject     `tfsdk:"ddns"`
-	StaticIp *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject `tfsdk:"static_ip"`
-}
-type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject struct {
-}
-type AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject struct {
-	Fqdn      types.String `tfsdk:"fqdn"`
-	IpAddress types.String `tfsdk:"ip_address"`
-}
-type AggregateInterfaceDataSourceLayer3AdjustTcpMssObject struct {
-	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
-	Enable            types.Bool  `tfsdk:"enable"`
-	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
-}
-type AggregateInterfaceDataSourceLayer3ArpObject struct {
+type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject struct {
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceDataSourceLayer3DhcpClientObject struct {
-	Enable             types.Bool                                                      `tfsdk:"enable"`
-	SendHostname       *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject `tfsdk:"send_hostname"`
-	CreateDefaultRoute types.Bool                                                      `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                     `tfsdk:"default_route_metric"`
-}
-type AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject struct {
-	Enable   types.Bool   `tfsdk:"enable"`
-	Hostname types.String `tfsdk:"hostname"`
-}
-type AggregateInterfaceDataSourceLayer3LldpObject struct {
-	Enable           types.Bool                                                    `tfsdk:"enable"`
-	HighAvailability *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject `tfsdk:"high_availability"`
-	Profile          types.String                                                  `tfsdk:"profile"`
-}
-type AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject struct {
-	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
-}
-type AggregateInterfaceDataSourceLayer3NdpProxyObject struct {
-	Address types.List `tfsdk:"address"`
-	Enabled types.Bool `tfsdk:"enabled"`
-}
-type AggregateInterfaceDataSourceLayer3NdpProxyAddressObject struct {
-	Name   types.String `tfsdk:"name"`
-	Negate types.Bool   `tfsdk:"negate"`
-}
-type AggregateInterfaceDataSourceLayer3BonjourObject struct {
-	TtlCheck types.Bool  `tfsdk:"ttl_check"`
-	Enable   types.Bool  `tfsdk:"enable"`
-	GroupId  types.Int64 `tfsdk:"group_id"`
-}
-type AggregateInterfaceDataSourceLayer3IpObject struct {
-	Name         types.String `tfsdk:"name"`
-	SdwanGateway types.String `tfsdk:"sdwan_gateway"`
 }
 type AggregateInterfaceDataSourceVirtualWireObject struct {
 	Lldp           *AggregateInterfaceDataSourceVirtualWireLldpObject `tfsdk:"lldp"`
 	NetflowProfile types.String                                       `tfsdk:"netflow_profile"`
 }
 type AggregateInterfaceDataSourceVirtualWireLldpObject struct {
+	HighAvailability *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject `tfsdk:"high_availability"`
 	Profile          types.String                                                       `tfsdk:"profile"`
 	Enable           types.Bool                                                         `tfsdk:"enable"`
-	HighAvailability *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject `tfsdk:"high_availability"`
 }
 type AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
 }
 type AggregateInterfaceDataSourceDecryptMirrorObject struct {
 }
+type AggregateInterfaceDataSourceHaObject struct {
+	Lacp *AggregateInterfaceDataSourceHaLacpObject `tfsdk:"lacp"`
+}
+type AggregateInterfaceDataSourceHaLacpObject struct {
+	TransmissionRate types.String `tfsdk:"transmission_rate"`
+	Enable           types.Bool   `tfsdk:"enable"`
+	FastFailover     types.Bool   `tfsdk:"fast_failover"`
+	MaxPorts         types.Int64  `tfsdk:"max_ports"`
+	Mode             types.String `tfsdk:"mode"`
+	SystemPriority   types.Int64  `tfsdk:"system_priority"`
+}
 
 func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
-	var decryptMirror_entry *aggregate.DecryptMirror
-	if o.DecryptMirror != nil {
-		if *obj != nil && (*obj).DecryptMirror != nil {
-			decryptMirror_entry = (*obj).DecryptMirror
-		} else {
-			decryptMirror_entry = new(aggregate.DecryptMirror)
-		}
-
-		diags.Append(o.DecryptMirror.CopyToPango(ctx, &decryptMirror_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ha_entry *aggregate.Ha
-	if o.Ha != nil {
-		if *obj != nil && (*obj).Ha != nil {
-			ha_entry = (*obj).Ha
-		} else {
-			ha_entry = new(aggregate.Ha)
-		}
-
-		diags.Append(o.Ha.CopyToPango(ctx, &ha_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var layer2_entry *aggregate.Layer2
 	if o.Layer2 != nil {
 		if *obj != nil && (*obj).Layer2 != nil {
@@ -555,17 +531,52 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 			return diags
 		}
 	}
+	var decryptMirror_entry *aggregate.DecryptMirror
+	if o.DecryptMirror != nil {
+		if *obj != nil && (*obj).DecryptMirror != nil {
+			decryptMirror_entry = (*obj).DecryptMirror
+		} else {
+			decryptMirror_entry = new(aggregate.DecryptMirror)
+		}
+
+		diags.Append(o.DecryptMirror.CopyToPango(ctx, &decryptMirror_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ha_entry *aggregate.Ha
+	if o.Ha != nil {
+		if *obj != nil && (*obj).Ha != nil {
+			ha_entry = (*obj).Ha
+		} else {
+			ha_entry = new(aggregate.Ha)
+		}
+
+		diags.Append(o.Ha.CopyToPango(ctx, &ha_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Comment = comment_value
-	(*obj).DecryptMirror = decryptMirror_entry
-	(*obj).Ha = ha_entry
 	(*obj).Layer2 = layer2_entry
 	(*obj).Layer3 = layer3_entry
 	(*obj).VirtualWire = virtualWire_entry
+	(*obj).DecryptMirror = decryptMirror_entry
+	(*obj).Ha = ha_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyToPango(ctx context.Context, obj **aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.DecryptMirror)
+	}
 
 	return diags
 }
@@ -615,6 +626,7 @@ func (o *AggregateInterfaceDataSourceHaLacpObject) CopyToPango(ctx context.Conte
 }
 func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Context, obj **aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var lacp_entry *aggregate.Layer2Lacp
 	if o.Lacp != nil {
 		if *obj != nil && (*obj).Lacp != nil {
@@ -641,19 +653,20 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer2)
 	}
+	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).Lacp = lacp_entry
 	(*obj).Lldp = lldp_entry
-	(*obj).NetflowProfile = netflowProfile_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	fastFailover_value := o.FastFailover.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer2LacpHighAvailability
 	if o.HighAvailability != nil {
 		if *obj != nil && (*obj).HighAvailability != nil {
@@ -671,19 +684,17 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.C
 	mode_value := o.Mode.ValueStringPointer()
 	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
 	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	fastFailover_value := o.FastFailover.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer2Lacp)
 	}
+	(*obj).Enable = enable_value
+	(*obj).FastFailover = fastFailover_value
 	(*obj).HighAvailability = highAvailability_entry
 	(*obj).MaxPorts = maxPorts_value
 	(*obj).Mode = mode_value
 	(*obj).SystemPriority = systemPriority_value
 	(*obj).TransmissionRate = transmissionRate_value
-	(*obj).Enable = enable_value
-	(*obj).FastFailover = fastFailover_value
 
 	return diags
 }
@@ -738,24 +749,25 @@ func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyToPan
 }
 func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
-	untaggedSubInterface_value := o.UntaggedSubInterface.ValueBoolPointer()
-	var ddnsConfig_entry *aggregate.Layer3DdnsConfig
-	if o.DdnsConfig != nil {
-		if *obj != nil && (*obj).DdnsConfig != nil {
-			ddnsConfig_entry = (*obj).DdnsConfig
-		} else {
-			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
-		}
-
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+	decryptForward_value := o.DecryptForward.ValueBoolPointer()
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
+	var ip_tf_entries []AggregateInterfaceDataSourceLayer3IpObject
+	var ip_pango_entries []aggregate.Layer3Ip
+	{
+		d := o.Ip.ElementsAs(ctx, &ip_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
 			return diags
 		}
+		for _, elt := range ip_tf_entries {
+			var entry *aggregate.Layer3Ip
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			ip_pango_entries = append(ip_pango_entries, *entry)
+		}
 	}
-	decryptForward_value := o.DecryptForward.ValueBoolPointer()
-	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
-	mtu_value := o.Mtu.ValueInt64Pointer()
 	var ipv6_entry *aggregate.Layer3Ipv6
 	if o.Ipv6 != nil {
 		if *obj != nil && (*obj).Ipv6 != nil {
@@ -769,6 +781,37 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
+	var arp_tf_entries []AggregateInterfaceDataSourceLayer3ArpObject
+	var arp_pango_entries []aggregate.Layer3Arp
+	{
+		d := o.Arp.ElementsAs(ctx, &arp_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range arp_tf_entries {
+			var entry *aggregate.Layer3Arp
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			arp_pango_entries = append(arp_pango_entries, *entry)
+		}
+	}
+	var bonjour_entry *aggregate.Layer3Bonjour
+	if o.Bonjour != nil {
+		if *obj != nil && (*obj).Bonjour != nil {
+			bonjour_entry = (*obj).Bonjour
+		} else {
+			bonjour_entry = new(aggregate.Layer3Bonjour)
+		}
+
+		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
 	var lacp_entry *aggregate.Layer3Lacp
 	if o.Lacp != nil {
 		if *obj != nil && (*obj).Lacp != nil {
@@ -778,6 +821,19 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		}
 
 		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var lldp_entry *aggregate.Layer3Lldp
+	if o.Lldp != nil {
+		if *obj != nil && (*obj).Lldp != nil {
+			lldp_entry = (*obj).Lldp
+		} else {
+			lldp_entry = new(aggregate.Layer3Lldp)
+		}
+
+		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -795,6 +851,20 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
+	var dhcpClient_entry *aggregate.Layer3DhcpClient
+	if o.DhcpClient != nil {
+		if *obj != nil && (*obj).DhcpClient != nil {
+			dhcpClient_entry = (*obj).DhcpClient
+		} else {
+			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
+		}
+
+		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	mtu_value := o.Mtu.ValueInt64Pointer()
 	var ndpProxy_entry *aggregate.Layer3NdpProxy
 	if o.NdpProxy != nil {
 		if *obj != nil && (*obj).NdpProxy != nil {
@@ -821,181 +891,59 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
-	var arp_tf_entries []AggregateInterfaceDataSourceLayer3ArpObject
-	var arp_pango_entries []aggregate.Layer3Arp
-	{
-		d := o.Arp.ElementsAs(ctx, &arp_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range arp_tf_entries {
-			var entry *aggregate.Layer3Arp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			arp_pango_entries = append(arp_pango_entries, *entry)
-		}
-	}
-	var dhcpClient_entry *aggregate.Layer3DhcpClient
-	if o.DhcpClient != nil {
-		if *obj != nil && (*obj).DhcpClient != nil {
-			dhcpClient_entry = (*obj).DhcpClient
+	var ddnsConfig_entry *aggregate.Layer3DdnsConfig
+	if o.DdnsConfig != nil {
+		if *obj != nil && (*obj).DdnsConfig != nil {
+			ddnsConfig_entry = (*obj).DdnsConfig
 		} else {
-			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
+			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
 		}
 
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var lldp_entry *aggregate.Layer3Lldp
-	if o.Lldp != nil {
-		if *obj != nil && (*obj).Lldp != nil {
-			lldp_entry = (*obj).Lldp
-		} else {
-			lldp_entry = new(aggregate.Layer3Lldp)
-		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var bonjour_entry *aggregate.Layer3Bonjour
-	if o.Bonjour != nil {
-		if *obj != nil && (*obj).Bonjour != nil {
-			bonjour_entry = (*obj).Bonjour
-		} else {
-			bonjour_entry = new(aggregate.Layer3Bonjour)
-		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
-	var ip_tf_entries []AggregateInterfaceDataSourceLayer3IpObject
-	var ip_pango_entries []aggregate.Layer3Ip
-	{
-		d := o.Ip.ElementsAs(ctx, &ip_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range ip_tf_entries {
-			var entry *aggregate.Layer3Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			ip_pango_entries = append(ip_pango_entries, *entry)
-		}
-	}
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
+	untaggedSubInterface_value := o.UntaggedSubInterface.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3)
 	}
-	(*obj).NetflowProfile = netflowProfile_value
-	(*obj).UntaggedSubInterface = untaggedSubInterface_value
-	(*obj).DdnsConfig = ddnsConfig_entry
 	(*obj).DecryptForward = decryptForward_value
-	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
-	(*obj).Mtu = mtu_value
-	(*obj).Ipv6 = ipv6_entry
-	(*obj).Lacp = lacp_entry
-	(*obj).SdwanLinkSettings = sdwanLinkSettings_entry
-	(*obj).NdpProxy = ndpProxy_entry
-	(*obj).AdjustTcpMss = adjustTcpMss_entry
-	(*obj).Arp = arp_pango_entries
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Lldp = lldp_entry
-	(*obj).Bonjour = bonjour_entry
 	(*obj).DfIgnore = dfIgnore_value
 	(*obj).Ip = ip_pango_entries
+	(*obj).Ipv6 = ipv6_entry
+	(*obj).Arp = arp_pango_entries
+	(*obj).Bonjour = bonjour_entry
+	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
+	(*obj).Lacp = lacp_entry
+	(*obj).Lldp = lldp_entry
+	(*obj).SdwanLinkSettings = sdwanLinkSettings_entry
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Mtu = mtu_value
+	(*obj).NdpProxy = ndpProxy_entry
+	(*obj).AdjustTcpMss = adjustTcpMss_entry
+	(*obj).DdnsConfig = ddnsConfig_entry
+	(*obj).NetflowProfile = netflowProfile_value
+	(*obj).UntaggedSubInterface = untaggedSubInterface_value
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ddnsIpv6_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
-	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
-	var ddnsVendorConfig_tf_entries []AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject
-	var ddnsVendorConfig_pango_entries []aggregate.Layer3DdnsConfigDdnsVendorConfig
-	{
-		d := o.DdnsVendorConfig.ElementsAs(ctx, &ddnsVendorConfig_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range ddnsVendorConfig_tf_entries {
-			var entry *aggregate.Layer3DdnsConfigDdnsVendorConfig
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			ddnsVendorConfig_pango_entries = append(ddnsVendorConfig_pango_entries, *entry)
-		}
-	}
-	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
-	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
-	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
-	ddnsIp_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
+	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3DdnsConfig)
-	}
-	(*obj).DdnsIpv6 = ddnsIpv6_pango_entries
-	(*obj).DdnsUpdateInterval = ddnsUpdateInterval_value
-	(*obj).DdnsVendor = ddnsVendor_value
-	(*obj).DdnsVendorConfig = ddnsVendorConfig_pango_entries
-	(*obj).DdnsCertProfile = ddnsCertProfile_value
-	(*obj).DdnsEnabled = ddnsEnabled_value
-	(*obj).DdnsHostname = ddnsHostname_value
-	(*obj).DdnsIp = ddnsIp_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	value_value := o.Value.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3DdnsConfigDdnsVendorConfig)
+		*obj = new(aggregate.Layer3Ip)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Value = value_value
+	(*obj).SdwanGateway = sdwanGateway_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	interfaceId_value := o.InterfaceId.ValueStringPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dhcpClient_entry *aggregate.Layer3Ipv6DhcpClient
 	if o.DhcpClient != nil {
 		if *obj != nil && (*obj).DhcpClient != nil {
@@ -1040,21 +988,48 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.C
 		}
 	}
 	enabled_value := o.Enabled.ValueBoolPointer()
+	interfaceId_value := o.InterfaceId.ValueStringPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6)
 	}
-	(*obj).InterfaceId = interfaceId_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).DhcpClient = dhcpClient_entry
 	(*obj).Inherited = inherited_entry
 	(*obj).Address = address_pango_entries
 	(*obj).Enabled = enabled_value
+	(*obj).InterfaceId = interfaceId_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var routerAdvertisement_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement
+	if o.RouterAdvertisement != nil {
+		if *obj != nil && (*obj).RouterAdvertisement != nil {
+			routerAdvertisement_entry = (*obj).RouterAdvertisement
+		} else {
+			routerAdvertisement_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
+		}
+
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	enableDad_value := o.EnableDad.ValueBoolPointer()
 	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
@@ -1077,35 +1052,38 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPa
 	}
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	var routerAdvertisement_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
-		if *obj != nil && (*obj).RouterAdvertisement != nil {
-			routerAdvertisement_entry = (*obj).RouterAdvertisement
-		} else {
-			routerAdvertisement_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
-		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6NeighborDiscovery)
 	}
+	(*obj).RouterAdvertisement = routerAdvertisement_entry
 	(*obj).DadAttempts = dadAttempts_value
 	(*obj).EnableDad = enableDad_value
 	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterAdvertisement = routerAdvertisement_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
 	var dnsSupport_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
 		if *obj != nil && (*obj).DnsSupport != nil {
@@ -1122,32 +1100,28 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
 	hopLimit_value := o.HopLimit.ValueStringPointer()
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
 	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
 	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
 	}
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).RouterPreference = routerPreference_value
 	(*obj).DnsSupport = dnsSupport_entry
 	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
 	(*obj).HopLimit = hopLimit_value
 	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
+	(*obj).MinInterval = minInterval_value
 	(*obj).OtherFlag = otherFlag_value
+	(*obj).ReachableTime = reachableTime_value
 	(*obj).RetransmissionTimer = retransmissionTimer_value
 	(*obj).Enable = enable_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterPreference = routerPreference_value
 
 	return diags
 }
@@ -1198,18 +1172,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
@@ -1222,20 +1184,35 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryNeighbor)
+		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
+	(*obj).Lifetime = lifetime_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	preference_value := o.Preference.ValueStringPointer()
 	var prefixDelegation_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegation
 	if o.PrefixDelegation != nil {
 		if *obj != nil && (*obj).PrefixDelegation != nil {
@@ -1264,209 +1241,23 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx
 	}
 	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	preference_value := o.Preference.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6DhcpClient)
 	}
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).Preference = preference_value
 	(*obj).PrefixDelegation = prefixDelegation_entry
 	(*obj).V6Options = v6Options_entry
 	(*obj).AcceptRaRoute = acceptRaRoute_value
 	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).Preference = preference_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-	}
-	(*obj).Enable = enable_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
-	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
-	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-	}
-	(*obj).PfxPoolName = pfxPoolName_value
-	(*obj).PrefixLen = prefixLen_value
-	(*obj).PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
 	if o.DnsServer != nil {
 		if *obj != nil && (*obj).DnsServer != nil {
@@ -1514,11 +1305,11 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 	}
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
 	}
+	(*obj).DadAttempts = dadAttempts_value
 	(*obj).DnsServer = dnsServer_entry
 	(*obj).DnsSuffix = dnsSuffix_entry
 	(*obj).EnableDad = enableDad_value
@@ -1526,7 +1317,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
-	(*obj).DadAttempts = dadAttempts_value
 
 	return diags
 }
@@ -1762,8 +1552,194 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+	}
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
+	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
+	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+	}
+	(*obj).PfxPoolName = pfxPoolName_value
+	(*obj).PrefixLen = prefixLen_value
+	(*obj).PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+	duidType_value := o.DuidType.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+	}
+	(*obj).Enable = enable_entry
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+	(*obj).DuidType = duidType_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).NonTempAddr = nonTempAddr_value
+	(*obj).TempAddr = tempAddr_value
+
+	return diags
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var assignAddr_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
 	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
 	{
@@ -1781,27 +1757,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyToPango(ctx 
 			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
 		}
 	}
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6Inherited)
 	}
-	(*obj).AssignAddr = assignAddr_pango_entries
 	(*obj).Enable = enable_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).AssignAddr = assignAddr_pango_entries
 
 	return diags
 }
@@ -1868,6 +1830,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) Co
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
 	if o.PoolType != nil {
@@ -1895,33 +1858,19 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
 			return diags
 		}
 	}
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
 	}
+	(*obj).EnableOnInterface = enableOnInterface_value
 	(*obj).PrefixPool = prefixPool_value
 	(*obj).PoolType = poolType_entry
 	(*obj).Advertise = advertise_entry
-	(*obj).EnableOnInterface = enableOnInterface_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
-		if *obj != nil && (*obj).DynamicId != nil {
-			dynamicId_entry = (*obj).DynamicId
-		} else {
-			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-		}
-
-		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
 	if o.Dynamic != nil {
 		if *obj != nil && (*obj).Dynamic != nil {
@@ -1935,12 +1884,25 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTyp
 			return diags
 		}
 	}
+	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
+	if o.DynamicId != nil {
+		if *obj != nil && (*obj).DynamicId != nil {
+			dynamicId_entry = (*obj).DynamicId
+		} else {
+			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+		}
+
+		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
 	}
-	(*obj).DynamicId = dynamicId_entry
 	(*obj).Dynamic = dynamic_entry
+	(*obj).DynamicId = dynamicId_entry
 
 	return diags
 }
@@ -1966,24 +1928,21 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTyp
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
 	}
-	(*obj).AutoConfigFlag = autoConfigFlag_value
 	(*obj).Enable = enable_value
 	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
 	anycast_value := o.Anycast.ValueBoolPointer()
 	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
 	if o.Advertise != nil {
@@ -1998,34 +1957,37 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
 			return diags
 		}
 	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
 	}
+	(*obj).Anycast = anycast_value
+	(*obj).Advertise = advertise_entry
 	(*obj).EnableOnInterface = enableOnInterface_value
 	(*obj).Address = address_value
 	(*obj).Prefix = prefix_value
-	(*obj).Anycast = anycast_value
-	(*obj).Advertise = advertise_entry
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
 	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
 	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
 	}
-	(*obj).OnlinkFlag = onlinkFlag_value
 	(*obj).AutoConfigFlag = autoConfigFlag_value
 	(*obj).Enable = enable_value
 	(*obj).ValidLifetime = validLifetime_value
 	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
 
 	return diags
 }
@@ -2044,6 +2006,20 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 			return diags
 		}
 	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+		}
+
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
@@ -2060,21 +2036,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 		}
 	}
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 	var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
 	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
 	{
@@ -2097,13 +2059,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
 	}
 	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
 	(*obj).RouterAdvertisement = routerAdvertisement_entry
 	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsSuffix = dnsSuffix_entry
 	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).Neighbor = neighbor_pango_entries
 
 	return diags
@@ -2170,17 +2132,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
@@ -2217,6 +2168,17 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServ
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
 
 	return diags
 }
@@ -2346,34 +2308,34 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighbo
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
 	linkMtu_value := o.LinkMtu.ValueStringPointer()
 	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
 	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
 	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
 	}
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).Enable = enable_value
 	(*obj).LinkMtu = linkMtu_value
 	(*obj).ManagedFlag = managedFlag_value
 	(*obj).MaxInterval = maxInterval_value
-	(*obj).RouterPreference = routerPreference_value
-	(*obj).Enable = enable_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
 	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
 
 	return diags
 }
@@ -2431,6 +2393,15 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx co
 
 	return diags
 }
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6AddressPrefix)
+	}
+
+	return diags
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -2459,12 +2430,18 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	groupId_value := o.GroupId.ValueInt64Pointer()
+	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6AddressPrefix)
+		*obj = new(aggregate.Layer3Bonjour)
 	}
+	(*obj).Enable = enable_value
+	(*obj).GroupId = groupId_value
+	(*obj).TtlCheck = ttlCheck_value
 
 	return diags
 }
@@ -2509,6 +2486,44 @@ func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyToPan
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3LacpHighAvailability)
+	}
+	(*obj).PassivePreNegotiation = passivePreNegotiation_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var highAvailability_entry *aggregate.Layer3LldpHighAvailability
+	if o.HighAvailability != nil {
+		if *obj != nil && (*obj).HighAvailability != nil {
+			highAvailability_entry = (*obj).HighAvailability
+		} else {
+			highAvailability_entry = new(aggregate.Layer3LldpHighAvailability)
+		}
+
+		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	profile_value := o.Profile.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Lldp)
+	}
+	(*obj).Enable = enable_value
+	(*obj).HighAvailability = highAvailability_entry
+	(*obj).Profile = profile_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3LldpHighAvailability)
 	}
 	(*obj).PassivePreNegotiation = passivePreNegotiation_value
 
@@ -2602,46 +2617,21 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpO
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	profile_value := o.Profile.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var highAvailability_entry *aggregate.Layer3LldpHighAvailability
-	if o.HighAvailability != nil {
-		if *obj != nil && (*obj).HighAvailability != nil {
-			highAvailability_entry = (*obj).HighAvailability
-		} else {
-			highAvailability_entry = new(aggregate.Layer3LldpHighAvailability)
-		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	hwAddress_value := o.HwAddress.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Lldp)
+		*obj = new(aggregate.Layer3Arp)
 	}
-	(*obj).Profile = profile_value
-	(*obj).Enable = enable_value
-	(*obj).HighAvailability = highAvailability_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3LldpHighAvailability)
-	}
-	(*obj).PassivePreNegotiation = passivePreNegotiation_value
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
 func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enabled_value := o.Enabled.ValueBoolPointer()
 	var address_tf_entries []AggregateInterfaceDataSourceLayer3NdpProxyAddressObject
 	var address_pango_entries []aggregate.Layer3NdpProxyAddress
 	{
@@ -2659,13 +2649,12 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx conte
 			address_pango_entries = append(address_pango_entries, *entry)
 		}
 	}
-	enabled_value := o.Enabled.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3NdpProxy)
 	}
-	(*obj).Address = address_pango_entries
 	(*obj).Enabled = enabled_value
+	(*obj).Address = address_pango_entries
 
 	return diags
 }
@@ -2681,36 +2670,8 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
-	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3AdjustTcpMss)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
-	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Arp)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
 func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var sendHostname_entry *aggregate.Layer3DhcpClientSendHostname
@@ -2726,14 +2687,15 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx con
 			return diags
 		}
 	}
+	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3DhcpClient)
 	}
-	(*obj).CreateDefaultRoute = createDefaultRoute_value
 	(*obj).DefaultRouteMetric = defaultRouteMetric_value
 	(*obj).Enable = enable_value
 	(*obj).SendHostname = sendHostname_entry
+	(*obj).CreateDefaultRoute = createDefaultRoute_value
 
 	return diags
 }
@@ -2750,30 +2712,79 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyToP
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	groupId_value := o.GroupId.ValueInt64Pointer()
+	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
+	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
+	ddnsIp_pango_entries := make([]string, 0)
+	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	ddnsIpv6_pango_entries := make([]string, 0)
+	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
+	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
+	var ddnsVendorConfig_tf_entries []AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject
+	var ddnsVendorConfig_pango_entries []aggregate.Layer3DdnsConfigDdnsVendorConfig
+	{
+		d := o.DdnsVendorConfig.ElementsAs(ctx, &ddnsVendorConfig_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range ddnsVendorConfig_tf_entries {
+			var entry *aggregate.Layer3DdnsConfigDdnsVendorConfig
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			ddnsVendorConfig_pango_entries = append(ddnsVendorConfig_pango_entries, *entry)
+		}
+	}
+	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Bonjour)
+		*obj = new(aggregate.Layer3DdnsConfig)
 	}
-	(*obj).TtlCheck = ttlCheck_value
-	(*obj).Enable = enable_value
-	(*obj).GroupId = groupId_value
+	(*obj).DdnsEnabled = ddnsEnabled_value
+	(*obj).DdnsHostname = ddnsHostname_value
+	(*obj).DdnsIp = ddnsIp_pango_entries
+	(*obj).DdnsIpv6 = ddnsIpv6_pango_entries
+	(*obj).DdnsUpdateInterval = ddnsUpdateInterval_value
+	(*obj).DdnsVendor = ddnsVendor_value
+	(*obj).DdnsVendorConfig = ddnsVendorConfig_pango_entries
+	(*obj).DdnsCertProfile = ddnsCertProfile_value
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
+	value_value := o.Value.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ip)
+		*obj = new(aggregate.Layer3DdnsConfigDdnsVendorConfig)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).SdwanGateway = sdwanGateway_value
+	(*obj).Value = value_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
+	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3AdjustTcpMss)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
+	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
@@ -2804,6 +2815,7 @@ func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyToPango(ctx context.
 }
 func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	profile_value := o.Profile.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.VirtualWireLldpHighAvailability
 	if o.HighAvailability != nil {
@@ -2818,14 +2830,13 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx cont
 			return diags
 		}
 	}
-	profile_value := o.Profile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.VirtualWireLldp)
 	}
+	(*obj).Profile = profile_value
 	(*obj).Enable = enable_value
 	(*obj).HighAvailability = highAvailability_entry
-	(*obj).Profile = profile_value
 
 	return diags
 }
@@ -2837,15 +2848,6 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) Copy
 		*obj = new(aggregate.VirtualWireLldpHighAvailability)
 	}
 	(*obj).PassivePreNegotiation = passivePreNegotiation_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyToPango(ctx context.Context, obj **aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.DecryptMirror)
-	}
 
 	return diags
 }
@@ -2939,14 +2941,6 @@ func (o *AggregateInterfaceDataSourceHaObject) CopyFromPango(ctx context.Context
 func (o *AggregateInterfaceDataSourceHaLacpObject) CopyFromPango(ctx context.Context, obj *aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var fastFailover_value types.Bool
-	if obj.FastFailover != nil {
-		fastFailover_value = types.BoolValue(*obj.FastFailover)
-	}
 	var maxPorts_value types.Int64
 	if obj.MaxPorts != nil {
 		maxPorts_value = types.Int64Value(*obj.MaxPorts)
@@ -2963,12 +2957,20 @@ func (o *AggregateInterfaceDataSourceHaLacpObject) CopyFromPango(ctx context.Con
 	if obj.TransmissionRate != nil {
 		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
 	}
-	o.Enable = enable_value
-	o.FastFailover = fastFailover_value
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var fastFailover_value types.Bool
+	if obj.FastFailover != nil {
+		fastFailover_value = types.BoolValue(*obj.FastFailover)
+	}
 	o.MaxPorts = maxPorts_value
 	o.Mode = mode_value
 	o.SystemPriority = systemPriority_value
 	o.TransmissionRate = transmissionRate_value
+	o.Enable = enable_value
+	o.FastFailover = fastFailover_value
 
 	return diags
 }
@@ -3017,10 +3019,6 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyFromPango(ctx context
 		}
 	}
 
-	var maxPorts_value types.Int64
-	if obj.MaxPorts != nil {
-		maxPorts_value = types.Int64Value(*obj.MaxPorts)
-	}
 	var mode_value types.String
 	if obj.Mode != nil {
 		mode_value = types.StringValue(*obj.Mode)
@@ -3041,13 +3039,17 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyFromPango(ctx context
 	if obj.FastFailover != nil {
 		fastFailover_value = types.BoolValue(*obj.FastFailover)
 	}
-	o.HighAvailability = highAvailability_object
-	o.MaxPorts = maxPorts_value
+	var maxPorts_value types.Int64
+	if obj.MaxPorts != nil {
+		maxPorts_value = types.Int64Value(*obj.MaxPorts)
+	}
 	o.Mode = mode_value
 	o.SystemPriority = systemPriority_value
 	o.TransmissionRate = transmissionRate_value
 	o.Enable = enable_value
 	o.FastFailover = fastFailover_value
+	o.HighAvailability = highAvailability_object
+	o.MaxPorts = maxPorts_value
 
 	return diags
 }
@@ -3105,20 +3107,6 @@ func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyFromP
 
 func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var arp_list types.List
-	{
-		var arp_tf_entries []AggregateInterfaceDataSourceLayer3ArpObject
-		for _, elt := range obj.Arp {
-			var entry AggregateInterfaceDataSourceLayer3ArpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			arp_tf_entries = append(arp_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("arp")
-		arp_list, list_diags = types.ListValueFrom(ctx, schemaType, arp_tf_entries)
-		diags.Append(list_diags...)
-	}
 	var ip_list types.List
 	{
 		var ip_tf_entries []AggregateInterfaceDataSourceLayer3IpObject
@@ -3133,11 +3121,34 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var arp_list types.List
+	{
+		var arp_tf_entries []AggregateInterfaceDataSourceLayer3ArpObject
+		for _, elt := range obj.Arp {
+			var entry AggregateInterfaceDataSourceLayer3ArpObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			arp_tf_entries = append(arp_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("arp")
+		arp_list, list_diags = types.ListValueFrom(ctx, schemaType, arp_tf_entries)
+		diags.Append(list_diags...)
+	}
 	var ipv6_object *AggregateInterfaceDataSourceLayer3Ipv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6Object)
 
 		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var bonjour_object *AggregateInterfaceDataSourceLayer3BonjourObject
+	if obj.Bonjour != nil {
+		bonjour_object = new(AggregateInterfaceDataSourceLayer3BonjourObject)
+
+		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3151,20 +3162,20 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 			return diags
 		}
 	}
+	var lldp_object *AggregateInterfaceDataSourceLayer3LldpObject
+	if obj.Lldp != nil {
+		lldp_object = new(AggregateInterfaceDataSourceLayer3LldpObject)
+
+		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var sdwanLinkSettings_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject
 	if obj.SdwanLinkSettings != nil {
 		sdwanLinkSettings_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject)
 
 		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, obj.SdwanLinkSettings, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var adjustTcpMss_object *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject
-	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(AggregateInterfaceDataSourceLayer3AdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3178,15 +3189,6 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 			return diags
 		}
 	}
-	var lldp_object *AggregateInterfaceDataSourceLayer3LldpObject
-	if obj.Lldp != nil {
-		lldp_object = new(AggregateInterfaceDataSourceLayer3LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ndpProxy_object *AggregateInterfaceDataSourceLayer3NdpProxyObject
 	if obj.NdpProxy != nil {
 		ndpProxy_object = new(AggregateInterfaceDataSourceLayer3NdpProxyObject)
@@ -3196,11 +3198,11 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 			return diags
 		}
 	}
-	var bonjour_object *AggregateInterfaceDataSourceLayer3BonjourObject
-	if obj.Bonjour != nil {
-		bonjour_object = new(AggregateInterfaceDataSourceLayer3BonjourObject)
+	var adjustTcpMss_object *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject
+	if obj.AdjustTcpMss != nil {
+		adjustTcpMss_object = new(AggregateInterfaceDataSourceLayer3AdjustTcpMssObject)
 
-		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3215,17 +3217,13 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 		}
 	}
 
-	var dfIgnore_value types.Bool
-	if obj.DfIgnore != nil {
-		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
-	}
-	var untaggedSubInterface_value types.Bool
-	if obj.UntaggedSubInterface != nil {
-		untaggedSubInterface_value = types.BoolValue(*obj.UntaggedSubInterface)
-	}
 	var decryptForward_value types.Bool
 	if obj.DecryptForward != nil {
 		decryptForward_value = types.BoolValue(*obj.DecryptForward)
+	}
+	var dfIgnore_value types.Bool
+	if obj.DfIgnore != nil {
+		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
 	}
 	var interfaceManagementProfile_value types.String
 	if obj.InterfaceManagementProfile != nil {
@@ -3239,64 +3237,61 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	if obj.NetflowProfile != nil {
 		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
 	}
-	o.Ipv6 = ipv6_object
-	o.Lacp = lacp_object
-	o.SdwanLinkSettings = sdwanLinkSettings_object
-	o.AdjustTcpMss = adjustTcpMss_object
-	o.Arp = arp_list
-	o.DhcpClient = dhcpClient_object
-	o.Lldp = lldp_object
-	o.NdpProxy = ndpProxy_object
-	o.Bonjour = bonjour_object
+	var untaggedSubInterface_value types.Bool
+	if obj.UntaggedSubInterface != nil {
+		untaggedSubInterface_value = types.BoolValue(*obj.UntaggedSubInterface)
+	}
+	o.DecryptForward = decryptForward_value
 	o.DfIgnore = dfIgnore_value
 	o.Ip = ip_list
-	o.UntaggedSubInterface = untaggedSubInterface_value
-	o.DdnsConfig = ddnsConfig_object
-	o.DecryptForward = decryptForward_value
+	o.Ipv6 = ipv6_object
+	o.Arp = arp_list
+	o.Bonjour = bonjour_object
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
+	o.Lacp = lacp_object
+	o.Lldp = lldp_object
+	o.SdwanLinkSettings = sdwanLinkSettings_object
+	o.DhcpClient = dhcpClient_object
 	o.Mtu = mtu_value
+	o.NdpProxy = ndpProxy_object
+	o.AdjustTcpMss = adjustTcpMss_object
+	o.DdnsConfig = ddnsConfig_object
 	o.NetflowProfile = netflowProfile_value
+	o.UntaggedSubInterface = untaggedSubInterface_value
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var sdwanGateway_value types.String
-	if obj.SdwanGateway != nil {
-		sdwanGateway_value = types.StringValue(*obj.SdwanGateway)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.SdwanGateway = sdwanGateway_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var groupId_value types.Int64
-	if obj.GroupId != nil {
-		groupId_value = types.Int64Value(*obj.GroupId)
+	var ipv4MssAdjustment_value types.Int64
+	if obj.Ipv4MssAdjustment != nil {
+		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
 	}
-	var ttlCheck_value types.Bool
-	if obj.TtlCheck != nil {
-		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
+	var ipv6MssAdjustment_value types.Int64
+	if obj.Ipv6MssAdjustment != nil {
+		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
 	}
 	o.Enable = enable_value
-	o.GroupId = groupId_value
-	o.TtlCheck = ttlCheck_value
+	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
+	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
 
 func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var ddnsIp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+		diags.Append(list_diags...)
+	}
 	var ddnsIpv6_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -3317,21 +3312,7 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx c
 		ddnsVendorConfig_list, list_diags = types.ListValueFrom(ctx, schemaType, ddnsVendorConfig_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var ddnsIp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
-		diags.Append(list_diags...)
-	}
 
-	var ddnsUpdateInterval_value types.Int64
-	if obj.DdnsUpdateInterval != nil {
-		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
-	}
-	var ddnsVendor_value types.String
-	if obj.DdnsVendor != nil {
-		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
-	}
 	var ddnsCertProfile_value types.String
 	if obj.DdnsCertProfile != nil {
 		ddnsCertProfile_value = types.StringValue(*obj.DdnsCertProfile)
@@ -3344,14 +3325,22 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx c
 	if obj.DdnsHostname != nil {
 		ddnsHostname_value = types.StringValue(*obj.DdnsHostname)
 	}
-	o.DdnsIpv6 = ddnsIpv6_list
-	o.DdnsUpdateInterval = ddnsUpdateInterval_value
-	o.DdnsVendor = ddnsVendor_value
-	o.DdnsVendorConfig = ddnsVendorConfig_list
+	var ddnsUpdateInterval_value types.Int64
+	if obj.DdnsUpdateInterval != nil {
+		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
+	}
+	var ddnsVendor_value types.String
+	if obj.DdnsVendor != nil {
+		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
+	}
 	o.DdnsCertProfile = ddnsCertProfile_value
 	o.DdnsEnabled = ddnsEnabled_value
 	o.DdnsHostname = ddnsHostname_value
 	o.DdnsIp = ddnsIp_list
+	o.DdnsIpv6 = ddnsIpv6_list
+	o.DdnsUpdateInterval = ddnsUpdateInterval_value
+	o.DdnsVendor = ddnsVendor_value
+	o.DdnsVendorConfig = ddnsVendorConfig_list
 
 	return diags
 }
@@ -3369,84 +3358,15 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) Cop
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var upstreamNat_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject
-	if obj.UpstreamNat != nil {
-		upstreamNat_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject)
-
-		diags.Append(upstreamNat_object.CopyFromPango(ctx, obj.UpstreamNat, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var sdwanInterfaceProfile_value types.String
-	if obj.SdwanInterfaceProfile != nil {
-		sdwanInterfaceProfile_value = types.StringValue(*obj.SdwanInterfaceProfile)
-	}
-	o.Enable = enable_value
-	o.SdwanInterfaceProfile = sdwanInterfaceProfile_value
-	o.UpstreamNat = upstreamNat_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var ddns_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
-	if obj.Ddns != nil {
-		ddns_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject)
-
-		diags.Append(ddns_object.CopyFromPango(ctx, obj.Ddns, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var staticIp_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
-	if obj.StaticIp != nil {
-		staticIp_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject)
-
-		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Ddns = ddns_object
-	o.StaticIp = staticIp_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
+	var sdwanGateway_value types.String
+	if obj.SdwanGateway != nil {
+		sdwanGateway_value = types.StringValue(*obj.SdwanGateway)
 	}
-	var ipAddress_value types.String
-	if obj.IpAddress != nil {
-		ipAddress_value = types.StringValue(*obj.IpAddress)
-	}
-	o.Fqdn = fqdn_value
-	o.IpAddress = ipAddress_value
+	o.Name = types.StringValue(obj.Name)
+	o.SdwanGateway = sdwanGateway_value
 
 	return diags
 }
@@ -3467,6 +3387,15 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var inherited_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject
+	if obj.Inherited != nil {
+		inherited_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedObject)
+
+		diags.Append(inherited_object.CopyFromPango(ctx, obj.Inherited, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
 	if obj.NeighborDiscovery != nil {
 		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject)
@@ -3485,117 +3414,21 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context
 			return diags
 		}
 	}
-	var inherited_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject
-	if obj.Inherited != nil {
-		inherited_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedObject)
 
-		diags.Append(inherited_object.CopyFromPango(ctx, obj.Inherited, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var interfaceId_value types.String
-	if obj.InterfaceId != nil {
-		interfaceId_value = types.StringValue(*obj.InterfaceId)
-	}
 	var enabled_value types.Bool
 	if obj.Enabled != nil {
 		enabled_value = types.BoolValue(*obj.Enabled)
 	}
-	o.InterfaceId = interfaceId_value
-	o.NeighborDiscovery = neighborDiscovery_object
-	o.DhcpClient = dhcpClient_object
+	var interfaceId_value types.String
+	if obj.InterfaceId != nil {
+		interfaceId_value = types.StringValue(*obj.InterfaceId)
+	}
 	o.Inherited = inherited_object
 	o.Address = address_list
 	o.Enabled = enabled_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var prefix_object *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject
-	if obj.Prefix != nil {
-		prefix_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var anycast_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject
-	if obj.Anycast != nil {
-		anycast_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.EnableOnInterface = enableOnInterface_value
-	o.Prefix = prefix_object
-	o.Anycast = anycast_object
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	o.AutoConfigFlag = autoConfigFlag_value
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
+	o.InterfaceId = interfaceId_value
+	o.NeighborDiscovery = neighborDiscovery_object
+	o.DhcpClient = dhcpClient_object
 
 	return diags
 }
@@ -3626,14 +3459,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFrom
 		}
 	}
 
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
 	var reachableTime_value types.Int64
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.Int64Value(*obj.ReachableTime)
@@ -3646,13 +3471,21 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFrom
 	if obj.EnableDad != nil {
 		enableDad_value = types.BoolValue(*obj.EnableDad)
 	}
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
 	o.ReachableTime = reachableTime_value
 	o.RouterAdvertisement = routerAdvertisement_object
 	o.DadAttempts = dadAttempts_value
 	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
 
 	return diags
 }
@@ -3669,33 +3502,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 		}
 	}
 
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
 	}
 	var linkMtu_value types.String
 	if obj.LinkMtu != nil {
 		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
 	}
 	var managedFlag_value types.Bool
 	if obj.ManagedFlag != nil {
@@ -3709,27 +3522,47 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	if obj.MinInterval != nil {
 		minInterval_value = types.Int64Value(*obj.MinInterval)
 	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
 	var reachableTime_value types.String
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.StringValue(*obj.ReachableTime)
 	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
 	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.RouterPreference = routerPreference_value
 	o.DnsSupport = dnsSupport_object
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
 	o.LinkMtu = linkMtu_value
-	o.OtherFlag = otherFlag_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.Enable = enable_value
 	o.ManagedFlag = managedFlag_value
 	o.MaxInterval = maxInterval_value
 	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
 	o.ReachableTime = reachableTime_value
-	o.RouterPreference = routerPreference_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.Enable = enable_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.Lifetime = lifetime_value
 
 	return diags
 }
@@ -3776,7 +3609,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -3789,7 +3622,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -3817,15 +3650,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) 
 
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var v6Options_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject
-	if obj.V6Options != nil {
-		v6Options_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject)
-
-		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 	if obj.NeighborDiscovery != nil {
 		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject)
@@ -3844,11 +3668,16 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyFromPango(c
 			return diags
 		}
 	}
+	var v6Options_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject
+	if obj.V6Options != nil {
+		v6Options_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject)
 
-	var acceptRaRoute_value types.Bool
-	if obj.AcceptRaRoute != nil {
-		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
+		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
+
 	var defaultRouteMetric_value types.Int64
 	if obj.DefaultRouteMetric != nil {
 		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
@@ -3861,13 +3690,17 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyFromPango(c
 	if obj.Preference != nil {
 		preference_value = types.StringValue(*obj.Preference)
 	}
-	o.V6Options = v6Options_object
-	o.AcceptRaRoute = acceptRaRoute_value
+	var acceptRaRoute_value types.Bool
+	if obj.AcceptRaRoute != nil {
+		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
+	}
 	o.DefaultRouteMetric = defaultRouteMetric_value
 	o.Enable = enable_value
 	o.NeighborDiscovery = neighborDiscovery_object
 	o.Preference = preference_value
 	o.PrefixDelegation = prefixDelegation_object
+	o.V6Options = v6Options_object
+	o.AcceptRaRoute = acceptRaRoute_value
 
 	return diags
 }
@@ -3907,14 +3740,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 		}
 	}
 
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
 	var dadAttempts_value types.Int64
 	if obj.DadAttempts != nil {
 		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
@@ -3927,14 +3752,22 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 	if obj.EnableNdpMonitor != nil {
 		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
 	}
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
 	o.DadAttempts = dadAttempts_value
 	o.DnsServer = dnsServer_object
 	o.DnsSuffix = dnsSuffix_object
 	o.EnableDad = enableDad_value
 	o.EnableNdpMonitor = enableNdpMonitor_value
 	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
 
 	return diags
 }
@@ -4185,10 +4018,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableN
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var pfxPoolName_value types.String
-	if obj.PfxPoolName != nil {
-		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
-	}
 	var prefixLen_value types.Int64
 	if obj.PrefixLen != nil {
 		prefixLen_value = types.Int64Value(*obj.PrefixLen)
@@ -4197,9 +4026,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableY
 	if obj.PrefixLenHint != nil {
 		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
 	}
-	o.PfxPoolName = pfxPoolName_value
+	var pfxPoolName_value types.String
+	if obj.PfxPoolName != nil {
+		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
+	}
 	o.PrefixLen = prefixLen_value
 	o.PrefixLenHint = prefixLenHint_value
+	o.PfxPoolName = pfxPoolName_value
 
 	return diags
 }
@@ -4323,224 +4156,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
-	if obj.Type != nil {
-		type_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Type = type_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
-
-		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
-	if obj.Ula != nil {
-		ula_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
-
-		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Gua = gua_object
-	o.Ula = ula_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var poolType_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
-
-		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	o.PrefixPool = prefixPool_value
-	o.PoolType = poolType_object
-	o.Advertise = advertise_object
-	o.EnableOnInterface = enableOnInterface_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
-	if obj.DynamicId != nil {
-		dynamicId_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-
-		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dynamic = dynamic_object
-	o.DynamicId = dynamicId_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var identifier_value types.Int64
-	if obj.Identifier != nil {
-		identifier_value = types.Int64Value(*obj.Identifier)
-	}
-	o.Identifier = identifier_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	o.AutoConfigFlag = autoConfigFlag_value
-	o.Enable = enable_value
-	o.OnlinkFlag = onlinkFlag_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var address_value types.String
-	if obj.Address != nil {
-		address_value = types.StringValue(*obj.Address)
-	}
-	var prefix_value types.Bool
-	if obj.Prefix != nil {
-		prefix_value = types.BoolValue(*obj.Prefix)
-	}
-	var anycast_value types.Bool
-	if obj.Anycast != nil {
-		anycast_value = types.BoolValue(*obj.Anycast)
-	}
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	o.Address = address_value
-	o.Prefix = prefix_value
-	o.Anycast = anycast_value
-	o.Advertise = advertise_object
-	o.EnableOnInterface = enableOnInterface_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
@@ -4556,15 +4171,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
-	}
-	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
 	}
 	var routerAdvertisement_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
 	if obj.RouterAdvertisement != nil {
@@ -4584,6 +4190,15 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 			return diags
 		}
 	}
+	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
+
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var dadAttempts_value types.Int64
 	if obj.DadAttempts != nil {
@@ -4593,10 +4208,6 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 	if obj.EnableDad != nil {
 		enableDad_value = types.BoolValue(*obj.EnableDad)
 	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
 	var nsInterval_value types.Int64
 	if obj.NsInterval != nil {
 		nsInterval_value = types.Int64Value(*obj.NsInterval)
@@ -4605,15 +4216,195 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.Int64Value(*obj.ReachableTime)
 	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
 	o.DadAttempts = dadAttempts_value
-	o.DnsSuffix = dnsSuffix_object
 	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
 	o.Neighbor = neighbor_list
-	o.RouterAdvertisement = routerAdvertisement_object
-	o.DnsServer = dnsServer_object
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableNdpMonitor = enableNdpMonitor_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.Lifetime = lifetime_value
+	o.MaxInterval = maxInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterPreference = routerPreference_value
+	o.Enable = enable_value
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
+
+		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+
+		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Manual = manual_object
+	o.Dhcpv6 = dhcpv6_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
 
 	return diags
 }
@@ -4634,8 +4425,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuff
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.Enable = enable_value
 	o.Source = source_object
+	o.Enable = enable_value
 
 	return diags
 }
@@ -4714,178 +4505,307 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var type_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
+	if obj.Type != nil {
+		type_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject)
 
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
+		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
+
 	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
+	o.Type = type_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var gua_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+	if obj.Gua != nil {
+		gua_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
 
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
+		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.RouterPreference = routerPreference_value
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	var ula_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
+	if obj.Ula != nil {
+		ula_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
 
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
+		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
+	o.Gua = gua_object
+	o.Ula = ula_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+	var poolType_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if obj.PoolType != nil {
+		poolType_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
 
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
 
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
 	var prefixPool_value types.String
 	if obj.PrefixPool != nil {
 		prefixPool_value = types.StringValue(*obj.PrefixPool)
 	}
+	o.EnableOnInterface = enableOnInterface_value
 	o.PrefixPool = prefixPool_value
+	o.PoolType = poolType_object
+	o.Advertise = advertise_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
+	var dynamic_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if obj.Dynamic != nil {
+		dynamic_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+
+		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		if diags.HasError() {
+			return diags
 		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
+	}
+	var dynamicId_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if obj.DynamicId != nil {
+		dynamicId_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+
+		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
-	o.Server = server_list
+	o.Dynamic = dynamic_object
+	o.DynamicId = dynamicId_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var identifier_value types.Int64
+	if obj.Identifier != nil {
+		identifier_value = types.Int64Value(*obj.Identifier)
+	}
+	o.Identifier = identifier_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
+	}
+	var prefix_value types.Bool
+	if obj.Prefix != nil {
+		prefix_value = types.BoolValue(*obj.Prefix)
+	}
+	var anycast_value types.Bool
+	if obj.Anycast != nil {
+		anycast_value = types.BoolValue(*obj.Anycast)
+	}
+	o.EnableOnInterface = enableOnInterface_value
+	o.Address = address_value
+	o.Prefix = prefix_value
+	o.Anycast = anycast_value
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var prefix_object *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject
+	if obj.Prefix != nil {
+		prefix_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject)
+
+		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var anycast_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject
+	if obj.Anycast != nil {
+		anycast_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject)
+
+		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
+	o.EnableOnInterface = enableOnInterface_value
+	o.Prefix = prefix_object
+	o.Anycast = anycast_object
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
 
 	return diags
 }
@@ -4902,14 +4822,6 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyFromPango(ctx context
 		}
 	}
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var fastFailover_value types.Bool
-	if obj.FastFailover != nil {
-		fastFailover_value = types.BoolValue(*obj.FastFailover)
-	}
 	var maxPorts_value types.Int64
 	if obj.MaxPorts != nil {
 		maxPorts_value = types.Int64Value(*obj.MaxPorts)
@@ -4926,13 +4838,21 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyFromPango(ctx context
 	if obj.TransmissionRate != nil {
 		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
 	}
-	o.Enable = enable_value
-	o.FastFailover = fastFailover_value
-	o.HighAvailability = highAvailability_object
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var fastFailover_value types.Bool
+	if obj.FastFailover != nil {
+		fastFailover_value = types.BoolValue(*obj.FastFailover)
+	}
 	o.MaxPorts = maxPorts_value
 	o.Mode = mode_value
 	o.SystemPriority = systemPriority_value
 	o.TransmissionRate = transmissionRate_value
+	o.Enable = enable_value
+	o.FastFailover = fastFailover_value
+	o.HighAvailability = highAvailability_object
 
 	return diags
 }
@@ -4945,55 +4865,6 @@ func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyFromP
 		passivePreNegotiation_value = types.BoolValue(*obj.PassivePreNegotiation)
 	}
 	o.PassivePreNegotiation = passivePreNegotiation_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var sendHostname_object *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject
-	if obj.SendHostname != nil {
-		sendHostname_object = new(AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject)
-
-		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var createDefaultRoute_value types.Bool
-	if obj.CreateDefaultRoute != nil {
-		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
-	}
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.CreateDefaultRoute = createDefaultRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
-	o.Enable = enable_value
-	o.SendHostname = sendHostname_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var hostname_value types.String
-	if obj.Hostname != nil {
-		hostname_value = types.StringValue(*obj.Hostname)
-	}
-	o.Enable = enable_value
-	o.Hostname = hostname_value
 
 	return diags
 }
@@ -5033,6 +4904,123 @@ func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyFromP
 		passivePreNegotiation_value = types.BoolValue(*obj.PassivePreNegotiation)
 	}
 	o.PassivePreNegotiation = passivePreNegotiation_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var upstreamNat_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject
+	if obj.UpstreamNat != nil {
+		upstreamNat_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject)
+
+		diags.Append(upstreamNat_object.CopyFromPango(ctx, obj.UpstreamNat, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var sdwanInterfaceProfile_value types.String
+	if obj.SdwanInterfaceProfile != nil {
+		sdwanInterfaceProfile_value = types.StringValue(*obj.SdwanInterfaceProfile)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	o.UpstreamNat = upstreamNat_object
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var ddns_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
+	if obj.Ddns != nil {
+		ddns_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject)
+
+		diags.Append(ddns_object.CopyFromPango(ctx, obj.Ddns, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var staticIp_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
+	if obj.StaticIp != nil {
+		staticIp_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject)
+
+		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Ddns = ddns_object
+	o.StaticIp = staticIp_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
+	var ipAddress_value types.String
+	if obj.IpAddress != nil {
+		ipAddress_value = types.StringValue(*obj.IpAddress)
+	}
+	o.Fqdn = fqdn_value
+	o.IpAddress = ipAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var groupId_value types.Int64
+	if obj.GroupId != nil {
+		groupId_value = types.Int64Value(*obj.GroupId)
+	}
+	var ttlCheck_value types.Bool
+	if obj.TtlCheck != nil {
+		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.GroupId = groupId_value
+	o.TtlCheck = ttlCheck_value
+	o.Enable = enable_value
 
 	return diags
 }
@@ -5077,37 +5065,51 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyFromPango(
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var sendHostname_object *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject
+	if obj.SendHostname != nil {
+		sendHostname_object = new(AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject)
+
+		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var createDefaultRoute_value types.Bool
+	if obj.CreateDefaultRoute != nil {
+		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
+	}
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.SendHostname = sendHostname_object
+	o.CreateDefaultRoute = createDefaultRoute_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var ipv4MssAdjustment_value types.Int64
-	if obj.Ipv4MssAdjustment != nil {
-		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
-	}
-	var ipv6MssAdjustment_value types.Int64
-	if obj.Ipv6MssAdjustment != nil {
-		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
+	var hostname_value types.String
+	if obj.Hostname != nil {
+		hostname_value = types.StringValue(*obj.Hostname)
 	}
 	o.Enable = enable_value
-	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
-	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
+	o.Hostname = hostname_value
 
 	return diags
 }
@@ -5173,6 +5175,14 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) Copy
 	return diags
 }
 
+func (o *AggregateInterfaceDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
+}
+
 func AggregateInterfaceDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -5235,30 +5245,37 @@ func AggregateInterfaceDataSourceLayer3Schema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"ipv6": AggregateInterfaceDataSourceLayer3Ipv6Schema(),
-
-			"lacp": AggregateInterfaceDataSourceLayer3LacpSchema(),
-
-			"sdwan_link_settings": AggregateInterfaceDataSourceLayer3SdwanLinkSettingsSchema(),
-
-			"adjust_tcp_mss": AggregateInterfaceDataSourceLayer3AdjustTcpMssSchema(),
-
-			"arp": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3ArpSchema(),
+			"mtu": dsschema.Int64Attribute{
+				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
-
-			"dhcp_client": AggregateInterfaceDataSourceLayer3DhcpClientSchema(),
-
-			"lldp": AggregateInterfaceDataSourceLayer3LldpSchema(),
 
 			"ndp_proxy": AggregateInterfaceDataSourceLayer3NdpProxySchema(),
 
-			"bonjour": AggregateInterfaceDataSourceLayer3BonjourSchema(),
+			"dhcp_client": AggregateInterfaceDataSourceLayer3DhcpClientSchema(),
+
+			"ddns_config": AggregateInterfaceDataSourceLayer3DdnsConfigSchema(),
+
+			"netflow_profile": dsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"untagged_sub_interface": dsschema.BoolAttribute{
+				Description: "Enable untagged sub-interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"adjust_tcp_mss": AggregateInterfaceDataSourceLayer3AdjustTcpMssSchema(),
 
 			"df_ignore": dsschema.BoolAttribute{
 				Description: "",
@@ -5277,7 +5294,7 @@ func AggregateInterfaceDataSourceLayer3Schema() dsschema.SingleNestedAttribute {
 				NestedObject: AggregateInterfaceDataSourceLayer3IpSchema(),
 			},
 
-			"ddns_config": AggregateInterfaceDataSourceLayer3DdnsConfigSchema(),
+			"ipv6": AggregateInterfaceDataSourceLayer3Ipv6Schema(),
 
 			"decrypt_forward": dsschema.BoolAttribute{
 				Description: "",
@@ -5287,6 +5304,8 @@ func AggregateInterfaceDataSourceLayer3Schema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
+			"bonjour": AggregateInterfaceDataSourceLayer3BonjourSchema(),
+
 			"interface_management_profile": dsschema.StringAttribute{
 				Description: "Interface management profile",
 				Computed:    true,
@@ -5295,28 +5314,19 @@ func AggregateInterfaceDataSourceLayer3Schema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"mtu": dsschema.Int64Attribute{
-				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"lacp": AggregateInterfaceDataSourceLayer3LacpSchema(),
 
-			"netflow_profile": dsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"lldp": AggregateInterfaceDataSourceLayer3LldpSchema(),
 
-			"untagged_sub_interface": dsschema.BoolAttribute{
-				Description: "Enable untagged sub-interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+			"sdwan_link_settings": AggregateInterfaceDataSourceLayer3SdwanLinkSettingsSchema(),
+
+			"arp": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3ArpSchema(),
 			},
 		},
 	}
@@ -5519,219 +5529,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpO
 	panic("unreachable")
 }
 
-func AggregateInterfaceDataSourceLayer3Ipv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcp_client": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema(),
-
-			"inherited": AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema(),
-
-			"address": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6AddressSchema(),
-			},
-
-			"enabled": dsschema.BoolAttribute{
-				Description: "Enable IPv6 on the interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"interface_id": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Enable DHCPv6 Client",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema(),
-
-			"preference": dsschema.StringAttribute{
-				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix_delegation": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema(),
-
-			"v6_options": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema(),
-
-			"accept_ra_route": dsschema.BoolAttribute{
-				Description: "Accept Router Advertised Default Route",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": dsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dns_server": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema(),
-
-			"dns_suffix": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": dsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema(),
-			},
-
-			"ns_interval": dsschema.Int64Attribute{
-				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.Int64Attribute{
-				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+func AggregateInterfaceDataSourceLayer3ArpSchema() dsschema.NestedAttributeObject {
 	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
 
@@ -5754,8 +5552,8 @@ func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSc
 	}
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema()
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3ArpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5772,7 +5570,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighb
 	panic("unreachable")
 }
 
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
+func AggregateInterfaceDataSourceLayer3BonjourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -5782,166 +5580,23 @@ func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerS
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
-				Description: "",
+				Description: "Set to support Bonjour service",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"source": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
-
-			"manual": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"server": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
+			"group_id": dsschema.Int64Attribute{
+				Description: "default 0: NO-Group",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) Lifetime in Seconds",
+			"ttl_check": dsschema.BoolAttribute{
+				Description: "Set to check and update TTL",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -5951,2259 +5606,8 @@ func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerS
 	}
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
-
-			"manual": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"suffix": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"yes": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema(),
-
-			"no": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("no"),
-				path.MatchRelative().AtParent().AtName("yes"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("no"),
-				path.MatchRelative().AtParent().AtName("yes"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"prefix_len_hint": dsschema.BoolAttribute{
-				Description: "Send prefix length hint to server",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"pfx_pool_name": dsschema.StringAttribute{
-				Description: "Configure unique Prefix Pool Name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix_len": dsschema.Int64Attribute{
-				Description: "Hint DHCP Prefix Length (bits)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"duid_type": dsschema.StringAttribute{
-				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema(),
-
-			"rapid_commit": dsschema.BoolAttribute{
-				Description: "Enable Rapid Commit",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"support_srvr_reconfig": dsschema.BoolAttribute{
-				Description: "Enable DHCPv6 Server Re-Configuration Support",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"no": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema(),
-
-			"yes": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("no"),
-				path.MatchRelative().AtParent().AtName("yes"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("no"),
-				path.MatchRelative().AtParent().AtName("yes"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"non_temp_addr": dsschema.BoolAttribute{
-				Description: "Request Non-Temporary Address Type",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"temp_addr": dsschema.BoolAttribute{
-				Description: "Request Temporary Address Type",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"assign_addr": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema(),
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Enable Inherited Interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dns_server": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema(),
-
-			"ns_interval": dsschema.Int64Attribute{
-				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.Int64Attribute{
-				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dns_suffix": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": dsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema(),
-			},
-
-			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
-
-			"manual": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"prefix_pool": dsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"suffix": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"managed_flag": dsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": dsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"router_preference": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": dsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"link_mtu": dsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"other_flag": dsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"retransmission_timer": dsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hop_limit": dsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"min_interval": dsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
-
-			"manual": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"prefix_pool": dsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"server": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"type": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"gua": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema(),
-
-			"ula": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("gua"),
-				path.MatchRelative().AtParent().AtName("ula"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable_on_interface": dsschema.BoolAttribute{
-				Description: "Enable on Interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix_pool": dsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"pool_type": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
-
-			"advertise": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dynamic": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
-
-			"dynamic_id": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic"),
-				path.MatchRelative().AtParent().AtName("dynamic_id"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"identifier": dsschema.Int64Attribute{
-				Description: "Range [0-4095] must be unqiue for this prefix-pool",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic"),
-				path.MatchRelative().AtParent().AtName("dynamic_id"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"onlink_flag": dsschema.BoolAttribute{
-				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"auto_config_flag": dsschema.BoolAttribute{
-				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("gua"),
-				path.MatchRelative().AtParent().AtName("ula"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"anycast": dsschema.BoolAttribute{
-				Description: "Anycast Address",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"advertise": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
-
-			"enable_on_interface": dsschema.BoolAttribute{
-				Description: "Configure this address on Interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"address": dsschema.StringAttribute{
-				Description: "Configure ULA (Unique Local Address)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix": dsschema.BoolAttribute{
-				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"valid_lifetime": dsschema.StringAttribute{
-				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"preferred_lifetime": dsschema.StringAttribute{
-				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"onlink_flag": dsschema.BoolAttribute{
-				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"auto_config_flag": dsschema.BoolAttribute{
-				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6AddressSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"enable_on_interface": dsschema.BoolAttribute{
-				Description: "configure this address on interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix": AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema(),
-
-			"anycast": AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema(),
-
-			"advertise": AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"onlink_flag": dsschema.BoolAttribute{
-				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"auto_config_flag": dsschema.BoolAttribute{
-				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"valid_lifetime": dsschema.StringAttribute{
-				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"preferred_lifetime": dsschema.StringAttribute{
-				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes:  map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes:  map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "enable duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": dsschema.BoolAttribute{
-				Description: "enable ndp monitoring",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
-			},
-
-			"ns_interval": dsschema.Int64Attribute{
-				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.Int64Attribute{
-				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"managed_flag": dsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": dsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"min_interval": dsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"router_preference": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dns_support": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
-
-			"enable_consistency_check": dsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hop_limit": dsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"link_mtu": dsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"other_flag": dsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"retransmission_timer": dsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"suffix": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"server": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3BonjourSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -8228,6 +5632,22 @@ func AggregateInterfaceDataSourceLayer3LacpSchema() dsschema.SingleNestedAttribu
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
+
+			"system_priority": dsschema.Int64Attribute{
+				Description: "LACP system priority in system ID",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"transmission_rate": dsschema.StringAttribute{
+				Description: "periodic transition rate. N/A in passive mode",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
@@ -8257,22 +5677,6 @@ func AggregateInterfaceDataSourceLayer3LacpSchema() dsschema.SingleNestedAttribu
 
 			"mode": dsschema.StringAttribute{
 				Description: "LACP mode",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"system_priority": dsschema.Int64Attribute{
-				Description: "LACP system priority in system ID",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"transmission_rate": dsschema.StringAttribute{
-				Description: "periodic transition rate. N/A in passive mode",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -8322,108 +5726,6 @@ func AggregateInterfaceDataSourceLayer3LacpHighAvailabilitySchema() dsschema.Sin
 
 func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceDataSourceLayer3LacpHighAvailabilitySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3DhcpClientSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"send_hostname": AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema(),
-
-			"create_default_route": dsschema.BoolAttribute{
-				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": dsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3DhcpClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hostname": dsschema.StringAttribute{
-				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -8510,6 +5812,108 @@ func AggregateInterfaceDataSourceLayer3LldpHighAvailabilitySchema() dsschema.Sin
 
 func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceDataSourceLayer3LldpHighAvailabilitySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3DhcpClientSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_hostname": AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema(),
+
+			"create_default_route": dsschema.BoolAttribute{
+				Description: "Automatically create default route pointing to default gateway provided by server",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": dsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3DhcpClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hostname": dsschema.StringAttribute{
+				Description: "Set Interface Hostname",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -8668,142 +6072,6 @@ func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func AggregateInterfaceDataSourceLayer3ArpSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3ArpObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3ArpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3IpSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"sdwan_gateway": dsschema.StringAttribute{
-				Description: "Gateway IPv4 Address",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3IpObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3IpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3BonjourSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Set to support Bonjour service",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"group_id": dsschema.Int64Attribute{
-				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ttl_check": dsschema.BoolAttribute{
-				Description: "Set to check and update TTL",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3BonjourObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3BonjourSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func AggregateInterfaceDataSourceLayer3DdnsConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -8942,6 +6210,2748 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) get
 	panic("unreachable")
 }
 
+func AggregateInterfaceDataSourceLayer3IpSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"sdwan_gateway": dsschema.StringAttribute{
+				Description: "Gateway IPv4 Address",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3IpObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3IpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enabled": dsschema.BoolAttribute{
+				Description: "Enable IPv6 on the interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"interface_id": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema(),
+
+			"dhcp_client": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema(),
+
+			"inherited": AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema(),
+
+			"address": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6AddressSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6AddressSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"enable_on_interface": dsschema.BoolAttribute{
+				Description: "configure this address on interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix": AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema(),
+
+			"anycast": AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema(),
+
+			"advertise": AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"valid_lifetime": dsschema.StringAttribute{
+				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"preferred_lifetime": dsschema.StringAttribute{
+				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"onlink_flag": dsschema.BoolAttribute{
+				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_config_flag": dsschema.BoolAttribute{
+				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "enable advertising this prefix in router advertisements",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
+
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "enable duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": dsschema.BoolAttribute{
+				Description: "enable ndp monitoring",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": dsschema.Int64Attribute{
+				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.Int64Attribute{
+				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"min_interval": dsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"other_flag": dsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"retransmission_timer": dsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_consistency_check": dsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": dsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"max_interval": dsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"router_preference": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"dns_support": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+
+			"link_mtu": dsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"managed_flag": dsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"server": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
+			},
+
+			"suffix": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"prefix_delegation": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema(),
+
+			"v6_options": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema(),
+
+			"accept_ra_route": dsschema.BoolAttribute{
+				Description: "Accept Router Advertised Default Route",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": dsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "Enable DHCPv6 Client",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema(),
+
+			"preference": dsschema.StringAttribute{
+				Description: "Select Low/Medium/High",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"reachable_time": dsschema.Int64Attribute{
+				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"dns_server": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema(),
+
+			"dns_suffix": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": dsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": dsschema.Int64Attribute{
+				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"manual": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema(),
+
+			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"suffix": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
+
+			"manual": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"server": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) Lifetime in Seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"no": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema(),
+
+			"yes": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("no"),
+				path.MatchRelative().AtParent().AtName("yes"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"pfx_pool_name": dsschema.StringAttribute{
+				Description: "Configure unique Prefix Pool Name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix_len": dsschema.Int64Attribute{
+				Description: "Hint DHCP Prefix Length (bits)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix_len_hint": dsschema.BoolAttribute{
+				Description: "Send prefix length hint to server",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("no"),
+				path.MatchRelative().AtParent().AtName("yes"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"rapid_commit": dsschema.BoolAttribute{
+				Description: "Enable Rapid Commit",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"support_srvr_reconfig": dsschema.BoolAttribute{
+				Description: "Enable DHCPv6 Server Re-Configuration Support",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"duid_type": dsschema.StringAttribute{
+				Description: "Select DUID-LLT/DUID-LL",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"no": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema(),
+
+			"yes": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("no"),
+				path.MatchRelative().AtParent().AtName("yes"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("no"),
+				path.MatchRelative().AtParent().AtName("yes"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"non_temp_addr": dsschema.BoolAttribute{
+				Description: "Request Non-Temporary Address Type",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"temp_addr": dsschema.BoolAttribute{
+				Description: "Request Temporary Address Type",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "Enable Inherited Interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema(),
+
+			"assign_addr": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"type": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"gua": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema(),
+
+			"ula": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("gua"),
+				path.MatchRelative().AtParent().AtName("ula"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"anycast": dsschema.BoolAttribute{
+				Description: "Anycast Address",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"advertise": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
+
+			"enable_on_interface": dsschema.BoolAttribute{
+				Description: "Configure this address on Interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"address": dsschema.StringAttribute{
+				Description: "Configure ULA (Unique Local Address)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix": dsschema.BoolAttribute{
+				Description: "Use this as prefix to form full address with interface id/EUI-64",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "enable advertising this prefix in router advertisements",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"valid_lifetime": dsschema.StringAttribute{
+				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"preferred_lifetime": dsschema.StringAttribute{
+				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"onlink_flag": dsschema.BoolAttribute{
+				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_config_flag": dsschema.BoolAttribute{
+				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("gua"),
+				path.MatchRelative().AtParent().AtName("ula"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable_on_interface": dsschema.BoolAttribute{
+				Description: "Enable on Interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix_pool": dsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"pool_type": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
+
+			"advertise": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dynamic": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
+
+			"dynamic_id": AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dynamic_id"),
+				path.MatchRelative().AtParent().AtName("dynamic"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dynamic_id"),
+				path.MatchRelative().AtParent().AtName("dynamic"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"identifier": dsschema.Int64Attribute{
+				Description: "Range [0-4095] must be unqiue for this prefix-pool",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"onlink_flag": dsschema.BoolAttribute{
+				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_config_flag": dsschema.BoolAttribute{
+				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "Enable advertising this prefix in router advertisements",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection (DAD)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": dsschema.Int64Attribute{
+				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.Int64Attribute{
+				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
+
+			"dns_server": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema(),
+
+			"dns_suffix": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_ndp_monitor": dsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable_consistency_check": dsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": dsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"min_interval": dsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"other_flag": dsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"retransmission_timer": dsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"link_mtu": dsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"managed_flag": dsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"max_interval": dsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"router_preference": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
+
+			"manual": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"prefix_pool": dsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"server": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) Lifetime in Seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"source": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dhcpv6": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
+
+			"manual": AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"prefix_pool": dsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"suffix": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceDataSourceVirtualWireSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -8991,14 +9001,6 @@ func AggregateInterfaceDataSourceVirtualWireLldpSchema() dsschema.SingleNestedAt
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"profile": dsschema.StringAttribute{
-				Description: "LLDP profile",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"enable": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
@@ -9008,6 +9010,14 @@ func AggregateInterfaceDataSourceVirtualWireLldpSchema() dsschema.SingleNestedAt
 			},
 
 			"high_availability": AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilitySchema(),
+
+			"profile": dsschema.StringAttribute{
+				Description: "LLDP profile",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -9216,6 +9226,10 @@ func AggregateInterfaceDataSourceLayer2Schema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"lacp": AggregateInterfaceDataSourceLayer2LacpSchema(),
+
+			"lldp": AggregateInterfaceDataSourceLayer2LldpSchema(),
+
 			"netflow_profile": dsschema.StringAttribute{
 				Description: "Netflow Server Profile",
 				Computed:    true,
@@ -9223,10 +9237,6 @@ func AggregateInterfaceDataSourceLayer2Schema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"lacp": AggregateInterfaceDataSourceLayer2LacpSchema(),
-
-			"lldp": AggregateInterfaceDataSourceLayer2LldpSchema(),
 		},
 	}
 }
@@ -9257,6 +9267,24 @@ func AggregateInterfaceDataSourceLayer2LacpSchema() dsschema.SingleNestedAttribu
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"fast_failover": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"high_availability": AggregateInterfaceDataSourceLayer2LacpHighAvailabilitySchema(),
 
 			"max_ports": dsschema.Int64Attribute{
 				Description: "maximum number of physical ports bundled in the LAG",
@@ -9289,24 +9317,6 @@ func AggregateInterfaceDataSourceLayer2LacpSchema() dsschema.SingleNestedAttribu
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"fast_failover": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"high_availability": AggregateInterfaceDataSourceLayer2LacpHighAvailabilitySchema(),
 		},
 	}
 }
@@ -9481,7 +9491,6 @@ func (d *AggregateInterfaceDataSource) Configure(_ context.Context, req datasour
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, aggregate.NewService(d.client), specifier, aggregate.SpecMatches)
 }
-
 func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AggregateInterfaceDataSourceModel
@@ -9492,6 +9501,12 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 
 	var location aggregate.Location
 
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &aggregate.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -9511,12 +9526,6 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -9525,8 +9534,13 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -9581,88 +9595,72 @@ type AggregateInterfaceResourceModel struct {
 	Location      AggregateInterfaceLocation                     `tfsdk:"location"`
 	Name          types.String                                   `tfsdk:"name"`
 	Comment       types.String                                   `tfsdk:"comment"`
-	Layer3        *AggregateInterfaceResourceLayer3Object        `tfsdk:"layer3"`
-	VirtualWire   *AggregateInterfaceResourceVirtualWireObject   `tfsdk:"virtual_wire"`
 	DecryptMirror *AggregateInterfaceResourceDecryptMirrorObject `tfsdk:"decrypt_mirror"`
 	Ha            *AggregateInterfaceResourceHaObject            `tfsdk:"ha"`
 	Layer2        *AggregateInterfaceResourceLayer2Object        `tfsdk:"layer2"`
+	Layer3        *AggregateInterfaceResourceLayer3Object        `tfsdk:"layer3"`
+	VirtualWire   *AggregateInterfaceResourceVirtualWireObject   `tfsdk:"virtual_wire"`
 }
-type AggregateInterfaceResourceLayer3Object struct {
-	Arp                        types.List                                               `tfsdk:"arp"`
-	DhcpClient                 *AggregateInterfaceResourceLayer3DhcpClientObject        `tfsdk:"dhcp_client"`
-	Lldp                       *AggregateInterfaceResourceLayer3LldpObject              `tfsdk:"lldp"`
-	NdpProxy                   *AggregateInterfaceResourceLayer3NdpProxyObject          `tfsdk:"ndp_proxy"`
-	AdjustTcpMss               *AggregateInterfaceResourceLayer3AdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
-	DfIgnore                   types.Bool                                               `tfsdk:"df_ignore"`
-	Ip                         types.List                                               `tfsdk:"ip"`
-	Bonjour                    *AggregateInterfaceResourceLayer3BonjourObject           `tfsdk:"bonjour"`
-	DecryptForward             types.Bool                                               `tfsdk:"decrypt_forward"`
-	InterfaceManagementProfile types.String                                             `tfsdk:"interface_management_profile"`
-	Mtu                        types.Int64                                              `tfsdk:"mtu"`
-	NetflowProfile             types.String                                             `tfsdk:"netflow_profile"`
-	UntaggedSubInterface       types.Bool                                               `tfsdk:"untagged_sub_interface"`
-	DdnsConfig                 *AggregateInterfaceResourceLayer3DdnsConfigObject        `tfsdk:"ddns_config"`
-	Lacp                       *AggregateInterfaceResourceLayer3LacpObject              `tfsdk:"lacp"`
-	SdwanLinkSettings          *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
-	Ipv6                       *AggregateInterfaceResourceLayer3Ipv6Object              `tfsdk:"ipv6"`
+type AggregateInterfaceResourceDecryptMirrorObject struct {
 }
-type AggregateInterfaceResourceLayer3NdpProxyObject struct {
-	Address types.List `tfsdk:"address"`
-	Enabled types.Bool `tfsdk:"enabled"`
+type AggregateInterfaceResourceHaObject struct {
+	Lacp *AggregateInterfaceResourceHaLacpObject `tfsdk:"lacp"`
 }
-type AggregateInterfaceResourceLayer3NdpProxyAddressObject struct {
-	Name   types.String `tfsdk:"name"`
-	Negate types.Bool   `tfsdk:"negate"`
+type AggregateInterfaceResourceHaLacpObject struct {
+	SystemPriority   types.Int64  `tfsdk:"system_priority"`
+	TransmissionRate types.String `tfsdk:"transmission_rate"`
+	Enable           types.Bool   `tfsdk:"enable"`
+	FastFailover     types.Bool   `tfsdk:"fast_failover"`
+	MaxPorts         types.Int64  `tfsdk:"max_ports"`
+	Mode             types.String `tfsdk:"mode"`
 }
-type AggregateInterfaceResourceLayer3AdjustTcpMssObject struct {
-	Enable            types.Bool  `tfsdk:"enable"`
-	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
-	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
+type AggregateInterfaceResourceLayer2Object struct {
+	Lacp           *AggregateInterfaceResourceLayer2LacpObject `tfsdk:"lacp"`
+	Lldp           *AggregateInterfaceResourceLayer2LldpObject `tfsdk:"lldp"`
+	NetflowProfile types.String                                `tfsdk:"netflow_profile"`
 }
-type AggregateInterfaceResourceLayer3ArpObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceResourceLayer3DhcpClientObject struct {
-	Enable             types.Bool                                                    `tfsdk:"enable"`
-	SendHostname       *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject `tfsdk:"send_hostname"`
-	CreateDefaultRoute types.Bool                                                    `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                   `tfsdk:"default_route_metric"`
-}
-type AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject struct {
-	Enable   types.Bool   `tfsdk:"enable"`
-	Hostname types.String `tfsdk:"hostname"`
-}
-type AggregateInterfaceResourceLayer3LldpObject struct {
+type AggregateInterfaceResourceLayer2LacpObject struct {
+	HighAvailability *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject `tfsdk:"high_availability"`
+	MaxPorts         types.Int64                                                 `tfsdk:"max_ports"`
+	Mode             types.String                                                `tfsdk:"mode"`
+	SystemPriority   types.Int64                                                 `tfsdk:"system_priority"`
+	TransmissionRate types.String                                                `tfsdk:"transmission_rate"`
 	Enable           types.Bool                                                  `tfsdk:"enable"`
-	HighAvailability *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject `tfsdk:"high_availability"`
-	Profile          types.String                                                `tfsdk:"profile"`
+	FastFailover     types.Bool                                                  `tfsdk:"fast_failover"`
 }
-type AggregateInterfaceResourceLayer3LldpHighAvailabilityObject struct {
+type AggregateInterfaceResourceLayer2LacpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
 }
-type AggregateInterfaceResourceLayer3BonjourObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
-	GroupId  types.Int64 `tfsdk:"group_id"`
-	TtlCheck types.Bool  `tfsdk:"ttl_check"`
+type AggregateInterfaceResourceLayer2LldpObject struct {
+	Enable           types.Bool                                                  `tfsdk:"enable"`
+	HighAvailability *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject `tfsdk:"high_availability"`
+	Profile          types.String                                                `tfsdk:"profile"`
+}
+type AggregateInterfaceResourceLayer2LldpHighAvailabilityObject struct {
+	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
+type AggregateInterfaceResourceLayer3Object struct {
+	DecryptForward             types.Bool                                               `tfsdk:"decrypt_forward"`
+	DfIgnore                   types.Bool                                               `tfsdk:"df_ignore"`
+	Ip                         types.List                                               `tfsdk:"ip"`
+	Ipv6                       *AggregateInterfaceResourceLayer3Ipv6Object              `tfsdk:"ipv6"`
+	Arp                        types.List                                               `tfsdk:"arp"`
+	Bonjour                    *AggregateInterfaceResourceLayer3BonjourObject           `tfsdk:"bonjour"`
+	InterfaceManagementProfile types.String                                             `tfsdk:"interface_management_profile"`
+	Lacp                       *AggregateInterfaceResourceLayer3LacpObject              `tfsdk:"lacp"`
+	Lldp                       *AggregateInterfaceResourceLayer3LldpObject              `tfsdk:"lldp"`
+	SdwanLinkSettings          *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
+	DhcpClient                 *AggregateInterfaceResourceLayer3DhcpClientObject        `tfsdk:"dhcp_client"`
+	Mtu                        types.Int64                                              `tfsdk:"mtu"`
+	NdpProxy                   *AggregateInterfaceResourceLayer3NdpProxyObject          `tfsdk:"ndp_proxy"`
+	AdjustTcpMss               *AggregateInterfaceResourceLayer3AdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
+	DdnsConfig                 *AggregateInterfaceResourceLayer3DdnsConfigObject        `tfsdk:"ddns_config"`
+	NetflowProfile             types.String                                             `tfsdk:"netflow_profile"`
+	UntaggedSubInterface       types.Bool                                               `tfsdk:"untagged_sub_interface"`
 }
 type AggregateInterfaceResourceLayer3IpObject struct {
 	Name         types.String `tfsdk:"name"`
 	SdwanGateway types.String `tfsdk:"sdwan_gateway"`
-}
-type AggregateInterfaceResourceLayer3DdnsConfigObject struct {
-	DdnsVendor         types.String `tfsdk:"ddns_vendor"`
-	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
-	DdnsCertProfile    types.String `tfsdk:"ddns_cert_profile"`
-	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
-	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
-	DdnsIp             types.List   `tfsdk:"ddns_ip"`
-	DdnsIpv6           types.List   `tfsdk:"ddns_ipv6"`
-	DdnsUpdateInterval types.Int64  `tfsdk:"ddns_update_interval"`
-}
-type AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject struct {
-	Name  types.String `tfsdk:"name"`
-	Value types.String `tfsdk:"value"`
 }
 type AggregateInterfaceResourceLayer3Ipv6Object struct {
 	Address           types.List                                                   `tfsdk:"address"`
@@ -9672,75 +9670,58 @@ type AggregateInterfaceResourceLayer3Ipv6Object struct {
 	DhcpClient        *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
 	Inherited         *AggregateInterfaceResourceLayer3Ipv6InheritedObject         `tfsdk:"inherited"`
 }
-type AggregateInterfaceResourceLayer3Ipv6AddressObject struct {
-	Name              types.String                                                `tfsdk:"name"`
-	EnableOnInterface types.Bool                                                  `tfsdk:"enable_on_interface"`
-	Prefix            *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject    `tfsdk:"prefix"`
-	Anycast           *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject   `tfsdk:"anycast"`
-	Advertise         *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject `tfsdk:"advertise"`
-}
-type AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject struct {
-}
-type AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject struct {
-}
-type AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject struct {
-	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
-	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
-	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-	Enable            types.Bool   `tfsdk:"enable"`
-	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
-}
 type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject struct {
-	EnableNdpMonitor    types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                                     `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                                     `tfsdk:"reachable_time"`
 	RouterAdvertisement *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
 	DadAttempts         types.Int64                                                                     `tfsdk:"dad_attempts"`
 	EnableDad           types.Bool                                                                      `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
 }
 type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
-	Lifetime               types.Int64                                                                               `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                              `tfsdk:"link_mtu"`
-	OtherFlag              types.Bool                                                                                `tfsdk:"other_flag"`
-	RetransmissionTimer    types.String                                                                              `tfsdk:"retransmission_timer"`
 	DnsSupport             *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	EnableConsistencyCheck types.Bool                                                                                `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String                                                                              `tfsdk:"hop_limit"`
-	MinInterval            types.Int64                                                                               `tfsdk:"min_interval"`
-	ReachableTime          types.String                                                                              `tfsdk:"reachable_time"`
-	RouterPreference       types.String                                                                              `tfsdk:"router_preference"`
-	Enable                 types.Bool                                                                                `tfsdk:"enable"`
+	LinkMtu                types.String                                                                              `tfsdk:"link_mtu"`
 	ManagedFlag            types.Bool                                                                                `tfsdk:"managed_flag"`
 	MaxInterval            types.Int64                                                                               `tfsdk:"max_interval"`
+	RouterPreference       types.String                                                                              `tfsdk:"router_preference"`
+	RetransmissionTimer    types.String                                                                              `tfsdk:"retransmission_timer"`
+	Enable                 types.Bool                                                                                `tfsdk:"enable"`
+	EnableConsistencyCheck types.Bool                                                                                `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String                                                                              `tfsdk:"hop_limit"`
+	Lifetime               types.Int64                                                                               `tfsdk:"lifetime"`
+	MinInterval            types.Int64                                                                               `tfsdk:"min_interval"`
+	OtherFlag              types.Bool                                                                                `tfsdk:"other_flag"`
+	ReachableTime          types.String                                                                              `tfsdk:"reachable_time"`
 }
 type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
 	Enable types.Bool `tfsdk:"enable"`
 	Server types.List `tfsdk:"server"`
 	Suffix types.List `tfsdk:"suffix"`
 }
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
 type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientObject struct {
-	AcceptRaRoute      types.Bool                                                             `tfsdk:"accept_ra_route"`
-	DefaultRouteMetric types.Int64                                                            `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                             `tfsdk:"enable"`
 	NeighborDiscovery  *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
 	Preference         types.String                                                           `tfsdk:"preference"`
 	PrefixDelegation   *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
 	V6Options          *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
+	AcceptRaRoute      types.Bool                                                             `tfsdk:"accept_ra_route"`
+	DefaultRouteMetric types.Int64                                                            `tfsdk:"default_route_metric"`
+	Enable             types.Bool                                                             `tfsdk:"enable"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject struct {
+	DnsSuffix        *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
 	EnableDad        types.Bool                                                                      `tfsdk:"enable_dad"`
 	EnableNdpMonitor types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
 	Neighbor         types.List                                                                      `tfsdk:"neighbor"`
@@ -9748,19 +9729,14 @@ type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject struc
 	ReachableTime    types.Int64                                                                     `tfsdk:"reachable_time"`
 	DadAttempts      types.Int64                                                                     `tfsdk:"dad_attempts"`
 	DnsServer        *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
-	DnsSuffix        *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
-}
-type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject struct {
 	Enable types.Bool                                                                            `tfsdk:"enable"`
 	Source *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 	Manual *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 }
@@ -9788,6 +9764,10 @@ type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSou
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
+type AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject struct {
 	Enable *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
 }
@@ -9798,25 +9778,25 @@ type AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject 
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject struct {
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject struct {
-	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
 	PfxPoolName   types.String `tfsdk:"pfx_pool_name"`
 	PrefixLen     types.Int64  `tfsdk:"prefix_len"`
+	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject struct {
+	SupportSrvrReconfig types.Bool                                                           `tfsdk:"support_srvr_reconfig"`
 	DuidType            types.String                                                         `tfsdk:"duid_type"`
 	Enable              *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
 	RapidCommit         types.Bool                                                           `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                           `tfsdk:"support_srvr_reconfig"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject struct {
 	Yes *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
 	No  *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
 }
+type AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject struct {
+}
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject struct {
 	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
 	TempAddr    types.Bool `tfsdk:"temp_addr"`
-}
-type AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject struct {
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedObject struct {
 	AssignAddr        types.List                                                            `tfsdk:"assign_addr"`
@@ -9837,6 +9817,11 @@ type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject struct
 	PoolType          *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject  `tfsdk:"pool_type"`
 	Advertise         *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject `tfsdk:"advertise"`
 }
+type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
+	Enable         types.Bool `tfsdk:"enable"`
+	OnlinkFlag     types.Bool `tfsdk:"onlink_flag"`
+	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
+}
 type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject struct {
 	Dynamic   *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
 	DynamicId *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
@@ -9846,11 +9831,6 @@ type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynam
 type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject struct {
 	Identifier types.Int64 `tfsdk:"identifier"`
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
-	Enable         types.Bool `tfsdk:"enable"`
-	OnlinkFlag     types.Bool `tfsdk:"onlink_flag"`
-	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
-}
 type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject struct {
 	EnableOnInterface types.Bool                                                                     `tfsdk:"enable_on_interface"`
 	Address           types.String                                                                   `tfsdk:"address"`
@@ -9859,30 +9839,66 @@ type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject struct
 	Advertise         *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
-	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
-	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 	Enable            types.Bool   `tfsdk:"enable"`
+	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
+	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                              `tfsdk:"dad_attempts"`
-	DnsSuffix           *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	EnableDad           types.Bool                                                                               `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                               `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                               `tfsdk:"neighbor"`
-	RouterAdvertisement *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
 	DnsServer           *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
+	DnsSuffix           *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
+	EnableNdpMonitor    types.Bool                                                                               `tfsdk:"enable_ndp_monitor"`
+	DadAttempts         types.Int64                                                                              `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool                                                                               `tfsdk:"enable_dad"`
+	Neighbor            types.List                                                                               `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                                              `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                                              `tfsdk:"reachable_time"`
+	RouterAdvertisement *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RouterPreference       types.String `tfsdk:"router_preference"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject struct {
+	Enable types.Bool                                                                           `tfsdk:"enable"`
+	Source *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject struct {
+	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
+	Manual *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject struct {
+	Suffix types.List `tfsdk:"suffix"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
+	PrefixPool types.String `tfsdk:"prefix_pool"`
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject struct {
-	Source *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
 	Enable types.Bool                                                                           `tfsdk:"enable"`
+	Source *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 	Manual *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 }
 type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 	PrefixPool types.String `tfsdk:"prefix_pool"`
@@ -9894,52 +9910,30 @@ type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSour
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                           `tfsdk:"enable"`
-	Source *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+type AggregateInterfaceResourceLayer3Ipv6AddressObject struct {
+	Name              types.String                                                `tfsdk:"name"`
+	EnableOnInterface types.Bool                                                  `tfsdk:"enable_on_interface"`
+	Prefix            *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject    `tfsdk:"prefix"`
+	Anycast           *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject   `tfsdk:"anycast"`
+	Advertise         *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject `tfsdk:"advertise"`
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+type AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject struct {
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
-	PrefixPool types.String `tfsdk:"prefix_pool"`
+type AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject struct {
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject struct {
-	Suffix types.List `tfsdk:"suffix"`
+type AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject struct {
+	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
+	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
+	Enable            types.Bool   `tfsdk:"enable"`
+	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
+	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 }
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
-	HopLimit               types.String `tfsdk:"hop_limit"`
-	Lifetime               types.Int64  `tfsdk:"lifetime"`
-	MinInterval            types.Int64  `tfsdk:"min_interval"`
-	OtherFlag              types.Bool   `tfsdk:"other_flag"`
-	ReachableTime          types.String `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
-	Enable                 types.Bool   `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
-	LinkMtu                types.String `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64  `tfsdk:"max_interval"`
-	RouterPreference       types.String `tfsdk:"router_preference"`
-}
-type AggregateInterfaceResourceLayer3LacpObject struct {
+type AggregateInterfaceResourceLayer3LldpObject struct {
+	HighAvailability *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject `tfsdk:"high_availability"`
+	Profile          types.String                                                `tfsdk:"profile"`
 	Enable           types.Bool                                                  `tfsdk:"enable"`
-	FastFailover     types.Bool                                                  `tfsdk:"fast_failover"`
-	HighAvailability *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject `tfsdk:"high_availability"`
-	MaxPorts         types.Int64                                                 `tfsdk:"max_ports"`
-	Mode             types.String                                                `tfsdk:"mode"`
-	SystemPriority   types.Int64                                                 `tfsdk:"system_priority"`
-	TransmissionRate types.String                                                `tfsdk:"transmission_rate"`
 }
-type AggregateInterfaceResourceLayer3LacpHighAvailabilityObject struct {
+type AggregateInterfaceResourceLayer3LldpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
 }
 type AggregateInterfaceResourceLayer3SdwanLinkSettingsObject struct {
@@ -9958,6 +9952,64 @@ type AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject 
 	Fqdn      types.String `tfsdk:"fqdn"`
 	IpAddress types.String `tfsdk:"ip_address"`
 }
+type AggregateInterfaceResourceLayer3ArpObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceResourceLayer3BonjourObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	GroupId  types.Int64 `tfsdk:"group_id"`
+	TtlCheck types.Bool  `tfsdk:"ttl_check"`
+}
+type AggregateInterfaceResourceLayer3LacpObject struct {
+	Mode             types.String                                                `tfsdk:"mode"`
+	SystemPriority   types.Int64                                                 `tfsdk:"system_priority"`
+	TransmissionRate types.String                                                `tfsdk:"transmission_rate"`
+	Enable           types.Bool                                                  `tfsdk:"enable"`
+	FastFailover     types.Bool                                                  `tfsdk:"fast_failover"`
+	HighAvailability *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject `tfsdk:"high_availability"`
+	MaxPorts         types.Int64                                                 `tfsdk:"max_ports"`
+}
+type AggregateInterfaceResourceLayer3LacpHighAvailabilityObject struct {
+	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
+type AggregateInterfaceResourceLayer3DhcpClientObject struct {
+	Enable             types.Bool                                                    `tfsdk:"enable"`
+	SendHostname       *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject `tfsdk:"send_hostname"`
+	CreateDefaultRoute types.Bool                                                    `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64                                                   `tfsdk:"default_route_metric"`
+}
+type AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject struct {
+	Enable   types.Bool   `tfsdk:"enable"`
+	Hostname types.String `tfsdk:"hostname"`
+}
+type AggregateInterfaceResourceLayer3NdpProxyObject struct {
+	Address types.List `tfsdk:"address"`
+	Enabled types.Bool `tfsdk:"enabled"`
+}
+type AggregateInterfaceResourceLayer3NdpProxyAddressObject struct {
+	Name   types.String `tfsdk:"name"`
+	Negate types.Bool   `tfsdk:"negate"`
+}
+type AggregateInterfaceResourceLayer3AdjustTcpMssObject struct {
+	Enable            types.Bool  `tfsdk:"enable"`
+	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
+}
+type AggregateInterfaceResourceLayer3DdnsConfigObject struct {
+	DdnsCertProfile    types.String `tfsdk:"ddns_cert_profile"`
+	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
+	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
+	DdnsIp             types.List   `tfsdk:"ddns_ip"`
+	DdnsIpv6           types.List   `tfsdk:"ddns_ipv6"`
+	DdnsUpdateInterval types.Int64  `tfsdk:"ddns_update_interval"`
+	DdnsVendor         types.String `tfsdk:"ddns_vendor"`
+	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
+}
+type AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
 type AggregateInterfaceResourceVirtualWireObject struct {
 	Lldp           *AggregateInterfaceResourceVirtualWireLldpObject `tfsdk:"lldp"`
 	NetflowProfile types.String                                     `tfsdk:"netflow_profile"`
@@ -9969,48 +10021,6 @@ type AggregateInterfaceResourceVirtualWireLldpObject struct {
 }
 type AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
-}
-type AggregateInterfaceResourceDecryptMirrorObject struct {
-}
-type AggregateInterfaceResourceHaObject struct {
-	Lacp *AggregateInterfaceResourceHaLacpObject `tfsdk:"lacp"`
-}
-type AggregateInterfaceResourceHaLacpObject struct {
-	TransmissionRate types.String `tfsdk:"transmission_rate"`
-	Enable           types.Bool   `tfsdk:"enable"`
-	FastFailover     types.Bool   `tfsdk:"fast_failover"`
-	MaxPorts         types.Int64  `tfsdk:"max_ports"`
-	Mode             types.String `tfsdk:"mode"`
-	SystemPriority   types.Int64  `tfsdk:"system_priority"`
-}
-type AggregateInterfaceResourceLayer2Object struct {
-	NetflowProfile types.String                                `tfsdk:"netflow_profile"`
-	Lacp           *AggregateInterfaceResourceLayer2LacpObject `tfsdk:"lacp"`
-	Lldp           *AggregateInterfaceResourceLayer2LldpObject `tfsdk:"lldp"`
-}
-type AggregateInterfaceResourceLayer2LldpObject struct {
-	Enable           types.Bool                                                  `tfsdk:"enable"`
-	HighAvailability *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject `tfsdk:"high_availability"`
-	Profile          types.String                                                `tfsdk:"profile"`
-}
-type AggregateInterfaceResourceLayer2LldpHighAvailabilityObject struct {
-	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
-}
-type AggregateInterfaceResourceLayer2LacpObject struct {
-	Enable           types.Bool                                                  `tfsdk:"enable"`
-	FastFailover     types.Bool                                                  `tfsdk:"fast_failover"`
-	HighAvailability *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject `tfsdk:"high_availability"`
-	MaxPorts         types.Int64                                                 `tfsdk:"max_ports"`
-	Mode             types.String                                                `tfsdk:"mode"`
-	SystemPriority   types.Int64                                                 `tfsdk:"system_priority"`
-	TransmissionRate types.String                                                `tfsdk:"transmission_rate"`
-}
-type AggregateInterfaceResourceLayer2LacpHighAvailabilityObject struct {
-	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
-}
-
-func (r *AggregateInterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_aggregate_interface"
 }
 
 func (r *AggregateInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -10040,6 +10050,8 @@ func AggregateInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"virtual_wire": AggregateInterfaceResourceVirtualWireSchema(),
+
 			"decrypt_mirror": AggregateInterfaceResourceDecryptMirrorSchema(),
 
 			"ha": AggregateInterfaceResourceHaSchema(),
@@ -10047,14 +10059,148 @@ func AggregateInterfaceResourceSchema() rsschema.Schema {
 			"layer2": AggregateInterfaceResourceLayer2Schema(),
 
 			"layer3": AggregateInterfaceResourceLayer3Schema(),
-
-			"virtual_wire": AggregateInterfaceResourceVirtualWireSchema(),
 		},
 	}
 }
 
 func (o *AggregateInterfaceResourceModel) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceVirtualWireSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("decrypt_mirror"),
+				path.MatchRelative().AtParent().AtName("ha"),
+				path.MatchRelative().AtParent().AtName("layer2"),
+				path.MatchRelative().AtParent().AtName("layer3"),
+				path.MatchRelative().AtParent().AtName("virtual_wire"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"lldp": AggregateInterfaceResourceVirtualWireLldpSchema(),
+
+			"netflow_profile": rsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceVirtualWireObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceVirtualWireSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceVirtualWireLldpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"high_availability": AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema(),
+
+			"profile": rsschema.StringAttribute{
+				Description: "LLDP profile",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceVirtualWireLldpObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceVirtualWireLldpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"passive_pre_negotiation": rsschema.BoolAttribute{
+				Description: "Enable LLDP pre-negotiation in HA passive state",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -10078,17 +10224,7 @@ func AggregateInterfaceResourceDecryptMirrorSchema() rsschema.SingleNestedAttrib
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("decrypt_mirror"),
-				path.MatchRelative().AtParent().AtName("ha"),
-				path.MatchRelative().AtParent().AtName("layer2"),
-				path.MatchRelative().AtParent().AtName("layer3"),
-				path.MatchRelative().AtParent().AtName("virtual_wire"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
+		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
 
@@ -10151,24 +10287,6 @@ func AggregateInterfaceResourceHaLacpSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"max_ports": rsschema.Int64Attribute{
-				Description: "maximum number of physical ports bundled in the LAG",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(8),
-			},
-
-			"mode": rsschema.StringAttribute{
-				Description: "LACP mode",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("passive"),
-			},
-
 			"system_priority": rsschema.Int64Attribute{
 				Description: "LACP system priority in system ID",
 				Computed:    true,
@@ -10202,6 +10320,24 @@ func AggregateInterfaceResourceHaLacpSchema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"max_ports": rsschema.Int64Attribute{
+				Description: "maximum number of physical ports bundled in the LAG",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(8),
+			},
+
+			"mode": rsschema.StringAttribute{
+				Description: "LACP mode",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("passive"),
+			},
 		},
 	}
 }
@@ -10233,6 +10369,8 @@ func AggregateInterfaceResourceLayer2Schema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"lacp": AggregateInterfaceResourceLayer2LacpSchema(),
+
 			"lldp": AggregateInterfaceResourceLayer2LldpSchema(),
 
 			"netflow_profile": rsschema.StringAttribute{
@@ -10242,8 +10380,6 @@ func AggregateInterfaceResourceLayer2Schema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"lacp": AggregateInterfaceResourceLayer2LacpSchema(),
 		},
 	}
 }
@@ -10274,6 +10410,14 @@ func AggregateInterfaceResourceLayer2LacpSchema() rsschema.SingleNestedAttribute
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"fast_failover": rsschema.BoolAttribute{
 				Description: "",
@@ -10319,14 +10463,6 @@ func AggregateInterfaceResourceLayer2LacpSchema() rsschema.SingleNestedAttribute
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("slow"),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10397,6 +10533,14 @@ func AggregateInterfaceResourceLayer2LldpSchema() rsschema.SingleNestedAttribute
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"profile": rsschema.StringAttribute{
+				Description: "LLDP profile",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"enable": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -10406,14 +10550,6 @@ func AggregateInterfaceResourceLayer2LldpSchema() rsschema.SingleNestedAttribute
 			},
 
 			"high_availability": AggregateInterfaceResourceLayer2LldpHighAvailabilitySchema(),
-
-			"profile": rsschema.StringAttribute{
-				Description: "LLDP profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
@@ -10483,39 +10619,6 @@ func AggregateInterfaceResourceLayer3Schema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"ipv6": AggregateInterfaceResourceLayer3Ipv6Schema(),
-
-			"lacp": AggregateInterfaceResourceLayer3LacpSchema(),
-
-			"sdwan_link_settings": AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema(),
-
-			"adjust_tcp_mss": AggregateInterfaceResourceLayer3AdjustTcpMssSchema(),
-
-			"arp": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3ArpSchema(),
-			},
-
-			"dhcp_client": AggregateInterfaceResourceLayer3DhcpClientSchema(),
-
-			"lldp": AggregateInterfaceResourceLayer3LldpSchema(),
-
-			"ndp_proxy": AggregateInterfaceResourceLayer3NdpProxySchema(),
-
-			"bonjour": AggregateInterfaceResourceLayer3BonjourSchema(),
-
-			"df_ignore": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"ip": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -10525,9 +10628,17 @@ func AggregateInterfaceResourceLayer3Schema() rsschema.SingleNestedAttribute {
 				NestedObject: AggregateInterfaceResourceLayer3IpSchema(),
 			},
 
-			"ddns_config": AggregateInterfaceResourceLayer3DdnsConfigSchema(),
+			"ipv6": AggregateInterfaceResourceLayer3Ipv6Schema(),
 
 			"decrypt_forward": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -10542,6 +10653,27 @@ func AggregateInterfaceResourceLayer3Schema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"lacp": AggregateInterfaceResourceLayer3LacpSchema(),
+
+			"lldp": AggregateInterfaceResourceLayer3LldpSchema(),
+
+			"sdwan_link_settings": AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema(),
+
+			"arp": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3ArpSchema(),
+			},
+
+			"bonjour": AggregateInterfaceResourceLayer3BonjourSchema(),
+
+			"ndp_proxy": AggregateInterfaceResourceLayer3NdpProxySchema(),
+
+			"dhcp_client": AggregateInterfaceResourceLayer3DhcpClientSchema(),
 
 			"mtu": rsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
@@ -10566,6 +10698,10 @@ func AggregateInterfaceResourceLayer3Schema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"adjust_tcp_mss": AggregateInterfaceResourceLayer3AdjustTcpMssSchema(),
+
+			"ddns_config": AggregateInterfaceResourceLayer3DdnsConfigSchema(),
 		},
 	}
 }
@@ -10588,7 +10724,7 @@ func (o *AggregateInterfaceResourceLayer3Object) getTypeFor(name string) attr.Ty
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3BonjourSchema() rsschema.SingleNestedAttribute {
+func AggregateInterfaceResourceLayer3NdpProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -10597,25 +10733,17 @@ func AggregateInterfaceResourceLayer3BonjourSchema() rsschema.SingleNestedAttrib
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"enable": rsschema.BoolAttribute{
-				Description: "Set to support Bonjour service",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+			"address": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3NdpProxyAddressSchema(),
 			},
 
-			"group_id": rsschema.Int64Attribute{
-				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(40),
-			},
-
-			"ttl_check": rsschema.BoolAttribute{
-				Description: "Set to check and update TTL",
+			"enabled": rsschema.BoolAttribute{
+				Description: "Enable proxy NDP on the interface",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -10625,8 +10753,8 @@ func AggregateInterfaceResourceLayer3BonjourSchema() rsschema.SingleNestedAttrib
 	}
 }
 
-func (o *AggregateInterfaceResourceLayer3BonjourObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3BonjourSchema()
+func (o *AggregateInterfaceResourceLayer3NdpProxyObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3NdpProxySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -10643,7 +10771,7 @@ func (o *AggregateInterfaceResourceLayer3BonjourObject) getTypeFor(name string) 
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3IpSchema() rsschema.NestedAttributeObject {
+func AggregateInterfaceResourceLayer3NdpProxyAddressSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
 
@@ -10655,8 +10783,8 @@ func AggregateInterfaceResourceLayer3IpSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"sdwan_gateway": rsschema.StringAttribute{
-				Description: "Gateway IPv4 Address",
+			"negate": rsschema.BoolAttribute{
+				Description: "put the prefix or address on a block list",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -10666,8 +10794,112 @@ func AggregateInterfaceResourceLayer3IpSchema() rsschema.NestedAttributeObject {
 	}
 }
 
-func (o *AggregateInterfaceResourceLayer3IpObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3IpSchema()
+func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3NdpProxyAddressSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3DhcpClientSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"create_default_route": rsschema.BoolAttribute{
+				Description: "Automatically create default route pointing to default gateway provided by server",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": rsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(10),
+			},
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_hostname": AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3DhcpClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hostname": rsschema.StringAttribute{
+				Description: "Set Interface Hostname",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("system-hostname"),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -10692,30 +10924,6 @@ func AggregateInterfaceResourceLayer3DdnsConfigSchema() rsschema.SingleNestedAtt
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
-
-			"ddns_cert_profile": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_enabled": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_hostname": rsschema.StringAttribute{
-				Description: "ddns hostname variable or real address",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 
 			"ddns_ip": rsschema.ListAttribute{
 				Description: "",
@@ -10759,6 +10967,30 @@ func AggregateInterfaceResourceLayer3DdnsConfigSchema() rsschema.SingleNestedAtt
 				Computed:     false,
 				Sensitive:    false,
 				NestedObject: AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigSchema(),
+			},
+
+			"ddns_cert_profile": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_enabled": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_hostname": rsschema.StringAttribute{
+				Description: "ddns hostname variable or real address",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -10823,6 +11055,103 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) getTy
 	panic("unreachable")
 }
 
+func AggregateInterfaceResourceLayer3AdjustTcpMssSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"ipv6_mss_adjustment": rsschema.Int64Attribute{
+				Description: "IPv6 MSS adjustment size (in bytes)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(60),
+			},
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Set if TCP MSS value should be reduced based on mtu",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ipv4_mss_adjustment": rsschema.Int64Attribute{
+				Description: "IPv4 MSS adjustment size (in bytes)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(40),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3AdjustTcpMssSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3IpSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"sdwan_gateway": rsschema.StringAttribute{
+				Description: "Gateway IPv4 Address",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3IpObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3IpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -10831,6 +11160,15 @@ func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
+
+			"address": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3Ipv6AddressSchema(),
+			},
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
@@ -10854,15 +11192,6 @@ func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute
 			"dhcp_client": AggregateInterfaceResourceLayer3Ipv6DhcpClientSchema(),
 
 			"inherited": AggregateInterfaceResourceLayer3Ipv6InheritedSchema(),
-
-			"address": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3Ipv6AddressSchema(),
-			},
 		},
 	}
 }
@@ -10893,6 +11222,15 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema() rsschema.Sing
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
+
+			"neighbor": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
+			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
@@ -10937,15 +11275,6 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema() rsschema.Sing
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"neighbor": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
 			},
 		},
 	}
@@ -11019,25 +11348,6 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSch
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"retransmission_timer": rsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"dns_support": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
-
-			"enable_consistency_check": rsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
 				Computed:    true,
@@ -11056,13 +11366,13 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSch
 				Default:     int64default.StaticInt64(1800),
 			},
 
-			"link_mtu": rsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+			"min_interval": rsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
+				Default:     int64default.StaticInt64(200),
 			},
 
 			"other_flag": rsschema.BoolAttribute{
@@ -11073,8 +11383,34 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSch
 				Sensitive:   false,
 			},
 
+			"reachable_time": rsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"retransmission_timer": rsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
 			"enable": rsschema.BoolAttribute{
 				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_consistency_check": rsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -11098,24 +11434,6 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSch
 				Default:     int64default.StaticInt64(600),
 			},
 
-			"min_interval": rsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(200),
-			},
-
-			"reachable_time": rsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
 			"router_preference": rsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -11123,6 +11441,17 @@ func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSch
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("Medium"),
+			},
+
+			"dns_support": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+
+			"link_mtu": rsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
 			},
 		},
 	}
@@ -11365,24 +11694,6 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoverySchema() rss
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"dns_suffix": AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": rsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -11420,6 +11731,24 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoverySchema() rss
 			},
 
 			"dns_server": AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSchema(),
+
+			"dns_suffix": AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": rsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -11516,6 +11845,42 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServe
 	panic("unreachable")
 }
 
+func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -11588,42 +11953,6 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSou
 
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -12052,6 +12381,17 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsSchema() rsschema.Si
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"duid_type": rsschema.StringAttribute{
+				Description: "Select DUID-LLT/DUID-LL",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("duid-type-llt"),
+			},
+
+			"enable": AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableSchema(),
+
 			"rapid_commit": rsschema.BoolAttribute{
 				Description: "Enable Rapid Commit",
 				Computed:    false,
@@ -12067,17 +12407,6 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsSchema() rsschema.Si
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"duid_type": rsschema.StringAttribute{
-				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("duid-type-llt"),
-			},
-
-			"enable": AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableSchema(),
 		},
 	}
 }
@@ -12134,42 +12463,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) ge
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("no"),
-				path.MatchRelative().AtParent().AtName("yes"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -12207,6 +12500,42 @@ func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema() rs
 
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("no"),
+				path.MatchRelative().AtParent().AtName("yes"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -12341,149 +12670,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) getT
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("gua"),
-				path.MatchRelative().AtParent().AtName("ula"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable_on_interface": rsschema.BoolAttribute{
-				Description: "Configure this address on Interface",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"address": rsschema.StringAttribute{
-				Description: "Configure ULA (Unique Local Address)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"prefix": rsschema.BoolAttribute{
-				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"anycast": rsschema.BoolAttribute{
-				Description: "Anycast Address",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"advertise": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"onlink_flag": rsschema.BoolAttribute{
-				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"auto_config_flag": rsschema.BoolAttribute{
-				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"valid_lifetime": rsschema.StringAttribute{
-				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("2592000"),
-			},
-
-			"preferred_lifetime": rsschema.StringAttribute{
-				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("604800"),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -12500,6 +12686,10 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema() rssc
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"pool_type": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
+
+			"advertise": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema(),
+
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Enable on Interface",
 				Computed:    false,
@@ -12515,10 +12705,6 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaSchema() rssc
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"pool_type": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
-
-			"advertise": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseSchema(),
 		},
 	}
 }
@@ -12585,8 +12771,8 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynam
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic_id"),
 				path.MatchRelative().AtParent().AtName("dynamic"),
+				path.MatchRelative().AtParent().AtName("dynamic_id"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -12621,8 +12807,8 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynam
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic_id"),
 				path.MatchRelative().AtParent().AtName("dynamic"),
+				path.MatchRelative().AtParent().AtName("dynamic_id"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -12710,6 +12896,149 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertise
 	panic("unreachable")
 }
 
+func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("gua"),
+				path.MatchRelative().AtParent().AtName("ula"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable_on_interface": rsschema.BoolAttribute{
+				Description: "Configure this address on Interface",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"address": rsschema.StringAttribute{
+				Description: "Configure ULA (Unique Local Address)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix": rsschema.BoolAttribute{
+				Description: "Use this as prefix to form full address with interface id/EUI-64",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"anycast": rsschema.BoolAttribute{
+				Description: "Anycast Address",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"advertise": AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "enable advertising this prefix in router advertisements",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"valid_lifetime": rsschema.StringAttribute{
+				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("2592000"),
+			},
+
+			"preferred_lifetime": rsschema.StringAttribute{
+				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("604800"),
+			},
+
+			"onlink_flag": rsschema.BoolAttribute{
+				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_config_flag": rsschema.BoolAttribute{
+				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -12719,8 +13048,17 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoverySchema() rssc
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"enable_ndp_monitor": rsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
+			"dad_attempts": rsschema.Int64Attribute{
+				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection (DAD)",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -12735,29 +13073,6 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoverySchema() rssc
 				Sensitive:    false,
 				NestedObject: AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema(),
 			},
-
-			"router_advertisement": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
-
-			"dad_attempts": rsschema.Int64Attribute{
-				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"dns_suffix": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dns_server": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema(),
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
@@ -12775,6 +13090,20 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoverySchema() rssc
 				Optional:    true,
 				Sensitive:   false,
 				Default:     int64default.StaticInt64(30),
+			},
+
+			"router_advertisement": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
+
+			"dns_server": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema(),
+
+			"dns_suffix": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_ndp_monitor": rsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -12807,8 +13136,6 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSche
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"source": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
-
 			"enable": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -12816,6 +13143,8 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSche
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"source": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
 		},
 	}
 }
@@ -13005,181 +13334,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffix
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": rsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"hop_limit": rsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("64"),
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1800),
-			},
-
-			"min_interval": rsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(200),
-			},
-
-			"other_flag": rsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": rsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"retransmission_timer": rsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": rsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"link_mtu": rsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"managed_flag": rsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": rsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(600),
-			},
-
-			"router_preference": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("Medium"),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -13229,9 +13383,9 @@ func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSour
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"dhcpv6": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
-
 			"manual": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
+
+			"dhcpv6": AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
 		},
 	}
 }
@@ -13387,6 +13541,181 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServer
 	panic("unreachable")
 }
 
+func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": rsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable_consistency_check": rsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": rsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("64"),
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1800),
+			},
+
+			"min_interval": rsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(200),
+			},
+
+			"other_flag": rsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"retransmission_timer": rsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"link_mtu": rsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"managed_flag": rsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"max_interval": rsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(600),
+			},
+
+			"reachable_time": rsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"router_preference": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("Medium"),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceResourceLayer3Ipv6AddressSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
@@ -13418,6 +13747,64 @@ func AggregateInterfaceResourceLayer3Ipv6AddressSchema() rsschema.NestedAttribut
 
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceResourceLayer3Ipv6AddressSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6AddressPrefixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6AddressAnycastSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -13506,48 +13893,45 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) getTypeFor(
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3Ipv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
+func AggregateInterfaceResourceLayer3BonjourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
-		Attributes:  map[string]rsschema.Attribute{},
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Set to support Bonjour service",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"group_id": rsschema.Int64Attribute{
+				Description: "default 0: NO-Group",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(40),
+			},
+
+			"ttl_check": rsschema.BoolAttribute{
+				Description: "Set to check and update TTL",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
 	}
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6AddressPrefixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes:  map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6AddressAnycastSchema()
+func (o *AggregateInterfaceResourceLayer3BonjourObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3BonjourSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -13686,192 +14070,6 @@ func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) getTypeFor(
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Enable sdwan on this ethernet interface",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"sdwan_interface_profile": rsschema.StringAttribute{
-				Description: "Sdwan link characteristics",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"upstream_nat": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Enable upstream NAT IP config",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"static_ip": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema(),
-
-			"ddns": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ddns"),
-				path.MatchRelative().AtParent().AtName("static_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"fqdn": rsschema.StringAttribute{
-				Description: "Upstream NAT address FQDN name configuration",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-
-				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("fqdn"),
-						path.MatchRelative().AtParent().AtName("ip_address"),
-					}...),
-				},
-			},
-
-			"ip_address": rsschema.StringAttribute{
-				Description: "Upstream NAT IP address",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ddns"),
-				path.MatchRelative().AtParent().AtName("static_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func AggregateInterfaceResourceLayer3LldpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -13958,7 +14156,7 @@ func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) getTypeFor(
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3NdpProxySchema() rsschema.SingleNestedAttribute {
+func AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -13967,28 +14165,29 @@ func AggregateInterfaceResourceLayer3NdpProxySchema() rsschema.SingleNestedAttri
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"enabled": rsschema.BoolAttribute{
-				Description: "Enable proxy NDP on the interface",
+			"upstream_nat": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema(),
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Enable sdwan on this ethernet interface",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"address": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3NdpProxyAddressSchema(),
+			"sdwan_interface_profile": rsschema.StringAttribute{
+				Description: "Sdwan link characteristics",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
 }
 
-func (o *AggregateInterfaceResourceLayer3NdpProxyObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3NdpProxySchema()
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -14005,48 +14204,7 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3NdpProxyAddressSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"negate": rsschema.BoolAttribute{
-				Description: "put the prefix or address on a block list",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3NdpProxyAddressSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3AdjustTcpMssSchema() rsschema.SingleNestedAttribute {
+func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -14056,36 +14214,118 @@ func AggregateInterfaceResourceLayer3AdjustTcpMssSchema() rsschema.SingleNestedA
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
-				Description: "Set if TCP MSS value should be reduced based on mtu",
+				Description: "Enable upstream NAT IP config",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"ipv4_mss_adjustment": rsschema.Int64Attribute{
-				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
+			"ddns": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema(),
+
+			"static_ip": AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ddns"),
+				path.MatchRelative().AtParent().AtName("static_ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ddns"),
+				path.MatchRelative().AtParent().AtName("static_ip"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"fqdn": rsschema.StringAttribute{
+				Description: "Upstream NAT address FQDN name configuration",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(40),
+
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("fqdn"),
+						path.MatchRelative().AtParent().AtName("ip_address"),
+					}...),
+				},
 			},
 
-			"ipv6_mss_adjustment": rsschema.Int64Attribute{
-				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
+			"ip_address": rsschema.StringAttribute{
+				Description: "Upstream NAT IP address",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(60),
 			},
 		},
 	}
 }
 
-func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3AdjustTcpMssSchema()
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -14143,234 +14383,8 @@ func (o *AggregateInterfaceResourceLayer3ArpObject) getTypeFor(name string) attr
 	panic("unreachable")
 }
 
-func AggregateInterfaceResourceLayer3DhcpClientSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"send_hostname": AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema(),
-
-			"create_default_route": rsschema.BoolAttribute{
-				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": rsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(10),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3DhcpClientObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3DhcpClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hostname": rsschema.StringAttribute{
-				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("system-hostname"),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3DhcpClientSendHostnameSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceVirtualWireSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"lldp": AggregateInterfaceResourceVirtualWireLldpSchema(),
-
-			"netflow_profile": rsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceVirtualWireObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceVirtualWireSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceVirtualWireLldpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"profile": rsschema.StringAttribute{
-				Description: "LLDP profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"high_availability": AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceVirtualWireLldpObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceVirtualWireLldpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"passive_pre_negotiation": rsschema.BoolAttribute{
-				Description: "Enable LLDP pre-negotiation in HA passive state",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceVirtualWireLldpHighAvailabilitySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
+func (r *AggregateInterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_aggregate_interface"
 }
 
 func (r *AggregateInterfaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -14510,40 +14524,27 @@ func (o *AggregateInterfaceResourceHaObject) CopyToPango(ctx context.Context, ob
 }
 func (o *AggregateInterfaceResourceHaLacpObject) CopyToPango(ctx context.Context, obj **aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	mode_value := o.Mode.ValueStringPointer()
-	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
-	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
 	maxPorts_value := o.MaxPorts.ValueInt64Pointer()
+	mode_value := o.Mode.ValueStringPointer()
+	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
+	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.HaLacp)
 	}
-	(*obj).Mode = mode_value
-	(*obj).SystemPriority = systemPriority_value
-	(*obj).TransmissionRate = transmissionRate_value
 	(*obj).Enable = enable_value
 	(*obj).FastFailover = fastFailover_value
 	(*obj).MaxPorts = maxPorts_value
+	(*obj).Mode = mode_value
+	(*obj).SystemPriority = systemPriority_value
+	(*obj).TransmissionRate = transmissionRate_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context, obj **aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var lldp_entry *aggregate.Layer2Lldp
-	if o.Lldp != nil {
-		if *obj != nil && (*obj).Lldp != nil {
-			lldp_entry = (*obj).Lldp
-		} else {
-			lldp_entry = new(aggregate.Layer2Lldp)
-		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var lacp_entry *aggregate.Layer2Lacp
 	if o.Lacp != nil {
@@ -14558,13 +14559,72 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context
 			return diags
 		}
 	}
+	var lldp_entry *aggregate.Layer2Lldp
+	if o.Lldp != nil {
+		if *obj != nil && (*obj).Lldp != nil {
+			lldp_entry = (*obj).Lldp
+		} else {
+			lldp_entry = new(aggregate.Layer2Lldp)
+		}
+
+		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer2)
 	}
-	(*obj).Lldp = lldp_entry
 	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).Lacp = lacp_entry
+	(*obj).Lldp = lldp_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	fastFailover_value := o.FastFailover.ValueBoolPointer()
+	var highAvailability_entry *aggregate.Layer2LacpHighAvailability
+	if o.HighAvailability != nil {
+		if *obj != nil && (*obj).HighAvailability != nil {
+			highAvailability_entry = (*obj).HighAvailability
+		} else {
+			highAvailability_entry = new(aggregate.Layer2LacpHighAvailability)
+		}
+
+		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	maxPorts_value := o.MaxPorts.ValueInt64Pointer()
+	mode_value := o.Mode.ValueStringPointer()
+	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
+	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer2Lacp)
+	}
+	(*obj).FastFailover = fastFailover_value
+	(*obj).HighAvailability = highAvailability_entry
+	(*obj).MaxPorts = maxPorts_value
+	(*obj).Mode = mode_value
+	(*obj).SystemPriority = systemPriority_value
+	(*obj).TransmissionRate = transmissionRate_value
+	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer2LacpHighAvailability)
+	}
+	(*obj).PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
 }
@@ -14606,93 +14666,8 @@ func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var highAvailability_entry *aggregate.Layer2LacpHighAvailability
-	if o.HighAvailability != nil {
-		if *obj != nil && (*obj).HighAvailability != nil {
-			highAvailability_entry = (*obj).HighAvailability
-		} else {
-			highAvailability_entry = new(aggregate.Layer2LacpHighAvailability)
-		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	maxPorts_value := o.MaxPorts.ValueInt64Pointer()
-	mode_value := o.Mode.ValueStringPointer()
-	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
-	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	fastFailover_value := o.FastFailover.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer2Lacp)
-	}
-	(*obj).HighAvailability = highAvailability_entry
-	(*obj).MaxPorts = maxPorts_value
-	(*obj).Mode = mode_value
-	(*obj).SystemPriority = systemPriority_value
-	(*obj).TransmissionRate = transmissionRate_value
-	(*obj).Enable = enable_value
-	(*obj).FastFailover = fastFailover_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer2LacpHighAvailability)
-	}
-	(*obj).PassivePreNegotiation = passivePreNegotiation_value
-
-	return diags
-}
 func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ipv6_entry *aggregate.Layer3Ipv6
-	if o.Ipv6 != nil {
-		if *obj != nil && (*obj).Ipv6 != nil {
-			ipv6_entry = (*obj).Ipv6
-		} else {
-			ipv6_entry = new(aggregate.Layer3Ipv6)
-		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var lacp_entry *aggregate.Layer3Lacp
-	if o.Lacp != nil {
-		if *obj != nil && (*obj).Lacp != nil {
-			lacp_entry = (*obj).Lacp
-		} else {
-			lacp_entry = new(aggregate.Layer3Lacp)
-		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sdwanLinkSettings_entry *aggregate.Layer3SdwanLinkSettings
-	if o.SdwanLinkSettings != nil {
-		if *obj != nil && (*obj).SdwanLinkSettings != nil {
-			sdwanLinkSettings_entry = (*obj).SdwanLinkSettings
-		} else {
-			sdwanLinkSettings_entry = new(aggregate.Layer3SdwanLinkSettings)
-		}
-
-		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, &sdwanLinkSettings_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var adjustTcpMss_entry *aggregate.Layer3AdjustTcpMss
 	if o.AdjustTcpMss != nil {
 		if *obj != nil && (*obj).AdjustTcpMss != nil {
@@ -14702,6 +14677,53 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		}
 
 		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ddnsConfig_entry *aggregate.Layer3DdnsConfig
+	if o.DdnsConfig != nil {
+		if *obj != nil && (*obj).DdnsConfig != nil {
+			ddnsConfig_entry = (*obj).DdnsConfig
+		} else {
+			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
+		}
+
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
+	untaggedSubInterface_value := o.UntaggedSubInterface.ValueBoolPointer()
+	decryptForward_value := o.DecryptForward.ValueBoolPointer()
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
+	var ip_tf_entries []AggregateInterfaceResourceLayer3IpObject
+	var ip_pango_entries []aggregate.Layer3Ip
+	{
+		d := o.Ip.ElementsAs(ctx, &ip_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range ip_tf_entries {
+			var entry *aggregate.Layer3Ip
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			ip_pango_entries = append(ip_pango_entries, *entry)
+		}
+	}
+	var ipv6_entry *aggregate.Layer3Ipv6
+	if o.Ipv6 != nil {
+		if *obj != nil && (*obj).Ipv6 != nil {
+			ipv6_entry = (*obj).Ipv6
+		} else {
+			ipv6_entry = new(aggregate.Layer3Ipv6)
+		}
+
+		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -14723,15 +14745,29 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 			arp_pango_entries = append(arp_pango_entries, *entry)
 		}
 	}
-	var dhcpClient_entry *aggregate.Layer3DhcpClient
-	if o.DhcpClient != nil {
-		if *obj != nil && (*obj).DhcpClient != nil {
-			dhcpClient_entry = (*obj).DhcpClient
+	var bonjour_entry *aggregate.Layer3Bonjour
+	if o.Bonjour != nil {
+		if *obj != nil && (*obj).Bonjour != nil {
+			bonjour_entry = (*obj).Bonjour
 		} else {
-			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
+			bonjour_entry = new(aggregate.Layer3Bonjour)
 		}
 
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
+	var lacp_entry *aggregate.Layer3Lacp
+	if o.Lacp != nil {
+		if *obj != nil && (*obj).Lacp != nil {
+			lacp_entry = (*obj).Lacp
+		} else {
+			lacp_entry = new(aggregate.Layer3Lacp)
+		}
+
+		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -14749,6 +14785,33 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 			return diags
 		}
 	}
+	var sdwanLinkSettings_entry *aggregate.Layer3SdwanLinkSettings
+	if o.SdwanLinkSettings != nil {
+		if *obj != nil && (*obj).SdwanLinkSettings != nil {
+			sdwanLinkSettings_entry = (*obj).SdwanLinkSettings
+		} else {
+			sdwanLinkSettings_entry = new(aggregate.Layer3SdwanLinkSettings)
+		}
+
+		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, &sdwanLinkSettings_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dhcpClient_entry *aggregate.Layer3DhcpClient
+	if o.DhcpClient != nil {
+		if *obj != nil && (*obj).DhcpClient != nil {
+			dhcpClient_entry = (*obj).DhcpClient
+		} else {
+			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
+		}
+
+		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	mtu_value := o.Mtu.ValueInt64Pointer()
 	var ndpProxy_entry *aggregate.Layer3NdpProxy
 	if o.NdpProxy != nil {
 		if *obj != nil && (*obj).NdpProxy != nil {
@@ -14762,123 +14825,79 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 			return diags
 		}
 	}
-	var bonjour_entry *aggregate.Layer3Bonjour
-	if o.Bonjour != nil {
-		if *obj != nil && (*obj).Bonjour != nil {
-			bonjour_entry = (*obj).Bonjour
-		} else {
-			bonjour_entry = new(aggregate.Layer3Bonjour)
-		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
-	var ip_tf_entries []AggregateInterfaceResourceLayer3IpObject
-	var ip_pango_entries []aggregate.Layer3Ip
-	{
-		d := o.Ip.ElementsAs(ctx, &ip_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range ip_tf_entries {
-			var entry *aggregate.Layer3Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			ip_pango_entries = append(ip_pango_entries, *entry)
-		}
-	}
-	var ddnsConfig_entry *aggregate.Layer3DdnsConfig
-	if o.DdnsConfig != nil {
-		if *obj != nil && (*obj).DdnsConfig != nil {
-			ddnsConfig_entry = (*obj).DdnsConfig
-		} else {
-			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
-		}
-
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	decryptForward_value := o.DecryptForward.ValueBoolPointer()
-	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
-	mtu_value := o.Mtu.ValueInt64Pointer()
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
-	untaggedSubInterface_value := o.UntaggedSubInterface.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3)
 	}
-	(*obj).Ipv6 = ipv6_entry
-	(*obj).Lacp = lacp_entry
-	(*obj).SdwanLinkSettings = sdwanLinkSettings_entry
 	(*obj).AdjustTcpMss = adjustTcpMss_entry
-	(*obj).Arp = arp_pango_entries
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Lldp = lldp_entry
-	(*obj).NdpProxy = ndpProxy_entry
-	(*obj).Bonjour = bonjour_entry
-	(*obj).DfIgnore = dfIgnore_value
-	(*obj).Ip = ip_pango_entries
 	(*obj).DdnsConfig = ddnsConfig_entry
-	(*obj).DecryptForward = decryptForward_value
-	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
-	(*obj).Mtu = mtu_value
 	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).UntaggedSubInterface = untaggedSubInterface_value
+	(*obj).DecryptForward = decryptForward_value
+	(*obj).DfIgnore = dfIgnore_value
+	(*obj).Ip = ip_pango_entries
+	(*obj).Ipv6 = ipv6_entry
+	(*obj).Arp = arp_pango_entries
+	(*obj).Bonjour = bonjour_entry
+	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
+	(*obj).Lacp = lacp_entry
+	(*obj).Lldp = lldp_entry
+	(*obj).SdwanLinkSettings = sdwanLinkSettings_entry
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Mtu = mtu_value
+	(*obj).NdpProxy = ndpProxy_entry
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var sendHostname_entry *aggregate.Layer3DhcpClientSendHostname
-	if o.SendHostname != nil {
-		if *obj != nil && (*obj).SendHostname != nil {
-			sendHostname_entry = (*obj).SendHostname
+	var highAvailability_entry *aggregate.Layer3LacpHighAvailability
+	if o.HighAvailability != nil {
+		if *obj != nil && (*obj).HighAvailability != nil {
+			highAvailability_entry = (*obj).HighAvailability
 		} else {
-			sendHostname_entry = new(aggregate.Layer3DhcpClientSendHostname)
+			highAvailability_entry = new(aggregate.Layer3LacpHighAvailability)
 		}
 
-		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	maxPorts_value := o.MaxPorts.ValueInt64Pointer()
+	mode_value := o.Mode.ValueStringPointer()
+	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
+	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	fastFailover_value := o.FastFailover.ValueBoolPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3DhcpClient)
+		*obj = new(aggregate.Layer3Lacp)
 	}
-	(*obj).CreateDefaultRoute = createDefaultRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).HighAvailability = highAvailability_entry
+	(*obj).MaxPorts = maxPorts_value
+	(*obj).Mode = mode_value
+	(*obj).SystemPriority = systemPriority_value
+	(*obj).TransmissionRate = transmissionRate_value
 	(*obj).Enable = enable_value
-	(*obj).SendHostname = sendHostname_entry
+	(*obj).FastFailover = fastFailover_value
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	hostname_value := o.Hostname.ValueStringPointer()
+	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3DhcpClientSendHostname)
+		*obj = new(aggregate.Layer3LacpHighAvailability)
 	}
-	(*obj).Enable = enable_value
-	(*obj).Hostname = hostname_value
+	(*obj).PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	profile_value := o.Profile.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer3LldpHighAvailability
 	if o.HighAvailability != nil {
@@ -14893,14 +14912,13 @@ func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
-	profile_value := o.Profile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Lldp)
 	}
+	(*obj).Profile = profile_value
 	(*obj).Enable = enable_value
 	(*obj).HighAvailability = highAvailability_entry
-	(*obj).Profile = profile_value
 
 	return diags
 }
@@ -14912,6 +14930,121 @@ func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyToPango
 		*obj = new(aggregate.Layer3LldpHighAvailability)
 	}
 	(*obj).PassivePreNegotiation = passivePreNegotiation_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
+	var upstreamNat_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNat
+	if o.UpstreamNat != nil {
+		if *obj != nil && (*obj).UpstreamNat != nil {
+			upstreamNat_entry = (*obj).UpstreamNat
+		} else {
+			upstreamNat_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
+		}
+
+		diags.Append(o.UpstreamNat.CopyToPango(ctx, &upstreamNat_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3SdwanLinkSettings)
+	}
+	(*obj).Enable = enable_value
+	(*obj).SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	(*obj).UpstreamNat = upstreamNat_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var ddns_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns
+	if o.Ddns != nil {
+		if *obj != nil && (*obj).Ddns != nil {
+			ddns_entry = (*obj).Ddns
+		} else {
+			ddns_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
+		}
+
+		diags.Append(o.Ddns.CopyToPango(ctx, &ddns_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var staticIp_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp
+	if o.StaticIp != nil {
+		if *obj != nil && (*obj).StaticIp != nil {
+			staticIp_entry = (*obj).StaticIp
+		} else {
+			staticIp_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
+		}
+
+		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Ddns = ddns_entry
+	(*obj).StaticIp = staticIp_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	fqdn_value := o.Fqdn.ValueStringPointer()
+	ipAddress_value := o.IpAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
+	}
+	(*obj).Fqdn = fqdn_value
+	(*obj).IpAddress = ipAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Arp)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	groupId_value := o.GroupId.ValueInt64Pointer()
+	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Bonjour)
+	}
+	(*obj).GroupId = groupId_value
+	(*obj).TtlCheck = ttlCheck_value
+	(*obj).Enable = enable_value
 
 	return diags
 }
@@ -14956,62 +15089,71 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyToPango(ctx 
 
 	return diags
 }
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var sendHostname_entry *aggregate.Layer3DhcpClientSendHostname
+	if o.SendHostname != nil {
+		if *obj != nil && (*obj).SendHostname != nil {
+			sendHostname_entry = (*obj).SendHostname
+		} else {
+			sendHostname_entry = new(aggregate.Layer3DhcpClientSendHostname)
+		}
+
+		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3DhcpClient)
+	}
+	(*obj).Enable = enable_value
+	(*obj).SendHostname = sendHostname_entry
+	(*obj).CreateDefaultRoute = createDefaultRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	hostname_value := o.Hostname.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3DhcpClientSendHostname)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Hostname = hostname_value
+
+	return diags
+}
 func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
+	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3AdjustTcpMss)
 	}
-	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 	(*obj).Enable = enable_value
 	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Arp)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ip)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).SdwanGateway = sdwanGateway_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	groupId_value := o.GroupId.ValueInt64Pointer()
-	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Bonjour)
-	}
-	(*obj).Enable = enable_value
-	(*obj).GroupId = groupId_value
-	(*obj).TtlCheck = ttlCheck_value
+	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	ddnsIpv6_pango_entries := make([]string, 0)
+	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
 	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
 	var ddnsVendorConfig_tf_entries []AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject
 	var ddnsVendorConfig_pango_entries []aggregate.Layer3DdnsConfigDdnsVendorConfig
@@ -15038,24 +15180,18 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx conte
 	if diags.HasError() {
 		return diags
 	}
-	ddnsIpv6_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3DdnsConfig)
 	}
+	(*obj).DdnsIpv6 = ddnsIpv6_pango_entries
+	(*obj).DdnsUpdateInterval = ddnsUpdateInterval_value
 	(*obj).DdnsVendor = ddnsVendor_value
 	(*obj).DdnsVendorConfig = ddnsVendorConfig_pango_entries
 	(*obj).DdnsCertProfile = ddnsCertProfile_value
 	(*obj).DdnsEnabled = ddnsEnabled_value
 	(*obj).DdnsHostname = ddnsHostname_value
 	(*obj).DdnsIp = ddnsIp_pango_entries
-	(*obj).DdnsIpv6 = ddnsIpv6_pango_entries
-	(*obj).DdnsUpdateInterval = ddnsUpdateInterval_value
 
 	return diags
 }
@@ -15071,96 +15207,46 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyT
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
-	var upstreamNat_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNat
-	if o.UpstreamNat != nil {
-		if *obj != nil && (*obj).UpstreamNat != nil {
-			upstreamNat_entry = (*obj).UpstreamNat
-		} else {
-			upstreamNat_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
-		}
-
-		diags.Append(o.UpstreamNat.CopyToPango(ctx, &upstreamNat_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3SdwanLinkSettings)
+		*obj = new(aggregate.Layer3Ip)
 	}
-	(*obj).Enable = enable_value
-	(*obj).SdwanInterfaceProfile = sdwanInterfaceProfile_value
-	(*obj).UpstreamNat = upstreamNat_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var staticIp_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp
-	if o.StaticIp != nil {
-		if *obj != nil && (*obj).StaticIp != nil {
-			staticIp_entry = (*obj).StaticIp
-		} else {
-			staticIp_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
-		}
-
-		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ddns_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns
-	if o.Ddns != nil {
-		if *obj != nil && (*obj).Ddns != nil {
-			ddns_entry = (*obj).Ddns
-		} else {
-			ddns_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
-		}
-
-		diags.Append(o.Ddns.CopyToPango(ctx, &ddns_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
-	}
-	(*obj).Enable = enable_value
-	(*obj).StaticIp = staticIp_entry
-	(*obj).Ddns = ddns_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	fqdn_value := o.Fqdn.ValueStringPointer()
-	ipAddress_value := o.IpAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
-	}
-	(*obj).Fqdn = fqdn_value
-	(*obj).IpAddress = ipAddress_value
+	(*obj).Name = o.Name.ValueString()
+	(*obj).SdwanGateway = sdwanGateway_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var dhcpClient_entry *aggregate.Layer3Ipv6DhcpClient
+	if o.DhcpClient != nil {
+		if *obj != nil && (*obj).DhcpClient != nil {
+			dhcpClient_entry = (*obj).DhcpClient
+		} else {
+			dhcpClient_entry = new(aggregate.Layer3Ipv6DhcpClient)
+		}
+
+		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var inherited_entry *aggregate.Layer3Ipv6Inherited
+	if o.Inherited != nil {
+		if *obj != nil && (*obj).Inherited != nil {
+			inherited_entry = (*obj).Inherited
+		} else {
+			inherited_entry = new(aggregate.Layer3Ipv6Inherited)
+		}
+
+		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var address_tf_entries []AggregateInterfaceResourceLayer3Ipv6AddressObject
 	var address_pango_entries []aggregate.Layer3Ipv6Address
 	{
@@ -15193,42 +15279,722 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
-	var dhcpClient_entry *aggregate.Layer3Ipv6DhcpClient
-	if o.DhcpClient != nil {
-		if *obj != nil && (*obj).DhcpClient != nil {
-			dhcpClient_entry = (*obj).DhcpClient
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6)
+	}
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Inherited = inherited_entry
+	(*obj).Address = address_pango_entries
+	(*obj).Enabled = enabled_value
+	(*obj).InterfaceId = interfaceId_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
-			dhcpClient_entry = new(aggregate.Layer3Ipv6DhcpClient)
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
 		}
 
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var inherited_entry *aggregate.Layer3Ipv6Inherited
-	if o.Inherited != nil {
-		if *obj != nil && (*obj).Inherited != nil {
-			inherited_entry = (*obj).Inherited
+	var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
+	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
+	{
+		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range assignAddr_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
+		}
+	}
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6Inherited)
+	}
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).AssignAddr = assignAddr_pango_entries
+	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
+	if o.Type != nil {
+		if *obj != nil && (*obj).Type != nil {
+			type_entry = (*obj).Type
 		} else {
-			inherited_entry = new(aggregate.Layer3Ipv6Inherited)
+			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
 		}
 
-		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
+		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
 	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6)
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
 	}
-	(*obj).Address = address_pango_entries
-	(*obj).Enabled = enabled_value
-	(*obj).InterfaceId = interfaceId_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Inherited = inherited_entry
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Type = type_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
+	if o.Gua != nil {
+		if *obj != nil && (*obj).Gua != nil {
+			gua_entry = (*obj).Gua
+		} else {
+			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+		}
+
+		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
+	if o.Ula != nil {
+		if *obj != nil && (*obj).Ula != nil {
+			ula_entry = (*obj).Ula
+		} else {
+			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+		}
+
+		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
+	}
+	(*obj).Gua = gua_entry
+	(*obj).Ula = ula_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
+	if o.PoolType != nil {
+		if *obj != nil && (*obj).PoolType != nil {
+			poolType_entry = (*obj).PoolType
+		} else {
+			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+		}
+
+		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+	}
+	(*obj).Advertise = advertise_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).PrefixPool = prefixPool_value
+	(*obj).PoolType = poolType_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+		}
+
+		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
+	if o.DynamicId != nil {
+		if *obj != nil && (*obj).DynamicId != nil {
+			dynamicId_entry = (*obj).DynamicId
+		} else {
+			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+		}
+
+		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+	}
+	(*obj).Dynamic = dynamic_entry
+	(*obj).DynamicId = dynamicId_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	identifier_value := o.Identifier.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+	}
+	(*obj).Identifier = identifier_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
+	anycast_value := o.Anycast.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+	}
+	(*obj).Advertise = advertise_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).Address = address_value
+	(*obj).Prefix = prefix_value
+	(*obj).Anycast = anycast_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+	}
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
+	if o.RouterAdvertisement != nil {
+		if *obj != nil && (*obj).RouterAdvertisement != nil {
+			routerAdvertisement_entry = (*obj).RouterAdvertisement
+		} else {
+			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+		}
+
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+		}
+
+		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+		}
+
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).EnableDad = enableDad_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RouterAdvertisement = routerAdvertisement_entry
+	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+	}
+	(*obj).Lifetime = lifetime_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).Enable = enable_value
+	(*obj).LinkMtu = linkMtu_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+		}
+
+		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+		}
+
+		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+		}
+
+		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+		}
+
+		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var prefix_entry *aggregate.Layer3Ipv6AddressPrefix
+	if o.Prefix != nil {
+		if *obj != nil && (*obj).Prefix != nil {
+			prefix_entry = (*obj).Prefix
+		} else {
+			prefix_entry = new(aggregate.Layer3Ipv6AddressPrefix)
+		}
+
+		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var anycast_entry *aggregate.Layer3Ipv6AddressAnycast
+	if o.Anycast != nil {
+		if *obj != nil && (*obj).Anycast != nil {
+			anycast_entry = (*obj).Anycast
+		} else {
+			anycast_entry = new(aggregate.Layer3Ipv6AddressAnycast)
+		}
+
+		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_entry *aggregate.Layer3Ipv6AddressAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6AddressAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6Address)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Prefix = prefix_entry
+	(*obj).Anycast = anycast_entry
+	(*obj).Advertise = advertise_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6AddressPrefix)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6AddressAnycast)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6AddressAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
 
 	return diags
 }
@@ -15283,28 +16049,10 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPang
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
 func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
 	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
 	var dnsSupport_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
 		if *obj != nil && (*obj).DnsSupport != nil {
@@ -15318,32 +16066,55 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 			return diags
 		}
 	}
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
 	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
 	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
 	}
-	(*obj).RouterPreference = routerPreference_value
-	(*obj).Enable = enable_value
-	(*obj).ManagedFlag = managedFlag_value
 	(*obj).MaxInterval = maxInterval_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).RouterPreference = routerPreference_value
 	(*obj).DnsSupport = dnsSupport_entry
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).Enable = enable_value
 	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
 	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
 	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
 	var server_pango_entries []aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
@@ -15362,30 +16133,13 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 			server_pango_entries = append(server_pango_entries, *entry)
 		}
 	}
-	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 	}
+	(*obj).Suffix = suffix_pango_entries
 	(*obj).Enable = enable_value
 	(*obj).Server = server_pango_entries
-	(*obj).Suffix = suffix_pango_entries
 
 	return diags
 }
@@ -15413,8 +16167,23 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 
 	return diags
 }
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6NeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
 	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
 	if o.NeighborDiscovery != nil {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
@@ -15455,45 +16224,194 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx c
 			return diags
 		}
 	}
-	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6DhcpClient)
 	}
+	(*obj).AcceptRaRoute = acceptRaRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).Enable = enable_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).Preference = preference_value
 	(*obj).PrefixDelegation = prefixDelegation_entry
 	(*obj).V6Options = v6Options_entry
-	(*obj).AcceptRaRoute = acceptRaRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+	}
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
+	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
+	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+	}
+	(*obj).PfxPoolName = pfxPoolName_value
+	(*obj).PrefixLen = prefixLen_value
+	(*obj).PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	duidType_value := o.DuidType.ValueStringPointer()
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+	}
+	(*obj).DuidType = duidType_value
+	(*obj).Enable = enable_entry
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).Yes = yes_entry
+	(*obj).No = no_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).TempAddr = tempAddr_value
+	(*obj).NonTempAddr = nonTempAddr_value
 
 	return diags
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
 	if o.DnsServer != nil {
 		if *obj != nil && (*obj).DnsServer != nil {
@@ -15522,18 +16440,38 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) 
 	}
 	enableDad_value := o.EnableDad.ValueBoolPointer()
 	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
 	}
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).DadAttempts = dadAttempts_value
 	(*obj).DnsServer = dnsServer_entry
 	(*obj).DnsSuffix = dnsSuffix_entry
 	(*obj).EnableDad = enableDad_value
 	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).DadAttempts = dadAttempts_value
 
 	return diags
 }
@@ -15769,930 +16707,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffi
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-	}
-	(*obj).Enable = enable_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
-	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
-	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-	}
-	(*obj).PfxPoolName = pfxPoolName_value
-	(*obj).PrefixLen = prefixLen_value
-	(*obj).PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).Yes = yes_entry
-	(*obj).No = no_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
-	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
-	{
-		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range assignAddr_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
-		}
-	}
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6Inherited)
-	}
-	(*obj).AssignAddr = assignAddr_pango_entries
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
-	if o.Type != nil {
-		if *obj != nil && (*obj).Type != nil {
-			type_entry = (*obj).Type
-		} else {
-			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
-		if *obj != nil && (*obj).Gua != nil {
-			gua_entry = (*obj).Gua
-		} else {
-			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-		}
-
-		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
-		if *obj != nil && (*obj).Ula != nil {
-			ula_entry = (*obj).Ula
-		} else {
-			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-		}
-
-		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-	}
-	(*obj).Gua = gua_entry
-	(*obj).Ula = ula_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
-		if *obj != nil && (*obj).PoolType != nil {
-			poolType_entry = (*obj).PoolType
-		} else {
-			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-		}
-
-		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).PrefixPool = prefixPool_value
-	(*obj).PoolType = poolType_entry
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
-		if *obj != nil && (*obj).DynamicId != nil {
-			dynamicId_entry = (*obj).DynamicId
-		} else {
-			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-		}
-
-		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-	}
-	(*obj).Dynamic = dynamic_entry
-	(*obj).DynamicId = dynamicId_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	identifier_value := o.Identifier.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-	}
-	(*obj).Identifier = identifier_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
-	anycast_value := o.Anycast.ValueBoolPointer()
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Address = address_value
-	(*obj).Prefix = prefix_value
-	(*obj).Anycast = anycast_value
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
-		if *obj != nil && (*obj).RouterAdvertisement != nil {
-			routerAdvertisement_entry = (*obj).RouterAdvertisement
-		} else {
-			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-	}
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).RouterAdvertisement = routerAdvertisement_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-	}
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).RouterPreference = routerPreference_value
-	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).ManagedFlag = managedFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	var prefix_entry *aggregate.Layer3Ipv6AddressPrefix
-	if o.Prefix != nil {
-		if *obj != nil && (*obj).Prefix != nil {
-			prefix_entry = (*obj).Prefix
-		} else {
-			prefix_entry = new(aggregate.Layer3Ipv6AddressPrefix)
-		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var anycast_entry *aggregate.Layer3Ipv6AddressAnycast
-	if o.Anycast != nil {
-		if *obj != nil && (*obj).Anycast != nil {
-			anycast_entry = (*obj).Anycast
-		} else {
-			anycast_entry = new(aggregate.Layer3Ipv6AddressAnycast)
-		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_entry *aggregate.Layer3Ipv6AddressAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6AddressAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6Address)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Prefix = prefix_entry
-	(*obj).Anycast = anycast_entry
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6AddressPrefix)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6AddressAnycast)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6AddressAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var highAvailability_entry *aggregate.Layer3LacpHighAvailability
-	if o.HighAvailability != nil {
-		if *obj != nil && (*obj).HighAvailability != nil {
-			highAvailability_entry = (*obj).HighAvailability
-		} else {
-			highAvailability_entry = new(aggregate.Layer3LacpHighAvailability)
-		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	maxPorts_value := o.MaxPorts.ValueInt64Pointer()
-	mode_value := o.Mode.ValueStringPointer()
-	systemPriority_value := o.SystemPriority.ValueInt64Pointer()
-	transmissionRate_value := o.TransmissionRate.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	fastFailover_value := o.FastFailover.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Lacp)
-	}
-	(*obj).HighAvailability = highAvailability_entry
-	(*obj).MaxPorts = maxPorts_value
-	(*obj).Mode = mode_value
-	(*obj).SystemPriority = systemPriority_value
-	(*obj).TransmissionRate = transmissionRate_value
-	(*obj).Enable = enable_value
-	(*obj).FastFailover = fastFailover_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3LacpHighAvailability)
-	}
-	(*obj).PassivePreNegotiation = passivePreNegotiation_value
-
-	return diags
-}
 func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_entry *aggregate.VirtualWireLldp
@@ -16720,6 +16734,8 @@ func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Co
 }
 func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	profile_value := o.Profile.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.VirtualWireLldpHighAvailability
 	if o.HighAvailability != nil {
 		if *obj != nil && (*obj).HighAvailability != nil {
@@ -16733,15 +16749,13 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx contex
 			return diags
 		}
 	}
-	profile_value := o.Profile.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(aggregate.VirtualWireLldp)
 	}
-	(*obj).HighAvailability = highAvailability_entry
 	(*obj).Profile = profile_value
 	(*obj).Enable = enable_value
+	(*obj).HighAvailability = highAvailability_entry
 
 	return diags
 }
@@ -16759,6 +16773,15 @@ func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyTo
 
 func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var ha_object *AggregateInterfaceResourceHaObject
+	if obj.Ha != nil {
+		ha_object = new(AggregateInterfaceResourceHaObject)
+
+		diags.Append(ha_object.CopyFromPango(ctx, obj.Ha, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var layer2_object *AggregateInterfaceResourceLayer2Object
 	if obj.Layer2 != nil {
 		layer2_object = new(AggregateInterfaceResourceLayer2Object)
@@ -16795,15 +16818,6 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 			return diags
 		}
 	}
-	var ha_object *AggregateInterfaceResourceHaObject
-	if obj.Ha != nil {
-		ha_object = new(AggregateInterfaceResourceHaObject)
-
-		diags.Append(ha_object.CopyFromPango(ctx, obj.Ha, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	var comment_value types.String
 	if obj.Comment != nil {
@@ -16811,11 +16825,11 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Comment = comment_value
+	o.Ha = ha_object
 	o.Layer2 = layer2_object
 	o.Layer3 = layer3_object
 	o.VirtualWire = virtualWire_object
 	o.DecryptMirror = decryptMirror_object
-	o.Ha = ha_object
 
 	return diags
 }
@@ -16846,18 +16860,6 @@ func (o *AggregateInterfaceResourceHaObject) CopyFromPango(ctx context.Context, 
 func (o *AggregateInterfaceResourceHaLacpObject) CopyFromPango(ctx context.Context, obj *aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var fastFailover_value types.Bool
-	if obj.FastFailover != nil {
-		fastFailover_value = types.BoolValue(*obj.FastFailover)
-	}
-	var maxPorts_value types.Int64
-	if obj.MaxPorts != nil {
-		maxPorts_value = types.Int64Value(*obj.MaxPorts)
-	}
 	var mode_value types.String
 	if obj.Mode != nil {
 		mode_value = types.StringValue(*obj.Mode)
@@ -16870,12 +16872,24 @@ func (o *AggregateInterfaceResourceHaLacpObject) CopyFromPango(ctx context.Conte
 	if obj.TransmissionRate != nil {
 		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
 	}
-	o.Enable = enable_value
-	o.FastFailover = fastFailover_value
-	o.MaxPorts = maxPorts_value
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var fastFailover_value types.Bool
+	if obj.FastFailover != nil {
+		fastFailover_value = types.BoolValue(*obj.FastFailover)
+	}
+	var maxPorts_value types.Int64
+	if obj.MaxPorts != nil {
+		maxPorts_value = types.Int64Value(*obj.MaxPorts)
+	}
 	o.Mode = mode_value
 	o.SystemPriority = systemPriority_value
 	o.TransmissionRate = transmissionRate_value
+	o.Enable = enable_value
+	o.FastFailover = fastFailover_value
+	o.MaxPorts = maxPorts_value
 
 	return diags
 }
@@ -16924,6 +16938,10 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) CopyFromPango(ctx context.C
 		}
 	}
 
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
 	var fastFailover_value types.Bool
 	if obj.FastFailover != nil {
 		fastFailover_value = types.BoolValue(*obj.FastFailover)
@@ -16944,17 +16962,13 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) CopyFromPango(ctx context.C
 	if obj.TransmissionRate != nil {
 		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
 	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
+	o.Enable = enable_value
 	o.FastFailover = fastFailover_value
 	o.HighAvailability = highAvailability_object
 	o.MaxPorts = maxPorts_value
 	o.Mode = mode_value
 	o.SystemPriority = systemPriority_value
 	o.TransmissionRate = transmissionRate_value
-	o.Enable = enable_value
 
 	return diags
 }
@@ -17012,20 +17026,6 @@ func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyFromPan
 
 func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ip_list types.List
-	{
-		var ip_tf_entries []AggregateInterfaceResourceLayer3IpObject
-		for _, elt := range obj.Ip {
-			var entry AggregateInterfaceResourceLayer3IpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			ip_tf_entries = append(ip_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("ip")
-		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
-		diags.Append(list_diags...)
-	}
 	var arp_list types.List
 	{
 		var arp_tf_entries []AggregateInterfaceResourceLayer3ArpObject
@@ -17040,11 +17040,79 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 		arp_list, list_diags = types.ListValueFrom(ctx, schemaType, arp_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var ip_list types.List
+	{
+		var ip_tf_entries []AggregateInterfaceResourceLayer3IpObject
+		for _, elt := range obj.Ip {
+			var entry AggregateInterfaceResourceLayer3IpObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			ip_tf_entries = append(ip_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("ip")
+		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var lldp_object *AggregateInterfaceResourceLayer3LldpObject
+	if obj.Lldp != nil {
+		lldp_object = new(AggregateInterfaceResourceLayer3LldpObject)
+
+		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sdwanLinkSettings_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject
+	if obj.SdwanLinkSettings != nil {
+		sdwanLinkSettings_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsObject)
+
+		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, obj.SdwanLinkSettings, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var bonjour_object *AggregateInterfaceResourceLayer3BonjourObject
 	if obj.Bonjour != nil {
 		bonjour_object = new(AggregateInterfaceResourceLayer3BonjourObject)
 
 		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var lacp_object *AggregateInterfaceResourceLayer3LacpObject
+	if obj.Lacp != nil {
+		lacp_object = new(AggregateInterfaceResourceLayer3LacpObject)
+
+		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dhcpClient_object *AggregateInterfaceResourceLayer3DhcpClientObject
+	if obj.DhcpClient != nil {
+		dhcpClient_object = new(AggregateInterfaceResourceLayer3DhcpClientObject)
+
+		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ndpProxy_object *AggregateInterfaceResourceLayer3NdpProxyObject
+	if obj.NdpProxy != nil {
+		ndpProxy_object = new(AggregateInterfaceResourceLayer3NdpProxyObject)
+
+		diags.Append(ndpProxy_object.CopyFromPango(ctx, obj.NdpProxy, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var adjustTcpMss_object *AggregateInterfaceResourceLayer3AdjustTcpMssObject
+	if obj.AdjustTcpMss != nil {
+		adjustTcpMss_object = new(AggregateInterfaceResourceLayer3AdjustTcpMssObject)
+
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17067,69 +17135,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 			return diags
 		}
 	}
-	var lacp_object *AggregateInterfaceResourceLayer3LacpObject
-	if obj.Lacp != nil {
-		lacp_object = new(AggregateInterfaceResourceLayer3LacpObject)
 
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sdwanLinkSettings_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject
-	if obj.SdwanLinkSettings != nil {
-		sdwanLinkSettings_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsObject)
-
-		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, obj.SdwanLinkSettings, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var adjustTcpMss_object *AggregateInterfaceResourceLayer3AdjustTcpMssObject
-	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(AggregateInterfaceResourceLayer3AdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dhcpClient_object *AggregateInterfaceResourceLayer3DhcpClientObject
-	if obj.DhcpClient != nil {
-		dhcpClient_object = new(AggregateInterfaceResourceLayer3DhcpClientObject)
-
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var lldp_object *AggregateInterfaceResourceLayer3LldpObject
-	if obj.Lldp != nil {
-		lldp_object = new(AggregateInterfaceResourceLayer3LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ndpProxy_object *AggregateInterfaceResourceLayer3NdpProxyObject
-	if obj.NdpProxy != nil {
-		ndpProxy_object = new(AggregateInterfaceResourceLayer3NdpProxyObject)
-
-		diags.Append(ndpProxy_object.CopyFromPango(ctx, obj.NdpProxy, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dfIgnore_value types.Bool
-	if obj.DfIgnore != nil {
-		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
-	}
-	var decryptForward_value types.Bool
-	if obj.DecryptForward != nil {
-		decryptForward_value = types.BoolValue(*obj.DecryptForward)
-	}
 	var interfaceManagementProfile_value types.String
 	if obj.InterfaceManagementProfile != nil {
 		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
@@ -17146,29 +17152,160 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	if obj.UntaggedSubInterface != nil {
 		untaggedSubInterface_value = types.BoolValue(*obj.UntaggedSubInterface)
 	}
+	var decryptForward_value types.Bool
+	if obj.DecryptForward != nil {
+		decryptForward_value = types.BoolValue(*obj.DecryptForward)
+	}
+	var dfIgnore_value types.Bool
+	if obj.DfIgnore != nil {
+		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
+	}
+	o.Lldp = lldp_object
+	o.SdwanLinkSettings = sdwanLinkSettings_object
+	o.Arp = arp_list
 	o.Bonjour = bonjour_object
-	o.DfIgnore = dfIgnore_value
-	o.Ip = ip_list
-	o.DdnsConfig = ddnsConfig_object
-	o.DecryptForward = decryptForward_value
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
+	o.Lacp = lacp_object
+	o.DhcpClient = dhcpClient_object
 	o.Mtu = mtu_value
+	o.NdpProxy = ndpProxy_object
+	o.AdjustTcpMss = adjustTcpMss_object
+	o.DdnsConfig = ddnsConfig_object
 	o.NetflowProfile = netflowProfile_value
 	o.UntaggedSubInterface = untaggedSubInterface_value
+	o.DecryptForward = decryptForward_value
+	o.DfIgnore = dfIgnore_value
+	o.Ip = ip_list
 	o.Ipv6 = ipv6_object
-	o.Lacp = lacp_object
-	o.SdwanLinkSettings = sdwanLinkSettings_object
-	o.AdjustTcpMss = adjustTcpMss_object
-	o.Arp = arp_list
-	o.DhcpClient = dhcpClient_object
-	o.Lldp = lldp_object
-	o.NdpProxy = ndpProxy_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var sendHostname_object *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject
+	if obj.SendHostname != nil {
+		sendHostname_object = new(AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject)
+
+		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var createDefaultRoute_value types.Bool
+	if obj.CreateDefaultRoute != nil {
+		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
+	}
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.CreateDefaultRoute = createDefaultRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.SendHostname = sendHostname_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var hostname_value types.String
+	if obj.Hostname != nil {
+		hostname_value = types.StringValue(*obj.Hostname)
+	}
+	o.Enable = enable_value
+	o.Hostname = hostname_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var address_list types.List
+	{
+		var address_tf_entries []AggregateInterfaceResourceLayer3NdpProxyAddressObject
+		for _, elt := range obj.Address {
+			var entry AggregateInterfaceResourceLayer3NdpProxyAddressObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			address_tf_entries = append(address_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("address")
+		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	var enabled_value types.Bool
+	if obj.Enabled != nil {
+		enabled_value = types.BoolValue(*obj.Enabled)
+	}
+	o.Address = address_list
+	o.Enabled = enabled_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var negate_value types.Bool
+	if obj.Negate != nil {
+		negate_value = types.BoolValue(*obj.Negate)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Negate = negate_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv4MssAdjustment_value types.Int64
+	if obj.Ipv4MssAdjustment != nil {
+		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
+	}
+	var ipv6MssAdjustment_value types.Int64
+	if obj.Ipv6MssAdjustment != nil {
+		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
+	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
+	o.Enable = enable_value
 
 	return diags
 }
 
 func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var ddnsIp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+		diags.Append(list_diags...)
+	}
+	var ddnsIpv6_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
+		diags.Append(list_diags...)
+	}
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject
@@ -17183,19 +17320,15 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx con
 		ddnsVendorConfig_list, list_diags = types.ListValueFrom(ctx, schemaType, ddnsVendorConfig_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var ddnsIp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
-		diags.Append(list_diags...)
-	}
-	var ddnsIpv6_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
-		diags.Append(list_diags...)
-	}
 
+	var ddnsHostname_value types.String
+	if obj.DdnsHostname != nil {
+		ddnsHostname_value = types.StringValue(*obj.DdnsHostname)
+	}
+	var ddnsUpdateInterval_value types.Int64
+	if obj.DdnsUpdateInterval != nil {
+		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
+	}
 	var ddnsVendor_value types.String
 	if obj.DdnsVendor != nil {
 		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
@@ -17208,22 +17341,14 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx con
 	if obj.DdnsEnabled != nil {
 		ddnsEnabled_value = types.BoolValue(*obj.DdnsEnabled)
 	}
-	var ddnsHostname_value types.String
-	if obj.DdnsHostname != nil {
-		ddnsHostname_value = types.StringValue(*obj.DdnsHostname)
-	}
-	var ddnsUpdateInterval_value types.Int64
-	if obj.DdnsUpdateInterval != nil {
-		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
-	}
-	o.DdnsVendor = ddnsVendor_value
-	o.DdnsVendorConfig = ddnsVendorConfig_list
-	o.DdnsCertProfile = ddnsCertProfile_value
-	o.DdnsEnabled = ddnsEnabled_value
 	o.DdnsHostname = ddnsHostname_value
 	o.DdnsIp = ddnsIp_list
 	o.DdnsIpv6 = ddnsIpv6_list
 	o.DdnsUpdateInterval = ddnsUpdateInterval_value
+	o.DdnsVendor = ddnsVendor_value
+	o.DdnsVendorConfig = ddnsVendorConfig_list
+	o.DdnsCertProfile = ddnsCertProfile_value
+	o.DdnsEnabled = ddnsEnabled_value
 
 	return diags
 }
@@ -17237,6 +17362,19 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyF
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Value = value_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var sdwanGateway_value types.String
+	if obj.SdwanGateway != nil {
+		sdwanGateway_value = types.StringValue(*obj.SdwanGateway)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.SdwanGateway = sdwanGateway_value
 
 	return diags
 }
@@ -17285,20 +17423,322 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.C
 		}
 	}
 
-	var enabled_value types.Bool
-	if obj.Enabled != nil {
-		enabled_value = types.BoolValue(*obj.Enabled)
-	}
 	var interfaceId_value types.String
 	if obj.InterfaceId != nil {
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
-	o.Address = address_list
-	o.Enabled = enabled_value
+	var enabled_value types.Bool
+	if obj.Enabled != nil {
+		enabled_value = types.BoolValue(*obj.Enabled)
+	}
 	o.InterfaceId = interfaceId_value
 	o.NeighborDiscovery = neighborDiscovery_object
 	o.DhcpClient = dhcpClient_object
 	o.Inherited = inherited_object
+	o.Address = address_list
+	o.Enabled = enabled_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var prefix_object *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject
+	if obj.Prefix != nil {
+		prefix_object = new(AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject)
+
+		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var anycast_object *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject
+	if obj.Anycast != nil {
+		anycast_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject)
+
+		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.EnableOnInterface = enableOnInterface_value
+	o.Prefix = prefix_object
+	o.Anycast = anycast_object
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var routerAdvertisement_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
+	if obj.RouterAdvertisement != nil {
+		routerAdvertisement_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject)
+
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+	o.DadAttempts = dadAttempts_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dnsSupport_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+	if obj.DnsSupport != nil {
+		dnsSupport_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
+
+		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	o.MaxInterval = maxInterval_value
+	o.RouterPreference = routerPreference_value
+	o.DnsSupport = dnsSupport_object
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+	o.Lifetime = lifetime_value
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.ReachableTime = reachableTime_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.Enable = enable_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+		for _, elt := range obj.Server {
+			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+		for _, elt := range obj.Suffix {
+			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Server = server_list
+	o.Suffix = suffix_list
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
 
 	return diags
 }
@@ -17333,14 +17773,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx
 		}
 	}
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var preference_value types.String
-	if obj.Preference != nil {
-		preference_value = types.StringValue(*obj.Preference)
-	}
 	var acceptRaRoute_value types.Bool
 	if obj.AcceptRaRoute != nil {
 		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
@@ -17349,13 +17781,21 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx
 	if obj.DefaultRouteMetric != nil {
 		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
 	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var preference_value types.String
+	if obj.Preference != nil {
+		preference_value = types.StringValue(*obj.Preference)
+	}
+	o.AcceptRaRoute = acceptRaRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
 	o.Enable = enable_value
 	o.NeighborDiscovery = neighborDiscovery_object
 	o.Preference = preference_value
 	o.PrefixDelegation = prefixDelegation_object
 	o.V6Options = v6Options_object
-	o.AcceptRaRoute = acceptRaRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
 
 	return diags
 }
@@ -17379,15 +17819,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) C
 
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var no_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
 	if obj.No != nil {
 		no_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject)
@@ -17397,9 +17828,18 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObj
 			return diags
 		}
 	}
+	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
 
-	o.Yes = yes_object
+		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.No = no_object
+	o.Yes = yes_object
 
 	return diags
 }
@@ -17444,6 +17884,10 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFrom
 		}
 	}
 
+	var duidType_value types.String
+	if obj.DuidType != nil {
+		duidType_value = types.StringValue(*obj.DuidType)
+	}
 	var rapidCommit_value types.Bool
 	if obj.RapidCommit != nil {
 		rapidCommit_value = types.BoolValue(*obj.RapidCommit)
@@ -17452,14 +17896,10 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFrom
 	if obj.SupportSrvrReconfig != nil {
 		supportSrvrReconfig_value = types.BoolValue(*obj.SupportSrvrReconfig)
 	}
-	var duidType_value types.String
-	if obj.DuidType != nil {
-		duidType_value = types.StringValue(*obj.DuidType)
-	}
+	o.DuidType = duidType_value
 	o.Enable = enable_object
 	o.RapidCommit = rapidCommit_value
 	o.SupportSrvrReconfig = supportSrvrReconfig_value
-	o.DuidType = duidType_value
 
 	return diags
 }
@@ -17530,15 +17970,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) 
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dnsServer_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
 	if obj.DnsServer != nil {
 		dnsServer_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject)
@@ -17548,11 +17979,16 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) 
 			return diags
 		}
 	}
+	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
 
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
+
 	var enableNdpMonitor_value types.Bool
 	if obj.EnableNdpMonitor != nil {
 		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
@@ -17569,14 +18005,18 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) 
 	if obj.DadAttempts != nil {
 		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
 	}
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
 	o.EnableNdpMonitor = enableNdpMonitor_value
 	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
 	o.DadAttempts = dadAttempts_value
 	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
 
 	return diags
 }
@@ -17804,9 +18244,9 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyFromPango(ctx 
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.NeighborDiscovery = neighborDiscovery_object
 	o.AssignAddr = assignAddr_list
 	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
 
 	return diags
 }
@@ -17831,15 +18271,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyFrom
 
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var gua_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
-
-		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ula_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
 	if obj.Ula != nil {
 		ula_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
@@ -17849,9 +18280,18 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) Copy
 			return diags
 		}
 	}
+	var gua_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+	if obj.Gua != nil {
+		gua_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
 
-	o.Gua = gua_object
+		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Ula = ula_object
+	o.Gua = gua_object
 
 	return diags
 }
@@ -18000,14 +18440,6 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) C
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
@@ -18020,11 +18452,19 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertise
 	if obj.PreferredLifetime != nil {
 		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
 	}
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
 	o.Enable = enable_value
 	o.ValidLifetime = validLifetime_value
 	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
 
 	return diags
 }
@@ -18073,13 +18513,9 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) C
 		}
 	}
 
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
 	}
 	var dadAttempts_value types.Int64
 	if obj.DadAttempts != nil {
@@ -18089,195 +18525,23 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) C
 	if obj.EnableDad != nil {
 		enableDad_value = types.BoolValue(*obj.EnableDad)
 	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
 	}
 	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.DadAttempts = dadAttempts_value
+	o.EnableDad = enableDad_value
+	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
-	o.DadAttempts = dadAttempts_value
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
 	o.RouterAdvertisement = routerAdvertisement_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.LinkMtu = linkMtu_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.RouterPreference = routerPreference_value
 
 	return diags
 }
@@ -18378,199 +18642,105 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServer
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var advertise_object *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject)
+	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
 
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var prefix_object *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject
-	if obj.Prefix != nil {
-		prefix_object = new(AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var anycast_object *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject
-	if obj.Anycast != nil {
-		anycast_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Advertise = advertise_object
-	o.EnableOnInterface = enableOnInterface_value
-	o.Prefix = prefix_object
-	o.Anycast = anycast_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
+	o.Source = source_object
 	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighbor_list types.List
+	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+
+		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
 	{
-		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
+		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			var entry AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
 			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			suffix_tf_entries = append(suffix_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var routerAdvertisement_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
-	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject)
 
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-	o.RouterAdvertisement = routerAdvertisement_object
-	o.DadAttempts = dadAttempts_value
-	o.EnableDad = enableDad_value
+	o.Suffix = suffix_list
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
+	o.Lifetime = lifetime_value
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSupport_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
-	if obj.DnsSupport != nil {
-		dnsSupport_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
 
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
 	var hopLimit_value types.String
 	if obj.HopLimit != nil {
 		hopLimit_value = types.StringValue(*obj.HopLimit)
@@ -18579,9 +18749,9 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	if obj.Lifetime != nil {
 		lifetime_value = types.Int64Value(*obj.Lifetime)
 	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
 	}
 	var otherFlag_value types.Bool
 	if obj.OtherFlag != nil {
@@ -18595,146 +18765,55 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	if obj.EnableConsistencyCheck != nil {
 		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
 	}
-	o.MaxInterval = maxInterval_value
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.HopLimit = hopLimit_value
+	o.Lifetime = lifetime_value
 	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+	o.MaxInterval = maxInterval_value
 	o.ReachableTime = reachableTime_value
 	o.RouterPreference = routerPreference_value
 	o.Enable = enable_value
-	o.ManagedFlag = managedFlag_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.OtherFlag = otherFlag_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.DnsSupport = dnsSupport_object
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Server = server_list
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var highAvailability_object *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject
-	if obj.HighAvailability != nil {
-		highAvailability_object = new(AggregateInterfaceResourceLayer3LacpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var systemPriority_value types.Int64
-	if obj.SystemPriority != nil {
-		systemPriority_value = types.Int64Value(*obj.SystemPriority)
-	}
-	var transmissionRate_value types.String
-	if obj.TransmissionRate != nil {
-		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var fastFailover_value types.Bool
-	if obj.FastFailover != nil {
-		fastFailover_value = types.BoolValue(*obj.FastFailover)
-	}
-	var maxPorts_value types.Int64
-	if obj.MaxPorts != nil {
-		maxPorts_value = types.Int64Value(*obj.MaxPorts)
-	}
-	var mode_value types.String
-	if obj.Mode != nil {
-		mode_value = types.StringValue(*obj.Mode)
-	}
-	o.SystemPriority = systemPriority_value
-	o.TransmissionRate = transmissionRate_value
-	o.Enable = enable_value
-	o.FastFailover = fastFailover_value
-	o.HighAvailability = highAvailability_object
-	o.MaxPorts = maxPorts_value
-	o.Mode = mode_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var passivePreNegotiation_value types.Bool
-	if obj.PassivePreNegotiation != nil {
-		passivePreNegotiation_value = types.BoolValue(*obj.PassivePreNegotiation)
-	}
-	o.PassivePreNegotiation = passivePreNegotiation_value
+	o.HwAddress = hwAddress_value
 
 	return diags
 }
@@ -18821,28 +18900,6 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObj
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var ipv4MssAdjustment_value types.Int64
-	if obj.Ipv4MssAdjustment != nil {
-		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
-	}
-	var ipv6MssAdjustment_value types.Int64
-	if obj.Ipv6MssAdjustment != nil {
-		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
-	}
-	o.Enable = enable_value
-	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
-	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
-
-	return diags
-}
-
 func (o *AggregateInterfaceResourceLayer3ArpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -18856,51 +18913,83 @@ func (o *AggregateInterfaceResourceLayer3ArpObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sendHostname_object *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject
-	if obj.SendHostname != nil {
-		sendHostname_object = new(AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject)
 
-		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+	var groupId_value types.Int64
+	if obj.GroupId != nil {
+		groupId_value = types.Int64Value(*obj.GroupId)
+	}
+	var ttlCheck_value types.Bool
+	if obj.TtlCheck != nil {
+		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.GroupId = groupId_value
+	o.TtlCheck = ttlCheck_value
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var highAvailability_object *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject
+	if obj.HighAvailability != nil {
+		highAvailability_object = new(AggregateInterfaceResourceLayer3LacpHighAvailabilityObject)
+
+		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	var createDefaultRoute_value types.Bool
-	if obj.CreateDefaultRoute != nil {
-		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
-	}
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
-	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.CreateDefaultRoute = createDefaultRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
+	var fastFailover_value types.Bool
+	if obj.FastFailover != nil {
+		fastFailover_value = types.BoolValue(*obj.FastFailover)
+	}
+	var maxPorts_value types.Int64
+	if obj.MaxPorts != nil {
+		maxPorts_value = types.Int64Value(*obj.MaxPorts)
+	}
+	var mode_value types.String
+	if obj.Mode != nil {
+		mode_value = types.StringValue(*obj.Mode)
+	}
+	var systemPriority_value types.Int64
+	if obj.SystemPriority != nil {
+		systemPriority_value = types.Int64Value(*obj.SystemPriority)
+	}
+	var transmissionRate_value types.String
+	if obj.TransmissionRate != nil {
+		transmissionRate_value = types.StringValue(*obj.TransmissionRate)
+	}
 	o.Enable = enable_value
-	o.SendHostname = sendHostname_object
+	o.FastFailover = fastFailover_value
+	o.HighAvailability = highAvailability_object
+	o.MaxPorts = maxPorts_value
+	o.Mode = mode_value
+	o.SystemPriority = systemPriority_value
+	o.TransmissionRate = transmissionRate_value
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
+	var passivePreNegotiation_value types.Bool
+	if obj.PassivePreNegotiation != nil {
+		passivePreNegotiation_value = types.BoolValue(*obj.PassivePreNegotiation)
 	}
-	var hostname_value types.String
-	if obj.Hostname != nil {
-		hostname_value = types.StringValue(*obj.Hostname)
-	}
-	o.Enable = enable_value
-	o.Hostname = hostname_value
+	o.PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
 }
@@ -18944,81 +19033,6 @@ func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var address_list types.List
-	{
-		var address_tf_entries []AggregateInterfaceResourceLayer3NdpProxyAddressObject
-		for _, elt := range obj.Address {
-			var entry AggregateInterfaceResourceLayer3NdpProxyAddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			address_tf_entries = append(address_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("address")
-		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var enabled_value types.Bool
-	if obj.Enabled != nil {
-		enabled_value = types.BoolValue(*obj.Enabled)
-	}
-	o.Address = address_list
-	o.Enabled = enabled_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var negate_value types.Bool
-	if obj.Negate != nil {
-		negate_value = types.BoolValue(*obj.Negate)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Negate = negate_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var groupId_value types.Int64
-	if obj.GroupId != nil {
-		groupId_value = types.Int64Value(*obj.GroupId)
-	}
-	var ttlCheck_value types.Bool
-	if obj.TtlCheck != nil {
-		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.GroupId = groupId_value
-	o.TtlCheck = ttlCheck_value
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var sdwanGateway_value types.String
-	if obj.SdwanGateway != nil {
-		sdwanGateway_value = types.StringValue(*obj.SdwanGateway)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.SdwanGateway = sdwanGateway_value
-
-	return diags
-}
-
 func (o *AggregateInterfaceResourceVirtualWireObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_object *AggregateInterfaceResourceVirtualWireLldpObject
@@ -19035,8 +19049,8 @@ func (o *AggregateInterfaceResourceVirtualWireObject) CopyFromPango(ctx context.
 	if obj.NetflowProfile != nil {
 		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
 	}
-	o.NetflowProfile = netflowProfile_value
 	o.Lldp = lldp_object
+	o.NetflowProfile = netflowProfile_value
 
 	return diags
 }
@@ -19053,17 +19067,17 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyFromPango(ctx cont
 		}
 	}
 
-	var profile_value types.String
-	if obj.Profile != nil {
-		profile_value = types.StringValue(*obj.Profile)
-	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.Profile = profile_value
+	var profile_value types.String
+	if obj.Profile != nil {
+		profile_value = types.StringValue(*obj.Profile)
+	}
 	o.Enable = enable_value
 	o.HighAvailability = highAvailability_object
+	o.Profile = profile_value
 
 	return diags
 }
@@ -19078,6 +19092,14 @@ func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyFr
 	o.PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
+}
+
+func (o *AggregateInterfaceResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -19104,6 +19126,9 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 
 	var location aggregate.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
 
@@ -19126,9 +19151,6 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 
 	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
@@ -19150,7 +19172,13 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -19165,7 +19193,6 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state AggregateInterfaceResourceModel
@@ -19176,15 +19203,21 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 
 	var location aggregate.Location
 
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &aggregate.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
 
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
@@ -19195,12 +19228,6 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -19209,8 +19236,13 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -19235,7 +19267,6 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AggregateInterfaceResourceModel
@@ -19247,15 +19278,12 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 
 	var location aggregate.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
 
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
@@ -19272,6 +19300,9 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
@@ -19284,7 +19315,14 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -19320,7 +19358,6 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AggregateInterfaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AggregateInterfaceResourceModel
@@ -19442,6 +19479,11 @@ func (r *AggregateInterfaceResource) ImportState(ctx context.Context, req resour
 
 }
 
+type AggregateInterfaceTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+}
 type AggregateInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
@@ -19450,16 +19492,11 @@ type AggregateInterfaceTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
-type AggregateInterfaceTemplateStackLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-}
 type AggregateInterfaceLocation struct {
+	TemplateStack *AggregateInterfaceTemplateStackLocation `tfsdk:"template_stack"`
 	Ngfw          *AggregateInterfaceNgfwLocation          `tfsdk:"ngfw"`
 	Shared        types.Bool                               `tfsdk:"shared"`
 	Template      *AggregateInterfaceTemplateLocation      `tfsdk:"template"`
-	TemplateStack *AggregateInterfaceTemplateStackLocation `tfsdk:"template_stack"`
 }
 
 func AggregateInterfaceLocationSchema() rsschema.Attribute {
@@ -19467,10 +19504,35 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("ngfw"),
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+					}...),
+				},
+			},
 			"template": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"name": rsschema.StringAttribute{
+						Description: "Specific Panorama template",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device",
 						Optional:    true,
@@ -19489,42 +19551,15 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
-					"name": rsschema.StringAttribute{
-						Description: "Specific Panorama template",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-						path.MatchRelative().AtParent().AtName("ngfw"),
-					}...),
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -19539,6 +19574,15 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -19566,71 +19610,10 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-			},
 		},
 	}
 }
 
-func (o AggregateInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-		Name:           o.Name.ValueStringPointer(),
-		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *AggregateInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-
-	return nil
-}
-func (o AggregateInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *AggregateInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-
-	return nil
-}
 func (o AggregateInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -19662,17 +19645,71 @@ func (o *AggregateInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o AggregateInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device"`
+	}{
+		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AggregateInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+
+	return nil
+}
+func (o AggregateInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AggregateInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
 		Shared        *bool                                    `json:"shared"`
 		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
+		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
+		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
 	}{
-		TemplateStack: o.TemplateStack,
-		Ngfw:          o.Ngfw,
 		Shared:        o.Shared.ValueBoolPointer(),
 		Template:      o.Template,
+		TemplateStack: o.TemplateStack,
+		Ngfw:          o.Ngfw,
 	}
 
 	return json.Marshal(obj)
@@ -19680,20 +19717,20 @@ func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
 		Shared        *bool                                    `json:"shared"`
 		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
+		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
+		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.TemplateStack = shadow.TemplateStack
-	o.Ngfw = shadow.Ngfw
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Template = shadow.Template
+	o.TemplateStack = shadow.TemplateStack
+	o.Ngfw = shadow.Ngfw
 
 	return nil
 }

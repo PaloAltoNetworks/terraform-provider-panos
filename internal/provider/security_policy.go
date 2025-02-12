@@ -59,38 +59,63 @@ type SecurityPolicyDataSourceModel struct {
 }
 type SecurityPolicyDataSourceRulesObject struct {
 	Name                            types.String                                       `tfsdk:"name"`
-	Description                     types.String                                       `tfsdk:"description"`
-	DestinationAddresses            types.List                                         `tfsdk:"destination_addresses"`
+	Category                        types.List                                         `tfsdk:"category"`
+	IcmpUnreachable                 types.Bool                                         `tfsdk:"icmp_unreachable"`
+	Services                        types.List                                         `tfsdk:"services"`
+	Tag                             types.List                                         `tfsdk:"tag"`
+	DestinationZones                types.List                                         `tfsdk:"destination_zones"`
+	Action                          types.String                                       `tfsdk:"action"`
+	Disabled                        types.Bool                                         `tfsdk:"disabled"`
+	ProfileSetting                  *SecurityPolicyDataSourceRulesProfileSettingObject `tfsdk:"profile_setting"`
+	Schedule                        types.String                                       `tfsdk:"schedule"`
 	SourceHip                       types.List                                         `tfsdk:"source_hip"`
-	Target                          *SecurityPolicyDataSourceRulesTargetObject         `tfsdk:"target"`
 	DestinationHip                  types.List                                         `tfsdk:"destination_hip"`
 	Qos                             *SecurityPolicyDataSourceRulesQosObject            `tfsdk:"qos"`
-	SourceNwSlice                   types.List                                         `tfsdk:"source_nw_slice"`
-	GroupTag                        types.String                                       `tfsdk:"group_tag"`
-	LogEnd                          types.Bool                                         `tfsdk:"log_end"`
-	SourceUsers                     types.List                                         `tfsdk:"source_users"`
-	DisableInspect                  types.Bool                                         `tfsdk:"disable_inspect"`
-	IcmpUnreachable                 types.Bool                                         `tfsdk:"icmp_unreachable"`
-	LogStart                        types.Bool                                         `tfsdk:"log_start"`
-	Schedule                        types.String                                       `tfsdk:"schedule"`
-	Uuid                            types.String                                       `tfsdk:"uuid"`
-	DestinationZone                 types.String                                       `tfsdk:"destination_zone"`
-	Action                          types.String                                       `tfsdk:"action"`
-	Applications                    types.List                                         `tfsdk:"applications"`
-	ProfileSetting                  *SecurityPolicyDataSourceRulesProfileSettingObject `tfsdk:"profile_setting"`
 	RuleType                        types.String                                       `tfsdk:"rule_type"`
-	SourceAddresses                 types.List                                         `tfsdk:"source_addresses"`
+	Uuid                            types.String                                       `tfsdk:"uuid"`
+	DisableInspect                  types.Bool                                         `tfsdk:"disable_inspect"`
 	SourceZones                     types.List                                         `tfsdk:"source_zones"`
+	SourceAddresses                 types.List                                         `tfsdk:"source_addresses"`
+	SourceNwSlice                   types.List                                         `tfsdk:"source_nw_slice"`
+	Target                          *SecurityPolicyDataSourceRulesTargetObject         `tfsdk:"target"`
+	NegateSource                    types.Bool                                         `tfsdk:"negate_source"`
+	Applications                    types.List                                         `tfsdk:"applications"`
+	DestinationAddresses            types.List                                         `tfsdk:"destination_addresses"`
+	GroupTag                        types.String                                       `tfsdk:"group_tag"`
+	LogStart                        types.Bool                                         `tfsdk:"log_start"`
+	DisableServerResponseInspection types.Bool                                         `tfsdk:"disable_server_response_inspection"`
+	Description                     types.String                                       `tfsdk:"description"`
+	SourceUsers                     types.List                                         `tfsdk:"source_users"`
+	LogEnd                          types.Bool                                         `tfsdk:"log_end"`
 	LogSetting                      types.String                                       `tfsdk:"log_setting"`
 	NegateDestination               types.Bool                                         `tfsdk:"negate_destination"`
-	Services                        types.List                                         `tfsdk:"services"`
 	SourceImei                      types.List                                         `tfsdk:"source_imei"`
-	DisableServerResponseInspection types.Bool                                         `tfsdk:"disable_server_response_inspection"`
-	Category                        types.List                                         `tfsdk:"category"`
-	Disabled                        types.Bool                                         `tfsdk:"disabled"`
-	NegateSource                    types.Bool                                         `tfsdk:"negate_source"`
 	SourceImsi                      types.List                                         `tfsdk:"source_imsi"`
-	Tag                             types.List                                         `tfsdk:"tag"`
+}
+type SecurityPolicyDataSourceRulesProfileSettingObject struct {
+	Group    types.List                                                 `tfsdk:"group"`
+	Profiles *SecurityPolicyDataSourceRulesProfileSettingProfilesObject `tfsdk:"profiles"`
+}
+type SecurityPolicyDataSourceRulesProfileSettingProfilesObject struct {
+	FileBlocking     types.List `tfsdk:"file_blocking"`
+	Gtp              types.List `tfsdk:"gtp"`
+	Virus            types.List `tfsdk:"virus"`
+	WildfireAnalysis types.List `tfsdk:"wildfire_analysis"`
+	DataFiltering    types.List `tfsdk:"data_filtering"`
+	Sctp             types.List `tfsdk:"sctp"`
+	Spyware          types.List `tfsdk:"spyware"`
+	UrlFiltering     types.List `tfsdk:"url_filtering"`
+	Vulnerability    types.List `tfsdk:"vulnerability"`
+}
+type SecurityPolicyDataSourceRulesQosObject struct {
+	Marking *SecurityPolicyDataSourceRulesQosMarkingObject `tfsdk:"marking"`
+}
+type SecurityPolicyDataSourceRulesQosMarkingObject struct {
+	FollowC2sFlow *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject `tfsdk:"follow_c2s_flow"`
+	IpDscp        types.String                                                `tfsdk:"ip_dscp"`
+	IpPrecedence  types.String                                                `tfsdk:"ip_precedence"`
+}
+type SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject struct {
 }
 type SecurityPolicyDataSourceRulesTargetObject struct {
 	Devices types.List `tfsdk:"devices"`
@@ -104,49 +129,15 @@ type SecurityPolicyDataSourceRulesTargetDevicesObject struct {
 type SecurityPolicyDataSourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
 }
-type SecurityPolicyDataSourceRulesQosObject struct {
-	Marking *SecurityPolicyDataSourceRulesQosMarkingObject `tfsdk:"marking"`
-}
-type SecurityPolicyDataSourceRulesQosMarkingObject struct {
-	IpDscp        types.String                                                `tfsdk:"ip_dscp"`
-	IpPrecedence  types.String                                                `tfsdk:"ip_precedence"`
-	FollowC2sFlow *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject `tfsdk:"follow_c2s_flow"`
-}
-type SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject struct {
-}
-type SecurityPolicyDataSourceRulesProfileSettingObject struct {
-	Group    types.List                                                 `tfsdk:"group"`
-	Profiles *SecurityPolicyDataSourceRulesProfileSettingProfilesObject `tfsdk:"profiles"`
-}
-type SecurityPolicyDataSourceRulesProfileSettingProfilesObject struct {
-	DataFiltering    types.List `tfsdk:"data_filtering"`
-	FileBlocking     types.List `tfsdk:"file_blocking"`
-	Virus            types.List `tfsdk:"virus"`
-	Vulnerability    types.List `tfsdk:"vulnerability"`
-	Gtp              types.List `tfsdk:"gtp"`
-	Sctp             types.List `tfsdk:"sctp"`
-	Spyware          types.List `tfsdk:"spyware"`
-	UrlFiltering     types.List `tfsdk:"url_filtering"`
-	WildfireAnalysis types.List `tfsdk:"wildfire_analysis"`
-}
 
 func (o *SecurityPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	disabled_value := o.Disabled.ValueBoolPointer()
 	negateSource_value := o.NegateSource.ValueBoolPointer()
-	sourceImsi_pango_entries := make([]string, 0)
-	diags.Append(o.SourceImsi.ElementsAs(ctx, &sourceImsi_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
+	groupTag_value := o.GroupTag.ValueStringPointer()
+	logStart_value := o.LogStart.ValueBoolPointer()
 	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
-	category_pango_entries := make([]string, 0)
-	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	applications_pango_entries := make([]string, 0)
+	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -155,8 +146,93 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, o
 	if diags.HasError() {
 		return diags
 	}
+	description_value := o.Description.ValueStringPointer()
+	negateDestination_value := o.NegateDestination.ValueBoolPointer()
+	sourceImei_pango_entries := make([]string, 0)
+	diags.Append(o.SourceImei.ElementsAs(ctx, &sourceImei_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceImsi_pango_entries := make([]string, 0)
+	diags.Append(o.SourceImsi.ElementsAs(ctx, &sourceImsi_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceUsers_pango_entries := make([]string, 0)
+	diags.Append(o.SourceUsers.ElementsAs(ctx, &sourceUsers_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	logEnd_value := o.LogEnd.ValueBoolPointer()
+	logSetting_value := o.LogSetting.ValueStringPointer()
+	services_pango_entries := make([]string, 0)
+	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	tag_pango_entries := make([]string, 0)
+	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	destinationZones_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	category_pango_entries := make([]string, 0)
+	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	icmpUnreachable_value := o.IcmpUnreachable.ValueBoolPointer()
+	var profileSetting_entry *security.ProfileSetting
+	if o.ProfileSetting != nil {
+		if *obj != nil && (*obj).ProfileSetting != nil {
+			profileSetting_entry = (*obj).ProfileSetting
+		} else {
+			profileSetting_entry = new(security.ProfileSetting)
+		}
+
+		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	schedule_value := o.Schedule.ValueStringPointer()
 	sourceHip_pango_entries := make([]string, 0)
 	diags.Append(o.SourceHip.ElementsAs(ctx, &sourceHip_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	action_value := o.Action.ValueStringPointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ruleType_value := o.RuleType.ValueStringPointer()
+	destinationHip_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var qos_entry *security.Qos
+	if o.Qos != nil {
+		if *obj != nil && (*obj).Qos != nil {
+			qos_entry = (*obj).Qos
+		} else {
+			qos_entry = new(security.Qos)
+		}
+
+		diags.Append(o.Qos.CopyToPango(ctx, &qos_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sourceAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceNwSlice_pango_entries := make([]string, 0)
+	diags.Append(o.SourceNwSlice.ElementsAs(ctx, &sourceNwSlice_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -173,80 +249,8 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, o
 			return diags
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
-	var qos_entry *security.Qos
-	if o.Qos != nil {
-		if *obj != nil && (*obj).Qos != nil {
-			qos_entry = (*obj).Qos
-		} else {
-			qos_entry = new(security.Qos)
-		}
-
-		diags.Append(o.Qos.CopyToPango(ctx, &qos_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	sourceNwSlice_pango_entries := make([]string, 0)
-	diags.Append(o.SourceNwSlice.ElementsAs(ctx, &sourceNwSlice_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	destinationHip_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	groupTag_value := o.GroupTag.ValueStringPointer()
-	sourceUsers_pango_entries := make([]string, 0)
-	diags.Append(o.SourceUsers.ElementsAs(ctx, &sourceUsers_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	logEnd_value := o.LogEnd.ValueBoolPointer()
-	icmpUnreachable_value := o.IcmpUnreachable.ValueBoolPointer()
-	logStart_value := o.LogStart.ValueBoolPointer()
-	schedule_value := o.Schedule.ValueStringPointer()
 	uuid_value := o.Uuid.ValueStringPointer()
 	disableInspect_value := o.DisableInspect.ValueBoolPointer()
-	applications_pango_entries := make([]string, 0)
-	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var profileSetting_entry *security.ProfileSetting
-	if o.ProfileSetting != nil {
-		if *obj != nil && (*obj).ProfileSetting != nil {
-			profileSetting_entry = (*obj).ProfileSetting
-		} else {
-			profileSetting_entry = new(security.ProfileSetting)
-		}
-
-		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	ruleType_value := o.RuleType.ValueStringPointer()
-	sourceAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	destinationZone_pango_entries := []string{o.DestinationZone.ValueString()}
-	action_value := o.Action.ValueStringPointer()
-	logSetting_value := o.LogSetting.ValueStringPointer()
-	negateDestination_value := o.NegateDestination.ValueBoolPointer()
-	services_pango_entries := make([]string, 0)
-	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceImei_pango_entries := make([]string, 0)
-	diags.Append(o.SourceImei.ElementsAs(ctx, &sourceImei_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
 	if diags.HasError() {
@@ -257,130 +261,97 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, o
 		*obj = new(security.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Disabled = disabled_value
 	(*obj).NegateSource = negateSource_value
-	(*obj).SourceImsi = sourceImsi_pango_entries
-	(*obj).Tag = tag_pango_entries
-	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
-	(*obj).Category = category_pango_entries
-	(*obj).Destination = destinationAddresses_pango_entries
-	(*obj).SourceHip = sourceHip_pango_entries
-	(*obj).Target = target_entry
-	(*obj).Description = description_value
-	(*obj).Qos = qos_entry
-	(*obj).SourceNwSlice = sourceNwSlice_pango_entries
-	(*obj).DestinationHip = destinationHip_pango_entries
 	(*obj).GroupTag = groupTag_value
+	(*obj).LogStart = logStart_value
+	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
+	(*obj).Application = applications_pango_entries
+	(*obj).Destination = destinationAddresses_pango_entries
+	(*obj).Description = description_value
+	(*obj).NegateDestination = negateDestination_value
+	(*obj).SourceImei = sourceImei_pango_entries
+	(*obj).SourceImsi = sourceImsi_pango_entries
 	(*obj).SourceUser = sourceUsers_pango_entries
 	(*obj).LogEnd = logEnd_value
+	(*obj).LogSetting = logSetting_value
+	(*obj).Service = services_pango_entries
+	(*obj).Tag = tag_pango_entries
+	(*obj).To = destinationZones_pango_entries
+	(*obj).Category = category_pango_entries
 	(*obj).IcmpUnreachable = icmpUnreachable_value
-	(*obj).LogStart = logStart_value
+	(*obj).ProfileSetting = profileSetting_entry
 	(*obj).Schedule = schedule_value
+	(*obj).SourceHip = sourceHip_pango_entries
+	(*obj).Action = action_value
+	(*obj).Disabled = disabled_value
+	(*obj).RuleType = ruleType_value
+	(*obj).DestinationHip = destinationHip_pango_entries
+	(*obj).Qos = qos_entry
+	(*obj).Source = sourceAddresses_pango_entries
+	(*obj).SourceNwSlice = sourceNwSlice_pango_entries
+	(*obj).Target = target_entry
 	(*obj).Uuid = uuid_value
 	(*obj).DisableInspect = disableInspect_value
-	(*obj).Application = applications_pango_entries
-	(*obj).ProfileSetting = profileSetting_entry
-	(*obj).RuleType = ruleType_value
-	(*obj).Source = sourceAddresses_pango_entries
-	(*obj).To = destinationZone_pango_entries
-	(*obj).Action = action_value
-	(*obj).LogSetting = logSetting_value
-	(*obj).NegateDestination = negateDestination_value
-	(*obj).Service = services_pango_entries
-	(*obj).SourceImei = sourceImei_pango_entries
 	(*obj).From = sourceZones_pango_entries
 
 	return diags
 }
-func (o *SecurityPolicyDataSourceRulesProfileSettingObject) CopyToPango(ctx context.Context, obj **security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyDataSourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	group_pango_entries := make([]string, 0)
-	diags.Append(o.Group.ElementsAs(ctx, &group_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var profiles_entry *security.ProfileSettingProfiles
-	if o.Profiles != nil {
-		if *obj != nil && (*obj).Profiles != nil {
-			profiles_entry = (*obj).Profiles
+	var marking_entry *security.QosMarking
+	if o.Marking != nil {
+		if *obj != nil && (*obj).Marking != nil {
+			marking_entry = (*obj).Marking
 		} else {
-			profiles_entry = new(security.ProfileSettingProfiles)
+			marking_entry = new(security.QosMarking)
 		}
 
-		diags.Append(o.Profiles.CopyToPango(ctx, &profiles_entry, encrypted)...)
+		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
 	if (*obj) == nil {
-		*obj = new(security.ProfileSetting)
+		*obj = new(security.Qos)
 	}
-	(*obj).Group = group_pango_entries
-	(*obj).Profiles = profiles_entry
+	(*obj).Marking = marking_entry
 
 	return diags
 }
-func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, obj **security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyDataSourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	gtp_pango_entries := make([]string, 0)
-	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
+	if o.FollowC2sFlow != nil {
+		if *obj != nil && (*obj).FollowC2sFlow != nil {
+			followC2sFlow_entry = (*obj).FollowC2sFlow
+		} else {
+			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
+		}
+
+		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	sctp_pango_entries := make([]string, 0)
-	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	spyware_pango_entries := make([]string, 0)
-	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	dataFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
+	ipDscp_value := o.IpDscp.ValueStringPointer()
+	ipPrecedence_value := o.IpPrecedence.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(security.ProfileSettingProfiles)
+		*obj = new(security.QosMarking)
 	}
-	(*obj).Gtp = gtp_pango_entries
-	(*obj).Sctp = sctp_pango_entries
-	(*obj).Spyware = spyware_pango_entries
-	(*obj).UrlFiltering = urlFiltering_pango_entries
-	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
-	(*obj).DataFiltering = dataFiltering_pango_entries
-	(*obj).FileBlocking = fileBlocking_pango_entries
-	(*obj).Virus = virus_pango_entries
-	(*obj).Vulnerability = vulnerability_pango_entries
+	(*obj).FollowC2sFlow = followC2sFlow_entry
+	(*obj).IpDscp = ipDscp_value
+	(*obj).IpPrecedence = ipPrecedence_value
+
+	return diags
+}
+func (o *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(security.QosMarkingFollowC2sFlow)
+	}
 
 	return diags
 }
@@ -457,108 +428,105 @@ func (o *SecurityPolicyDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *SecurityPolicyDataSourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyDataSourceRulesProfileSettingObject) CopyToPango(ctx context.Context, obj **security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var marking_entry *security.QosMarking
-	if o.Marking != nil {
-		if *obj != nil && (*obj).Marking != nil {
-			marking_entry = (*obj).Marking
+	group_pango_entries := make([]string, 0)
+	diags.Append(o.Group.ElementsAs(ctx, &group_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var profiles_entry *security.ProfileSettingProfiles
+	if o.Profiles != nil {
+		if *obj != nil && (*obj).Profiles != nil {
+			profiles_entry = (*obj).Profiles
 		} else {
-			marking_entry = new(security.QosMarking)
+			profiles_entry = new(security.ProfileSettingProfiles)
 		}
 
-		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
+		diags.Append(o.Profiles.CopyToPango(ctx, &profiles_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
 	if (*obj) == nil {
-		*obj = new(security.Qos)
+		*obj = new(security.ProfileSetting)
 	}
-	(*obj).Marking = marking_entry
+	(*obj).Group = group_pango_entries
+	(*obj).Profiles = profiles_entry
 
 	return diags
 }
-func (o *SecurityPolicyDataSourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, obj **security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipDscp_value := o.IpDscp.ValueStringPointer()
-	ipPrecedence_value := o.IpPrecedence.ValueStringPointer()
-	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
-	if o.FollowC2sFlow != nil {
-		if *obj != nil && (*obj).FollowC2sFlow != nil {
-			followC2sFlow_entry = (*obj).FollowC2sFlow
-		} else {
-			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
-		}
-
-		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
+	sctp_pango_entries := make([]string, 0)
+	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	spyware_pango_entries := make([]string, 0)
+	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	urlFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	vulnerability_pango_entries := make([]string, 0)
+	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	dataFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	gtp_pango_entries := make([]string, 0)
+	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	virus_pango_entries := make([]string, 0)
+	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	wildfireAnalysis_pango_entries := make([]string, 0)
+	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	fileBlocking_pango_entries := make([]string, 0)
+	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
 	}
 
 	if (*obj) == nil {
-		*obj = new(security.QosMarking)
+		*obj = new(security.ProfileSettingProfiles)
 	}
-	(*obj).IpDscp = ipDscp_value
-	(*obj).IpPrecedence = ipPrecedence_value
-	(*obj).FollowC2sFlow = followC2sFlow_entry
-
-	return diags
-}
-func (o *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(security.QosMarkingFollowC2sFlow)
-	}
+	(*obj).Sctp = sctp_pango_entries
+	(*obj).Spyware = spyware_pango_entries
+	(*obj).UrlFiltering = urlFiltering_pango_entries
+	(*obj).Vulnerability = vulnerability_pango_entries
+	(*obj).DataFiltering = dataFiltering_pango_entries
+	(*obj).Gtp = gtp_pango_entries
+	(*obj).Virus = virus_pango_entries
+	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
+	(*obj).FileBlocking = fileBlocking_pango_entries
 
 	return diags
 }
 
 func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sourceUsers_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceUsers_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
-		diags.Append(list_diags...)
-	}
-	var applications_list types.List
-	{
-		var list_diags diag.Diagnostics
-		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
-		diags.Append(list_diags...)
-	}
-	var sourceAddresses_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
-		diags.Append(list_diags...)
-	}
-	var sourceZones_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
-		diags.Append(list_diags...)
-	}
-	var services_list types.List
-	{
-		var list_diags diag.Diagnostics
-		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
-		diags.Append(list_diags...)
-	}
 	var sourceImei_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceImei_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImei)
-		diags.Append(list_diags...)
-	}
-	var category_list types.List
-	{
-		var list_diags diag.Diagnostics
-		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
 	}
 	var sourceImsi_list types.List
@@ -567,16 +535,34 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context,
 		sourceImsi_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImsi)
 		diags.Append(list_diags...)
 	}
+	var sourceUsers_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceUsers_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
+		diags.Append(list_diags...)
+	}
+	var services_list types.List
+	{
+		var list_diags diag.Diagnostics
+		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
+		diags.Append(list_diags...)
+	}
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
-	var destinationAddresses_list types.List
+	var destinationZones_list types.List
 	{
 		var list_diags diag.Diagnostics
-		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
+		destinationZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
+		diags.Append(list_diags...)
+	}
+	var category_list types.List
+	{
+		var list_diags diag.Diagnostics
+		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
 	}
 	var sourceHip_list types.List
@@ -591,10 +577,34 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context,
 		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
 		diags.Append(list_diags...)
 	}
+	var sourceZones_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
+		diags.Append(list_diags...)
+	}
+	var sourceAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
+		diags.Append(list_diags...)
+	}
 	var sourceNwSlice_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceNwSlice_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceNwSlice)
+		diags.Append(list_diags...)
+	}
+	var destinationAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
+		diags.Append(list_diags...)
+	}
+	var applications_list types.List
+	{
+		var list_diags diag.Diagnostics
+		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
 	}
 	var profileSetting_object *SecurityPolicyDataSourceRulesProfileSettingObject
@@ -602,15 +612,6 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context,
 		profileSetting_object = new(SecurityPolicyDataSourceRulesProfileSettingObject)
 
 		diags.Append(profileSetting_object.CopyFromPango(ctx, obj.ProfileSetting, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var target_object *SecurityPolicyDataSourceRulesTargetObject
-	if obj.Target != nil {
-		target_object = new(SecurityPolicyDataSourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -624,44 +625,19 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context,
 			return diags
 		}
 	}
+	var target_object *SecurityPolicyDataSourceRulesTargetObject
+	if obj.Target != nil {
+		target_object = new(SecurityPolicyDataSourceRulesTargetObject)
 
-	destinationZone_value := types.StringValue(obj.To[0])
+		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
-	var groupTag_value types.String
-	if obj.GroupTag != nil {
-		groupTag_value = types.StringValue(*obj.GroupTag)
-	}
-	var logEnd_value types.Bool
-	if obj.LogEnd != nil {
-		logEnd_value = types.BoolValue(*obj.LogEnd)
-	}
-	var disableInspect_value types.Bool
-	if obj.DisableInspect != nil {
-		disableInspect_value = types.BoolValue(*obj.DisableInspect)
-	}
-	var icmpUnreachable_value types.Bool
-	if obj.IcmpUnreachable != nil {
-		icmpUnreachable_value = types.BoolValue(*obj.IcmpUnreachable)
-	}
-	var logStart_value types.Bool
-	if obj.LogStart != nil {
-		logStart_value = types.BoolValue(*obj.LogStart)
-	}
-	var schedule_value types.String
-	if obj.Schedule != nil {
-		schedule_value = types.StringValue(*obj.Schedule)
-	}
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
-	}
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var ruleType_value types.String
-	if obj.RuleType != nil {
-		ruleType_value = types.StringValue(*obj.RuleType)
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var logSetting_value types.String
 	if obj.LogSetting != nil {
@@ -671,55 +647,87 @@ func (o *SecurityPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context,
 	if obj.NegateDestination != nil {
 		negateDestination_value = types.BoolValue(*obj.NegateDestination)
 	}
+	var logEnd_value types.Bool
+	if obj.LogEnd != nil {
+		logEnd_value = types.BoolValue(*obj.LogEnd)
+	}
+	var icmpUnreachable_value types.Bool
+	if obj.IcmpUnreachable != nil {
+		icmpUnreachable_value = types.BoolValue(*obj.IcmpUnreachable)
+	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
+	}
+	var schedule_value types.String
+	if obj.Schedule != nil {
+		schedule_value = types.StringValue(*obj.Schedule)
+	}
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var ruleType_value types.String
+	if obj.RuleType != nil {
+		ruleType_value = types.StringValue(*obj.RuleType)
+	}
+	var uuid_value types.String
+	if obj.Uuid != nil {
+		uuid_value = types.StringValue(*obj.Uuid)
+	}
+	var disableInspect_value types.Bool
+	if obj.DisableInspect != nil {
+		disableInspect_value = types.BoolValue(*obj.DisableInspect)
 	}
 	var negateSource_value types.Bool
 	if obj.NegateSource != nil {
 		negateSource_value = types.BoolValue(*obj.NegateSource)
 	}
+	var groupTag_value types.String
+	if obj.GroupTag != nil {
+		groupTag_value = types.StringValue(*obj.GroupTag)
+	}
+	var logStart_value types.Bool
+	if obj.LogStart != nil {
+		logStart_value = types.BoolValue(*obj.LogStart)
+	}
 	var disableServerResponseInspection_value types.Bool
 	if obj.DisableServerResponseInspection != nil {
 		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.GroupTag = groupTag_value
-	o.LogEnd = logEnd_value
-	o.SourceUsers = sourceUsers_list
-	o.DisableInspect = disableInspect_value
-	o.IcmpUnreachable = icmpUnreachable_value
-	o.LogStart = logStart_value
-	o.Schedule = schedule_value
-	o.Uuid = uuid_value
-	o.Action = action_value
-	o.Applications = applications_list
-	o.ProfileSetting = profileSetting_object
-	o.RuleType = ruleType_value
-	o.SourceAddresses = sourceAddresses_list
-	o.DestinationZone = destinationZone_value
-	o.SourceZones = sourceZones_list
+	o.Description = description_value
 	o.LogSetting = logSetting_value
 	o.NegateDestination = negateDestination_value
-	o.Services = services_list
 	o.SourceImei = sourceImei_list
+	o.SourceImsi = sourceImsi_list
+	o.SourceUsers = sourceUsers_list
+	o.LogEnd = logEnd_value
+	o.IcmpUnreachable = icmpUnreachable_value
+	o.Services = services_list
+	o.Tag = tag_list
+	o.DestinationZones = destinationZones_list
 	o.Category = category_list
 	o.Disabled = disabled_value
-	o.NegateSource = negateSource_value
-	o.SourceImsi = sourceImsi_list
-	o.Tag = tag_list
-	o.DisableServerResponseInspection = disableServerResponseInspection_value
-	o.Description = description_value
-	o.DestinationAddresses = destinationAddresses_list
+	o.ProfileSetting = profileSetting_object
+	o.Schedule = schedule_value
 	o.SourceHip = sourceHip_list
-	o.Target = target_object
-	o.DestinationHip = destinationHip_list
+	o.Action = action_value
 	o.Qos = qos_object
+	o.RuleType = ruleType_value
+	o.DestinationHip = destinationHip_list
+	o.SourceZones = sourceZones_list
+	o.SourceAddresses = sourceAddresses_list
 	o.SourceNwSlice = sourceNwSlice_list
+	o.Target = target_object
+	o.Uuid = uuid_value
+	o.DisableInspect = disableInspect_value
+	o.NegateSource = negateSource_value
+	o.DestinationAddresses = destinationAddresses_list
+	o.GroupTag = groupTag_value
+	o.LogStart = logStart_value
+	o.DisableServerResponseInspection = disableServerResponseInspection_value
+	o.Applications = applications_list
 
 	return diags
 }
@@ -742,36 +750,42 @@ func (o *SecurityPolicyDataSourceRulesProfileSettingObject) CopyFromPango(ctx co
 		}
 	}
 
-	o.Group = group_list
 	o.Profiles = profiles_object
+	o.Group = group_list
 
 	return diags
 }
 
 func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, obj *security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var gtp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
+		diags.Append(list_diags...)
+	}
 	var virus_list types.List
 	{
 		var list_diags diag.Diagnostics
 		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
 		diags.Append(list_diags...)
 	}
-	var vulnerability_list types.List
+	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
-		diags.Append(list_diags...)
-	}
-	var dataFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
 		diags.Append(list_diags...)
 	}
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+		diags.Append(list_diags...)
+	}
+	var sctp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
 		diags.Append(list_diags...)
 	}
 	var spyware_list types.List
@@ -786,34 +800,78 @@ func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) CopyFromPang
 		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
 		diags.Append(list_diags...)
 	}
-	var wildfireAnalysis_list types.List
+	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
-		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
 	}
-	var gtp_list types.List
+	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
-		diags.Append(list_diags...)
-	}
-	var sctp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
 		diags.Append(list_diags...)
 	}
 
+	o.Gtp = gtp_list
 	o.Virus = virus_list
-	o.Vulnerability = vulnerability_list
-	o.DataFiltering = dataFiltering_list
+	o.WildfireAnalysis = wildfireAnalysis_list
 	o.FileBlocking = fileBlocking_list
+	o.Sctp = sctp_list
 	o.Spyware = spyware_list
 	o.UrlFiltering = urlFiltering_list
-	o.WildfireAnalysis = wildfireAnalysis_list
-	o.Gtp = gtp_list
-	o.Sctp = sctp_list
+	o.Vulnerability = vulnerability_list
+	o.DataFiltering = dataFiltering_list
+
+	return diags
+}
+
+func (o *SecurityPolicyDataSourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var marking_object *SecurityPolicyDataSourceRulesQosMarkingObject
+	if obj.Marking != nil {
+		marking_object = new(SecurityPolicyDataSourceRulesQosMarkingObject)
+
+		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Marking = marking_object
+
+	return diags
+}
+
+func (o *SecurityPolicyDataSourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var followC2sFlow_object *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject
+	if obj.FollowC2sFlow != nil {
+		followC2sFlow_object = new(SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject)
+
+		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipDscp_value types.String
+	if obj.IpDscp != nil {
+		ipDscp_value = types.StringValue(*obj.IpDscp)
+	}
+	var ipPrecedence_value types.String
+	if obj.IpPrecedence != nil {
+		ipPrecedence_value = types.StringValue(*obj.IpPrecedence)
+	}
+	o.IpDscp = ipDscp_value
+	o.IpPrecedence = ipPrecedence_value
+	o.FollowC2sFlow = followC2sFlow_object
+
+	return diags
+}
+
+func (o *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -882,56 +940,6 @@ func (o *SecurityPolicyDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *SecurityPolicyDataSourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var marking_object *SecurityPolicyDataSourceRulesQosMarkingObject
-	if obj.Marking != nil {
-		marking_object = new(SecurityPolicyDataSourceRulesQosMarkingObject)
-
-		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Marking = marking_object
-
-	return diags
-}
-
-func (o *SecurityPolicyDataSourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var followC2sFlow_object *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject
-	if obj.FollowC2sFlow != nil {
-		followC2sFlow_object = new(SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject)
-
-		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var ipDscp_value types.String
-	if obj.IpDscp != nil {
-		ipDscp_value = types.StringValue(*obj.IpDscp)
-	}
-	var ipPrecedence_value types.String
-	if obj.IpPrecedence != nil {
-		ipPrecedence_value = types.StringValue(*obj.IpPrecedence)
-	}
-	o.FollowC2sFlow = followC2sFlow_object
-	o.IpDscp = ipDscp_value
-	o.IpPrecedence = ipPrecedence_value
-
-	return diags
-}
-
-func (o *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
 func SecurityPolicyDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -980,15 +988,7 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"description": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"destination_addresses": dsschema.ListAttribute{
+			"source_imei": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -997,51 +997,13 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"source_hip": dsschema.ListAttribute{
+			"source_imsi": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"target": SecurityPolicyDataSourceRulesTargetSchema(),
-
-			"destination_hip": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"qos": SecurityPolicyDataSourceRulesQosSchema(),
-
-			"source_nw_slice": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"group_tag": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_end": dsschema.BoolAttribute{
-				Description: "Log at session end (required for certain ACC tables)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_users": dsschema.ListAttribute{
@@ -1053,97 +1015,12 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"disable_inspect": dsschema.BoolAttribute{
-				Description: "",
+			"log_end": dsschema.BoolAttribute{
+				Description: "Log at session end (required for certain ACC tables)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"icmp_unreachable": dsschema.BoolAttribute{
-				Description: "Send ICMP unreachable error when action is drop or reset",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_start": dsschema.BoolAttribute{
-				Description: "Log at session start",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"schedule": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"uuid": dsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"applications": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"profile_setting": SecurityPolicyDataSourceRulesProfileSettingSchema(),
-
-			"rule_type": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_addresses": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"destination_zone": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_zones": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"log_setting": dsschema.StringAttribute{
@@ -1162,7 +1039,7 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"services": dsschema.ListAttribute{
+			"tag": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1171,7 +1048,7 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"source_imei": dsschema.ListAttribute{
+			"destination_zones": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1189,12 +1066,120 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
+			"icmp_unreachable": dsschema.BoolAttribute{
+				Description: "Send ICMP unreachable error when action is drop or reset",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"services": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"schedule": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_hip": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"disabled": dsschema.BoolAttribute{
 				Description: "Disable the rule",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"profile_setting": SecurityPolicyDataSourceRulesProfileSettingSchema(),
+
+			"destination_hip": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"qos": SecurityPolicyDataSourceRulesQosSchema(),
+
+			"rule_type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_nw_slice": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"target": SecurityPolicyDataSourceRulesTargetSchema(),
+
+			"uuid": dsschema.StringAttribute{
+				Description: "Entry UUID value",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_inspect": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_zones": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_addresses": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 
 			"negate_source": dsschema.BoolAttribute{
@@ -1205,26 +1190,50 @@ func SecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"source_imsi": dsschema.ListAttribute{
-				Description: "",
+			"log_start": dsschema.BoolAttribute{
+				Description: "Log at session start",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
-				Computed:    true,
 				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"tag": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"disable_server_response_inspection": dsschema.BoolAttribute{
 				Description: "Disable inspection of server side traffic",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"applications": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"destination_addresses": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"group_tag": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": dsschema.StringAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1252,7 +1261,7 @@ func (o *SecurityPolicyDataSourceRulesObject) getTypeFor(name string) attr.Type 
 	panic("unreachable")
 }
 
-func SecurityPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
+func SecurityPolicyDataSourceRulesProfileSettingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -1261,15 +1270,55 @@ func SecurityPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute 
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"negate": dsschema.BoolAttribute{
-				Description: "Target to all but these specified devices and tags",
-				Computed:    true,
+			"profiles": SecurityPolicyDataSourceRulesProfileSettingProfilesSchema(),
+
+			"group": dsschema.ListAttribute{
+				Description: "",
 				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   false,
+				ElementType: types.StringType,
 			},
+		},
+	}
+}
 
-			"tags": dsschema.ListAttribute{
+func (o *SecurityPolicyDataSourceRulesProfileSettingObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyDataSourceRulesProfileSettingSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyDataSourceRulesProfileSettingProfilesSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("group"),
+				path.MatchRelative().AtParent().AtName("profiles"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"virus": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1278,95 +1327,83 @@ func SecurityPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute 
 				ElementType: types.StringType,
 			},
 
-			"devices": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: SecurityPolicyDataSourceRulesTargetDevicesSchema(),
-			},
-		},
-	}
-}
-
-func (o *SecurityPolicyDataSourceRulesTargetObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyDataSourceRulesTargetSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyDataSourceRulesTargetDevicesSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
+			"wildfire_analysis": dsschema.ListAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
 				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 
-			"vsys": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: SecurityPolicyDataSourceRulesTargetDevicesVsysSchema(),
-			},
-		},
-	}
-}
-
-func (o *SecurityPolicyDataSourceRulesTargetDevicesObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyDataSourceRulesTargetDevicesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyDataSourceRulesTargetDevicesVsysSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
+			"file_blocking": dsschema.ListAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
 				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"gtp": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"spyware": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"url_filtering": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"vulnerability": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"data_filtering": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"sctp": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
 }
 
-func (o *SecurityPolicyDataSourceRulesTargetDevicesVsysObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyDataSourceRulesTargetDevicesVsysSchema()
+func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyDataSourceRulesProfileSettingProfilesSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1473,9 +1510,9 @@ func SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowSchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ip_precedence"),
 				path.MatchRelative().AtParent().AtName("follow_c2s_flow"),
 				path.MatchRelative().AtParent().AtName("ip_dscp"),
+				path.MatchRelative().AtParent().AtName("ip_precedence"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -1500,7 +1537,7 @@ func (o *SecurityPolicyDataSourceRulesQosMarkingFollowC2sFlowObject) getTypeFor(
 	panic("unreachable")
 }
 
-func SecurityPolicyDataSourceRulesProfileSettingSchema() dsschema.SingleNestedAttribute {
+func SecurityPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -1509,7 +1546,24 @@ func SecurityPolicyDataSourceRulesProfileSettingSchema() dsschema.SingleNestedAt
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"group": dsschema.ListAttribute{
+			"devices": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: SecurityPolicyDataSourceRulesTargetDevicesSchema(),
+			},
+
+			"negate": dsschema.BoolAttribute{
+				Description: "Target to all but these specified devices and tags",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tags": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1517,14 +1571,12 @@ func SecurityPolicyDataSourceRulesProfileSettingSchema() dsschema.SingleNestedAt
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
-
-			"profiles": SecurityPolicyDataSourceRulesProfileSettingProfilesSchema(),
 		},
 	}
 }
 
-func (o *SecurityPolicyDataSourceRulesProfileSettingObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyDataSourceRulesProfileSettingSchema()
+func (o *SecurityPolicyDataSourceRulesTargetObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyDataSourceRulesTargetSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1541,108 +1593,65 @@ func (o *SecurityPolicyDataSourceRulesProfileSettingObject) getTypeFor(name stri
 	panic("unreachable")
 }
 
-func SecurityPolicyDataSourceRulesProfileSettingProfilesSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("group"),
-				path.MatchRelative().AtParent().AtName("profiles"),
-			}...),
-		},
+func SecurityPolicyDataSourceRulesTargetDevicesSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
 
-			"data_filtering": dsschema.ListAttribute{
+			"name": dsschema.StringAttribute{
 				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
 				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
-			"file_blocking": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"virus": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"vulnerability": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"wildfire_analysis": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"gtp": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"sctp": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"spyware": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"url_filtering": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
+			"vsys": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: SecurityPolicyDataSourceRulesTargetDevicesVsysSchema(),
 			},
 		},
 	}
 }
 
-func (o *SecurityPolicyDataSourceRulesProfileSettingProfilesObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyDataSourceRulesProfileSettingProfilesSchema()
+func (o *SecurityPolicyDataSourceRulesTargetDevicesObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyDataSourceRulesTargetDevicesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyDataSourceRulesTargetDevicesVsysSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *SecurityPolicyDataSourceRulesTargetDevicesVsysObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyDataSourceRulesTargetDevicesVsysSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1687,7 +1696,6 @@ func (d *SecurityPolicyDataSource) Configure(_ context.Context, req datasource.C
 	}
 	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), specifier, security.SpecMatches)
 }
-
 func (o *SecurityPolicyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var state SecurityPolicyDataSourceModel
@@ -1802,37 +1810,62 @@ type SecurityPolicyResourceModel struct {
 type SecurityPolicyResourceRulesObject struct {
 	Name                            types.String                                     `tfsdk:"name"`
 	Description                     types.String                                     `tfsdk:"description"`
-	DestinationAddresses            types.List                                       `tfsdk:"destination_addresses"`
-	SourceHip                       types.List                                       `tfsdk:"source_hip"`
-	Target                          *SecurityPolicyResourceRulesTargetObject         `tfsdk:"target"`
-	DestinationHip                  types.List                                       `tfsdk:"destination_hip"`
-	Qos                             *SecurityPolicyResourceRulesQosObject            `tfsdk:"qos"`
-	SourceNwSlice                   types.List                                       `tfsdk:"source_nw_slice"`
-	GroupTag                        types.String                                     `tfsdk:"group_tag"`
-	LogEnd                          types.Bool                                       `tfsdk:"log_end"`
+	SourceImsi                      types.List                                       `tfsdk:"source_imsi"`
 	SourceUsers                     types.List                                       `tfsdk:"source_users"`
-	Uuid                            types.String                                     `tfsdk:"uuid"`
-	DisableInspect                  types.Bool                                       `tfsdk:"disable_inspect"`
-	IcmpUnreachable                 types.Bool                                       `tfsdk:"icmp_unreachable"`
-	LogStart                        types.Bool                                       `tfsdk:"log_start"`
-	Schedule                        types.String                                     `tfsdk:"schedule"`
-	SourceAddresses                 types.List                                       `tfsdk:"source_addresses"`
-	DestinationZone                 types.String                                     `tfsdk:"destination_zone"`
-	Action                          types.String                                     `tfsdk:"action"`
-	Applications                    types.List                                       `tfsdk:"applications"`
-	ProfileSetting                  *SecurityPolicyResourceRulesProfileSettingObject `tfsdk:"profile_setting"`
-	RuleType                        types.String                                     `tfsdk:"rule_type"`
-	SourceImei                      types.List                                       `tfsdk:"source_imei"`
-	SourceZones                     types.List                                       `tfsdk:"source_zones"`
+	LogEnd                          types.Bool                                       `tfsdk:"log_end"`
 	LogSetting                      types.String                                     `tfsdk:"log_setting"`
 	NegateDestination               types.Bool                                       `tfsdk:"negate_destination"`
+	SourceImei                      types.List                                       `tfsdk:"source_imei"`
+	DestinationZones                types.List                                       `tfsdk:"destination_zones"`
+	Category                        types.List                                       `tfsdk:"category"`
+	IcmpUnreachable                 types.Bool                                       `tfsdk:"icmp_unreachable"`
 	Services                        types.List                                       `tfsdk:"services"`
 	Tag                             types.List                                       `tfsdk:"tag"`
-	DisableServerResponseInspection types.Bool                                       `tfsdk:"disable_server_response_inspection"`
-	Category                        types.List                                       `tfsdk:"category"`
+	SourceHip                       types.List                                       `tfsdk:"source_hip"`
+	Action                          types.String                                     `tfsdk:"action"`
 	Disabled                        types.Bool                                       `tfsdk:"disabled"`
+	ProfileSetting                  *SecurityPolicyResourceRulesProfileSettingObject `tfsdk:"profile_setting"`
+	Schedule                        types.String                                     `tfsdk:"schedule"`
+	DestinationHip                  types.List                                       `tfsdk:"destination_hip"`
+	Qos                             *SecurityPolicyResourceRulesQosObject            `tfsdk:"qos"`
+	RuleType                        types.String                                     `tfsdk:"rule_type"`
+	Target                          *SecurityPolicyResourceRulesTargetObject         `tfsdk:"target"`
+	Uuid                            types.String                                     `tfsdk:"uuid"`
+	DisableInspect                  types.Bool                                       `tfsdk:"disable_inspect"`
+	SourceZones                     types.List                                       `tfsdk:"source_zones"`
+	SourceAddresses                 types.List                                       `tfsdk:"source_addresses"`
+	SourceNwSlice                   types.List                                       `tfsdk:"source_nw_slice"`
 	NegateSource                    types.Bool                                       `tfsdk:"negate_source"`
-	SourceImsi                      types.List                                       `tfsdk:"source_imsi"`
+	DisableServerResponseInspection types.Bool                                       `tfsdk:"disable_server_response_inspection"`
+	Applications                    types.List                                       `tfsdk:"applications"`
+	DestinationAddresses            types.List                                       `tfsdk:"destination_addresses"`
+	GroupTag                        types.String                                     `tfsdk:"group_tag"`
+	LogStart                        types.Bool                                       `tfsdk:"log_start"`
+}
+type SecurityPolicyResourceRulesProfileSettingObject struct {
+	Group    types.List                                               `tfsdk:"group"`
+	Profiles *SecurityPolicyResourceRulesProfileSettingProfilesObject `tfsdk:"profiles"`
+}
+type SecurityPolicyResourceRulesProfileSettingProfilesObject struct {
+	WildfireAnalysis types.List `tfsdk:"wildfire_analysis"`
+	FileBlocking     types.List `tfsdk:"file_blocking"`
+	Gtp              types.List `tfsdk:"gtp"`
+	Virus            types.List `tfsdk:"virus"`
+	UrlFiltering     types.List `tfsdk:"url_filtering"`
+	Vulnerability    types.List `tfsdk:"vulnerability"`
+	DataFiltering    types.List `tfsdk:"data_filtering"`
+	Sctp             types.List `tfsdk:"sctp"`
+	Spyware          types.List `tfsdk:"spyware"`
+}
+type SecurityPolicyResourceRulesQosObject struct {
+	Marking *SecurityPolicyResourceRulesQosMarkingObject `tfsdk:"marking"`
+}
+type SecurityPolicyResourceRulesQosMarkingObject struct {
+	IpDscp        types.String                                              `tfsdk:"ip_dscp"`
+	IpPrecedence  types.String                                              `tfsdk:"ip_precedence"`
+	FollowC2sFlow *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject `tfsdk:"follow_c2s_flow"`
+}
+type SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject struct {
 }
 type SecurityPolicyResourceRulesTargetObject struct {
 	Devices types.List `tfsdk:"devices"`
@@ -1845,35 +1878,6 @@ type SecurityPolicyResourceRulesTargetDevicesObject struct {
 }
 type SecurityPolicyResourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
-}
-type SecurityPolicyResourceRulesQosObject struct {
-	Marking *SecurityPolicyResourceRulesQosMarkingObject `tfsdk:"marking"`
-}
-type SecurityPolicyResourceRulesQosMarkingObject struct {
-	FollowC2sFlow *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject `tfsdk:"follow_c2s_flow"`
-	IpDscp        types.String                                              `tfsdk:"ip_dscp"`
-	IpPrecedence  types.String                                              `tfsdk:"ip_precedence"`
-}
-type SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject struct {
-}
-type SecurityPolicyResourceRulesProfileSettingObject struct {
-	Group    types.List                                               `tfsdk:"group"`
-	Profiles *SecurityPolicyResourceRulesProfileSettingProfilesObject `tfsdk:"profiles"`
-}
-type SecurityPolicyResourceRulesProfileSettingProfilesObject struct {
-	Gtp              types.List `tfsdk:"gtp"`
-	Sctp             types.List `tfsdk:"sctp"`
-	Spyware          types.List `tfsdk:"spyware"`
-	UrlFiltering     types.List `tfsdk:"url_filtering"`
-	WildfireAnalysis types.List `tfsdk:"wildfire_analysis"`
-	DataFiltering    types.List `tfsdk:"data_filtering"`
-	FileBlocking     types.List `tfsdk:"file_blocking"`
-	Virus            types.List `tfsdk:"virus"`
-	Vulnerability    types.List `tfsdk:"vulnerability"`
-}
-
-func (r *SecurityPolicyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_security_policy"
 }
 
 func (r *SecurityPolicyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -1929,249 +1933,6 @@ func SecurityPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"negate_destination": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"services": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_imei": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_zones": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"log_setting": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"negate_source": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_imsi": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"tag": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"disable_server_response_inspection": rsschema.BoolAttribute{
-				Description: "Disable inspection of server side traffic",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"category": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"disabled": rsschema.BoolAttribute{
-				Description: "Disable the rule",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_hip": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"target": SecurityPolicyResourceRulesTargetSchema(),
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"destination_addresses": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_nw_slice": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"destination_hip": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"qos": SecurityPolicyResourceRulesQosSchema(),
-
-			"group_tag": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_end": rsschema.BoolAttribute{
-				Description: "Log at session end (required for certain ACC tables)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_users": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"log_start": rsschema.BoolAttribute{
-				Description: "Log at session start",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"schedule": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"uuid": rsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"disable_inspect": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"icmp_unreachable": rsschema.BoolAttribute{
-				Description: "Send ICMP unreachable error when action is drop or reset",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"profile_setting": SecurityPolicyResourceRulesProfileSettingSchema(),
-
-			"rule_type": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("universal"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"universal",
-						"intrazone",
-						"interzone",
-					}...),
-				},
-			},
-
-			"source_addresses": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"destination_zone": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"action": rsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -2192,7 +1953,251 @@ func SecurityPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				},
 			},
 
+			"disabled": rsschema.BoolAttribute{
+				Description: "Disable the rule",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"profile_setting": SecurityPolicyResourceRulesProfileSettingSchema(),
+
+			"schedule": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_hip": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"destination_hip": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"qos": SecurityPolicyResourceRulesQosSchema(),
+
+			"rule_type": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("universal"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"interzone",
+						"universal",
+						"intrazone",
+					}...),
+				},
+			},
+
+			"uuid": rsschema.StringAttribute{
+				Description: "Entry UUID value",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_inspect": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_zones": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_addresses": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_nw_slice": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"target": SecurityPolicyResourceRulesTargetSchema(),
+
+			"negate_source": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"applications": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"destination_addresses": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"group_tag": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_start": rsschema.BoolAttribute{
+				Description: "Log at session start",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_server_response_inspection": rsschema.BoolAttribute{
+				Description: "Disable inspection of server side traffic",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_users": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"log_end": rsschema.BoolAttribute{
+				Description: "Log at session end (required for certain ACC tables)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_setting": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"negate_destination": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_imei": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_imsi": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"category": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"icmp_unreachable": rsschema.BoolAttribute{
+				Description: "Send ICMP unreachable error when action is drop or reset",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"services": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"tag": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"destination_zones": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -2206,6 +2211,289 @@ func SecurityPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 
 func (o *SecurityPolicyResourceRulesObject) getTypeFor(name string) attr.Type {
 	schema := SecurityPolicyResourceRulesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyResourceRulesProfileSettingSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"group": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+
+				Validators: []validator.List{
+					listvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("group"),
+						path.MatchRelative().AtParent().AtName("profiles"),
+					}...),
+				},
+			},
+
+			"profiles": SecurityPolicyResourceRulesProfileSettingProfilesSchema(),
+		},
+	}
+}
+
+func (o *SecurityPolicyResourceRulesProfileSettingObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyResourceRulesProfileSettingSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyResourceRulesProfileSettingProfilesSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("group"),
+				path.MatchRelative().AtParent().AtName("profiles"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"data_filtering": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"sctp": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"spyware": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"url_filtering": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"vulnerability": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"file_blocking": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"gtp": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"virus": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"wildfire_analysis": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyResourceRulesProfileSettingProfilesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyResourceRulesQosSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"marking": SecurityPolicyResourceRulesQosMarkingSchema(),
+		},
+	}
+}
+
+func (o *SecurityPolicyResourceRulesQosObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyResourceRulesQosSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyResourceRulesQosMarkingSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"follow_c2s_flow": SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema(),
+
+			"ip_dscp": rsschema.StringAttribute{
+				Description: "IP DSCP",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_precedence": rsschema.StringAttribute{
+				Description: "IP Precedence",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *SecurityPolicyResourceRulesQosMarkingObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyResourceRulesQosMarkingSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("follow_c2s_flow"),
+				path.MatchRelative().AtParent().AtName("ip_dscp"),
+				path.MatchRelative().AtParent().AtName("ip_precedence"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) getTypeFor(name string) attr.Type {
+	schema := SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2353,287 +2641,8 @@ func (o *SecurityPolicyResourceRulesTargetDevicesVsysObject) getTypeFor(name str
 	panic("unreachable")
 }
 
-func SecurityPolicyResourceRulesQosSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"marking": SecurityPolicyResourceRulesQosMarkingSchema(),
-		},
-	}
-}
-
-func (o *SecurityPolicyResourceRulesQosObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyResourceRulesQosSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyResourceRulesQosMarkingSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"follow_c2s_flow": SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema(),
-
-			"ip_dscp": rsschema.StringAttribute{
-				Description: "IP DSCP",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ip_precedence": rsschema.StringAttribute{
-				Description: "IP Precedence",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *SecurityPolicyResourceRulesQosMarkingObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyResourceRulesQosMarkingSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("follow_c2s_flow"),
-				path.MatchRelative().AtParent().AtName("ip_dscp"),
-				path.MatchRelative().AtParent().AtName("ip_precedence"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyResourceRulesQosMarkingFollowC2sFlowSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyResourceRulesProfileSettingSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"group": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-
-				Validators: []validator.List{
-					listvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("group"),
-						path.MatchRelative().AtParent().AtName("profiles"),
-					}...),
-				},
-			},
-
-			"profiles": SecurityPolicyResourceRulesProfileSettingProfilesSchema(),
-		},
-	}
-}
-
-func (o *SecurityPolicyResourceRulesProfileSettingObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyResourceRulesProfileSettingSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SecurityPolicyResourceRulesProfileSettingProfilesSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("group"),
-				path.MatchRelative().AtParent().AtName("profiles"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"data_filtering": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"file_blocking": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"virus": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"vulnerability": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"gtp": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"sctp": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"spyware": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"url_filtering": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"wildfire_analysis": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) getTypeFor(name string) attr.Type {
-	schema := SecurityPolicyResourceRulesProfileSettingProfilesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
+func (r *SecurityPolicyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_security_policy"
 }
 
 func (r *SecurityPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -2659,15 +2668,40 @@ func (r *SecurityPolicyResource) Configure(ctx context.Context, req resource.Con
 
 func (o *SecurityPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	category_pango_entries := make([]string, 0)
-	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	groupTag_value := o.GroupTag.ValueStringPointer()
+	logStart_value := o.LogStart.ValueBoolPointer()
+	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
+	applications_pango_entries := make([]string, 0)
+	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	disabled_value := o.Disabled.ValueBoolPointer()
-	negateSource_value := o.NegateSource.ValueBoolPointer()
+	destinationAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	description_value := o.Description.ValueStringPointer()
+	negateDestination_value := o.NegateDestination.ValueBoolPointer()
+	sourceImei_pango_entries := make([]string, 0)
+	diags.Append(o.SourceImei.ElementsAs(ctx, &sourceImei_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	sourceImsi_pango_entries := make([]string, 0)
 	diags.Append(o.SourceImsi.ElementsAs(ctx, &sourceImsi_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceUsers_pango_entries := make([]string, 0)
+	diags.Append(o.SourceUsers.ElementsAs(ctx, &sourceUsers_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	logEnd_value := o.LogEnd.ValueBoolPointer()
+	logSetting_value := o.LogSetting.ValueStringPointer()
+	services_pango_entries := make([]string, 0)
+	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2676,31 +2710,39 @@ func (o *SecurityPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj
 	if diags.HasError() {
 		return diags
 	}
-	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
-	description_value := o.Description.ValueStringPointer()
-	destinationAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	destinationZones_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
+	category_pango_entries := make([]string, 0)
+	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	icmpUnreachable_value := o.IcmpUnreachable.ValueBoolPointer()
+	var profileSetting_entry *security.ProfileSetting
+	if o.ProfileSetting != nil {
+		if *obj != nil && (*obj).ProfileSetting != nil {
+			profileSetting_entry = (*obj).ProfileSetting
+		} else {
+			profileSetting_entry = new(security.ProfileSetting)
+		}
+
+		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	schedule_value := o.Schedule.ValueStringPointer()
 	sourceHip_pango_entries := make([]string, 0)
 	diags.Append(o.SourceHip.ElementsAs(ctx, &sourceHip_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	var target_entry *security.Target
-	if o.Target != nil {
-		if *obj != nil && (*obj).Target != nil {
-			target_entry = (*obj).Target
-		} else {
-			target_entry = new(security.Target)
-		}
-
-		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	action_value := o.Action.ValueStringPointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ruleType_value := o.RuleType.ValueStringPointer()
 	destinationHip_pango_entries := make([]string, 0)
 	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
 	if diags.HasError() {
@@ -2719,103 +2761,74 @@ func (o *SecurityPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj
 			return diags
 		}
 	}
-	sourceNwSlice_pango_entries := make([]string, 0)
-	diags.Append(o.SourceNwSlice.ElementsAs(ctx, &sourceNwSlice_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	groupTag_value := o.GroupTag.ValueStringPointer()
-	logEnd_value := o.LogEnd.ValueBoolPointer()
-	sourceUsers_pango_entries := make([]string, 0)
-	diags.Append(o.SourceUsers.ElementsAs(ctx, &sourceUsers_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	disableInspect_value := o.DisableInspect.ValueBoolPointer()
-	icmpUnreachable_value := o.IcmpUnreachable.ValueBoolPointer()
-	logStart_value := o.LogStart.ValueBoolPointer()
-	schedule_value := o.Schedule.ValueStringPointer()
-	uuid_value := o.Uuid.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-	applications_pango_entries := make([]string, 0)
-	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var profileSetting_entry *security.ProfileSetting
-	if o.ProfileSetting != nil {
-		if *obj != nil && (*obj).ProfileSetting != nil {
-			profileSetting_entry = (*obj).ProfileSetting
-		} else {
-			profileSetting_entry = new(security.ProfileSetting)
-		}
-
-		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	ruleType_value := o.RuleType.ValueStringPointer()
 	sourceAddresses_pango_entries := make([]string, 0)
 	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	destinationZone_pango_entries := []string{o.DestinationZone.ValueString()}
+	sourceNwSlice_pango_entries := make([]string, 0)
+	diags.Append(o.SourceNwSlice.ElementsAs(ctx, &sourceNwSlice_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var target_entry *security.Target
+	if o.Target != nil {
+		if *obj != nil && (*obj).Target != nil {
+			target_entry = (*obj).Target
+		} else {
+			target_entry = new(security.Target)
+		}
+
+		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	uuid_value := o.Uuid.ValueStringPointer()
+	disableInspect_value := o.DisableInspect.ValueBoolPointer()
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	logSetting_value := o.LogSetting.ValueStringPointer()
-	negateDestination_value := o.NegateDestination.ValueBoolPointer()
-	services_pango_entries := make([]string, 0)
-	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceImei_pango_entries := make([]string, 0)
-	diags.Append(o.SourceImei.ElementsAs(ctx, &sourceImei_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
+	negateSource_value := o.NegateSource.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(security.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Category = category_pango_entries
-	(*obj).Disabled = disabled_value
-	(*obj).NegateSource = negateSource_value
-	(*obj).SourceImsi = sourceImsi_pango_entries
-	(*obj).Tag = tag_pango_entries
+	(*obj).GroupTag = groupTag_value
+	(*obj).LogStart = logStart_value
 	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
-	(*obj).Description = description_value
+	(*obj).Application = applications_pango_entries
 	(*obj).Destination = destinationAddresses_pango_entries
+	(*obj).Description = description_value
+	(*obj).NegateDestination = negateDestination_value
+	(*obj).SourceImei = sourceImei_pango_entries
+	(*obj).SourceImsi = sourceImsi_pango_entries
+	(*obj).SourceUser = sourceUsers_pango_entries
+	(*obj).LogEnd = logEnd_value
+	(*obj).LogSetting = logSetting_value
+	(*obj).Service = services_pango_entries
+	(*obj).Tag = tag_pango_entries
+	(*obj).To = destinationZones_pango_entries
+	(*obj).Category = category_pango_entries
+	(*obj).IcmpUnreachable = icmpUnreachable_value
+	(*obj).ProfileSetting = profileSetting_entry
+	(*obj).Schedule = schedule_value
 	(*obj).SourceHip = sourceHip_pango_entries
-	(*obj).Target = target_entry
+	(*obj).Action = action_value
+	(*obj).Disabled = disabled_value
+	(*obj).RuleType = ruleType_value
 	(*obj).DestinationHip = destinationHip_pango_entries
 	(*obj).Qos = qos_entry
-	(*obj).SourceNwSlice = sourceNwSlice_pango_entries
-	(*obj).GroupTag = groupTag_value
-	(*obj).LogEnd = logEnd_value
-	(*obj).SourceUser = sourceUsers_pango_entries
-	(*obj).DisableInspect = disableInspect_value
-	(*obj).IcmpUnreachable = icmpUnreachable_value
-	(*obj).LogStart = logStart_value
-	(*obj).Schedule = schedule_value
-	(*obj).Uuid = uuid_value
-	(*obj).Action = action_value
-	(*obj).Application = applications_pango_entries
-	(*obj).ProfileSetting = profileSetting_entry
-	(*obj).RuleType = ruleType_value
 	(*obj).Source = sourceAddresses_pango_entries
-	(*obj).To = destinationZone_pango_entries
+	(*obj).SourceNwSlice = sourceNwSlice_pango_entries
+	(*obj).Target = target_entry
+	(*obj).Uuid = uuid_value
+	(*obj).DisableInspect = disableInspect_value
 	(*obj).From = sourceZones_pango_entries
-	(*obj).LogSetting = logSetting_value
-	(*obj).NegateDestination = negateDestination_value
-	(*obj).Service = services_pango_entries
-	(*obj).SourceImei = sourceImei_pango_entries
+	(*obj).NegateSource = negateSource_value
 
 	return diags
 }
@@ -2850,18 +2863,8 @@ func (o *SecurityPolicyResourceRulesProfileSettingObject) CopyToPango(ctx contex
 }
 func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, obj **security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	dataFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	urlFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2870,8 +2873,8 @@ func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyToPango(ct
 	if diags.HasError() {
 		return diags
 	}
-	gtp_pango_entries := make([]string, 0)
-	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
+	dataFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2885,13 +2888,23 @@ func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyToPango(ct
 	if diags.HasError() {
 		return diags
 	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
+	wildfireAnalysis_pango_entries := make([]string, 0)
+	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
+	fileBlocking_pango_entries := make([]string, 0)
+	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	gtp_pango_entries := make([]string, 0)
+	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	virus_pango_entries := make([]string, 0)
+	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2899,15 +2912,74 @@ func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyToPango(ct
 	if (*obj) == nil {
 		*obj = new(security.ProfileSettingProfiles)
 	}
-	(*obj).DataFiltering = dataFiltering_pango_entries
-	(*obj).FileBlocking = fileBlocking_pango_entries
-	(*obj).Virus = virus_pango_entries
+	(*obj).UrlFiltering = urlFiltering_pango_entries
 	(*obj).Vulnerability = vulnerability_pango_entries
-	(*obj).Gtp = gtp_pango_entries
+	(*obj).DataFiltering = dataFiltering_pango_entries
 	(*obj).Sctp = sctp_pango_entries
 	(*obj).Spyware = spyware_pango_entries
-	(*obj).UrlFiltering = urlFiltering_pango_entries
 	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
+	(*obj).FileBlocking = fileBlocking_pango_entries
+	(*obj).Gtp = gtp_pango_entries
+	(*obj).Virus = virus_pango_entries
+
+	return diags
+}
+func (o *SecurityPolicyResourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var marking_entry *security.QosMarking
+	if o.Marking != nil {
+		if *obj != nil && (*obj).Marking != nil {
+			marking_entry = (*obj).Marking
+		} else {
+			marking_entry = new(security.QosMarking)
+		}
+
+		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(security.Qos)
+	}
+	(*obj).Marking = marking_entry
+
+	return diags
+}
+func (o *SecurityPolicyResourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
+	if o.FollowC2sFlow != nil {
+		if *obj != nil && (*obj).FollowC2sFlow != nil {
+			followC2sFlow_entry = (*obj).FollowC2sFlow
+		} else {
+			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
+		}
+
+		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipDscp_value := o.IpDscp.ValueStringPointer()
+	ipPrecedence_value := o.IpPrecedence.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(security.QosMarking)
+	}
+	(*obj).FollowC2sFlow = followC2sFlow_entry
+	(*obj).IpDscp = ipDscp_value
+	(*obj).IpPrecedence = ipPrecedence_value
+
+	return diags
+}
+func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(security.QosMarkingFollowC2sFlow)
+	}
 
 	return diags
 }
@@ -2984,78 +3056,19 @@ func (o *SecurityPolicyResourceRulesTargetDevicesVsysObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *SecurityPolicyResourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var marking_entry *security.QosMarking
-	if o.Marking != nil {
-		if *obj != nil && (*obj).Marking != nil {
-			marking_entry = (*obj).Marking
-		} else {
-			marking_entry = new(security.QosMarking)
-		}
-
-		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(security.Qos)
-	}
-	(*obj).Marking = marking_entry
-
-	return diags
-}
-func (o *SecurityPolicyResourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
-	if o.FollowC2sFlow != nil {
-		if *obj != nil && (*obj).FollowC2sFlow != nil {
-			followC2sFlow_entry = (*obj).FollowC2sFlow
-		} else {
-			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
-		}
-
-		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	ipDscp_value := o.IpDscp.ValueStringPointer()
-	ipPrecedence_value := o.IpPrecedence.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(security.QosMarking)
-	}
-	(*obj).FollowC2sFlow = followC2sFlow_entry
-	(*obj).IpDscp = ipDscp_value
-	(*obj).IpPrecedence = ipPrecedence_value
-
-	return diags
-}
-func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(security.QosMarkingFollowC2sFlow)
-	}
-
-	return diags
-}
 
 func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, obj *security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sourceAddresses_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
-		diags.Append(list_diags...)
-	}
 	var applications_list types.List
 	{
 		var list_diags diag.Diagnostics
 		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
+		diags.Append(list_diags...)
+	}
+	var destinationAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
 	}
 	var sourceImei_list types.List
@@ -3064,10 +3077,22 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 		sourceImei_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImei)
 		diags.Append(list_diags...)
 	}
-	var sourceZones_list types.List
+	var sourceImsi_list types.List
 	{
 		var list_diags diag.Diagnostics
-		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
+		sourceImsi_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImsi)
+		diags.Append(list_diags...)
+	}
+	var sourceUsers_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceUsers_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
+		diags.Append(list_diags...)
+	}
+	var category_list types.List
+	{
+		var list_diags diag.Diagnostics
+		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
 	}
 	var services_list types.List
@@ -3082,22 +3107,10 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
-	var category_list types.List
+	var destinationZones_list types.List
 	{
 		var list_diags diag.Diagnostics
-		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
-		diags.Append(list_diags...)
-	}
-	var sourceImsi_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceImsi_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImsi)
-		diags.Append(list_diags...)
-	}
-	var destinationAddresses_list types.List
-	{
-		var list_diags diag.Diagnostics
-		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
+		destinationZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
 	}
 	var sourceHip_list types.List
@@ -3112,16 +3125,22 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
 		diags.Append(list_diags...)
 	}
+	var sourceZones_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
+		diags.Append(list_diags...)
+	}
+	var sourceAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
+		diags.Append(list_diags...)
+	}
 	var sourceNwSlice_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceNwSlice_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceNwSlice)
-		diags.Append(list_diags...)
-	}
-	var sourceUsers_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceUsers_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
 		diags.Append(list_diags...)
 	}
 	var profileSetting_object *SecurityPolicyResourceRulesProfileSettingObject
@@ -3129,15 +3148,6 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 		profileSetting_object = new(SecurityPolicyResourceRulesProfileSettingObject)
 
 		diags.Append(profileSetting_object.CopyFromPango(ctx, obj.ProfileSetting, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var target_object *SecurityPolicyResourceRulesTargetObject
-	if obj.Target != nil {
-		target_object = new(SecurityPolicyResourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3151,16 +3161,39 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 			return diags
 		}
 	}
+	var target_object *SecurityPolicyResourceRulesTargetObject
+	if obj.Target != nil {
+		target_object = new(SecurityPolicyResourceRulesTargetObject)
 
-	destinationZone_value := types.StringValue(obj.To[0])
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
+		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	var ruleType_value types.String
-	if obj.RuleType != nil {
-		ruleType_value = types.StringValue(*obj.RuleType)
+
+	var negateSource_value types.Bool
+	if obj.NegateSource != nil {
+		negateSource_value = types.BoolValue(*obj.NegateSource)
+	}
+	var groupTag_value types.String
+	if obj.GroupTag != nil {
+		groupTag_value = types.StringValue(*obj.GroupTag)
+	}
+	var logStart_value types.Bool
+	if obj.LogStart != nil {
+		logStart_value = types.BoolValue(*obj.LogStart)
+	}
+	var disableServerResponseInspection_value types.Bool
+	if obj.DisableServerResponseInspection != nil {
+		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	var logEnd_value types.Bool
+	if obj.LogEnd != nil {
+		logEnd_value = types.BoolValue(*obj.LogEnd)
 	}
 	var logSetting_value types.String
 	if obj.LogSetting != nil {
@@ -3170,83 +3203,211 @@ func (o *SecurityPolicyResourceRulesObject) CopyFromPango(ctx context.Context, o
 	if obj.NegateDestination != nil {
 		negateDestination_value = types.BoolValue(*obj.NegateDestination)
 	}
-	var disableServerResponseInspection_value types.Bool
-	if obj.DisableServerResponseInspection != nil {
-		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
+	var icmpUnreachable_value types.Bool
+	if obj.IcmpUnreachable != nil {
+		icmpUnreachable_value = types.BoolValue(*obj.IcmpUnreachable)
+	}
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
-	var negateSource_value types.Bool
-	if obj.NegateSource != nil {
-		negateSource_value = types.BoolValue(*obj.NegateSource)
+	var schedule_value types.String
+	if obj.Schedule != nil {
+		schedule_value = types.StringValue(*obj.Schedule)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	var groupTag_value types.String
-	if obj.GroupTag != nil {
-		groupTag_value = types.StringValue(*obj.GroupTag)
-	}
-	var logEnd_value types.Bool
-	if obj.LogEnd != nil {
-		logEnd_value = types.BoolValue(*obj.LogEnd)
-	}
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
+	var ruleType_value types.String
+	if obj.RuleType != nil {
+		ruleType_value = types.StringValue(*obj.RuleType)
 	}
 	var disableInspect_value types.Bool
 	if obj.DisableInspect != nil {
 		disableInspect_value = types.BoolValue(*obj.DisableInspect)
 	}
-	var icmpUnreachable_value types.Bool
-	if obj.IcmpUnreachable != nil {
-		icmpUnreachable_value = types.BoolValue(*obj.IcmpUnreachable)
-	}
-	var logStart_value types.Bool
-	if obj.LogStart != nil {
-		logStart_value = types.BoolValue(*obj.LogStart)
-	}
-	var schedule_value types.String
-	if obj.Schedule != nil {
-		schedule_value = types.StringValue(*obj.Schedule)
+	var uuid_value types.String
+	if obj.Uuid != nil {
+		uuid_value = types.StringValue(*obj.Uuid)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.SourceAddresses = sourceAddresses_list
-	o.DestinationZone = destinationZone_value
-	o.Action = action_value
+	o.NegateSource = negateSource_value
 	o.Applications = applications_list
-	o.ProfileSetting = profileSetting_object
-	o.RuleType = ruleType_value
-	o.SourceImei = sourceImei_list
-	o.SourceZones = sourceZones_list
+	o.DestinationAddresses = destinationAddresses_list
+	o.GroupTag = groupTag_value
+	o.LogStart = logStart_value
+	o.DisableServerResponseInspection = disableServerResponseInspection_value
+	o.Description = description_value
+	o.LogEnd = logEnd_value
 	o.LogSetting = logSetting_value
 	o.NegateDestination = negateDestination_value
+	o.SourceImei = sourceImei_list
+	o.SourceImsi = sourceImsi_list
+	o.SourceUsers = sourceUsers_list
+	o.Category = category_list
+	o.IcmpUnreachable = icmpUnreachable_value
 	o.Services = services_list
 	o.Tag = tag_list
-	o.DisableServerResponseInspection = disableServerResponseInspection_value
-	o.Category = category_list
+	o.DestinationZones = destinationZones_list
+	o.Action = action_value
 	o.Disabled = disabled_value
-	o.NegateSource = negateSource_value
-	o.SourceImsi = sourceImsi_list
-	o.Description = description_value
-	o.DestinationAddresses = destinationAddresses_list
+	o.ProfileSetting = profileSetting_object
+	o.Schedule = schedule_value
 	o.SourceHip = sourceHip_list
-	o.Target = target_object
 	o.DestinationHip = destinationHip_list
 	o.Qos = qos_object
-	o.SourceNwSlice = sourceNwSlice_list
-	o.GroupTag = groupTag_value
-	o.LogEnd = logEnd_value
-	o.SourceUsers = sourceUsers_list
-	o.Uuid = uuid_value
+	o.RuleType = ruleType_value
 	o.DisableInspect = disableInspect_value
-	o.IcmpUnreachable = icmpUnreachable_value
-	o.LogStart = logStart_value
-	o.Schedule = schedule_value
+	o.SourceZones = sourceZones_list
+	o.SourceAddresses = sourceAddresses_list
+	o.SourceNwSlice = sourceNwSlice_list
+	o.Target = target_object
+	o.Uuid = uuid_value
+
+	return diags
+}
+
+func (o *SecurityPolicyResourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, obj *security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var group_list types.List
+	{
+		var list_diags diag.Diagnostics
+		group_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Group)
+		diags.Append(list_diags...)
+	}
+	var profiles_object *SecurityPolicyResourceRulesProfileSettingProfilesObject
+	if obj.Profiles != nil {
+		profiles_object = new(SecurityPolicyResourceRulesProfileSettingProfilesObject)
+
+		diags.Append(profiles_object.CopyFromPango(ctx, obj.Profiles, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Group = group_list
+	o.Profiles = profiles_object
+
+	return diags
+}
+
+func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, obj *security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var fileBlocking_list types.List
+	{
+		var list_diags diag.Diagnostics
+		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+		diags.Append(list_diags...)
+	}
+	var gtp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
+		diags.Append(list_diags...)
+	}
+	var virus_list types.List
+	{
+		var list_diags diag.Diagnostics
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+		diags.Append(list_diags...)
+	}
+	var wildfireAnalysis_list types.List
+	{
+		var list_diags diag.Diagnostics
+		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
+		diags.Append(list_diags...)
+	}
+	var vulnerability_list types.List
+	{
+		var list_diags diag.Diagnostics
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
+		diags.Append(list_diags...)
+	}
+	var dataFiltering_list types.List
+	{
+		var list_diags diag.Diagnostics
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+		diags.Append(list_diags...)
+	}
+	var sctp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+		diags.Append(list_diags...)
+	}
+	var spyware_list types.List
+	{
+		var list_diags diag.Diagnostics
+		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
+		diags.Append(list_diags...)
+	}
+	var urlFiltering_list types.List
+	{
+		var list_diags diag.Diagnostics
+		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+		diags.Append(list_diags...)
+	}
+
+	o.FileBlocking = fileBlocking_list
+	o.Gtp = gtp_list
+	o.Virus = virus_list
+	o.WildfireAnalysis = wildfireAnalysis_list
+	o.Vulnerability = vulnerability_list
+	o.DataFiltering = dataFiltering_list
+	o.Sctp = sctp_list
+	o.Spyware = spyware_list
+	o.UrlFiltering = urlFiltering_list
+
+	return diags
+}
+
+func (o *SecurityPolicyResourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var marking_object *SecurityPolicyResourceRulesQosMarkingObject
+	if obj.Marking != nil {
+		marking_object = new(SecurityPolicyResourceRulesQosMarkingObject)
+
+		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Marking = marking_object
+
+	return diags
+}
+
+func (o *SecurityPolicyResourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var followC2sFlow_object *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject
+	if obj.FollowC2sFlow != nil {
+		followC2sFlow_object = new(SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject)
+
+		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipDscp_value types.String
+	if obj.IpDscp != nil {
+		ipDscp_value = types.StringValue(*obj.IpDscp)
+	}
+	var ipPrecedence_value types.String
+	if obj.IpPrecedence != nil {
+		ipPrecedence_value = types.StringValue(*obj.IpPrecedence)
+	}
+	o.FollowC2sFlow = followC2sFlow_object
+	o.IpDscp = ipDscp_value
+	o.IpPrecedence = ipPrecedence_value
+
+	return diags
+}
+
+func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -3315,150 +3476,6 @@ func (o *SecurityPolicyResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *SecurityPolicyResourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var marking_object *SecurityPolicyResourceRulesQosMarkingObject
-	if obj.Marking != nil {
-		marking_object = new(SecurityPolicyResourceRulesQosMarkingObject)
-
-		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Marking = marking_object
-
-	return diags
-}
-
-func (o *SecurityPolicyResourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var followC2sFlow_object *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject
-	if obj.FollowC2sFlow != nil {
-		followC2sFlow_object = new(SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject)
-
-		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var ipDscp_value types.String
-	if obj.IpDscp != nil {
-		ipDscp_value = types.StringValue(*obj.IpDscp)
-	}
-	var ipPrecedence_value types.String
-	if obj.IpPrecedence != nil {
-		ipPrecedence_value = types.StringValue(*obj.IpPrecedence)
-	}
-	o.FollowC2sFlow = followC2sFlow_object
-	o.IpDscp = ipDscp_value
-	o.IpPrecedence = ipPrecedence_value
-
-	return diags
-}
-
-func (o *SecurityPolicyResourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *SecurityPolicyResourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, obj *security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var group_list types.List
-	{
-		var list_diags diag.Diagnostics
-		group_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Group)
-		diags.Append(list_diags...)
-	}
-	var profiles_object *SecurityPolicyResourceRulesProfileSettingProfilesObject
-	if obj.Profiles != nil {
-		profiles_object = new(SecurityPolicyResourceRulesProfileSettingProfilesObject)
-
-		diags.Append(profiles_object.CopyFromPango(ctx, obj.Profiles, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Group = group_list
-	o.Profiles = profiles_object
-
-	return diags
-}
-
-func (o *SecurityPolicyResourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, obj *security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dataFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
-		diags.Append(list_diags...)
-	}
-	var fileBlocking_list types.List
-	{
-		var list_diags diag.Diagnostics
-		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
-		diags.Append(list_diags...)
-	}
-	var virus_list types.List
-	{
-		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
-		diags.Append(list_diags...)
-	}
-	var vulnerability_list types.List
-	{
-		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
-		diags.Append(list_diags...)
-	}
-	var wildfireAnalysis_list types.List
-	{
-		var list_diags diag.Diagnostics
-		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
-		diags.Append(list_diags...)
-	}
-	var gtp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
-		diags.Append(list_diags...)
-	}
-	var sctp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
-		diags.Append(list_diags...)
-	}
-	var spyware_list types.List
-	{
-		var list_diags diag.Diagnostics
-		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
-		diags.Append(list_diags...)
-	}
-	var urlFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
-		diags.Append(list_diags...)
-	}
-
-	o.DataFiltering = dataFiltering_list
-	o.FileBlocking = fileBlocking_list
-	o.Virus = virus_list
-	o.Vulnerability = vulnerability_list
-	o.WildfireAnalysis = wildfireAnalysis_list
-	o.Gtp = gtp_list
-	o.Sctp = sctp_list
-	o.Spyware = spyware_list
-	o.UrlFiltering = urlFiltering_list
-
-	return diags
-}
-
 func (r *SecurityPolicyResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
 	var state SecurityPolicyResourceModel
@@ -3475,11 +3492,17 @@ func (r *SecurityPolicyResource) Create(ctx context.Context, req resource.Create
 
 	var location security.Location
 
+	if state.Location.Shared != nil {
+		location.Shared = &security.SharedLocation{
+
+			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+		}
+	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -3488,12 +3511,6 @@ func (r *SecurityPolicyResource) Create(ctx context.Context, req resource.Create
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
-		}
-	}
-	if state.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
 		}
 	}
 
@@ -3535,7 +3552,6 @@ func (r *SecurityPolicyResource) Create(ctx context.Context, req resource.Create
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (o *SecurityPolicyResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var state SecurityPolicyResourceModel
@@ -3622,7 +3638,6 @@ func (o *SecurityPolicyResource) Read(ctx context.Context, req resource.ReadRequ
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *SecurityPolicyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var state, plan SecurityPolicyResourceModel
@@ -3656,9 +3671,9 @@ func (r *SecurityPolicyResource) Update(ctx context.Context, req resource.Update
 	if plan.Location.DeviceGroup != nil {
 		location.DeviceGroup = &security.DeviceGroupLocation{
 
+			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
 			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
 		}
 	}
 
@@ -3725,7 +3740,6 @@ func (r *SecurityPolicyResource) Update(ctx context.Context, req resource.Update
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-
 func (r *SecurityPolicyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state SecurityPolicyResourceModel
@@ -3782,11 +3796,6 @@ func (r *SecurityPolicyResource) ImportState(ctx context.Context, req resource.I
 
 }
 
-type SecurityPolicyDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	Rulebase       types.String `tfsdk:"rulebase"`
-}
 type SecurityPolicySharedLocation struct {
 	Rulebase types.String `tfsdk:"rulebase"`
 }
@@ -3794,10 +3803,15 @@ type SecurityPolicyVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type SecurityPolicyDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	Rulebase       types.String `tfsdk:"rulebase"`
+}
 type SecurityPolicyLocation struct {
-	DeviceGroup *SecurityPolicyDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      *SecurityPolicySharedLocation      `tfsdk:"shared"`
 	Vsys        *SecurityPolicyVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *SecurityPolicyDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func SecurityPolicyLocationSchema() rsschema.Attribute {
@@ -3805,6 +3819,50 @@ func SecurityPolicyLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"device_group": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific device group.",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"rulebase": rsschema.StringAttribute{
+						Description: "The rulebase.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("pre-rulebase"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"panorama_device": rsschema.StringAttribute{
+						Description: "The panorama device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The device group.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
+				},
+			},
 			"shared": rsschema.SingleNestedAttribute{
 				Description: "Located in a shared rulebase",
 				Optional:    true,
@@ -3821,14 +3879,6 @@ func SecurityPolicyLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
@@ -3849,42 +3899,6 @@ func SecurityPolicyLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific device group.",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The device group.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"rulebase": rsschema.StringAttribute{
-						Description: "The rulebase.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("pre-rulebase"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -3950,13 +3964,13 @@ func (o *SecurityPolicyVsysLocation) UnmarshalJSON(data []byte) error {
 }
 func (o SecurityPolicyDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Name           *string `json:"name"`
 		Rulebase       *string `json:"rulebase"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}{
-		Name:           o.Name.ValueStringPointer(),
 		Rulebase:       o.Rulebase.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -3964,18 +3978,18 @@ func (o SecurityPolicyDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityPolicyDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Name           *string `json:"name"`
 		Rulebase       *string `json:"rulebase"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Name = types.StringPointerValue(shadow.Name)
 	o.Rulebase = types.StringPointerValue(shadow.Rulebase)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }

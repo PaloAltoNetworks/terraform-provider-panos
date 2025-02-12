@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/secgroup"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -57,16 +58,16 @@ type SecurityProfileGroupDataSourceFilter struct {
 type SecurityProfileGroupDataSourceModel struct {
 	Location         SecurityProfileGroupLocation `tfsdk:"location"`
 	Name             types.String                 `tfsdk:"name"`
-	DisableOverride  types.String                 `tfsdk:"disable_override"`
-	Gtp              types.List                   `tfsdk:"gtp"`
-	Spyware          types.List                   `tfsdk:"spyware"`
-	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
-	Virus            types.List                   `tfsdk:"virus"`
 	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
-	DataFiltering    types.List                   `tfsdk:"data_filtering"`
-	Sctp             types.List                   `tfsdk:"sctp"`
+	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
 	Vulnerability    types.List                   `tfsdk:"vulnerability"`
 	FileBlocking     types.List                   `tfsdk:"file_blocking"`
+	Gtp              types.List                   `tfsdk:"gtp"`
+	Sctp             types.List                   `tfsdk:"sctp"`
+	Spyware          types.List                   `tfsdk:"spyware"`
+	Virus            types.List                   `tfsdk:"virus"`
+	DataFiltering    types.List                   `tfsdk:"data_filtering"`
+	DisableOverride  types.String                 `tfsdk:"disable_override"`
 }
 
 func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, obj **secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -77,33 +78,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, o
 		return diags
 	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	gtp_pango_entries := make([]string, 0)
-	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	spyware_pango_entries := make([]string, 0)
-	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	fileBlocking_pango_entries := make([]string, 0)
 	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	gtp_pango_entries := make([]string, 0)
+	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -112,8 +93,28 @@ func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, o
 	if diags.HasError() {
 		return diags
 	}
+	spyware_pango_entries := make([]string, 0)
+	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	virus_pango_entries := make([]string, 0)
+	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	urlFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	vulnerability_pango_entries := make([]string, 0)
 	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	wildfireAnalysis_pango_entries := make([]string, 0)
+	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -124,32 +125,20 @@ func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, o
 	(*obj).Name = o.Name.ValueString()
 	(*obj).DataFiltering = dataFiltering_pango_entries
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).Gtp = gtp_pango_entries
-	(*obj).Spyware = spyware_pango_entries
-	(*obj).UrlFiltering = urlFiltering_pango_entries
-	(*obj).Virus = virus_pango_entries
-	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
 	(*obj).FileBlocking = fileBlocking_pango_entries
+	(*obj).Gtp = gtp_pango_entries
 	(*obj).Sctp = sctp_pango_entries
+	(*obj).Spyware = spyware_pango_entries
+	(*obj).Virus = virus_pango_entries
+	(*obj).UrlFiltering = urlFiltering_pango_entries
 	(*obj).Vulnerability = vulnerability_pango_entries
+	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
 
 	return diags
 }
 
 func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sctp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
-		diags.Append(list_diags...)
-	}
-	var vulnerability_list types.List
-	{
-		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
-		diags.Append(list_diags...)
-	}
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -162,16 +151,16 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
 		diags.Append(list_diags...)
 	}
+	var sctp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+		diags.Append(list_diags...)
+	}
 	var spyware_list types.List
 	{
 		var list_diags diag.Diagnostics
 		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
-		diags.Append(list_diags...)
-	}
-	var urlFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
 		diags.Append(list_diags...)
 	}
 	var virus_list types.List
@@ -180,16 +169,28 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
 		diags.Append(list_diags...)
 	}
+	var dataFiltering_list types.List
+	{
+		var list_diags diag.Diagnostics
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+		diags.Append(list_diags...)
+	}
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
 		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
 		diags.Append(list_diags...)
 	}
-	var dataFiltering_list types.List
+	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+		diags.Append(list_diags...)
+	}
+	var vulnerability_list types.List
+	{
+		var list_diags diag.Diagnostics
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
 	}
 
@@ -198,18 +199,26 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Sctp = sctp_list
-	o.Vulnerability = vulnerability_list
 	o.FileBlocking = fileBlocking_list
-	o.DisableOverride = disableOverride_value
 	o.Gtp = gtp_list
+	o.Sctp = sctp_list
 	o.Spyware = spyware_list
-	o.UrlFiltering = urlFiltering_list
 	o.Virus = virus_list
-	o.WildfireAnalysis = wildfireAnalysis_list
 	o.DataFiltering = dataFiltering_list
+	o.DisableOverride = disableOverride_value
+	o.WildfireAnalysis = wildfireAnalysis_list
+	o.UrlFiltering = urlFiltering_list
+	o.Vulnerability = vulnerability_list
 
 	return diags
+}
+
+func (o *SecurityProfileGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
@@ -226,16 +235,7 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"file_blocking": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"sctp": dsschema.ListAttribute{
+			"url_filtering": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -279,6 +279,15 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"file_blocking": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"gtp": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -288,7 +297,7 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"spyware": dsschema.ListAttribute{
+			"sctp": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -297,7 +306,7 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"url_filtering": dsschema.ListAttribute{
+			"spyware": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -364,7 +373,6 @@ func (d *SecurityProfileGroupDataSource) Configure(_ context.Context, req dataso
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, secgroup.NewService(d.client), specifier, secgroup.SpecMatches)
 }
-
 func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state SecurityProfileGroupDataSourceModel
@@ -393,8 +401,13 @@ func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasourc
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -448,20 +461,16 @@ func SecurityProfileGroupResourceLocationSchema() rsschema.Attribute {
 type SecurityProfileGroupResourceModel struct {
 	Location         SecurityProfileGroupLocation `tfsdk:"location"`
 	Name             types.String                 `tfsdk:"name"`
-	Gtp              types.List                   `tfsdk:"gtp"`
-	Spyware          types.List                   `tfsdk:"spyware"`
-	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
-	Virus            types.List                   `tfsdk:"virus"`
 	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
-	DataFiltering    types.List                   `tfsdk:"data_filtering"`
-	DisableOverride  types.String                 `tfsdk:"disable_override"`
+	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
 	Vulnerability    types.List                   `tfsdk:"vulnerability"`
 	FileBlocking     types.List                   `tfsdk:"file_blocking"`
+	Gtp              types.List                   `tfsdk:"gtp"`
 	Sctp             types.List                   `tfsdk:"sctp"`
-}
-
-func (r *SecurityProfileGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_security_profile_group"
+	Spyware          types.List                   `tfsdk:"spyware"`
+	Virus            types.List                   `tfsdk:"virus"`
+	DataFiltering    types.List                   `tfsdk:"data_filtering"`
+	DisableOverride  types.String                 `tfsdk:"disable_override"`
 }
 
 func (r *SecurityProfileGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -483,16 +492,7 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"file_blocking": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"sctp": rsschema.ListAttribute{
+			"url_filtering": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -511,6 +511,33 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 			},
 
 			"wildfire_analysis": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"sctp": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"spyware": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"virus": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -544,34 +571,16 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 				},
 			},
 
+			"file_blocking": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"gtp": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"spyware": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"url_filtering": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"virus": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -601,6 +610,10 @@ func (o *SecurityProfileGroupResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func (r *SecurityProfileGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_security_profile_group"
+}
+
 func (r *SecurityProfileGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = SecurityProfileGroupResourceSchema()
 }
@@ -624,28 +637,13 @@ func (r *SecurityProfileGroupResource) Configure(ctx context.Context, req resour
 
 func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj **secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sctp_pango_entries := make([]string, 0)
-	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	urlFiltering_pango_entries := make([]string, 0)
 	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	vulnerability_pango_entries := make([]string, 0)
+	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -660,8 +658,18 @@ func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj
 		return diags
 	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	fileBlocking_pango_entries := make([]string, 0)
+	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	gtp_pango_entries := make([]string, 0)
 	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sctp_pango_entries := make([]string, 0)
+	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -670,67 +678,42 @@ func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj
 	if diags.HasError() {
 		return diags
 	}
+	virus_pango_entries := make([]string, 0)
+	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(secgroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).FileBlocking = fileBlocking_pango_entries
-	(*obj).Sctp = sctp_pango_entries
-	(*obj).Vulnerability = vulnerability_pango_entries
 	(*obj).UrlFiltering = urlFiltering_pango_entries
-	(*obj).Virus = virus_pango_entries
+	(*obj).Vulnerability = vulnerability_pango_entries
 	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
 	(*obj).DataFiltering = dataFiltering_pango_entries
 	(*obj).DisableOverride = disableOverride_value
+	(*obj).FileBlocking = fileBlocking_pango_entries
 	(*obj).Gtp = gtp_pango_entries
+	(*obj).Sctp = sctp_pango_entries
 	(*obj).Spyware = spyware_pango_entries
+	(*obj).Virus = virus_pango_entries
 
 	return diags
 }
 
 func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, obj *secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sctp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
-		diags.Append(list_diags...)
-	}
-	var vulnerability_list types.List
-	{
-		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
-		diags.Append(list_diags...)
-	}
-	var fileBlocking_list types.List
-	{
-		var list_diags diag.Diagnostics
-		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
-		diags.Append(list_diags...)
-	}
-	var gtp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
-		diags.Append(list_diags...)
-	}
-	var spyware_list types.List
-	{
-		var list_diags diag.Diagnostics
-		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
-		diags.Append(list_diags...)
-	}
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
 		diags.Append(list_diags...)
 	}
-	var virus_list types.List
+	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
 	}
 	var wildfireAnalysis_list types.List
@@ -745,24 +728,62 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, o
 		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
 		diags.Append(list_diags...)
 	}
+	var fileBlocking_list types.List
+	{
+		var list_diags diag.Diagnostics
+		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+		diags.Append(list_diags...)
+	}
+	var gtp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
+		diags.Append(list_diags...)
+	}
+	var sctp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+		diags.Append(list_diags...)
+	}
+	var spyware_list types.List
+	{
+		var list_diags diag.Diagnostics
+		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
+		diags.Append(list_diags...)
+	}
+	var virus_list types.List
+	{
+		var list_diags diag.Diagnostics
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+		diags.Append(list_diags...)
+	}
 
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Sctp = sctp_list
-	o.Vulnerability = vulnerability_list
-	o.FileBlocking = fileBlocking_list
-	o.DisableOverride = disableOverride_value
-	o.Gtp = gtp_list
-	o.Spyware = spyware_list
 	o.UrlFiltering = urlFiltering_list
-	o.Virus = virus_list
+	o.Vulnerability = vulnerability_list
 	o.WildfireAnalysis = wildfireAnalysis_list
 	o.DataFiltering = dataFiltering_list
+	o.DisableOverride = disableOverride_value
+	o.FileBlocking = fileBlocking_list
+	o.Gtp = gtp_list
+	o.Sctp = sctp_list
+	o.Spyware = spyware_list
+	o.Virus = virus_list
 
 	return diags
+}
+
+func (o *SecurityProfileGroupResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -820,7 +841,13 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -835,7 +862,6 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state SecurityProfileGroupResourceModel
@@ -864,8 +890,13 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -890,7 +921,6 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state SecurityProfileGroupResourceModel
@@ -924,7 +954,14 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -960,7 +997,6 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state SecurityProfileGroupResourceModel
@@ -1072,8 +1108,8 @@ type SecurityProfileGroupDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type SecurityProfileGroupLocation struct {
-	DeviceGroup *SecurityProfileGroupDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                               `tfsdk:"shared"`
+	DeviceGroup *SecurityProfileGroupDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func SecurityProfileGroupLocationSchema() rsschema.Attribute {

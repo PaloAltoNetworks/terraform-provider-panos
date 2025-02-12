@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/devicegroup"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -53,10 +54,10 @@ type DeviceGroupDataSourceFilter struct {
 type DeviceGroupDataSourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
-	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
 	Devices           types.List          `tfsdk:"devices"`
 	AuthorizationCode types.String        `tfsdk:"authorization_code"`
+	Description       types.String        `tfsdk:"description"`
 }
 type DeviceGroupDataSourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -65,6 +66,8 @@ type DeviceGroupDataSourceDevicesObject struct {
 
 func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
 	if diags.HasError() {
@@ -87,17 +90,15 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
-	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Templates = templates_pango_entries
-	(*obj).Devices = devices_pango_entries
 	(*obj).AuthorizationCode = authorizationCode_value
 	(*obj).Description = description_value
+	(*obj).Templates = templates_pango_entries
+	(*obj).Devices = devices_pango_entries
 
 	return diags
 }
@@ -171,6 +172,14 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, 
 	o.Vsys = vsys_list
 
 	return diags
+}
+
+func (o *DeviceGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func DeviceGroupDataSourceSchema() dsschema.Schema {
@@ -312,7 +321,6 @@ func (d *DeviceGroupDataSource) Configure(_ context.Context, req datasource.Conf
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, devicegroup.NewService(d.client), specifier, devicegroup.SpecMatches)
 }
-
 func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state DeviceGroupDataSourceModel
@@ -337,8 +345,13 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -392,18 +405,14 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 type DeviceGroupResourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
+	Devices           types.List          `tfsdk:"devices"`
 	AuthorizationCode types.String        `tfsdk:"authorization_code"`
 	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
-	Devices           types.List          `tfsdk:"devices"`
 }
 type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
 	Vsys types.List   `tfsdk:"vsys"`
-}
-
-func (r *DeviceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_device_group"
 }
 
 func (r *DeviceGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -422,6 +431,14 @@ func DeviceGroupResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"authorization_code": rsschema.StringAttribute{
+				Description: "Authorization code",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
 				Sensitive:   false,
 			},
 
@@ -449,14 +466,6 @@ func DeviceGroupResourceSchema() rsschema.Schema {
 				Computed:     false,
 				Sensitive:    false,
 				NestedObject: DeviceGroupResourceDevicesSchema(),
-			},
-
-			"authorization_code": rsschema.StringAttribute{
-				Description: "Authorization code",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -522,6 +531,10 @@ func (o *DeviceGroupResourceDevicesObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func (r *DeviceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_device_group"
+}
+
 func (r *DeviceGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = DeviceGroupResourceSchema()
 }
@@ -545,6 +558,12 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 
 func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	templates_pango_entries := make([]string, 0)
+	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	var devices_tf_entries []DeviceGroupResourceDevicesObject
 	var devices_pango_entries []devicegroup.Devices
 	{
@@ -563,21 +582,15 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 		}
 	}
 	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Devices = devices_pango_entries
-	(*obj).AuthorizationCode = authorizationCode_value
 	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
+	(*obj).Devices = devices_pango_entries
+	(*obj).AuthorizationCode = authorizationCode_value
 
 	return diags
 }
@@ -653,6 +666,14 @@ func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
+func (o *DeviceGroupResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
+}
+
 func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state DeviceGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -704,7 +725,13 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -719,7 +746,6 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state DeviceGroupResourceModel
@@ -744,8 +770,13 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -770,7 +801,6 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state DeviceGroupResourceModel
@@ -800,7 +830,14 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -836,7 +873,6 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DeviceGroupResourceModel

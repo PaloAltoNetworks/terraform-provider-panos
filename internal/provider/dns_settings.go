@@ -53,8 +53,8 @@ type DnsSettingsDataSourceFilter struct {
 
 type DnsSettingsDataSourceModel struct {
 	Location        DnsSettingsLocation                     `tfsdk:"location"`
-	DnsSettings     *DnsSettingsDataSourceDnsSettingsObject `tfsdk:"dns_settings"`
 	FqdnRefreshTime types.Int64                             `tfsdk:"fqdn_refresh_time"`
+	DnsSettings     *DnsSettingsDataSourceDnsSettingsObject `tfsdk:"dns_settings"`
 }
 type DnsSettingsDataSourceDnsSettingsObject struct {
 	Servers *DnsSettingsDataSourceDnsSettingsServersObject `tfsdk:"servers"`
@@ -168,18 +168,23 @@ func (o *DnsSettingsDataSourceDnsSettingsObject) CopyFromPango(ctx context.Conte
 func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var primary_value types.String
-	if obj.Primary != nil {
-		primary_value = types.StringValue(*obj.Primary)
-	}
 	var secondary_value types.String
 	if obj.Secondary != nil {
 		secondary_value = types.StringValue(*obj.Secondary)
 	}
-	o.Primary = primary_value
+	var primary_value types.String
+	if obj.Primary != nil {
+		primary_value = types.StringValue(*obj.Primary)
+	}
 	o.Secondary = secondary_value
+	o.Primary = primary_value
 
 	return diags
+}
+
+func (o *DnsSettingsDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func DnsSettingsDataSourceSchema() dsschema.Schema {
@@ -325,7 +330,6 @@ func (d *DnsSettingsDataSource) Configure(_ context.Context, req datasource.Conf
 	}
 	d.manager = sdkmanager.NewConfigObjectManager(d.client, dns.NewService(d.client), specifier)
 }
-
 func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state DnsSettingsDataSourceModel
@@ -336,6 +340,14 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location dns.Location
 
+	if savestate.Location.Template != nil {
+		location.Template = &dns.TemplateLocation{
+
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
+		}
+	}
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &dns.TemplateStackLocation{
 
@@ -350,14 +362,6 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
 		}
 	}
-	if savestate.Location.Template != nil {
-		location.Template = &dns.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-		}
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -365,8 +369,13 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"function":      "Read",
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location)
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -423,10 +432,6 @@ type DnsSettingsResourceDnsSettingsObject struct {
 type DnsSettingsResourceDnsSettingsServersObject struct {
 	Primary   types.String `tfsdk:"primary"`
 	Secondary types.String `tfsdk:"secondary"`
-}
-
-func (r *DnsSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_dns_settings"
 }
 
 func (r *DnsSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -548,6 +553,10 @@ func (o *DnsSettingsResourceDnsSettingsServersObject) getTypeFor(name string) at
 	}
 
 	panic("unreachable")
+}
+
+func (r *DnsSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_dns_settings"
 }
 
 func (r *DnsSettingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -675,18 +684,23 @@ func (o *DnsSettingsResourceDnsSettingsObject) CopyFromPango(ctx context.Context
 func (o *DnsSettingsResourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, obj *dns.DnsSettingServers, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var secondary_value types.String
-	if obj.Secondary != nil {
-		secondary_value = types.StringValue(*obj.Secondary)
-	}
 	var primary_value types.String
 	if obj.Primary != nil {
 		primary_value = types.StringValue(*obj.Primary)
 	}
-	o.Secondary = secondary_value
+	var secondary_value types.String
+	if obj.Secondary != nil {
+		secondary_value = types.StringValue(*obj.Secondary)
+	}
 	o.Primary = primary_value
+	o.Secondary = secondary_value
 
 	return diags
+}
+
+func (o *DnsSettingsResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -712,14 +726,6 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location dns.Location
 
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &dns.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
 	if state.Location.System != nil {
 		location.System = &dns.SystemLocation{
 
@@ -729,9 +735,17 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	if state.Location.Template != nil {
 		location.Template = &dns.TemplateLocation{
 
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &dns.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -755,7 +769,13 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -769,7 +789,6 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state DnsSettingsResourceModel
@@ -780,14 +799,6 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location dns.Location
 
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &dns.TemplateStackLocation{
-
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
 	if savestate.Location.System != nil {
 		location.System = &dns.SystemLocation{
 
@@ -802,6 +813,14 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &dns.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -809,8 +828,13 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 		"function":      "Read",
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location)
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -835,7 +859,6 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state DnsSettingsResourceModel
@@ -864,9 +887,9 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &dns.TemplateStackLocation{
 
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -881,7 +904,14 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -917,7 +947,6 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DnsSettingsResourceModel
@@ -980,11 +1009,6 @@ func (r *DnsSettingsResource) ImportState(ctx context.Context, req resource.Impo
 
 }
 
-type DnsSettingsTemplateStackLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-}
 type DnsSettingsSystemLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
@@ -993,10 +1017,15 @@ type DnsSettingsTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
+type DnsSettingsTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+}
 type DnsSettingsLocation struct {
-	TemplateStack *DnsSettingsTemplateStackLocation `tfsdk:"template_stack"`
 	System        *DnsSettingsSystemLocation        `tfsdk:"system"`
 	Template      *DnsSettingsTemplateLocation      `tfsdk:"template"`
+	TemplateStack *DnsSettingsTemplateStackLocation `tfsdk:"template_stack"`
 }
 
 func DnsSettingsLocationSchema() rsschema.Attribute {
@@ -1004,10 +1033,28 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"system": rsschema.SingleNestedAttribute{
-				Description: "Located in a system settings.",
+			"template_stack": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific template stack.",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "The panorama device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The template stack.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device.",
 						Optional:    true,
@@ -1028,6 +1075,24 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
 					}...),
+				},
+			},
+			"system": rsschema.SingleNestedAttribute{
+				Description: "Located in a system settings.",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
@@ -1066,46 +1131,33 @@ func DnsSettingsLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack.",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The template stack.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
 		},
 	}
 }
 
+func (o DnsSettingsSystemLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DnsSettingsSystemLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o DnsSettingsTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1139,13 +1191,13 @@ func (o *DnsSettingsTemplateLocation) UnmarshalJSON(data []byte) error {
 }
 func (o DnsSettingsTemplateStackLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
 	}{
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
-		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1153,53 +1205,30 @@ func (o DnsSettingsTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DnsSettingsTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-
-	return nil
-}
-func (o DnsSettingsSystemLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *DnsSettingsSystemLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }
 func (o DnsSettingsLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		System        *DnsSettingsSystemLocation        `json:"system"`
 		Template      *DnsSettingsTemplateLocation      `json:"template"`
 		TemplateStack *DnsSettingsTemplateStackLocation `json:"template_stack"`
-		System        *DnsSettingsSystemLocation        `json:"system"`
 	}{
+		System:        o.System,
 		Template:      o.Template,
 		TemplateStack: o.TemplateStack,
-		System:        o.System,
 	}
 
 	return json.Marshal(obj)
@@ -1207,18 +1236,18 @@ func (o DnsSettingsLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DnsSettingsLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		System        *DnsSettingsSystemLocation        `json:"system"`
 		Template      *DnsSettingsTemplateLocation      `json:"template"`
 		TemplateStack *DnsSettingsTemplateStackLocation `json:"template_stack"`
-		System        *DnsSettingsSystemLocation        `json:"system"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.System = shadow.System
 	o.Template = shadow.Template
 	o.TemplateStack = shadow.TemplateStack
-	o.System = shadow.System
 
 	return nil
 }

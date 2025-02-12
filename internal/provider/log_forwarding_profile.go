@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/logforwarding"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -66,39 +67,39 @@ type LogForwardingProfileDataSourceModel struct {
 }
 type LogForwardingProfileDataSourceMatchListObject struct {
 	Name           types.String `tfsdk:"name"`
+	ActionDesc     types.String `tfsdk:"action_desc"`
 	LogType        types.String `tfsdk:"log_type"`
-	Filter         types.String `tfsdk:"filter"`
+	Quarantine     types.Bool   `tfsdk:"quarantine"`
 	SendSnmptrap   types.List   `tfsdk:"send_snmptrap"`
-	SendEmail      types.List   `tfsdk:"send_email"`
 	SendSyslog     types.List   `tfsdk:"send_syslog"`
+	Filter         types.String `tfsdk:"filter"`
+	SendToPanorama types.Bool   `tfsdk:"send_to_panorama"`
+	SendEmail      types.List   `tfsdk:"send_email"`
 	SendHttp       types.List   `tfsdk:"send_http"`
 	Actions        types.List   `tfsdk:"actions"`
-	ActionDesc     types.String `tfsdk:"action_desc"`
-	SendToPanorama types.Bool   `tfsdk:"send_to_panorama"`
-	Quarantine     types.Bool   `tfsdk:"quarantine"`
 }
 type LogForwardingProfileDataSourceMatchListActionsObject struct {
 	Name types.String                                              `tfsdk:"name"`
 	Type *LogForwardingProfileDataSourceMatchListActionsTypeObject `tfsdk:"type"`
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeObject struct {
-	Integration *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject `tfsdk:"integration"`
 	Tagging     *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject     `tfsdk:"tagging"`
+	Integration *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject `tfsdk:"integration"`
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject struct {
 	Action types.String `tfsdk:"action"`
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject struct {
+	Target       types.String                                                                 `tfsdk:"target"`
+	Action       types.String                                                                 `tfsdk:"action"`
 	Timeout      types.Int64                                                                  `tfsdk:"timeout"`
 	Registration *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject `tfsdk:"registration"`
 	Tags         types.List                                                                   `tfsdk:"tags"`
-	Target       types.String                                                                 `tfsdk:"target"`
-	Action       types.String                                                                 `tfsdk:"action"`
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject struct {
+	Localhost *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject `tfsdk:"localhost"`
 	Panorama  *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject  `tfsdk:"panorama"`
 	Remote    *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject    `tfsdk:"remote"`
-	Localhost *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject `tfsdk:"localhost"`
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject struct {
 }
@@ -144,8 +145,10 @@ func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, o
 }
 func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	sendSyslog_pango_entries := make([]string, 0)
-	diags.Append(o.SendSyslog.ElementsAs(ctx, &sendSyslog_pango_entries, false)...)
+	filter_value := o.Filter.ValueStringPointer()
+	sendToPanorama_value := o.SendToPanorama.ValueBoolPointer()
+	sendEmail_pango_entries := make([]string, 0)
+	diags.Append(o.SendEmail.ElementsAs(ctx, &sendEmail_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -172,17 +175,15 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.
 		}
 	}
 	actionDesc_value := o.ActionDesc.ValueStringPointer()
-	sendToPanorama_value := o.SendToPanorama.ValueBoolPointer()
+	logType_value := o.LogType.ValueStringPointer()
 	quarantine_value := o.Quarantine.ValueBoolPointer()
-	sendEmail_pango_entries := make([]string, 0)
-	diags.Append(o.SendEmail.ElementsAs(ctx, &sendEmail_pango_entries, false)...)
+	sendSnmptrap_pango_entries := make([]string, 0)
+	diags.Append(o.SendSnmptrap.ElementsAs(ctx, &sendSnmptrap_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	logType_value := o.LogType.ValueStringPointer()
-	filter_value := o.Filter.ValueStringPointer()
-	sendSnmptrap_pango_entries := make([]string, 0)
-	diags.Append(o.SendSnmptrap.ElementsAs(ctx, &sendSnmptrap_pango_entries, false)...)
+	sendSyslog_pango_entries := make([]string, 0)
+	diags.Append(o.SendSyslog.ElementsAs(ctx, &sendSyslog_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -191,16 +192,16 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.
 		*obj = new(logforwarding.MatchList)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).SendSyslog = sendSyslog_pango_entries
+	(*obj).Filter = filter_value
+	(*obj).SendToPanorama = sendToPanorama_value
+	(*obj).SendEmail = sendEmail_pango_entries
 	(*obj).SendHttp = sendHttp_pango_entries
 	(*obj).Actions = actions_pango_entries
 	(*obj).ActionDesc = actionDesc_value
-	(*obj).SendToPanorama = sendToPanorama_value
-	(*obj).Quarantine = quarantine_value
-	(*obj).SendEmail = sendEmail_pango_entries
 	(*obj).LogType = logType_value
-	(*obj).Filter = filter_value
+	(*obj).Quarantine = quarantine_value
 	(*obj).SendSnmptrap = sendSnmptrap_pango_entries
+	(*obj).SendSyslog = sendSyslog_pango_entries
 
 	return diags
 }
@@ -313,19 +314,6 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyTo
 }
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var remote_entry *logforwarding.MatchListActionsTypeTaggingRegistrationRemote
-	if o.Remote != nil {
-		if *obj != nil && (*obj).Remote != nil {
-			remote_entry = (*obj).Remote
-		} else {
-			remote_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationRemote)
-		}
-
-		diags.Append(o.Remote.CopyToPango(ctx, &remote_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var localhost_entry *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost
 	if o.Localhost != nil {
 		if *obj != nil && (*obj).Localhost != nil {
@@ -352,13 +340,26 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 			return diags
 		}
 	}
+	var remote_entry *logforwarding.MatchListActionsTypeTaggingRegistrationRemote
+	if o.Remote != nil {
+		if *obj != nil && (*obj).Remote != nil {
+			remote_entry = (*obj).Remote
+		} else {
+			remote_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationRemote)
+		}
+
+		diags.Append(o.Remote.CopyToPango(ctx, &remote_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(logforwarding.MatchListActionsTypeTaggingRegistration)
 	}
-	(*obj).Remote = remote_entry
 	(*obj).Localhost = localhost_entry
 	(*obj).Panorama = panorama_entry
+	(*obj).Remote = remote_entry
 
 	return diags
 }
@@ -409,10 +410,6 @@ func (o *LogForwardingProfileDataSourceModel) CopyFromPango(ctx context.Context,
 		diags.Append(list_diags...)
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
@@ -421,27 +418,37 @@ func (o *LogForwardingProfileDataSourceModel) CopyFromPango(ctx context.Context,
 	if obj.EnhancedApplicationLogging != nil {
 		enhancedApplicationLogging_value = types.BoolValue(*obj.EnhancedApplicationLogging)
 	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.EnhancedApplicationLogging = enhancedApplicationLogging_value
 	o.MatchList = matchList_list
+	o.Description = description_value
 
 	return diags
 }
 
 func (o *LogForwardingProfileDataSourceMatchListObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sendEmail_list types.List
+	var sendSnmptrap_list types.List
 	{
 		var list_diags diag.Diagnostics
-		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
+		sendSnmptrap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSnmptrap)
 		diags.Append(list_diags...)
 	}
 	var sendSyslog_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSyslog_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSyslog)
+		diags.Append(list_diags...)
+	}
+	var sendEmail_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
 		diags.Append(list_diags...)
 	}
 	var sendHttp_list types.List
@@ -464,44 +471,38 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyFromPango(ctx contex
 		actions_list, list_diags = types.ListValueFrom(ctx, schemaType, actions_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var sendSnmptrap_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sendSnmptrap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSnmptrap)
-		diags.Append(list_diags...)
-	}
 
-	var quarantine_value types.Bool
-	if obj.Quarantine != nil {
-		quarantine_value = types.BoolValue(*obj.Quarantine)
-	}
 	var actionDesc_value types.String
 	if obj.ActionDesc != nil {
 		actionDesc_value = types.StringValue(*obj.ActionDesc)
-	}
-	var sendToPanorama_value types.Bool
-	if obj.SendToPanorama != nil {
-		sendToPanorama_value = types.BoolValue(*obj.SendToPanorama)
 	}
 	var logType_value types.String
 	if obj.LogType != nil {
 		logType_value = types.StringValue(*obj.LogType)
 	}
+	var quarantine_value types.Bool
+	if obj.Quarantine != nil {
+		quarantine_value = types.BoolValue(*obj.Quarantine)
+	}
 	var filter_value types.String
 	if obj.Filter != nil {
 		filter_value = types.StringValue(*obj.Filter)
 	}
+	var sendToPanorama_value types.Bool
+	if obj.SendToPanorama != nil {
+		sendToPanorama_value = types.BoolValue(*obj.SendToPanorama)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.ActionDesc = actionDesc_value
+	o.LogType = logType_value
 	o.Quarantine = quarantine_value
-	o.SendEmail = sendEmail_list
+	o.SendSnmptrap = sendSnmptrap_list
 	o.SendSyslog = sendSyslog_list
+	o.Filter = filter_value
+	o.SendToPanorama = sendToPanorama_value
+	o.SendEmail = sendEmail_list
 	o.SendHttp = sendHttp_list
 	o.Actions = actions_list
-	o.ActionDesc = actionDesc_value
-	o.SendToPanorama = sendToPanorama_value
-	o.SendSnmptrap = sendSnmptrap_list
-	o.LogType = logType_value
-	o.Filter = filter_value
 
 	return diags
 }
@@ -581,10 +582,6 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyFr
 		}
 	}
 
-	var target_value types.String
-	if obj.Target != nil {
-		target_value = types.StringValue(*obj.Target)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
@@ -593,11 +590,15 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyFr
 	if obj.Timeout != nil {
 		timeout_value = types.Int64Value(*obj.Timeout)
 	}
-	o.Tags = tags_list
-	o.Target = target_value
+	var target_value types.String
+	if obj.Target != nil {
+		target_value = types.StringValue(*obj.Target)
+	}
 	o.Action = action_value
 	o.Timeout = timeout_value
 	o.Registration = registration_object
+	o.Tags = tags_list
+	o.Target = target_value
 
 	return diags
 }
@@ -639,12 +640,6 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -663,6 +658,20 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRe
 	return diags
 }
 
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *LogForwardingProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
+}
+
 func LogForwardingProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -675,15 +684,6 @@ func LogForwardingProfileDataSourceSchema() dsschema.Schema {
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
-			},
-
-			"match_list": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: LogForwardingProfileDataSourceMatchListSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
@@ -708,6 +708,15 @@ func LogForwardingProfileDataSourceSchema() dsschema.Schema {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"match_list": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: LogForwardingProfileDataSourceMatchListSchema(),
 			},
 		},
 	}
@@ -743,15 +752,7 @@ func LogForwardingProfileDataSourceMatchListSchema() dsschema.NestedAttributeObj
 				Sensitive:   false,
 			},
 
-			"log_type": dsschema.StringAttribute{
-				Description: "Pick log type",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"filter": dsschema.StringAttribute{
+			"quarantine": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -768,31 +769,7 @@ func LogForwardingProfileDataSourceMatchListSchema() dsschema.NestedAttributeObj
 				ElementType: types.StringType,
 			},
 
-			"action_desc": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"send_to_panorama": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"quarantine": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"send_email": dsschema.ListAttribute{
+			"send_syslog": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -801,7 +778,23 @@ func LogForwardingProfileDataSourceMatchListSchema() dsschema.NestedAttributeObj
 				ElementType: types.StringType,
 			},
 
-			"send_syslog": dsschema.ListAttribute{
+			"action_desc": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_type": dsschema.StringAttribute{
+				Description: "Pick log type",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_email": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -826,6 +819,22 @@ func LogForwardingProfileDataSourceMatchListSchema() dsschema.NestedAttributeObj
 				Computed:     true,
 				Sensitive:    false,
 				NestedObject: LogForwardingProfileDataSourceMatchListActionsSchema(),
+			},
+
+			"filter": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_to_panorama": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -893,9 +902,9 @@ func LogForwardingProfileDataSourceMatchListActionsTypeSchema() dsschema.SingleN
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"integration": LogForwardingProfileDataSourceMatchListActionsTypeIntegrationSchema(),
-
 			"tagging": LogForwardingProfileDataSourceMatchListActionsTypeTaggingSchema(),
+
+			"integration": LogForwardingProfileDataSourceMatchListActionsTypeIntegrationSchema(),
 		},
 	}
 }
@@ -979,22 +988,6 @@ func LogForwardingProfileDataSourceMatchListActionsTypeTaggingSchema() dsschema.
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"target": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in minutes",
 				Computed:    true,
@@ -1012,6 +1005,22 @@ func LogForwardingProfileDataSourceMatchListActionsTypeTaggingSchema() dsschema.
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"target": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -1044,11 +1053,11 @@ func LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationSchema
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"localhost": LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostSchema(),
-
 			"panorama": LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaSchema(),
 
 			"remote": LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteSchema(),
+
+			"localhost": LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostSchema(),
 		},
 	}
 }
@@ -1219,7 +1228,6 @@ func (d *LogForwardingProfileDataSource) Configure(_ context.Context, req dataso
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, logforwarding.NewService(d.client), specifier, logforwarding.SpecMatches)
 }
-
 func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state LogForwardingProfileDataSourceModel
@@ -1248,8 +1256,13 @@ func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasourc
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -1310,16 +1323,16 @@ type LogForwardingProfileResourceModel struct {
 }
 type LogForwardingProfileResourceMatchListObject struct {
 	Name           types.String `tfsdk:"name"`
+	ActionDesc     types.String `tfsdk:"action_desc"`
 	LogType        types.String `tfsdk:"log_type"`
-	Filter         types.String `tfsdk:"filter"`
+	Quarantine     types.Bool   `tfsdk:"quarantine"`
 	SendSnmptrap   types.List   `tfsdk:"send_snmptrap"`
-	SendEmail      types.List   `tfsdk:"send_email"`
 	SendSyslog     types.List   `tfsdk:"send_syslog"`
+	Filter         types.String `tfsdk:"filter"`
+	SendToPanorama types.Bool   `tfsdk:"send_to_panorama"`
+	SendEmail      types.List   `tfsdk:"send_email"`
 	SendHttp       types.List   `tfsdk:"send_http"`
 	Actions        types.List   `tfsdk:"actions"`
-	ActionDesc     types.String `tfsdk:"action_desc"`
-	SendToPanorama types.Bool   `tfsdk:"send_to_panorama"`
-	Quarantine     types.Bool   `tfsdk:"quarantine"`
 }
 type LogForwardingProfileResourceMatchListActionsObject struct {
 	Name types.String                                            `tfsdk:"name"`
@@ -1333,11 +1346,11 @@ type LogForwardingProfileResourceMatchListActionsTypeIntegrationObject struct {
 	Action types.String `tfsdk:"action"`
 }
 type LogForwardingProfileResourceMatchListActionsTypeTaggingObject struct {
-	Tags         types.List                                                                 `tfsdk:"tags"`
 	Target       types.String                                                               `tfsdk:"target"`
 	Action       types.String                                                               `tfsdk:"action"`
 	Timeout      types.Int64                                                                `tfsdk:"timeout"`
 	Registration *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject `tfsdk:"registration"`
+	Tags         types.List                                                                 `tfsdk:"tags"`
 }
 type LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject struct {
 	Localhost *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject `tfsdk:"localhost"`
@@ -1350,10 +1363,6 @@ type LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanorama
 }
 type LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject struct {
 	HttpProfile types.String `tfsdk:"http_profile"`
-}
-
-func (r *LogForwardingProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_log_forwarding_profile"
 }
 
 func (r *LogForwardingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -1449,6 +1458,14 @@ func LogForwardingProfileResourceMatchListSchema() rsschema.NestedAttributeObjec
 				Sensitive:   false,
 			},
 
+			"action_desc": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"log_type": rsschema.StringAttribute{
 				Description: "Pick log type",
 				Computed:    true,
@@ -1458,7 +1475,7 @@ func LogForwardingProfileResourceMatchListSchema() rsschema.NestedAttributeObjec
 				Default:     stringdefault.StaticString("traffic"),
 			},
 
-			"filter": rsschema.StringAttribute{
+			"quarantine": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -1475,7 +1492,7 @@ func LogForwardingProfileResourceMatchListSchema() rsschema.NestedAttributeObjec
 				ElementType: types.StringType,
 			},
 
-			"send_email": rsschema.ListAttribute{
+			"send_syslog": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1484,7 +1501,23 @@ func LogForwardingProfileResourceMatchListSchema() rsschema.NestedAttributeObjec
 				ElementType: types.StringType,
 			},
 
-			"send_syslog": rsschema.ListAttribute{
+			"filter": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_to_panorama": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_email": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1509,30 +1542,6 @@ func LogForwardingProfileResourceMatchListSchema() rsschema.NestedAttributeObjec
 				Computed:     false,
 				Sensitive:    false,
 				NestedObject: LogForwardingProfileResourceMatchListActionsSchema(),
-			},
-
-			"action_desc": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"send_to_panorama": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"quarantine": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1687,17 +1696,6 @@ func LogForwardingProfileResourceMatchListActionsTypeTaggingSchema() rsschema.Si
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"registration": LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationSchema(),
-
-			"tags": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"target": rsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -1723,6 +1721,17 @@ func LogForwardingProfileResourceMatchListActionsTypeTaggingSchema() rsschema.Si
 				Optional:    true,
 				Sensitive:   false,
 				Default:     int64default.StaticInt64(0),
+			},
+
+			"registration": LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationSchema(),
+
+			"tags": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -1902,6 +1911,10 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemo
 	panic("unreachable")
 }
 
+func (r *LogForwardingProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_log_forwarding_profile"
+}
+
 func (r *LogForwardingProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = LogForwardingProfileResourceSchema()
 }
@@ -1959,6 +1972,18 @@ func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj
 }
 func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	filter_value := o.Filter.ValueStringPointer()
+	sendToPanorama_value := o.SendToPanorama.ValueBoolPointer()
+	sendEmail_pango_entries := make([]string, 0)
+	diags.Append(o.SendEmail.ElementsAs(ctx, &sendEmail_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sendHttp_pango_entries := make([]string, 0)
+	diags.Append(o.SendHttp.ElementsAs(ctx, &sendHttp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	var actions_tf_entries []LogForwardingProfileResourceMatchListActionsObject
 	var actions_pango_entries []logforwarding.MatchListActions
 	{
@@ -1977,10 +2002,10 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Co
 		}
 	}
 	actionDesc_value := o.ActionDesc.ValueStringPointer()
-	sendToPanorama_value := o.SendToPanorama.ValueBoolPointer()
+	logType_value := o.LogType.ValueStringPointer()
 	quarantine_value := o.Quarantine.ValueBoolPointer()
-	sendEmail_pango_entries := make([]string, 0)
-	diags.Append(o.SendEmail.ElementsAs(ctx, &sendEmail_pango_entries, false)...)
+	sendSnmptrap_pango_entries := make([]string, 0)
+	diags.Append(o.SendSnmptrap.ElementsAs(ctx, &sendSnmptrap_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -1989,33 +2014,21 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Co
 	if diags.HasError() {
 		return diags
 	}
-	sendHttp_pango_entries := make([]string, 0)
-	diags.Append(o.SendHttp.ElementsAs(ctx, &sendHttp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	logType_value := o.LogType.ValueStringPointer()
-	filter_value := o.Filter.ValueStringPointer()
-	sendSnmptrap_pango_entries := make([]string, 0)
-	diags.Append(o.SendSnmptrap.ElementsAs(ctx, &sendSnmptrap_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(logforwarding.MatchList)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Filter = filter_value
+	(*obj).SendToPanorama = sendToPanorama_value
+	(*obj).SendEmail = sendEmail_pango_entries
+	(*obj).SendHttp = sendHttp_pango_entries
 	(*obj).Actions = actions_pango_entries
 	(*obj).ActionDesc = actionDesc_value
-	(*obj).SendToPanorama = sendToPanorama_value
-	(*obj).Quarantine = quarantine_value
-	(*obj).SendEmail = sendEmail_pango_entries
-	(*obj).SendSyslog = sendSyslog_pango_entries
-	(*obj).SendHttp = sendHttp_pango_entries
 	(*obj).LogType = logType_value
-	(*obj).Filter = filter_value
+	(*obj).Quarantine = quarantine_value
 	(*obj).SendSnmptrap = sendSnmptrap_pango_entries
+	(*obj).SendSyslog = sendSyslog_pango_entries
 
 	return diags
 }
@@ -2080,17 +2093,6 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(logforwarding.MatchListActionsTypeIntegration)
-	}
-	(*obj).Action = action_value
-
-	return diags
-}
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTagging, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	target_value := o.Target.ValueStringPointer()
@@ -2128,19 +2130,6 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPa
 }
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var localhost_entry *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost
-	if o.Localhost != nil {
-		if *obj != nil && (*obj).Localhost != nil {
-			localhost_entry = (*obj).Localhost
-		} else {
-			localhost_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost)
-		}
-
-		diags.Append(o.Localhost.CopyToPango(ctx, &localhost_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var panorama_entry *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama
 	if o.Panorama != nil {
 		if *obj != nil && (*obj).Panorama != nil {
@@ -2167,13 +2156,26 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 			return diags
 		}
 	}
+	var localhost_entry *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost
+	if o.Localhost != nil {
+		if *obj != nil && (*obj).Localhost != nil {
+			localhost_entry = (*obj).Localhost
+		} else {
+			localhost_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost)
+		}
+
+		diags.Append(o.Localhost.CopyToPango(ctx, &localhost_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(logforwarding.MatchListActionsTypeTaggingRegistration)
 	}
-	(*obj).Localhost = localhost_entry
 	(*obj).Panorama = panorama_entry
 	(*obj).Remote = remote_entry
+	(*obj).Localhost = localhost_entry
 
 	return diags
 }
@@ -2203,6 +2205,17 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemo
 		*obj = new(logforwarding.MatchListActionsTypeTaggingRegistrationRemote)
 	}
 	(*obj).HttpProfile = httpProfile_value
+
+	return diags
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(logforwarding.MatchListActionsTypeIntegration)
+	}
+	(*obj).Action = action_value
 
 	return diags
 }
@@ -2253,16 +2266,16 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.
 		sendSnmptrap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSnmptrap)
 		diags.Append(list_diags...)
 	}
-	var sendEmail_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
-		diags.Append(list_diags...)
-	}
 	var sendSyslog_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSyslog_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSyslog)
+		diags.Append(list_diags...)
+	}
+	var sendEmail_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
 		diags.Append(list_diags...)
 	}
 	var sendHttp_list types.List
@@ -2286,17 +2299,9 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.
 		diags.Append(list_diags...)
 	}
 
-	var filter_value types.String
-	if obj.Filter != nil {
-		filter_value = types.StringValue(*obj.Filter)
-	}
 	var logType_value types.String
 	if obj.LogType != nil {
 		logType_value = types.StringValue(*obj.LogType)
-	}
-	var sendToPanorama_value types.Bool
-	if obj.SendToPanorama != nil {
-		sendToPanorama_value = types.BoolValue(*obj.SendToPanorama)
 	}
 	var quarantine_value types.Bool
 	if obj.Quarantine != nil {
@@ -2306,17 +2311,25 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.
 	if obj.ActionDesc != nil {
 		actionDesc_value = types.StringValue(*obj.ActionDesc)
 	}
+	var sendToPanorama_value types.Bool
+	if obj.SendToPanorama != nil {
+		sendToPanorama_value = types.BoolValue(*obj.SendToPanorama)
+	}
+	var filter_value types.String
+	if obj.Filter != nil {
+		filter_value = types.StringValue(*obj.Filter)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Filter = filter_value
-	o.SendSnmptrap = sendSnmptrap_list
 	o.LogType = logType_value
-	o.SendToPanorama = sendToPanorama_value
 	o.Quarantine = quarantine_value
-	o.SendEmail = sendEmail_list
+	o.SendSnmptrap = sendSnmptrap_list
 	o.SendSyslog = sendSyslog_list
+	o.ActionDesc = actionDesc_value
+	o.SendToPanorama = sendToPanorama_value
+	o.SendEmail = sendEmail_list
 	o.SendHttp = sendHttp_list
 	o.Actions = actions_list
-	o.ActionDesc = actionDesc_value
+	o.Filter = filter_value
 
 	return diags
 }
@@ -2419,15 +2432,6 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyFrom
 
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var localhost_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject
-	if obj.Localhost != nil {
-		localhost_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject)
-
-		diags.Append(localhost_object.CopyFromPango(ctx, obj.Localhost, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var panorama_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject
 	if obj.Panorama != nil {
 		panorama_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject)
@@ -2446,16 +2450,19 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 			return diags
 		}
 	}
+	var localhost_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject
+	if obj.Localhost != nil {
+		localhost_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject)
 
-	o.Localhost = localhost_object
+		diags.Append(localhost_object.CopyFromPango(ctx, obj.Localhost, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Panorama = panorama_object
 	o.Remote = remote_object
-
-	return diags
-}
-
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
+	o.Localhost = localhost_object
 
 	return diags
 }
@@ -2476,6 +2483,20 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLoca
 	var diags diag.Diagnostics
 
 	return diags
+}
+
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *LogForwardingProfileResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -2533,7 +2554,13 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -2548,7 +2575,6 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state LogForwardingProfileResourceModel
@@ -2577,8 +2603,13 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -2603,7 +2634,6 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state LogForwardingProfileResourceModel
@@ -2637,7 +2667,14 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -2673,7 +2710,6 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *LogForwardingProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state LogForwardingProfileResourceModel

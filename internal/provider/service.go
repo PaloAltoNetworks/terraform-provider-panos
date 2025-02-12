@@ -12,8 +12,8 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/service"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -59,10 +59,10 @@ type ServiceDataSourceFilter struct {
 type ServiceDataSourceModel struct {
 	Location        ServiceLocation                  `tfsdk:"location"`
 	Name            types.String                     `tfsdk:"name"`
-	Tags            types.List                       `tfsdk:"tags"`
 	Description     types.String                     `tfsdk:"description"`
 	DisableOverride types.String                     `tfsdk:"disable_override"`
 	Protocol        *ServiceDataSourceProtocolObject `tfsdk:"protocol"`
+	Tags            types.List                       `tfsdk:"tags"`
 }
 type ServiceDataSourceProtocolObject struct {
 	Tcp *ServiceDataSourceProtocolTcpObject `tfsdk:"tcp"`
@@ -79,9 +79,9 @@ type ServiceDataSourceProtocolTcpOverrideObject struct {
 	TimewaitTimeout  types.Int64 `tfsdk:"timewait_timeout"`
 }
 type ServiceDataSourceProtocolUdpObject struct {
-	SourcePort      types.String                                `tfsdk:"source_port"`
 	Override        *ServiceDataSourceProtocolUdpOverrideObject `tfsdk:"override"`
 	DestinationPort types.String                                `tfsdk:"destination_port"`
+	SourcePort      types.String                                `tfsdk:"source_port"`
 }
 type ServiceDataSourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
@@ -89,6 +89,7 @@ type ServiceDataSourceProtocolUdpOverrideObject struct {
 
 func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var protocol_entry *service.Protocol
 	if o.Protocol != nil {
@@ -108,16 +109,15 @@ func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.
 	if diags.HasError() {
 		return diags
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Protocol = protocol_entry
 	(*obj).Tag = tags_pango_entries
-	(*obj).Description = description_value
 
 	return diags
 }
@@ -160,6 +160,8 @@ func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, obj *
 }
 func (o *ServiceDataSourceProtocolTcpObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	destinationPort_value := o.DestinationPort.ValueStringPointer()
+	sourcePort_value := o.SourcePort.ValueStringPointer()
 	var override_entry *service.ProtocolTcpOverride
 	if o.Override != nil {
 		if *obj != nil && (*obj).Override != nil {
@@ -173,15 +175,13 @@ func (o *ServiceDataSourceProtocolTcpObject) CopyToPango(ctx context.Context, ob
 			return diags
 		}
 	}
-	destinationPort_value := o.DestinationPort.ValueStringPointer()
-	sourcePort_value := o.SourcePort.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolTcp)
 	}
-	(*obj).Override = override_entry
 	(*obj).Port = destinationPort_value
 	(*obj).SourcePort = sourcePort_value
+	(*obj).Override = override_entry
 
 	return diags
 }
@@ -387,6 +387,14 @@ func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyFromPango(ctx context.C
 	o.Timeout = timeout_value
 
 	return diags
+}
+
+func (o *ServiceDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func ServiceDataSourceSchema() dsschema.Schema {
@@ -610,8 +618,6 @@ func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"override": ServiceDataSourceProtocolUdpOverrideSchema(),
-
 			"destination_port": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -627,6 +633,8 @@ func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"override": ServiceDataSourceProtocolUdpOverrideSchema(),
 		},
 	}
 }
@@ -715,7 +723,6 @@ func (d *ServiceDataSource) Configure(_ context.Context, req datasource.Configur
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, service.NewService(d.client), specifier, service.SpecMatches)
 }
-
 func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ServiceDataSourceModel
@@ -739,8 +746,8 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -751,8 +758,13 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -806,24 +818,14 @@ func ServiceResourceLocationSchema() rsschema.Attribute {
 type ServiceResourceModel struct {
 	Location        ServiceLocation                `tfsdk:"location"`
 	Name            types.String                   `tfsdk:"name"`
-	Tags            types.List                     `tfsdk:"tags"`
-	Description     types.String                   `tfsdk:"description"`
 	DisableOverride types.String                   `tfsdk:"disable_override"`
 	Protocol        *ServiceResourceProtocolObject `tfsdk:"protocol"`
+	Tags            types.List                     `tfsdk:"tags"`
+	Description     types.String                   `tfsdk:"description"`
 }
 type ServiceResourceProtocolObject struct {
 	Tcp *ServiceResourceProtocolTcpObject `tfsdk:"tcp"`
 	Udp *ServiceResourceProtocolUdpObject `tfsdk:"udp"`
-}
-type ServiceResourceProtocolTcpObject struct {
-	DestinationPort types.String                              `tfsdk:"destination_port"`
-	SourcePort      types.String                              `tfsdk:"source_port"`
-	Override        *ServiceResourceProtocolTcpOverrideObject `tfsdk:"override"`
-}
-type ServiceResourceProtocolTcpOverrideObject struct {
-	TimewaitTimeout  types.Int64 `tfsdk:"timewait_timeout"`
-	HalfcloseTimeout types.Int64 `tfsdk:"halfclose_timeout"`
-	Timeout          types.Int64 `tfsdk:"timeout"`
 }
 type ServiceResourceProtocolUdpObject struct {
 	Override        *ServiceResourceProtocolUdpOverrideObject `tfsdk:"override"`
@@ -833,9 +835,15 @@ type ServiceResourceProtocolUdpObject struct {
 type ServiceResourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
 }
-
-func (r *ServiceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_service"
+type ServiceResourceProtocolTcpObject struct {
+	Override        *ServiceResourceProtocolTcpOverrideObject `tfsdk:"override"`
+	DestinationPort types.String                              `tfsdk:"destination_port"`
+	SourcePort      types.String                              `tfsdk:"source_port"`
+}
+type ServiceResourceProtocolTcpOverrideObject struct {
+	HalfcloseTimeout types.Int64 `tfsdk:"halfclose_timeout"`
+	Timeout          types.Int64 `tfsdk:"timeout"`
+	TimewaitTimeout  types.Int64 `tfsdk:"timewait_timeout"`
 }
 
 func (r *ServiceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -854,6 +862,14 @@ func ServiceResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
 				Sensitive:   false,
 			},
 
@@ -881,14 +897,6 @@ func ServiceResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -930,6 +938,115 @@ func ServiceResourceProtocolSchema() rsschema.SingleNestedAttribute {
 
 func (o *ServiceResourceProtocolObject) getTypeFor(name string) attr.Type {
 	schema := ServiceResourceProtocolSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"source_port": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"override": ServiceResourceProtocolTcpOverrideSchema(),
+
+			"destination_port": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ServiceResourceProtocolTcpObject) getTypeFor(name string) attr.Type {
+	schema := ServiceResourceProtocolTcpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ServiceResourceProtocolTcpOverrideSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"halfclose_timeout": rsschema.Int64Attribute{
+				Description: "tcp session half-close timeout value (in second)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"timeout": rsschema.Int64Attribute{
+				Description: "tcp session timeout value (in second)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"timewait_timeout": rsschema.Int64Attribute{
+				Description: "tcp session time-wait timeout value (in second)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ServiceResourceProtocolTcpOverrideObject) getTypeFor(name string) attr.Type {
+	schema := ServiceResourceProtocolTcpOverrideSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1040,113 +1157,8 @@ func (o *ServiceResourceProtocolUdpOverrideObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
-func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"destination_port": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_port": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"override": ServiceResourceProtocolTcpOverrideSchema(),
-		},
-	}
-}
-
-func (o *ServiceResourceProtocolTcpObject) getTypeFor(name string) attr.Type {
-	schema := ServiceResourceProtocolTcpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ServiceResourceProtocolTcpOverrideSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"halfclose_timeout": rsschema.Int64Attribute{
-				Description: "tcp session half-close timeout value (in second)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"timeout": rsschema.Int64Attribute{
-				Description: "tcp session timeout value (in second)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"timewait_timeout": rsschema.Int64Attribute{
-				Description: "tcp session time-wait timeout value (in second)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ServiceResourceProtocolTcpOverrideObject) getTypeFor(name string) attr.Type {
-	schema := ServiceResourceProtocolTcpOverrideSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
+func (r *ServiceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_service"
 }
 
 func (r *ServiceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -1270,16 +1282,16 @@ func (o *ServiceResourceProtocolTcpObject) CopyToPango(ctx context.Context, obj 
 }
 func (o *ServiceResourceProtocolTcpOverrideObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcpOverride, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	halfcloseTimeout_value := o.HalfcloseTimeout.ValueInt64Pointer()
 	timeout_value := o.Timeout.ValueInt64Pointer()
 	timewaitTimeout_value := o.TimewaitTimeout.ValueInt64Pointer()
-	halfcloseTimeout_value := o.HalfcloseTimeout.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolTcpOverride)
 	}
+	(*obj).HalfcloseTimeout = halfcloseTimeout_value
 	(*obj).Timeout = timeout_value
 	(*obj).TimewaitTimeout = timewaitTimeout_value
-	(*obj).HalfcloseTimeout = halfcloseTimeout_value
 
 	return diags
 }
@@ -1349,25 +1361,16 @@ func (o *ServiceResourceModel) CopyFromPango(ctx context.Context, obj *service.E
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-	o.DisableOverride = disableOverride_value
 	o.Protocol = protocol_object
 	o.Tags = tags_list
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
 
 	return diags
 }
 
 func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, obj *service.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var udp_object *ServiceResourceProtocolUdpObject
-	if obj.Udp != nil {
-		udp_object = new(ServiceResourceProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var tcp_object *ServiceResourceProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(ServiceResourceProtocolTcpObject)
@@ -1377,9 +1380,18 @@ func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, obj *
 			return diags
 		}
 	}
+	var udp_object *ServiceResourceProtocolUdpObject
+	if obj.Udp != nil {
+		udp_object = new(ServiceResourceProtocolUdpObject)
 
-	o.Udp = udp_object
+		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Tcp = tcp_object
+	o.Udp = udp_object
 
 	return diags
 }
@@ -1445,17 +1457,17 @@ func (o *ServiceResourceProtocolUdpObject) CopyFromPango(ctx context.Context, ob
 		}
 	}
 
-	var destinationPort_value types.String
-	if obj.Port != nil {
-		destinationPort_value = types.StringValue(*obj.Port)
-	}
 	var sourcePort_value types.String
 	if obj.SourcePort != nil {
 		sourcePort_value = types.StringValue(*obj.SourcePort)
 	}
+	var destinationPort_value types.String
+	if obj.Port != nil {
+		destinationPort_value = types.StringValue(*obj.Port)
+	}
+	o.SourcePort = sourcePort_value
 	o.Override = override_object
 	o.DestinationPort = destinationPort_value
-	o.SourcePort = sourcePort_value
 
 	return diags
 }
@@ -1470,6 +1482,14 @@ func (o *ServiceResourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Con
 	o.Timeout = timeout_value
 
 	return diags
+}
+
+func (o *ServiceResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1496,6 +1516,13 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 
 	var location service.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &service.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -1504,13 +1531,6 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
-
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -1534,7 +1554,13 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -1549,7 +1575,6 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state ServiceResourceModel
@@ -1573,8 +1598,8 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -1585,8 +1610,13 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1611,7 +1641,6 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state ServiceResourceModel
@@ -1623,6 +1652,13 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	var location service.Location
 
+	if state.Location.Vsys != nil {
+		location.Vsys = &service.VsysLocation{
+
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &service.DeviceGroupLocation{
 
@@ -1632,13 +1668,6 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
 	}
 
 	// Basic logging.
@@ -1652,7 +1681,14 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1688,7 +1724,6 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state ServiceResourceModel
@@ -1802,18 +1837,18 @@ func (r *ServiceResource) ImportState(ctx context.Context, req resource.ImportSt
 
 }
 
-type ServiceDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-}
 type ServiceVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type ServiceDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type ServiceLocation struct {
-	DeviceGroup *ServiceDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                  `tfsdk:"shared"`
 	Vsys        *ServiceVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *ServiceDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func ServiceLocationSchema() rsschema.Attribute {
@@ -1821,21 +1856,6 @@ func ServiceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-					}...),
-				},
-			},
 			"vsys": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
@@ -1861,6 +1881,14 @@ func ServiceLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
@@ -1890,37 +1918,17 @@ func ServiceLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
 		},
 	}
 }
 
-func (o ServiceDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-		Name:           o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *ServiceDeviceGroupLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o ServiceVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -1948,15 +1956,42 @@ func (o *ServiceVsysLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o ServiceDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o ServiceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                       `json:"shared"`
 		Vsys        *ServiceVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 	}{
-		DeviceGroup: o.DeviceGroup,
 		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
 	}
 
 	return json.Marshal(obj)
@@ -1964,18 +1999,18 @@ func (o ServiceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                       `json:"shared"`
 		Vsys        *ServiceVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.DeviceGroup = shadow.DeviceGroup
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil
 }

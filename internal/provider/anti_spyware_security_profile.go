@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/security/profiles/spyware"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -58,111 +59,29 @@ type AntiSpywareSecurityProfileDataSourceFilter struct {
 type AntiSpywareSecurityProfileDataSourceModel struct {
 	Location                 AntiSpywareSecurityProfileLocation                       `tfsdk:"location"`
 	Name                     types.String                                             `tfsdk:"name"`
-	DisableOverride          types.String                                             `tfsdk:"disable_override"`
-	ThreatException          types.List                                               `tfsdk:"threat_exception"`
+	BotnetDomains            *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject `tfsdk:"botnet_domains"`
 	CloudInlineAnalysis      types.Bool                                               `tfsdk:"cloud_inline_analysis"`
 	Description              types.String                                             `tfsdk:"description"`
 	InlineExceptionEdlUrl    types.List                                               `tfsdk:"inline_exception_edl_url"`
-	InlineExceptionIpAddress types.List                                               `tfsdk:"inline_exception_ip_address"`
 	MicaEngineSpywareEnabled types.List                                               `tfsdk:"mica_engine_spyware_enabled"`
+	ThreatException          types.List                                               `tfsdk:"threat_exception"`
+	DisableOverride          types.String                                             `tfsdk:"disable_override"`
+	InlineExceptionIpAddress types.List                                               `tfsdk:"inline_exception_ip_address"`
 	Rules                    types.List                                               `tfsdk:"rules"`
-	BotnetDomains            *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject `tfsdk:"botnet_domains"`
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionObject struct {
-	Name          types.String                                                     `tfsdk:"name"`
-	PacketCapture types.String                                                     `tfsdk:"packet_capture"`
-	Action        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject `tfsdk:"action"`
-	ExemptIp      types.List                                                       `tfsdk:"exempt_ip"`
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject struct {
-	ResetClient *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
-	BlockIp     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
-	Default     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject        `tfsdk:"drop"`
-	ResetBoth   *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject   `tfsdk:"reset_both"`
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject struct {
-	TrackBy  types.String `tfsdk:"track_by"`
-	Duration types.Int64  `tfsdk:"duration"`
-}
-type AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject struct {
-	Name types.String `tfsdk:"name"`
-}
-type AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject struct {
-	Name               types.String `tfsdk:"name"`
-	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
-}
-type AntiSpywareSecurityProfileDataSourceRulesObject struct {
-	Name          types.String                                           `tfsdk:"name"`
-	ThreatName    types.String                                           `tfsdk:"threat_name"`
-	Category      types.String                                           `tfsdk:"category"`
-	PacketCapture types.String                                           `tfsdk:"packet_capture"`
-	Severity      types.List                                             `tfsdk:"severity"`
-	Action        *AntiSpywareSecurityProfileDataSourceRulesActionObject `tfsdk:"action"`
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionObject struct {
-	ResetServer *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject `tfsdk:"reset_server"`
-	ResetBoth   *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject   `tfsdk:"reset_both"`
-	BlockIp     *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
-	Default     *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileDataSourceRulesActionDropObject        `tfsdk:"drop"`
-	ResetClient *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject `tfsdk:"reset_client"`
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject struct {
-	TrackBy  types.String `tfsdk:"track_by"`
-	Duration types.Int64  `tfsdk:"duration"`
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionAllowObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionAlertObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionDropObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject struct {
-}
-type AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject struct {
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsObject struct {
+	Whitelist             types.List                                                          `tfsdk:"whitelist"`
+	RtypeAction           *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
 	DnsSecurityCategories types.List                                                          `tfsdk:"dns_security_categories"`
 	Lists                 types.List                                                          `tfsdk:"lists"`
 	Sinkhole              *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject    `tfsdk:"sinkhole"`
 	ThreatException       types.List                                                          `tfsdk:"threat_exception"`
-	Whitelist             types.List                                                          `tfsdk:"whitelist"`
-	RtypeAction           *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
-}
-type AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject struct {
-	Any   types.String `tfsdk:"any"`
-	Https types.String `tfsdk:"https"`
-	Svcb  types.String `tfsdk:"svcb"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject struct {
 	Name          types.String `tfsdk:"name"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
 	Action        types.String `tfsdk:"action"`
 	LogLevel      types.String `tfsdk:"log_level"`
-	PacketCapture types.String `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject struct {
 	Name          types.String                                                        `tfsdk:"name"`
@@ -170,10 +89,10 @@ type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject struct {
 	PacketCapture types.String                                                        `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject struct {
-	Alert    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject    `tfsdk:"alert"`
 	Allow    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject    `tfsdk:"allow"`
 	Block    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject    `tfsdk:"block"`
 	Sinkhole *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject `tfsdk:"sinkhole"`
+	Alert    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject    `tfsdk:"alert"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject struct {
 }
@@ -194,10 +113,114 @@ type AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 }
+type AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject struct {
+	Any   types.String `tfsdk:"any"`
+	Https types.String `tfsdk:"https"`
+	Svcb  types.String `tfsdk:"svcb"`
+}
+type AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject struct {
+	Name               types.String `tfsdk:"name"`
+	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionObject struct {
+	Name          types.String                                                     `tfsdk:"name"`
+	PacketCapture types.String                                                     `tfsdk:"packet_capture"`
+	Action        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject `tfsdk:"action"`
+	ExemptIp      types.List                                                       `tfsdk:"exempt_ip"`
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject struct {
+	ResetServer *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
+	BlockIp     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject     `tfsdk:"default"`
+	Allow       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject       `tfsdk:"allow"`
+	Alert       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject       `tfsdk:"alert"`
+	Drop        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject        `tfsdk:"drop"`
+	ResetBoth   *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject   `tfsdk:"reset_both"`
+	ResetClient *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject `tfsdk:"reset_client"`
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject struct {
+	TrackBy  types.String `tfsdk:"track_by"`
+	Duration types.Int64  `tfsdk:"duration"`
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject struct {
+	Name types.String `tfsdk:"name"`
+}
+type AntiSpywareSecurityProfileDataSourceRulesObject struct {
+	Name          types.String                                           `tfsdk:"name"`
+	ThreatName    types.String                                           `tfsdk:"threat_name"`
+	Category      types.String                                           `tfsdk:"category"`
+	PacketCapture types.String                                           `tfsdk:"packet_capture"`
+	Severity      types.List                                             `tfsdk:"severity"`
+	Action        *AntiSpywareSecurityProfileDataSourceRulesActionObject `tfsdk:"action"`
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionObject struct {
+	BlockIp     *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject     `tfsdk:"default"`
+	Allow       *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject       `tfsdk:"allow"`
+	Alert       *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject       `tfsdk:"alert"`
+	Drop        *AntiSpywareSecurityProfileDataSourceRulesActionDropObject        `tfsdk:"drop"`
+	ResetClient *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject `tfsdk:"reset_client"`
+	ResetServer *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject `tfsdk:"reset_server"`
+	ResetBoth   *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject   `tfsdk:"reset_both"`
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionDropObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject struct {
+	TrackBy  types.String `tfsdk:"track_by"`
+	Duration types.Int64  `tfsdk:"duration"`
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionAllowObject struct {
+}
+type AntiSpywareSecurityProfileDataSourceRulesActionAlertObject struct {
+}
 
 func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	inlineExceptionIpAddress_pango_entries := make([]string, 0)
+	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var rules_tf_entries []AntiSpywareSecurityProfileDataSourceRulesObject
+	var rules_pango_entries []spyware.Rules
+	{
+		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range rules_tf_entries {
+			var entry *spyware.Rules
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			rules_pango_entries = append(rules_pango_entries, *entry)
+		}
+	}
 	var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionObject
 	var threatException_pango_entries []spyware.ThreatException
 	{
@@ -215,15 +238,23 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 			threatException_pango_entries = append(threatException_pango_entries, *entry)
 		}
 	}
+	var botnetDomains_entry *spyware.BotnetDomains
+	if o.BotnetDomains != nil {
+		if *obj != nil && (*obj).BotnetDomains != nil {
+			botnetDomains_entry = (*obj).BotnetDomains
+		} else {
+			botnetDomains_entry = new(spyware.BotnetDomains)
+		}
+
+		diags.Append(o.BotnetDomains.CopyToPango(ctx, &botnetDomains_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	cloudInlineAnalysis_value := o.CloudInlineAnalysis.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
 	inlineExceptionEdlUrl_pango_entries := make([]string, 0)
 	diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &inlineExceptionEdlUrl_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	inlineExceptionIpAddress_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -244,50 +275,573 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 			micaEngineSpywareEnabled_pango_entries = append(micaEngineSpywareEnabled_pango_entries, *entry)
 		}
 	}
-	var rules_tf_entries []AntiSpywareSecurityProfileDataSourceRulesObject
-	var rules_pango_entries []spyware.Rules
-	{
-		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range rules_tf_entries {
-			var entry *spyware.Rules
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			rules_pango_entries = append(rules_pango_entries, *entry)
-		}
-	}
-	var botnetDomains_entry *spyware.BotnetDomains
-	if o.BotnetDomains != nil {
-		if *obj != nil && (*obj).BotnetDomains != nil {
-			botnetDomains_entry = (*obj).BotnetDomains
-		} else {
-			botnetDomains_entry = new(spyware.BotnetDomains)
-		}
-
-		diags.Append(o.BotnetDomains.CopyToPango(ctx, &botnetDomains_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(spyware.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).DisableOverride = disableOverride_value
+	(*obj).InlineExceptionIpAddress = inlineExceptionIpAddress_pango_entries
+	(*obj).Rules = rules_pango_entries
 	(*obj).ThreatException = threatException_pango_entries
+	(*obj).BotnetDomains = botnetDomains_entry
 	(*obj).CloudInlineAnalysis = cloudInlineAnalysis_value
 	(*obj).Description = description_value
 	(*obj).InlineExceptionEdlUrl = inlineExceptionEdlUrl_pango_entries
-	(*obj).InlineExceptionIpAddress = inlineExceptionIpAddress_pango_entries
 	(*obj).MicaEngineSpywareEnabled = micaEngineSpywareEnabled_pango_entries
-	(*obj).Rules = rules_pango_entries
-	(*obj).BotnetDomains = botnetDomains_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var exemptIp_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject
+	var exemptIp_pango_entries []spyware.ThreatExceptionExemptIp
+	{
+		d := o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range exemptIp_tf_entries {
+			var entry *spyware.ThreatExceptionExemptIp
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			exemptIp_pango_entries = append(exemptIp_pango_entries, *entry)
+		}
+	}
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
+	var action_entry *spyware.ThreatExceptionAction
+	if o.Action != nil {
+		if *obj != nil && (*obj).Action != nil {
+			action_entry = (*obj).Action
+		} else {
+			action_entry = new(spyware.ThreatExceptionAction)
+		}
+
+		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatException)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).ExemptIp = exemptIp_pango_entries
+	(*obj).PacketCapture = packetCapture_value
+	(*obj).Action = action_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var resetServer_entry *spyware.ThreatExceptionActionResetServer
+	if o.ResetServer != nil {
+		if *obj != nil && (*obj).ResetServer != nil {
+			resetServer_entry = (*obj).ResetServer
+		} else {
+			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
+		}
+
+		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
+	if o.BlockIp != nil {
+		if *obj != nil && (*obj).BlockIp != nil {
+			blockIp_entry = (*obj).BlockIp
+		} else {
+			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
+		}
+
+		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var default_entry *spyware.ThreatExceptionActionDefault
+	if o.Default != nil {
+		if *obj != nil && (*obj).Default != nil {
+			default_entry = (*obj).Default
+		} else {
+			default_entry = new(spyware.ThreatExceptionActionDefault)
+		}
+
+		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_entry *spyware.ThreatExceptionActionAllow
+	if o.Allow != nil {
+		if *obj != nil && (*obj).Allow != nil {
+			allow_entry = (*obj).Allow
+		} else {
+			allow_entry = new(spyware.ThreatExceptionActionAllow)
+		}
+
+		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var alert_entry *spyware.ThreatExceptionActionAlert
+	if o.Alert != nil {
+		if *obj != nil && (*obj).Alert != nil {
+			alert_entry = (*obj).Alert
+		} else {
+			alert_entry = new(spyware.ThreatExceptionActionAlert)
+		}
+
+		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var drop_entry *spyware.ThreatExceptionActionDrop
+	if o.Drop != nil {
+		if *obj != nil && (*obj).Drop != nil {
+			drop_entry = (*obj).Drop
+		} else {
+			drop_entry = new(spyware.ThreatExceptionActionDrop)
+		}
+
+		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
+	if o.ResetBoth != nil {
+		if *obj != nil && (*obj).ResetBoth != nil {
+			resetBoth_entry = (*obj).ResetBoth
+		} else {
+			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
+		}
+
+		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetClient_entry *spyware.ThreatExceptionActionResetClient
+	if o.ResetClient != nil {
+		if *obj != nil && (*obj).ResetClient != nil {
+			resetClient_entry = (*obj).ResetClient
+		} else {
+			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
+		}
+
+		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionAction)
+	}
+	(*obj).ResetServer = resetServer_entry
+	(*obj).BlockIp = blockIp_entry
+	(*obj).Default = default_entry
+	(*obj).Allow = allow_entry
+	(*obj).Alert = alert_entry
+	(*obj).Drop = drop_entry
+	(*obj).ResetBoth = resetBoth_entry
+	(*obj).ResetClient = resetClient_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionDrop)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetBoth)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetClient)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetServer)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	trackBy_value := o.TrackBy.ValueStringPointer()
+	duration_value := o.Duration.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionBlockIp)
+	}
+	(*obj).TrackBy = trackBy_value
+	(*obj).Duration = duration_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionDefault)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionAllow)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionAlert)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionExemptIp)
+	}
+	(*obj).Name = o.Name.ValueString()
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject
+	var threatException_pango_entries []spyware.BotnetDomainsThreatException
+	{
+		d := o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range threatException_tf_entries {
+			var entry *spyware.BotnetDomainsThreatException
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			threatException_pango_entries = append(threatException_pango_entries, *entry)
+		}
+	}
+	var whitelist_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject
+	var whitelist_pango_entries []spyware.BotnetDomainsWhitelist
+	{
+		d := o.Whitelist.ElementsAs(ctx, &whitelist_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range whitelist_tf_entries {
+			var entry *spyware.BotnetDomainsWhitelist
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			whitelist_pango_entries = append(whitelist_pango_entries, *entry)
+		}
+	}
+	var rtypeAction_entry *spyware.BotnetDomainsRtypeAction
+	if o.RtypeAction != nil {
+		if *obj != nil && (*obj).RtypeAction != nil {
+			rtypeAction_entry = (*obj).RtypeAction
+		} else {
+			rtypeAction_entry = new(spyware.BotnetDomainsRtypeAction)
+		}
+
+		diags.Append(o.RtypeAction.CopyToPango(ctx, &rtypeAction_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject
+	var dnsSecurityCategories_pango_entries []spyware.BotnetDomainsDnsSecurityCategories
+	{
+		d := o.DnsSecurityCategories.ElementsAs(ctx, &dnsSecurityCategories_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range dnsSecurityCategories_tf_entries {
+			var entry *spyware.BotnetDomainsDnsSecurityCategories
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			dnsSecurityCategories_pango_entries = append(dnsSecurityCategories_pango_entries, *entry)
+		}
+	}
+	var lists_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
+	var lists_pango_entries []spyware.BotnetDomainsLists
+	{
+		d := o.Lists.ElementsAs(ctx, &lists_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range lists_tf_entries {
+			var entry *spyware.BotnetDomainsLists
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			lists_pango_entries = append(lists_pango_entries, *entry)
+		}
+	}
+	var sinkhole_entry *spyware.BotnetDomainsSinkhole
+	if o.Sinkhole != nil {
+		if *obj != nil && (*obj).Sinkhole != nil {
+			sinkhole_entry = (*obj).Sinkhole
+		} else {
+			sinkhole_entry = new(spyware.BotnetDomainsSinkhole)
+		}
+
+		diags.Append(o.Sinkhole.CopyToPango(ctx, &sinkhole_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomains)
+	}
+	(*obj).ThreatException = threatException_pango_entries
+	(*obj).Whitelist = whitelist_pango_entries
+	(*obj).RtypeAction = rtypeAction_entry
+	(*obj).DnsSecurityCategories = dnsSecurityCategories_pango_entries
+	(*obj).Lists = lists_pango_entries
+	(*obj).Sinkhole = sinkhole_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	ipv4Address_value := o.Ipv4Address.ValueStringPointer()
+	ipv6Address_value := o.Ipv6Address.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsSinkhole)
+	}
+	(*obj).Ipv4Address = ipv4Address_value
+	(*obj).Ipv6Address = ipv6Address_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsThreatException)
+	}
+	(*obj).Name = o.Name.ValueString()
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsWhitelist)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	https_value := o.Https.ValueStringPointer()
+	svcb_value := o.Svcb.ValueStringPointer()
+	any_value := o.Any.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsRtypeAction)
+	}
+	(*obj).Https = https_value
+	(*obj).Svcb = svcb_value
+	(*obj).Any = any_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	logLevel_value := o.LogLevel.ValueStringPointer()
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsDnsSecurityCategories)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Action = action_value
+	(*obj).LogLevel = logLevel_value
+	(*obj).PacketCapture = packetCapture_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsLists, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var action_entry *spyware.BotnetDomainsListsAction
+	if o.Action != nil {
+		if *obj != nil && (*obj).Action != nil {
+			action_entry = (*obj).Action
+		} else {
+			action_entry = new(spyware.BotnetDomainsListsAction)
+		}
+
+		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsLists)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Action = action_entry
+	(*obj).PacketCapture = packetCapture_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var alert_entry *spyware.BotnetDomainsListsActionAlert
+	if o.Alert != nil {
+		if *obj != nil && (*obj).Alert != nil {
+			alert_entry = (*obj).Alert
+		} else {
+			alert_entry = new(spyware.BotnetDomainsListsActionAlert)
+		}
+
+		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_entry *spyware.BotnetDomainsListsActionAllow
+	if o.Allow != nil {
+		if *obj != nil && (*obj).Allow != nil {
+			allow_entry = (*obj).Allow
+		} else {
+			allow_entry = new(spyware.BotnetDomainsListsActionAllow)
+		}
+
+		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var block_entry *spyware.BotnetDomainsListsActionBlock
+	if o.Block != nil {
+		if *obj != nil && (*obj).Block != nil {
+			block_entry = (*obj).Block
+		} else {
+			block_entry = new(spyware.BotnetDomainsListsActionBlock)
+		}
+
+		diags.Append(o.Block.CopyToPango(ctx, &block_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sinkhole_entry *spyware.BotnetDomainsListsActionSinkhole
+	if o.Sinkhole != nil {
+		if *obj != nil && (*obj).Sinkhole != nil {
+			sinkhole_entry = (*obj).Sinkhole
+		} else {
+			sinkhole_entry = new(spyware.BotnetDomainsListsActionSinkhole)
+		}
+
+		diags.Append(o.Sinkhole.CopyToPango(ctx, &sinkhole_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsAction)
+	}
+	(*obj).Alert = alert_entry
+	(*obj).Allow = allow_entry
+	(*obj).Block = block_entry
+	(*obj).Sinkhole = sinkhole_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsActionAlert)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsActionAllow)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionBlock, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsActionBlock)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsActionSinkhole)
+	}
 
 	return diags
 }
@@ -305,6 +859,7 @@ func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) Cop
 }
 func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	threatName_value := o.ThreatName.ValueStringPointer()
 	category_value := o.Category.ValueStringPointer()
 	packetCapture_value := o.PacketCapture.ValueStringPointer()
 	severity_pango_entries := make([]string, 0)
@@ -325,17 +880,16 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyToPango(ctx contex
 			return diags
 		}
 	}
-	threatName_value := o.ThreatName.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(spyware.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).ThreatName = threatName_value
 	(*obj).Category = category_value
 	(*obj).PacketCapture = packetCapture_value
 	(*obj).Severity = severity_pango_entries
 	(*obj).Action = action_entry
-	(*obj).ThreatName = threatName_value
 
 	return diags
 }
@@ -460,15 +1014,6 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionResetServer)
-	}
-
-	return diags
-}
 func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -536,566 +1081,22 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var whitelist_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject
-	var whitelist_pango_entries []spyware.BotnetDomainsWhitelist
-	{
-		d := o.Whitelist.ElementsAs(ctx, &whitelist_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range whitelist_tf_entries {
-			var entry *spyware.BotnetDomainsWhitelist
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			whitelist_pango_entries = append(whitelist_pango_entries, *entry)
-		}
-	}
-	var rtypeAction_entry *spyware.BotnetDomainsRtypeAction
-	if o.RtypeAction != nil {
-		if *obj != nil && (*obj).RtypeAction != nil {
-			rtypeAction_entry = (*obj).RtypeAction
-		} else {
-			rtypeAction_entry = new(spyware.BotnetDomainsRtypeAction)
-		}
-
-		diags.Append(o.RtypeAction.CopyToPango(ctx, &rtypeAction_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject
-	var dnsSecurityCategories_pango_entries []spyware.BotnetDomainsDnsSecurityCategories
-	{
-		d := o.DnsSecurityCategories.ElementsAs(ctx, &dnsSecurityCategories_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range dnsSecurityCategories_tf_entries {
-			var entry *spyware.BotnetDomainsDnsSecurityCategories
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			dnsSecurityCategories_pango_entries = append(dnsSecurityCategories_pango_entries, *entry)
-		}
-	}
-	var lists_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
-	var lists_pango_entries []spyware.BotnetDomainsLists
-	{
-		d := o.Lists.ElementsAs(ctx, &lists_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range lists_tf_entries {
-			var entry *spyware.BotnetDomainsLists
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			lists_pango_entries = append(lists_pango_entries, *entry)
-		}
-	}
-	var sinkhole_entry *spyware.BotnetDomainsSinkhole
-	if o.Sinkhole != nil {
-		if *obj != nil && (*obj).Sinkhole != nil {
-			sinkhole_entry = (*obj).Sinkhole
-		} else {
-			sinkhole_entry = new(spyware.BotnetDomainsSinkhole)
-		}
-
-		diags.Append(o.Sinkhole.CopyToPango(ctx, &sinkhole_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject
-	var threatException_pango_entries []spyware.BotnetDomainsThreatException
-	{
-		d := o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range threatException_tf_entries {
-			var entry *spyware.BotnetDomainsThreatException
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			threatException_pango_entries = append(threatException_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomains)
-	}
-	(*obj).Whitelist = whitelist_pango_entries
-	(*obj).RtypeAction = rtypeAction_entry
-	(*obj).DnsSecurityCategories = dnsSecurityCategories_pango_entries
-	(*obj).Lists = lists_pango_entries
-	(*obj).Sinkhole = sinkhole_entry
-	(*obj).ThreatException = threatException_pango_entries
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	any_value := o.Any.ValueStringPointer()
-	https_value := o.Https.ValueStringPointer()
-	svcb_value := o.Svcb.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsRtypeAction)
-	}
-	(*obj).Any = any_value
-	(*obj).Https = https_value
-	(*obj).Svcb = svcb_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	logLevel_value := o.LogLevel.ValueStringPointer()
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsDnsSecurityCategories)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).LogLevel = logLevel_value
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsLists, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	var action_entry *spyware.BotnetDomainsListsAction
-	if o.Action != nil {
-		if *obj != nil && (*obj).Action != nil {
-			action_entry = (*obj).Action
-		} else {
-			action_entry = new(spyware.BotnetDomainsListsAction)
-		}
-
-		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsLists)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).Action = action_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var alert_entry *spyware.BotnetDomainsListsActionAlert
-	if o.Alert != nil {
-		if *obj != nil && (*obj).Alert != nil {
-			alert_entry = (*obj).Alert
-		} else {
-			alert_entry = new(spyware.BotnetDomainsListsActionAlert)
-		}
-
-		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_entry *spyware.BotnetDomainsListsActionAllow
-	if o.Allow != nil {
-		if *obj != nil && (*obj).Allow != nil {
-			allow_entry = (*obj).Allow
-		} else {
-			allow_entry = new(spyware.BotnetDomainsListsActionAllow)
-		}
-
-		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var block_entry *spyware.BotnetDomainsListsActionBlock
-	if o.Block != nil {
-		if *obj != nil && (*obj).Block != nil {
-			block_entry = (*obj).Block
-		} else {
-			block_entry = new(spyware.BotnetDomainsListsActionBlock)
-		}
-
-		diags.Append(o.Block.CopyToPango(ctx, &block_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sinkhole_entry *spyware.BotnetDomainsListsActionSinkhole
-	if o.Sinkhole != nil {
-		if *obj != nil && (*obj).Sinkhole != nil {
-			sinkhole_entry = (*obj).Sinkhole
-		} else {
-			sinkhole_entry = new(spyware.BotnetDomainsListsActionSinkhole)
-		}
-
-		diags.Append(o.Sinkhole.CopyToPango(ctx, &sinkhole_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsAction)
-	}
-	(*obj).Alert = alert_entry
-	(*obj).Allow = allow_entry
-	(*obj).Block = block_entry
-	(*obj).Sinkhole = sinkhole_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsActionAlert)
+		*obj = new(spyware.RulesActionResetServer)
 	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsActionAllow)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionBlock, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsActionBlock)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsActionSinkhole)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	ipv4Address_value := o.Ipv4Address.ValueStringPointer()
-	ipv6Address_value := o.Ipv6Address.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsSinkhole)
-	}
-	(*obj).Ipv4Address = ipv4Address_value
-	(*obj).Ipv6Address = ipv6Address_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsThreatException)
-	}
-	(*obj).Name = o.Name.ValueString()
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsWhitelist)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	var action_entry *spyware.ThreatExceptionAction
-	if o.Action != nil {
-		if *obj != nil && (*obj).Action != nil {
-			action_entry = (*obj).Action
-		} else {
-			action_entry = new(spyware.ThreatExceptionAction)
-		}
-
-		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var exemptIp_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject
-	var exemptIp_pango_entries []spyware.ThreatExceptionExemptIp
-	{
-		d := o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range exemptIp_tf_entries {
-			var entry *spyware.ThreatExceptionExemptIp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			exemptIp_pango_entries = append(exemptIp_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatException)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).Action = action_entry
-	(*obj).ExemptIp = exemptIp_pango_entries
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var resetClient_entry *spyware.ThreatExceptionActionResetClient
-	if o.ResetClient != nil {
-		if *obj != nil && (*obj).ResetClient != nil {
-			resetClient_entry = (*obj).ResetClient
-		} else {
-			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
-		}
-
-		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetServer_entry *spyware.ThreatExceptionActionResetServer
-	if o.ResetServer != nil {
-		if *obj != nil && (*obj).ResetServer != nil {
-			resetServer_entry = (*obj).ResetServer
-		} else {
-			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
-		}
-
-		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
-	if o.BlockIp != nil {
-		if *obj != nil && (*obj).BlockIp != nil {
-			blockIp_entry = (*obj).BlockIp
-		} else {
-			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
-		}
-
-		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var default_entry *spyware.ThreatExceptionActionDefault
-	if o.Default != nil {
-		if *obj != nil && (*obj).Default != nil {
-			default_entry = (*obj).Default
-		} else {
-			default_entry = new(spyware.ThreatExceptionActionDefault)
-		}
-
-		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_entry *spyware.ThreatExceptionActionAllow
-	if o.Allow != nil {
-		if *obj != nil && (*obj).Allow != nil {
-			allow_entry = (*obj).Allow
-		} else {
-			allow_entry = new(spyware.ThreatExceptionActionAllow)
-		}
-
-		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var alert_entry *spyware.ThreatExceptionActionAlert
-	if o.Alert != nil {
-		if *obj != nil && (*obj).Alert != nil {
-			alert_entry = (*obj).Alert
-		} else {
-			alert_entry = new(spyware.ThreatExceptionActionAlert)
-		}
-
-		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var drop_entry *spyware.ThreatExceptionActionDrop
-	if o.Drop != nil {
-		if *obj != nil && (*obj).Drop != nil {
-			drop_entry = (*obj).Drop
-		} else {
-			drop_entry = new(spyware.ThreatExceptionActionDrop)
-		}
-
-		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
-	if o.ResetBoth != nil {
-		if *obj != nil && (*obj).ResetBoth != nil {
-			resetBoth_entry = (*obj).ResetBoth
-		} else {
-			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
-		}
-
-		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionAction)
-	}
-	(*obj).ResetClient = resetClient_entry
-	(*obj).ResetServer = resetServer_entry
-	(*obj).BlockIp = blockIp_entry
-	(*obj).Default = default_entry
-	(*obj).Allow = allow_entry
-	(*obj).Alert = alert_entry
-	(*obj).Drop = drop_entry
-	(*obj).ResetBoth = resetBoth_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetServer)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	trackBy_value := o.TrackBy.ValueStringPointer()
-	duration_value := o.Duration.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionBlockIp)
-	}
-	(*obj).TrackBy = trackBy_value
-	(*obj).Duration = duration_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionDefault)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionAllow)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionAlert)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionDrop)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetBoth)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetClient)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionExemptIp)
-	}
-	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var inlineExceptionIpAddress_list types.List
+	var inlineExceptionEdlUrl_list types.List
 	{
 		var list_diags diag.Diagnostics
-		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
+		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
 		diags.Append(list_diags...)
 	}
 	var micaEngineSpywareEnabled_list types.List
@@ -1112,26 +1113,6 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 		micaEngineSpywareEnabled_list, list_diags = types.ListValueFrom(ctx, schemaType, micaEngineSpywareEnabled_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var rules_list types.List
-	{
-		var rules_tf_entries []AntiSpywareSecurityProfileDataSourceRulesObject
-		for _, elt := range obj.Rules {
-			var entry AntiSpywareSecurityProfileDataSourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			rules_tf_entries = append(rules_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("rules")
-		rules_list, list_diags = types.ListValueFrom(ctx, schemaType, rules_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var inlineExceptionEdlUrl_list types.List
-	{
-		var list_diags diag.Diagnostics
-		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
-		diags.Append(list_diags...)
-	}
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionObject
@@ -1146,6 +1127,26 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var inlineExceptionIpAddress_list types.List
+	{
+		var list_diags diag.Diagnostics
+		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
+		diags.Append(list_diags...)
+	}
+	var rules_list types.List
+	{
+		var rules_tf_entries []AntiSpywareSecurityProfileDataSourceRulesObject
+		for _, elt := range obj.Rules {
+			var entry AntiSpywareSecurityProfileDataSourceRulesObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("rules")
+		rules_list, list_diags = types.ListValueFrom(ctx, schemaType, rules_tf_entries)
+		diags.Append(list_diags...)
+	}
 	var botnetDomains_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
 	if obj.BotnetDomains != nil {
 		botnetDomains_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsObject)
@@ -1156,28 +1157,214 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 		}
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var cloudInlineAnalysis_value types.Bool
 	if obj.CloudInlineAnalysis != nil {
 		cloudInlineAnalysis_value = types.BoolValue(*obj.CloudInlineAnalysis)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.InlineExceptionIpAddress = inlineExceptionIpAddress_list
-	o.MicaEngineSpywareEnabled = micaEngineSpywareEnabled_list
-	o.Rules = rules_list
-	o.BotnetDomains = botnetDomains_object
+	o.CloudInlineAnalysis = cloudInlineAnalysis_value
 	o.Description = description_value
 	o.InlineExceptionEdlUrl = inlineExceptionEdlUrl_list
-	o.CloudInlineAnalysis = cloudInlineAnalysis_value
-	o.DisableOverride = disableOverride_value
+	o.MicaEngineSpywareEnabled = micaEngineSpywareEnabled_list
 	o.ThreatException = threatException_list
+	o.BotnetDomains = botnetDomains_object
+	o.InlineExceptionIpAddress = inlineExceptionIpAddress_list
+	o.Rules = rules_list
+	o.DisableOverride = disableOverride_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var severity_list types.List
+	{
+		var list_diags diag.Diagnostics
+		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
+		diags.Append(list_diags...)
+	}
+	var action_object *AntiSpywareSecurityProfileDataSourceRulesActionObject
+	if obj.Action != nil {
+		action_object = new(AntiSpywareSecurityProfileDataSourceRulesActionObject)
+
+		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var threatName_value types.String
+	if obj.ThreatName != nil {
+		threatName_value = types.StringValue(*obj.ThreatName)
+	}
+	var category_value types.String
+	if obj.Category != nil {
+		category_value = types.StringValue(*obj.Category)
+	}
+	var packetCapture_value types.String
+	if obj.PacketCapture != nil {
+		packetCapture_value = types.StringValue(*obj.PacketCapture)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Severity = severity_list
+	o.Action = action_object
+	o.ThreatName = threatName_value
+	o.Category = category_value
+	o.PacketCapture = packetCapture_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyFromPango(ctx context.Context, obj *spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var resetClient_object *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
+	if obj.ResetClient != nil {
+		resetClient_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject)
+
+		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetServer_object *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
+	if obj.ResetServer != nil {
+		resetServer_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject)
+
+		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetBoth_object *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
+	if obj.ResetBoth != nil {
+		resetBoth_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject)
+
+		diags.Append(resetBoth_object.CopyFromPango(ctx, obj.ResetBoth, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_object *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
+	if obj.BlockIp != nil {
+		blockIp_object = new(AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject)
+
+		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var default_object *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
+	if obj.Default != nil {
+		default_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject)
+
+		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_object *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
+	if obj.Allow != nil {
+		allow_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAllowObject)
+
+		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var alert_object *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
+	if obj.Alert != nil {
+		alert_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAlertObject)
+
+		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var drop_object *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
+	if obj.Drop != nil {
+		drop_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDropObject)
+
+		diags.Append(drop_object.CopyFromPango(ctx, obj.Drop, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.ResetClient = resetClient_object
+	o.ResetServer = resetServer_object
+	o.ResetBoth = resetBoth_object
+	o.BlockIp = blockIp_object
+	o.Default = default_object
+	o.Allow = allow_object
+	o.Alert = alert_object
+	o.Drop = drop_object
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var duration_value types.Int64
+	if obj.Duration != nil {
+		duration_value = types.Int64Value(*obj.Duration)
+	}
+	var trackBy_value types.String
+	if obj.TrackBy != nil {
+		trackBy_value = types.StringValue(*obj.TrackBy)
+	}
+	o.Duration = duration_value
+	o.TrackBy = trackBy_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -1222,33 +1409,6 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyFromPang
 
 func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionAction, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var resetClient_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
-	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject)
-
-		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetServer_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
-	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject)
-
-		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
-	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
-
-		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var default_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject
 	if obj.Default != nil {
 		default_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject)
@@ -1294,38 +1454,42 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyFr
 			return diags
 		}
 	}
+	var resetClient_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
+	if obj.ResetClient != nil {
+		resetClient_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject)
 
-	o.ResetClient = resetClient_object
-	o.ResetServer = resetServer_object
-	o.BlockIp = blockIp_object
+		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetServer_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
+	if obj.ResetServer != nil {
+		resetServer_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject)
+
+		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
+	if obj.BlockIp != nil {
+		blockIp_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
+
+		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Default = default_object
 	o.Allow = allow_object
 	o.Alert = alert_object
 	o.Drop = drop_object
 	o.ResetBoth = resetBoth_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var trackBy_value types.String
-	if obj.TrackBy != nil {
-		trackBy_value = types.StringValue(*obj.TrackBy)
-	}
-	var duration_value types.Int64
-	if obj.Duration != nil {
-		duration_value = types.Int64Value(*obj.Duration)
-	}
-	o.TrackBy = trackBy_value
-	o.Duration = duration_value
+	o.ResetClient = resetClient_object
+	o.ResetServer = resetServer_object
+	o.BlockIp = blockIp_object
 
 	return diags
 }
@@ -1366,6 +1530,29 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObj
 	return diags
 }
 
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var duration_value types.Int64
+	if obj.Duration != nil {
+		duration_value = types.Int64Value(*obj.Duration)
+	}
+	var trackBy_value types.String
+	if obj.TrackBy != nil {
+		trackBy_value = types.StringValue(*obj.TrackBy)
+	}
+	o.Duration = duration_value
+	o.TrackBy = trackBy_value
+
+	return diags
+}
+
 func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
@@ -1375,6 +1562,20 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) Copy
 
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var lists_list types.List
+	{
+		var lists_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
+		for _, elt := range obj.Lists {
+			var entry AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			lists_tf_entries = append(lists_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("lists")
+		lists_list, list_diags = types.ListValueFrom(ctx, schemaType, lists_tf_entries)
+		diags.Append(list_diags...)
+	}
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject
@@ -1417,19 +1618,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 		dnsSecurityCategories_list, list_diags = types.ListValueFrom(ctx, schemaType, dnsSecurityCategories_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var lists_list types.List
-	{
-		var lists_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
-		for _, elt := range obj.Lists {
-			var entry AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			lists_tf_entries = append(lists_tf_entries, entry)
+	var sinkhole_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
+	if obj.Sinkhole != nil {
+		sinkhole_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject)
+
+		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
+		if diags.HasError() {
+			return diags
 		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("lists")
-		lists_list, list_diags = types.ListValueFrom(ctx, schemaType, lists_tf_entries)
-		diags.Append(list_diags...)
 	}
 	var rtypeAction_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
 	if obj.RtypeAction != nil {
@@ -1440,22 +1636,48 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 			return diags
 		}
 	}
-	var sinkhole_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
-	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject)
 
-		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Lists = lists_list
+	o.Sinkhole = sinkhole_object
 	o.ThreatException = threatException_list
 	o.Whitelist = whitelist_list
 	o.RtypeAction = rtypeAction_object
 	o.DnsSecurityCategories = dnsSecurityCategories_list
-	o.Lists = lists_list
-	o.Sinkhole = sinkhole_object
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var svcb_value types.String
+	if obj.Svcb != nil {
+		svcb_value = types.StringValue(*obj.Svcb)
+	}
+	var any_value types.String
+	if obj.Any != nil {
+		any_value = types.StringValue(*obj.Any)
+	}
+	var https_value types.String
+	if obj.Https != nil {
+		https_value = types.StringValue(*obj.Https)
+	}
+	o.Svcb = svcb_value
+	o.Any = any_value
+	o.Https = https_value
 
 	return diags
 }
@@ -1463,10 +1685,6 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
 	var logLevel_value types.String
 	if obj.LogLevel != nil {
 		logLevel_value = types.StringValue(*obj.LogLevel)
@@ -1475,10 +1693,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesO
 	if obj.PacketCapture != nil {
 		packetCapture_value = types.StringValue(*obj.PacketCapture)
 	}
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
 	o.LogLevel = logLevel_value
 	o.PacketCapture = packetCapture_value
+	o.Action = action_value
 
 	return diags
 }
@@ -1508,6 +1730,15 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyFromP
 
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsAction, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var block_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
+	if obj.Block != nil {
+		block_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject)
+
+		diags.Append(block_object.CopyFromPango(ctx, obj.Block, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var sinkhole_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject
 	if obj.Sinkhole != nil {
 		sinkhole_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject)
@@ -1535,20 +1766,17 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) Cop
 			return diags
 		}
 	}
-	var block_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
-	if obj.Block != nil {
-		block_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject)
 
-		diags.Append(block_object.CopyFromPango(ctx, obj.Block, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Block = block_object
 	o.Sinkhole = sinkhole_object
 	o.Alert = alert_object
 	o.Allow = allow_object
-	o.Block = block_object
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -1566,12 +1794,6 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObj
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -1601,41 +1823,6 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject)
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var any_value types.String
-	if obj.Any != nil {
-		any_value = types.StringValue(*obj.Any)
-	}
-	var https_value types.String
-	if obj.Https != nil {
-		https_value = types.StringValue(*obj.Https)
-	}
-	var svcb_value types.String
-	if obj.Svcb != nil {
-		svcb_value = types.StringValue(*obj.Svcb)
-	}
-	o.Any = any_value
-	o.Https = https_value
-	o.Svcb = svcb_value
-
-	return diags
-}
-
 func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) CopyFromPango(ctx context.Context, obj *spyware.MicaEngineSpywareEnabled, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -1649,190 +1836,12 @@ func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) Cop
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var severity_list types.List
-	{
-		var list_diags diag.Diagnostics
-		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
-		diags.Append(list_diags...)
-	}
-	var action_object *AntiSpywareSecurityProfileDataSourceRulesActionObject
-	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileDataSourceRulesActionObject)
-
-		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var threatName_value types.String
-	if obj.ThreatName != nil {
-		threatName_value = types.StringValue(*obj.ThreatName)
-	}
-	var category_value types.String
-	if obj.Category != nil {
-		category_value = types.StringValue(*obj.Category)
-	}
-	var packetCapture_value types.String
-	if obj.PacketCapture != nil {
-		packetCapture_value = types.StringValue(*obj.PacketCapture)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.ThreatName = threatName_value
-	o.Category = category_value
-	o.PacketCapture = packetCapture_value
-	o.Severity = severity_list
-	o.Action = action_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyFromPango(ctx context.Context, obj *spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var default_object *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
-	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject)
-
-		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_object *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
-	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAllowObject)
-
-		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var alert_object *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
-	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAlertObject)
-
-		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var drop_object *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
-	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDropObject)
-
-		diags.Append(drop_object.CopyFromPango(ctx, obj.Drop, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetClient_object *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
-	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject)
-
-		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetServer_object *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
-	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject)
-
-		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetBoth_object *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
-	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject)
-
-		diags.Append(resetBoth_object.CopyFromPango(ctx, obj.ResetBoth, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_object *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
-	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject)
-
-		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Default = default_object
-	o.Allow = allow_object
-	o.Alert = alert_object
-	o.Drop = drop_object
-	o.ResetClient = resetClient_object
-	o.ResetServer = resetServer_object
-	o.ResetBoth = resetBoth_object
-	o.BlockIp = blockIp_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var trackBy_value types.String
-	if obj.TrackBy != nil {
-		trackBy_value = types.StringValue(*obj.TrackBy)
-	}
-	var duration_value types.Int64
-	if obj.Duration != nil {
-		duration_value = types.Int64Value(*obj.Duration)
-	}
-	o.TrackBy = trackBy_value
-	o.Duration = duration_value
-
-	return diags
+func (o *AntiSpywareSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
@@ -1849,7 +1858,15 @@ func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"inline_exception_edl_url": dsschema.ListAttribute{
+			"disable_override": dsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"inline_exception_ip_address": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1858,7 +1875,34 @@ func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"inline_exception_ip_address": dsschema.ListAttribute{
+			"rules": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileDataSourceRulesSchema(),
+			},
+
+			"botnet_domains": AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema(),
+
+			"cloud_inline_analysis": dsschema.BoolAttribute{
+				Description: "Enable cloud inline analysis",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"inline_exception_edl_url": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1876,25 +1920,6 @@ func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
 				NestedObject: AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema(),
 			},
 
-			"rules": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileDataSourceRulesSchema(),
-			},
-
-			"botnet_domains": AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema(),
-
-			"description": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"threat_exception": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -1903,69 +1928,12 @@ func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceThreatExceptionSchema(),
 			},
-
-			"cloud_inline_analysis": dsschema.BoolAttribute{
-				Description: "Enable cloud inline analysis",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"disable_override": dsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceModel) getTypeFor(name string) attr.Type {
 	schema := AntiSpywareSecurityProfileDataSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"inline_policy_action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1991,6 +1959,14 @@ func AntiSpywareSecurityProfileDataSourceRulesSchema() dsschema.NestedAttributeO
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"threat_name": dsschema.StringAttribute{
+				Description: "Threat name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
 				Sensitive:   false,
 			},
 
@@ -2020,14 +1996,6 @@ func AntiSpywareSecurityProfileDataSourceRulesSchema() dsschema.NestedAttributeO
 			},
 
 			"action": AntiSpywareSecurityProfileDataSourceRulesActionSchema(),
-
-			"threat_name": dsschema.StringAttribute{
-				Description: "Threat name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
@@ -2059,10 +2027,6 @@ func AntiSpywareSecurityProfileDataSourceRulesActionSchema() dsschema.SingleNest
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"allow": AntiSpywareSecurityProfileDataSourceRulesActionAllowSchema(),
-
-			"alert": AntiSpywareSecurityProfileDataSourceRulesActionAlertSchema(),
-
 			"drop": AntiSpywareSecurityProfileDataSourceRulesActionDropSchema(),
 
 			"reset_client": AntiSpywareSecurityProfileDataSourceRulesActionResetClientSchema(),
@@ -2074,6 +2038,10 @@ func AntiSpywareSecurityProfileDataSourceRulesActionSchema() dsschema.SingleNest
 			"block_ip": AntiSpywareSecurityProfileDataSourceRulesActionBlockIpSchema(),
 
 			"default": AntiSpywareSecurityProfileDataSourceRulesActionDefaultSchema(),
+
+			"allow": AntiSpywareSecurityProfileDataSourceRulesActionAllowSchema(),
+
+			"alert": AntiSpywareSecurityProfileDataSourceRulesActionAlertSchema(),
 		},
 	}
 }
@@ -2106,14 +2074,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionAllowSchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2148,14 +2116,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionAlertSchema() dsschema.Singl
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2190,14 +2158,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionDropSchema() dsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2232,14 +2200,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionResetClientSchema() dsschema
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2274,14 +2242,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionResetServerSchema() dsschema
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2316,14 +2284,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionResetBothSchema() dsschema.S
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2358,14 +2326,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionBlockIpSchema() dsschema.Sin
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -2417,14 +2385,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionDefaultSchema() dsschema.Sin
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2458,6 +2426,17 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema() dsschema.SingleNe
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"sinkhole": AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema(),
+
+			"threat_exception": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema(),
+			},
+
 			"whitelist": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -2486,335 +2465,12 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema() dsschema.SingleNe
 				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema(),
 			},
-
-			"sinkhole": AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema(),
-
-			"threat_exception": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema(),
-			},
 		},
 	}
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) getTypeFor(name string) attr.Type {
 	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"packet_capture": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"alert": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema(),
-
-			"allow": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema(),
-
-			"block": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema(),
-
-			"sinkhole": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"ipv4_address": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ipv6_address": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2938,14 +2594,6 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesSchem
 				Sensitive:   false,
 			},
 
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"log_level": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -2961,12 +2609,373 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesSchem
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) getTypeFor(name string) attr.Type {
 	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"action": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema(),
+
+			"packet_capture": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"alert": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema(),
+
+			"allow": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema(),
+
+			"block": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema(),
+
+			"sinkhole": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema(),
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"ipv4_address": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ipv6_address": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"inline_policy_action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3035,23 +3044,36 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) getTypeFor(n
 	panic("unreachable")
 }
 
-func AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
+func AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
+			"default": AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema(),
+
+			"allow": AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema(),
+
+			"alert": AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema(),
+
+			"drop": AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema(),
+
+			"reset_both": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothSchema(),
+
+			"reset_client": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientSchema(),
+
+			"reset_server": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerSchema(),
+
+			"block_ip": AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpSchema(),
 		},
 	}
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema()
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3068,36 +3090,158 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) getT
 	panic("unreachable")
 }
 
-func AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema() dsschema.SingleNestedAttribute {
+func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    true,
 		Optional:    true,
 		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
 
-			"reset_server": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerSchema(),
-
-			"block_ip": AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpSchema(),
-
-			"default": AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema(),
-
-			"allow": AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema(),
-
-			"alert": AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema(),
-
-			"drop": AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema(),
-
-			"reset_both": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothSchema(),
-
-			"reset_client": AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientSchema(),
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+			}...),
 		},
+		Attributes: map[string]dsschema.Attribute{},
 	}
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema()
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3124,14 +3268,14 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothSchema() 
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3166,14 +3310,14 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientSchema(
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3208,14 +3352,14 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerSchema(
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3250,14 +3394,14 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpSchema() ds
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
 				path.MatchRelative().AtParent().AtName("drop"),
 				path.MatchRelative().AtParent().AtName("reset_both"),
 				path.MatchRelative().AtParent().AtName("reset_client"),
 				path.MatchRelative().AtParent().AtName("reset_server"),
 				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3299,158 +3443,23 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
 	panic("unreachable")
 }
 
-func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
+func AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
 
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-			}...),
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
 		},
-		Attributes: map[string]dsschema.Attribute{},
 	}
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema()
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3495,7 +3504,6 @@ func (d *AntiSpywareSecurityProfileDataSource) Configure(_ context.Context, req 
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, spyware.NewService(d.client), specifier, spyware.SpecMatches)
 }
-
 func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AntiSpywareSecurityProfileDataSourceModel
@@ -3524,8 +3532,13 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -3579,15 +3592,19 @@ func AntiSpywareSecurityProfileResourceLocationSchema() rsschema.Attribute {
 type AntiSpywareSecurityProfileResourceModel struct {
 	Location                 AntiSpywareSecurityProfileLocation                     `tfsdk:"location"`
 	Name                     types.String                                           `tfsdk:"name"`
-	ThreatException          types.List                                             `tfsdk:"threat_exception"`
-	CloudInlineAnalysis      types.Bool                                             `tfsdk:"cloud_inline_analysis"`
-	DisableOverride          types.String                                           `tfsdk:"disable_override"`
-	InlineExceptionEdlUrl    types.List                                             `tfsdk:"inline_exception_edl_url"`
-	InlineExceptionIpAddress types.List                                             `tfsdk:"inline_exception_ip_address"`
 	MicaEngineSpywareEnabled types.List                                             `tfsdk:"mica_engine_spyware_enabled"`
-	Rules                    types.List                                             `tfsdk:"rules"`
+	ThreatException          types.List                                             `tfsdk:"threat_exception"`
 	BotnetDomains            *AntiSpywareSecurityProfileResourceBotnetDomainsObject `tfsdk:"botnet_domains"`
+	CloudInlineAnalysis      types.Bool                                             `tfsdk:"cloud_inline_analysis"`
 	Description              types.String                                           `tfsdk:"description"`
+	InlineExceptionEdlUrl    types.List                                             `tfsdk:"inline_exception_edl_url"`
+	DisableOverride          types.String                                           `tfsdk:"disable_override"`
+	InlineExceptionIpAddress types.List                                             `tfsdk:"inline_exception_ip_address"`
+	Rules                    types.List                                             `tfsdk:"rules"`
+}
+type AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject struct {
+	Name               types.String `tfsdk:"name"`
+	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionObject struct {
 	Name          types.String                                                   `tfsdk:"name"`
@@ -3596,14 +3613,14 @@ type AntiSpywareSecurityProfileResourceThreatExceptionObject struct {
 	ExemptIp      types.List                                                     `tfsdk:"exempt_ip"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionObject struct {
+	ResetServer *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
+	BlockIp     *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
 	Default     *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject     `tfsdk:"default"`
 	Allow       *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject       `tfsdk:"allow"`
 	Alert       *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject       `tfsdk:"alert"`
 	Drop        *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject        `tfsdk:"drop"`
 	ResetBoth   *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject   `tfsdk:"reset_both"`
 	ResetClient *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
-	BlockIp     *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject struct {
 }
@@ -3618,72 +3635,32 @@ type AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject st
 type AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject struct {
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject struct {
-	Duration types.Int64  `tfsdk:"duration"`
 	TrackBy  types.String `tfsdk:"track_by"`
+	Duration types.Int64  `tfsdk:"duration"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject struct {
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
-type AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject struct {
-	Name               types.String `tfsdk:"name"`
-	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
-}
-type AntiSpywareSecurityProfileResourceRulesObject struct {
-	Name          types.String                                         `tfsdk:"name"`
-	Category      types.String                                         `tfsdk:"category"`
-	PacketCapture types.String                                         `tfsdk:"packet_capture"`
-	Severity      types.List                                           `tfsdk:"severity"`
-	Action        *AntiSpywareSecurityProfileResourceRulesActionObject `tfsdk:"action"`
-	ThreatName    types.String                                         `tfsdk:"threat_name"`
-}
-type AntiSpywareSecurityProfileResourceRulesActionObject struct {
-	ResetBoth   *AntiSpywareSecurityProfileResourceRulesActionResetBothObject   `tfsdk:"reset_both"`
-	BlockIp     *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
-	Default     *AntiSpywareSecurityProfileResourceRulesActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileResourceRulesActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileResourceRulesActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileResourceRulesActionDropObject        `tfsdk:"drop"`
-	ResetClient *AntiSpywareSecurityProfileResourceRulesActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileResourceRulesActionResetServerObject `tfsdk:"reset_server"`
-}
-type AntiSpywareSecurityProfileResourceRulesActionBlockIpObject struct {
-	TrackBy  types.String `tfsdk:"track_by"`
-	Duration types.Int64  `tfsdk:"duration"`
-}
-type AntiSpywareSecurityProfileResourceRulesActionDefaultObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionAllowObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionAlertObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionDropObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionResetClientObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionResetServerObject struct {
-}
-type AntiSpywareSecurityProfileResourceRulesActionResetBothObject struct {
-}
 type AntiSpywareSecurityProfileResourceBotnetDomainsObject struct {
-	Whitelist             types.List                                                        `tfsdk:"whitelist"`
-	RtypeAction           *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
 	DnsSecurityCategories types.List                                                        `tfsdk:"dns_security_categories"`
 	Lists                 types.List                                                        `tfsdk:"lists"`
 	Sinkhole              *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject    `tfsdk:"sinkhole"`
 	ThreatException       types.List                                                        `tfsdk:"threat_exception"`
+	Whitelist             types.List                                                        `tfsdk:"whitelist"`
+	RtypeAction           *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsObject struct {
 	Name          types.String                                                      `tfsdk:"name"`
-	Action        *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject `tfsdk:"action"`
 	PacketCapture types.String                                                      `tfsdk:"packet_capture"`
+	Action        *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject `tfsdk:"action"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject struct {
+	Sinkhole *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject `tfsdk:"sinkhole"`
 	Alert    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject    `tfsdk:"alert"`
 	Allow    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject    `tfsdk:"allow"`
 	Block    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject    `tfsdk:"block"`
-	Sinkhole *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject `tfsdk:"sinkhole"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject struct {
 }
@@ -3705,9 +3682,9 @@ type AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject struct {
 	Description types.String `tfsdk:"description"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject struct {
-	Svcb  types.String `tfsdk:"svcb"`
 	Any   types.String `tfsdk:"any"`
 	Https types.String `tfsdk:"https"`
+	Svcb  types.String `tfsdk:"svcb"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject struct {
 	Name          types.String `tfsdk:"name"`
@@ -3715,9 +3692,41 @@ type AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject 
 	LogLevel      types.String `tfsdk:"log_level"`
 	PacketCapture types.String `tfsdk:"packet_capture"`
 }
-
-func (r *AntiSpywareSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_anti_spyware_security_profile"
+type AntiSpywareSecurityProfileResourceRulesObject struct {
+	Name          types.String                                         `tfsdk:"name"`
+	Category      types.String                                         `tfsdk:"category"`
+	PacketCapture types.String                                         `tfsdk:"packet_capture"`
+	Severity      types.List                                           `tfsdk:"severity"`
+	Action        *AntiSpywareSecurityProfileResourceRulesActionObject `tfsdk:"action"`
+	ThreatName    types.String                                         `tfsdk:"threat_name"`
+}
+type AntiSpywareSecurityProfileResourceRulesActionObject struct {
+	Default     *AntiSpywareSecurityProfileResourceRulesActionDefaultObject     `tfsdk:"default"`
+	Allow       *AntiSpywareSecurityProfileResourceRulesActionAllowObject       `tfsdk:"allow"`
+	Alert       *AntiSpywareSecurityProfileResourceRulesActionAlertObject       `tfsdk:"alert"`
+	Drop        *AntiSpywareSecurityProfileResourceRulesActionDropObject        `tfsdk:"drop"`
+	ResetClient *AntiSpywareSecurityProfileResourceRulesActionResetClientObject `tfsdk:"reset_client"`
+	ResetServer *AntiSpywareSecurityProfileResourceRulesActionResetServerObject `tfsdk:"reset_server"`
+	ResetBoth   *AntiSpywareSecurityProfileResourceRulesActionResetBothObject   `tfsdk:"reset_both"`
+	BlockIp     *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
+}
+type AntiSpywareSecurityProfileResourceRulesActionResetBothObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionBlockIpObject struct {
+	TrackBy  types.String `tfsdk:"track_by"`
+	Duration types.Int64  `tfsdk:"duration"`
+}
+type AntiSpywareSecurityProfileResourceRulesActionDefaultObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionAllowObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionAlertObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionDropObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionResetClientObject struct {
+}
+type AntiSpywareSecurityProfileResourceRulesActionResetServerObject struct {
 }
 
 func (r *AntiSpywareSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -3739,6 +3748,8 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"botnet_domains": AntiSpywareSecurityProfileResourceBotnetDomainsSchema(),
+
 			"cloud_inline_analysis": rsschema.BoolAttribute{
 				Description: "Enable cloud inline analysis",
 				Computed:    false,
@@ -3746,42 +3757,6 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"disable_override": rsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"no",
-						"yes",
-					}...),
-				},
-			},
-
-			"threat_exception": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionSchema(),
-			},
-
-			"rules": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceRulesSchema(),
-			},
-
-			"botnet_domains": AntiSpywareSecurityProfileResourceBotnetDomainsSchema(),
 
 			"description": rsschema.StringAttribute{
 				Description: "",
@@ -3800,6 +3775,40 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
+			"mica_engine_spyware_enabled": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledSchema(),
+			},
+
+			"threat_exception": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionSchema(),
+			},
+
+			"disable_override": rsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"yes",
+						"no",
+					}...),
+				},
+			},
+
 			"inline_exception_ip_address": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -3809,13 +3818,13 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"mica_engine_spyware_enabled": rsschema.ListNestedAttribute{
+			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
 				Optional:     true,
 				Computed:     false,
 				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledSchema(),
+				NestedObject: AntiSpywareSecurityProfileResourceRulesSchema(),
 			},
 		},
 	}
@@ -3823,961 +3832,6 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 
 func (o *AntiSpywareSecurityProfileResourceModel) getTypeFor(name string) attr.Type {
 	schema := AntiSpywareSecurityProfileResourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"packet_capture": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("disable"),
-			},
-
-			"action": AntiSpywareSecurityProfileResourceThreatExceptionActionSchema(),
-
-			"exempt_ip": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema(),
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"alert": AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema(),
-
-			"drop": AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema(),
-
-			"reset_both": AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema(),
-
-			"reset_client": AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema(),
-
-			"reset_server": AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema(),
-
-			"block_ip": AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema(),
-
-			"default": AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema(),
-
-			"allow": AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"duration": rsschema.Int64Attribute{
-				Description: "Duration for block ip",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"track_by": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"threat_name": rsschema.StringAttribute{
-				Description: "Threat name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("any"),
-			},
-
-			"category": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("any"),
-			},
-
-			"packet_capture": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("disable"),
-			},
-
-			"severity": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"action": AntiSpywareSecurityProfileResourceRulesActionSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"allow": AntiSpywareSecurityProfileResourceRulesActionAllowSchema(),
-
-			"alert": AntiSpywareSecurityProfileResourceRulesActionAlertSchema(),
-
-			"drop": AntiSpywareSecurityProfileResourceRulesActionDropSchema(),
-
-			"reset_client": AntiSpywareSecurityProfileResourceRulesActionResetClientSchema(),
-
-			"reset_server": AntiSpywareSecurityProfileResourceRulesActionResetServerSchema(),
-
-			"reset_both": AntiSpywareSecurityProfileResourceRulesActionResetBothSchema(),
-
-			"block_ip": AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema(),
-
-			"default": AntiSpywareSecurityProfileResourceRulesActionDefaultSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionAllowSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionAllowSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionAlertSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionAlertSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionDropSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionDropSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionResetClientSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionResetClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionResetServerSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionResetServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionResetBothSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionResetBothSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"track_by": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"duration": rsschema.Int64Attribute{
-				Description: "Duration for block ip",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceRulesActionDefaultSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("default"),
-				path.MatchRelative().AtParent().AtName("allow"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("drop"),
-				path.MatchRelative().AtParent().AtName("reset_client"),
-				path.MatchRelative().AtParent().AtName("reset_server"),
-				path.MatchRelative().AtParent().AtName("reset_both"),
-				path.MatchRelative().AtParent().AtName("block_ip"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceRulesActionDefaultSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4803,24 +3857,6 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsSchema() rsschema.SingleNest
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"dns_security_categories": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema(),
-			},
-
-			"lists": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema(),
-			},
-
 			"sinkhole": AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeSchema(),
 
 			"threat_exception": rsschema.ListNestedAttribute{
@@ -4842,306 +3878,30 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsSchema() rsschema.SingleNest
 			},
 
 			"rtype_action": AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionSchema(),
+
+			"dns_security_categories": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema(),
+			},
+
+			"lists": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema(),
+			},
 		},
 	}
 }
 
 func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) getTypeFor(name string) attr.Type {
 	schema := AntiSpywareSecurityProfileResourceBotnetDomainsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("default"),
-			},
-
-			"log_level": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("default"),
-			},
-
-			"packet_capture": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("disable"),
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"action": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema(),
-
-			"packet_capture": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("disable"),
-			},
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"allow": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema(),
-
-			"block": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema(),
-
-			"sinkhole": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema(),
-
-			"alert": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema(),
-		},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("block"),
-				path.MatchRelative().AtParent().AtName("sinkhole"),
-				path.MatchRelative().AtParent().AtName("alert"),
-				path.MatchRelative().AtParent().AtName("allow"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) getTypeFor(name string) attr.Type {
-	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5167,15 +3927,6 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeSchema() rsschema.Si
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"ipv6_address": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("::1"),
-			},
-
 			"ipv4_address": rsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -5183,6 +3934,15 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeSchema() rsschema.Si
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("pan-sinkhole-default-ip"),
+			},
+
+			"ipv6_address": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("::1"),
 			},
 		},
 	}
@@ -5337,6 +4097,300 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) getTy
 	panic("unreachable")
 }
 
+func AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("default"),
+			},
+
+			"log_level": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("default"),
+			},
+
+			"packet_capture": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("disable"),
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"action": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema(),
+
+			"packet_capture": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("disable"),
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"block": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema(),
+
+			"sinkhole": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema(),
+
+			"alert": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema(),
+
+			"allow": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema(),
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("block"),
+				path.MatchRelative().AtParent().AtName("sinkhole"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
@@ -5379,6 +4433,965 @@ func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) getTy
 	panic("unreachable")
 }
 
+func AntiSpywareSecurityProfileResourceThreatExceptionSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"packet_capture": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("disable"),
+			},
+
+			"action": AntiSpywareSecurityProfileResourceThreatExceptionActionSchema(),
+
+			"exempt_ip": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema(),
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"block_ip": AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema(),
+
+			"default": AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema(),
+
+			"allow": AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema(),
+
+			"alert": AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema(),
+
+			"drop": AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema(),
+
+			"reset_both": AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema(),
+
+			"reset_client": AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema(),
+
+			"reset_server": AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema(),
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("reset_client"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"track_by": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"duration": rsschema.Int64Attribute{
+				Description: "Duration for block ip",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"threat_name": rsschema.StringAttribute{
+				Description: "Threat name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("any"),
+			},
+
+			"category": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("any"),
+			},
+
+			"packet_capture": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("disable"),
+			},
+
+			"severity": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"action": AntiSpywareSecurityProfileResourceRulesActionSchema(),
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"reset_server": AntiSpywareSecurityProfileResourceRulesActionResetServerSchema(),
+
+			"reset_both": AntiSpywareSecurityProfileResourceRulesActionResetBothSchema(),
+
+			"block_ip": AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema(),
+
+			"default": AntiSpywareSecurityProfileResourceRulesActionDefaultSchema(),
+
+			"allow": AntiSpywareSecurityProfileResourceRulesActionAllowSchema(),
+
+			"alert": AntiSpywareSecurityProfileResourceRulesActionAlertSchema(),
+
+			"drop": AntiSpywareSecurityProfileResourceRulesActionDropSchema(),
+
+			"reset_client": AntiSpywareSecurityProfileResourceRulesActionResetClientSchema(),
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionResetClientSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionResetClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionResetServerSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionResetServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionResetBothSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionResetBothSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"track_by": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"duration": rsschema.Int64Attribute{
+				Description: "Duration for block ip",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionDefaultSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionDefaultSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionAllowSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionAllowSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionAlertSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionAlertSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntiSpywareSecurityProfileResourceRulesActionDropSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("reset_client"),
+				path.MatchRelative().AtParent().AtName("reset_server"),
+				path.MatchRelative().AtParent().AtName("reset_both"),
+				path.MatchRelative().AtParent().AtName("block_ip"),
+				path.MatchRelative().AtParent().AtName("default"),
+				path.MatchRelative().AtParent().AtName("allow"),
+				path.MatchRelative().AtParent().AtName("alert"),
+				path.MatchRelative().AtParent().AtName("drop"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) getTypeFor(name string) attr.Type {
+	schema := AntiSpywareSecurityProfileResourceRulesActionDropSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func (r *AntiSpywareSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_anti_spyware_security_profile"
+}
+
 func (r *AntiSpywareSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AntiSpywareSecurityProfileResourceSchema()
 }
@@ -5402,23 +5415,27 @@ func (r *AntiSpywareSecurityProfileResource) Configure(ctx context.Context, req 
 
 func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	cloudInlineAnalysis_value := o.CloudInlineAnalysis.ValueBoolPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	var threatException_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionObject
-	var threatException_pango_entries []spyware.ThreatException
+	inlineExceptionIpAddress_pango_entries := make([]string, 0)
+	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var rules_tf_entries []AntiSpywareSecurityProfileResourceRulesObject
+	var rules_pango_entries []spyware.Rules
 	{
-		d := o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)
+		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
 		diags.Append(d...)
 		if diags.HasError() {
 			return diags
 		}
-		for _, elt := range threatException_tf_entries {
-			var entry *spyware.ThreatException
+		for _, elt := range rules_tf_entries {
+			var entry *spyware.Rules
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
 			}
-			threatException_pango_entries = append(threatException_pango_entries, *entry)
+			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
 	var botnetDomains_entry *spyware.BotnetDomains
@@ -5434,14 +5451,10 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 			return diags
 		}
 	}
+	cloudInlineAnalysis_value := o.CloudInlineAnalysis.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
 	inlineExceptionEdlUrl_pango_entries := make([]string, 0)
 	diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &inlineExceptionEdlUrl_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	inlineExceptionIpAddress_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -5462,21 +5475,21 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 			micaEngineSpywareEnabled_pango_entries = append(micaEngineSpywareEnabled_pango_entries, *entry)
 		}
 	}
-	var rules_tf_entries []AntiSpywareSecurityProfileResourceRulesObject
-	var rules_pango_entries []spyware.Rules
+	var threatException_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionObject
+	var threatException_pango_entries []spyware.ThreatException
 	{
-		d := o.Rules.ElementsAs(ctx, &rules_tf_entries, false)
+		d := o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)
 		diags.Append(d...)
 		if diags.HasError() {
 			return diags
 		}
-		for _, elt := range rules_tf_entries {
-			var entry *spyware.Rules
+		for _, elt := range threatException_tf_entries {
+			var entry *spyware.ThreatException
 			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
 			if diags.HasError() {
 				return diags
 			}
-			rules_pango_entries = append(rules_pango_entries, *entry)
+			threatException_pango_entries = append(threatException_pango_entries, *entry)
 		}
 	}
 
@@ -5484,37 +5497,516 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		*obj = new(spyware.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).CloudInlineAnalysis = cloudInlineAnalysis_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).ThreatException = threatException_pango_entries
+	(*obj).InlineExceptionIpAddress = inlineExceptionIpAddress_pango_entries
+	(*obj).Rules = rules_pango_entries
 	(*obj).BotnetDomains = botnetDomains_entry
+	(*obj).CloudInlineAnalysis = cloudInlineAnalysis_value
 	(*obj).Description = description_value
 	(*obj).InlineExceptionEdlUrl = inlineExceptionEdlUrl_pango_entries
-	(*obj).InlineExceptionIpAddress = inlineExceptionIpAddress_pango_entries
 	(*obj).MicaEngineSpywareEnabled = micaEngineSpywareEnabled_pango_entries
-	(*obj).Rules = rules_pango_entries
+	(*obj).ThreatException = threatException_pango_entries
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	threatName_value := o.ThreatName.ValueStringPointer()
+	category_value := o.Category.ValueStringPointer()
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
+	severity_pango_entries := make([]string, 0)
+	diags.Append(o.Severity.ElementsAs(ctx, &severity_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var action_entry *spyware.RulesAction
+	if o.Action != nil {
+		if *obj != nil && (*obj).Action != nil {
+			action_entry = (*obj).Action
+		} else {
+			action_entry = new(spyware.RulesAction)
+		}
+
+		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.Rules)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).ThreatName = threatName_value
+	(*obj).Category = category_value
+	(*obj).PacketCapture = packetCapture_value
+	(*obj).Severity = severity_pango_entries
+	(*obj).Action = action_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyToPango(ctx context.Context, obj **spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var resetServer_entry *spyware.RulesActionResetServer
+	if o.ResetServer != nil {
+		if *obj != nil && (*obj).ResetServer != nil {
+			resetServer_entry = (*obj).ResetServer
+		} else {
+			resetServer_entry = new(spyware.RulesActionResetServer)
+		}
+
+		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetBoth_entry *spyware.RulesActionResetBoth
+	if o.ResetBoth != nil {
+		if *obj != nil && (*obj).ResetBoth != nil {
+			resetBoth_entry = (*obj).ResetBoth
+		} else {
+			resetBoth_entry = new(spyware.RulesActionResetBoth)
+		}
+
+		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_entry *spyware.RulesActionBlockIp
+	if o.BlockIp != nil {
+		if *obj != nil && (*obj).BlockIp != nil {
+			blockIp_entry = (*obj).BlockIp
+		} else {
+			blockIp_entry = new(spyware.RulesActionBlockIp)
+		}
+
+		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var default_entry *spyware.RulesActionDefault
+	if o.Default != nil {
+		if *obj != nil && (*obj).Default != nil {
+			default_entry = (*obj).Default
+		} else {
+			default_entry = new(spyware.RulesActionDefault)
+		}
+
+		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_entry *spyware.RulesActionAllow
+	if o.Allow != nil {
+		if *obj != nil && (*obj).Allow != nil {
+			allow_entry = (*obj).Allow
+		} else {
+			allow_entry = new(spyware.RulesActionAllow)
+		}
+
+		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var alert_entry *spyware.RulesActionAlert
+	if o.Alert != nil {
+		if *obj != nil && (*obj).Alert != nil {
+			alert_entry = (*obj).Alert
+		} else {
+			alert_entry = new(spyware.RulesActionAlert)
+		}
+
+		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var drop_entry *spyware.RulesActionDrop
+	if o.Drop != nil {
+		if *obj != nil && (*obj).Drop != nil {
+			drop_entry = (*obj).Drop
+		} else {
+			drop_entry = new(spyware.RulesActionDrop)
+		}
+
+		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetClient_entry *spyware.RulesActionResetClient
+	if o.ResetClient != nil {
+		if *obj != nil && (*obj).ResetClient != nil {
+			resetClient_entry = (*obj).ResetClient
+		} else {
+			resetClient_entry = new(spyware.RulesActionResetClient)
+		}
+
+		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesAction)
+	}
+	(*obj).ResetServer = resetServer_entry
+	(*obj).ResetBoth = resetBoth_entry
+	(*obj).BlockIp = blockIp_entry
+	(*obj).Default = default_entry
+	(*obj).Allow = allow_entry
+	(*obj).Alert = alert_entry
+	(*obj).Drop = drop_entry
+	(*obj).ResetClient = resetClient_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionResetServer)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionResetBoth)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	trackBy_value := o.TrackBy.ValueStringPointer()
+	duration_value := o.Duration.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionBlockIp)
+	}
+	(*obj).TrackBy = trackBy_value
+	(*obj).Duration = duration_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionDefault)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionAllow)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionAlert)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionDrop)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.RulesActionResetClient)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, obj **spyware.MicaEngineSpywareEnabled, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	inlinePolicyAction_value := o.InlinePolicyAction.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.MicaEngineSpywareEnabled)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).InlinePolicyAction = inlinePolicyAction_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
+	var action_entry *spyware.ThreatExceptionAction
+	if o.Action != nil {
+		if *obj != nil && (*obj).Action != nil {
+			action_entry = (*obj).Action
+		} else {
+			action_entry = new(spyware.ThreatExceptionAction)
+		}
+
+		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var exemptIp_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject
+	var exemptIp_pango_entries []spyware.ThreatExceptionExemptIp
+	{
+		d := o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range exemptIp_tf_entries {
+			var entry *spyware.ThreatExceptionExemptIp
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			exemptIp_pango_entries = append(exemptIp_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatException)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).PacketCapture = packetCapture_value
+	(*obj).Action = action_entry
+	(*obj).ExemptIp = exemptIp_pango_entries
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var resetServer_entry *spyware.ThreatExceptionActionResetServer
+	if o.ResetServer != nil {
+		if *obj != nil && (*obj).ResetServer != nil {
+			resetServer_entry = (*obj).ResetServer
+		} else {
+			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
+		}
+
+		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
+	if o.BlockIp != nil {
+		if *obj != nil && (*obj).BlockIp != nil {
+			blockIp_entry = (*obj).BlockIp
+		} else {
+			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
+		}
+
+		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var default_entry *spyware.ThreatExceptionActionDefault
+	if o.Default != nil {
+		if *obj != nil && (*obj).Default != nil {
+			default_entry = (*obj).Default
+		} else {
+			default_entry = new(spyware.ThreatExceptionActionDefault)
+		}
+
+		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_entry *spyware.ThreatExceptionActionAllow
+	if o.Allow != nil {
+		if *obj != nil && (*obj).Allow != nil {
+			allow_entry = (*obj).Allow
+		} else {
+			allow_entry = new(spyware.ThreatExceptionActionAllow)
+		}
+
+		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var alert_entry *spyware.ThreatExceptionActionAlert
+	if o.Alert != nil {
+		if *obj != nil && (*obj).Alert != nil {
+			alert_entry = (*obj).Alert
+		} else {
+			alert_entry = new(spyware.ThreatExceptionActionAlert)
+		}
+
+		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var drop_entry *spyware.ThreatExceptionActionDrop
+	if o.Drop != nil {
+		if *obj != nil && (*obj).Drop != nil {
+			drop_entry = (*obj).Drop
+		} else {
+			drop_entry = new(spyware.ThreatExceptionActionDrop)
+		}
+
+		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
+	if o.ResetBoth != nil {
+		if *obj != nil && (*obj).ResetBoth != nil {
+			resetBoth_entry = (*obj).ResetBoth
+		} else {
+			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
+		}
+
+		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetClient_entry *spyware.ThreatExceptionActionResetClient
+	if o.ResetClient != nil {
+		if *obj != nil && (*obj).ResetClient != nil {
+			resetClient_entry = (*obj).ResetClient
+		} else {
+			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
+		}
+
+		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionAction)
+	}
+	(*obj).ResetServer = resetServer_entry
+	(*obj).BlockIp = blockIp_entry
+	(*obj).Default = default_entry
+	(*obj).Allow = allow_entry
+	(*obj).Alert = alert_entry
+	(*obj).Drop = drop_entry
+	(*obj).ResetBoth = resetBoth_entry
+	(*obj).ResetClient = resetClient_entry
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionDrop)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetBoth)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetClient)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionResetServer)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	trackBy_value := o.TrackBy.ValueStringPointer()
+	duration_value := o.Duration.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionBlockIp)
+	}
+	(*obj).TrackBy = trackBy_value
+	(*obj).Duration = duration_value
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionDefault)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionAllow)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionActionAlert)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.ThreatExceptionExemptIp)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
 func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var lists_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
-	var lists_pango_entries []spyware.BotnetDomainsLists
-	{
-		d := o.Lists.ElementsAs(ctx, &lists_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range lists_tf_entries {
-			var entry *spyware.BotnetDomainsLists
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			lists_pango_entries = append(lists_pango_entries, *entry)
-		}
-	}
 	var sinkhole_entry *spyware.BotnetDomainsSinkhole
 	if o.Sinkhole != nil {
 		if *obj != nil && (*obj).Sinkhole != nil {
@@ -5592,32 +6084,64 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 			dnsSecurityCategories_pango_entries = append(dnsSecurityCategories_pango_entries, *entry)
 		}
 	}
+	var lists_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
+	var lists_pango_entries []spyware.BotnetDomainsLists
+	{
+		d := o.Lists.ElementsAs(ctx, &lists_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range lists_tf_entries {
+			var entry *spyware.BotnetDomainsLists
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			lists_pango_entries = append(lists_pango_entries, *entry)
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(spyware.BotnetDomains)
 	}
-	(*obj).Lists = lists_pango_entries
 	(*obj).Sinkhole = sinkhole_entry
 	(*obj).ThreatException = threatException_pango_entries
 	(*obj).Whitelist = whitelist_pango_entries
 	(*obj).RtypeAction = rtypeAction_entry
 	(*obj).DnsSecurityCategories = dnsSecurityCategories_pango_entries
+	(*obj).Lists = lists_pango_entries
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	any_value := o.Any.ValueStringPointer()
+	https_value := o.Https.ValueStringPointer()
+	svcb_value := o.Svcb.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsRtypeAction)
+	}
+	(*obj).Any = any_value
+	(*obj).Https = https_value
+	(*obj).Svcb = svcb_value
 
 	return diags
 }
 func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	packetCapture_value := o.PacketCapture.ValueStringPointer()
 	action_value := o.Action.ValueStringPointer()
 	logLevel_value := o.LogLevel.ValueStringPointer()
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(spyware.BotnetDomainsDnsSecurityCategories)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).PacketCapture = packetCapture_value
 	(*obj).Action = action_value
 	(*obj).LogLevel = logLevel_value
-	(*obj).PacketCapture = packetCapture_value
 
 	return diags
 }
@@ -5712,15 +6236,6 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsListsActionSinkhole)
-	}
-
-	return diags
-}
 func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -5744,6 +6259,15 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) 
 
 	if (*obj) == nil {
 		*obj = new(spyware.BotnetDomainsListsActionBlock)
+	}
+
+	return diags
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(spyware.BotnetDomainsListsActionSinkhole)
 	}
 
 	return diags
@@ -5783,532 +6307,9 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyToP
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, obj **spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	any_value := o.Any.ValueStringPointer()
-	https_value := o.Https.ValueStringPointer()
-	svcb_value := o.Svcb.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.BotnetDomainsRtypeAction)
-	}
-	(*obj).Any = any_value
-	(*obj).Https = https_value
-	(*obj).Svcb = svcb_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, obj **spyware.MicaEngineSpywareEnabled, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	inlinePolicyAction_value := o.InlinePolicyAction.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.MicaEngineSpywareEnabled)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).InlinePolicyAction = inlinePolicyAction_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	threatName_value := o.ThreatName.ValueStringPointer()
-	category_value := o.Category.ValueStringPointer()
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	severity_pango_entries := make([]string, 0)
-	diags.Append(o.Severity.ElementsAs(ctx, &severity_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var action_entry *spyware.RulesAction
-	if o.Action != nil {
-		if *obj != nil && (*obj).Action != nil {
-			action_entry = (*obj).Action
-		} else {
-			action_entry = new(spyware.RulesAction)
-		}
-
-		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.Rules)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).ThreatName = threatName_value
-	(*obj).Category = category_value
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).Severity = severity_pango_entries
-	(*obj).Action = action_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyToPango(ctx context.Context, obj **spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var resetClient_entry *spyware.RulesActionResetClient
-	if o.ResetClient != nil {
-		if *obj != nil && (*obj).ResetClient != nil {
-			resetClient_entry = (*obj).ResetClient
-		} else {
-			resetClient_entry = new(spyware.RulesActionResetClient)
-		}
-
-		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetServer_entry *spyware.RulesActionResetServer
-	if o.ResetServer != nil {
-		if *obj != nil && (*obj).ResetServer != nil {
-			resetServer_entry = (*obj).ResetServer
-		} else {
-			resetServer_entry = new(spyware.RulesActionResetServer)
-		}
-
-		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetBoth_entry *spyware.RulesActionResetBoth
-	if o.ResetBoth != nil {
-		if *obj != nil && (*obj).ResetBoth != nil {
-			resetBoth_entry = (*obj).ResetBoth
-		} else {
-			resetBoth_entry = new(spyware.RulesActionResetBoth)
-		}
-
-		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_entry *spyware.RulesActionBlockIp
-	if o.BlockIp != nil {
-		if *obj != nil && (*obj).BlockIp != nil {
-			blockIp_entry = (*obj).BlockIp
-		} else {
-			blockIp_entry = new(spyware.RulesActionBlockIp)
-		}
-
-		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var default_entry *spyware.RulesActionDefault
-	if o.Default != nil {
-		if *obj != nil && (*obj).Default != nil {
-			default_entry = (*obj).Default
-		} else {
-			default_entry = new(spyware.RulesActionDefault)
-		}
-
-		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_entry *spyware.RulesActionAllow
-	if o.Allow != nil {
-		if *obj != nil && (*obj).Allow != nil {
-			allow_entry = (*obj).Allow
-		} else {
-			allow_entry = new(spyware.RulesActionAllow)
-		}
-
-		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var alert_entry *spyware.RulesActionAlert
-	if o.Alert != nil {
-		if *obj != nil && (*obj).Alert != nil {
-			alert_entry = (*obj).Alert
-		} else {
-			alert_entry = new(spyware.RulesActionAlert)
-		}
-
-		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var drop_entry *spyware.RulesActionDrop
-	if o.Drop != nil {
-		if *obj != nil && (*obj).Drop != nil {
-			drop_entry = (*obj).Drop
-		} else {
-			drop_entry = new(spyware.RulesActionDrop)
-		}
-
-		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesAction)
-	}
-	(*obj).ResetClient = resetClient_entry
-	(*obj).ResetServer = resetServer_entry
-	(*obj).ResetBoth = resetBoth_entry
-	(*obj).BlockIp = blockIp_entry
-	(*obj).Default = default_entry
-	(*obj).Allow = allow_entry
-	(*obj).Alert = alert_entry
-	(*obj).Drop = drop_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionAllow)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionAlert)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionDrop)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionResetClient)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionResetServer)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionResetBoth)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	trackBy_value := o.TrackBy.ValueStringPointer()
-	duration_value := o.Duration.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionBlockIp)
-	}
-	(*obj).TrackBy = trackBy_value
-	(*obj).Duration = duration_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.RulesActionDefault)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	var action_entry *spyware.ThreatExceptionAction
-	if o.Action != nil {
-		if *obj != nil && (*obj).Action != nil {
-			action_entry = (*obj).Action
-		} else {
-			action_entry = new(spyware.ThreatExceptionAction)
-		}
-
-		diags.Append(o.Action.CopyToPango(ctx, &action_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var exemptIp_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject
-	var exemptIp_pango_entries []spyware.ThreatExceptionExemptIp
-	{
-		d := o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range exemptIp_tf_entries {
-			var entry *spyware.ThreatExceptionExemptIp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			exemptIp_pango_entries = append(exemptIp_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatException)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).Action = action_entry
-	(*obj).ExemptIp = exemptIp_pango_entries
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var resetClient_entry *spyware.ThreatExceptionActionResetClient
-	if o.ResetClient != nil {
-		if *obj != nil && (*obj).ResetClient != nil {
-			resetClient_entry = (*obj).ResetClient
-		} else {
-			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
-		}
-
-		diags.Append(o.ResetClient.CopyToPango(ctx, &resetClient_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetServer_entry *spyware.ThreatExceptionActionResetServer
-	if o.ResetServer != nil {
-		if *obj != nil && (*obj).ResetServer != nil {
-			resetServer_entry = (*obj).ResetServer
-		} else {
-			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
-		}
-
-		diags.Append(o.ResetServer.CopyToPango(ctx, &resetServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
-	if o.BlockIp != nil {
-		if *obj != nil && (*obj).BlockIp != nil {
-			blockIp_entry = (*obj).BlockIp
-		} else {
-			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
-		}
-
-		diags.Append(o.BlockIp.CopyToPango(ctx, &blockIp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var default_entry *spyware.ThreatExceptionActionDefault
-	if o.Default != nil {
-		if *obj != nil && (*obj).Default != nil {
-			default_entry = (*obj).Default
-		} else {
-			default_entry = new(spyware.ThreatExceptionActionDefault)
-		}
-
-		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_entry *spyware.ThreatExceptionActionAllow
-	if o.Allow != nil {
-		if *obj != nil && (*obj).Allow != nil {
-			allow_entry = (*obj).Allow
-		} else {
-			allow_entry = new(spyware.ThreatExceptionActionAllow)
-		}
-
-		diags.Append(o.Allow.CopyToPango(ctx, &allow_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var alert_entry *spyware.ThreatExceptionActionAlert
-	if o.Alert != nil {
-		if *obj != nil && (*obj).Alert != nil {
-			alert_entry = (*obj).Alert
-		} else {
-			alert_entry = new(spyware.ThreatExceptionActionAlert)
-		}
-
-		diags.Append(o.Alert.CopyToPango(ctx, &alert_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var drop_entry *spyware.ThreatExceptionActionDrop
-	if o.Drop != nil {
-		if *obj != nil && (*obj).Drop != nil {
-			drop_entry = (*obj).Drop
-		} else {
-			drop_entry = new(spyware.ThreatExceptionActionDrop)
-		}
-
-		diags.Append(o.Drop.CopyToPango(ctx, &drop_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
-	if o.ResetBoth != nil {
-		if *obj != nil && (*obj).ResetBoth != nil {
-			resetBoth_entry = (*obj).ResetBoth
-		} else {
-			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
-		}
-
-		diags.Append(o.ResetBoth.CopyToPango(ctx, &resetBoth_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionAction)
-	}
-	(*obj).ResetClient = resetClient_entry
-	(*obj).ResetServer = resetServer_entry
-	(*obj).BlockIp = blockIp_entry
-	(*obj).Default = default_entry
-	(*obj).Allow = allow_entry
-	(*obj).Alert = alert_entry
-	(*obj).Drop = drop_entry
-	(*obj).ResetBoth = resetBoth_entry
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetClient)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetServer)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	trackBy_value := o.TrackBy.ValueStringPointer()
-	duration_value := o.Duration.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionBlockIp)
-	}
-	(*obj).TrackBy = trackBy_value
-	(*obj).Duration = duration_value
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionDefault)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionAllow)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionAlert)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionDrop)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionActionResetBoth)
-	}
-
-	return diags
-}
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, obj **spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(spyware.ThreatExceptionExemptIp)
-	}
-	(*obj).Name = o.Name.ValueString()
-
-	return diags
-}
 
 func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var inlineExceptionEdlUrl_list types.List
-	{
-		var list_diags diag.Diagnostics
-		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
-		diags.Append(list_diags...)
-	}
-	var inlineExceptionIpAddress_list types.List
-	{
-		var list_diags diag.Diagnostics
-		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
-		diags.Append(list_diags...)
-	}
 	var micaEngineSpywareEnabled_list types.List
 	{
 		var micaEngineSpywareEnabled_tf_entries []AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject
@@ -6321,20 +6322,6 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("mica_engine_spyware_enabled")
 		micaEngineSpywareEnabled_list, list_diags = types.ListValueFrom(ctx, schemaType, micaEngineSpywareEnabled_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var rules_list types.List
-	{
-		var rules_tf_entries []AntiSpywareSecurityProfileResourceRulesObject
-		for _, elt := range obj.Rules {
-			var entry AntiSpywareSecurityProfileResourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			rules_tf_entries = append(rules_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("rules")
-		rules_list, list_diags = types.ListValueFrom(ctx, schemaType, rules_tf_entries)
 		diags.Append(list_diags...)
 	}
 	var threatException_list types.List
@@ -6351,6 +6338,32 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var inlineExceptionEdlUrl_list types.List
+	{
+		var list_diags diag.Diagnostics
+		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
+		diags.Append(list_diags...)
+	}
+	var inlineExceptionIpAddress_list types.List
+	{
+		var list_diags diag.Diagnostics
+		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
+		diags.Append(list_diags...)
+	}
+	var rules_list types.List
+	{
+		var rules_tf_entries []AntiSpywareSecurityProfileResourceRulesObject
+		for _, elt := range obj.Rules {
+			var entry AntiSpywareSecurityProfileResourceRulesObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("rules")
+		rules_list, list_diags = types.ListValueFrom(ctx, schemaType, rules_tf_entries)
+		diags.Append(list_diags...)
+	}
 	var botnetDomains_object *AntiSpywareSecurityProfileResourceBotnetDomainsObject
 	if obj.BotnetDomains != nil {
 		botnetDomains_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsObject)
@@ -6361,28 +6374,28 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 		}
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var cloudInlineAnalysis_value types.Bool
 	if obj.CloudInlineAnalysis != nil {
 		cloudInlineAnalysis_value = types.BoolValue(*obj.CloudInlineAnalysis)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.InlineExceptionEdlUrl = inlineExceptionEdlUrl_list
-	o.InlineExceptionIpAddress = inlineExceptionIpAddress_list
 	o.MicaEngineSpywareEnabled = micaEngineSpywareEnabled_list
-	o.Rules = rules_list
-	o.BotnetDomains = botnetDomains_object
-	o.Description = description_value
 	o.ThreatException = threatException_list
+	o.BotnetDomains = botnetDomains_object
 	o.CloudInlineAnalysis = cloudInlineAnalysis_value
+	o.Description = description_value
+	o.InlineExceptionEdlUrl = inlineExceptionEdlUrl_list
 	o.DisableOverride = disableOverride_value
+	o.InlineExceptionIpAddress = inlineExceptionIpAddress_list
+	o.Rules = rules_list
 
 	return diags
 }
@@ -6396,455 +6409,6 @@ func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyF
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.InlinePolicyAction = inlinePolicyAction_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var severity_list types.List
-	{
-		var list_diags diag.Diagnostics
-		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
-		diags.Append(list_diags...)
-	}
-	var action_object *AntiSpywareSecurityProfileResourceRulesActionObject
-	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileResourceRulesActionObject)
-
-		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var threatName_value types.String
-	if obj.ThreatName != nil {
-		threatName_value = types.StringValue(*obj.ThreatName)
-	}
-	var category_value types.String
-	if obj.Category != nil {
-		category_value = types.StringValue(*obj.Category)
-	}
-	var packetCapture_value types.String
-	if obj.PacketCapture != nil {
-		packetCapture_value = types.StringValue(*obj.PacketCapture)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.ThreatName = threatName_value
-	o.Category = category_value
-	o.PacketCapture = packetCapture_value
-	o.Severity = severity_list
-	o.Action = action_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyFromPango(ctx context.Context, obj *spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var resetServer_object *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
-	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileResourceRulesActionResetServerObject)
-
-		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetBoth_object *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
-	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileResourceRulesActionResetBothObject)
-
-		diags.Append(resetBoth_object.CopyFromPango(ctx, obj.ResetBoth, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var blockIp_object *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
-	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileResourceRulesActionBlockIpObject)
-
-		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var default_object *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
-	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileResourceRulesActionDefaultObject)
-
-		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_object *AntiSpywareSecurityProfileResourceRulesActionAllowObject
-	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileResourceRulesActionAllowObject)
-
-		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var alert_object *AntiSpywareSecurityProfileResourceRulesActionAlertObject
-	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileResourceRulesActionAlertObject)
-
-		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var drop_object *AntiSpywareSecurityProfileResourceRulesActionDropObject
-	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileResourceRulesActionDropObject)
-
-		diags.Append(drop_object.CopyFromPango(ctx, obj.Drop, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var resetClient_object *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
-	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileResourceRulesActionResetClientObject)
-
-		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.ResetServer = resetServer_object
-	o.ResetBoth = resetBoth_object
-	o.BlockIp = blockIp_object
-	o.Default = default_object
-	o.Allow = allow_object
-	o.Alert = alert_object
-	o.Drop = drop_object
-	o.ResetClient = resetClient_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var trackBy_value types.String
-	if obj.TrackBy != nil {
-		trackBy_value = types.StringValue(*obj.TrackBy)
-	}
-	var duration_value types.Int64
-	if obj.Duration != nil {
-		duration_value = types.Int64Value(*obj.Duration)
-	}
-	o.TrackBy = trackBy_value
-	o.Duration = duration_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dnsSecurityCategories_list types.List
-	{
-		var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
-		for _, elt := range obj.DnsSecurityCategories {
-			var entry AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("dns_security_categories")
-		dnsSecurityCategories_list, list_diags = types.ListValueFrom(ctx, schemaType, dnsSecurityCategories_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var lists_list types.List
-	{
-		var lists_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
-		for _, elt := range obj.Lists {
-			var entry AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			lists_tf_entries = append(lists_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("lists")
-		lists_list, list_diags = types.ListValueFrom(ctx, schemaType, lists_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var threatException_list types.List
-	{
-		var threatException_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
-		for _, elt := range obj.ThreatException {
-			var entry AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			threatException_tf_entries = append(threatException_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("threat_exception")
-		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var whitelist_list types.List
-	{
-		var whitelist_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
-		for _, elt := range obj.Whitelist {
-			var entry AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			whitelist_tf_entries = append(whitelist_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("whitelist")
-		whitelist_list, list_diags = types.ListValueFrom(ctx, schemaType, whitelist_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var rtypeAction_object *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
-	if obj.RtypeAction != nil {
-		rtypeAction_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject)
-
-		diags.Append(rtypeAction_object.CopyFromPango(ctx, obj.RtypeAction, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
-	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject)
-
-		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.RtypeAction = rtypeAction_object
-	o.DnsSecurityCategories = dnsSecurityCategories_list
-	o.Lists = lists_list
-	o.Sinkhole = sinkhole_object
-	o.ThreatException = threatException_list
-	o.Whitelist = whitelist_list
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var logLevel_value types.String
-	if obj.LogLevel != nil {
-		logLevel_value = types.StringValue(*obj.LogLevel)
-	}
-	var packetCapture_value types.String
-	if obj.PacketCapture != nil {
-		packetCapture_value = types.StringValue(*obj.PacketCapture)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
-	o.LogLevel = logLevel_value
-	o.PacketCapture = packetCapture_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsLists, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var action_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
-	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject)
-
-		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var packetCapture_value types.String
-	if obj.PacketCapture != nil {
-		packetCapture_value = types.StringValue(*obj.PacketCapture)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_object
-	o.PacketCapture = packetCapture_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var alert_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
-	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject)
-
-		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var allow_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
-	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject)
-
-		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var block_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
-	if obj.Block != nil {
-		block_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject)
-
-		diags.Append(block_object.CopyFromPango(ctx, obj.Block, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
-	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject)
-
-		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Alert = alert_object
-	o.Allow = allow_object
-	o.Block = block_object
-	o.Sinkhole = sinkhole_object
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionBlock, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ipv4Address_value types.String
-	if obj.Ipv4Address != nil {
-		ipv4Address_value = types.StringValue(*obj.Ipv4Address)
-	}
-	var ipv6Address_value types.String
-	if obj.Ipv6Address != nil {
-		ipv6Address_value = types.StringValue(*obj.Ipv6Address)
-	}
-	o.Ipv4Address = ipv4Address_value
-	o.Ipv6Address = ipv6Address_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-
-	return diags
-}
-
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var https_value types.String
-	if obj.Https != nil {
-		https_value = types.StringValue(*obj.Https)
-	}
-	var svcb_value types.String
-	if obj.Svcb != nil {
-		svcb_value = types.StringValue(*obj.Svcb)
-	}
-	var any_value types.String
-	if obj.Any != nil {
-		any_value = types.StringValue(*obj.Any)
-	}
-	o.Https = https_value
-	o.Svcb = svcb_value
-	o.Any = any_value
 
 	return diags
 }
@@ -6880,9 +6444,9 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyFromPango(
 		packetCapture_value = types.StringValue(*obj.PacketCapture)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.PacketCapture = packetCapture_value
 	o.Action = action_object
 	o.ExemptIp = exemptIp_list
+	o.PacketCapture = packetCapture_value
 
 	return diags
 }
@@ -6974,6 +6538,29 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyFrom
 	return diags
 }
 
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var trackBy_value types.String
+	if obj.TrackBy != nil {
+		trackBy_value = types.StringValue(*obj.TrackBy)
+	}
+	var duration_value types.Int64
+	if obj.Duration != nil {
+		duration_value = types.Int64Value(*obj.Duration)
+	}
+	o.TrackBy = trackBy_value
+	o.Duration = duration_value
+
+	return diags
+}
+
 func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -7010,13 +6597,434 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObjec
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomains, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var lists_list types.List
+	{
+		var lists_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
+		for _, elt := range obj.Lists {
+			var entry AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			lists_tf_entries = append(lists_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("lists")
+		lists_list, list_diags = types.ListValueFrom(ctx, schemaType, lists_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var threatException_list types.List
+	{
+		var threatException_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
+		for _, elt := range obj.ThreatException {
+			var entry AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			threatException_tf_entries = append(threatException_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("threat_exception")
+		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var whitelist_list types.List
+	{
+		var whitelist_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
+		for _, elt := range obj.Whitelist {
+			var entry AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			whitelist_tf_entries = append(whitelist_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("whitelist")
+		whitelist_list, list_diags = types.ListValueFrom(ctx, schemaType, whitelist_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsSecurityCategories_list types.List
+	{
+		var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
+		for _, elt := range obj.DnsSecurityCategories {
+			var entry AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("dns_security_categories")
+		dnsSecurityCategories_list, list_diags = types.ListValueFrom(ctx, schemaType, dnsSecurityCategories_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+	if obj.Sinkhole != nil {
+		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject)
+
+		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var rtypeAction_object *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
+	if obj.RtypeAction != nil {
+		rtypeAction_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject)
+
+		diags.Append(rtypeAction_object.CopyFromPango(ctx, obj.RtypeAction, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Lists = lists_list
+	o.Sinkhole = sinkhole_object
+	o.ThreatException = threatException_list
+	o.Whitelist = whitelist_list
+	o.RtypeAction = rtypeAction_object
+	o.DnsSecurityCategories = dnsSecurityCategories_list
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsWhitelist, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsRtypeAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var any_value types.String
+	if obj.Any != nil {
+		any_value = types.StringValue(*obj.Any)
+	}
+	var https_value types.String
+	if obj.Https != nil {
+		https_value = types.StringValue(*obj.Https)
+	}
+	var svcb_value types.String
+	if obj.Svcb != nil {
+		svcb_value = types.StringValue(*obj.Svcb)
+	}
+	o.Any = any_value
+	o.Https = https_value
+	o.Svcb = svcb_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsDnsSecurityCategories, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var logLevel_value types.String
+	if obj.LogLevel != nil {
+		logLevel_value = types.StringValue(*obj.LogLevel)
+	}
+	var packetCapture_value types.String
+	if obj.PacketCapture != nil {
+		packetCapture_value = types.StringValue(*obj.PacketCapture)
+	}
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.LogLevel = logLevel_value
+	o.PacketCapture = packetCapture_value
+	o.Action = action_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsLists, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var action_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+	if obj.Action != nil {
+		action_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject)
+
+		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var packetCapture_value types.String
+	if obj.PacketCapture != nil {
+		packetCapture_value = types.StringValue(*obj.PacketCapture)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Action = action_object
+	o.PacketCapture = packetCapture_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var alert_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+	if obj.Alert != nil {
+		alert_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject)
+
+		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+	if obj.Allow != nil {
+		allow_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject)
+
+		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var block_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+	if obj.Block != nil {
+		block_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject)
+
+		diags.Append(block_object.CopyFromPango(ctx, obj.Block, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+	if obj.Sinkhole != nil {
+		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject)
+
+		diags.Append(sinkhole_object.CopyFromPango(ctx, obj.Sinkhole, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Alert = alert_object
+	o.Allow = allow_object
+	o.Block = block_object
+	o.Sinkhole = sinkhole_object
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionBlock, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsListsActionSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsSinkhole, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv4Address_value types.String
+	if obj.Ipv4Address != nil {
+		ipv4Address_value = types.StringValue(*obj.Ipv4Address)
+	}
+	var ipv6Address_value types.String
+	if obj.Ipv6Address != nil {
+		ipv6Address_value = types.StringValue(*obj.Ipv6Address)
+	}
+	o.Ipv4Address = ipv4Address_value
+	o.Ipv6Address = ipv6Address_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, obj *spyware.BotnetDomainsThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *spyware.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var severity_list types.List
+	{
+		var list_diags diag.Diagnostics
+		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
+		diags.Append(list_diags...)
+	}
+	var action_object *AntiSpywareSecurityProfileResourceRulesActionObject
+	if obj.Action != nil {
+		action_object = new(AntiSpywareSecurityProfileResourceRulesActionObject)
+
+		diags.Append(action_object.CopyFromPango(ctx, obj.Action, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var threatName_value types.String
+	if obj.ThreatName != nil {
+		threatName_value = types.StringValue(*obj.ThreatName)
+	}
+	var category_value types.String
+	if obj.Category != nil {
+		category_value = types.StringValue(*obj.Category)
+	}
+	var packetCapture_value types.String
+	if obj.PacketCapture != nil {
+		packetCapture_value = types.StringValue(*obj.PacketCapture)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Severity = severity_list
+	o.Action = action_object
+	o.ThreatName = threatName_value
+	o.Category = category_value
+	o.PacketCapture = packetCapture_value
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyFromPango(ctx context.Context, obj *spyware.RulesAction, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var resetServer_object *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+	if obj.ResetServer != nil {
+		resetServer_object = new(AntiSpywareSecurityProfileResourceRulesActionResetServerObject)
+
+		diags.Append(resetServer_object.CopyFromPango(ctx, obj.ResetServer, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetBoth_object *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+	if obj.ResetBoth != nil {
+		resetBoth_object = new(AntiSpywareSecurityProfileResourceRulesActionResetBothObject)
+
+		diags.Append(resetBoth_object.CopyFromPango(ctx, obj.ResetBoth, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var blockIp_object *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+	if obj.BlockIp != nil {
+		blockIp_object = new(AntiSpywareSecurityProfileResourceRulesActionBlockIpObject)
+
+		diags.Append(blockIp_object.CopyFromPango(ctx, obj.BlockIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var default_object *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+	if obj.Default != nil {
+		default_object = new(AntiSpywareSecurityProfileResourceRulesActionDefaultObject)
+
+		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var allow_object *AntiSpywareSecurityProfileResourceRulesActionAllowObject
+	if obj.Allow != nil {
+		allow_object = new(AntiSpywareSecurityProfileResourceRulesActionAllowObject)
+
+		diags.Append(allow_object.CopyFromPango(ctx, obj.Allow, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var alert_object *AntiSpywareSecurityProfileResourceRulesActionAlertObject
+	if obj.Alert != nil {
+		alert_object = new(AntiSpywareSecurityProfileResourceRulesActionAlertObject)
+
+		diags.Append(alert_object.CopyFromPango(ctx, obj.Alert, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var drop_object *AntiSpywareSecurityProfileResourceRulesActionDropObject
+	if obj.Drop != nil {
+		drop_object = new(AntiSpywareSecurityProfileResourceRulesActionDropObject)
+
+		diags.Append(drop_object.CopyFromPango(ctx, obj.Drop, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var resetClient_object *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+	if obj.ResetClient != nil {
+		resetClient_object = new(AntiSpywareSecurityProfileResourceRulesActionResetClientObject)
+
+		diags.Append(resetClient_object.CopyFromPango(ctx, obj.ResetClient, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.ResetServer = resetServer_object
+	o.ResetBoth = resetBoth_object
+	o.BlockIp = blockIp_object
+	o.Default = default_object
+	o.Allow = allow_object
+	o.Alert = alert_object
+	o.Drop = drop_object
+	o.ResetClient = resetClient_object
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAlert, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDrop, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionResetBoth, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionBlockIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var trackBy_value types.String
@@ -7033,11 +7041,24 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) C
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, obj *spyware.ThreatExceptionExemptIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionDefault, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
 
 	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyFromPango(ctx context.Context, obj *spyware.RulesActionAllow, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AntiSpywareSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -7070,8 +7091,8 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -7095,7 +7116,13 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -7110,7 +7137,6 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state AntiSpywareSecurityProfileResourceModel
@@ -7121,15 +7147,15 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 
 	var location spyware.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -7139,8 +7165,13 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -7165,7 +7196,6 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AntiSpywareSecurityProfileResourceModel
@@ -7199,7 +7229,14 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -7235,7 +7272,6 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AntiSpywareSecurityProfileResourceModel
@@ -7343,8 +7379,8 @@ func (r *AntiSpywareSecurityProfileResource) ImportState(ctx context.Context, re
 }
 
 type AntiSpywareSecurityProfileDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type AntiSpywareSecurityProfileLocation struct {
 	Shared      types.Bool                                     `tfsdk:"shared"`
@@ -7374,20 +7410,20 @@ func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Panorama device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "Device Group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -7403,11 +7439,11 @@ func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
 
 func (o AntiSpywareSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}{
-		Name:           o.Name.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -7415,16 +7451,16 @@ func (o AntiSpywareSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, er
 
 func (o *AntiSpywareSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Name           *string `json:"name"`
 		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Name = types.StringPointerValue(shadow.Name)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }

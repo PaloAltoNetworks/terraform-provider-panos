@@ -12,8 +12,9 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/service/group"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -57,21 +58,21 @@ type ServiceGroupDataSourceFilter struct {
 type ServiceGroupDataSourceModel struct {
 	Location        ServiceGroupLocation `tfsdk:"location"`
 	Name            types.String         `tfsdk:"name"`
-	DisableOverride types.String         `tfsdk:"disable_override"`
 	Members         types.List           `tfsdk:"members"`
 	Tags            types.List           `tfsdk:"tags"`
+	DisableOverride types.String         `tfsdk:"disable_override"`
 }
 
 func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	members_pango_entries := make([]string, 0)
 	diags.Append(o.Members.ElementsAs(ctx, &members_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	tags_pango_entries := make([]string, 0)
+	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -80,9 +81,9 @@ func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 		*obj = new(group.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Tag = tags_pango_entries
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Members = members_pango_entries
+	(*obj).Tag = tags_pango_entries
 
 	return diags
 }
@@ -114,6 +115,14 @@ func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *gr
 	return diags
 }
 
+func (o *ServiceGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
+}
+
 func ServiceGroupDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -128,15 +137,6 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"tags": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -146,6 +146,15 @@ func ServiceGroupDataSourceSchema() dsschema.Schema {
 			},
 
 			"members": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"tags": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -203,7 +212,6 @@ func (d *ServiceGroupDataSource) Configure(_ context.Context, req datasource.Con
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, group.NewService(d.client), specifier, group.SpecMatches)
 }
-
 func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ServiceGroupDataSourceModel
@@ -239,8 +247,13 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -297,10 +310,6 @@ type ServiceGroupResourceModel struct {
 	DisableOverride types.String         `tfsdk:"disable_override"`
 	Members         types.List           `tfsdk:"members"`
 	Tags            types.List           `tfsdk:"tags"`
-}
-
-func (r *ServiceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_service_group"
 }
 
 func (r *ServiceGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -376,6 +385,10 @@ func (o *ServiceGroupResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func (r *ServiceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_service_group"
+}
+
 func (r *ServiceGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = ServiceGroupResourceSchema()
 }
@@ -449,6 +462,14 @@ func (o *ServiceGroupResourceModel) CopyFromPango(ctx context.Context, obj *grou
 	return diags
 }
 
+func (o *ServiceGroupResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
+}
+
 func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state ServiceGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -511,7 +532,13 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -526,7 +553,6 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state ServiceGroupResourceModel
@@ -537,6 +563,9 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
@@ -551,9 +580,6 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -562,8 +588,13 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -588,7 +619,6 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state ServiceGroupResourceModel
@@ -600,13 +630,6 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 	var location group.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -615,6 +638,13 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -629,7 +659,14 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -665,7 +702,6 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state ServiceGroupResourceModel
@@ -702,8 +738,8 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 
@@ -798,19 +834,46 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"device_group": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Device Group",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
+				},
+			},
 			"shared": rsschema.BoolAttribute{
 				Description: "Location in Shared Panorama",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
@@ -831,33 +894,6 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific Device Group",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Panorama device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -927,13 +963,13 @@ func (o *ServiceGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
+		Shared      *bool                            `json:"shared"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
+		Shared:      o.Shared.ValueBoolPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -941,18 +977,18 @@ func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
+		Shared      *bool                            `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
+	o.Shared = types.BoolPointerValue(shadow.Shared)
 
 	return nil
 }

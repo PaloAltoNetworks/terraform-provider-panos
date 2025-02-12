@@ -10,6 +10,7 @@ import (
 	"github.com/PaloAltoNetworks/terraform-provider-panos/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-testing/echoprovider"
 )
 
 var (
@@ -21,6 +22,7 @@ var (
 
 	testAccProviders = map[string]func() (tfprotov6.ProviderServer, error){
 		"panos": providerserver.NewProtocol6WithError(provider.New(version)()),
+		"echo":  echoprovider.NewProviderServer(),
 	}
 )
 

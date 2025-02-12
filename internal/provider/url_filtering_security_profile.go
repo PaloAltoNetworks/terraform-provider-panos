@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/urlfiltering"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -58,24 +59,44 @@ type UrlFilteringSecurityProfileDataSourceFilter struct {
 type UrlFilteringSecurityProfileDataSourceModel struct {
 	Location              UrlFilteringSecurityProfileLocation                               `tfsdk:"location"`
 	Name                  types.String                                                      `tfsdk:"name"`
-	Allow                 types.List                                                        `tfsdk:"allow"`
-	Continue              types.List                                                        `tfsdk:"continue"`
-	LogContainerPageOnly  types.Bool                                                        `tfsdk:"log_container_page_only"`
-	LocalInlineCat        types.Bool                                                        `tfsdk:"local_inline_cat"`
 	LogHttpHdrReferer     types.Bool                                                        `tfsdk:"log_http_hdr_referer"`
-	Override              types.List                                                        `tfsdk:"override"`
-	CloudInlineCat        types.Bool                                                        `tfsdk:"cloud_inline_cat"`
-	EnableContainerPage   types.Bool                                                        `tfsdk:"enable_container_page"`
-	HttpHeaderInsertion   types.List                                                        `tfsdk:"http_header_insertion"`
-	LogHttpHdrUserAgent   types.Bool                                                        `tfsdk:"log_http_hdr_user_agent"`
-	LogHttpHdrXff         types.Bool                                                        `tfsdk:"log_http_hdr_xff"`
 	MlavCategoryException types.List                                                        `tfsdk:"mlav_category_exception"`
 	SafeSearchEnforcement types.Bool                                                        `tfsdk:"safe_search_enforcement"`
-	CredentialEnforcement *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject `tfsdk:"credential_enforcement"`
-	Description           types.String                                                      `tfsdk:"description"`
-	DisableOverride       types.String                                                      `tfsdk:"disable_override"`
-	Alert                 types.List                                                        `tfsdk:"alert"`
+	CloudInlineCat        types.Bool                                                        `tfsdk:"cloud_inline_cat"`
 	Block                 types.List                                                        `tfsdk:"block"`
+	Allow                 types.List                                                        `tfsdk:"allow"`
+	DisableOverride       types.String                                                      `tfsdk:"disable_override"`
+	LocalInlineCat        types.Bool                                                        `tfsdk:"local_inline_cat"`
+	LogContainerPageOnly  types.Bool                                                        `tfsdk:"log_container_page_only"`
+	LogHttpHdrUserAgent   types.Bool                                                        `tfsdk:"log_http_hdr_user_agent"`
+	Override              types.List                                                        `tfsdk:"override"`
+	Description           types.String                                                      `tfsdk:"description"`
+	Continue              types.List                                                        `tfsdk:"continue"`
+	CredentialEnforcement *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject `tfsdk:"credential_enforcement"`
+	EnableContainerPage   types.Bool                                                        `tfsdk:"enable_container_page"`
+	HttpHeaderInsertion   types.List                                                        `tfsdk:"http_header_insertion"`
+	LogHttpHdrXff         types.Bool                                                        `tfsdk:"log_http_hdr_xff"`
+	Alert                 types.List                                                        `tfsdk:"alert"`
+}
+type UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject struct {
+	LogSeverity types.String                                                          `tfsdk:"log_severity"`
+	Mode        *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject `tfsdk:"mode"`
+	Alert       types.List                                                            `tfsdk:"alert"`
+	Allow       types.List                                                            `tfsdk:"allow"`
+	Block       types.List                                                            `tfsdk:"block"`
+	Continue    types.List                                                            `tfsdk:"continue"`
+}
+type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject struct {
+	Disabled          *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject          `tfsdk:"disabled"`
+	DomainCredentials *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject `tfsdk:"domain_credentials"`
+	GroupMapping      types.String                                                                           `tfsdk:"group_mapping"`
+	IpUser            *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject            `tfsdk:"ip_user"`
+}
+type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject struct {
+}
+type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject struct {
+}
+type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject struct {
 }
 type UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionObject struct {
 	Name            types.String `tfsdk:"name"`
@@ -89,40 +110,23 @@ type UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeObject struct {
 }
 type UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObject struct {
 	Name   types.String `tfsdk:"name"`
+	Header types.String `tfsdk:"header"`
 	Value  types.String `tfsdk:"value"`
 	Log    types.Bool   `tfsdk:"log"`
-	Header types.String `tfsdk:"header"`
-}
-type UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject struct {
-	Mode        *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject `tfsdk:"mode"`
-	Alert       types.List                                                            `tfsdk:"alert"`
-	Allow       types.List                                                            `tfsdk:"allow"`
-	Block       types.List                                                            `tfsdk:"block"`
-	Continue    types.List                                                            `tfsdk:"continue"`
-	LogSeverity types.String                                                          `tfsdk:"log_severity"`
-}
-type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject struct {
-	IpUser            *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject            `tfsdk:"ip_user"`
-	Disabled          *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject          `tfsdk:"disabled"`
-	DomainCredentials *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject `tfsdk:"domain_credentials"`
-	GroupMapping      types.String                                                                           `tfsdk:"group_mapping"`
-}
-type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject struct {
-}
-type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject struct {
-}
-type UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject struct {
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	logHttpHdrXff_value := o.LogHttpHdrXff.ValueBoolPointer()
-	mlavCategoryException_pango_entries := make([]string, 0)
-	diags.Append(o.MlavCategoryException.ElementsAs(ctx, &mlavCategoryException_pango_entries, false)...)
+	alert_pango_entries := make([]string, 0)
+	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	safeSearchEnforcement_value := o.SafeSearchEnforcement.ValueBoolPointer()
+	continue_pango_entries := make([]string, 0)
+	diags.Append(o.Continue.ElementsAs(ctx, &continue_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	var credentialEnforcement_entry *urlfiltering.CredentialEnforcement
 	if o.CredentialEnforcement != nil {
 		if *obj != nil && (*obj).CredentialEnforcement != nil {
@@ -136,37 +140,6 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	logHttpHdrUserAgent_value := o.LogHttpHdrUserAgent.ValueBoolPointer()
-	alert_pango_entries := make([]string, 0)
-	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	block_pango_entries := make([]string, 0)
-	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	allow_pango_entries := make([]string, 0)
-	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	continue_pango_entries := make([]string, 0)
-	diags.Append(o.Continue.ElementsAs(ctx, &continue_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	logContainerPageOnly_value := o.LogContainerPageOnly.ValueBoolPointer()
-	logHttpHdrReferer_value := o.LogHttpHdrReferer.ValueBoolPointer()
-	override_pango_entries := make([]string, 0)
-	diags.Append(o.Override.ElementsAs(ctx, &override_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	cloudInlineCat_value := o.CloudInlineCat.ValueBoolPointer()
 	enableContainerPage_value := o.EnableContainerPage.ValueBoolPointer()
 	var httpHeaderInsertion_tf_entries []UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionObject
 	var httpHeaderInsertion_pango_entries []urlfiltering.HttpHeaderInsertion
@@ -185,30 +158,187 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 			httpHeaderInsertion_pango_entries = append(httpHeaderInsertion_pango_entries, *entry)
 		}
 	}
+	logHttpHdrXff_value := o.LogHttpHdrXff.ValueBoolPointer()
+	cloudInlineCat_value := o.CloudInlineCat.ValueBoolPointer()
+	logHttpHdrReferer_value := o.LogHttpHdrReferer.ValueBoolPointer()
+	mlavCategoryException_pango_entries := make([]string, 0)
+	diags.Append(o.MlavCategoryException.ElementsAs(ctx, &mlavCategoryException_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	safeSearchEnforcement_value := o.SafeSearchEnforcement.ValueBoolPointer()
+	allow_pango_entries := make([]string, 0)
+	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	block_pango_entries := make([]string, 0)
+	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	localInlineCat_value := o.LocalInlineCat.ValueBoolPointer()
+	logContainerPageOnly_value := o.LogContainerPageOnly.ValueBoolPointer()
+	logHttpHdrUserAgent_value := o.LogHttpHdrUserAgent.ValueBoolPointer()
+	override_pango_entries := make([]string, 0)
+	diags.Append(o.Override.ElementsAs(ctx, &override_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(urlfiltering.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).LogHttpHdrXff = logHttpHdrXff_value
-	(*obj).MlavCategoryException = mlavCategoryException_pango_entries
-	(*obj).SafeSearchEnforcement = safeSearchEnforcement_value
-	(*obj).CredentialEnforcement = credentialEnforcement_entry
-	(*obj).Description = description_value
-	(*obj).DisableOverride = disableOverride_value
-	(*obj).LogHttpHdrUserAgent = logHttpHdrUserAgent_value
 	(*obj).Alert = alert_pango_entries
-	(*obj).Block = block_pango_entries
-	(*obj).Allow = allow_pango_entries
 	(*obj).Continue = continue_pango_entries
-	(*obj).LogContainerPageOnly = logContainerPageOnly_value
-	(*obj).LogHttpHdrReferer = logHttpHdrReferer_value
-	(*obj).Override = override_pango_entries
-	(*obj).CloudInlineCat = cloudInlineCat_value
+	(*obj).CredentialEnforcement = credentialEnforcement_entry
 	(*obj).EnableContainerPage = enableContainerPage_value
 	(*obj).HttpHeaderInsertion = httpHeaderInsertion_pango_entries
+	(*obj).LogHttpHdrXff = logHttpHdrXff_value
+	(*obj).CloudInlineCat = cloudInlineCat_value
+	(*obj).LogHttpHdrReferer = logHttpHdrReferer_value
+	(*obj).MlavCategoryException = mlavCategoryException_pango_entries
+	(*obj).SafeSearchEnforcement = safeSearchEnforcement_value
+	(*obj).Allow = allow_pango_entries
+	(*obj).Block = block_pango_entries
+	(*obj).Description = description_value
+	(*obj).DisableOverride = disableOverride_value
 	(*obj).LocalInlineCat = localInlineCat_value
+	(*obj).LogContainerPageOnly = logContainerPageOnly_value
+	(*obj).LogHttpHdrUserAgent = logHttpHdrUserAgent_value
+	(*obj).Override = override_pango_entries
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	alert_pango_entries := make([]string, 0)
+	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	allow_pango_entries := make([]string, 0)
+	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	block_pango_entries := make([]string, 0)
+	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	continue_pango_entries := make([]string, 0)
+	diags.Append(o.Continue.ElementsAs(ctx, &continue_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	logSeverity_value := o.LogSeverity.ValueStringPointer()
+	var mode_entry *urlfiltering.CredentialEnforcementMode
+	if o.Mode != nil {
+		if *obj != nil && (*obj).Mode != nil {
+			mode_entry = (*obj).Mode
+		} else {
+			mode_entry = new(urlfiltering.CredentialEnforcementMode)
+		}
+
+		diags.Append(o.Mode.CopyToPango(ctx, &mode_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.CredentialEnforcement)
+	}
+	(*obj).Alert = alert_pango_entries
+	(*obj).Allow = allow_pango_entries
+	(*obj).Block = block_pango_entries
+	(*obj).Continue = continue_pango_entries
+	(*obj).LogSeverity = logSeverity_value
+	(*obj).Mode = mode_entry
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementMode, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	groupMapping_value := o.GroupMapping.ValueStringPointer()
+	var ipUser_entry *urlfiltering.CredentialEnforcementModeIpUser
+	if o.IpUser != nil {
+		if *obj != nil && (*obj).IpUser != nil {
+			ipUser_entry = (*obj).IpUser
+		} else {
+			ipUser_entry = new(urlfiltering.CredentialEnforcementModeIpUser)
+		}
+
+		diags.Append(o.IpUser.CopyToPango(ctx, &ipUser_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var disabled_entry *urlfiltering.CredentialEnforcementModeDisabled
+	if o.Disabled != nil {
+		if *obj != nil && (*obj).Disabled != nil {
+			disabled_entry = (*obj).Disabled
+		} else {
+			disabled_entry = new(urlfiltering.CredentialEnforcementModeDisabled)
+		}
+
+		diags.Append(o.Disabled.CopyToPango(ctx, &disabled_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var domainCredentials_entry *urlfiltering.CredentialEnforcementModeDomainCredentials
+	if o.DomainCredentials != nil {
+		if *obj != nil && (*obj).DomainCredentials != nil {
+			domainCredentials_entry = (*obj).DomainCredentials
+		} else {
+			domainCredentials_entry = new(urlfiltering.CredentialEnforcementModeDomainCredentials)
+		}
+
+		diags.Append(o.DomainCredentials.CopyToPango(ctx, &domainCredentials_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.CredentialEnforcementMode)
+	}
+	(*obj).GroupMapping = groupMapping_value
+	(*obj).IpUser = ipUser_entry
+	(*obj).Disabled = disabled_entry
+	(*obj).DomainCredentials = domainCredentials_entry
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeIpUser, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.CredentialEnforcementModeIpUser)
+	}
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeDisabled, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.CredentialEnforcementModeDisabled)
+	}
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeDomainCredentials, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.CredentialEnforcementModeDomainCredentials)
+	}
 
 	return diags
 }
@@ -292,138 +422,15 @@ func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObje
 
 	return diags
 }
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	logSeverity_value := o.LogSeverity.ValueStringPointer()
-	var mode_entry *urlfiltering.CredentialEnforcementMode
-	if o.Mode != nil {
-		if *obj != nil && (*obj).Mode != nil {
-			mode_entry = (*obj).Mode
-		} else {
-			mode_entry = new(urlfiltering.CredentialEnforcementMode)
-		}
-
-		diags.Append(o.Mode.CopyToPango(ctx, &mode_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	alert_pango_entries := make([]string, 0)
-	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	allow_pango_entries := make([]string, 0)
-	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	block_pango_entries := make([]string, 0)
-	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	continue_pango_entries := make([]string, 0)
-	diags.Append(o.Continue.ElementsAs(ctx, &continue_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.CredentialEnforcement)
-	}
-	(*obj).LogSeverity = logSeverity_value
-	(*obj).Mode = mode_entry
-	(*obj).Alert = alert_pango_entries
-	(*obj).Allow = allow_pango_entries
-	(*obj).Block = block_pango_entries
-	(*obj).Continue = continue_pango_entries
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementMode, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	groupMapping_value := o.GroupMapping.ValueStringPointer()
-	var ipUser_entry *urlfiltering.CredentialEnforcementModeIpUser
-	if o.IpUser != nil {
-		if *obj != nil && (*obj).IpUser != nil {
-			ipUser_entry = (*obj).IpUser
-		} else {
-			ipUser_entry = new(urlfiltering.CredentialEnforcementModeIpUser)
-		}
-
-		diags.Append(o.IpUser.CopyToPango(ctx, &ipUser_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var disabled_entry *urlfiltering.CredentialEnforcementModeDisabled
-	if o.Disabled != nil {
-		if *obj != nil && (*obj).Disabled != nil {
-			disabled_entry = (*obj).Disabled
-		} else {
-			disabled_entry = new(urlfiltering.CredentialEnforcementModeDisabled)
-		}
-
-		diags.Append(o.Disabled.CopyToPango(ctx, &disabled_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var domainCredentials_entry *urlfiltering.CredentialEnforcementModeDomainCredentials
-	if o.DomainCredentials != nil {
-		if *obj != nil && (*obj).DomainCredentials != nil {
-			domainCredentials_entry = (*obj).DomainCredentials
-		} else {
-			domainCredentials_entry = new(urlfiltering.CredentialEnforcementModeDomainCredentials)
-		}
-
-		diags.Append(o.DomainCredentials.CopyToPango(ctx, &domainCredentials_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.CredentialEnforcementMode)
-	}
-	(*obj).GroupMapping = groupMapping_value
-	(*obj).IpUser = ipUser_entry
-	(*obj).Disabled = disabled_entry
-	(*obj).DomainCredentials = domainCredentials_entry
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeDomainCredentials, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.CredentialEnforcementModeDomainCredentials)
-	}
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeIpUser, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.CredentialEnforcementModeIpUser)
-	}
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcementModeDisabled, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.CredentialEnforcementModeDisabled)
-	}
-
-	return diags
-}
 
 func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var override_list types.List
+	{
+		var list_diags diag.Diagnostics
+		override_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Override)
+		diags.Append(list_diags...)
+	}
 	var httpHeaderInsertion_list types.List
 	{
 		var httpHeaderInsertion_tf_entries []UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionObject
@@ -438,24 +445,6 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 		httpHeaderInsertion_list, list_diags = types.ListValueFrom(ctx, schemaType, httpHeaderInsertion_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var override_list types.List
-	{
-		var list_diags diag.Diagnostics
-		override_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Override)
-		diags.Append(list_diags...)
-	}
-	var mlavCategoryException_list types.List
-	{
-		var list_diags diag.Diagnostics
-		mlavCategoryException_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.MlavCategoryException)
-		diags.Append(list_diags...)
-	}
-	var block_list types.List
-	{
-		var list_diags diag.Diagnostics
-		block_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Block)
-		diags.Append(list_diags...)
-	}
 	var alert_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -468,10 +457,22 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 		continue_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Continue)
 		diags.Append(list_diags...)
 	}
+	var mlavCategoryException_list types.List
+	{
+		var list_diags diag.Diagnostics
+		mlavCategoryException_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.MlavCategoryException)
+		diags.Append(list_diags...)
+	}
 	var allow_list types.List
 	{
 		var list_diags diag.Diagnostics
 		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
+		diags.Append(list_diags...)
+	}
+	var block_list types.List
+	{
+		var list_diags diag.Diagnostics
+		block_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Block)
 		diags.Append(list_diags...)
 	}
 	var credentialEnforcement_object *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject
@@ -484,21 +485,17 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 		}
 	}
 
-	var enableContainerPage_value types.Bool
-	if obj.EnableContainerPage != nil {
-		enableContainerPage_value = types.BoolValue(*obj.EnableContainerPage)
-	}
 	var localInlineCat_value types.Bool
 	if obj.LocalInlineCat != nil {
 		localInlineCat_value = types.BoolValue(*obj.LocalInlineCat)
 	}
-	var logHttpHdrReferer_value types.Bool
-	if obj.LogHttpHdrReferer != nil {
-		logHttpHdrReferer_value = types.BoolValue(*obj.LogHttpHdrReferer)
+	var logContainerPageOnly_value types.Bool
+	if obj.LogContainerPageOnly != nil {
+		logContainerPageOnly_value = types.BoolValue(*obj.LogContainerPageOnly)
 	}
-	var cloudInlineCat_value types.Bool
-	if obj.CloudInlineCat != nil {
-		cloudInlineCat_value = types.BoolValue(*obj.CloudInlineCat)
+	var logHttpHdrUserAgent_value types.Bool
+	if obj.LogHttpHdrUserAgent != nil {
+		logHttpHdrUserAgent_value = types.BoolValue(*obj.LogHttpHdrUserAgent)
 	}
 	var description_value types.String
 	if obj.Description != nil {
@@ -508,9 +505,9 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var logHttpHdrUserAgent_value types.Bool
-	if obj.LogHttpHdrUserAgent != nil {
-		logHttpHdrUserAgent_value = types.BoolValue(*obj.LogHttpHdrUserAgent)
+	var enableContainerPage_value types.Bool
+	if obj.EnableContainerPage != nil {
+		enableContainerPage_value = types.BoolValue(*obj.EnableContainerPage)
 	}
 	var logHttpHdrXff_value types.Bool
 	if obj.LogHttpHdrXff != nil {
@@ -520,35 +517,45 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 	if obj.SafeSearchEnforcement != nil {
 		safeSearchEnforcement_value = types.BoolValue(*obj.SafeSearchEnforcement)
 	}
-	var logContainerPageOnly_value types.Bool
-	if obj.LogContainerPageOnly != nil {
-		logContainerPageOnly_value = types.BoolValue(*obj.LogContainerPageOnly)
+	var cloudInlineCat_value types.Bool
+	if obj.CloudInlineCat != nil {
+		cloudInlineCat_value = types.BoolValue(*obj.CloudInlineCat)
+	}
+	var logHttpHdrReferer_value types.Bool
+	if obj.LogHttpHdrReferer != nil {
+		logHttpHdrReferer_value = types.BoolValue(*obj.LogHttpHdrReferer)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.EnableContainerPage = enableContainerPage_value
-	o.HttpHeaderInsertion = httpHeaderInsertion_list
 	o.LocalInlineCat = localInlineCat_value
-	o.LogHttpHdrReferer = logHttpHdrReferer_value
+	o.LogContainerPageOnly = logContainerPageOnly_value
+	o.LogHttpHdrUserAgent = logHttpHdrUserAgent_value
 	o.Override = override_list
-	o.CloudInlineCat = cloudInlineCat_value
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
-	o.LogHttpHdrUserAgent = logHttpHdrUserAgent_value
-	o.LogHttpHdrXff = logHttpHdrXff_value
-	o.MlavCategoryException = mlavCategoryException_list
-	o.SafeSearchEnforcement = safeSearchEnforcement_value
 	o.CredentialEnforcement = credentialEnforcement_object
-	o.Block = block_list
+	o.EnableContainerPage = enableContainerPage_value
+	o.HttpHeaderInsertion = httpHeaderInsertion_list
+	o.LogHttpHdrXff = logHttpHdrXff_value
 	o.Alert = alert_list
 	o.Continue = continue_list
-	o.LogContainerPageOnly = logContainerPageOnly_value
+	o.MlavCategoryException = mlavCategoryException_list
+	o.SafeSearchEnforcement = safeSearchEnforcement_value
+	o.CloudInlineCat = cloudInlineCat_value
+	o.LogHttpHdrReferer = logHttpHdrReferer_value
 	o.Allow = allow_list
+	o.Block = block_list
 
 	return diags
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var allow_list types.List
+	{
+		var list_diags diag.Diagnostics
+		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
+		diags.Append(list_diags...)
+	}
 	var block_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -565,12 +572,6 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) CopyF
 	{
 		var list_diags diag.Diagnostics
 		alert_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Alert)
-		diags.Append(list_diags...)
-	}
-	var allow_list types.List
-	{
-		var list_diags diag.Diagnostics
-		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
 		diags.Append(list_diags...)
 	}
 	var mode_object *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject
@@ -587,18 +588,27 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) CopyF
 	if obj.LogSeverity != nil {
 		logSeverity_value = types.StringValue(*obj.LogSeverity)
 	}
+	o.Allow = allow_list
 	o.Block = block_list
 	o.Continue = continue_list
 	o.LogSeverity = logSeverity_value
 	o.Mode = mode_object
 	o.Alert = alert_list
-	o.Allow = allow_list
 
 	return diags
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementMode, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var ipUser_object *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject
+	if obj.IpUser != nil {
+		ipUser_object = new(UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject)
+
+		diags.Append(ipUser_object.CopyFromPango(ctx, obj.IpUser, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var disabled_object *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject
 	if obj.Disabled != nil {
 		disabled_object = new(UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject)
@@ -617,24 +627,21 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) C
 			return diags
 		}
 	}
-	var ipUser_object *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject
-	if obj.IpUser != nil {
-		ipUser_object = new(UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject)
-
-		diags.Append(ipUser_object.CopyFromPango(ctx, obj.IpUser, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	var groupMapping_value types.String
 	if obj.GroupMapping != nil {
 		groupMapping_value = types.StringValue(*obj.GroupMapping)
 	}
-	o.Disabled = disabled_object
-	o.DomainCredentials = domainCredentials_object
 	o.GroupMapping = groupMapping_value
 	o.IpUser = ipUser_object
+	o.Disabled = disabled_object
+	o.DomainCredentials = domainCredentials_object
+
+	return diags
+}
+
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeIpUser, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -646,12 +653,6 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledO
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeDomainCredentials, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeIpUser, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -718,6 +719,10 @@ func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeObject) Cop
 func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObject) CopyFromPango(ctx context.Context, obj *urlfiltering.HttpHeaderInsertionTypeHeaders, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var header_value types.String
+	if obj.Header != nil {
+		header_value = types.StringValue(*obj.Header)
+	}
 	var value_value types.String
 	if obj.Value != nil {
 		value_value = types.StringValue(*obj.Value)
@@ -726,16 +731,20 @@ func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObje
 	if obj.Log != nil {
 		log_value = types.BoolValue(*obj.Log)
 	}
-	var header_value types.String
-	if obj.Header != nil {
-		header_value = types.StringValue(*obj.Header)
-	}
 	o.Name = types.StringValue(obj.Name)
+	o.Header = header_value
 	o.Value = value_value
 	o.Log = log_value
-	o.Header = header_value
 
 	return diags
+}
+
+func (o *UrlFilteringSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
@@ -752,7 +761,7 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"alert": dsschema.ListAttribute{
+			"allow": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -778,7 +787,73 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"allow": dsschema.ListAttribute{
+			"log_http_hdr_user_agent": dsschema.BoolAttribute{
+				Description: "Log HTTP Header User-Agent field",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"override": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"description": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_override": dsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"local_inline_cat": dsschema.BoolAttribute{
+				Description: "Enable local inline categorization",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_container_page": dsschema.BoolAttribute{
+				Description: "Track container page",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"http_header_insertion": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionSchema(),
+			},
+
+			"log_http_hdr_xff": dsschema.BoolAttribute{
+				Description: "Log HTTP Header X-Forwarded-For field",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"alert": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -796,17 +871,18 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"http_header_insertion": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionSchema(),
+			"credential_enforcement": UrlFilteringSecurityProfileDataSourceCredentialEnforcementSchema(),
+
+			"safe_search_enforcement": dsschema.BoolAttribute{
+				Description: "Safe-Search will be enforced if it is set ",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 
-			"local_inline_cat": dsschema.BoolAttribute{
-				Description: "Enable local inline categorization",
+			"cloud_inline_cat": dsschema.BoolAttribute{
+				Description: "Enable cloud inline categorization",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -821,55 +897,6 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"override": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"cloud_inline_cat": dsschema.BoolAttribute{
-				Description: "Enable cloud inline categorization",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_container_page": dsschema.BoolAttribute{
-				Description: "Track container page",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"disable_override": dsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_http_hdr_user_agent": dsschema.BoolAttribute{
-				Description: "Log HTTP Header User-Agent field",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_http_hdr_xff": dsschema.BoolAttribute{
-				Description: "Log HTTP Header X-Forwarded-For field",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"mlav_category_exception": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -877,24 +904,6 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"safe_search_enforcement": dsschema.BoolAttribute{
-				Description: "Safe-Search will be enforced if it is set ",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"credential_enforcement": UrlFilteringSecurityProfileDataSourceCredentialEnforcementSchema(),
-
-			"description": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1031,14 +1040,6 @@ func UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersSchema()
 				Sensitive:   false,
 			},
 
-			"header": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"value": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -1048,6 +1049,14 @@ func UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersSchema()
 			},
 
 			"log": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"header": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -1161,8 +1170,6 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema() dssc
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"ip_user": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema(),
-
 			"disabled": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledSchema(),
 
 			"domain_credentials": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsSchema(),
@@ -1174,50 +1181,14 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema() dssc
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"ip_user": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema(),
 		},
 	}
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) getTypeFor(name string) attr.Type {
 	schema := UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("disabled"),
-				path.MatchRelative().AtParent().AtName("domain_credentials"),
-				path.MatchRelative().AtParent().AtName("group_mapping"),
-				path.MatchRelative().AtParent().AtName("ip_user"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) getTypeFor(name string) attr.Type {
-	schema := UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1244,10 +1215,10 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledSchem
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("disabled"),
-				path.MatchRelative().AtParent().AtName("domain_credentials"),
 				path.MatchRelative().AtParent().AtName("group_mapping"),
 				path.MatchRelative().AtParent().AtName("ip_user"),
+				path.MatchRelative().AtParent().AtName("disabled"),
+				path.MatchRelative().AtParent().AtName("domain_credentials"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -1282,10 +1253,10 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredent
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("disabled"),
-				path.MatchRelative().AtParent().AtName("domain_credentials"),
 				path.MatchRelative().AtParent().AtName("group_mapping"),
 				path.MatchRelative().AtParent().AtName("ip_user"),
+				path.MatchRelative().AtParent().AtName("disabled"),
+				path.MatchRelative().AtParent().AtName("domain_credentials"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -1294,6 +1265,44 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredent
 
 func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject) getTypeFor(name string) attr.Type {
 	schema := UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("group_mapping"),
+				path.MatchRelative().AtParent().AtName("ip_user"),
+				path.MatchRelative().AtParent().AtName("disabled"),
+				path.MatchRelative().AtParent().AtName("domain_credentials"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) getTypeFor(name string) attr.Type {
+	schema := UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1338,7 +1347,6 @@ func (d *UrlFilteringSecurityProfileDataSource) Configure(_ context.Context, req
 	}
 	d.manager = sdkmanager.NewEntryObjectManager(d.client, urlfiltering.NewService(d.client), specifier, urlfiltering.SpecMatches)
 }
-
 func (o *UrlFilteringSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state UrlFilteringSecurityProfileDataSourceModel
@@ -1367,8 +1375,13 @@ func (o *UrlFilteringSecurityProfileDataSource) Read(ctx context.Context, req da
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -1422,24 +1435,44 @@ func UrlFilteringSecurityProfileResourceLocationSchema() rsschema.Attribute {
 type UrlFilteringSecurityProfileResourceModel struct {
 	Location              UrlFilteringSecurityProfileLocation                             `tfsdk:"location"`
 	Name                  types.String                                                    `tfsdk:"name"`
-	CloudInlineCat        types.Bool                                                      `tfsdk:"cloud_inline_cat"`
-	EnableContainerPage   types.Bool                                                      `tfsdk:"enable_container_page"`
-	HttpHeaderInsertion   types.List                                                      `tfsdk:"http_header_insertion"`
-	LocalInlineCat        types.Bool                                                      `tfsdk:"local_inline_cat"`
-	LogHttpHdrReferer     types.Bool                                                      `tfsdk:"log_http_hdr_referer"`
+	Allow                 types.List                                                      `tfsdk:"allow"`
+	Block                 types.List                                                      `tfsdk:"block"`
 	Override              types.List                                                      `tfsdk:"override"`
-	CredentialEnforcement *UrlFilteringSecurityProfileResourceCredentialEnforcementObject `tfsdk:"credential_enforcement"`
 	Description           types.String                                                    `tfsdk:"description"`
 	DisableOverride       types.String                                                    `tfsdk:"disable_override"`
+	LocalInlineCat        types.Bool                                                      `tfsdk:"local_inline_cat"`
+	LogContainerPageOnly  types.Bool                                                      `tfsdk:"log_container_page_only"`
 	LogHttpHdrUserAgent   types.Bool                                                      `tfsdk:"log_http_hdr_user_agent"`
 	LogHttpHdrXff         types.Bool                                                      `tfsdk:"log_http_hdr_xff"`
+	Alert                 types.List                                                      `tfsdk:"alert"`
+	Continue              types.List                                                      `tfsdk:"continue"`
+	CredentialEnforcement *UrlFilteringSecurityProfileResourceCredentialEnforcementObject `tfsdk:"credential_enforcement"`
+	EnableContainerPage   types.Bool                                                      `tfsdk:"enable_container_page"`
+	HttpHeaderInsertion   types.List                                                      `tfsdk:"http_header_insertion"`
+	CloudInlineCat        types.Bool                                                      `tfsdk:"cloud_inline_cat"`
+	LogHttpHdrReferer     types.Bool                                                      `tfsdk:"log_http_hdr_referer"`
 	MlavCategoryException types.List                                                      `tfsdk:"mlav_category_exception"`
 	SafeSearchEnforcement types.Bool                                                      `tfsdk:"safe_search_enforcement"`
-	Alert                 types.List                                                      `tfsdk:"alert"`
-	Block                 types.List                                                      `tfsdk:"block"`
-	Allow                 types.List                                                      `tfsdk:"allow"`
-	Continue              types.List                                                      `tfsdk:"continue"`
-	LogContainerPageOnly  types.Bool                                                      `tfsdk:"log_container_page_only"`
+}
+type UrlFilteringSecurityProfileResourceCredentialEnforcementObject struct {
+	Block       types.List                                                          `tfsdk:"block"`
+	Continue    types.List                                                          `tfsdk:"continue"`
+	LogSeverity types.String                                                        `tfsdk:"log_severity"`
+	Mode        *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject `tfsdk:"mode"`
+	Alert       types.List                                                          `tfsdk:"alert"`
+	Allow       types.List                                                          `tfsdk:"allow"`
+}
+type UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject struct {
+	Disabled          *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject          `tfsdk:"disabled"`
+	DomainCredentials *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject `tfsdk:"domain_credentials"`
+	GroupMapping      types.String                                                                         `tfsdk:"group_mapping"`
+	IpUser            *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject            `tfsdk:"ip_user"`
+}
+type UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject struct {
+}
+type UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject struct {
+}
+type UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject struct {
 }
 type UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject struct {
 	Name            types.String `tfsdk:"name"`
@@ -1453,33 +1486,9 @@ type UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject struct {
 }
 type UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject struct {
 	Name   types.String `tfsdk:"name"`
-	Header types.String `tfsdk:"header"`
 	Value  types.String `tfsdk:"value"`
 	Log    types.Bool   `tfsdk:"log"`
-}
-type UrlFilteringSecurityProfileResourceCredentialEnforcementObject struct {
-	Allow       types.List                                                          `tfsdk:"allow"`
-	Block       types.List                                                          `tfsdk:"block"`
-	Continue    types.List                                                          `tfsdk:"continue"`
-	LogSeverity types.String                                                        `tfsdk:"log_severity"`
-	Mode        *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject `tfsdk:"mode"`
-	Alert       types.List                                                          `tfsdk:"alert"`
-}
-type UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject struct {
-	GroupMapping      types.String                                                                         `tfsdk:"group_mapping"`
-	IpUser            *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject            `tfsdk:"ip_user"`
-	Disabled          *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject          `tfsdk:"disabled"`
-	DomainCredentials *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject `tfsdk:"domain_credentials"`
-}
-type UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject struct {
-}
-type UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject struct {
-}
-type UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject struct {
-}
-
-func (r *UrlFilteringSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_url_filtering_security_profile"
+	Header types.String `tfsdk:"header"`
 }
 
 func (r *UrlFilteringSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -1501,31 +1510,6 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"local_inline_cat": rsschema.BoolAttribute{
-				Description: "Enable local inline categorization",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_http_hdr_referer": rsschema.BoolAttribute{
-				Description: "Log HTTP Header Referer field",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"override": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"cloud_inline_cat": rsschema.BoolAttribute{
 				Description: "Enable cloud inline categorization",
 				Computed:    false,
@@ -1534,33 +1518,8 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"enable_container_page": rsschema.BoolAttribute{
-				Description: "Track container page",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"http_header_insertion": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema(),
-			},
-
-			"log_http_hdr_user_agent": rsschema.BoolAttribute{
-				Description: "Log HTTP Header User-Agent field",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"log_http_hdr_xff": rsschema.BoolAttribute{
-				Description: "Log HTTP Header X-Forwarded-For field",
+			"log_http_hdr_referer": rsschema.BoolAttribute{
+				Description: "Log HTTP Header Referer field",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -1584,7 +1543,40 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"credential_enforcement": UrlFilteringSecurityProfileResourceCredentialEnforcementSchema(),
+			"allow": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"block": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"log_http_hdr_user_agent": rsschema.BoolAttribute{
+				Description: "Log HTTP Header User-Agent field",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"override": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
@@ -1610,25 +1602,40 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 				},
 			},
 
+			"local_inline_cat": rsschema.BoolAttribute{
+				Description: "Enable local inline categorization",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_container_page_only": rsschema.BoolAttribute{
+				Description: "Log container page only",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"http_header_insertion": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema(),
+			},
+
+			"log_http_hdr_xff": rsschema.BoolAttribute{
+				Description: "Log HTTP Header X-Forwarded-For field",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"alert": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"block": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"allow": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1646,8 +1653,10 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"log_container_page_only": rsschema.BoolAttribute{
-				Description: "Log container page only",
+			"credential_enforcement": UrlFilteringSecurityProfileResourceCredentialEnforcementSchema(),
+
+			"enable_container_page": rsschema.BoolAttribute{
+				Description: "Track container page",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -1687,15 +1696,6 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema() rsschema.Nes
 				Sensitive:   false,
 			},
 
-			"disable_override": rsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
-			},
-
 			"type": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -1703,6 +1703,15 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema() rsschema.Nes
 				Computed:     false,
 				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeSchema(),
+			},
+
+			"disable_override": rsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
 			},
 		},
 	}
@@ -1738,15 +1747,6 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeSchema() rsschema
 				Sensitive:   false,
 			},
 
-			"headers": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema(),
-			},
-
 			"domains": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -1754,6 +1754,15 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeSchema() rsschema
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"headers": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema(),
 			},
 		},
 	}
@@ -1789,14 +1798,6 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema() r
 				Sensitive:   false,
 			},
 
-			"header": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"value": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -1806,6 +1807,14 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema() r
 			},
 
 			"log": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"header": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -1843,6 +1852,24 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementSchema() rsschema.S
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"alert": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"allow": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"block": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -1871,24 +1898,6 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementSchema() rsschema.S
 			},
 
 			"mode": UrlFilteringSecurityProfileResourceCredentialEnforcementModeSchema(),
-
-			"alert": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"allow": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
 		},
 	}
 }
@@ -1926,11 +1935,10 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementModeSchema() rssche
 
 			"group_mapping": rsschema.StringAttribute{
 				Description: "Use Group Mapping",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("any"),
 			},
 
 			"ip_user": UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserSchema(),
@@ -1966,10 +1974,10 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledSchema(
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("group_mapping"),
-				path.MatchRelative().AtParent().AtName("ip_user"),
 				path.MatchRelative().AtParent().AtName("disabled"),
 				path.MatchRelative().AtParent().AtName("domain_credentials"),
+				path.MatchRelative().AtParent().AtName("group_mapping"),
+				path.MatchRelative().AtParent().AtName("ip_user"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -2004,10 +2012,10 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentia
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("group_mapping"),
-				path.MatchRelative().AtParent().AtName("ip_user"),
 				path.MatchRelative().AtParent().AtName("disabled"),
 				path.MatchRelative().AtParent().AtName("domain_credentials"),
+				path.MatchRelative().AtParent().AtName("group_mapping"),
+				path.MatchRelative().AtParent().AtName("ip_user"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -2042,10 +2050,10 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserSchema() 
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("group_mapping"),
-				path.MatchRelative().AtParent().AtName("ip_user"),
 				path.MatchRelative().AtParent().AtName("disabled"),
 				path.MatchRelative().AtParent().AtName("domain_credentials"),
+				path.MatchRelative().AtParent().AtName("group_mapping"),
+				path.MatchRelative().AtParent().AtName("ip_user"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -2068,6 +2076,10 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObjec
 	}
 
 	panic("unreachable")
+}
+
+func (r *UrlFilteringSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_url_filtering_security_profile"
 }
 
 func (r *UrlFilteringSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -2093,8 +2105,36 @@ func (r *UrlFilteringSecurityProfileResource) Configure(ctx context.Context, req
 
 func (o *UrlFilteringSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	cloudInlineCat_value := o.CloudInlineCat.ValueBoolPointer()
+	logHttpHdrReferer_value := o.LogHttpHdrReferer.ValueBoolPointer()
+	mlavCategoryException_pango_entries := make([]string, 0)
+	diags.Append(o.MlavCategoryException.ElementsAs(ctx, &mlavCategoryException_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	safeSearchEnforcement_value := o.SafeSearchEnforcement.ValueBoolPointer()
 	allow_pango_entries := make([]string, 0)
 	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	block_pango_entries := make([]string, 0)
+	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	localInlineCat_value := o.LocalInlineCat.ValueBoolPointer()
+	logContainerPageOnly_value := o.LogContainerPageOnly.ValueBoolPointer()
+	logHttpHdrUserAgent_value := o.LogHttpHdrUserAgent.ValueBoolPointer()
+	override_pango_entries := make([]string, 0)
+	diags.Append(o.Override.ElementsAs(ctx, &override_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	alert_pango_entries := make([]string, 0)
+	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2103,14 +2143,19 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 	if diags.HasError() {
 		return diags
 	}
-	logContainerPageOnly_value := o.LogContainerPageOnly.ValueBoolPointer()
-	logHttpHdrReferer_value := o.LogHttpHdrReferer.ValueBoolPointer()
-	override_pango_entries := make([]string, 0)
-	diags.Append(o.Override.ElementsAs(ctx, &override_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var credentialEnforcement_entry *urlfiltering.CredentialEnforcement
+	if o.CredentialEnforcement != nil {
+		if *obj != nil && (*obj).CredentialEnforcement != nil {
+			credentialEnforcement_entry = (*obj).CredentialEnforcement
+		} else {
+			credentialEnforcement_entry = new(urlfiltering.CredentialEnforcement)
+		}
+
+		diags.Append(o.CredentialEnforcement.CopyToPango(ctx, &credentialEnforcement_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	cloudInlineCat_value := o.CloudInlineCat.ValueBoolPointer()
 	enableContainerPage_value := o.EnableContainerPage.ValueBoolPointer()
 	var httpHeaderInsertion_tf_entries []UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject
 	var httpHeaderInsertion_pango_entries []urlfiltering.HttpHeaderInsertion
@@ -2129,148 +2174,45 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 			httpHeaderInsertion_pango_entries = append(httpHeaderInsertion_pango_entries, *entry)
 		}
 	}
-	localInlineCat_value := o.LocalInlineCat.ValueBoolPointer()
 	logHttpHdrXff_value := o.LogHttpHdrXff.ValueBoolPointer()
-	mlavCategoryException_pango_entries := make([]string, 0)
-	diags.Append(o.MlavCategoryException.ElementsAs(ctx, &mlavCategoryException_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	safeSearchEnforcement_value := o.SafeSearchEnforcement.ValueBoolPointer()
-	var credentialEnforcement_entry *urlfiltering.CredentialEnforcement
-	if o.CredentialEnforcement != nil {
-		if *obj != nil && (*obj).CredentialEnforcement != nil {
-			credentialEnforcement_entry = (*obj).CredentialEnforcement
-		} else {
-			credentialEnforcement_entry = new(urlfiltering.CredentialEnforcement)
-		}
-
-		diags.Append(o.CredentialEnforcement.CopyToPango(ctx, &credentialEnforcement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	logHttpHdrUserAgent_value := o.LogHttpHdrUserAgent.ValueBoolPointer()
-	alert_pango_entries := make([]string, 0)
-	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	block_pango_entries := make([]string, 0)
-	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(urlfiltering.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Allow = allow_pango_entries
-	(*obj).Continue = continue_pango_entries
-	(*obj).LogContainerPageOnly = logContainerPageOnly_value
-	(*obj).LogHttpHdrReferer = logHttpHdrReferer_value
-	(*obj).Override = override_pango_entries
 	(*obj).CloudInlineCat = cloudInlineCat_value
-	(*obj).EnableContainerPage = enableContainerPage_value
-	(*obj).HttpHeaderInsertion = httpHeaderInsertion_pango_entries
-	(*obj).LocalInlineCat = localInlineCat_value
-	(*obj).LogHttpHdrXff = logHttpHdrXff_value
+	(*obj).LogHttpHdrReferer = logHttpHdrReferer_value
 	(*obj).MlavCategoryException = mlavCategoryException_pango_entries
 	(*obj).SafeSearchEnforcement = safeSearchEnforcement_value
-	(*obj).CredentialEnforcement = credentialEnforcement_entry
+	(*obj).Allow = allow_pango_entries
+	(*obj).Block = block_pango_entries
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
+	(*obj).LocalInlineCat = localInlineCat_value
+	(*obj).LogContainerPageOnly = logContainerPageOnly_value
 	(*obj).LogHttpHdrUserAgent = logHttpHdrUserAgent_value
+	(*obj).Override = override_pango_entries
 	(*obj).Alert = alert_pango_entries
-	(*obj).Block = block_pango_entries
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertion, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	var type_tf_entries []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject
-	var type_pango_entries []urlfiltering.HttpHeaderInsertionType
-	{
-		d := o.Type.ElementsAs(ctx, &type_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range type_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionType
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			type_pango_entries = append(type_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.HttpHeaderInsertion)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).DisableOverride = disableOverride_value
-	(*obj).Type = type_pango_entries
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertionType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var headers_tf_entries []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject
-	var headers_pango_entries []urlfiltering.HttpHeaderInsertionTypeHeaders
-	{
-		d := o.Headers.ElementsAs(ctx, &headers_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range headers_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionTypeHeaders
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			headers_pango_entries = append(headers_pango_entries, *entry)
-		}
-	}
-	domains_pango_entries := make([]string, 0)
-	diags.Append(o.Domains.ElementsAs(ctx, &domains_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.HttpHeaderInsertionType)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Headers = headers_pango_entries
-	(*obj).Domains = domains_pango_entries
-
-	return diags
-}
-func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertionTypeHeaders, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	header_value := o.Header.ValueStringPointer()
-	value_value := o.Value.ValueStringPointer()
-	log_value := o.Log.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(urlfiltering.HttpHeaderInsertionTypeHeaders)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Header = header_value
-	(*obj).Value = value_value
-	(*obj).Log = log_value
+	(*obj).Continue = continue_pango_entries
+	(*obj).CredentialEnforcement = credentialEnforcement_entry
+	(*obj).EnableContainerPage = enableContainerPage_value
+	(*obj).HttpHeaderInsertion = httpHeaderInsertion_pango_entries
+	(*obj).LogHttpHdrXff = logHttpHdrXff_value
 
 	return diags
 }
 func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) CopyToPango(ctx context.Context, obj **urlfiltering.CredentialEnforcement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	alert_pango_entries := make([]string, 0)
+	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	allow_pango_entries := make([]string, 0)
+	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	block_pango_entries := make([]string, 0)
 	diags.Append(o.Block.ElementsAs(ctx, &block_pango_entries, false)...)
 	if diags.HasError() {
@@ -2295,26 +2237,16 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) CopyToP
 			return diags
 		}
 	}
-	alert_pango_entries := make([]string, 0)
-	diags.Append(o.Alert.ElementsAs(ctx, &alert_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	allow_pango_entries := make([]string, 0)
-	diags.Append(o.Allow.ElementsAs(ctx, &allow_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(urlfiltering.CredentialEnforcement)
 	}
+	(*obj).Alert = alert_pango_entries
+	(*obj).Allow = allow_pango_entries
 	(*obj).Block = block_pango_entries
 	(*obj).Continue = continue_pango_entries
 	(*obj).LogSeverity = logSeverity_value
 	(*obj).Mode = mode_entry
-	(*obj).Alert = alert_pango_entries
-	(*obj).Allow = allow_pango_entries
 
 	return diags
 }
@@ -2398,43 +2330,99 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObjec
 
 	return diags
 }
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertion, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_tf_entries []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject
+	var type_pango_entries []urlfiltering.HttpHeaderInsertionType
+	{
+		d := o.Type.ElementsAs(ctx, &type_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range type_tf_entries {
+			var entry *urlfiltering.HttpHeaderInsertionType
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			type_pango_entries = append(type_pango_entries, *entry)
+		}
+	}
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.HttpHeaderInsertion)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Type = type_pango_entries
+	(*obj).DisableOverride = disableOverride_value
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertionType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var headers_tf_entries []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject
+	var headers_pango_entries []urlfiltering.HttpHeaderInsertionTypeHeaders
+	{
+		d := o.Headers.ElementsAs(ctx, &headers_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range headers_tf_entries {
+			var entry *urlfiltering.HttpHeaderInsertionTypeHeaders
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			headers_pango_entries = append(headers_pango_entries, *entry)
+		}
+	}
+	domains_pango_entries := make([]string, 0)
+	diags.Append(o.Domains.ElementsAs(ctx, &domains_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.HttpHeaderInsertionType)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Headers = headers_pango_entries
+	(*obj).Domains = domains_pango_entries
+
+	return diags
+}
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject) CopyToPango(ctx context.Context, obj **urlfiltering.HttpHeaderInsertionTypeHeaders, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	header_value := o.Header.ValueStringPointer()
+	value_value := o.Value.ValueStringPointer()
+	log_value := o.Log.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(urlfiltering.HttpHeaderInsertionTypeHeaders)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Header = header_value
+	(*obj).Value = value_value
+	(*obj).Log = log_value
+
+	return diags
+}
 
 func (o *UrlFilteringSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var mlavCategoryException_list types.List
-	{
-		var list_diags diag.Diagnostics
-		mlavCategoryException_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.MlavCategoryException)
-		diags.Append(list_diags...)
-	}
 	var alert_list types.List
 	{
 		var list_diags diag.Diagnostics
 		alert_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Alert)
 		diags.Append(list_diags...)
 	}
-	var block_list types.List
-	{
-		var list_diags diag.Diagnostics
-		block_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Block)
-		diags.Append(list_diags...)
-	}
-	var allow_list types.List
-	{
-		var list_diags diag.Diagnostics
-		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
-		diags.Append(list_diags...)
-	}
 	var continue_list types.List
 	{
 		var list_diags diag.Diagnostics
 		continue_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Continue)
-		diags.Append(list_diags...)
-	}
-	var override_list types.List
-	{
-		var list_diags diag.Diagnostics
-		override_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Override)
 		diags.Append(list_diags...)
 	}
 	var httpHeaderInsertion_list types.List
@@ -2451,6 +2439,30 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyFromPango(ctx context.Con
 		httpHeaderInsertion_list, list_diags = types.ListValueFrom(ctx, schemaType, httpHeaderInsertion_tf_entries)
 		diags.Append(list_diags...)
 	}
+	var mlavCategoryException_list types.List
+	{
+		var list_diags diag.Diagnostics
+		mlavCategoryException_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.MlavCategoryException)
+		diags.Append(list_diags...)
+	}
+	var allow_list types.List
+	{
+		var list_diags diag.Diagnostics
+		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
+		diags.Append(list_diags...)
+	}
+	var block_list types.List
+	{
+		var list_diags diag.Diagnostics
+		block_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Block)
+		diags.Append(list_diags...)
+	}
+	var override_list types.List
+	{
+		var list_diags diag.Diagnostics
+		override_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Override)
+		diags.Append(list_diags...)
+	}
 	var credentialEnforcement_object *UrlFilteringSecurityProfileResourceCredentialEnforcementObject
 	if obj.CredentialEnforcement != nil {
 		credentialEnforcement_object = new(UrlFilteringSecurityProfileResourceCredentialEnforcementObject)
@@ -2461,9 +2473,21 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyFromPango(ctx context.Con
 		}
 	}
 
+	var enableContainerPage_value types.Bool
+	if obj.EnableContainerPage != nil {
+		enableContainerPage_value = types.BoolValue(*obj.EnableContainerPage)
+	}
 	var logHttpHdrXff_value types.Bool
 	if obj.LogHttpHdrXff != nil {
 		logHttpHdrXff_value = types.BoolValue(*obj.LogHttpHdrXff)
+	}
+	var cloudInlineCat_value types.Bool
+	if obj.CloudInlineCat != nil {
+		cloudInlineCat_value = types.BoolValue(*obj.CloudInlineCat)
+	}
+	var logHttpHdrReferer_value types.Bool
+	if obj.LogHttpHdrReferer != nil {
+		logHttpHdrReferer_value = types.BoolValue(*obj.LogHttpHdrReferer)
 	}
 	var safeSearchEnforcement_value types.Bool
 	if obj.SafeSearchEnforcement != nil {
@@ -2477,49 +2501,37 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyFromPango(ctx context.Con
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var logHttpHdrUserAgent_value types.Bool
-	if obj.LogHttpHdrUserAgent != nil {
-		logHttpHdrUserAgent_value = types.BoolValue(*obj.LogHttpHdrUserAgent)
+	var localInlineCat_value types.Bool
+	if obj.LocalInlineCat != nil {
+		localInlineCat_value = types.BoolValue(*obj.LocalInlineCat)
 	}
 	var logContainerPageOnly_value types.Bool
 	if obj.LogContainerPageOnly != nil {
 		logContainerPageOnly_value = types.BoolValue(*obj.LogContainerPageOnly)
 	}
-	var logHttpHdrReferer_value types.Bool
-	if obj.LogHttpHdrReferer != nil {
-		logHttpHdrReferer_value = types.BoolValue(*obj.LogHttpHdrReferer)
-	}
-	var cloudInlineCat_value types.Bool
-	if obj.CloudInlineCat != nil {
-		cloudInlineCat_value = types.BoolValue(*obj.CloudInlineCat)
-	}
-	var enableContainerPage_value types.Bool
-	if obj.EnableContainerPage != nil {
-		enableContainerPage_value = types.BoolValue(*obj.EnableContainerPage)
-	}
-	var localInlineCat_value types.Bool
-	if obj.LocalInlineCat != nil {
-		localInlineCat_value = types.BoolValue(*obj.LocalInlineCat)
+	var logHttpHdrUserAgent_value types.Bool
+	if obj.LogHttpHdrUserAgent != nil {
+		logHttpHdrUserAgent_value = types.BoolValue(*obj.LogHttpHdrUserAgent)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.LogHttpHdrXff = logHttpHdrXff_value
-	o.MlavCategoryException = mlavCategoryException_list
-	o.SafeSearchEnforcement = safeSearchEnforcement_value
-	o.CredentialEnforcement = credentialEnforcement_object
-	o.Description = description_value
-	o.DisableOverride = disableOverride_value
-	o.LogHttpHdrUserAgent = logHttpHdrUserAgent_value
 	o.Alert = alert_list
-	o.Block = block_list
-	o.Allow = allow_list
 	o.Continue = continue_list
-	o.LogContainerPageOnly = logContainerPageOnly_value
-	o.LogHttpHdrReferer = logHttpHdrReferer_value
-	o.Override = override_list
-	o.CloudInlineCat = cloudInlineCat_value
+	o.CredentialEnforcement = credentialEnforcement_object
 	o.EnableContainerPage = enableContainerPage_value
 	o.HttpHeaderInsertion = httpHeaderInsertion_list
+	o.LogHttpHdrXff = logHttpHdrXff_value
+	o.CloudInlineCat = cloudInlineCat_value
+	o.LogHttpHdrReferer = logHttpHdrReferer_value
+	o.MlavCategoryException = mlavCategoryException_list
+	o.SafeSearchEnforcement = safeSearchEnforcement_value
+	o.Allow = allow_list
+	o.Block = block_list
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
 	o.LocalInlineCat = localInlineCat_value
+	o.LogContainerPageOnly = logContainerPageOnly_value
+	o.LogHttpHdrUserAgent = logHttpHdrUserAgent_value
+	o.Override = override_list
 
 	return diags
 }
@@ -2585,6 +2597,10 @@ func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) CopyF
 func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject) CopyFromPango(ctx context.Context, obj *urlfiltering.HttpHeaderInsertionTypeHeaders, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var log_value types.Bool
+	if obj.Log != nil {
+		log_value = types.BoolValue(*obj.Log)
+	}
 	var header_value types.String
 	if obj.Header != nil {
 		header_value = types.StringValue(*obj.Header)
@@ -2593,20 +2609,22 @@ func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject
 	if obj.Value != nil {
 		value_value = types.StringValue(*obj.Value)
 	}
-	var log_value types.Bool
-	if obj.Log != nil {
-		log_value = types.BoolValue(*obj.Log)
-	}
 	o.Name = types.StringValue(obj.Name)
+	o.Log = log_value
 	o.Header = header_value
 	o.Value = value_value
-	o.Log = log_value
 
 	return diags
 }
 
 func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var allow_list types.List
+	{
+		var list_diags diag.Diagnostics
+		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
+		diags.Append(list_diags...)
+	}
 	var block_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -2625,12 +2643,6 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) CopyFro
 		alert_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Alert)
 		diags.Append(list_diags...)
 	}
-	var allow_list types.List
-	{
-		var list_diags diag.Diagnostics
-		allow_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Allow)
-		diags.Append(list_diags...)
-	}
 	var mode_object *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject
 	if obj.Mode != nil {
 		mode_object = new(UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject)
@@ -2645,12 +2657,12 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) CopyFro
 	if obj.LogSeverity != nil {
 		logSeverity_value = types.StringValue(*obj.LogSeverity)
 	}
+	o.Allow = allow_list
 	o.Block = block_list
 	o.Continue = continue_list
 	o.LogSeverity = logSeverity_value
 	o.Mode = mode_object
 	o.Alert = alert_list
-	o.Allow = allow_list
 
 	return diags
 }
@@ -2697,6 +2709,12 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject) Cop
 	return diags
 }
 
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeDisabled, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeDomainCredentials, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -2709,10 +2727,12 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObjec
 	return diags
 }
 
-func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject) CopyFromPango(ctx context.Context, obj *urlfiltering.CredentialEnforcementModeDisabled, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
+func (o *UrlFilteringSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	components = append(components, pangoutil.AsEntryXpath(
+		[]string{o.Name.ValueString()},
+	))
+	return components, nil
 }
 
 func (r *UrlFilteringSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -2770,7 +2790,13 @@ func (r *UrlFilteringSecurityProfileResource) Create(ctx context.Context, req re
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -2785,7 +2811,6 @@ func (r *UrlFilteringSecurityProfileResource) Create(ctx context.Context, req re
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-
 func (o *UrlFilteringSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var savestate, state UrlFilteringSecurityProfileResourceModel
@@ -2814,8 +2839,13 @@ func (o *UrlFilteringSecurityProfileResource) Read(ctx context.Context, req reso
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -2840,7 +2870,6 @@ func (o *UrlFilteringSecurityProfileResource) Read(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *UrlFilteringSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state UrlFilteringSecurityProfileResourceModel
@@ -2874,7 +2903,14 @@ func (r *UrlFilteringSecurityProfileResource) Update(ctx context.Context, req re
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -2910,7 +2946,6 @@ func (r *UrlFilteringSecurityProfileResource) Update(ctx context.Context, req re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *UrlFilteringSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state UrlFilteringSecurityProfileResourceModel
@@ -3049,20 +3084,20 @@ func UrlFilteringSecurityProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Panorama device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "Device Group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

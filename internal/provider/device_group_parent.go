@@ -56,22 +56,27 @@ type DeviceGroupParentDataSourceModel struct {
 	Parent      types.String              `tfsdk:"parent"`
 }
 
+func (o *DeviceGroupParentDataSourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func DeviceGroupParentDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": DeviceGroupParentDataSourceLocationSchema(),
 
-			"device_group": dsschema.StringAttribute{
-				Description: "The device group whose parent is being set",
+			"parent": dsschema.StringAttribute{
+				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"parent": dsschema.StringAttribute{
-				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
+			"device_group": dsschema.StringAttribute{
+				Description: "The device group whose parent is being set",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -121,7 +126,6 @@ func (d *DeviceGroupParentDataSource) Configure(_ context.Context, req datasourc
 
 	d.client = req.ProviderData.(*pango.Client)
 }
-
 func (o *DeviceGroupParentDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var state DeviceGroupParentResourceModel
@@ -173,12 +177,8 @@ func DeviceGroupParentResourceLocationSchema() rsschema.Attribute {
 
 type DeviceGroupParentResourceModel struct {
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	DeviceGroup types.String              `tfsdk:"device_group"`
 	Parent      types.String              `tfsdk:"parent"`
-}
-
-func (r *DeviceGroupParentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_device_group_parent"
+	DeviceGroup types.String              `tfsdk:"device_group"`
 }
 
 func (r *DeviceGroupParentResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -192,16 +192,16 @@ func DeviceGroupParentResourceSchema() rsschema.Schema {
 
 			"location": DeviceGroupParentResourceLocationSchema(),
 
-			"parent": rsschema.StringAttribute{
-				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
+			"device_group": rsschema.StringAttribute{
+				Description: "The device group whose parent is being set",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"device_group": rsschema.StringAttribute{
-				Description: "The device group whose parent is being set",
+			"parent": rsschema.StringAttribute{
+				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -229,6 +229,10 @@ func (o *DeviceGroupParentResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func (r *DeviceGroupParentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_device_group_parent"
+}
+
 func (r *DeviceGroupParentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = DeviceGroupParentResourceSchema()
 }
@@ -242,6 +246,11 @@ func (r *DeviceGroupParentResource) Configure(ctx context.Context, req resource.
 	}
 
 	r.client = req.ProviderData.(*pango.Client)
+}
+
+func (o *DeviceGroupParentResourceModel) resourceXpathComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -262,7 +271,6 @@ func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.Cre
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (o *DeviceGroupParentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
 	var state DeviceGroupParentResourceModel
@@ -292,7 +300,6 @@ func (o *DeviceGroupParentResource) Read(ctx context.Context, req resource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DeviceGroupParentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var state DeviceGroupParentResourceModel
@@ -311,7 +318,6 @@ func (r *DeviceGroupParentResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-
 func (r *DeviceGroupParentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DeviceGroupParentResourceModel
