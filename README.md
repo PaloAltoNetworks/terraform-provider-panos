@@ -9,7 +9,7 @@ Terraform Provider for Palo Alto Networks PANOS
 
 - Website: https://www.terraform.io
 - Documentation: https://www.terraform.io/docs/providers/panos/index.html
-
+- [Roadmap](https://github.com/orgs/PaloAltoNetworks/projects/62/views/11)
 
 > [!TIP]
 > ### Getting Started
