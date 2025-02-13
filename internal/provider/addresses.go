@@ -57,13 +57,13 @@ type AddressesDataSourceModel struct {
 	Addresses types.Map         `tfsdk:"addresses"`
 }
 type AddressesDataSourceAddressesObject struct {
-	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
+	Description     types.String `tfsdk:"description"`
+	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
 	IpRange         types.String `tfsdk:"ip_range"`
 	IpWildcard      types.String `tfsdk:"ip_wildcard"`
-	Fqdn            types.String `tfsdk:"fqdn"`
 }
 
 func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -111,10 +111,6 @@ func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, 
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
-	}
 	var ipNetmask_value types.String
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
@@ -127,13 +123,17 @@ func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, 
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
 	}
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
+	o.Fqdn = fqdn_value
 
 	return diags
 }
@@ -395,10 +395,10 @@ type AddressesResourceAddressesObject struct {
 	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
-	IpWildcard      types.String `tfsdk:"ip_wildcard"`
-	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
 	IpRange         types.String `tfsdk:"ip_range"`
+	IpWildcard      types.String `tfsdk:"ip_wildcard"`
+	Fqdn            types.String `tfsdk:"fqdn"`
 }
 
 func (r *AddressesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -446,15 +446,6 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
 
-			"tags": rsschema.ListAttribute{
-				Description: "The administrative tags.",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
 				Computed:    false,
@@ -479,8 +470,17 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 				},
 			},
 
-			"ip_netmask": rsschema.StringAttribute{
-				Description: "The IP netmask value.",
+			"tags": rsschema.ListAttribute{
+				Description: "The administrative tags.",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"fqdn": rsschema.StringAttribute{
+				Description: "The FQDN value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -488,12 +488,20 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("fqdn"),
-						path.MatchRelative().AtParent().AtName("ip_netmask"),
 						path.MatchRelative().AtParent().AtName("ip_range"),
 						path.MatchRelative().AtParent().AtName("ip_wildcard"),
+						path.MatchRelative().AtParent().AtName("fqdn"),
+						path.MatchRelative().AtParent().AtName("ip_netmask"),
 					}...),
 				},
+			},
+
+			"ip_netmask": rsschema.StringAttribute{
+				Description: "The IP netmask value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 
 			"ip_range": rsschema.StringAttribute{
@@ -506,14 +514,6 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 			"ip_wildcard": rsschema.StringAttribute{
 				Description: "The IP wildcard value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"fqdn": rsschema.StringAttribute{
-				Description: "The FQDN value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -568,28 +568,28 @@ func (r *AddressesResource) Configure(ctx context.Context, req resource.Configur
 
 func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	tags_pango_entries := make([]string, 0)
 	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	description_value := o.Description.ValueStringPointer()
-	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
 	ipWildcard_value := o.IpWildcard.ValueStringPointer()
+	fqdn_value := o.Fqdn.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(address.Entry)
 	}
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tags_pango_entries
-	(*obj).Description = description_value
-	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).IpRange = ipRange_value
 	(*obj).IpWildcard = ipWildcard_value
+	(*obj).Fqdn = fqdn_value
 
 	return diags
 }
@@ -603,13 +603,17 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 		diags.Append(list_diags...)
 	}
 
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
+	var ipRange_value types.String
+	if obj.IpRange != nil {
+		ipRange_value = types.StringValue(*obj.IpRange)
 	}
 	var ipWildcard_value types.String
 	if obj.IpWildcard != nil {
@@ -623,17 +627,13 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
-	var ipRange_value types.String
-	if obj.IpRange != nil {
-		ipRange_value = types.StringValue(*obj.IpRange)
-	}
+	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.Description = description_value
+	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
 	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
-	o.IpRange = ipRange_value
 
 	return diags
 }
@@ -654,6 +654,13 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 
 	var location address.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -662,13 +669,6 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -750,8 +750,8 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &address.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -930,13 +930,6 @@ func (r *AddressesResource) Delete(ctx context.Context, req resource.DeleteReque
 
 	var location address.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -945,6 +938,13 @@ func (r *AddressesResource) Delete(ctx context.Context, req resource.DeleteReque
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -964,18 +964,18 @@ func (r *AddressesResource) ImportState(ctx context.Context, req resource.Import
 
 }
 
-type AddressesVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
-	Name       types.String `tfsdk:"name"`
-}
 type AddressesDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type AddressesVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
 type AddressesLocation struct {
+	DeviceGroup *AddressesDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                    `tfsdk:"shared"`
 	Vsys        *AddressesVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *AddressesDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func AddressesLocationSchema() rsschema.Attribute {
@@ -1002,20 +1002,20 @@ func AddressesLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1056,33 +1056,6 @@ func AddressesLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o AddressesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Name           *string `json:"name"`
-		PanoramaDevice *string `json:"panorama_device"`
-	}{
-		Name:           o.Name.ValueStringPointer(),
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *AddressesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		Name           *string `json:"name"`
-		PanoramaDevice *string `json:"panorama_device"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.Name = types.StringPointerValue(shadow.Name)
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-
-	return nil
-}
 func (o AddressesVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -1110,15 +1083,42 @@ func (o *AddressesVsysLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o AddressesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AddressesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o AddressesLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		DeviceGroup *AddressesDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                         `json:"shared"`
 		Vsys        *AddressesVsysLocation        `json:"vsys"`
+		DeviceGroup *AddressesDeviceGroupLocation `json:"device_group"`
 	}{
-		DeviceGroup: o.DeviceGroup,
 		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
 	}
 
 	return json.Marshal(obj)
@@ -1126,18 +1126,18 @@ func (o AddressesLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressesLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		DeviceGroup *AddressesDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                         `json:"shared"`
 		Vsys        *AddressesVsysLocation        `json:"vsys"`
+		DeviceGroup *AddressesDeviceGroupLocation `json:"device_group"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.DeviceGroup = shadow.DeviceGroup
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil
 }

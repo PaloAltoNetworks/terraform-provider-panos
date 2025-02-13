@@ -65,17 +65,17 @@ type AdministrativeTagDataSourceModel struct {
 
 func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	color_value := o.Color.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Color = color_value
 	(*obj).Comments = comments_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).Color = color_value
 
 	return diags
 }
@@ -208,6 +208,13 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 
 	var location admintag.Location
 
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &admintag.DeviceGroupLocation{
+
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -216,13 +223,6 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &admintag.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -326,47 +326,47 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
-						"color26",
-						"color28",
-						"color5",
-						"color9",
-						"color19",
-						"color23",
-						"color24",
-						"color36",
-						"color10",
-						"color21",
-						"color33",
-						"color38",
-						"color39",
-						"color41",
-						"color40",
-						"color2",
-						"color3",
-						"color6",
-						"color8",
-						"color17",
-						"color31",
-						"color20",
-						"color34",
-						"color42",
-						"color11",
-						"color12",
-						"color13",
-						"color14",
-						"color25",
-						"color32",
-						"color4",
-						"color16",
-						"color22",
 						"color27",
 						"color35",
+						"color7",
+						"color8",
+						"color14",
+						"color17",
+						"color21",
+						"color26",
+						"color4",
+						"color10",
+						"color6",
+						"color24",
+						"color28",
+						"color29",
+						"color40",
+						"color42",
+						"color2",
+						"color5",
+						"color31",
+						"color34",
+						"color36",
+						"color38",
+						"color15",
+						"color19",
+						"color22",
+						"color25",
+						"color13",
+						"color16",
+						"color30",
+						"color41",
+						"color39",
+						"color3",
+						"color12",
+						"color23",
+						"color32",
+						"color33",
 						"color37",
 						"color1",
-						"color7",
-						"color15",
-						"color29",
-						"color30",
+						"color9",
+						"color11",
+						"color20",
 					}...),
 				},
 			},
@@ -587,15 +587,15 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &admintag.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -654,8 +654,8 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -749,8 +749,8 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -842,9 +842,9 @@ type AdministrativeTagDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type AdministrativeTagLocation struct {
+	Shared      types.Bool                            `tfsdk:"shared"`
 	Vsys        *AdministrativeTagVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *AdministrativeTagDeviceGroupLocation `tfsdk:"device_group"`
-	Shared      types.Bool                            `tfsdk:"shared"`
 }
 
 func AdministrativeTagLocationSchema() rsschema.Attribute {
@@ -871,20 +871,20 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"name": rsschema.StringAttribute{
-						Description: "The Virtual System name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

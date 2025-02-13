@@ -420,14 +420,11 @@ type resourceFuncs struct {
 }
 
 var resourceFuncMap = map[string]resourceFuncs{
-	"panos_admin_role": resourceFuncs{
-		CreateImportId: AdminRoleImportStateCreator,
+	"panos_tunnel_interface": resourceFuncs{
+		CreateImportId: TunnelInterfaceImportStateCreator,
 	},
-	"panos_ethernet_interface": resourceFuncs{
-		CreateImportId: EthernetInterfaceImportStateCreator,
-	},
-	"panos_virtual_router": resourceFuncs{
-		CreateImportId: VirtualRouterImportStateCreator,
+	"panos_vlan_interface": resourceFuncs{
+		CreateImportId: VlanInterfaceImportStateCreator,
 	},
 	"panos_application": resourceFuncs{
 		CreateImportId: ApplicationImportStateCreator,
@@ -435,65 +432,62 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_certificate_profile": resourceFuncs{
 		CreateImportId: CertificateProfileImportStateCreator,
 	},
-	"panos_ipsec_crypto_profile": resourceFuncs{
-		CreateImportId: IpsecCryptoProfileImportStateCreator,
-	},
-	"panos_url_filtering_security_profile": resourceFuncs{
-		CreateImportId: UrlFilteringSecurityProfileImportStateCreator,
-	},
-	"panos_address": resourceFuncs{
-		CreateImportId: AddressImportStateCreator,
-	},
-	"panos_wildfire_analysis_security_profile": resourceFuncs{
-		CreateImportId: WildfireAnalysisSecurityProfileImportStateCreator,
-	},
-	"panos_template_stack": resourceFuncs{
-		CreateImportId: TemplateStackImportStateCreator,
-	},
-	"panos_template": resourceFuncs{
-		CreateImportId: TemplateImportStateCreator,
+	"panos_log_forwarding_profile": resourceFuncs{
+		CreateImportId: LogForwardingProfileImportStateCreator,
 	},
 	"panos_aggregate_interface": resourceFuncs{
 		CreateImportId: AggregateInterfaceImportStateCreator,
 	},
-	"panos_service_group": resourceFuncs{
-		CreateImportId: ServiceGroupImportStateCreator,
-	},
-	"panos_zone": resourceFuncs{
-		CreateImportId: ZoneImportStateCreator,
-	},
-	"panos_vulnerability_security_profile": resourceFuncs{
-		CreateImportId: VulnerabilitySecurityProfileImportStateCreator,
-	},
-	"panos_anti_spyware_security_profile": resourceFuncs{
-		CreateImportId: AntiSpywareSecurityProfileImportStateCreator,
+	"panos_address_group": resourceFuncs{
+		CreateImportId: AddressGroupImportStateCreator,
 	},
 	"panos_administrative_tag": resourceFuncs{
 		CreateImportId: AdministrativeTagImportStateCreator,
 	},
-	"panos_file_blocking_security_profile": resourceFuncs{
-		CreateImportId: FileBlockingSecurityProfileImportStateCreator,
-	},
-	"panos_security_profile_group": resourceFuncs{
-		CreateImportId: SecurityProfileGroupImportStateCreator,
-	},
-	"panos_tunnel_interface": resourceFuncs{
-		CreateImportId: TunnelInterfaceImportStateCreator,
-	},
-	"panos_vlan_interface": resourceFuncs{
-		CreateImportId: VlanInterfaceImportStateCreator,
-	},
-	"panos_application_group": resourceFuncs{
-		CreateImportId: ApplicationGroupImportStateCreator,
-	},
 	"panos_custom_url_category": resourceFuncs{
 		CreateImportId: CustomUrlCategoryImportStateCreator,
+	},
+	"panos_virtual_router": resourceFuncs{
+		CreateImportId: VirtualRouterImportStateCreator,
+	},
+	"panos_external_dynamic_list": resourceFuncs{
+		CreateImportId: ExternalDynamicListImportStateCreator,
+	},
+	"panos_url_filtering_security_profile": resourceFuncs{
+		CreateImportId: UrlFilteringSecurityProfileImportStateCreator,
+	},
+	"panos_service_group": resourceFuncs{
+		CreateImportId: ServiceGroupImportStateCreator,
+	},
+	"panos_template": resourceFuncs{
+		CreateImportId: TemplateImportStateCreator,
+	},
+	"panos_ethernet_interface": resourceFuncs{
+		CreateImportId: EthernetInterfaceImportStateCreator,
+	},
+	"panos_interface_management_profile": resourceFuncs{
+		CreateImportId: InterfaceManagementProfileImportStateCreator,
+	},
+	"panos_ethernet_layer3_subinterface": resourceFuncs{
+		CreateImportId: EthernetLayer3SubinterfaceImportStateCreator,
 	},
 	"panos_ike_gateway": resourceFuncs{
 		CreateImportId: IkeGatewayImportStateCreator,
 	},
-	"panos_ike_crypto_profile": resourceFuncs{
-		CreateImportId: IkeCryptoProfileImportStateCreator,
+	"panos_antivirus_security_profile": resourceFuncs{
+		CreateImportId: AntivirusSecurityProfileImportStateCreator,
+	},
+	"panos_security_profile_group": resourceFuncs{
+		CreateImportId: SecurityProfileGroupImportStateCreator,
+	},
+	"panos_vulnerability_security_profile": resourceFuncs{
+		CreateImportId: VulnerabilitySecurityProfileImportStateCreator,
+	},
+	"panos_wildfire_analysis_security_profile": resourceFuncs{
+		CreateImportId: WildfireAnalysisSecurityProfileImportStateCreator,
+	},
+	"panos_service": resourceFuncs{
+		CreateImportId: ServiceImportStateCreator,
 	},
 	"panos_device_group": resourceFuncs{
 		CreateImportId: DeviceGroupImportStateCreator,
@@ -501,31 +495,37 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_template_variable": resourceFuncs{
 		CreateImportId: TemplateVariableImportStateCreator,
 	},
-	"panos_external_dynamic_list": resourceFuncs{
-		CreateImportId: ExternalDynamicListImportStateCreator,
-	},
-	"panos_log_forwarding_profile": resourceFuncs{
-		CreateImportId: LogForwardingProfileImportStateCreator,
-	},
 	"panos_loopback_interface": resourceFuncs{
 		CreateImportId: LoopbackInterfaceImportStateCreator,
 	},
-	"panos_ethernet_layer3_subinterface": resourceFuncs{
-		CreateImportId: EthernetLayer3SubinterfaceImportStateCreator,
+	"panos_address": resourceFuncs{
+		CreateImportId: AddressImportStateCreator,
 	},
-	"panos_address_group": resourceFuncs{
-		CreateImportId: AddressGroupImportStateCreator,
+	"panos_ike_crypto_profile": resourceFuncs{
+		CreateImportId: IkeCryptoProfileImportStateCreator,
 	},
-	"panos_antivirus_security_profile": resourceFuncs{
-		CreateImportId: AntivirusSecurityProfileImportStateCreator,
+	"panos_ipsec_crypto_profile": resourceFuncs{
+		CreateImportId: IpsecCryptoProfileImportStateCreator,
 	},
-	"panos_service": resourceFuncs{
-		CreateImportId: ServiceImportStateCreator,
-	},
-	"panos_interface_management_profile": resourceFuncs{
-		CreateImportId: InterfaceManagementProfileImportStateCreator,
+	"panos_application_group": resourceFuncs{
+		CreateImportId: ApplicationGroupImportStateCreator,
 	},
 	"panos_ipsec_tunnel": resourceFuncs{
 		CreateImportId: IpsecTunnelImportStateCreator,
+	},
+	"panos_zone": resourceFuncs{
+		CreateImportId: ZoneImportStateCreator,
+	},
+	"panos_file_blocking_security_profile": resourceFuncs{
+		CreateImportId: FileBlockingSecurityProfileImportStateCreator,
+	},
+	"panos_admin_role": resourceFuncs{
+		CreateImportId: AdminRoleImportStateCreator,
+	},
+	"panos_anti_spyware_security_profile": resourceFuncs{
+		CreateImportId: AntiSpywareSecurityProfileImportStateCreator,
+	},
+	"panos_template_stack": resourceFuncs{
+		CreateImportId: TemplateStackImportStateCreator,
 	},
 }

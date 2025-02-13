@@ -60,34 +60,48 @@ type ApplicationDataSourceFilter struct {
 type ApplicationDataSourceModel struct {
 	Location               ApplicationLocation                 `tfsdk:"location"`
 	Name                   types.String                        `tfsdk:"name"`
-	Technology             types.String                        `tfsdk:"technology"`
-	VirusIdent             types.Bool                          `tfsdk:"virus_ident"`
-	NoAppidCaching         types.Bool                          `tfsdk:"no_appid_caching"`
-	TcpTimeout             types.Int64                         `tfsdk:"tcp_timeout"`
-	EvasiveBehavior        types.Bool                          `tfsdk:"evasive_behavior"`
-	HasKnownVulnerability  types.Bool                          `tfsdk:"has_known_vulnerability"`
-	PervasiveUse           types.Bool                          `tfsdk:"pervasive_use"`
-	Risk                   types.Int64                         `tfsdk:"risk"`
-	TunnelApplications     types.Bool                          `tfsdk:"tunnel_applications"`
-	ConsumeBigBandwidth    types.Bool                          `tfsdk:"consume_big_bandwidth"`
-	TunnelOtherApplication types.Bool                          `tfsdk:"tunnel_other_application"`
+	AbleToTransferFile     types.Bool                          `tfsdk:"able_to_transfer_file"`
+	Category               types.String                        `tfsdk:"category"`
+	ParentApp              types.String                        `tfsdk:"parent_app"`
 	AlgDisableCapability   types.String                        `tfsdk:"alg_disable_capability"`
-	Subcategory            types.String                        `tfsdk:"subcategory"`
-	Signature              types.List                          `tfsdk:"signature"`
 	DataIdent              types.Bool                          `tfsdk:"data_ident"`
 	Description            types.String                        `tfsdk:"description"`
-	DisableOverride        types.String                        `tfsdk:"disable_override"`
-	ParentApp              types.String                        `tfsdk:"parent_app"`
+	TunnelOtherApplication types.Bool                          `tfsdk:"tunnel_other_application"`
+	Default                *ApplicationDataSourceDefaultObject `tfsdk:"default"`
+	Risk                   types.Int64                         `tfsdk:"risk"`
+	Technology             types.String                        `tfsdk:"technology"`
 	TcpHalfClosedTimeout   types.Int64                         `tfsdk:"tcp_half_closed_timeout"`
+	TcpTimeout             types.Int64                         `tfsdk:"tcp_timeout"`
+	Timeout                types.Int64                         `tfsdk:"timeout"`
+	ConsumeBigBandwidth    types.Bool                          `tfsdk:"consume_big_bandwidth"`
+	HasKnownVulnerability  types.Bool                          `tfsdk:"has_known_vulnerability"`
 	UdpTimeout             types.Int64                         `tfsdk:"udp_timeout"`
-	AbleToTransferFile     types.Bool                          `tfsdk:"able_to_transfer_file"`
-	UsedByMalware          types.Bool                          `tfsdk:"used_by_malware"`
-	Category               types.String                        `tfsdk:"category"`
-	FileTypeIdent          types.Bool                          `tfsdk:"file_type_ident"`
+	PervasiveUse           types.Bool                          `tfsdk:"pervasive_use"`
 	ProneToMisuse          types.Bool                          `tfsdk:"prone_to_misuse"`
 	TcpTimeWaitTimeout     types.Int64                         `tfsdk:"tcp_time_wait_timeout"`
-	Timeout                types.Int64                         `tfsdk:"timeout"`
-	Default                *ApplicationDataSourceDefaultObject `tfsdk:"default"`
+	UsedByMalware          types.Bool                          `tfsdk:"used_by_malware"`
+	DisableOverride        types.String                        `tfsdk:"disable_override"`
+	FileTypeIdent          types.Bool                          `tfsdk:"file_type_ident"`
+	NoAppidCaching         types.Bool                          `tfsdk:"no_appid_caching"`
+	Signature              types.List                          `tfsdk:"signature"`
+	VirusIdent             types.Bool                          `tfsdk:"virus_ident"`
+	EvasiveBehavior        types.Bool                          `tfsdk:"evasive_behavior"`
+	Subcategory            types.String                        `tfsdk:"subcategory"`
+	TunnelApplications     types.Bool                          `tfsdk:"tunnel_applications"`
+}
+type ApplicationDataSourceDefaultObject struct {
+	IdentByIcmpType   *ApplicationDataSourceDefaultIdentByIcmpTypeObject  `tfsdk:"ident_by_icmp_type"`
+	IdentByIcmp6Type  *ApplicationDataSourceDefaultIdentByIcmp6TypeObject `tfsdk:"ident_by_icmp6_type"`
+	IdentByIpProtocol types.String                                        `tfsdk:"ident_by_ip_protocol"`
+	Port              types.List                                          `tfsdk:"port"`
+}
+type ApplicationDataSourceDefaultIdentByIcmpTypeObject struct {
+	Code types.String `tfsdk:"code"`
+	Type types.String `tfsdk:"type"`
+}
+type ApplicationDataSourceDefaultIdentByIcmp6TypeObject struct {
+	Code types.String `tfsdk:"code"`
+	Type types.String `tfsdk:"type"`
 }
 type ApplicationDataSourceSignatureObject struct {
 	Name         types.String `tfsdk:"name"`
@@ -105,19 +119,10 @@ type ApplicationDataSourceSignatureAndConditionOrConditionObject struct {
 	Operator *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject `tfsdk:"operator"`
 }
 type ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject struct {
+	PatternMatch *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject `tfsdk:"pattern_match"`
 	GreaterThan  *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject  `tfsdk:"greater_than"`
 	LessThan     *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject     `tfsdk:"less_than"`
 	EqualTo      *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject      `tfsdk:"equal_to"`
-	PatternMatch *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject `tfsdk:"pattern_match"`
-}
-type ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject struct {
-	Value     types.Int64  `tfsdk:"value"`
-	Qualifier types.List   `tfsdk:"qualifier"`
-	Context   types.String `tfsdk:"context"`
-}
-type ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject struct {
-	Name  types.String `tfsdk:"name"`
-	Value types.String `tfsdk:"value"`
 }
 type ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject struct {
 	Context  types.String `tfsdk:"context"`
@@ -143,32 +148,31 @@ type ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQua
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
-type ApplicationDataSourceDefaultObject struct {
-	Port              types.List                                          `tfsdk:"port"`
-	IdentByIcmpType   *ApplicationDataSourceDefaultIdentByIcmpTypeObject  `tfsdk:"ident_by_icmp_type"`
-	IdentByIcmp6Type  *ApplicationDataSourceDefaultIdentByIcmp6TypeObject `tfsdk:"ident_by_icmp6_type"`
-	IdentByIpProtocol types.String                                        `tfsdk:"ident_by_ip_protocol"`
+type ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject struct {
+	Value     types.Int64  `tfsdk:"value"`
+	Qualifier types.List   `tfsdk:"qualifier"`
+	Context   types.String `tfsdk:"context"`
 }
-type ApplicationDataSourceDefaultIdentByIcmpTypeObject struct {
-	Code types.String `tfsdk:"code"`
-	Type types.String `tfsdk:"type"`
-}
-type ApplicationDataSourceDefaultIdentByIcmp6TypeObject struct {
-	Code types.String `tfsdk:"code"`
-	Type types.String `tfsdk:"type"`
+type ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	tcpTimeout_value := o.TcpTimeout.ValueInt64Pointer()
+	timeout_value := o.Timeout.ValueInt64Pointer()
+	tcpHalfClosedTimeout_value := o.TcpHalfClosedTimeout.ValueInt64Pointer()
 	hasKnownVulnerability_value := o.HasKnownVulnerability.ValueBoolPointer()
-	pervasiveUse_value := o.PervasiveUse.ValueBoolPointer()
-	risk_value := o.Risk.ValueInt64Pointer()
-	tunnelApplications_value := o.TunnelApplications.ValueBoolPointer()
+	udpTimeout_value := o.UdpTimeout.ValueInt64Pointer()
 	consumeBigBandwidth_value := o.ConsumeBigBandwidth.ValueBoolPointer()
-	evasiveBehavior_value := o.EvasiveBehavior.ValueBoolPointer()
-	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
-	tunnelOtherApplication_value := o.TunnelOtherApplication.ValueBoolPointer()
+	fileTypeIdent_value := o.FileTypeIdent.ValueBoolPointer()
+	noAppidCaching_value := o.NoAppidCaching.ValueBoolPointer()
+	pervasiveUse_value := o.PervasiveUse.ValueBoolPointer()
+	proneToMisuse_value := o.ProneToMisuse.ValueBoolPointer()
+	tcpTimeWaitTimeout_value := o.TcpTimeWaitTimeout.ValueInt64Pointer()
+	usedByMalware_value := o.UsedByMalware.ValueBoolPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var signature_tf_entries []ApplicationDataSourceSignatureObject
 	var signature_pango_entries []application.Signature
 	{
@@ -187,18 +191,18 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **appl
 		}
 	}
 	subcategory_value := o.Subcategory.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	parentApp_value := o.ParentApp.ValueStringPointer()
-	tcpHalfClosedTimeout_value := o.TcpHalfClosedTimeout.ValueInt64Pointer()
-	udpTimeout_value := o.UdpTimeout.ValueInt64Pointer()
+	tunnelApplications_value := o.TunnelApplications.ValueBoolPointer()
+	virusIdent_value := o.VirusIdent.ValueBoolPointer()
+	evasiveBehavior_value := o.EvasiveBehavior.ValueBoolPointer()
+	category_value := o.Category.ValueStringPointer()
 	ableToTransferFile_value := o.AbleToTransferFile.ValueBoolPointer()
 	dataIdent_value := o.DataIdent.ValueBoolPointer()
-	category_value := o.Category.ValueStringPointer()
-	usedByMalware_value := o.UsedByMalware.ValueBoolPointer()
-	proneToMisuse_value := o.ProneToMisuse.ValueBoolPointer()
-	tcpTimeWaitTimeout_value := o.TcpTimeWaitTimeout.ValueInt64Pointer()
-	timeout_value := o.Timeout.ValueInt64Pointer()
+	description_value := o.Description.ValueStringPointer()
+	parentApp_value := o.ParentApp.ValueStringPointer()
+	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
+	risk_value := o.Risk.ValueInt64Pointer()
+	technology_value := o.Technology.ValueStringPointer()
+	tunnelOtherApplication_value := o.TunnelOtherApplication.ValueBoolPointer()
 	var default_entry *application.Default
 	if o.Default != nil {
 		if *obj != nil && (*obj).Default != nil {
@@ -212,61 +216,44 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **appl
 			return diags
 		}
 	}
-	fileTypeIdent_value := o.FileTypeIdent.ValueBoolPointer()
-	virusIdent_value := o.VirusIdent.ValueBoolPointer()
-	noAppidCaching_value := o.NoAppidCaching.ValueBoolPointer()
-	technology_value := o.Technology.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(application.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).TcpTimeout = tcpTimeout_value
-	(*obj).HasKnownVulnerability = hasKnownVulnerability_value
-	(*obj).PervasiveUse = pervasiveUse_value
-	(*obj).Risk = risk_value
-	(*obj).TunnelApplications = tunnelApplications_value
-	(*obj).ConsumeBigBandwidth = consumeBigBandwidth_value
-	(*obj).EvasiveBehavior = evasiveBehavior_value
-	(*obj).AlgDisableCapability = algDisableCapability_value
-	(*obj).TunnelOtherApplication = tunnelOtherApplication_value
-	(*obj).Signature = signature_pango_entries
-	(*obj).Subcategory = subcategory_value
-	(*obj).Description = description_value
-	(*obj).DisableOverride = disableOverride_value
-	(*obj).ParentApp = parentApp_value
+	(*obj).Timeout = timeout_value
 	(*obj).TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
+	(*obj).HasKnownVulnerability = hasKnownVulnerability_value
 	(*obj).UdpTimeout = udpTimeout_value
-	(*obj).AbleToTransferFile = ableToTransferFile_value
-	(*obj).DataIdent = dataIdent_value
-	(*obj).Category = category_value
-	(*obj).UsedByMalware = usedByMalware_value
+	(*obj).ConsumeBigBandwidth = consumeBigBandwidth_value
+	(*obj).FileTypeIdent = fileTypeIdent_value
+	(*obj).NoAppidCaching = noAppidCaching_value
+	(*obj).PervasiveUse = pervasiveUse_value
 	(*obj).ProneToMisuse = proneToMisuse_value
 	(*obj).TcpTimeWaitTimeout = tcpTimeWaitTimeout_value
-	(*obj).Timeout = timeout_value
-	(*obj).Default = default_entry
-	(*obj).FileTypeIdent = fileTypeIdent_value
+	(*obj).UsedByMalware = usedByMalware_value
+	(*obj).DisableOverride = disableOverride_value
+	(*obj).Signature = signature_pango_entries
+	(*obj).Subcategory = subcategory_value
+	(*obj).TunnelApplications = tunnelApplications_value
 	(*obj).VirusIdent = virusIdent_value
-	(*obj).NoAppidCaching = noAppidCaching_value
+	(*obj).EvasiveBehavior = evasiveBehavior_value
+	(*obj).Category = category_value
+	(*obj).AbleToTransferFile = ableToTransferFile_value
+	(*obj).DataIdent = dataIdent_value
+	(*obj).Description = description_value
+	(*obj).ParentApp = parentApp_value
+	(*obj).AlgDisableCapability = algDisableCapability_value
+	(*obj).Risk = risk_value
 	(*obj).Technology = technology_value
+	(*obj).TunnelOtherApplication = tunnelOtherApplication_value
+	(*obj).Default = default_entry
 
 	return diags
 }
 func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, obj **application.Default, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var identByIcmp6Type_entry *application.DefaultIdentByIcmp6Type
-	if o.IdentByIcmp6Type != nil {
-		if *obj != nil && (*obj).IdentByIcmp6Type != nil {
-			identByIcmp6Type_entry = (*obj).IdentByIcmp6Type
-		} else {
-			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
-		}
-
-		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	identByIpProtocol_value := o.IdentByIpProtocol.ValueStringPointer()
 	port_pango_entries := make([]string, 0)
 	diags.Append(o.Port.ElementsAs(ctx, &port_pango_entries, false)...)
@@ -286,27 +273,27 @@ func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, ob
 			return diags
 		}
 	}
+	var identByIcmp6Type_entry *application.DefaultIdentByIcmp6Type
+	if o.IdentByIcmp6Type != nil {
+		if *obj != nil && (*obj).IdentByIcmp6Type != nil {
+			identByIcmp6Type_entry = (*obj).IdentByIcmp6Type
+		} else {
+			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
+		}
+
+		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(application.Default)
 	}
-	(*obj).IdentByIcmp6Type = identByIcmp6Type_entry
 	(*obj).IdentByIpProtocol = identByIpProtocol_value
 	(*obj).Port = port_pango_entries
 	(*obj).IdentByIcmpType = identByIcmpType_entry
-
-	return diags
-}
-func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	type_value := o.Type.ValueStringPointer()
-	code_value := o.Code.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(application.DefaultIdentByIcmpType)
-	}
-	(*obj).Type = type_value
-	(*obj).Code = code_value
+	(*obj).IdentByIcmp6Type = identByIcmp6Type_entry
 
 	return diags
 }
@@ -317,6 +304,19 @@ func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx con
 
 	if (*obj) == nil {
 		*obj = new(application.DefaultIdentByIcmp6Type)
+	}
+	(*obj).Code = code_value
+	(*obj).Type = type_value
+
+	return diags
+}
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	code_value := o.Code.ValueStringPointer()
+	type_value := o.Type.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(application.DefaultIdentByIcmpType)
 	}
 	(*obj).Code = code_value
 	(*obj).Type = type_value
@@ -562,18 +562,18 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQu
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	value_value := o.Value.ValueStringPointer()
 	context_value := o.Context.ValueStringPointer()
 	position_value := o.Position.ValueStringPointer()
 	mask_value := o.Mask.ValueStringPointer()
+	value_value := o.Value.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(application.SignatureAndConditionOrConditionOperatorEqualTo)
 	}
-	(*obj).Value = value_value
 	(*obj).Context = context_value
 	(*obj).Position = position_value
 	(*obj).Mask = mask_value
+	(*obj).Value = value_value
 
 	return diags
 }
@@ -647,9 +647,21 @@ func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *app
 		}
 	}
 
-	var fileTypeIdent_value types.Bool
-	if obj.FileTypeIdent != nil {
-		fileTypeIdent_value = types.BoolValue(*obj.FileTypeIdent)
+	var consumeBigBandwidth_value types.Bool
+	if obj.ConsumeBigBandwidth != nil {
+		consumeBigBandwidth_value = types.BoolValue(*obj.ConsumeBigBandwidth)
+	}
+	var hasKnownVulnerability_value types.Bool
+	if obj.HasKnownVulnerability != nil {
+		hasKnownVulnerability_value = types.BoolValue(*obj.HasKnownVulnerability)
+	}
+	var udpTimeout_value types.Int64
+	if obj.UdpTimeout != nil {
+		udpTimeout_value = types.Int64Value(*obj.UdpTimeout)
+	}
+	var pervasiveUse_value types.Bool
+	if obj.PervasiveUse != nil {
+		pervasiveUse_value = types.BoolValue(*obj.PervasiveUse)
 	}
 	var proneToMisuse_value types.Bool
 	if obj.ProneToMisuse != nil {
@@ -659,65 +671,53 @@ func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *app
 	if obj.TcpTimeWaitTimeout != nil {
 		tcpTimeWaitTimeout_value = types.Int64Value(*obj.TcpTimeWaitTimeout)
 	}
-	var timeout_value types.Int64
-	if obj.Timeout != nil {
-		timeout_value = types.Int64Value(*obj.Timeout)
+	var usedByMalware_value types.Bool
+	if obj.UsedByMalware != nil {
+		usedByMalware_value = types.BoolValue(*obj.UsedByMalware)
+	}
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
+	}
+	var fileTypeIdent_value types.Bool
+	if obj.FileTypeIdent != nil {
+		fileTypeIdent_value = types.BoolValue(*obj.FileTypeIdent)
 	}
 	var noAppidCaching_value types.Bool
 	if obj.NoAppidCaching != nil {
 		noAppidCaching_value = types.BoolValue(*obj.NoAppidCaching)
 	}
-	var technology_value types.String
-	if obj.Technology != nil {
-		technology_value = types.StringValue(*obj.Technology)
-	}
 	var virusIdent_value types.Bool
 	if obj.VirusIdent != nil {
 		virusIdent_value = types.BoolValue(*obj.VirusIdent)
-	}
-	var tcpTimeout_value types.Int64
-	if obj.TcpTimeout != nil {
-		tcpTimeout_value = types.Int64Value(*obj.TcpTimeout)
-	}
-	var consumeBigBandwidth_value types.Bool
-	if obj.ConsumeBigBandwidth != nil {
-		consumeBigBandwidth_value = types.BoolValue(*obj.ConsumeBigBandwidth)
 	}
 	var evasiveBehavior_value types.Bool
 	if obj.EvasiveBehavior != nil {
 		evasiveBehavior_value = types.BoolValue(*obj.EvasiveBehavior)
 	}
-	var hasKnownVulnerability_value types.Bool
-	if obj.HasKnownVulnerability != nil {
-		hasKnownVulnerability_value = types.BoolValue(*obj.HasKnownVulnerability)
-	}
-	var pervasiveUse_value types.Bool
-	if obj.PervasiveUse != nil {
-		pervasiveUse_value = types.BoolValue(*obj.PervasiveUse)
-	}
-	var risk_value types.Int64
-	if obj.Risk != nil {
-		risk_value = types.Int64Value(*obj.Risk)
+	var subcategory_value types.String
+	if obj.Subcategory != nil {
+		subcategory_value = types.StringValue(*obj.Subcategory)
 	}
 	var tunnelApplications_value types.Bool
 	if obj.TunnelApplications != nil {
 		tunnelApplications_value = types.BoolValue(*obj.TunnelApplications)
 	}
-	var algDisableCapability_value types.String
-	if obj.AlgDisableCapability != nil {
-		algDisableCapability_value = types.StringValue(*obj.AlgDisableCapability)
-	}
-	var tunnelOtherApplication_value types.Bool
-	if obj.TunnelOtherApplication != nil {
-		tunnelOtherApplication_value = types.BoolValue(*obj.TunnelOtherApplication)
-	}
-	var subcategory_value types.String
-	if obj.Subcategory != nil {
-		subcategory_value = types.StringValue(*obj.Subcategory)
-	}
 	var ableToTransferFile_value types.Bool
 	if obj.AbleToTransferFile != nil {
 		ableToTransferFile_value = types.BoolValue(*obj.AbleToTransferFile)
+	}
+	var category_value types.String
+	if obj.Category != nil {
+		category_value = types.StringValue(*obj.Category)
+	}
+	var parentApp_value types.String
+	if obj.ParentApp != nil {
+		parentApp_value = types.StringValue(*obj.ParentApp)
+	}
+	var algDisableCapability_value types.String
+	if obj.AlgDisableCapability != nil {
+		algDisableCapability_value = types.StringValue(*obj.AlgDisableCapability)
 	}
 	var dataIdent_value types.Bool
 	if obj.DataIdent != nil {
@@ -727,59 +727,132 @@ func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *app
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
-	var disableOverride_value types.String
-	if obj.DisableOverride != nil {
-		disableOverride_value = types.StringValue(*obj.DisableOverride)
+	var tunnelOtherApplication_value types.Bool
+	if obj.TunnelOtherApplication != nil {
+		tunnelOtherApplication_value = types.BoolValue(*obj.TunnelOtherApplication)
 	}
-	var parentApp_value types.String
-	if obj.ParentApp != nil {
-		parentApp_value = types.StringValue(*obj.ParentApp)
+	var risk_value types.Int64
+	if obj.Risk != nil {
+		risk_value = types.Int64Value(*obj.Risk)
+	}
+	var technology_value types.String
+	if obj.Technology != nil {
+		technology_value = types.StringValue(*obj.Technology)
 	}
 	var tcpHalfClosedTimeout_value types.Int64
 	if obj.TcpHalfClosedTimeout != nil {
 		tcpHalfClosedTimeout_value = types.Int64Value(*obj.TcpHalfClosedTimeout)
 	}
-	var udpTimeout_value types.Int64
-	if obj.UdpTimeout != nil {
-		udpTimeout_value = types.Int64Value(*obj.UdpTimeout)
+	var tcpTimeout_value types.Int64
+	if obj.TcpTimeout != nil {
+		tcpTimeout_value = types.Int64Value(*obj.TcpTimeout)
 	}
-	var category_value types.String
-	if obj.Category != nil {
-		category_value = types.StringValue(*obj.Category)
-	}
-	var usedByMalware_value types.Bool
-	if obj.UsedByMalware != nil {
-		usedByMalware_value = types.BoolValue(*obj.UsedByMalware)
+	var timeout_value types.Int64
+	if obj.Timeout != nil {
+		timeout_value = types.Int64Value(*obj.Timeout)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Default = default_object
-	o.FileTypeIdent = fileTypeIdent_value
+	o.ConsumeBigBandwidth = consumeBigBandwidth_value
+	o.HasKnownVulnerability = hasKnownVulnerability_value
+	o.UdpTimeout = udpTimeout_value
+	o.PervasiveUse = pervasiveUse_value
 	o.ProneToMisuse = proneToMisuse_value
 	o.TcpTimeWaitTimeout = tcpTimeWaitTimeout_value
-	o.Timeout = timeout_value
+	o.UsedByMalware = usedByMalware_value
+	o.DisableOverride = disableOverride_value
+	o.FileTypeIdent = fileTypeIdent_value
 	o.NoAppidCaching = noAppidCaching_value
-	o.Technology = technology_value
-	o.VirusIdent = virusIdent_value
-	o.TcpTimeout = tcpTimeout_value
-	o.ConsumeBigBandwidth = consumeBigBandwidth_value
-	o.EvasiveBehavior = evasiveBehavior_value
-	o.HasKnownVulnerability = hasKnownVulnerability_value
-	o.PervasiveUse = pervasiveUse_value
-	o.Risk = risk_value
-	o.TunnelApplications = tunnelApplications_value
-	o.AlgDisableCapability = algDisableCapability_value
-	o.TunnelOtherApplication = tunnelOtherApplication_value
 	o.Signature = signature_list
+	o.VirusIdent = virusIdent_value
+	o.EvasiveBehavior = evasiveBehavior_value
 	o.Subcategory = subcategory_value
+	o.TunnelApplications = tunnelApplications_value
 	o.AbleToTransferFile = ableToTransferFile_value
+	o.Category = category_value
+	o.ParentApp = parentApp_value
+	o.AlgDisableCapability = algDisableCapability_value
 	o.DataIdent = dataIdent_value
 	o.Description = description_value
-	o.DisableOverride = disableOverride_value
-	o.ParentApp = parentApp_value
+	o.TunnelOtherApplication = tunnelOtherApplication_value
+	o.Default = default_object
+	o.Risk = risk_value
+	o.Technology = technology_value
 	o.TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
-	o.UdpTimeout = udpTimeout_value
-	o.Category = category_value
-	o.UsedByMalware = usedByMalware_value
+	o.TcpTimeout = tcpTimeout_value
+	o.Timeout = timeout_value
+
+	return diags
+}
+
+func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var port_list types.List
+	{
+		var list_diags diag.Diagnostics
+		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
+		diags.Append(list_diags...)
+	}
+	var identByIcmpType_object *ApplicationDataSourceDefaultIdentByIcmpTypeObject
+	if obj.IdentByIcmpType != nil {
+		identByIcmpType_object = new(ApplicationDataSourceDefaultIdentByIcmpTypeObject)
+
+		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var identByIcmp6Type_object *ApplicationDataSourceDefaultIdentByIcmp6TypeObject
+	if obj.IdentByIcmp6Type != nil {
+		identByIcmp6Type_object = new(ApplicationDataSourceDefaultIdentByIcmp6TypeObject)
+
+		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var identByIpProtocol_value types.String
+	if obj.IdentByIpProtocol != nil {
+		identByIpProtocol_value = types.StringValue(*obj.IdentByIpProtocol)
+	}
+	o.IdentByIcmpType = identByIcmpType_object
+	o.IdentByIcmp6Type = identByIcmp6Type_object
+	o.IdentByIpProtocol = identByIpProtocol_value
+	o.Port = port_list
+
+	return diags
+}
+
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var code_value types.String
+	if obj.Code != nil {
+		code_value = types.StringValue(*obj.Code)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Code = code_value
+	o.Type = type_value
+
+	return diags
+}
+
+func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var code_value types.String
+	if obj.Code != nil {
+		code_value = types.StringValue(*obj.Code)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Code = code_value
+	o.Type = type_value
 
 	return diags
 }
@@ -801,10 +874,6 @@ func (o *ApplicationDataSourceSignatureObject) CopyFromPango(ctx context.Context
 		diags.Append(list_diags...)
 	}
 
-	var orderFree_value types.Bool
-	if obj.OrderFree != nil {
-		orderFree_value = types.BoolValue(*obj.OrderFree)
-	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
@@ -813,11 +882,15 @@ func (o *ApplicationDataSourceSignatureObject) CopyFromPango(ctx context.Context
 	if obj.Scope != nil {
 		scope_value = types.StringValue(*obj.Scope)
 	}
+	var orderFree_value types.Bool
+	if obj.OrderFree != nil {
+		orderFree_value = types.BoolValue(*obj.OrderFree)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.OrderFree = orderFree_value
-	o.AndCondition = andCondition_list
 	o.Comment = comment_value
 	o.Scope = scope_value
+	o.OrderFree = orderFree_value
+	o.AndCondition = andCondition_list
 
 	return diags
 }
@@ -906,51 +979,6 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 	o.GreaterThan = greaterThan_object
 	o.LessThan = lessThan_object
 	o.EqualTo = equalTo_object
-
-	return diags
-}
-
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var qualifier_list types.List
-	{
-		var qualifier_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
-		for _, elt := range obj.Qualifier {
-			var entry ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			qualifier_tf_entries = append(qualifier_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("qualifier")
-		qualifier_list, list_diags = types.ListValueFrom(ctx, schemaType, qualifier_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var context_value types.String
-	if obj.Context != nil {
-		context_value = types.StringValue(*obj.Context)
-	}
-	var pattern_value types.String
-	if obj.Pattern != nil {
-		pattern_value = types.StringValue(*obj.Pattern)
-	}
-	o.Context = context_value
-	o.Pattern = pattern_value
-	o.Qualifier = qualifier_list
-
-	return diags
-}
-
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var value_value types.String
-	if obj.Value != nil {
-		value_value = types.StringValue(*obj.Value)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Value = value_value
 
 	return diags
 }
@@ -1072,75 +1100,47 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObj
 	return diags
 }
 
-func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var port_list types.List
+	var qualifier_list types.List
 	{
+		var qualifier_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
+		for _, elt := range obj.Qualifier {
+			var entry ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			qualifier_tf_entries = append(qualifier_tf_entries, entry)
+		}
 		var list_diags diag.Diagnostics
-		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
+		schemaType := o.getTypeFor("qualifier")
+		qualifier_list, list_diags = types.ListValueFrom(ctx, schemaType, qualifier_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var identByIcmpType_object *ApplicationDataSourceDefaultIdentByIcmpTypeObject
-	if obj.IdentByIcmpType != nil {
-		identByIcmpType_object = new(ApplicationDataSourceDefaultIdentByIcmpTypeObject)
 
-		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
+	var context_value types.String
+	if obj.Context != nil {
+		context_value = types.StringValue(*obj.Context)
 	}
-	var identByIcmp6Type_object *ApplicationDataSourceDefaultIdentByIcmp6TypeObject
-	if obj.IdentByIcmp6Type != nil {
-		identByIcmp6Type_object = new(ApplicationDataSourceDefaultIdentByIcmp6TypeObject)
-
-		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
+	var pattern_value types.String
+	if obj.Pattern != nil {
+		pattern_value = types.StringValue(*obj.Pattern)
 	}
-
-	var identByIpProtocol_value types.String
-	if obj.IdentByIpProtocol != nil {
-		identByIpProtocol_value = types.StringValue(*obj.IdentByIpProtocol)
-	}
-	o.Port = port_list
-	o.IdentByIcmpType = identByIcmpType_object
-	o.IdentByIcmp6Type = identByIcmp6Type_object
-	o.IdentByIpProtocol = identByIpProtocol_value
+	o.Context = context_value
+	o.Pattern = pattern_value
+	o.Qualifier = qualifier_list
 
 	return diags
 }
 
-func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var code_value types.String
-	if obj.Code != nil {
-		code_value = types.StringValue(*obj.Code)
+	var value_value types.String
+	if obj.Value != nil {
+		value_value = types.StringValue(*obj.Value)
 	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Code = code_value
-	o.Type = type_value
-
-	return diags
-}
-
-func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var code_value types.String
-	if obj.Code != nil {
-		code_value = types.StringValue(*obj.Code)
-	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Code = code_value
-	o.Type = type_value
+	o.Name = types.StringValue(obj.Name)
+	o.Value = value_value
 
 	return diags
 }
@@ -1167,7 +1167,7 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"description": dsschema.StringAttribute{
+			"file_type_ident": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -1175,15 +1175,7 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"disable_override": dsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"parent_app": dsschema.StringAttribute{
+			"no_appid_caching": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -1191,47 +1183,7 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"tcp_half_closed_timeout": dsschema.Int64Attribute{
-				Description: "timeout for half-close session in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"udp_timeout": dsschema.Int64Attribute{
-				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"able_to_transfer_file": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"data_ident": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"category": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"used_by_malware": dsschema.BoolAttribute{
+			"pervasive_use": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -1255,17 +1207,7 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"timeout": dsschema.Int64Attribute{
-				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default": ApplicationDataSourceDefaultSchema(),
-
-			"file_type_ident": dsschema.BoolAttribute{
+			"used_by_malware": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -1273,96 +1215,8 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"virus_ident": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"no_appid_caching": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"technology": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"tcp_timeout": dsschema.Int64Attribute{
-				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"has_known_vulnerability": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"pervasive_use": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"risk": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"tunnel_applications": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"consume_big_bandwidth": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"evasive_behavior": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"alg_disable_capability": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"tunnel_other_application": dsschema.BoolAttribute{
-				Description: "",
+			"disable_override": dsschema.StringAttribute{
+				Description: "disable object override in child device groups",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1385,173 +1239,158 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"tunnel_applications": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"virus_ident": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"evasive_behavior": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"category": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"able_to_transfer_file": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"data_ident": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"parent_app": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"alg_disable_capability": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"risk": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"technology": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tunnel_other_application": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default": ApplicationDataSourceDefaultSchema(),
+
+			"tcp_timeout": dsschema.Int64Attribute{
+				Description: "timeout in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"timeout": dsschema.Int64Attribute{
+				Description: "timeout in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tcp_half_closed_timeout": dsschema.Int64Attribute{
+				Description: "timeout for half-close session in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"has_known_vulnerability": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"udp_timeout": dsschema.Int64Attribute{
+				Description: "timeout in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"consume_big_bandwidth": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
 func (o *ApplicationDataSourceModel) getTypeFor(name string) attr.Type {
 	schema := ApplicationDataSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ApplicationDataSourceDefaultSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"ident_by_icmp_type": ApplicationDataSourceDefaultIdentByIcmpTypeSchema(),
-
-			"ident_by_icmp6_type": ApplicationDataSourceDefaultIdentByIcmp6TypeSchema(),
-
-			"ident_by_ip_protocol": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"port": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *ApplicationDataSourceDefaultObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationDataSourceDefaultSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ApplicationDataSourceDefaultIdentByIcmpTypeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
-				path.MatchRelative().AtParent().AtName("port"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"code": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"type": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationDataSourceDefaultIdentByIcmpTypeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ApplicationDataSourceDefaultIdentByIcmp6TypeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
-				path.MatchRelative().AtParent().AtName("port"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"code": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"type": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationDataSourceDefaultIdentByIcmp6TypeSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1720,13 +1559,13 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorSchema() dssch
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"equal_to": ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToSchema(),
+
 			"pattern_match": ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchSchema(),
 
 			"greater_than": ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanSchema(),
 
 			"less_than": ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanSchema(),
-
-			"equal_to": ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToSchema(),
 		},
 	}
 }
@@ -1872,6 +1711,15 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanSch
 		},
 		Attributes: map[string]dsschema.Attribute{
 
+			"qualifier": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierSchema(),
+			},
+
 			"context": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -1886,15 +1734,6 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanSch
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"qualifier": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierSchema(),
 			},
 		},
 	}
@@ -2135,6 +1974,167 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObj
 	panic("unreachable")
 }
 
+func ApplicationDataSourceDefaultSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"ident_by_icmp_type": ApplicationDataSourceDefaultIdentByIcmpTypeSchema(),
+
+			"ident_by_icmp6_type": ApplicationDataSourceDefaultIdentByIcmp6TypeSchema(),
+
+			"ident_by_ip_protocol": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"port": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *ApplicationDataSourceDefaultObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationDataSourceDefaultSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ApplicationDataSourceDefaultIdentByIcmpTypeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
+				path.MatchRelative().AtParent().AtName("port"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"code": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationDataSourceDefaultIdentByIcmpTypeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ApplicationDataSourceDefaultIdentByIcmp6TypeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
+				path.MatchRelative().AtParent().AtName("port"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"code": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationDataSourceDefaultIdentByIcmp6TypeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func ApplicationDataSourceLocationSchema() rsschema.Attribute {
 	return ApplicationLocationSchema()
 }
@@ -2173,14 +2173,11 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location application.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -2189,6 +2186,9 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -2258,55 +2258,41 @@ func ApplicationResourceLocationSchema() rsschema.Attribute {
 type ApplicationResourceModel struct {
 	Location               ApplicationLocation               `tfsdk:"location"`
 	Name                   types.String                      `tfsdk:"name"`
-	FileTypeIdent          types.Bool                        `tfsdk:"file_type_ident"`
-	ProneToMisuse          types.Bool                        `tfsdk:"prone_to_misuse"`
-	TcpTimeWaitTimeout     types.Int64                       `tfsdk:"tcp_time_wait_timeout"`
-	Timeout                types.Int64                       `tfsdk:"timeout"`
-	Default                *ApplicationResourceDefaultObject `tfsdk:"default"`
-	Technology             types.String                      `tfsdk:"technology"`
-	VirusIdent             types.Bool                        `tfsdk:"virus_ident"`
-	NoAppidCaching         types.Bool                        `tfsdk:"no_appid_caching"`
-	TcpTimeout             types.Int64                       `tfsdk:"tcp_timeout"`
-	EvasiveBehavior        types.Bool                        `tfsdk:"evasive_behavior"`
-	HasKnownVulnerability  types.Bool                        `tfsdk:"has_known_vulnerability"`
-	PervasiveUse           types.Bool                        `tfsdk:"pervasive_use"`
-	Risk                   types.Int64                       `tfsdk:"risk"`
-	TunnelApplications     types.Bool                        `tfsdk:"tunnel_applications"`
-	ConsumeBigBandwidth    types.Bool                        `tfsdk:"consume_big_bandwidth"`
-	TunnelOtherApplication types.Bool                        `tfsdk:"tunnel_other_application"`
-	AlgDisableCapability   types.String                      `tfsdk:"alg_disable_capability"`
-	Subcategory            types.String                      `tfsdk:"subcategory"`
 	Signature              types.List                        `tfsdk:"signature"`
+	EvasiveBehavior        types.Bool                        `tfsdk:"evasive_behavior"`
+	Subcategory            types.String                      `tfsdk:"subcategory"`
+	TunnelApplications     types.Bool                        `tfsdk:"tunnel_applications"`
+	VirusIdent             types.Bool                        `tfsdk:"virus_ident"`
+	AbleToTransferFile     types.Bool                        `tfsdk:"able_to_transfer_file"`
+	Category               types.String                      `tfsdk:"category"`
+	AlgDisableCapability   types.String                      `tfsdk:"alg_disable_capability"`
 	DataIdent              types.Bool                        `tfsdk:"data_ident"`
 	Description            types.String                      `tfsdk:"description"`
-	DisableOverride        types.String                      `tfsdk:"disable_override"`
 	ParentApp              types.String                      `tfsdk:"parent_app"`
+	Default                *ApplicationResourceDefaultObject `tfsdk:"default"`
+	Risk                   types.Int64                       `tfsdk:"risk"`
+	Technology             types.String                      `tfsdk:"technology"`
+	TunnelOtherApplication types.Bool                        `tfsdk:"tunnel_other_application"`
 	TcpHalfClosedTimeout   types.Int64                       `tfsdk:"tcp_half_closed_timeout"`
+	TcpTimeout             types.Int64                       `tfsdk:"tcp_timeout"`
+	Timeout                types.Int64                       `tfsdk:"timeout"`
+	ConsumeBigBandwidth    types.Bool                        `tfsdk:"consume_big_bandwidth"`
+	HasKnownVulnerability  types.Bool                        `tfsdk:"has_known_vulnerability"`
 	UdpTimeout             types.Int64                       `tfsdk:"udp_timeout"`
-	AbleToTransferFile     types.Bool                        `tfsdk:"able_to_transfer_file"`
 	UsedByMalware          types.Bool                        `tfsdk:"used_by_malware"`
-	Category               types.String                      `tfsdk:"category"`
-}
-type ApplicationResourceDefaultObject struct {
-	IdentByIpProtocol types.String                                      `tfsdk:"ident_by_ip_protocol"`
-	Port              types.List                                        `tfsdk:"port"`
-	IdentByIcmpType   *ApplicationResourceDefaultIdentByIcmpTypeObject  `tfsdk:"ident_by_icmp_type"`
-	IdentByIcmp6Type  *ApplicationResourceDefaultIdentByIcmp6TypeObject `tfsdk:"ident_by_icmp6_type"`
-}
-type ApplicationResourceDefaultIdentByIcmpTypeObject struct {
-	Type types.String `tfsdk:"type"`
-	Code types.String `tfsdk:"code"`
-}
-type ApplicationResourceDefaultIdentByIcmp6TypeObject struct {
-	Code types.String `tfsdk:"code"`
-	Type types.String `tfsdk:"type"`
+	DisableOverride        types.String                      `tfsdk:"disable_override"`
+	FileTypeIdent          types.Bool                        `tfsdk:"file_type_ident"`
+	NoAppidCaching         types.Bool                        `tfsdk:"no_appid_caching"`
+	PervasiveUse           types.Bool                        `tfsdk:"pervasive_use"`
+	ProneToMisuse          types.Bool                        `tfsdk:"prone_to_misuse"`
+	TcpTimeWaitTimeout     types.Int64                       `tfsdk:"tcp_time_wait_timeout"`
 }
 type ApplicationResourceSignatureObject struct {
 	Name         types.String `tfsdk:"name"`
-	Comment      types.String `tfsdk:"comment"`
-	Scope        types.String `tfsdk:"scope"`
 	OrderFree    types.Bool   `tfsdk:"order_free"`
 	AndCondition types.List   `tfsdk:"and_condition"`
+	Comment      types.String `tfsdk:"comment"`
+	Scope        types.String `tfsdk:"scope"`
 }
 type ApplicationResourceSignatureAndConditionObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -2341,9 +2327,9 @@ type ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQuali
 	Value types.String `tfsdk:"value"`
 }
 type ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject struct {
+	Qualifier types.List   `tfsdk:"qualifier"`
 	Context   types.String `tfsdk:"context"`
 	Value     types.Int64  `tfsdk:"value"`
-	Qualifier types.List   `tfsdk:"qualifier"`
 }
 type ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject struct {
 	Name  types.String `tfsdk:"name"`
@@ -2354,6 +2340,20 @@ type ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject st
 	Position types.String `tfsdk:"position"`
 	Mask     types.String `tfsdk:"mask"`
 	Value    types.String `tfsdk:"value"`
+}
+type ApplicationResourceDefaultObject struct {
+	Port              types.List                                        `tfsdk:"port"`
+	IdentByIcmpType   *ApplicationResourceDefaultIdentByIcmpTypeObject  `tfsdk:"ident_by_icmp_type"`
+	IdentByIcmp6Type  *ApplicationResourceDefaultIdentByIcmp6TypeObject `tfsdk:"ident_by_icmp6_type"`
+	IdentByIpProtocol types.String                                      `tfsdk:"ident_by_ip_protocol"`
+}
+type ApplicationResourceDefaultIdentByIcmpTypeObject struct {
+	Code types.String `tfsdk:"code"`
+	Type types.String `tfsdk:"type"`
+}
+type ApplicationResourceDefaultIdentByIcmp6TypeObject struct {
+	Code types.String `tfsdk:"code"`
+	Type types.String `tfsdk:"type"`
 }
 
 func (r *ApplicationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -2375,7 +2375,7 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"consume_big_bandwidth": rsschema.BoolAttribute{
+			"able_to_transfer_file": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2383,39 +2383,7 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"evasive_behavior": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"has_known_vulnerability": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"pervasive_use": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"risk": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"tunnel_applications": rsschema.BoolAttribute{
+			"category": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2424,39 +2392,6 @@ func ApplicationResourceSchema() rsschema.Schema {
 			},
 
 			"alg_disable_capability": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"tunnel_other_application": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"signature": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: ApplicationResourceSignatureSchema(),
-			},
-
-			"subcategory": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"able_to_transfer_file": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2480,23 +2415,33 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"disable_override": rsschema.StringAttribute{
-				Description: "disable object override in child device groups",
-				Computed:    true,
+			"parent_app": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"no",
-						"yes",
-					}...),
-				},
 			},
 
-			"parent_app": rsschema.StringAttribute{
+			"default": ApplicationResourceDefaultSchema(),
+
+			"risk": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"technology": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tunnel_other_application": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2512,7 +2457,7 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"udp_timeout": rsschema.Int64Attribute{
+			"tcp_timeout": rsschema.Int64Attribute{
 				Description: "timeout in seconds",
 				Computed:    false,
 				Required:    false,
@@ -2520,7 +2465,15 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"category": rsschema.StringAttribute{
+			"timeout": rsschema.Int64Attribute{
+				Description: "timeout in seconds",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"consume_big_bandwidth": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2528,7 +2481,7 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"used_by_malware": rsschema.BoolAttribute{
+			"has_known_vulnerability": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2536,10 +2489,8 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"default": ApplicationResourceDefaultSchema(),
-
-			"file_type_ident": rsschema.BoolAttribute{
-				Description: "",
+			"udp_timeout": rsschema.Int64Attribute{
+				Description: "timeout in seconds",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -2562,8 +2513,32 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"timeout": rsschema.Int64Attribute{
-				Description: "timeout in seconds",
+			"used_by_malware": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_override": rsschema.StringAttribute{
+				Description: "disable object override in child device groups",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"yes",
+						"no",
+					}...),
+				},
+			},
+
+			"file_type_ident": rsschema.BoolAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -2578,7 +2553,40 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"technology": rsschema.StringAttribute{
+			"pervasive_use": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"signature": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: ApplicationResourceSignatureSchema(),
+			},
+
+			"evasive_behavior": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"subcategory": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tunnel_applications": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -2593,9 +2601,61 @@ func ApplicationResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+		},
+	}
+}
 
-			"tcp_timeout": rsschema.Int64Attribute{
-				Description: "timeout in seconds",
+func (o *ApplicationResourceModel) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ApplicationResourceDefaultSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"port": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+
+				Validators: []validator.List{
+					listvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("port"),
+						path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+						path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
+						path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
+					}...),
+				},
+			},
+
+			"ident_by_icmp_type": ApplicationResourceDefaultIdentByIcmpTypeSchema(),
+
+			"ident_by_icmp6_type": ApplicationResourceDefaultIdentByIcmp6TypeSchema(),
+
+			"ident_by_ip_protocol": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -2605,8 +2665,118 @@ func ApplicationResourceSchema() rsschema.Schema {
 	}
 }
 
-func (o *ApplicationResourceModel) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceSchema()
+func (o *ApplicationResourceDefaultObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceDefaultSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ApplicationResourceDefaultIdentByIcmpTypeSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("port"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"code": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"type": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceDefaultIdentByIcmpTypeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("port"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
+				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"code": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"type": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceDefaultIdentByIcmp6TypeSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2805,182 +2975,6 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) getT
 	panic("unreachable")
 }
 
-func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("pattern_match"),
-				path.MatchRelative().AtParent().AtName("greater_than"),
-				path.MatchRelative().AtParent().AtName("less_than"),
-				path.MatchRelative().AtParent().AtName("equal_to"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"qualifier": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema(),
-			},
-
-			"context": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"value": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"value": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("pattern_match"),
-				path.MatchRelative().AtParent().AtName("greater_than"),
-				path.MatchRelative().AtParent().AtName("less_than"),
-				path.MatchRelative().AtParent().AtName("equal_to"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"value": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"context": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"position": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"mask": rsschema.StringAttribute{
-				Description: "4-byte hex value",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -2999,6 +2993,15 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSche
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"qualifier": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierSchema(),
+			},
+
 			"context": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -3013,15 +3016,6 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSche
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"qualifier": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierSchema(),
 			},
 		},
 	}
@@ -3191,50 +3185,54 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 	panic("unreachable")
 }
 
-func ApplicationResourceDefaultSchema() rsschema.SingleNestedAttribute {
+func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("pattern_match"),
+				path.MatchRelative().AtParent().AtName("greater_than"),
+				path.MatchRelative().AtParent().AtName("less_than"),
+				path.MatchRelative().AtParent().AtName("equal_to"),
+			}...),
+		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"port": rsschema.ListAttribute{
+			"context": rsschema.StringAttribute{
 				Description: "",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
-				Computed:    false,
 				Sensitive:   false,
-				ElementType: types.StringType,
-
-				Validators: []validator.List{
-					listvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
-						path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
-						path.MatchRelative().AtParent().AtName("port"),
-						path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
-					}...),
-				},
 			},
 
-			"ident_by_icmp_type": ApplicationResourceDefaultIdentByIcmpTypeSchema(),
-
-			"ident_by_icmp6_type": ApplicationResourceDefaultIdentByIcmp6TypeSchema(),
-
-			"ident_by_ip_protocol": rsschema.StringAttribute{
+			"value": rsschema.Int64Attribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"qualifier": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema(),
 			},
 		},
 	}
 }
 
-func (o *ApplicationResourceDefaultObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceDefaultSchema()
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3251,33 +3249,19 @@ func (o *ApplicationResourceDefaultObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func ApplicationResourceDefaultIdentByIcmpTypeSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
-				path.MatchRelative().AtParent().AtName("port"),
-				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
-			}...),
-		},
+func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
 
-			"code": rsschema.StringAttribute{
+			"name": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
-				Required:    false,
-				Optional:    true,
+				Required:    true,
+				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"type": rsschema.StringAttribute{
+			"value": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -3288,8 +3272,8 @@ func ApplicationResourceDefaultIdentByIcmpTypeSchema() rsschema.SingleNestedAttr
 	}
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceDefaultIdentByIcmpTypeSchema()
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3306,7 +3290,7 @@ func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) getTypeFor(name string
 	panic("unreachable")
 }
 
-func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAttribute {
+func ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -3316,15 +3300,15 @@ func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAtt
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ident_by_icmp6_type"),
-				path.MatchRelative().AtParent().AtName("ident_by_ip_protocol"),
-				path.MatchRelative().AtParent().AtName("port"),
-				path.MatchRelative().AtParent().AtName("ident_by_icmp_type"),
+				path.MatchRelative().AtParent().AtName("pattern_match"),
+				path.MatchRelative().AtParent().AtName("greater_than"),
+				path.MatchRelative().AtParent().AtName("less_than"),
+				path.MatchRelative().AtParent().AtName("equal_to"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"code": rsschema.StringAttribute{
+			"context": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -3332,7 +3316,23 @@ func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAtt
 				Sensitive:   false,
 			},
 
-			"type": rsschema.StringAttribute{
+			"position": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"mask": rsschema.StringAttribute{
+				Description: "4-byte hex value",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"value": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -3343,8 +3343,8 @@ func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAtt
 	}
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) getTypeFor(name string) attr.Type {
-	schema := ApplicationResourceDefaultIdentByIcmp6TypeSchema()
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) getTypeFor(name string) attr.Type {
+	schema := ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3405,16 +3405,17 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **applic
 			signature_pango_entries = append(signature_pango_entries, *entry)
 		}
 	}
+	virusIdent_value := o.VirusIdent.ValueBoolPointer()
+	evasiveBehavior_value := o.EvasiveBehavior.ValueBoolPointer()
 	subcategory_value := o.Subcategory.ValueStringPointer()
+	tunnelApplications_value := o.TunnelApplications.ValueBoolPointer()
 	ableToTransferFile_value := o.AbleToTransferFile.ValueBoolPointer()
+	category_value := o.Category.ValueStringPointer()
+	parentApp_value := o.ParentApp.ValueStringPointer()
+	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
 	dataIdent_value := o.DataIdent.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	parentApp_value := o.ParentApp.ValueStringPointer()
-	tcpHalfClosedTimeout_value := o.TcpHalfClosedTimeout.ValueInt64Pointer()
-	udpTimeout_value := o.UdpTimeout.ValueInt64Pointer()
-	category_value := o.Category.ValueStringPointer()
-	usedByMalware_value := o.UsedByMalware.ValueBoolPointer()
+	tunnelOtherApplication_value := o.TunnelOtherApplication.ValueBoolPointer()
 	var default_entry *application.Default
 	if o.Default != nil {
 		if *obj != nil && (*obj).Default != nil {
@@ -3428,131 +3429,61 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **applic
 			return diags
 		}
 	}
-	fileTypeIdent_value := o.FileTypeIdent.ValueBoolPointer()
+	risk_value := o.Risk.ValueInt64Pointer()
+	technology_value := o.Technology.ValueStringPointer()
+	tcpHalfClosedTimeout_value := o.TcpHalfClosedTimeout.ValueInt64Pointer()
+	tcpTimeout_value := o.TcpTimeout.ValueInt64Pointer()
+	timeout_value := o.Timeout.ValueInt64Pointer()
+	consumeBigBandwidth_value := o.ConsumeBigBandwidth.ValueBoolPointer()
+	hasKnownVulnerability_value := o.HasKnownVulnerability.ValueBoolPointer()
+	udpTimeout_value := o.UdpTimeout.ValueInt64Pointer()
+	pervasiveUse_value := o.PervasiveUse.ValueBoolPointer()
 	proneToMisuse_value := o.ProneToMisuse.ValueBoolPointer()
 	tcpTimeWaitTimeout_value := o.TcpTimeWaitTimeout.ValueInt64Pointer()
-	timeout_value := o.Timeout.ValueInt64Pointer()
+	usedByMalware_value := o.UsedByMalware.ValueBoolPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	fileTypeIdent_value := o.FileTypeIdent.ValueBoolPointer()
 	noAppidCaching_value := o.NoAppidCaching.ValueBoolPointer()
-	technology_value := o.Technology.ValueStringPointer()
-	virusIdent_value := o.VirusIdent.ValueBoolPointer()
-	tcpTimeout_value := o.TcpTimeout.ValueInt64Pointer()
-	consumeBigBandwidth_value := o.ConsumeBigBandwidth.ValueBoolPointer()
-	evasiveBehavior_value := o.EvasiveBehavior.ValueBoolPointer()
-	hasKnownVulnerability_value := o.HasKnownVulnerability.ValueBoolPointer()
-	pervasiveUse_value := o.PervasiveUse.ValueBoolPointer()
-	risk_value := o.Risk.ValueInt64Pointer()
-	tunnelApplications_value := o.TunnelApplications.ValueBoolPointer()
-	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
-	tunnelOtherApplication_value := o.TunnelOtherApplication.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(application.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Signature = signature_pango_entries
+	(*obj).VirusIdent = virusIdent_value
+	(*obj).EvasiveBehavior = evasiveBehavior_value
 	(*obj).Subcategory = subcategory_value
+	(*obj).TunnelApplications = tunnelApplications_value
 	(*obj).AbleToTransferFile = ableToTransferFile_value
+	(*obj).Category = category_value
+	(*obj).ParentApp = parentApp_value
+	(*obj).AlgDisableCapability = algDisableCapability_value
 	(*obj).DataIdent = dataIdent_value
 	(*obj).Description = description_value
-	(*obj).DisableOverride = disableOverride_value
-	(*obj).ParentApp = parentApp_value
-	(*obj).TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
-	(*obj).UdpTimeout = udpTimeout_value
-	(*obj).Category = category_value
-	(*obj).UsedByMalware = usedByMalware_value
+	(*obj).TunnelOtherApplication = tunnelOtherApplication_value
 	(*obj).Default = default_entry
-	(*obj).FileTypeIdent = fileTypeIdent_value
+	(*obj).Risk = risk_value
+	(*obj).Technology = technology_value
+	(*obj).TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
+	(*obj).TcpTimeout = tcpTimeout_value
+	(*obj).Timeout = timeout_value
+	(*obj).ConsumeBigBandwidth = consumeBigBandwidth_value
+	(*obj).HasKnownVulnerability = hasKnownVulnerability_value
+	(*obj).UdpTimeout = udpTimeout_value
+	(*obj).PervasiveUse = pervasiveUse_value
 	(*obj).ProneToMisuse = proneToMisuse_value
 	(*obj).TcpTimeWaitTimeout = tcpTimeWaitTimeout_value
-	(*obj).Timeout = timeout_value
+	(*obj).UsedByMalware = usedByMalware_value
+	(*obj).DisableOverride = disableOverride_value
+	(*obj).FileTypeIdent = fileTypeIdent_value
 	(*obj).NoAppidCaching = noAppidCaching_value
-	(*obj).Technology = technology_value
-	(*obj).VirusIdent = virusIdent_value
-	(*obj).TcpTimeout = tcpTimeout_value
-	(*obj).ConsumeBigBandwidth = consumeBigBandwidth_value
-	(*obj).EvasiveBehavior = evasiveBehavior_value
-	(*obj).HasKnownVulnerability = hasKnownVulnerability_value
-	(*obj).PervasiveUse = pervasiveUse_value
-	(*obj).Risk = risk_value
-	(*obj).TunnelApplications = tunnelApplications_value
-	(*obj).AlgDisableCapability = algDisableCapability_value
-	(*obj).TunnelOtherApplication = tunnelOtherApplication_value
-
-	return diags
-}
-func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj **application.Default, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var identByIcmpType_entry *application.DefaultIdentByIcmpType
-	if o.IdentByIcmpType != nil {
-		if *obj != nil && (*obj).IdentByIcmpType != nil {
-			identByIcmpType_entry = (*obj).IdentByIcmpType
-		} else {
-			identByIcmpType_entry = new(application.DefaultIdentByIcmpType)
-		}
-
-		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, &identByIcmpType_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var identByIcmp6Type_entry *application.DefaultIdentByIcmp6Type
-	if o.IdentByIcmp6Type != nil {
-		if *obj != nil && (*obj).IdentByIcmp6Type != nil {
-			identByIcmp6Type_entry = (*obj).IdentByIcmp6Type
-		} else {
-			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
-		}
-
-		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	identByIpProtocol_value := o.IdentByIpProtocol.ValueStringPointer()
-	port_pango_entries := make([]string, 0)
-	diags.Append(o.Port.ElementsAs(ctx, &port_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(application.Default)
-	}
-	(*obj).IdentByIcmpType = identByIcmpType_entry
-	(*obj).IdentByIcmp6Type = identByIcmp6Type_entry
-	(*obj).IdentByIpProtocol = identByIpProtocol_value
-	(*obj).Port = port_pango_entries
-
-	return diags
-}
-func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	code_value := o.Code.ValueStringPointer()
-	type_value := o.Type.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(application.DefaultIdentByIcmpType)
-	}
-	(*obj).Code = code_value
-	(*obj).Type = type_value
-
-	return diags
-}
-func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	code_value := o.Code.ValueStringPointer()
-	type_value := o.Type.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(application.DefaultIdentByIcmp6Type)
-	}
-	(*obj).Code = code_value
-	(*obj).Type = type_value
 
 	return diags
 }
 func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, obj **application.Signature, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	comment_value := o.Comment.ValueStringPointer()
+	scope_value := o.Scope.ValueStringPointer()
 	orderFree_value := o.OrderFree.ValueBoolPointer()
 	var andCondition_tf_entries []ApplicationResourceSignatureAndConditionObject
 	var andCondition_pango_entries []application.SignatureAndCondition
@@ -3571,17 +3502,15 @@ func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, ob
 			andCondition_pango_entries = append(andCondition_pango_entries, *entry)
 		}
 	}
-	comment_value := o.Comment.ValueStringPointer()
-	scope_value := o.Scope.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(application.Signature)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).OrderFree = orderFree_value
-	(*obj).AndCondition = andCondition_pango_entries
 	(*obj).Comment = comment_value
 	(*obj).Scope = scope_value
+	(*obj).OrderFree = orderFree_value
+	(*obj).AndCondition = andCondition_pango_entries
 
 	return diags
 }
@@ -3702,6 +3631,23 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 
 	return diags
 }
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	context_value := o.Context.ValueStringPointer()
+	position_value := o.Position.ValueStringPointer()
+	mask_value := o.Mask.ValueStringPointer()
+	value_value := o.Value.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(application.SignatureAndConditionOrConditionOperatorEqualTo)
+	}
+	(*obj).Context = context_value
+	(*obj).Position = position_value
+	(*obj).Mask = mask_value
+	(*obj).Value = value_value
+
+	return diags
+}
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
@@ -3747,6 +3693,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorGreaterThan, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	context_value := o.Context.ValueStringPointer()
 	value_value := o.Value.ValueInt64Pointer()
 	var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
 	var qualifier_pango_entries []application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier
@@ -3765,14 +3712,13 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 			qualifier_pango_entries = append(qualifier_pango_entries, *entry)
 		}
 	}
-	context_value := o.Context.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(application.SignatureAndConditionOrConditionOperatorGreaterThan)
 	}
+	(*obj).Context = context_value
 	(*obj).Value = value_value
 	(*obj).Qualifier = qualifier_pango_entries
-	(*obj).Context = context_value
 
 	return diags
 }
@@ -3790,6 +3736,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	value_value := o.Value.ValueInt64Pointer()
 	var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
 	var qualifier_pango_entries []application.SignatureAndConditionOrConditionOperatorLessThanQualifier
 	{
@@ -3808,14 +3755,13 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 		}
 	}
 	context_value := o.Context.ValueStringPointer()
-	value_value := o.Value.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(application.SignatureAndConditionOrConditionOperatorLessThan)
 	}
+	(*obj).Value = value_value
 	(*obj).Qualifier = qualifier_pango_entries
 	(*obj).Context = context_value
-	(*obj).Value = value_value
 
 	return diags
 }
@@ -3831,20 +3777,74 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQual
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj **application.Default, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	value_value := o.Value.ValueStringPointer()
-	context_value := o.Context.ValueStringPointer()
-	position_value := o.Position.ValueStringPointer()
-	mask_value := o.Mask.ValueStringPointer()
+	identByIpProtocol_value := o.IdentByIpProtocol.ValueStringPointer()
+	port_pango_entries := make([]string, 0)
+	diags.Append(o.Port.ElementsAs(ctx, &port_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var identByIcmpType_entry *application.DefaultIdentByIcmpType
+	if o.IdentByIcmpType != nil {
+		if *obj != nil && (*obj).IdentByIcmpType != nil {
+			identByIcmpType_entry = (*obj).IdentByIcmpType
+		} else {
+			identByIcmpType_entry = new(application.DefaultIdentByIcmpType)
+		}
+
+		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, &identByIcmpType_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var identByIcmp6Type_entry *application.DefaultIdentByIcmp6Type
+	if o.IdentByIcmp6Type != nil {
+		if *obj != nil && (*obj).IdentByIcmp6Type != nil {
+			identByIcmp6Type_entry = (*obj).IdentByIcmp6Type
+		} else {
+			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
+		}
+
+		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
-		*obj = new(application.SignatureAndConditionOrConditionOperatorEqualTo)
+		*obj = new(application.Default)
 	}
-	(*obj).Value = value_value
-	(*obj).Context = context_value
-	(*obj).Position = position_value
-	(*obj).Mask = mask_value
+	(*obj).IdentByIpProtocol = identByIpProtocol_value
+	(*obj).Port = port_pango_entries
+	(*obj).IdentByIcmpType = identByIcmpType_entry
+	(*obj).IdentByIcmp6Type = identByIcmp6Type_entry
+
+	return diags
+}
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	type_value := o.Type.ValueStringPointer()
+	code_value := o.Code.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(application.DefaultIdentByIcmp6Type)
+	}
+	(*obj).Type = type_value
+	(*obj).Code = code_value
+
+	return diags
+}
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	code_value := o.Code.ValueStringPointer()
+	type_value := o.Type.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(application.DefaultIdentByIcmpType)
+	}
+	(*obj).Code = code_value
+	(*obj).Type = type_value
 
 	return diags
 }
@@ -3875,97 +3875,33 @@ func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, obj *appli
 		}
 	}
 
-	var category_value types.String
-	if obj.Category != nil {
-		category_value = types.StringValue(*obj.Category)
-	}
-	var usedByMalware_value types.Bool
-	if obj.UsedByMalware != nil {
-		usedByMalware_value = types.BoolValue(*obj.UsedByMalware)
-	}
-	var timeout_value types.Int64
-	if obj.Timeout != nil {
-		timeout_value = types.Int64Value(*obj.Timeout)
-	}
-	var fileTypeIdent_value types.Bool
-	if obj.FileTypeIdent != nil {
-		fileTypeIdent_value = types.BoolValue(*obj.FileTypeIdent)
-	}
-	var proneToMisuse_value types.Bool
-	if obj.ProneToMisuse != nil {
-		proneToMisuse_value = types.BoolValue(*obj.ProneToMisuse)
-	}
-	var tcpTimeWaitTimeout_value types.Int64
-	if obj.TcpTimeWaitTimeout != nil {
-		tcpTimeWaitTimeout_value = types.Int64Value(*obj.TcpTimeWaitTimeout)
-	}
-	var noAppidCaching_value types.Bool
-	if obj.NoAppidCaching != nil {
-		noAppidCaching_value = types.BoolValue(*obj.NoAppidCaching)
-	}
-	var technology_value types.String
-	if obj.Technology != nil {
-		technology_value = types.StringValue(*obj.Technology)
-	}
-	var virusIdent_value types.Bool
-	if obj.VirusIdent != nil {
-		virusIdent_value = types.BoolValue(*obj.VirusIdent)
-	}
-	var tcpTimeout_value types.Int64
-	if obj.TcpTimeout != nil {
-		tcpTimeout_value = types.Int64Value(*obj.TcpTimeout)
-	}
-	var risk_value types.Int64
-	if obj.Risk != nil {
-		risk_value = types.Int64Value(*obj.Risk)
-	}
-	var tunnelApplications_value types.Bool
-	if obj.TunnelApplications != nil {
-		tunnelApplications_value = types.BoolValue(*obj.TunnelApplications)
-	}
-	var consumeBigBandwidth_value types.Bool
-	if obj.ConsumeBigBandwidth != nil {
-		consumeBigBandwidth_value = types.BoolValue(*obj.ConsumeBigBandwidth)
-	}
 	var evasiveBehavior_value types.Bool
 	if obj.EvasiveBehavior != nil {
 		evasiveBehavior_value = types.BoolValue(*obj.EvasiveBehavior)
-	}
-	var hasKnownVulnerability_value types.Bool
-	if obj.HasKnownVulnerability != nil {
-		hasKnownVulnerability_value = types.BoolValue(*obj.HasKnownVulnerability)
-	}
-	var pervasiveUse_value types.Bool
-	if obj.PervasiveUse != nil {
-		pervasiveUse_value = types.BoolValue(*obj.PervasiveUse)
-	}
-	var algDisableCapability_value types.String
-	if obj.AlgDisableCapability != nil {
-		algDisableCapability_value = types.StringValue(*obj.AlgDisableCapability)
-	}
-	var tunnelOtherApplication_value types.Bool
-	if obj.TunnelOtherApplication != nil {
-		tunnelOtherApplication_value = types.BoolValue(*obj.TunnelOtherApplication)
 	}
 	var subcategory_value types.String
 	if obj.Subcategory != nil {
 		subcategory_value = types.StringValue(*obj.Subcategory)
 	}
-	var parentApp_value types.String
-	if obj.ParentApp != nil {
-		parentApp_value = types.StringValue(*obj.ParentApp)
+	var tunnelApplications_value types.Bool
+	if obj.TunnelApplications != nil {
+		tunnelApplications_value = types.BoolValue(*obj.TunnelApplications)
 	}
-	var tcpHalfClosedTimeout_value types.Int64
-	if obj.TcpHalfClosedTimeout != nil {
-		tcpHalfClosedTimeout_value = types.Int64Value(*obj.TcpHalfClosedTimeout)
-	}
-	var udpTimeout_value types.Int64
-	if obj.UdpTimeout != nil {
-		udpTimeout_value = types.Int64Value(*obj.UdpTimeout)
+	var virusIdent_value types.Bool
+	if obj.VirusIdent != nil {
+		virusIdent_value = types.BoolValue(*obj.VirusIdent)
 	}
 	var ableToTransferFile_value types.Bool
 	if obj.AbleToTransferFile != nil {
 		ableToTransferFile_value = types.BoolValue(*obj.AbleToTransferFile)
+	}
+	var category_value types.String
+	if obj.Category != nil {
+		category_value = types.StringValue(*obj.Category)
+	}
+	var algDisableCapability_value types.String
+	if obj.AlgDisableCapability != nil {
+		algDisableCapability_value = types.StringValue(*obj.AlgDisableCapability)
 	}
 	var dataIdent_value types.Bool
 	if obj.DataIdent != nil {
@@ -3975,39 +3911,176 @@ func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, obj *appli
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var parentApp_value types.String
+	if obj.ParentApp != nil {
+		parentApp_value = types.StringValue(*obj.ParentApp)
+	}
+	var risk_value types.Int64
+	if obj.Risk != nil {
+		risk_value = types.Int64Value(*obj.Risk)
+	}
+	var technology_value types.String
+	if obj.Technology != nil {
+		technology_value = types.StringValue(*obj.Technology)
+	}
+	var tunnelOtherApplication_value types.Bool
+	if obj.TunnelOtherApplication != nil {
+		tunnelOtherApplication_value = types.BoolValue(*obj.TunnelOtherApplication)
+	}
+	var tcpHalfClosedTimeout_value types.Int64
+	if obj.TcpHalfClosedTimeout != nil {
+		tcpHalfClosedTimeout_value = types.Int64Value(*obj.TcpHalfClosedTimeout)
+	}
+	var tcpTimeout_value types.Int64
+	if obj.TcpTimeout != nil {
+		tcpTimeout_value = types.Int64Value(*obj.TcpTimeout)
+	}
+	var timeout_value types.Int64
+	if obj.Timeout != nil {
+		timeout_value = types.Int64Value(*obj.Timeout)
+	}
+	var consumeBigBandwidth_value types.Bool
+	if obj.ConsumeBigBandwidth != nil {
+		consumeBigBandwidth_value = types.BoolValue(*obj.ConsumeBigBandwidth)
+	}
+	var hasKnownVulnerability_value types.Bool
+	if obj.HasKnownVulnerability != nil {
+		hasKnownVulnerability_value = types.BoolValue(*obj.HasKnownVulnerability)
+	}
+	var udpTimeout_value types.Int64
+	if obj.UdpTimeout != nil {
+		udpTimeout_value = types.Int64Value(*obj.UdpTimeout)
+	}
+	var proneToMisuse_value types.Bool
+	if obj.ProneToMisuse != nil {
+		proneToMisuse_value = types.BoolValue(*obj.ProneToMisuse)
+	}
+	var tcpTimeWaitTimeout_value types.Int64
+	if obj.TcpTimeWaitTimeout != nil {
+		tcpTimeWaitTimeout_value = types.Int64Value(*obj.TcpTimeWaitTimeout)
+	}
+	var usedByMalware_value types.Bool
+	if obj.UsedByMalware != nil {
+		usedByMalware_value = types.BoolValue(*obj.UsedByMalware)
+	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
+	var fileTypeIdent_value types.Bool
+	if obj.FileTypeIdent != nil {
+		fileTypeIdent_value = types.BoolValue(*obj.FileTypeIdent)
+	}
+	var noAppidCaching_value types.Bool
+	if obj.NoAppidCaching != nil {
+		noAppidCaching_value = types.BoolValue(*obj.NoAppidCaching)
+	}
+	var pervasiveUse_value types.Bool
+	if obj.PervasiveUse != nil {
+		pervasiveUse_value = types.BoolValue(*obj.PervasiveUse)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Category = category_value
-	o.UsedByMalware = usedByMalware_value
-	o.Timeout = timeout_value
-	o.Default = default_object
-	o.FileTypeIdent = fileTypeIdent_value
-	o.ProneToMisuse = proneToMisuse_value
-	o.TcpTimeWaitTimeout = tcpTimeWaitTimeout_value
-	o.NoAppidCaching = noAppidCaching_value
-	o.Technology = technology_value
-	o.VirusIdent = virusIdent_value
-	o.TcpTimeout = tcpTimeout_value
-	o.Risk = risk_value
-	o.TunnelApplications = tunnelApplications_value
-	o.ConsumeBigBandwidth = consumeBigBandwidth_value
-	o.EvasiveBehavior = evasiveBehavior_value
-	o.HasKnownVulnerability = hasKnownVulnerability_value
-	o.PervasiveUse = pervasiveUse_value
-	o.AlgDisableCapability = algDisableCapability_value
-	o.TunnelOtherApplication = tunnelOtherApplication_value
 	o.Signature = signature_list
+	o.EvasiveBehavior = evasiveBehavior_value
 	o.Subcategory = subcategory_value
-	o.ParentApp = parentApp_value
-	o.TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
-	o.UdpTimeout = udpTimeout_value
+	o.TunnelApplications = tunnelApplications_value
+	o.VirusIdent = virusIdent_value
 	o.AbleToTransferFile = ableToTransferFile_value
+	o.Category = category_value
+	o.AlgDisableCapability = algDisableCapability_value
 	o.DataIdent = dataIdent_value
 	o.Description = description_value
+	o.ParentApp = parentApp_value
+	o.Default = default_object
+	o.Risk = risk_value
+	o.Technology = technology_value
+	o.TunnelOtherApplication = tunnelOtherApplication_value
+	o.TcpHalfClosedTimeout = tcpHalfClosedTimeout_value
+	o.TcpTimeout = tcpTimeout_value
+	o.Timeout = timeout_value
+	o.ConsumeBigBandwidth = consumeBigBandwidth_value
+	o.HasKnownVulnerability = hasKnownVulnerability_value
+	o.UdpTimeout = udpTimeout_value
+	o.ProneToMisuse = proneToMisuse_value
+	o.TcpTimeWaitTimeout = tcpTimeWaitTimeout_value
+	o.UsedByMalware = usedByMalware_value
 	o.DisableOverride = disableOverride_value
+	o.FileTypeIdent = fileTypeIdent_value
+	o.NoAppidCaching = noAppidCaching_value
+	o.PervasiveUse = pervasiveUse_value
+
+	return diags
+}
+
+func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var port_list types.List
+	{
+		var list_diags diag.Diagnostics
+		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
+		diags.Append(list_diags...)
+	}
+	var identByIcmp6Type_object *ApplicationResourceDefaultIdentByIcmp6TypeObject
+	if obj.IdentByIcmp6Type != nil {
+		identByIcmp6Type_object = new(ApplicationResourceDefaultIdentByIcmp6TypeObject)
+
+		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var identByIcmpType_object *ApplicationResourceDefaultIdentByIcmpTypeObject
+	if obj.IdentByIcmpType != nil {
+		identByIcmpType_object = new(ApplicationResourceDefaultIdentByIcmpTypeObject)
+
+		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var identByIpProtocol_value types.String
+	if obj.IdentByIpProtocol != nil {
+		identByIpProtocol_value = types.StringValue(*obj.IdentByIpProtocol)
+	}
+	o.IdentByIcmp6Type = identByIcmp6Type_object
+	o.IdentByIpProtocol = identByIpProtocol_value
+	o.Port = port_list
+	o.IdentByIcmpType = identByIcmpType_object
+
+	return diags
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var code_value types.String
+	if obj.Code != nil {
+		code_value = types.StringValue(*obj.Code)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Code = code_value
+	o.Type = type_value
+
+	return diags
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var code_value types.String
+	if obj.Code != nil {
+		code_value = types.StringValue(*obj.Code)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Code = code_value
+	o.Type = type_value
 
 	return diags
 }
@@ -4093,6 +4166,15 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyFromPang
 
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperator, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var equalTo_object *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject
+	if obj.EqualTo != nil {
+		equalTo_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject)
+
+		diags.Append(equalTo_object.CopyFromPango(ctx, obj.EqualTo, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var patternMatch_object *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject
 	if obj.PatternMatch != nil {
 		patternMatch_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject)
@@ -4120,92 +4202,11 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 			return diags
 		}
 	}
-	var equalTo_object *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject
-	if obj.EqualTo != nil {
-		equalTo_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject)
 
-		diags.Append(equalTo_object.CopyFromPango(ctx, obj.EqualTo, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.EqualTo = equalTo_object
 	o.PatternMatch = patternMatch_object
 	o.GreaterThan = greaterThan_object
 	o.LessThan = lessThan_object
-	o.EqualTo = equalTo_object
-
-	return diags
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var qualifier_list types.List
-	{
-		var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
-		for _, elt := range obj.Qualifier {
-			var entry ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			qualifier_tf_entries = append(qualifier_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("qualifier")
-		qualifier_list, list_diags = types.ListValueFrom(ctx, schemaType, qualifier_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var context_value types.String
-	if obj.Context != nil {
-		context_value = types.StringValue(*obj.Context)
-	}
-	var value_value types.Int64
-	if obj.Value != nil {
-		value_value = types.Int64Value(*obj.Value)
-	}
-	o.Context = context_value
-	o.Value = value_value
-	o.Qualifier = qualifier_list
-
-	return diags
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var value_value types.String
-	if obj.Value != nil {
-		value_value = types.StringValue(*obj.Value)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Value = value_value
-
-	return diags
-}
-
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var mask_value types.String
-	if obj.Mask != nil {
-		mask_value = types.StringValue(*obj.Mask)
-	}
-	var value_value types.String
-	if obj.Value != nil {
-		value_value = types.StringValue(*obj.Value)
-	}
-	var context_value types.String
-	if obj.Context != nil {
-		context_value = types.StringValue(*obj.Context)
-	}
-	var position_value types.String
-	if obj.Position != nil {
-		position_value = types.StringValue(*obj.Position)
-	}
-	o.Mask = mask_value
-	o.Value = value_value
-	o.Context = context_value
-	o.Position = position_value
 
 	return diags
 }
@@ -4280,9 +4281,9 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 	if obj.Value != nil {
 		value_value = types.Int64Value(*obj.Value)
 	}
+	o.Qualifier = qualifier_list
 	o.Context = context_value
 	o.Value = value_value
-	o.Qualifier = qualifier_list
 
 	return diags
 }
@@ -4300,75 +4301,74 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 	return diags
 }
 
-func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var port_list types.List
+	var qualifier_list types.List
 	{
+		var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
+		for _, elt := range obj.Qualifier {
+			var entry ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			qualifier_tf_entries = append(qualifier_tf_entries, entry)
+		}
 		var list_diags diag.Diagnostics
-		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
+		schemaType := o.getTypeFor("qualifier")
+		qualifier_list, list_diags = types.ListValueFrom(ctx, schemaType, qualifier_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var identByIcmpType_object *ApplicationResourceDefaultIdentByIcmpTypeObject
-	if obj.IdentByIcmpType != nil {
-		identByIcmpType_object = new(ApplicationResourceDefaultIdentByIcmpTypeObject)
 
-		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
+	var context_value types.String
+	if obj.Context != nil {
+		context_value = types.StringValue(*obj.Context)
 	}
-	var identByIcmp6Type_object *ApplicationResourceDefaultIdentByIcmp6TypeObject
-	if obj.IdentByIcmp6Type != nil {
-		identByIcmp6Type_object = new(ApplicationResourceDefaultIdentByIcmp6TypeObject)
-
-		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
+	var value_value types.Int64
+	if obj.Value != nil {
+		value_value = types.Int64Value(*obj.Value)
 	}
-
-	var identByIpProtocol_value types.String
-	if obj.IdentByIpProtocol != nil {
-		identByIpProtocol_value = types.StringValue(*obj.IdentByIpProtocol)
-	}
-	o.IdentByIcmpType = identByIcmpType_object
-	o.IdentByIcmp6Type = identByIcmp6Type_object
-	o.IdentByIpProtocol = identByIpProtocol_value
-	o.Port = port_list
+	o.Context = context_value
+	o.Value = value_value
+	o.Qualifier = qualifier_list
 
 	return diags
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var code_value types.String
-	if obj.Code != nil {
-		code_value = types.StringValue(*obj.Code)
+	var value_value types.String
+	if obj.Value != nil {
+		value_value = types.StringValue(*obj.Value)
 	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Code = code_value
-	o.Type = type_value
+	o.Name = types.StringValue(obj.Name)
+	o.Value = value_value
 
 	return diags
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
+	var context_value types.String
+	if obj.Context != nil {
+		context_value = types.StringValue(*obj.Context)
 	}
-	var code_value types.String
-	if obj.Code != nil {
-		code_value = types.StringValue(*obj.Code)
+	var position_value types.String
+	if obj.Position != nil {
+		position_value = types.StringValue(*obj.Position)
 	}
-	o.Type = type_value
-	o.Code = code_value
+	var mask_value types.String
+	if obj.Mask != nil {
+		mask_value = types.StringValue(*obj.Mask)
+	}
+	var value_value types.String
+	if obj.Value != nil {
+		value_value = types.StringValue(*obj.Value)
+	}
+	o.Context = context_value
+	o.Position = position_value
+	o.Mask = mask_value
+	o.Value = value_value
 
 	return diags
 }
@@ -4480,8 +4480,8 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -4636,9 +4636,6 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location application.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
 
@@ -4649,9 +4646,12 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -4764,20 +4764,20 @@ func ApplicationLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -4874,13 +4874,13 @@ func (o *ApplicationDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Shared      *bool                           `json:"shared"`
 		Vsys        *ApplicationVsysLocation        `json:"vsys"`
 		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                           `json:"shared"`
 	}{
+		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
-		Shared:      o.Shared.ValueBoolPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -4888,18 +4888,18 @@ func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Shared      *bool                           `json:"shared"`
 		Vsys        *ApplicationVsysLocation        `json:"vsys"`
 		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                           `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
-	o.Shared = types.BoolPointerValue(shadow.Shared)
 
 	return nil
 }

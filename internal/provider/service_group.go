@@ -58,9 +58,9 @@ type ServiceGroupDataSourceFilter struct {
 type ServiceGroupDataSourceModel struct {
 	Location        ServiceGroupLocation `tfsdk:"location"`
 	Name            types.String         `tfsdk:"name"`
+	DisableOverride types.String         `tfsdk:"disable_override"`
 	Members         types.List           `tfsdk:"members"`
 	Tags            types.List           `tfsdk:"tags"`
-	DisableOverride types.String         `tfsdk:"disable_override"`
 }
 
 func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -222,9 +222,6 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 
 	var location group.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
@@ -238,6 +235,9 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -494,6 +494,13 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 
 	var location group.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -502,13 +509,6 @@ func (r *ServiceGroupResource) Create(ctx context.Context, req resource.CreateRe
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -630,9 +630,6 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 	var location group.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
@@ -643,9 +640,12 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -725,13 +725,6 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	var location group.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -740,6 +733,13 @@ func (r *ServiceGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -816,12 +816,12 @@ func (r *ServiceGroupResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 type ServiceGroupVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type ServiceGroupDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type ServiceGroupLocation struct {
 	Shared      types.Bool                       `tfsdk:"shared"`
@@ -834,6 +834,41 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
+				},
+			},
 			"device_group": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Device Group",
 				Optional:    true,
@@ -860,47 +895,12 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
-				},
 			},
 			"shared": rsschema.BoolAttribute{
 				Description: "Location in Shared Panorama",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-				},
-			},
-			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific Virtual System",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The Virtual System name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
@@ -936,11 +936,11 @@ func (o *ServiceGroupVsysLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ServiceGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device"`
 	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -948,28 +948,28 @@ func (o ServiceGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 
 	return nil
 }
 func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                            `json:"shared"`
 	}{
+		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
-		Shared:      o.Shared.ValueBoolPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -977,18 +977,18 @@ func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
-		Shared      *bool                            `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
-	o.Shared = types.BoolPointerValue(shadow.Shared)
 
 	return nil
 }

@@ -54,10 +54,10 @@ type DeviceGroupDataSourceFilter struct {
 type DeviceGroupDataSourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
+	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
 	Devices           types.List          `tfsdk:"devices"`
 	AuthorizationCode types.String        `tfsdk:"authorization_code"`
-	Description       types.String        `tfsdk:"description"`
 }
 type DeviceGroupDataSourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -66,7 +66,6 @@ type DeviceGroupDataSourceDevicesObject struct {
 
 func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
@@ -90,15 +89,16 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
+	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).AuthorizationCode = authorizationCode_value
 	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
+	(*obj).AuthorizationCode = authorizationCode_value
 
 	return diags
 }
@@ -142,19 +142,19 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 		diags.Append(list_diags...)
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var authorizationCode_value types.String
 	if obj.AuthorizationCode != nil {
 		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
 	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
 	o.AuthorizationCode = authorizationCode_value
+	o.Description = description_value
 
 	return diags
 }
@@ -405,10 +405,10 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 type DeviceGroupResourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
-	Devices           types.List          `tfsdk:"devices"`
-	AuthorizationCode types.String        `tfsdk:"authorization_code"`
 	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
+	Devices           types.List          `tfsdk:"devices"`
+	AuthorizationCode types.String        `tfsdk:"authorization_code"`
 }
 type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -431,14 +431,6 @@ func DeviceGroupResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"authorization_code": rsschema.StringAttribute{
-				Description: "Authorization code",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
 				Sensitive:   false,
 			},
 
@@ -466,6 +458,14 @@ func DeviceGroupResourceSchema() rsschema.Schema {
 				Computed:     false,
 				Sensitive:    false,
 				NestedObject: DeviceGroupResourceDevicesSchema(),
+			},
+
+			"authorization_code": rsschema.StringAttribute{
+				Description: "Authorization code",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -558,12 +558,6 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 
 func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var devices_tf_entries []DeviceGroupResourceDevicesObject
 	var devices_pango_entries []devicegroup.Devices
 	{
@@ -582,15 +576,21 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 		}
 	}
 	authorizationCode_value := o.AuthorizationCode.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	templates_pango_entries := make([]string, 0)
+	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(devicegroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
-	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
 	(*obj).AuthorizationCode = authorizationCode_value
+	(*obj).Description = description_value
+	(*obj).Templates = templates_pango_entries
 
 	return diags
 }

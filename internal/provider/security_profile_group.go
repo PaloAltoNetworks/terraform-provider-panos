@@ -58,28 +58,48 @@ type SecurityProfileGroupDataSourceFilter struct {
 type SecurityProfileGroupDataSourceModel struct {
 	Location         SecurityProfileGroupLocation `tfsdk:"location"`
 	Name             types.String                 `tfsdk:"name"`
-	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
-	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
-	Vulnerability    types.List                   `tfsdk:"vulnerability"`
-	FileBlocking     types.List                   `tfsdk:"file_blocking"`
-	Gtp              types.List                   `tfsdk:"gtp"`
 	Sctp             types.List                   `tfsdk:"sctp"`
 	Spyware          types.List                   `tfsdk:"spyware"`
-	Virus            types.List                   `tfsdk:"virus"`
+	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
 	DataFiltering    types.List                   `tfsdk:"data_filtering"`
+	Gtp              types.List                   `tfsdk:"gtp"`
+	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
+	Virus            types.List                   `tfsdk:"virus"`
+	Vulnerability    types.List                   `tfsdk:"vulnerability"`
 	DisableOverride  types.String                 `tfsdk:"disable_override"`
+	FileBlocking     types.List                   `tfsdk:"file_blocking"`
 }
 
 func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, obj **secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	dataFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
+	vulnerability_pango_entries := make([]string, 0)
+	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	fileBlocking_pango_entries := make([]string, 0)
 	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	urlFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	virus_pango_entries := make([]string, 0)
+	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	wildfireAnalysis_pango_entries := make([]string, 0)
+	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	dataFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -98,41 +118,21 @@ func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, o
 	if diags.HasError() {
 		return diags
 	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(secgroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).DataFiltering = dataFiltering_pango_entries
+	(*obj).Vulnerability = vulnerability_pango_entries
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).FileBlocking = fileBlocking_pango_entries
+	(*obj).UrlFiltering = urlFiltering_pango_entries
+	(*obj).Virus = virus_pango_entries
+	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
+	(*obj).DataFiltering = dataFiltering_pango_entries
 	(*obj).Gtp = gtp_pango_entries
 	(*obj).Sctp = sctp_pango_entries
 	(*obj).Spyware = spyware_pango_entries
-	(*obj).Virus = virus_pango_entries
-	(*obj).UrlFiltering = urlFiltering_pango_entries
-	(*obj).Vulnerability = vulnerability_pango_entries
-	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
 
 	return diags
 }
@@ -143,6 +143,30 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	{
 		var list_diags diag.Diagnostics
 		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+		diags.Append(list_diags...)
+	}
+	var urlFiltering_list types.List
+	{
+		var list_diags diag.Diagnostics
+		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+		diags.Append(list_diags...)
+	}
+	var virus_list types.List
+	{
+		var list_diags diag.Diagnostics
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+		diags.Append(list_diags...)
+	}
+	var vulnerability_list types.List
+	{
+		var list_diags diag.Diagnostics
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
+		diags.Append(list_diags...)
+	}
+	var dataFiltering_list types.List
+	{
+		var list_diags diag.Diagnostics
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
 		diags.Append(list_diags...)
 	}
 	var gtp_list types.List
@@ -163,34 +187,10 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
 		diags.Append(list_diags...)
 	}
-	var virus_list types.List
-	{
-		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
-		diags.Append(list_diags...)
-	}
-	var dataFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
-		diags.Append(list_diags...)
-	}
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
 		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
-		diags.Append(list_diags...)
-	}
-	var urlFiltering_list types.List
-	{
-		var list_diags diag.Diagnostics
-		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
-		diags.Append(list_diags...)
-	}
-	var vulnerability_list types.List
-	{
-		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
 	}
 
@@ -199,16 +199,16 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
+	o.DisableOverride = disableOverride_value
 	o.FileBlocking = fileBlocking_list
+	o.UrlFiltering = urlFiltering_list
+	o.Virus = virus_list
+	o.Vulnerability = vulnerability_list
+	o.DataFiltering = dataFiltering_list
 	o.Gtp = gtp_list
 	o.Sctp = sctp_list
 	o.Spyware = spyware_list
-	o.Virus = virus_list
-	o.DataFiltering = dataFiltering_list
-	o.DisableOverride = disableOverride_value
 	o.WildfireAnalysis = wildfireAnalysis_list
-	o.UrlFiltering = urlFiltering_list
-	o.Vulnerability = vulnerability_list
 
 	return diags
 }
@@ -235,7 +235,25 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"file_blocking": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"url_filtering": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"virus": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -253,39 +271,12 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"wildfire_analysis": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"data_filtering": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"file_blocking": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"gtp": dsschema.ListAttribute{
@@ -315,7 +306,16 @@ func SecurityProfileGroupDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"virus": dsschema.ListAttribute{
+			"wildfire_analysis": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"data_filtering": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -461,16 +461,16 @@ func SecurityProfileGroupResourceLocationSchema() rsschema.Attribute {
 type SecurityProfileGroupResourceModel struct {
 	Location         SecurityProfileGroupLocation `tfsdk:"location"`
 	Name             types.String                 `tfsdk:"name"`
-	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
-	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
-	Vulnerability    types.List                   `tfsdk:"vulnerability"`
-	FileBlocking     types.List                   `tfsdk:"file_blocking"`
+	DataFiltering    types.List                   `tfsdk:"data_filtering"`
 	Gtp              types.List                   `tfsdk:"gtp"`
 	Sctp             types.List                   `tfsdk:"sctp"`
 	Spyware          types.List                   `tfsdk:"spyware"`
-	Virus            types.List                   `tfsdk:"virus"`
-	DataFiltering    types.List                   `tfsdk:"data_filtering"`
+	WildfireAnalysis types.List                   `tfsdk:"wildfire_analysis"`
 	DisableOverride  types.String                 `tfsdk:"disable_override"`
+	FileBlocking     types.List                   `tfsdk:"file_blocking"`
+	UrlFiltering     types.List                   `tfsdk:"url_filtering"`
+	Virus            types.List                   `tfsdk:"virus"`
+	Vulnerability    types.List                   `tfsdk:"vulnerability"`
 }
 
 func (r *SecurityProfileGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -492,25 +492,25 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"url_filtering": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"vulnerability": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"wildfire_analysis": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"data_filtering": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"gtp": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -537,16 +537,7 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"virus": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"data_filtering": rsschema.ListAttribute{
+			"vulnerability": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -580,7 +571,16 @@ func SecurityProfileGroupResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"gtp": rsschema.ListAttribute{
+			"url_filtering": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"virus": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -637,29 +637,8 @@ func (r *SecurityProfileGroupResource) Configure(ctx context.Context, req resour
 
 func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj **secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	dataFiltering_pango_entries := make([]string, 0)
 	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -678,8 +657,29 @@ func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj
 	if diags.HasError() {
 		return diags
 	}
+	wildfireAnalysis_pango_entries := make([]string, 0)
+	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	fileBlocking_pango_entries := make([]string, 0)
+	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	urlFiltering_pango_entries := make([]string, 0)
+	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	virus_pango_entries := make([]string, 0)
 	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	vulnerability_pango_entries := make([]string, 0)
+	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -688,26 +688,38 @@ func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj
 		*obj = new(secgroup.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).UrlFiltering = urlFiltering_pango_entries
-	(*obj).Vulnerability = vulnerability_pango_entries
-	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
 	(*obj).DataFiltering = dataFiltering_pango_entries
-	(*obj).DisableOverride = disableOverride_value
-	(*obj).FileBlocking = fileBlocking_pango_entries
 	(*obj).Gtp = gtp_pango_entries
 	(*obj).Sctp = sctp_pango_entries
 	(*obj).Spyware = spyware_pango_entries
+	(*obj).WildfireAnalysis = wildfireAnalysis_pango_entries
+	(*obj).DisableOverride = disableOverride_value
+	(*obj).FileBlocking = fileBlocking_pango_entries
+	(*obj).UrlFiltering = urlFiltering_pango_entries
 	(*obj).Virus = virus_pango_entries
+	(*obj).Vulnerability = vulnerability_pango_entries
 
 	return diags
 }
 
 func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, obj *secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var fileBlocking_list types.List
+	{
+		var list_diags diag.Diagnostics
+		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+		diags.Append(list_diags...)
+	}
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+		diags.Append(list_diags...)
+	}
+	var virus_list types.List
+	{
+		var list_diags diag.Diagnostics
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
 		diags.Append(list_diags...)
 	}
 	var vulnerability_list types.List
@@ -716,22 +728,10 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, o
 		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
 	}
-	var wildfireAnalysis_list types.List
-	{
-		var list_diags diag.Diagnostics
-		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
-		diags.Append(list_diags...)
-	}
 	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
-		diags.Append(list_diags...)
-	}
-	var fileBlocking_list types.List
-	{
-		var list_diags diag.Diagnostics
-		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
 		diags.Append(list_diags...)
 	}
 	var gtp_list types.List
@@ -752,10 +752,10 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, o
 		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
 		diags.Append(list_diags...)
 	}
-	var virus_list types.List
+	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
 		diags.Append(list_diags...)
 	}
 
@@ -764,16 +764,16 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, o
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.UrlFiltering = urlFiltering_list
-	o.Vulnerability = vulnerability_list
-	o.WildfireAnalysis = wildfireAnalysis_list
-	o.DataFiltering = dataFiltering_list
 	o.DisableOverride = disableOverride_value
 	o.FileBlocking = fileBlocking_list
+	o.UrlFiltering = urlFiltering_list
+	o.Virus = virus_list
+	o.Vulnerability = vulnerability_list
+	o.DataFiltering = dataFiltering_list
 	o.Gtp = gtp_list
 	o.Sctp = sctp_list
 	o.Spyware = spyware_list
-	o.Virus = virus_list
+	o.WildfireAnalysis = wildfireAnalysis_list
 
 	return diags
 }
@@ -878,8 +878,8 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -938,8 +938,8 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -1126,8 +1126,8 @@ func SecurityProfileGroupLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},

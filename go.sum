@@ -12,8 +12,10 @@ github.com/Masterminds/sprig/v3 v3.2.3 h1:eL2fZNezLomi0uOLqjQoN6BfsDD+fyLtgbJMAj
 github.com/Masterminds/sprig/v3 v3.2.3/go.mod h1:rXcFaZ2zZbLRJv/xSysmlgIM1u11eBaRMhvYXJNkGuM=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/PaloAltoNetworks/pango v0.10.3-0.20250210132909-77ca459f8f8a h1:8noS1YWhld/a/sjHVSvSWfyfiqoM6dSVxfXi4QykbTU=
-github.com/PaloAltoNetworks/pango v0.10.3-0.20250210132909-77ca459f8f8a/go.mod h1:tDFAikqi8qR9jGyOqzXn5JyWh4LoBG/aUSJHF3rmVd4=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20250213091804-03aebf526b1e h1:YZmUE+rSLnfAZ7QvHveU5kMvHW3nnJWwjbD/I4rb9J4=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20250213091804-03aebf526b1e/go.mod h1:tDFAikqi8qR9jGyOqzXn5JyWh4LoBG/aUSJHF3rmVd4=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20250213110909-149fa41d9871 h1:W3vix/+dbgCW+dmCvloszMEdPLGqn/tAcD7Mu4bdiUo=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20250213110909-149fa41d9871/go.mod h1:tDFAikqi8qR9jGyOqzXn5JyWh4LoBG/aUSJHF3rmVd4=
 github.com/ProtonMail/go-crypto v1.1.0-alpha.2 h1:bkyFVUP+ROOARdgCiJzNQo2V2kiB97LyUpzH9P6Hrlg=
 github.com/ProtonMail/go-crypto v1.1.0-alpha.2/go.mod h1:rA3QumHc/FZ8pAHreoekgiAbzpNsfQAosU5td4SnOrE=
 github.com/agext/levenshtein v1.2.2 h1:0S/Yg6LYmFJ5stwQeRp6EeOcCbj7xiqQSdNelsXvaqE=

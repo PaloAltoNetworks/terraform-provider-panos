@@ -61,10 +61,10 @@ type AddressDataSourceModel struct {
 	Description     types.String    `tfsdk:"description"`
 	DisableOverride types.String    `tfsdk:"disable_override"`
 	Tags            types.List      `tfsdk:"tags"`
-	IpNetmask       types.String    `tfsdk:"ip_netmask"`
-	IpRange         types.String    `tfsdk:"ip_range"`
 	IpWildcard      types.String    `tfsdk:"ip_wildcard"`
 	Fqdn            types.String    `tfsdk:"fqdn"`
+	IpNetmask       types.String    `tfsdk:"ip_netmask"`
+	IpRange         types.String    `tfsdk:"ip_range"`
 }
 
 func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -105,21 +105,13 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 		diags.Append(list_diags...)
 	}
 
-	var disableOverride_value types.String
-	if obj.DisableOverride != nil {
-		disableOverride_value = types.StringValue(*obj.DisableOverride)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
-	}
-	var ipNetmask_value types.String
-	if obj.IpNetmask != nil {
-		ipNetmask_value = types.StringValue(*obj.IpNetmask)
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	var ipRange_value types.String
 	if obj.IpRange != nil {
@@ -129,14 +121,22 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
 	}
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
+	var ipNetmask_value types.String
+	if obj.IpNetmask != nil {
+		ipNetmask_value = types.StringValue(*obj.IpNetmask)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.Description = description_value
-	o.Fqdn = fqdn_value
-	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
+	o.Fqdn = fqdn_value
+	o.IpNetmask = ipNetmask_value
 
 	return diags
 }
@@ -188,14 +188,6 @@ func AddressDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"ip_wildcard": dsschema.StringAttribute{
-				Description: "The IP wildcard value.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"fqdn": dsschema.StringAttribute{
 				Description: "The FQDN value.",
 				Computed:    true,
@@ -214,6 +206,14 @@ func AddressDataSourceSchema() dsschema.Schema {
 
 			"ip_range": dsschema.StringAttribute{
 				Description: "The IP range value.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_wildcard": dsschema.StringAttribute{
+				Description: "The IP wildcard value.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -279,6 +279,13 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	var location address.Location
 
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -287,13 +294,6 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -392,6 +392,14 @@ func AddressResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"description": rsschema.StringAttribute{
+				Description: "The description.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -415,14 +423,6 @@ func AddressResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "The description.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
@@ -624,8 +624,8 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 	if state.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -687,9 +687,6 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	var location address.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
@@ -703,6 +700,9 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -849,6 +849,13 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	var location address.Location
 
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -857,13 +864,6 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -939,18 +939,18 @@ func (r *AddressResource) ImportState(ctx context.Context, req resource.ImportSt
 
 }
 
-type AddressVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
-	Name       types.String `tfsdk:"name"`
-}
 type AddressDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type AddressVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
 type AddressLocation struct {
+	DeviceGroup *AddressDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                  `tfsdk:"shared"`
 	Vsys        *AddressVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *AddressDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func AddressLocationSchema() rsschema.Attribute {
@@ -967,9 +967,9 @@ func AddressLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
 					}...),
 				},
 			},

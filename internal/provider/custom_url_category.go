@@ -66,6 +66,7 @@ type CustomUrlCategoryDataSourceModel struct {
 
 func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	list_pango_entries := make([]string, 0)
 	diags.Append(o.List.ElementsAs(ctx, &list_pango_entries, false)...)
@@ -73,16 +74,15 @@ func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj 
 		return diags
 	}
 	type_value := o.Type.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(customurlcategory.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).List = list_pango_entries
 	(*obj).Type = type_value
-	(*obj).Description = description_value
 
 	return diags
 }
@@ -96,6 +96,10 @@ func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ob
 		diags.Append(list_diags...)
 	}
 
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
@@ -104,15 +108,11 @@ func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ob
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-	o.DisableOverride = disableOverride_value
 	o.List = list_list
 	o.Type = type_value
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
 
 	return diags
 }
@@ -139,14 +139,6 @@ func CustomUrlCategoryDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"type": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"description": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -170,6 +162,14 @@ func CustomUrlCategoryDataSourceSchema() dsschema.Schema {
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -231,6 +231,9 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 
 	var location customurlcategory.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
@@ -244,9 +247,6 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -341,24 +341,6 @@ func CustomUrlCategoryResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"list": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"type": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("URL List"),
-			},
-
 			"description": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -380,6 +362,24 @@ func CustomUrlCategoryResourceSchema() rsschema.Schema {
 						"no",
 					}...),
 				},
+			},
+
+			"list": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"type": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("URL List"),
 			},
 		},
 	}
@@ -513,6 +513,9 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 
 	var location customurlcategory.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
@@ -526,9 +529,6 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -655,15 +655,15 @@ func (r *CustomUrlCategoryResource) Update(ctx context.Context, req resource.Upd
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &customurlcategory.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -750,15 +750,15 @@ func (r *CustomUrlCategoryResource) Delete(ctx context.Context, req resource.Del
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &customurlcategory.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -835,12 +835,12 @@ func (r *CustomUrlCategoryResource) ImportState(ctx context.Context, req resourc
 }
 
 type CustomUrlCategoryVsysLocation struct {
-	Name       types.String `tfsdk:"name"`
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
 }
 type CustomUrlCategoryDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type CustomUrlCategoryLocation struct {
 	Shared      types.Bool                            `tfsdk:"shared"`
@@ -862,9 +862,9 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
 				},
 			},
@@ -926,6 +926,33 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o CustomUrlCategoryVsysLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		Name:       o.Name.ValueStringPointer(),
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *CustomUrlCategoryVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o CustomUrlCategoryDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -953,42 +980,15 @@ func (o *CustomUrlCategoryDeviceGroupLocation) UnmarshalJSON(data []byte) error 
 
 	return nil
 }
-func (o CustomUrlCategoryVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-		Name:       o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *CustomUrlCategoryVsysLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o CustomUrlCategoryLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 		DeviceGroup *CustomUrlCategoryDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                                 `json:"shared"`
-		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 	}{
+		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
 		Shared:      o.Shared.ValueBoolPointer(),
-		Vsys:        o.Vsys,
 	}
 
 	return json.Marshal(obj)
@@ -996,18 +996,18 @@ func (o CustomUrlCategoryLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CustomUrlCategoryLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 		DeviceGroup *CustomUrlCategoryDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                                 `json:"shared"`
-		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
 	o.Shared = types.BoolPointerValue(shadow.Shared)
-	o.Vsys = shadow.Vsys
 
 	return nil
 }

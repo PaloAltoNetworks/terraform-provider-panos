@@ -58,21 +58,71 @@ type IkeGatewayDataSourceFilter struct {
 type IkeGatewayDataSourceModel struct {
 	Location       IkeGatewayLocation                        `tfsdk:"location"`
 	Name           types.String                              `tfsdk:"name"`
+	Authentication *IkeGatewayDataSourceAuthenticationObject `tfsdk:"authentication"`
+	LocalId        *IkeGatewayDataSourceLocalIdObject        `tfsdk:"local_id"`
 	PeerId         *IkeGatewayDataSourcePeerIdObject         `tfsdk:"peer_id"`
+	Protocol       *IkeGatewayDataSourceProtocolObject       `tfsdk:"protocol"`
 	ProtocolCommon *IkeGatewayDataSourceProtocolCommonObject `tfsdk:"protocol_common"`
 	Comment        types.String                              `tfsdk:"comment"`
 	Disabled       types.Bool                                `tfsdk:"disabled"`
+	Ipv6           types.Bool                                `tfsdk:"ipv6"`
 	LocalAddress   *IkeGatewayDataSourceLocalAddressObject   `tfsdk:"local_address"`
 	PeerAddress    *IkeGatewayDataSourcePeerAddressObject    `tfsdk:"peer_address"`
-	Protocol       *IkeGatewayDataSourceProtocolObject       `tfsdk:"protocol"`
-	Authentication *IkeGatewayDataSourceAuthenticationObject `tfsdk:"authentication"`
-	Ipv6           types.Bool                                `tfsdk:"ipv6"`
-	LocalId        *IkeGatewayDataSourceLocalIdObject        `tfsdk:"local_id"`
+}
+type IkeGatewayDataSourceAuthenticationObject struct {
+	Certificate  *IkeGatewayDataSourceAuthenticationCertificateObject  `tfsdk:"certificate"`
+	PreSharedKey *IkeGatewayDataSourceAuthenticationPreSharedKeyObject `tfsdk:"pre_shared_key"`
+}
+type IkeGatewayDataSourceAuthenticationCertificateObject struct {
+	UseManagementAsSource      types.Bool                                                           `tfsdk:"use_management_as_source"`
+	AllowIdPayloadMismatch     types.Bool                                                           `tfsdk:"allow_id_payload_mismatch"`
+	CertificateProfile         types.String                                                         `tfsdk:"certificate_profile"`
+	LocalCertificate           *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject `tfsdk:"local_certificate"`
+	StrictValidationRevocation types.Bool                                                           `tfsdk:"strict_validation_revocation"`
+}
+type IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject struct {
+	Name       types.String                                                                   `tfsdk:"name"`
+	HashAndUrl *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject `tfsdk:"hash_and_url"`
+}
+type IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject struct {
+	BaseUrl types.String `tfsdk:"base_url"`
+	Enable  types.Bool   `tfsdk:"enable"`
+}
+type IkeGatewayDataSourceAuthenticationPreSharedKeyObject struct {
+	Key types.String `tfsdk:"key"`
+}
+type IkeGatewayDataSourceLocalIdObject struct {
+	Type types.String `tfsdk:"type"`
+	Id   types.String `tfsdk:"id"`
 }
 type IkeGatewayDataSourcePeerIdObject struct {
 	Id       types.String `tfsdk:"id"`
 	Matching types.String `tfsdk:"matching"`
 	Type     types.String `tfsdk:"type"`
+}
+type IkeGatewayDataSourceProtocolObject struct {
+	Ikev1   *IkeGatewayDataSourceProtocolIkev1Object `tfsdk:"ikev1"`
+	Ikev2   *IkeGatewayDataSourceProtocolIkev2Object `tfsdk:"ikev2"`
+	Version types.String                             `tfsdk:"version"`
+}
+type IkeGatewayDataSourceProtocolIkev1Object struct {
+	IkeCryptoProfile types.String                                `tfsdk:"ike_crypto_profile"`
+	Dpd              *IkeGatewayDataSourceProtocolIkev1DpdObject `tfsdk:"dpd"`
+	ExchangeMode     types.String                                `tfsdk:"exchange_mode"`
+}
+type IkeGatewayDataSourceProtocolIkev1DpdObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	Interval types.Int64 `tfsdk:"interval"`
+	Retry    types.Int64 `tfsdk:"retry"`
+}
+type IkeGatewayDataSourceProtocolIkev2Object struct {
+	Dpd              *IkeGatewayDataSourceProtocolIkev2DpdObject `tfsdk:"dpd"`
+	IkeCryptoProfile types.String                                `tfsdk:"ike_crypto_profile"`
+	RequireCookie    types.Bool                                  `tfsdk:"require_cookie"`
+}
+type IkeGatewayDataSourceProtocolIkev2DpdObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	Interval types.Int64 `tfsdk:"interval"`
 }
 type IkeGatewayDataSourceProtocolCommonObject struct {
 	Fragmentation *IkeGatewayDataSourceProtocolCommonFragmentationObject `tfsdk:"fragmentation"`
@@ -99,59 +149,25 @@ type IkeGatewayDataSourcePeerAddressObject struct {
 }
 type IkeGatewayDataSourcePeerAddressDynamicObject struct {
 }
-type IkeGatewayDataSourceProtocolObject struct {
-	Version types.String                             `tfsdk:"version"`
-	Ikev1   *IkeGatewayDataSourceProtocolIkev1Object `tfsdk:"ikev1"`
-	Ikev2   *IkeGatewayDataSourceProtocolIkev2Object `tfsdk:"ikev2"`
-}
-type IkeGatewayDataSourceProtocolIkev1Object struct {
-	Dpd              *IkeGatewayDataSourceProtocolIkev1DpdObject `tfsdk:"dpd"`
-	ExchangeMode     types.String                                `tfsdk:"exchange_mode"`
-	IkeCryptoProfile types.String                                `tfsdk:"ike_crypto_profile"`
-}
-type IkeGatewayDataSourceProtocolIkev1DpdObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
-	Interval types.Int64 `tfsdk:"interval"`
-	Retry    types.Int64 `tfsdk:"retry"`
-}
-type IkeGatewayDataSourceProtocolIkev2Object struct {
-	Dpd              *IkeGatewayDataSourceProtocolIkev2DpdObject `tfsdk:"dpd"`
-	IkeCryptoProfile types.String                                `tfsdk:"ike_crypto_profile"`
-	RequireCookie    types.Bool                                  `tfsdk:"require_cookie"`
-}
-type IkeGatewayDataSourceProtocolIkev2DpdObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
-	Interval types.Int64 `tfsdk:"interval"`
-}
-type IkeGatewayDataSourceAuthenticationObject struct {
-	Certificate  *IkeGatewayDataSourceAuthenticationCertificateObject  `tfsdk:"certificate"`
-	PreSharedKey *IkeGatewayDataSourceAuthenticationPreSharedKeyObject `tfsdk:"pre_shared_key"`
-}
-type IkeGatewayDataSourceAuthenticationCertificateObject struct {
-	LocalCertificate           *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject `tfsdk:"local_certificate"`
-	StrictValidationRevocation types.Bool                                                           `tfsdk:"strict_validation_revocation"`
-	UseManagementAsSource      types.Bool                                                           `tfsdk:"use_management_as_source"`
-	AllowIdPayloadMismatch     types.Bool                                                           `tfsdk:"allow_id_payload_mismatch"`
-	CertificateProfile         types.String                                                         `tfsdk:"certificate_profile"`
-}
-type IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject struct {
-	HashAndUrl *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject `tfsdk:"hash_and_url"`
-	Name       types.String                                                                   `tfsdk:"name"`
-}
-type IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject struct {
-	BaseUrl types.String `tfsdk:"base_url"`
-	Enable  types.Bool   `tfsdk:"enable"`
-}
-type IkeGatewayDataSourceAuthenticationPreSharedKeyObject struct {
-	Key types.String `tfsdk:"key"`
-}
-type IkeGatewayDataSourceLocalIdObject struct {
-	Id   types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-}
 
 func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	comment_value := o.Comment.ValueStringPointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ipv6_value := o.Ipv6.ValueBoolPointer()
+	var localAddress_entry *gateway.LocalAddress
+	if o.LocalAddress != nil {
+		if *obj != nil && (*obj).LocalAddress != nil {
+			localAddress_entry = (*obj).LocalAddress
+		} else {
+			localAddress_entry = new(gateway.LocalAddress)
+		}
+
+		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var peerAddress_entry *gateway.PeerAddress
 	if o.PeerAddress != nil {
 		if *obj != nil && (*obj).PeerAddress != nil {
@@ -165,15 +181,15 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 			return diags
 		}
 	}
-	var protocol_entry *gateway.Protocol
-	if o.Protocol != nil {
-		if *obj != nil && (*obj).Protocol != nil {
-			protocol_entry = (*obj).Protocol
+	var protocolCommon_entry *gateway.ProtocolCommon
+	if o.ProtocolCommon != nil {
+		if *obj != nil && (*obj).ProtocolCommon != nil {
+			protocolCommon_entry = (*obj).ProtocolCommon
 		} else {
-			protocol_entry = new(gateway.Protocol)
+			protocolCommon_entry = new(gateway.ProtocolCommon)
 		}
 
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		diags.Append(o.ProtocolCommon.CopyToPango(ctx, &protocolCommon_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -191,7 +207,6 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 			return diags
 		}
 	}
-	ipv6_value := o.Ipv6.ValueBoolPointer()
 	var localId_entry *gateway.LocalId
 	if o.LocalId != nil {
 		if *obj != nil && (*obj).LocalId != nil {
@@ -218,30 +233,15 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 			return diags
 		}
 	}
-	var protocolCommon_entry *gateway.ProtocolCommon
-	if o.ProtocolCommon != nil {
-		if *obj != nil && (*obj).ProtocolCommon != nil {
-			protocolCommon_entry = (*obj).ProtocolCommon
+	var protocol_entry *gateway.Protocol
+	if o.Protocol != nil {
+		if *obj != nil && (*obj).Protocol != nil {
+			protocol_entry = (*obj).Protocol
 		} else {
-			protocolCommon_entry = new(gateway.ProtocolCommon)
+			protocol_entry = new(gateway.Protocol)
 		}
 
-		diags.Append(o.ProtocolCommon.CopyToPango(ctx, &protocolCommon_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	comment_value := o.Comment.ValueStringPointer()
-	disabled_value := o.Disabled.ValueBoolPointer()
-	var localAddress_entry *gateway.LocalAddress
-	if o.LocalAddress != nil {
-		if *obj != nil && (*obj).LocalAddress != nil {
-			localAddress_entry = (*obj).LocalAddress
-		} else {
-			localAddress_entry = new(gateway.LocalAddress)
-		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -251,111 +251,16 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		*obj = new(gateway.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).PeerAddress = peerAddress_entry
-	(*obj).Protocol = protocol_entry
-	(*obj).Authentication = authentication_entry
-	(*obj).Ipv6 = ipv6_value
-	(*obj).LocalId = localId_entry
-	(*obj).PeerId = peerId_entry
-	(*obj).ProtocolCommon = protocolCommon_entry
 	(*obj).Comment = comment_value
 	(*obj).Disabled = disabled_value
+	(*obj).Ipv6 = ipv6_value
 	(*obj).LocalAddress = localAddress_entry
-
-	return diags
-}
-func (o *IkeGatewayDataSourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	interface_value := o.Interface.ValueStringPointer()
-	floatingIp_value := o.FloatingIp.ValueStringPointer()
-	ip_value := o.Ip.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.LocalAddress)
-	}
-	(*obj).Interface = interface_value
-	(*obj).FloatingIp = floatingIp_value
-	(*obj).Ip = ip_value
-
-	return diags
-}
-func (o *IkeGatewayDataSourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	id_value := o.Id.ValueStringPointer()
-	matching_value := o.Matching.ValueStringPointer()
-	type_value := o.Type.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.PeerId)
-	}
-	(*obj).Id = id_value
-	(*obj).Matching = matching_value
-	(*obj).Type = type_value
-
-	return diags
-}
-func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var fragmentation_entry *gateway.ProtocolCommonFragmentation
-	if o.Fragmentation != nil {
-		if *obj != nil && (*obj).Fragmentation != nil {
-			fragmentation_entry = (*obj).Fragmentation
-		} else {
-			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
-		}
-
-		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var natTraversal_entry *gateway.ProtocolCommonNatTraversal
-	if o.NatTraversal != nil {
-		if *obj != nil && (*obj).NatTraversal != nil {
-			natTraversal_entry = (*obj).NatTraversal
-		} else {
-			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
-		}
-
-		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	passiveMode_value := o.PassiveMode.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommon)
-	}
-	(*obj).Fragmentation = fragmentation_entry
-	(*obj).NatTraversal = natTraversal_entry
-	(*obj).PassiveMode = passiveMode_value
-
-	return diags
-}
-func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommonFragmentation)
-	}
-	(*obj).Enable = enable_value
-
-	return diags
-}
-func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
-	udpChecksumEnable_value := o.UdpChecksumEnable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommonNatTraversal)
-	}
-	(*obj).Enable = enable_value
-	(*obj).KeepAliveInterval = keepAliveInterval_value
-	(*obj).UdpChecksumEnable = udpChecksumEnable_value
+	(*obj).PeerAddress = peerAddress_entry
+	(*obj).ProtocolCommon = protocolCommon_entry
+	(*obj).Authentication = authentication_entry
+	(*obj).LocalId = localId_entry
+	(*obj).PeerId = peerId_entry
+	(*obj).Protocol = protocol_entry
 
 	return diags
 }
@@ -454,14 +359,14 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) Co
 }
 func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
 	baseUrl_value := o.BaseUrl.ValueStringPointer()
+	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.AuthenticationCertificateLocalCertificateHashAndUrl)
 	}
-	(*obj).Enable = enable_value
 	(*obj).BaseUrl = baseUrl_value
+	(*obj).Enable = enable_value
 
 	return diags
 }
@@ -489,39 +394,18 @@ func (o *IkeGatewayDataSourceLocalIdObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	fqdn_value := o.Fqdn.ValueStringPointer()
-	ip_value := o.Ip.ValueStringPointer()
-	var dynamic_entry *gateway.PeerAddressDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(gateway.PeerAddressDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	matching_value := o.Matching.ValueStringPointer()
+	type_value := o.Type.ValueStringPointer()
+	id_value := o.Id.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(gateway.PeerAddress)
+		*obj = new(gateway.PeerId)
 	}
-	(*obj).Fqdn = fqdn_value
-	(*obj).Ip = ip_value
-	(*obj).Dynamic = dynamic_entry
-
-	return diags
-}
-func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(gateway.PeerAddressDynamic)
-	}
+	(*obj).Matching = matching_value
+	(*obj).Type = type_value
+	(*obj).Id = id_value
 
 	return diags
 }
@@ -608,8 +492,6 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyToPango(ctx context.Con
 }
 func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ikeCryptoProfile_value := o.IkeCryptoProfile.ValueStringPointer()
-	requireCookie_value := o.RequireCookie.ValueBoolPointer()
 	var dpd_entry *gateway.ProtocolIkev2Dpd
 	if o.Dpd != nil {
 		if *obj != nil && (*obj).Dpd != nil {
@@ -623,13 +505,15 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Contex
 			return diags
 		}
 	}
+	ikeCryptoProfile_value := o.IkeCryptoProfile.ValueStringPointer()
+	requireCookie_value := o.RequireCookie.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.ProtocolIkev2)
 	}
+	(*obj).Dpd = dpd_entry
 	(*obj).IkeCryptoProfile = ikeCryptoProfile_value
 	(*obj).RequireCookie = requireCookie_value
-	(*obj).Dpd = dpd_entry
 
 	return diags
 }
@@ -646,9 +530,170 @@ func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
+func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var fragmentation_entry *gateway.ProtocolCommonFragmentation
+	if o.Fragmentation != nil {
+		if *obj != nil && (*obj).Fragmentation != nil {
+			fragmentation_entry = (*obj).Fragmentation
+		} else {
+			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
+		}
+
+		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var natTraversal_entry *gateway.ProtocolCommonNatTraversal
+	if o.NatTraversal != nil {
+		if *obj != nil && (*obj).NatTraversal != nil {
+			natTraversal_entry = (*obj).NatTraversal
+		} else {
+			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
+		}
+
+		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	passiveMode_value := o.PassiveMode.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommon)
+	}
+	(*obj).Fragmentation = fragmentation_entry
+	(*obj).NatTraversal = natTraversal_entry
+	(*obj).PassiveMode = passiveMode_value
+
+	return diags
+}
+func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
+	udpChecksumEnable_value := o.UdpChecksumEnable.ValueBoolPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommonNatTraversal)
+	}
+	(*obj).KeepAliveInterval = keepAliveInterval_value
+	(*obj).UdpChecksumEnable = udpChecksumEnable_value
+	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommonFragmentation)
+	}
+	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *IkeGatewayDataSourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	interface_value := o.Interface.ValueStringPointer()
+	floatingIp_value := o.FloatingIp.ValueStringPointer()
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.LocalAddress)
+	}
+	(*obj).Interface = interface_value
+	(*obj).FloatingIp = floatingIp_value
+	(*obj).Ip = ip_value
+
+	return diags
+}
+func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_entry *gateway.PeerAddressDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(gateway.PeerAddressDynamic)
+		}
+
+		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	fqdn_value := o.Fqdn.ValueStringPointer()
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.PeerAddress)
+	}
+	(*obj).Dynamic = dynamic_entry
+	(*obj).Fqdn = fqdn_value
+	(*obj).Ip = ip_value
+
+	return diags
+}
+func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(gateway.PeerAddressDynamic)
+	}
+
+	return diags
+}
 
 func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var localAddress_object *IkeGatewayDataSourceLocalAddressObject
+	if obj.LocalAddress != nil {
+		localAddress_object = new(IkeGatewayDataSourceLocalAddressObject)
+
+		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var peerAddress_object *IkeGatewayDataSourcePeerAddressObject
+	if obj.PeerAddress != nil {
+		peerAddress_object = new(IkeGatewayDataSourcePeerAddressObject)
+
+		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var protocolCommon_object *IkeGatewayDataSourceProtocolCommonObject
+	if obj.ProtocolCommon != nil {
+		protocolCommon_object = new(IkeGatewayDataSourceProtocolCommonObject)
+
+		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var peerId_object *IkeGatewayDataSourcePeerIdObject
+	if obj.PeerId != nil {
+		peerId_object = new(IkeGatewayDataSourcePeerIdObject)
+
+		diags.Append(peerId_object.CopyFromPango(ctx, obj.PeerId, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var protocol_object *IkeGatewayDataSourceProtocolObject
+	if obj.Protocol != nil {
+		protocol_object = new(IkeGatewayDataSourceProtocolObject)
+
+		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var authentication_object *IkeGatewayDataSourceAuthenticationObject
 	if obj.Authentication != nil {
 		authentication_object = new(IkeGatewayDataSourceAuthenticationObject)
@@ -667,51 +712,6 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 			return diags
 		}
 	}
-	var peerAddress_object *IkeGatewayDataSourcePeerAddressObject
-	if obj.PeerAddress != nil {
-		peerAddress_object = new(IkeGatewayDataSourcePeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var protocol_object *IkeGatewayDataSourceProtocolObject
-	if obj.Protocol != nil {
-		protocol_object = new(IkeGatewayDataSourceProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var localAddress_object *IkeGatewayDataSourceLocalAddressObject
-	if obj.LocalAddress != nil {
-		localAddress_object = new(IkeGatewayDataSourceLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var peerId_object *IkeGatewayDataSourcePeerIdObject
-	if obj.PeerId != nil {
-		peerId_object = new(IkeGatewayDataSourcePeerIdObject)
-
-		diags.Append(peerId_object.CopyFromPango(ctx, obj.PeerId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var protocolCommon_object *IkeGatewayDataSourceProtocolCommonObject
-	if obj.ProtocolCommon != nil {
-		protocolCommon_object = new(IkeGatewayDataSourceProtocolCommonObject)
-
-		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	var ipv6_value types.Bool
 	if obj.Ipv6 != nil {
@@ -726,104 +726,16 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Authentication = authentication_object
 	o.Ipv6 = ipv6_value
-	o.LocalId = localId_object
+	o.LocalAddress = localAddress_object
 	o.PeerAddress = peerAddress_object
-	o.Protocol = protocol_object
+	o.ProtocolCommon = protocolCommon_object
 	o.Comment = comment_value
 	o.Disabled = disabled_value
-	o.LocalAddress = localAddress_object
 	o.PeerId = peerId_object
-	o.ProtocolCommon = protocolCommon_object
-
-	return diags
-}
-
-func (o *IkeGatewayDataSourcePeerIdObject) CopyFromPango(ctx context.Context, obj *gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var id_value types.String
-	if obj.Id != nil {
-		id_value = types.StringValue(*obj.Id)
-	}
-	var matching_value types.String
-	if obj.Matching != nil {
-		matching_value = types.StringValue(*obj.Matching)
-	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Id = id_value
-	o.Matching = matching_value
-	o.Type = type_value
-
-	return diags
-}
-
-func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var fragmentation_object *IkeGatewayDataSourceProtocolCommonFragmentationObject
-	if obj.Fragmentation != nil {
-		fragmentation_object = new(IkeGatewayDataSourceProtocolCommonFragmentationObject)
-
-		diags.Append(fragmentation_object.CopyFromPango(ctx, obj.Fragmentation, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var natTraversal_object *IkeGatewayDataSourceProtocolCommonNatTraversalObject
-	if obj.NatTraversal != nil {
-		natTraversal_object = new(IkeGatewayDataSourceProtocolCommonNatTraversalObject)
-
-		diags.Append(natTraversal_object.CopyFromPango(ctx, obj.NatTraversal, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var passiveMode_value types.Bool
-	if obj.PassiveMode != nil {
-		passiveMode_value = types.BoolValue(*obj.PassiveMode)
-	}
-	o.PassiveMode = passiveMode_value
-	o.Fragmentation = fragmentation_object
-	o.NatTraversal = natTraversal_object
-
-	return diags
-}
-
-func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var keepAliveInterval_value types.Int64
-	if obj.KeepAliveInterval != nil {
-		keepAliveInterval_value = types.Int64Value(*obj.KeepAliveInterval)
-	}
-	var udpChecksumEnable_value types.Bool
-	if obj.UdpChecksumEnable != nil {
-		udpChecksumEnable_value = types.BoolValue(*obj.UdpChecksumEnable)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.KeepAliveInterval = keepAliveInterval_value
-	o.UdpChecksumEnable = udpChecksumEnable_value
-	o.Enable = enable_value
+	o.Protocol = protocol_object
+	o.Authentication = authentication_object
+	o.LocalId = localId_object
 
 	return diags
 }
@@ -879,6 +791,111 @@ func (o *IkeGatewayDataSourcePeerAddressObject) CopyFromPango(ctx context.Contex
 
 func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyFromPango(ctx context.Context, obj *gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var natTraversal_object *IkeGatewayDataSourceProtocolCommonNatTraversalObject
+	if obj.NatTraversal != nil {
+		natTraversal_object = new(IkeGatewayDataSourceProtocolCommonNatTraversalObject)
+
+		diags.Append(natTraversal_object.CopyFromPango(ctx, obj.NatTraversal, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var fragmentation_object *IkeGatewayDataSourceProtocolCommonFragmentationObject
+	if obj.Fragmentation != nil {
+		fragmentation_object = new(IkeGatewayDataSourceProtocolCommonFragmentationObject)
+
+		diags.Append(fragmentation_object.CopyFromPango(ctx, obj.Fragmentation, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var passiveMode_value types.Bool
+	if obj.PassiveMode != nil {
+		passiveMode_value = types.BoolValue(*obj.PassiveMode)
+	}
+	o.NatTraversal = natTraversal_object
+	o.PassiveMode = passiveMode_value
+	o.Fragmentation = fragmentation_object
+
+	return diags
+}
+
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var keepAliveInterval_value types.Int64
+	if obj.KeepAliveInterval != nil {
+		keepAliveInterval_value = types.Int64Value(*obj.KeepAliveInterval)
+	}
+	var udpChecksumEnable_value types.Bool
+	if obj.UdpChecksumEnable != nil {
+		udpChecksumEnable_value = types.BoolValue(*obj.UdpChecksumEnable)
+	}
+	o.Enable = enable_value
+	o.KeepAliveInterval = keepAliveInterval_value
+	o.UdpChecksumEnable = udpChecksumEnable_value
+
+	return diags
+}
+
+func (o *IkeGatewayDataSourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	var id_value types.String
+	if obj.Id != nil {
+		id_value = types.StringValue(*obj.Id)
+	}
+	o.Type = type_value
+	o.Id = id_value
+
+	return diags
+}
+
+func (o *IkeGatewayDataSourcePeerIdObject) CopyFromPango(ctx context.Context, obj *gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var id_value types.String
+	if obj.Id != nil {
+		id_value = types.StringValue(*obj.Id)
+	}
+	var matching_value types.String
+	if obj.Matching != nil {
+		matching_value = types.StringValue(*obj.Matching)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Id = id_value
+	o.Matching = matching_value
+	o.Type = type_value
 
 	return diags
 }
@@ -945,6 +962,10 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyFromPango(ctx context.Cont
 func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var interval_value types.Int64
+	if obj.Interval != nil {
+		interval_value = types.Int64Value(*obj.Interval)
+	}
 	var retry_value types.Int64
 	if obj.Retry != nil {
 		retry_value = types.Int64Value(*obj.Retry)
@@ -953,13 +974,9 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyFromPango(ctx context.C
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var interval_value types.Int64
-	if obj.Interval != nil {
-		interval_value = types.Int64Value(*obj.Interval)
-	}
+	o.Interval = interval_value
 	o.Retry = retry_value
 	o.Enable = enable_value
-	o.Interval = interval_value
 
 	return diags
 }
@@ -976,17 +993,17 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyFromPango(ctx context.Cont
 		}
 	}
 
-	var ikeCryptoProfile_value types.String
-	if obj.IkeCryptoProfile != nil {
-		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
-	}
 	var requireCookie_value types.Bool
 	if obj.RequireCookie != nil {
 		requireCookie_value = types.BoolValue(*obj.RequireCookie)
 	}
-	o.IkeCryptoProfile = ikeCryptoProfile_value
+	var ikeCryptoProfile_value types.String
+	if obj.IkeCryptoProfile != nil {
+		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
+	}
 	o.RequireCookie = requireCookie_value
 	o.Dpd = dpd_object
+	o.IkeCryptoProfile = ikeCryptoProfile_value
 
 	return diags
 }
@@ -1035,6 +1052,18 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
+func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
 func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localCertificate_object *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject
@@ -1047,14 +1076,6 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx 
 		}
 	}
 
-	var strictValidationRevocation_value types.Bool
-	if obj.StrictValidationRevocation != nil {
-		strictValidationRevocation_value = types.BoolValue(*obj.StrictValidationRevocation)
-	}
-	var useManagementAsSource_value types.Bool
-	if obj.UseManagementAsSource != nil {
-		useManagementAsSource_value = types.BoolValue(*obj.UseManagementAsSource)
-	}
 	var allowIdPayloadMismatch_value types.Bool
 	if obj.AllowIdPayloadMismatch != nil {
 		allowIdPayloadMismatch_value = types.BoolValue(*obj.AllowIdPayloadMismatch)
@@ -1063,11 +1084,19 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx 
 	if obj.CertificateProfile != nil {
 		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
 	}
-	o.StrictValidationRevocation = strictValidationRevocation_value
-	o.UseManagementAsSource = useManagementAsSource_value
+	var strictValidationRevocation_value types.Bool
+	if obj.StrictValidationRevocation != nil {
+		strictValidationRevocation_value = types.BoolValue(*obj.StrictValidationRevocation)
+	}
+	var useManagementAsSource_value types.Bool
+	if obj.UseManagementAsSource != nil {
+		useManagementAsSource_value = types.BoolValue(*obj.UseManagementAsSource)
+	}
 	o.AllowIdPayloadMismatch = allowIdPayloadMismatch_value
 	o.CertificateProfile = certificateProfile_value
 	o.LocalCertificate = localCertificate_object
+	o.StrictValidationRevocation = strictValidationRevocation_value
+	o.UseManagementAsSource = useManagementAsSource_value
 
 	return diags
 }
@@ -1111,35 +1140,6 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrl
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IkeGatewayDataSourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var id_value types.String
-	if obj.Id != nil {
-		id_value = types.StringValue(*obj.Id)
-	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Id = id_value
-	o.Type = type_value
-
-	return diags
-}
-
 func (o *IkeGatewayDataSourceModel) resourceXpathComponents() ([]string, error) {
 	var components []string
 	components = append(components, pangoutil.AsEntryXpath(
@@ -1178,14 +1178,6 @@ func IkeGatewayDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"local_address": IkeGatewayDataSourceLocalAddressSchema(),
-
-			"peer_id": IkeGatewayDataSourcePeerIdSchema(),
-
-			"protocol_common": IkeGatewayDataSourceProtocolCommonSchema(),
-
-			"authentication": IkeGatewayDataSourceAuthenticationSchema(),
-
 			"ipv6": dsschema.BoolAttribute{
 				Description: "use IPv6 for the IKE gateway",
 				Computed:    true,
@@ -1194,9 +1186,17 @@ func IkeGatewayDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"local_id": IkeGatewayDataSourceLocalIdSchema(),
+			"local_address": IkeGatewayDataSourceLocalAddressSchema(),
 
 			"peer_address": IkeGatewayDataSourcePeerAddressSchema(),
+
+			"protocol_common": IkeGatewayDataSourceProtocolCommonSchema(),
+
+			"authentication": IkeGatewayDataSourceAuthenticationSchema(),
+
+			"local_id": IkeGatewayDataSourceLocalIdSchema(),
+
+			"peer_id": IkeGatewayDataSourcePeerIdSchema(),
 
 			"protocol": IkeGatewayDataSourceProtocolSchema(),
 		},
@@ -1238,16 +1238,16 @@ func IkeGatewayDataSourceLocalAddressSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"floating_ip": dsschema.StringAttribute{
-				Description: "Floating IP address in HA Active-Active configuration",
+			"ip": dsschema.StringAttribute{
+				Description: "specify exact IP address if interface has multiple addresses",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"ip": dsschema.StringAttribute{
-				Description: "specify exact IP address if interface has multiple addresses",
+			"floating_ip": dsschema.StringAttribute{
+				Description: "Floating IP address in HA Active-Active configuration",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1275,7 +1275,7 @@ func (o *IkeGatewayDataSourceLocalAddressObject) getTypeFor(name string) attr.Ty
 	panic("unreachable")
 }
 
-func IkeGatewayDataSourcePeerIdSchema() dsschema.SingleNestedAttribute {
+func IkeGatewayDataSourcePeerAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -1284,35 +1284,66 @@ func IkeGatewayDataSourcePeerIdSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"type": dsschema.StringAttribute{
-				Description: "",
+			"fqdn": dsschema.StringAttribute{
+				Description: "peer gateway FQDN name",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"id": dsschema.StringAttribute{
-				Description: "Peer ID string",
+			"ip": dsschema.StringAttribute{
+				Description: "peer gateway has static IP address",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"matching": dsschema.StringAttribute{
-				Description: "Enable peer ID wildcard match for certificate authentication",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"dynamic": IkeGatewayDataSourcePeerAddressDynamicSchema(),
 		},
 	}
 }
 
-func (o *IkeGatewayDataSourcePeerIdObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayDataSourcePeerIdSchema()
+func (o *IkeGatewayDataSourcePeerAddressObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayDataSourcePeerAddressSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayDataSourcePeerAddressDynamicSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dynamic"),
+				path.MatchRelative().AtParent().AtName("fqdn"),
+				path.MatchRelative().AtParent().AtName("ip"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *IkeGatewayDataSourcePeerAddressDynamicObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayDataSourcePeerAddressDynamicSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1355,6 +1386,44 @@ func IkeGatewayDataSourceProtocolCommonSchema() dsschema.SingleNestedAttribute {
 
 func (o *IkeGatewayDataSourceProtocolCommonObject) getTypeFor(name string) attr.Type {
 	schema := IkeGatewayDataSourceProtocolCommonSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayDataSourceProtocolCommonFragmentationSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "Enable IKE fragmentation",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayDataSourceProtocolCommonFragmentationSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1425,44 +1494,6 @@ func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func IkeGatewayDataSourceProtocolCommonFragmentationSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Enable IKE fragmentation",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayDataSourceProtocolCommonFragmentationSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func IkeGatewayDataSourceAuthenticationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -1472,9 +1503,9 @@ func IkeGatewayDataSourceAuthenticationSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"pre_shared_key": IkeGatewayDataSourceAuthenticationPreSharedKeySchema(),
-
 			"certificate": IkeGatewayDataSourceAuthenticationCertificateSchema(),
+
+			"pre_shared_key": IkeGatewayDataSourceAuthenticationPreSharedKeySchema(),
 		},
 	}
 }
@@ -1513,6 +1544,16 @@ func IkeGatewayDataSourceAuthenticationCertificateSchema() dsschema.SingleNested
 		},
 		Attributes: map[string]dsschema.Attribute{
 
+			"local_certificate": IkeGatewayDataSourceAuthenticationCertificateLocalCertificateSchema(),
+
+			"strict_validation_revocation": dsschema.BoolAttribute{
+				Description: "Enable strict validation of peer's extended key use",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"use_management_as_source": dsschema.BoolAttribute{
 				Description: "Use management interface IP as source to retrieve http certificates",
 				Computed:    true,
@@ -1531,16 +1572,6 @@ func IkeGatewayDataSourceAuthenticationCertificateSchema() dsschema.SingleNested
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for certificate valdiation during IKE negotiation",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"local_certificate": IkeGatewayDataSourceAuthenticationCertificateLocalCertificateSchema(),
-
-			"strict_validation_revocation": dsschema.BoolAttribute{
-				Description: "Enable strict validation of peer's extended key use",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1745,7 +1776,7 @@ func (o *IkeGatewayDataSourceLocalIdObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func IkeGatewayDataSourcePeerAddressSchema() dsschema.SingleNestedAttribute {
+func IkeGatewayDataSourcePeerIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -1754,66 +1785,35 @@ func IkeGatewayDataSourcePeerAddressSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"fqdn": dsschema.StringAttribute{
-				Description: "peer gateway FQDN name",
+			"id": dsschema.StringAttribute{
+				Description: "Peer ID string",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"ip": dsschema.StringAttribute{
-				Description: "peer gateway has static IP address",
+			"matching": dsschema.StringAttribute{
+				Description: "Enable peer ID wildcard match for certificate authentication",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"dynamic": IkeGatewayDataSourcePeerAddressDynamicSchema(),
+			"type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
-func (o *IkeGatewayDataSourcePeerAddressObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayDataSourcePeerAddressSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayDataSourcePeerAddressDynamicSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic"),
-				path.MatchRelative().AtParent().AtName("fqdn"),
-				path.MatchRelative().AtParent().AtName("ip"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *IkeGatewayDataSourcePeerAddressDynamicObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayDataSourcePeerAddressDynamicSchema()
+func (o *IkeGatewayDataSourcePeerIdObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayDataSourcePeerIdSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1839,6 +1839,8 @@ func IkeGatewayDataSourceProtocolSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"ikev1": IkeGatewayDataSourceProtocolIkev1Schema(),
+
 			"ikev2": IkeGatewayDataSourceProtocolIkev2Schema(),
 
 			"version": dsschema.StringAttribute{
@@ -1848,8 +1850,6 @@ func IkeGatewayDataSourceProtocolSchema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"ikev1": IkeGatewayDataSourceProtocolIkev1Schema(),
 		},
 	}
 }
@@ -1881,18 +1881,18 @@ func IkeGatewayDataSourceProtocolIkev1Schema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"ike_crypto_profile": dsschema.StringAttribute{
-				Description: "IKE SA crypto profile name",
+			"dpd": IkeGatewayDataSourceProtocolIkev1DpdSchema(),
+
+			"exchange_mode": dsschema.StringAttribute{
+				Description: "Exchange mode",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"dpd": IkeGatewayDataSourceProtocolIkev1DpdSchema(),
-
-			"exchange_mode": dsschema.StringAttribute{
-				Description: "Exchange mode",
+			"ike_crypto_profile": dsschema.StringAttribute{
+				Description: "IKE SA crypto profile name",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1983,6 +1983,8 @@ func IkeGatewayDataSourceProtocolIkev2Schema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"dpd": IkeGatewayDataSourceProtocolIkev2DpdSchema(),
+
 			"ike_crypto_profile": dsschema.StringAttribute{
 				Description: "IKE SA crypto profile name",
 				Computed:    true,
@@ -1998,8 +2000,6 @@ func IkeGatewayDataSourceProtocolIkev2Schema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"dpd": IkeGatewayDataSourceProtocolIkev2DpdSchema(),
 		},
 	}
 }
@@ -2196,21 +2196,26 @@ func IkeGatewayResourceLocationSchema() rsschema.Attribute {
 type IkeGatewayResourceModel struct {
 	Location       IkeGatewayLocation                      `tfsdk:"location"`
 	Name           types.String                            `tfsdk:"name"`
+	PeerId         *IkeGatewayResourcePeerIdObject         `tfsdk:"peer_id"`
 	Protocol       *IkeGatewayResourceProtocolObject       `tfsdk:"protocol"`
 	Authentication *IkeGatewayResourceAuthenticationObject `tfsdk:"authentication"`
-	Ipv6           types.Bool                              `tfsdk:"ipv6"`
 	LocalId        *IkeGatewayResourceLocalIdObject        `tfsdk:"local_id"`
+	Ipv6           types.Bool                              `tfsdk:"ipv6"`
+	LocalAddress   *IkeGatewayResourceLocalAddressObject   `tfsdk:"local_address"`
 	PeerAddress    *IkeGatewayResourcePeerAddressObject    `tfsdk:"peer_address"`
 	ProtocolCommon *IkeGatewayResourceProtocolCommonObject `tfsdk:"protocol_common"`
 	Comment        types.String                            `tfsdk:"comment"`
 	Disabled       types.Bool                              `tfsdk:"disabled"`
-	LocalAddress   *IkeGatewayResourceLocalAddressObject   `tfsdk:"local_address"`
-	PeerId         *IkeGatewayResourcePeerIdObject         `tfsdk:"peer_id"`
+}
+type IkeGatewayResourcePeerIdObject struct {
+	Type     types.String `tfsdk:"type"`
+	Id       types.String `tfsdk:"id"`
+	Matching types.String `tfsdk:"matching"`
 }
 type IkeGatewayResourceProtocolObject struct {
+	Version types.String                           `tfsdk:"version"`
 	Ikev1   *IkeGatewayResourceProtocolIkev1Object `tfsdk:"ikev1"`
 	Ikev2   *IkeGatewayResourceProtocolIkev2Object `tfsdk:"ikev2"`
-	Version types.String                           `tfsdk:"version"`
 }
 type IkeGatewayResourceProtocolIkev1Object struct {
 	Dpd              *IkeGatewayResourceProtocolIkev1DpdObject `tfsdk:"dpd"`
@@ -2223,9 +2228,9 @@ type IkeGatewayResourceProtocolIkev1DpdObject struct {
 	Retry    types.Int64 `tfsdk:"retry"`
 }
 type IkeGatewayResourceProtocolIkev2Object struct {
+	Dpd              *IkeGatewayResourceProtocolIkev2DpdObject `tfsdk:"dpd"`
 	IkeCryptoProfile types.String                              `tfsdk:"ike_crypto_profile"`
 	RequireCookie    types.Bool                                `tfsdk:"require_cookie"`
-	Dpd              *IkeGatewayResourceProtocolIkev2DpdObject `tfsdk:"dpd"`
 }
 type IkeGatewayResourceProtocolIkev2DpdObject struct {
 	Enable   types.Bool  `tfsdk:"enable"`
@@ -2236,15 +2241,15 @@ type IkeGatewayResourceAuthenticationObject struct {
 	PreSharedKey *IkeGatewayResourceAuthenticationPreSharedKeyObject `tfsdk:"pre_shared_key"`
 }
 type IkeGatewayResourceAuthenticationCertificateObject struct {
-	StrictValidationRevocation types.Bool                                                         `tfsdk:"strict_validation_revocation"`
 	UseManagementAsSource      types.Bool                                                         `tfsdk:"use_management_as_source"`
 	AllowIdPayloadMismatch     types.Bool                                                         `tfsdk:"allow_id_payload_mismatch"`
 	CertificateProfile         types.String                                                       `tfsdk:"certificate_profile"`
 	LocalCertificate           *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject `tfsdk:"local_certificate"`
+	StrictValidationRevocation types.Bool                                                         `tfsdk:"strict_validation_revocation"`
 }
 type IkeGatewayResourceAuthenticationCertificateLocalCertificateObject struct {
-	HashAndUrl *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject `tfsdk:"hash_and_url"`
 	Name       types.String                                                                 `tfsdk:"name"`
+	HashAndUrl *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject `tfsdk:"hash_and_url"`
 }
 type IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject struct {
 	BaseUrl types.String `tfsdk:"base_url"`
@@ -2257,6 +2262,11 @@ type IkeGatewayResourceLocalIdObject struct {
 	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
+type IkeGatewayResourceLocalAddressObject struct {
+	Interface  types.String `tfsdk:"interface"`
+	FloatingIp types.String `tfsdk:"floating_ip"`
+	Ip         types.String `tfsdk:"ip"`
+}
 type IkeGatewayResourcePeerAddressObject struct {
 	Dynamic *IkeGatewayResourcePeerAddressDynamicObject `tfsdk:"dynamic"`
 	Fqdn    types.String                                `tfsdk:"fqdn"`
@@ -2265,9 +2275,9 @@ type IkeGatewayResourcePeerAddressObject struct {
 type IkeGatewayResourcePeerAddressDynamicObject struct {
 }
 type IkeGatewayResourceProtocolCommonObject struct {
+	PassiveMode   types.Bool                                           `tfsdk:"passive_mode"`
 	Fragmentation *IkeGatewayResourceProtocolCommonFragmentationObject `tfsdk:"fragmentation"`
 	NatTraversal  *IkeGatewayResourceProtocolCommonNatTraversalObject  `tfsdk:"nat_traversal"`
-	PassiveMode   types.Bool                                           `tfsdk:"passive_mode"`
 }
 type IkeGatewayResourceProtocolCommonFragmentationObject struct {
 	Enable types.Bool `tfsdk:"enable"`
@@ -2276,16 +2286,6 @@ type IkeGatewayResourceProtocolCommonNatTraversalObject struct {
 	Enable            types.Bool  `tfsdk:"enable"`
 	KeepAliveInterval types.Int64 `tfsdk:"keep_alive_interval"`
 	UdpChecksumEnable types.Bool  `tfsdk:"udp_checksum_enable"`
-}
-type IkeGatewayResourceLocalAddressObject struct {
-	Interface  types.String `tfsdk:"interface"`
-	FloatingIp types.String `tfsdk:"floating_ip"`
-	Ip         types.String `tfsdk:"ip"`
-}
-type IkeGatewayResourcePeerIdObject struct {
-	Id       types.String `tfsdk:"id"`
-	Matching types.String `tfsdk:"matching"`
-	Type     types.String `tfsdk:"type"`
 }
 
 func (r *IkeGatewayResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -2307,6 +2307,28 @@ func IkeGatewayResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"peer_id": IkeGatewayResourcePeerIdSchema(),
+
+			"protocol": IkeGatewayResourceProtocolSchema(),
+
+			"authentication": IkeGatewayResourceAuthenticationSchema(),
+
+			"local_id": IkeGatewayResourceLocalIdSchema(),
+
+			"ipv6": rsschema.BoolAttribute{
+				Description: "use IPv6 for the IKE gateway",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"local_address": IkeGatewayResourceLocalAddressSchema(),
+
+			"peer_address": IkeGatewayResourcePeerAddressSchema(),
+
+			"protocol_common": IkeGatewayResourceProtocolCommonSchema(),
+
 			"comment": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -2322,95 +2344,12 @@ func IkeGatewayResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"local_address": IkeGatewayResourceLocalAddressSchema(),
-
-			"peer_id": IkeGatewayResourcePeerIdSchema(),
-
-			"protocol_common": IkeGatewayResourceProtocolCommonSchema(),
-
-			"authentication": IkeGatewayResourceAuthenticationSchema(),
-
-			"ipv6": rsschema.BoolAttribute{
-				Description: "use IPv6 for the IKE gateway",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"local_id": IkeGatewayResourceLocalIdSchema(),
-
-			"peer_address": IkeGatewayResourcePeerAddressSchema(),
-
-			"protocol": IkeGatewayResourceProtocolSchema(),
 		},
 	}
 }
 
 func (o *IkeGatewayResourceModel) getTypeFor(name string) attr.Type {
 	schema := IkeGatewayResourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"interface": rsschema.StringAttribute{
-				Description: "local gateway end-point",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"floating_ip": rsschema.StringAttribute{
-				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-
-				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("floating_ip"),
-						path.MatchRelative().AtParent().AtName("ip"),
-					}...),
-				},
-			},
-
-			"ip": rsschema.StringAttribute{
-				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayResourceLocalAddressObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceLocalAddressSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2482,7 +2421,7 @@ func (o *IkeGatewayResourcePeerIdObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func IkeGatewayResourceProtocolCommonSchema() rsschema.SingleNestedAttribute {
+func IkeGatewayResourceProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -2491,116 +2430,226 @@ func IkeGatewayResourceProtocolCommonSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"fragmentation": IkeGatewayResourceProtocolCommonFragmentationSchema(),
+			"ikev1": IkeGatewayResourceProtocolIkev1Schema(),
 
-			"nat_traversal": IkeGatewayResourceProtocolCommonNatTraversalSchema(),
+			"ikev2": IkeGatewayResourceProtocolIkev2Schema(),
 
-			"passive_mode": rsschema.BoolAttribute{
-				Description: "Enable passive mode (responder only)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayResourceProtocolCommonObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolCommonSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceProtocolCommonFragmentationSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Enable IKE fragmentation",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayResourceProtocolCommonFragmentationObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolCommonFragmentationSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceProtocolCommonNatTraversalSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Enable NAT-Traversal",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"keep_alive_interval": rsschema.Int64Attribute{
-				Description: "sending interval for NAT keep-alive packets (in seconds)",
+			"version": rsschema.StringAttribute{
+				Description: "IKE protocol version",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(20),
-			},
-
-			"udp_checksum_enable": rsschema.BoolAttribute{
-				Description: "Enable UDP checksum",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+				Default:     stringdefault.StaticString("ikev1"),
 			},
 		},
 	}
 }
 
-func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolCommonNatTraversalSchema()
+func (o *IkeGatewayResourceProtocolObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayResourceProtocolIkev1Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"dpd": IkeGatewayResourceProtocolIkev1DpdSchema(),
+
+			"exchange_mode": rsschema.StringAttribute{
+				Description: "Exchange mode",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("auto"),
+			},
+
+			"ike_crypto_profile": rsschema.StringAttribute{
+				Description: "IKE SA crypto profile name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("default"),
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev1Object) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolIkev1Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayResourceProtocolIkev1DpdSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Enable Dead-Peer-Detection",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"interval": rsschema.Int64Attribute{
+				Description: "sending interval for probing packets (in seconds)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(5),
+			},
+
+			"retry": rsschema.Int64Attribute{
+				Description: "number of retries before disconnection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(5),
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolIkev1DpdSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayResourceProtocolIkev2Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"require_cookie": rsschema.BoolAttribute{
+				Description: "Require cookie",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"dpd": IkeGatewayResourceProtocolIkev2DpdSchema(),
+
+			"ike_crypto_profile": rsschema.StringAttribute{
+				Description: "IKE SA crypto profile name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("default"),
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev2Object) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolIkev2Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayResourceProtocolIkev2DpdSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Enable sending empty information liveness check message",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"interval": rsschema.Int64Attribute{
+				Description: "delay interval before sending probing packets (in seconds)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(5),
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolIkev2DpdSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2667,6 +2716,14 @@ func IkeGatewayResourceAuthenticationCertificateSchema() rsschema.SingleNestedAt
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"use_management_as_source": rsschema.BoolAttribute{
+				Description: "Use management interface IP as source to retrieve http certificates",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"allow_id_payload_mismatch": rsschema.BoolAttribute{
 				Description: "Permit peer identification and certificate payload identification mismatch",
 				Computed:    false,
@@ -2687,14 +2744,6 @@ func IkeGatewayResourceAuthenticationCertificateSchema() rsschema.SingleNestedAt
 
 			"strict_validation_revocation": rsschema.BoolAttribute{
 				Description: "Enable strict validation of peer's extended key use",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"use_management_as_source": rsschema.BoolAttribute{
-				Description: "Use management interface IP as source to retrieve http certificates",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -2899,6 +2948,67 @@ func (o *IkeGatewayResourceLocalIdObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func IkeGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"interface": rsschema.StringAttribute{
+				Description: "local gateway end-point",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"floating_ip": rsschema.StringAttribute{
+				Description: "Floating IP address in HA Active-Active configuration",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("floating_ip"),
+						path.MatchRelative().AtParent().AtName("ip"),
+					}...),
+				},
+			},
+
+			"ip": rsschema.StringAttribute{
+				Description: "specify exact IP address if interface has multiple addresses",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceLocalAddressObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceLocalAddressSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func IkeGatewayResourcePeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -2908,20 +3018,14 @@ func IkeGatewayResourcePeerAddressSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"dynamic": IkeGatewayResourcePeerAddressDynamicSchema(),
+
 			"fqdn": rsschema.StringAttribute{
 				Description: "peer gateway FQDN name",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-
-				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("dynamic"),
-						path.MatchRelative().AtParent().AtName("fqdn"),
-						path.MatchRelative().AtParent().AtName("ip"),
-					}...),
-				},
 			},
 
 			"ip": rsschema.StringAttribute{
@@ -2931,8 +3035,6 @@ func IkeGatewayResourcePeerAddressSchema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"dynamic": IkeGatewayResourcePeerAddressDynamicSchema(),
 		},
 	}
 }
@@ -2992,7 +3094,7 @@ func (o *IkeGatewayResourcePeerAddressDynamicObject) getTypeFor(name string) att
 	panic("unreachable")
 }
 
-func IkeGatewayResourceProtocolSchema() rsschema.SingleNestedAttribute {
+func IkeGatewayResourceProtocolCommonSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -3001,130 +3103,23 @@ func IkeGatewayResourceProtocolSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"ikev1": IkeGatewayResourceProtocolIkev1Schema(),
+			"fragmentation": IkeGatewayResourceProtocolCommonFragmentationSchema(),
 
-			"ikev2": IkeGatewayResourceProtocolIkev2Schema(),
+			"nat_traversal": IkeGatewayResourceProtocolCommonNatTraversalSchema(),
 
-			"version": rsschema.StringAttribute{
-				Description: "IKE protocol version",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("ikev1"),
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayResourceProtocolObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceProtocolIkev1Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dpd": IkeGatewayResourceProtocolIkev1DpdSchema(),
-
-			"exchange_mode": rsschema.StringAttribute{
-				Description: "Exchange mode",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("auto"),
-			},
-
-			"ike_crypto_profile": rsschema.StringAttribute{
-				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("default"),
-			},
-		},
-	}
-}
-
-func (o *IkeGatewayResourceProtocolIkev1Object) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolIkev1Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceProtocolIkev1DpdSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"retry": rsschema.Int64Attribute{
-				Description: "number of retries before disconnection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(5),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Enable Dead-Peer-Detection",
+			"passive_mode": rsschema.BoolAttribute{
+				Description: "Enable passive mode (responder only)",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"interval": rsschema.Int64Attribute{
-				Description: "sending interval for probing packets (in seconds)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(5),
-			},
 		},
 	}
 }
 
-func (o *IkeGatewayResourceProtocolIkev1DpdObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolIkev1DpdSchema()
+func (o *IkeGatewayResourceProtocolCommonObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolCommonSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3141,56 +3136,7 @@ func (o *IkeGatewayResourceProtocolIkev1DpdObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
-func IkeGatewayResourceProtocolIkev2Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"ike_crypto_profile": rsschema.StringAttribute{
-				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("default"),
-			},
-
-			"require_cookie": rsschema.BoolAttribute{
-				Description: "Require cookie",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dpd": IkeGatewayResourceProtocolIkev2DpdSchema(),
-		},
-	}
-}
-
-func (o *IkeGatewayResourceProtocolIkev2Object) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolIkev2Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IkeGatewayResourceProtocolIkev2DpdSchema() rsschema.SingleNestedAttribute {
+func IkeGatewayResourceProtocolCommonFragmentationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -3200,27 +3146,73 @@ func IkeGatewayResourceProtocolIkev2DpdSchema() rsschema.SingleNestedAttribute {
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
-				Description: "Enable sending empty information liveness check message",
+				Description: "Enable IKE fragmentation",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolCommonFragmentationSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IkeGatewayResourceProtocolCommonNatTraversalSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Enable NAT-Traversal",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"interval": rsschema.Int64Attribute{
-				Description: "delay interval before sending probing packets (in seconds)",
+			"keep_alive_interval": rsschema.Int64Attribute{
+				Description: "sending interval for NAT keep-alive packets (in seconds)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(5),
+				Default:     int64default.StaticInt64(20),
+			},
+
+			"udp_checksum_enable": rsschema.BoolAttribute{
+				Description: "Enable UDP checksum",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
 }
 
-func (o *IkeGatewayResourceProtocolIkev2DpdObject) getTypeFor(name string) attr.Type {
-	schema := IkeGatewayResourceProtocolIkev2DpdSchema()
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) getTypeFor(name string) attr.Type {
+	schema := IkeGatewayResourceProtocolCommonNatTraversalSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3264,33 +3256,6 @@ func (r *IkeGatewayResource) Configure(ctx context.Context, req resource.Configu
 
 func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipv6_value := o.Ipv6.ValueBoolPointer()
-	var localId_entry *gateway.LocalId
-	if o.LocalId != nil {
-		if *obj != nil && (*obj).LocalId != nil {
-			localId_entry = (*obj).LocalId
-		} else {
-			localId_entry = new(gateway.LocalId)
-		}
-
-		diags.Append(o.LocalId.CopyToPango(ctx, &localId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var peerAddress_entry *gateway.PeerAddress
-	if o.PeerAddress != nil {
-		if *obj != nil && (*obj).PeerAddress != nil {
-			peerAddress_entry = (*obj).PeerAddress
-		} else {
-			peerAddress_entry = new(gateway.PeerAddress)
-		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var protocol_entry *gateway.Protocol
 	if o.Protocol != nil {
 		if *obj != nil && (*obj).Protocol != nil {
@@ -3317,16 +3282,15 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 			return diags
 		}
 	}
-	disabled_value := o.Disabled.ValueBoolPointer()
-	var localAddress_entry *gateway.LocalAddress
-	if o.LocalAddress != nil {
-		if *obj != nil && (*obj).LocalAddress != nil {
-			localAddress_entry = (*obj).LocalAddress
+	var localId_entry *gateway.LocalId
+	if o.LocalId != nil {
+		if *obj != nil && (*obj).LocalId != nil {
+			localId_entry = (*obj).LocalId
 		} else {
-			localAddress_entry = new(gateway.LocalAddress)
+			localId_entry = new(gateway.LocalId)
 		}
 
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		diags.Append(o.LocalId.CopyToPango(ctx, &localId_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3340,6 +3304,32 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		}
 
 		diags.Append(o.PeerId.CopyToPango(ctx, &peerId_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var localAddress_entry *gateway.LocalAddress
+	if o.LocalAddress != nil {
+		if *obj != nil && (*obj).LocalAddress != nil {
+			localAddress_entry = (*obj).LocalAddress
+		} else {
+			localAddress_entry = new(gateway.LocalAddress)
+		}
+
+		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var peerAddress_entry *gateway.PeerAddress
+	if o.PeerAddress != nil {
+		if *obj != nil && (*obj).PeerAddress != nil {
+			peerAddress_entry = (*obj).PeerAddress
+		} else {
+			peerAddress_entry = new(gateway.PeerAddress)
+		}
+
+		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3358,39 +3348,144 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		}
 	}
 	comment_value := o.Comment.ValueStringPointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ipv6_value := o.Ipv6.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Ipv6 = ipv6_value
-	(*obj).LocalId = localId_entry
-	(*obj).PeerAddress = peerAddress_entry
 	(*obj).Protocol = protocol_entry
 	(*obj).Authentication = authentication_entry
-	(*obj).Disabled = disabled_value
-	(*obj).LocalAddress = localAddress_entry
+	(*obj).LocalId = localId_entry
 	(*obj).PeerId = peerId_entry
+	(*obj).LocalAddress = localAddress_entry
+	(*obj).PeerAddress = peerAddress_entry
 	(*obj).ProtocolCommon = protocolCommon_entry
 	(*obj).Comment = comment_value
+	(*obj).Disabled = disabled_value
+	(*obj).Ipv6 = ipv6_value
+
+	return diags
+}
+func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var fragmentation_entry *gateway.ProtocolCommonFragmentation
+	if o.Fragmentation != nil {
+		if *obj != nil && (*obj).Fragmentation != nil {
+			fragmentation_entry = (*obj).Fragmentation
+		} else {
+			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
+		}
+
+		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var natTraversal_entry *gateway.ProtocolCommonNatTraversal
+	if o.NatTraversal != nil {
+		if *obj != nil && (*obj).NatTraversal != nil {
+			natTraversal_entry = (*obj).NatTraversal
+		} else {
+			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
+		}
+
+		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	passiveMode_value := o.PassiveMode.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommon)
+	}
+	(*obj).Fragmentation = fragmentation_entry
+	(*obj).NatTraversal = natTraversal_entry
+	(*obj).PassiveMode = passiveMode_value
+
+	return diags
+}
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
+	udpChecksumEnable_value := o.UdpChecksumEnable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommonNatTraversal)
+	}
+	(*obj).Enable = enable_value
+	(*obj).KeepAliveInterval = keepAliveInterval_value
+	(*obj).UdpChecksumEnable = udpChecksumEnable_value
+
+	return diags
+}
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.ProtocolCommonFragmentation)
+	}
+	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *IkeGatewayResourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	interface_value := o.Interface.ValueStringPointer()
+	floatingIp_value := o.FloatingIp.ValueStringPointer()
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(gateway.LocalAddress)
+	}
+	(*obj).Interface = interface_value
+	(*obj).FloatingIp = floatingIp_value
+	(*obj).Ip = ip_value
+
+	return diags
+}
+func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	fqdn_value := o.Fqdn.ValueStringPointer()
+	ip_value := o.Ip.ValueStringPointer()
+	var dynamic_entry *gateway.PeerAddressDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(gateway.PeerAddressDynamic)
+		}
+
+		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(gateway.PeerAddress)
+	}
+	(*obj).Fqdn = fqdn_value
+	(*obj).Ip = ip_value
+	(*obj).Dynamic = dynamic_entry
+
+	return diags
+}
+func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(gateway.PeerAddressDynamic)
+	}
 
 	return diags
 }
 func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context, obj **gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var preSharedKey_entry *gateway.AuthenticationPreSharedKey
-	if o.PreSharedKey != nil {
-		if *obj != nil && (*obj).PreSharedKey != nil {
-			preSharedKey_entry = (*obj).PreSharedKey
-		} else {
-			preSharedKey_entry = new(gateway.AuthenticationPreSharedKey)
-		}
-
-		diags.Append(o.PreSharedKey.CopyToPango(ctx, &preSharedKey_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var certificate_entry *gateway.AuthenticationCertificate
 	if o.Certificate != nil {
 		if *obj != nil && (*obj).Certificate != nil {
@@ -3404,18 +3499,30 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context
 			return diags
 		}
 	}
+	var preSharedKey_entry *gateway.AuthenticationPreSharedKey
+	if o.PreSharedKey != nil {
+		if *obj != nil && (*obj).PreSharedKey != nil {
+			preSharedKey_entry = (*obj).PreSharedKey
+		} else {
+			preSharedKey_entry = new(gateway.AuthenticationPreSharedKey)
+		}
+
+		diags.Append(o.PreSharedKey.CopyToPango(ctx, &preSharedKey_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(gateway.Authentication)
 	}
-	(*obj).PreSharedKey = preSharedKey_entry
 	(*obj).Certificate = certificate_entry
+	(*obj).PreSharedKey = preSharedKey_entry
 
 	return diags
 }
 func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	useManagementAsSource_value := o.UseManagementAsSource.ValueBoolPointer()
 	allowIdPayloadMismatch_value := o.AllowIdPayloadMismatch.ValueBoolPointer()
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	var localCertificate_entry *gateway.AuthenticationCertificateLocalCertificate
@@ -3432,20 +3539,22 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx cont
 		}
 	}
 	strictValidationRevocation_value := o.StrictValidationRevocation.ValueBoolPointer()
+	useManagementAsSource_value := o.UseManagementAsSource.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.AuthenticationCertificate)
 	}
-	(*obj).UseManagementAsSource = useManagementAsSource_value
 	(*obj).AllowIdPayloadMismatch = allowIdPayloadMismatch_value
 	(*obj).CertificateProfile = certificateProfile_value
 	(*obj).LocalCertificate = localCertificate_entry
 	(*obj).StrictValidationRevocation = strictValidationRevocation_value
+	(*obj).UseManagementAsSource = useManagementAsSource_value
 
 	return diags
 }
 func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	name_value := o.Name.ValueStringPointer()
 	var hashAndUrl_entry *gateway.AuthenticationCertificateLocalCertificateHashAndUrl
 	if o.HashAndUrl != nil {
 		if *obj != nil && (*obj).HashAndUrl != nil {
@@ -3459,13 +3568,12 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) Copy
 			return diags
 		}
 	}
-	name_value := o.Name.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.AuthenticationCertificateLocalCertificate)
 	}
-	(*obj).HashAndUrl = hashAndUrl_entry
 	(*obj).Name = name_value
+	(*obj).HashAndUrl = hashAndUrl_entry
 
 	return diags
 }
@@ -3506,39 +3614,18 @@ func (o *IkeGatewayResourceLocalIdObject) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ip_value := o.Ip.ValueStringPointer()
-	var dynamic_entry *gateway.PeerAddressDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(gateway.PeerAddressDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	fqdn_value := o.Fqdn.ValueStringPointer()
+	id_value := o.Id.ValueStringPointer()
+	matching_value := o.Matching.ValueStringPointer()
+	type_value := o.Type.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(gateway.PeerAddress)
+		*obj = new(gateway.PeerId)
 	}
-	(*obj).Ip = ip_value
-	(*obj).Dynamic = dynamic_entry
-	(*obj).Fqdn = fqdn_value
-
-	return diags
-}
-func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(gateway.PeerAddressDynamic)
-	}
+	(*obj).Id = id_value
+	(*obj).Matching = matching_value
+	(*obj).Type = type_value
 
 	return diags
 }
@@ -3610,22 +3697,21 @@ func (o *IkeGatewayResourceProtocolIkev1Object) CopyToPango(ctx context.Context,
 }
 func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	retry_value := o.Retry.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	interval_value := o.Interval.ValueInt64Pointer()
-	retry_value := o.Retry.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.ProtocolIkev1Dpd)
 	}
+	(*obj).Retry = retry_value
 	(*obj).Enable = enable_value
 	(*obj).Interval = interval_value
-	(*obj).Retry = retry_value
 
 	return diags
 }
 func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	requireCookie_value := o.RequireCookie.ValueBoolPointer()
 	var dpd_entry *gateway.ProtocolIkev2Dpd
 	if o.Dpd != nil {
 		if *obj != nil && (*obj).Dpd != nil {
@@ -3640,13 +3726,14 @@ func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context,
 		}
 	}
 	ikeCryptoProfile_value := o.IkeCryptoProfile.ValueStringPointer()
+	requireCookie_value := o.RequireCookie.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(gateway.ProtocolIkev2)
 	}
-	(*obj).RequireCookie = requireCookie_value
 	(*obj).Dpd = dpd_entry
 	(*obj).IkeCryptoProfile = ikeCryptoProfile_value
+	(*obj).RequireCookie = requireCookie_value
 
 	return diags
 }
@@ -3663,145 +3750,14 @@ func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IkeGatewayResourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	interface_value := o.Interface.ValueStringPointer()
-	floatingIp_value := o.FloatingIp.ValueStringPointer()
-	ip_value := o.Ip.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.LocalAddress)
-	}
-	(*obj).Interface = interface_value
-	(*obj).FloatingIp = floatingIp_value
-	(*obj).Ip = ip_value
-
-	return diags
-}
-func (o *IkeGatewayResourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	id_value := o.Id.ValueStringPointer()
-	matching_value := o.Matching.ValueStringPointer()
-	type_value := o.Type.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.PeerId)
-	}
-	(*obj).Id = id_value
-	(*obj).Matching = matching_value
-	(*obj).Type = type_value
-
-	return diags
-}
-func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var natTraversal_entry *gateway.ProtocolCommonNatTraversal
-	if o.NatTraversal != nil {
-		if *obj != nil && (*obj).NatTraversal != nil {
-			natTraversal_entry = (*obj).NatTraversal
-		} else {
-			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
-		}
-
-		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	passiveMode_value := o.PassiveMode.ValueBoolPointer()
-	var fragmentation_entry *gateway.ProtocolCommonFragmentation
-	if o.Fragmentation != nil {
-		if *obj != nil && (*obj).Fragmentation != nil {
-			fragmentation_entry = (*obj).Fragmentation
-		} else {
-			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
-		}
-
-		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommon)
-	}
-	(*obj).NatTraversal = natTraversal_entry
-	(*obj).PassiveMode = passiveMode_value
-	(*obj).Fragmentation = fragmentation_entry
-
-	return diags
-}
-func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommonFragmentation)
-	}
-	(*obj).Enable = enable_value
-
-	return diags
-}
-func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
-	udpChecksumEnable_value := o.UdpChecksumEnable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(gateway.ProtocolCommonNatTraversal)
-	}
-	(*obj).Enable = enable_value
-	(*obj).KeepAliveInterval = keepAliveInterval_value
-	(*obj).UdpChecksumEnable = udpChecksumEnable_value
-
-	return diags
-}
 
 func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var localAddress_object *IkeGatewayResourceLocalAddressObject
-	if obj.LocalAddress != nil {
-		localAddress_object = new(IkeGatewayResourceLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var peerId_object *IkeGatewayResourcePeerIdObject
 	if obj.PeerId != nil {
 		peerId_object = new(IkeGatewayResourcePeerIdObject)
 
 		diags.Append(peerId_object.CopyFromPango(ctx, obj.PeerId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var protocolCommon_object *IkeGatewayResourceProtocolCommonObject
-	if obj.ProtocolCommon != nil {
-		protocolCommon_object = new(IkeGatewayResourceProtocolCommonObject)
-
-		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var localId_object *IkeGatewayResourceLocalIdObject
-	if obj.LocalId != nil {
-		localId_object = new(IkeGatewayResourceLocalIdObject)
-
-		diags.Append(localId_object.CopyFromPango(ctx, obj.LocalId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var peerAddress_object *IkeGatewayResourcePeerAddressObject
-	if obj.PeerAddress != nil {
-		peerAddress_object = new(IkeGatewayResourcePeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3824,7 +3780,47 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 			return diags
 		}
 	}
+	var localId_object *IkeGatewayResourceLocalIdObject
+	if obj.LocalId != nil {
+		localId_object = new(IkeGatewayResourceLocalIdObject)
 
+		diags.Append(localId_object.CopyFromPango(ctx, obj.LocalId, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var localAddress_object *IkeGatewayResourceLocalAddressObject
+	if obj.LocalAddress != nil {
+		localAddress_object = new(IkeGatewayResourceLocalAddressObject)
+
+		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var peerAddress_object *IkeGatewayResourcePeerAddressObject
+	if obj.PeerAddress != nil {
+		peerAddress_object = new(IkeGatewayResourcePeerAddressObject)
+
+		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var protocolCommon_object *IkeGatewayResourceProtocolCommonObject
+	if obj.ProtocolCommon != nil {
+		protocolCommon_object = new(IkeGatewayResourceProtocolCommonObject)
+
+		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipv6_value types.Bool
+	if obj.Ipv6 != nil {
+		ipv6_value = types.BoolValue(*obj.Ipv6)
+	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
@@ -3833,278 +3829,17 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
-	var ipv6_value types.Bool
-	if obj.Ipv6 != nil {
-		ipv6_value = types.BoolValue(*obj.Ipv6)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.LocalAddress = localAddress_object
 	o.PeerId = peerId_object
+	o.Protocol = protocol_object
+	o.Authentication = authentication_object
+	o.LocalId = localId_object
+	o.Ipv6 = ipv6_value
+	o.LocalAddress = localAddress_object
+	o.PeerAddress = peerAddress_object
 	o.ProtocolCommon = protocolCommon_object
 	o.Comment = comment_value
 	o.Disabled = disabled_value
-	o.LocalId = localId_object
-	o.PeerAddress = peerAddress_object
-	o.Protocol = protocol_object
-	o.Authentication = authentication_object
-	o.Ipv6 = ipv6_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, obj *gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var ikev1_object *IkeGatewayResourceProtocolIkev1Object
-	if obj.Ikev1 != nil {
-		ikev1_object = new(IkeGatewayResourceProtocolIkev1Object)
-
-		diags.Append(ikev1_object.CopyFromPango(ctx, obj.Ikev1, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ikev2_object *IkeGatewayResourceProtocolIkev2Object
-	if obj.Ikev2 != nil {
-		ikev2_object = new(IkeGatewayResourceProtocolIkev2Object)
-
-		diags.Append(ikev2_object.CopyFromPango(ctx, obj.Ikev2, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var version_value types.String
-	if obj.Version != nil {
-		version_value = types.StringValue(*obj.Version)
-	}
-	o.Ikev1 = ikev1_object
-	o.Ikev2 = ikev2_object
-	o.Version = version_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceProtocolIkev1Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dpd_object *IkeGatewayResourceProtocolIkev1DpdObject
-	if obj.Dpd != nil {
-		dpd_object = new(IkeGatewayResourceProtocolIkev1DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var exchangeMode_value types.String
-	if obj.ExchangeMode != nil {
-		exchangeMode_value = types.StringValue(*obj.ExchangeMode)
-	}
-	var ikeCryptoProfile_value types.String
-	if obj.IkeCryptoProfile != nil {
-		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
-	}
-	o.Dpd = dpd_object
-	o.ExchangeMode = exchangeMode_value
-	o.IkeCryptoProfile = ikeCryptoProfile_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var interval_value types.Int64
-	if obj.Interval != nil {
-		interval_value = types.Int64Value(*obj.Interval)
-	}
-	var retry_value types.Int64
-	if obj.Retry != nil {
-		retry_value = types.Int64Value(*obj.Retry)
-	}
-	o.Enable = enable_value
-	o.Interval = interval_value
-	o.Retry = retry_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceProtocolIkev2Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dpd_object *IkeGatewayResourceProtocolIkev2DpdObject
-	if obj.Dpd != nil {
-		dpd_object = new(IkeGatewayResourceProtocolIkev2DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var ikeCryptoProfile_value types.String
-	if obj.IkeCryptoProfile != nil {
-		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
-	}
-	var requireCookie_value types.Bool
-	if obj.RequireCookie != nil {
-		requireCookie_value = types.BoolValue(*obj.RequireCookie)
-	}
-	o.Dpd = dpd_object
-	o.IkeCryptoProfile = ikeCryptoProfile_value
-	o.RequireCookie = requireCookie_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var interval_value types.Int64
-	if obj.Interval != nil {
-		interval_value = types.Int64Value(*obj.Interval)
-	}
-	o.Enable = enable_value
-	o.Interval = interval_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Context, obj *gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var certificate_object *IkeGatewayResourceAuthenticationCertificateObject
-	if obj.Certificate != nil {
-		certificate_object = new(IkeGatewayResourceAuthenticationCertificateObject)
-
-		diags.Append(certificate_object.CopyFromPango(ctx, obj.Certificate, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var preSharedKey_object *IkeGatewayResourceAuthenticationPreSharedKeyObject
-	if obj.PreSharedKey != nil {
-		preSharedKey_object = new(IkeGatewayResourceAuthenticationPreSharedKeyObject)
-
-		diags.Append(preSharedKey_object.CopyFromPango(ctx, obj.PreSharedKey, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Certificate = certificate_object
-	o.PreSharedKey = preSharedKey_object
-
-	return diags
-}
-
-func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var localCertificate_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject
-	if obj.LocalCertificate != nil {
-		localCertificate_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateObject)
-
-		diags.Append(localCertificate_object.CopyFromPango(ctx, obj.LocalCertificate, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
-	var strictValidationRevocation_value types.Bool
-	if obj.StrictValidationRevocation != nil {
-		strictValidationRevocation_value = types.BoolValue(*obj.StrictValidationRevocation)
-	}
-	var useManagementAsSource_value types.Bool
-	if obj.UseManagementAsSource != nil {
-		useManagementAsSource_value = types.BoolValue(*obj.UseManagementAsSource)
-	}
-	var allowIdPayloadMismatch_value types.Bool
-	if obj.AllowIdPayloadMismatch != nil {
-		allowIdPayloadMismatch_value = types.BoolValue(*obj.AllowIdPayloadMismatch)
-	}
-	o.CertificateProfile = certificateProfile_value
-	o.LocalCertificate = localCertificate_object
-	o.StrictValidationRevocation = strictValidationRevocation_value
-	o.UseManagementAsSource = useManagementAsSource_value
-	o.AllowIdPayloadMismatch = allowIdPayloadMismatch_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var hashAndUrl_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
-	if obj.HashAndUrl != nil {
-		hashAndUrl_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject)
-
-		diags.Append(hashAndUrl_object.CopyFromPango(ctx, obj.HashAndUrl, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var name_value types.String
-	if obj.Name != nil {
-		name_value = types.StringValue(*obj.Name)
-	}
-	o.HashAndUrl = hashAndUrl_object
-	o.Name = name_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var baseUrl_value types.String
-	if obj.BaseUrl != nil {
-		baseUrl_value = types.StringValue(*obj.BaseUrl)
-	}
-	o.Enable = enable_value
-	o.BaseUrl = baseUrl_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IkeGatewayResourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var id_value types.String
-	if obj.Id != nil {
-		id_value = types.StringValue(*obj.Id)
-	}
-	var type_value types.String
-	if obj.Type != nil {
-		type_value = types.StringValue(*obj.Type)
-	}
-	o.Id = id_value
-	o.Type = type_value
 
 	return diags
 }
@@ -4174,28 +3909,6 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var keepAliveInterval_value types.Int64
-	if obj.KeepAliveInterval != nil {
-		keepAliveInterval_value = types.Int64Value(*obj.KeepAliveInterval)
-	}
-	var udpChecksumEnable_value types.Bool
-	if obj.UdpChecksumEnable != nil {
-		udpChecksumEnable_value = types.BoolValue(*obj.UdpChecksumEnable)
-	}
-	o.Enable = enable_value
-	o.KeepAliveInterval = keepAliveInterval_value
-	o.UdpChecksumEnable = udpChecksumEnable_value
-
-	return diags
-}
-
 func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -4208,6 +3921,28 @@ func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyFromPango(ctx 
 	return diags
 }
 
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var keepAliveInterval_value types.Int64
+	if obj.KeepAliveInterval != nil {
+		keepAliveInterval_value = types.Int64Value(*obj.KeepAliveInterval)
+	}
+	var udpChecksumEnable_value types.Bool
+	if obj.UdpChecksumEnable != nil {
+		udpChecksumEnable_value = types.BoolValue(*obj.UdpChecksumEnable)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.KeepAliveInterval = keepAliveInterval_value
+	o.UdpChecksumEnable = udpChecksumEnable_value
+	o.Enable = enable_value
+
+	return diags
+}
+
 func (o *IkeGatewayResourceLocalAddressObject) CopyFromPango(ctx context.Context, obj *gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -4215,17 +3950,149 @@ func (o *IkeGatewayResourceLocalAddressObject) CopyFromPango(ctx context.Context
 	if obj.Interface != nil {
 		interface_value = types.StringValue(*obj.Interface)
 	}
-	var ip_value types.String
-	if obj.Ip != nil {
-		ip_value = types.StringValue(*obj.Ip)
-	}
 	var floatingIp_value types.String
 	if obj.FloatingIp != nil {
 		floatingIp_value = types.StringValue(*obj.FloatingIp)
 	}
+	var ip_value types.String
+	if obj.Ip != nil {
+		ip_value = types.StringValue(*obj.Ip)
+	}
 	o.Interface = interface_value
-	o.Ip = ip_value
 	o.FloatingIp = floatingIp_value
+	o.Ip = ip_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Context, obj *gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var certificate_object *IkeGatewayResourceAuthenticationCertificateObject
+	if obj.Certificate != nil {
+		certificate_object = new(IkeGatewayResourceAuthenticationCertificateObject)
+
+		diags.Append(certificate_object.CopyFromPango(ctx, obj.Certificate, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var preSharedKey_object *IkeGatewayResourceAuthenticationPreSharedKeyObject
+	if obj.PreSharedKey != nil {
+		preSharedKey_object = new(IkeGatewayResourceAuthenticationPreSharedKeyObject)
+
+		diags.Append(preSharedKey_object.CopyFromPango(ctx, obj.PreSharedKey, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Certificate = certificate_object
+	o.PreSharedKey = preSharedKey_object
+
+	return diags
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var localCertificate_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject
+	if obj.LocalCertificate != nil {
+		localCertificate_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateObject)
+
+		diags.Append(localCertificate_object.CopyFromPango(ctx, obj.LocalCertificate, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var allowIdPayloadMismatch_value types.Bool
+	if obj.AllowIdPayloadMismatch != nil {
+		allowIdPayloadMismatch_value = types.BoolValue(*obj.AllowIdPayloadMismatch)
+	}
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
+	var strictValidationRevocation_value types.Bool
+	if obj.StrictValidationRevocation != nil {
+		strictValidationRevocation_value = types.BoolValue(*obj.StrictValidationRevocation)
+	}
+	var useManagementAsSource_value types.Bool
+	if obj.UseManagementAsSource != nil {
+		useManagementAsSource_value = types.BoolValue(*obj.UseManagementAsSource)
+	}
+	o.AllowIdPayloadMismatch = allowIdPayloadMismatch_value
+	o.CertificateProfile = certificateProfile_value
+	o.LocalCertificate = localCertificate_object
+	o.StrictValidationRevocation = strictValidationRevocation_value
+	o.UseManagementAsSource = useManagementAsSource_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var hashAndUrl_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
+	if obj.HashAndUrl != nil {
+		hashAndUrl_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject)
+
+		diags.Append(hashAndUrl_object.CopyFromPango(ctx, obj.HashAndUrl, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var name_value types.String
+	if obj.Name != nil {
+		name_value = types.StringValue(*obj.Name)
+	}
+	o.Name = name_value
+	o.HashAndUrl = hashAndUrl_object
+
+	return diags
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var baseUrl_value types.String
+	if obj.BaseUrl != nil {
+		baseUrl_value = types.StringValue(*obj.BaseUrl)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.BaseUrl = baseUrl_value
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var id_value types.String
+	if obj.Id != nil {
+		id_value = types.StringValue(*obj.Id)
+	}
+	var type_value types.String
+	if obj.Type != nil {
+		type_value = types.StringValue(*obj.Type)
+	}
+	o.Id = id_value
+	o.Type = type_value
 
 	return diags
 }
@@ -4248,6 +4115,131 @@ func (o *IkeGatewayResourcePeerIdObject) CopyFromPango(ctx context.Context, obj 
 	o.Id = id_value
 	o.Matching = matching_value
 	o.Type = type_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, obj *gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var ikev1_object *IkeGatewayResourceProtocolIkev1Object
+	if obj.Ikev1 != nil {
+		ikev1_object = new(IkeGatewayResourceProtocolIkev1Object)
+
+		diags.Append(ikev1_object.CopyFromPango(ctx, obj.Ikev1, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ikev2_object *IkeGatewayResourceProtocolIkev2Object
+	if obj.Ikev2 != nil {
+		ikev2_object = new(IkeGatewayResourceProtocolIkev2Object)
+
+		diags.Append(ikev2_object.CopyFromPango(ctx, obj.Ikev2, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var version_value types.String
+	if obj.Version != nil {
+		version_value = types.StringValue(*obj.Version)
+	}
+	o.Ikev1 = ikev1_object
+	o.Ikev2 = ikev2_object
+	o.Version = version_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceProtocolIkev1Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dpd_object *IkeGatewayResourceProtocolIkev1DpdObject
+	if obj.Dpd != nil {
+		dpd_object = new(IkeGatewayResourceProtocolIkev1DpdObject)
+
+		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var exchangeMode_value types.String
+	if obj.ExchangeMode != nil {
+		exchangeMode_value = types.StringValue(*obj.ExchangeMode)
+	}
+	var ikeCryptoProfile_value types.String
+	if obj.IkeCryptoProfile != nil {
+		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
+	}
+	o.Dpd = dpd_object
+	o.ExchangeMode = exchangeMode_value
+	o.IkeCryptoProfile = ikeCryptoProfile_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var interval_value types.Int64
+	if obj.Interval != nil {
+		interval_value = types.Int64Value(*obj.Interval)
+	}
+	var retry_value types.Int64
+	if obj.Retry != nil {
+		retry_value = types.Int64Value(*obj.Retry)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Interval = interval_value
+	o.Retry = retry_value
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceProtocolIkev2Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dpd_object *IkeGatewayResourceProtocolIkev2DpdObject
+	if obj.Dpd != nil {
+		dpd_object = new(IkeGatewayResourceProtocolIkev2DpdObject)
+
+		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ikeCryptoProfile_value types.String
+	if obj.IkeCryptoProfile != nil {
+		ikeCryptoProfile_value = types.StringValue(*obj.IkeCryptoProfile)
+	}
+	var requireCookie_value types.Bool
+	if obj.RequireCookie != nil {
+		requireCookie_value = types.BoolValue(*obj.RequireCookie)
+	}
+	o.Dpd = dpd_object
+	o.IkeCryptoProfile = ikeCryptoProfile_value
+	o.RequireCookie = requireCookie_value
+
+	return diags
+}
+
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var interval_value types.Int64
+	if obj.Interval != nil {
+		interval_value = types.Int64Value(*obj.Interval)
+	}
+	o.Enable = enable_value
+	o.Interval = interval_value
 
 	return diags
 }
@@ -4358,14 +4350,6 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	var location gateway.Location
 
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
-
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
 	if savestate.Location.Ngfw != nil {
 		location.Ngfw = &gateway.NgfwLocation{
 
@@ -4375,9 +4359,17 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 	if savestate.Location.Template != nil {
 		location.Template = &gateway.TemplateLocation{
 
+			Template:       savestate.Location.Template.Name.ValueString(),
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
+		}
+	}
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &gateway.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -4430,6 +4422,12 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	var location gateway.Location
 
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &gateway.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
 		location.Template = &gateway.TemplateLocation{
 
@@ -4441,15 +4439,9 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &gateway.TemplateStackLocation{
 
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -4547,9 +4539,9 @@ func (r *IkeGatewayResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &gateway.TemplateStackLocation{
 
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 		}
 	}
 
@@ -4626,9 +4618,9 @@ func (r *IkeGatewayResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 type IkeGatewayTemplateLocation struct {
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IkeGatewayTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -4649,32 +4641,6 @@ func IkeGatewayLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"ngfw": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific NGFW device",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("ngfw"),
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-					}...),
-				},
-			},
 			"template": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template",
 				Optional:    true,
@@ -4710,20 +4676,19 @@ func IkeGatewayLocationSchema() rsschema.Attribute {
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("ngfw"),
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+					}...),
+				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -4738,6 +4703,33 @@ func IkeGatewayLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"ngfw": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific NGFW device",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

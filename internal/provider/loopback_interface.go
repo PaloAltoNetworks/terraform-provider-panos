@@ -57,21 +57,26 @@ type LoopbackInterfaceDataSourceFilter struct {
 type LoopbackInterfaceDataSourceModel struct {
 	Location                   LoopbackInterfaceLocation                      `tfsdk:"location"`
 	Name                       types.String                                   `tfsdk:"name"`
+	NetflowProfile             types.String                                   `tfsdk:"netflow_profile"`
+	AdjustTcpMss               *LoopbackInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
+	Comment                    types.String                                   `tfsdk:"comment"`
 	InterfaceManagementProfile types.String                                   `tfsdk:"interface_management_profile"`
 	Ip                         types.List                                     `tfsdk:"ip"`
 	Ipv6                       *LoopbackInterfaceDataSourceIpv6Object         `tfsdk:"ipv6"`
 	Mtu                        types.Int64                                    `tfsdk:"mtu"`
-	NetflowProfile             types.String                                   `tfsdk:"netflow_profile"`
-	AdjustTcpMss               *LoopbackInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
-	Comment                    types.String                                   `tfsdk:"comment"`
+}
+type LoopbackInterfaceDataSourceAdjustTcpMssObject struct {
+	Enable            types.Bool  `tfsdk:"enable"`
+	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
 }
 type LoopbackInterfaceDataSourceIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
 type LoopbackInterfaceDataSourceIpv6Object struct {
-	Address     types.List   `tfsdk:"address"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	InterfaceId types.String `tfsdk:"interface_id"`
+	Address     types.List   `tfsdk:"address"`
 }
 type LoopbackInterfaceDataSourceIpv6AddressObject struct {
 	Name              types.String                                         `tfsdk:"name"`
@@ -83,15 +88,9 @@ type LoopbackInterfaceDataSourceIpv6AddressPrefixObject struct {
 }
 type LoopbackInterfaceDataSourceIpv6AddressAnycastObject struct {
 }
-type LoopbackInterfaceDataSourceAdjustTcpMssObject struct {
-	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
-	Enable            types.Bool  `tfsdk:"enable"`
-	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
-}
 
 func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	mtu_value := o.Mtu.ValueInt64Pointer()
 	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var adjustTcpMss_entry *loopback.AdjustTcpMss
 	if o.AdjustTcpMss != nil {
@@ -138,33 +137,19 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj 
 			return diags
 		}
 	}
+	mtu_value := o.Mtu.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(loopback.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Mtu = mtu_value
 	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).AdjustTcpMss = adjustTcpMss_entry
 	(*obj).Comment = comment_value
 	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
 	(*obj).Ip = ip_pango_entries
 	(*obj).Ipv6 = ipv6_entry
-
-	return diags
-}
-func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
-	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(loopback.AdjustTcpMss)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
-	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
+	(*obj).Mtu = mtu_value
 
 	return diags
 }
@@ -249,6 +234,15 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.C
 
 	return diags
 }
+func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(loopback.Ipv6AddressAnycast)
+	}
+
+	return diags
+}
 func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -258,12 +252,18 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
+	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(loopback.Ipv6AddressAnycast)
+		*obj = new(loopback.AdjustTcpMss)
 	}
+	(*obj).Enable = enable_value
+	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
+	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
@@ -284,20 +284,20 @@ func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ob
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var adjustTcpMss_object *LoopbackInterfaceDataSourceAdjustTcpMssObject
-	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(LoopbackInterfaceDataSourceAdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ipv6_object *LoopbackInterfaceDataSourceIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LoopbackInterfaceDataSourceIpv6Object)
 
 		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var adjustTcpMss_object *LoopbackInterfaceDataSourceAdjustTcpMssObject
+	if obj.AdjustTcpMss != nil {
+		adjustTcpMss_object = new(LoopbackInterfaceDataSourceAdjustTcpMssObject)
+
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -320,13 +320,13 @@ func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ob
 		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
 	}
 	o.Name = types.StringValue(obj.Name)
+	o.Ip = ip_list
+	o.Ipv6 = ipv6_object
 	o.Mtu = mtu_value
 	o.NetflowProfile = netflowProfile_value
 	o.AdjustTcpMss = adjustTcpMss_object
 	o.Comment = comment_value
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
-	o.Ip = ip_list
-	o.Ipv6 = ipv6_object
 
 	return diags
 }
@@ -567,6 +567,14 @@ func LoopbackInterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"interface_id": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -578,14 +586,6 @@ func LoopbackInterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"interface_id": dsschema.StringAttribute{
-				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -817,9 +817,9 @@ func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.R
 	if savestate.Location.Template != nil {
 		location.Template = &loopback.TemplateLocation{
 
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
@@ -898,13 +898,13 @@ func LoopbackInterfaceResourceLocationSchema() rsschema.Attribute {
 type LoopbackInterfaceResourceModel struct {
 	Location                   LoopbackInterfaceLocation                    `tfsdk:"location"`
 	Name                       types.String                                 `tfsdk:"name"`
+	Mtu                        types.Int64                                  `tfsdk:"mtu"`
 	NetflowProfile             types.String                                 `tfsdk:"netflow_profile"`
 	AdjustTcpMss               *LoopbackInterfaceResourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
 	Comment                    types.String                                 `tfsdk:"comment"`
 	InterfaceManagementProfile types.String                                 `tfsdk:"interface_management_profile"`
 	Ip                         types.List                                   `tfsdk:"ip"`
 	Ipv6                       *LoopbackInterfaceResourceIpv6Object         `tfsdk:"ipv6"`
-	Mtu                        types.Int64                                  `tfsdk:"mtu"`
 }
 type LoopbackInterfaceResourceAdjustTcpMssObject struct {
 	Enable            types.Bool  `tfsdk:"enable"`
@@ -949,6 +949,24 @@ func LoopbackInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"ipv6": LoopbackInterfaceResourceIpv6Schema(),
+
+			"mtu": rsschema.Int64Attribute{
+				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"netflow_profile": rsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"adjust_tcp_mss": LoopbackInterfaceResourceAdjustTcpMssSchema(),
 
 			"comment": rsschema.StringAttribute{
@@ -975,119 +993,12 @@ func LoopbackInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:    false,
 				NestedObject: LoopbackInterfaceResourceIpSchema(),
 			},
-
-			"ipv6": LoopbackInterfaceResourceIpv6Schema(),
-
-			"mtu": rsschema.Int64Attribute{
-				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"netflow_profile": rsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
 
 func (o *LoopbackInterfaceResourceModel) getTypeFor(name string) attr.Type {
 	schema := LoopbackInterfaceResourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func LoopbackInterfaceResourceAdjustTcpMssSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Set if TCP MSS value should be reduced based on mtu",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ipv4_mss_adjustment": rsschema.Int64Attribute{
-				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(40),
-			},
-
-			"ipv6_mss_adjustment": rsschema.Int64Attribute{
-				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(60),
-			},
-		},
-	}
-}
-
-func (o *LoopbackInterfaceResourceAdjustTcpMssObject) getTypeFor(name string) attr.Type {
-	schema := LoopbackInterfaceResourceAdjustTcpMssSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func LoopbackInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *LoopbackInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
-	schema := LoopbackInterfaceResourceIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1205,6 +1116,35 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) getTypeFor(name string) att
 	panic("unreachable")
 }
 
+func LoopbackInterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) getTypeFor(name string) attr.Type {
+	schema := LoopbackInterfaceResourceIpv6AddressPrefixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func LoopbackInterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -1234,19 +1174,79 @@ func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) getTypeFor(name stri
 	panic("unreachable")
 }
 
-func LoopbackInterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
+func LoopbackInterfaceResourceAdjustTcpMssSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
-		Attributes:  map[string]rsschema.Attribute{},
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Set if TCP MSS value should be reduced based on mtu",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ipv4_mss_adjustment": rsschema.Int64Attribute{
+				Description: "IPv4 MSS adjustment size (in bytes)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(40),
+			},
+
+			"ipv6_mss_adjustment": rsschema.Int64Attribute{
+				Description: "IPv6 MSS adjustment size (in bytes)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(60),
+			},
+		},
 	}
 }
 
-func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) getTypeFor(name string) attr.Type {
-	schema := LoopbackInterfaceResourceIpv6AddressPrefixSchema()
+func (o *LoopbackInterfaceResourceAdjustTcpMssObject) getTypeFor(name string) attr.Type {
+	schema := LoopbackInterfaceResourceAdjustTcpMssSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func LoopbackInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *LoopbackInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
+	schema := LoopbackInterfaceResourceIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1290,19 +1290,6 @@ func (r *LoopbackInterfaceResource) Configure(ctx context.Context, req resource.
 
 func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ipv6_entry *loopback.Ipv6
-	if o.Ipv6 != nil {
-		if *obj != nil && (*obj).Ipv6 != nil {
-			ipv6_entry = (*obj).Ipv6
-		} else {
-			ipv6_entry = new(loopback.Ipv6)
-		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	mtu_value := o.Mtu.ValueInt64Pointer()
 	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var adjustTcpMss_entry *loopback.AdjustTcpMss
@@ -1337,18 +1324,41 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **
 			ip_pango_entries = append(ip_pango_entries, *entry)
 		}
 	}
+	var ipv6_entry *loopback.Ipv6
+	if o.Ipv6 != nil {
+		if *obj != nil && (*obj).Ipv6 != nil {
+			ipv6_entry = (*obj).Ipv6
+		} else {
+			ipv6_entry = new(loopback.Ipv6)
+		}
+
+		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(loopback.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Ipv6 = ipv6_entry
 	(*obj).Mtu = mtu_value
 	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).AdjustTcpMss = adjustTcpMss_entry
 	(*obj).Comment = comment_value
 	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
 	(*obj).Ip = ip_pango_entries
+	(*obj).Ipv6 = ipv6_entry
+
+	return diags
+}
+func (o *LoopbackInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj **loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(loopback.Ip)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -1385,7 +1395,6 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, o
 }
 func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *loopback.Ipv6AddressPrefix
 	if o.Prefix != nil {
 		if *obj != nil && (*obj).Prefix != nil {
@@ -1412,14 +1421,15 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(loopback.Ipv6Address)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).EnableOnInterface = enableOnInterface_value
 	(*obj).Prefix = prefix_entry
 	(*obj).Anycast = anycast_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
 
 	return diags
 }
@@ -1443,26 +1453,16 @@ func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx cont
 }
 func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
 	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(loopback.AdjustTcpMss)
 	}
-	(*obj).Enable = enable_value
 	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
 	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
-
-	return diags
-}
-func (o *LoopbackInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj **loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(loopback.Ip)
-	}
-	(*obj).Name = o.Name.ValueString()
+	(*obj).Enable = enable_value
 
 	return diags
 }
@@ -1502,10 +1502,6 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 		}
 	}
 
-	var netflowProfile_value types.String
-	if obj.NetflowProfile != nil {
-		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
-	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
@@ -1518,14 +1514,18 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 	if obj.Mtu != nil {
 		mtu_value = types.Int64Value(*obj.Mtu)
 	}
+	var netflowProfile_value types.String
+	if obj.NetflowProfile != nil {
+		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.NetflowProfile = netflowProfile_value
 	o.AdjustTcpMss = adjustTcpMss_object
 	o.Comment = comment_value
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
 	o.Ip = ip_list
 	o.Ipv6 = ipv6_object
 	o.Mtu = mtu_value
+	o.NetflowProfile = netflowProfile_value
 
 	return diags
 }
@@ -1533,6 +1533,10 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var ipv6MssAdjustment_value types.Int64
+	if obj.Ipv6MssAdjustment != nil {
+		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
+	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
@@ -1541,13 +1545,9 @@ func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.
 	if obj.Ipv4MssAdjustment != nil {
 		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
 	}
-	var ipv6MssAdjustment_value types.Int64
-	if obj.Ipv6MssAdjustment != nil {
-		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
-	}
+	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
 	o.Enable = enable_value
 	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
-	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
@@ -1584,9 +1584,9 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context,
 	if obj.InterfaceId != nil {
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
+	o.Address = address_list
 	o.Enabled = enabled_value
 	o.InterfaceId = interfaceId_value
-	o.Address = address_list
 
 	return diags
 }
@@ -1668,6 +1668,14 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 
 	var location loopback.Location
 
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &loopback.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Ngfw != nil {
 		location.Ngfw = &loopback.NgfwLocation{
 
@@ -1680,14 +1688,6 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
-		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1742,26 +1742,26 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 
 	var location loopback.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 	if savestate.Location.Template != nil {
 		location.Template = &loopback.TemplateLocation{
 
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &loopback.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1831,9 +1831,9 @@ func (r *LoopbackInterfaceResource) Update(ctx context.Context, req resource.Upd
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &loopback.TemplateStackLocation{
 
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1914,26 +1914,26 @@ func (r *LoopbackInterfaceResource) Delete(ctx context.Context, req resource.Del
 
 	var location loopback.Location
 
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &loopback.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
 		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -2013,9 +2013,9 @@ type LoopbackInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type LoopbackInterfaceTemplateLocation struct {
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type LoopbackInterfaceTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -2063,15 +2063,6 @@ func LoopbackInterfaceLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -2086,6 +2077,15 @@ func LoopbackInterfaceLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

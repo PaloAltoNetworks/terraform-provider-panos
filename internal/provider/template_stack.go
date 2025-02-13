@@ -54,11 +54,11 @@ type TemplateStackDataSourceFilter struct {
 type TemplateStackDataSourceModel struct {
 	Location        TemplateStackLocation                         `tfsdk:"location"`
 	Name            types.String                                  `tfsdk:"name"`
+	Description     types.String                                  `tfsdk:"description"`
 	Templates       types.List                                    `tfsdk:"templates"`
 	Devices         types.List                                    `tfsdk:"devices"`
 	DefaultVsys     types.String                                  `tfsdk:"default_vsys"`
 	UserGroupSource *TemplateStackDataSourceUserGroupSourceObject `tfsdk:"user_group_source"`
-	Description     types.String                                  `tfsdk:"description"`
 }
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
@@ -66,6 +66,17 @@ type TemplateStackDataSourceUserGroupSourceObject struct {
 
 func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	templates_pango_entries := make([]string, 0)
+	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	devices_pango_entries := make([]string, 0)
+	diags.Append(o.Devices.ElementsAs(ctx, &devices_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
 	var userGroupSource_entry *template_stack.UserGroupSource
 	if o.UserGroupSource != nil {
@@ -80,27 +91,16 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **te
 			return diags
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	devices_pango_entries := make([]string, 0)
-	diags.Append(o.Devices.ElementsAs(ctx, &devices_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(template_stack.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).DefaultVsys = defaultVsys_value
-	(*obj).UserGroupSource = userGroupSource_entry
 	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
+	(*obj).DefaultVsys = defaultVsys_value
+	(*obj).UserGroupSource = userGroupSource_entry
 
 	return diags
 }
@@ -192,6 +192,16 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"default_vsys": dsschema.StringAttribute{
+				Description: "Default virtual system",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"user_group_source": TemplateStackDataSourceUserGroupSourceSchema(),
+
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
 				Computed:    true,
@@ -217,16 +227,6 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
-
-			"default_vsys": dsschema.StringAttribute{
-				Description: "Default virtual system",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"user_group_source": TemplateStackDataSourceUserGroupSourceSchema(),
 		},
 	}
 }
@@ -399,11 +399,11 @@ func TemplateStackResourceLocationSchema() rsschema.Attribute {
 type TemplateStackResourceModel struct {
 	Location        TemplateStackLocation                       `tfsdk:"location"`
 	Name            types.String                                `tfsdk:"name"`
-	DefaultVsys     types.String                                `tfsdk:"default_vsys"`
-	UserGroupSource *TemplateStackResourceUserGroupSourceObject `tfsdk:"user_group_source"`
 	Description     types.String                                `tfsdk:"description"`
 	Templates       types.List                                  `tfsdk:"templates"`
 	Devices         types.List                                  `tfsdk:"devices"`
+	DefaultVsys     types.String                                `tfsdk:"default_vsys"`
+	UserGroupSource *TemplateStackResourceUserGroupSourceObject `tfsdk:"user_group_source"`
 }
 type TemplateStackResourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
@@ -550,6 +550,7 @@ func (r *TemplateStackResource) Configure(ctx context.Context, req resource.Conf
 
 func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
 	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
 	if diags.HasError() {
@@ -574,17 +575,16 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **temp
 			return diags
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template_stack.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).Templates = templates_pango_entries
 	(*obj).Devices = devices_pango_entries
 	(*obj).DefaultVsys = defaultVsys_value
 	(*obj).UserGroupSource = userGroupSource_entry
-	(*obj).Description = description_value
 
 	return diags
 }
@@ -624,20 +624,20 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, obj *tem
 		}
 	}
 
-	var defaultVsys_value types.String
-	if obj.DefaultVsys != nil {
-		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var defaultVsys_value types.String
+	if obj.DefaultVsys != nil {
+		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.DefaultVsys = defaultVsys_value
-	o.UserGroupSource = userGroupSource_object
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
+	o.DefaultVsys = defaultVsys_value
+	o.UserGroupSource = userGroupSource_object
 
 	return diags
 }

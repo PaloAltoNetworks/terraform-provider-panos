@@ -67,16 +67,16 @@ func DeviceGroupParentDataSourceSchema() dsschema.Schema {
 
 			"location": DeviceGroupParentDataSourceLocationSchema(),
 
-			"parent": dsschema.StringAttribute{
-				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
+			"device_group": dsschema.StringAttribute{
+				Description: "The device group whose parent is being set",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"device_group": dsschema.StringAttribute{
-				Description: "The device group whose parent is being set",
+			"parent": dsschema.StringAttribute{
+				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -177,8 +177,8 @@ func DeviceGroupParentResourceLocationSchema() rsschema.Attribute {
 
 type DeviceGroupParentResourceModel struct {
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	Parent      types.String              `tfsdk:"parent"`
 	DeviceGroup types.String              `tfsdk:"device_group"`
+	Parent      types.String              `tfsdk:"parent"`
 }
 
 func (r *DeviceGroupParentResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
