@@ -12,9 +12,8 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -61,21 +60,21 @@ type AddressDataSourceModel struct {
 	Description     types.String    `tfsdk:"description"`
 	DisableOverride types.String    `tfsdk:"disable_override"`
 	Tags            types.List      `tfsdk:"tags"`
-	IpWildcard      types.String    `tfsdk:"ip_wildcard"`
 	Fqdn            types.String    `tfsdk:"fqdn"`
 	IpNetmask       types.String    `tfsdk:"ip_netmask"`
 	IpRange         types.String    `tfsdk:"ip_range"`
+	IpWildcard      types.String    `tfsdk:"ip_wildcard"`
 }
 
 func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	tags_pango_entries := make([]string, 0)
 	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
+	description_value := o.Description.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -85,9 +84,9 @@ func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, obj **address.
 		*obj = new(address.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tags_pango_entries
+	(*obj).Description = description_value
 	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).IpRange = ipRange_value
@@ -113,10 +112,6 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var ipRange_value types.String
-	if obj.IpRange != nil {
-		ipRange_value = types.StringValue(*obj.IpRange)
-	}
 	var ipWildcard_value types.String
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
@@ -129,24 +124,20 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
+	var ipRange_value types.String
+	if obj.IpRange != nil {
+		ipRange_value = types.StringValue(*obj.IpRange)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
 	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
+	o.IpRange = ipRange_value
 
 	return diags
-}
-
-func (o *AddressDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func AddressDataSourceSchema() dsschema.Schema {
@@ -304,13 +295,8 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -367,10 +353,10 @@ type AddressResourceModel struct {
 	Description     types.String    `tfsdk:"description"`
 	DisableOverride types.String    `tfsdk:"disable_override"`
 	Tags            types.List      `tfsdk:"tags"`
-	Fqdn            types.String    `tfsdk:"fqdn"`
 	IpNetmask       types.String    `tfsdk:"ip_netmask"`
 	IpRange         types.String    `tfsdk:"ip_range"`
 	IpWildcard      types.String    `tfsdk:"ip_wildcard"`
+	Fqdn            types.String    `tfsdk:"fqdn"`
 }
 
 func (r *AddressResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -425,8 +411,8 @@ func AddressResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"fqdn": rsschema.StringAttribute{
-				Description: "The FQDN value.",
+			"ip_range": rsschema.StringAttribute{
+				Description: "The IP range value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -434,32 +420,32 @@ func AddressResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("fqdn"),
 						path.MatchRelative().AtParent().AtName("ip_netmask"),
 						path.MatchRelative().AtParent().AtName("ip_range"),
 						path.MatchRelative().AtParent().AtName("ip_wildcard"),
+						path.MatchRelative().AtParent().AtName("fqdn"),
 					}...),
 				},
 			},
 
-			"ip_netmask": rsschema.StringAttribute{
-				Description: "The IP netmask value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ip_range": rsschema.StringAttribute{
-				Description: "The IP range value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"ip_wildcard": rsschema.StringAttribute{
 				Description: "The IP wildcard value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"fqdn": rsschema.StringAttribute{
+				Description: "The FQDN value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_netmask": rsschema.StringAttribute{
+				Description: "The IP netmask value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -558,6 +544,10 @@ func (o *AddressResourceModel) CopyFromPango(ctx context.Context, obj *address.E
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
+	var fqdn_value types.String
+	if obj.Fqdn != nil {
+		fqdn_value = types.StringValue(*obj.Fqdn)
+	}
 	var ipNetmask_value types.String
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
@@ -570,28 +560,16 @@ func (o *AddressResourceModel) CopyFromPango(ctx context.Context, obj *address.E
 	if obj.IpWildcard != nil {
 		ipWildcard_value = types.StringValue(*obj.IpWildcard)
 	}
-	var fqdn_value types.String
-	if obj.Fqdn != nil {
-		fqdn_value = types.StringValue(*obj.Fqdn)
-	}
 	o.Name = types.StringValue(obj.Name)
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
+	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
 	o.IpWildcard = ipWildcard_value
-	o.Fqdn = fqdn_value
 
 	return diags
-}
-
-func (o *AddressResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -624,8 +602,8 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 	if state.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -656,13 +634,7 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -687,13 +659,6 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	var location address.Location
 
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &address.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
-		}
-	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &address.DeviceGroupLocation{
 
@@ -704,6 +669,13 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
+	if savestate.Location.Vsys != nil {
+		location.Vsys = &address.VsysLocation{
+
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -712,13 +684,8 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -783,14 +750,7 @@ func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -862,8 +822,8 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if state.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -939,18 +899,18 @@ func (r *AddressResource) ImportState(ctx context.Context, req resource.ImportSt
 
 }
 
-type AddressDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-}
 type AddressVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type AddressDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type AddressLocation struct {
-	DeviceGroup *AddressDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                  `tfsdk:"shared"`
 	Vsys        *AddressVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *AddressDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func AddressLocationSchema() rsschema.Attribute {
@@ -958,19 +918,46 @@ func AddressLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"device_group": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Device Group",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
+				},
+			},
 			"shared": rsschema.BoolAttribute{
 				Description: "Location in Shared Panorama",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
-					}...),
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
@@ -991,33 +978,6 @@ func AddressLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
-			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific Device Group",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Panorama device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

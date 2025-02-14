@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/antivirus"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -58,23 +57,15 @@ type AntivirusSecurityProfileDataSourceFilter struct {
 type AntivirusSecurityProfileDataSourceModel struct {
 	Location                  AntivirusSecurityProfileLocation `tfsdk:"location"`
 	Name                      types.String                     `tfsdk:"name"`
-	Description               types.String                     `tfsdk:"description"`
-	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
 	WfrtHoldMode              types.Bool                       `tfsdk:"wfrt_hold_mode"`
-	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
-	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
 	ApplicationExceptions     types.List                       `tfsdk:"application_exceptions"`
 	Decoders                  types.List                       `tfsdk:"decoders"`
-	DisableOverride           types.String                     `tfsdk:"disable_override"`
 	MachineLearningModels     types.List                       `tfsdk:"machine_learning_models"`
-}
-type AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject struct {
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Filename    types.String `tfsdk:"filename"`
-}
-type AntivirusSecurityProfileDataSourceThreatExceptionsObject struct {
-	Name types.String `tfsdk:"name"`
+	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
+	Description               types.String                     `tfsdk:"description"`
+	DisableOverride           types.String                     `tfsdk:"disable_override"`
+	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
+	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
 }
 type AntivirusSecurityProfileDataSourceApplicationExceptionsObject struct {
 	Name   types.String `tfsdk:"name"`
@@ -82,71 +73,25 @@ type AntivirusSecurityProfileDataSourceApplicationExceptionsObject struct {
 }
 type AntivirusSecurityProfileDataSourceDecodersObject struct {
 	Name           types.String `tfsdk:"name"`
-	MlAction       types.String `tfsdk:"ml_action"`
 	Action         types.String `tfsdk:"action"`
 	WildfireAction types.String `tfsdk:"wildfire_action"`
+	MlAction       types.String `tfsdk:"ml_action"`
 }
 type AntivirusSecurityProfileDataSourceMachineLearningModelsObject struct {
 	Name   types.String `tfsdk:"name"`
 	Action types.String `tfsdk:"action"`
 }
+type AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject struct {
+	Name        types.String `tfsdk:"name"`
+	Filename    types.String `tfsdk:"filename"`
+	Description types.String `tfsdk:"description"`
+}
+type AntivirusSecurityProfileDataSourceThreatExceptionsObject struct {
+	Name types.String `tfsdk:"name"`
+}
 
 func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	description_value := o.Description.ValueStringPointer()
-	packetCapture_value := o.PacketCapture.ValueBoolPointer()
-	wfrtHoldMode_value := o.WfrtHoldMode.ValueBoolPointer()
-	var machineLearningExceptions_tf_entries []AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
-	var machineLearningExceptions_pango_entries []antivirus.MlavException
-	{
-		d := o.MachineLearningExceptions.ElementsAs(ctx, &machineLearningExceptions_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range machineLearningExceptions_tf_entries {
-			var entry *antivirus.MlavException
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			machineLearningExceptions_pango_entries = append(machineLearningExceptions_pango_entries, *entry)
-		}
-	}
-	var threatExceptions_tf_entries []AntivirusSecurityProfileDataSourceThreatExceptionsObject
-	var threatExceptions_pango_entries []antivirus.ThreatException
-	{
-		d := o.ThreatExceptions.ElementsAs(ctx, &threatExceptions_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range threatExceptions_tf_entries {
-			var entry *antivirus.ThreatException
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			threatExceptions_pango_entries = append(threatExceptions_pango_entries, *entry)
-		}
-	}
-	var applicationExceptions_tf_entries []AntivirusSecurityProfileDataSourceApplicationExceptionsObject
-	var applicationExceptions_pango_entries []antivirus.Application
-	{
-		d := o.ApplicationExceptions.ElementsAs(ctx, &applicationExceptions_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range applicationExceptions_tf_entries {
-			var entry *antivirus.Application
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			applicationExceptions_pango_entries = append(applicationExceptions_pango_entries, *entry)
-		}
-	}
 	var decoders_tf_entries []AntivirusSecurityProfileDataSourceDecodersObject
 	var decoders_pango_entries []antivirus.Decoder
 	{
@@ -164,7 +109,6 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 			decoders_pango_entries = append(decoders_pango_entries, *entry)
 		}
 	}
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var machineLearningModels_tf_entries []AntivirusSecurityProfileDataSourceMachineLearningModelsObject
 	var machineLearningModels_pango_entries []antivirus.MlavEngineFilebasedEnabled
 	{
@@ -182,20 +126,75 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 			machineLearningModels_pango_entries = append(machineLearningModels_pango_entries, *entry)
 		}
 	}
+	var machineLearningExceptions_tf_entries []AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
+	var machineLearningExceptions_pango_entries []antivirus.MlavException
+	{
+		d := o.MachineLearningExceptions.ElementsAs(ctx, &machineLearningExceptions_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range machineLearningExceptions_tf_entries {
+			var entry *antivirus.MlavException
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			machineLearningExceptions_pango_entries = append(machineLearningExceptions_pango_entries, *entry)
+		}
+	}
+	wfrtHoldMode_value := o.WfrtHoldMode.ValueBoolPointer()
+	var applicationExceptions_tf_entries []AntivirusSecurityProfileDataSourceApplicationExceptionsObject
+	var applicationExceptions_pango_entries []antivirus.Application
+	{
+		d := o.ApplicationExceptions.ElementsAs(ctx, &applicationExceptions_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range applicationExceptions_tf_entries {
+			var entry *antivirus.Application
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			applicationExceptions_pango_entries = append(applicationExceptions_pango_entries, *entry)
+		}
+	}
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
+	packetCapture_value := o.PacketCapture.ValueBoolPointer()
+	var threatExceptions_tf_entries []AntivirusSecurityProfileDataSourceThreatExceptionsObject
+	var threatExceptions_pango_entries []antivirus.ThreatException
+	{
+		d := o.ThreatExceptions.ElementsAs(ctx, &threatExceptions_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range threatExceptions_tf_entries {
+			var entry *antivirus.ThreatException
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			threatExceptions_pango_entries = append(threatExceptions_pango_entries, *entry)
+		}
+	}
+	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(antivirus.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = description_value
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).WfrtHoldMode = wfrtHoldMode_value
-	(*obj).MlavException = machineLearningExceptions_pango_entries
-	(*obj).ThreatException = threatExceptions_pango_entries
-	(*obj).Application = applicationExceptions_pango_entries
 	(*obj).Decoder = decoders_pango_entries
-	(*obj).DisableOverride = disableOverride_value
 	(*obj).MlavEngineFilebasedEnabled = machineLearningModels_pango_entries
+	(*obj).MlavException = machineLearningExceptions_pango_entries
+	(*obj).WfrtHoldMode = wfrtHoldMode_value
+	(*obj).Application = applicationExceptions_pango_entries
+	(*obj).DisableOverride = disableOverride_value
+	(*obj).PacketCapture = packetCapture_value
+	(*obj).ThreatException = threatExceptions_pango_entries
+	(*obj).Description = description_value
 
 	return diags
 }
@@ -225,16 +224,6 @@ func (o *AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject) Copy
 
 	return diags
 }
-func (o *AntivirusSecurityProfileDataSourceThreatExceptionsObject) CopyToPango(ctx context.Context, obj **antivirus.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(antivirus.ThreatException)
-	}
-	(*obj).Name = o.Name.ValueString()
-
-	return diags
-}
 func (o *AntivirusSecurityProfileDataSourceApplicationExceptionsObject) CopyToPango(ctx context.Context, obj **antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
@@ -249,35 +238,45 @@ func (o *AntivirusSecurityProfileDataSourceApplicationExceptionsObject) CopyToPa
 }
 func (o *AntivirusSecurityProfileDataSourceDecodersObject) CopyToPango(ctx context.Context, obj **antivirus.Decoder, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
 	wildfireAction_value := o.WildfireAction.ValueStringPointer()
 	mlAction_value := o.MlAction.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(antivirus.Decoder)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Action = action_value
 	(*obj).WildfireAction = wildfireAction_value
 	(*obj).MlavAction = mlAction_value
-	(*obj).Action = action_value
+
+	return diags
+}
+func (o *AntivirusSecurityProfileDataSourceThreatExceptionsObject) CopyToPango(ctx context.Context, obj **antivirus.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(antivirus.ThreatException)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
 
 func (o *AntivirusSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var threatExceptions_list types.List
+	var machineLearningExceptions_list types.List
 	{
-		var threatExceptions_tf_entries []AntivirusSecurityProfileDataSourceThreatExceptionsObject
-		for _, elt := range obj.ThreatException {
-			var entry AntivirusSecurityProfileDataSourceThreatExceptionsObject
+		var machineLearningExceptions_tf_entries []AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
+		for _, elt := range obj.MlavException {
+			var entry AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
 			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
 			diags.Append(entry_diags...)
-			threatExceptions_tf_entries = append(threatExceptions_tf_entries, entry)
+			machineLearningExceptions_tf_entries = append(machineLearningExceptions_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("threat_exceptions")
-		threatExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, threatExceptions_tf_entries)
+		schemaType := o.getTypeFor("machine_learning_exceptions")
+		machineLearningExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, machineLearningExceptions_tf_entries)
 		diags.Append(list_diags...)
 	}
 	var applicationExceptions_list types.List
@@ -322,47 +321,67 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyFromPango(ctx context.Cont
 		machineLearningModels_list, list_diags = types.ListValueFrom(ctx, schemaType, machineLearningModels_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var machineLearningExceptions_list types.List
+	var threatExceptions_list types.List
 	{
-		var machineLearningExceptions_tf_entries []AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
-		for _, elt := range obj.MlavException {
-			var entry AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject
+		var threatExceptions_tf_entries []AntivirusSecurityProfileDataSourceThreatExceptionsObject
+		for _, elt := range obj.ThreatException {
+			var entry AntivirusSecurityProfileDataSourceThreatExceptionsObject
 			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
 			diags.Append(entry_diags...)
-			machineLearningExceptions_tf_entries = append(machineLearningExceptions_tf_entries, entry)
+			threatExceptions_tf_entries = append(threatExceptions_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("machine_learning_exceptions")
-		machineLearningExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, machineLearningExceptions_tf_entries)
+		schemaType := o.getTypeFor("threat_exceptions")
+		threatExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, threatExceptions_tf_entries)
 		diags.Append(list_diags...)
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
-	var packetCapture_value types.Bool
-	if obj.PacketCapture != nil {
-		packetCapture_value = types.BoolValue(*obj.PacketCapture)
-	}
 	var wfrtHoldMode_value types.Bool
 	if obj.WfrtHoldMode != nil {
 		wfrtHoldMode_value = types.BoolValue(*obj.WfrtHoldMode)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var disableOverride_value types.String
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
+	var packetCapture_value types.Bool
+	if obj.PacketCapture != nil {
+		packetCapture_value = types.BoolValue(*obj.PacketCapture)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Description = description_value
-	o.PacketCapture = packetCapture_value
+	o.MachineLearningExceptions = machineLearningExceptions_list
 	o.WfrtHoldMode = wfrtHoldMode_value
-	o.ThreatExceptions = threatExceptions_list
 	o.ApplicationExceptions = applicationExceptions_list
 	o.Decoders = decoders_list
-	o.DisableOverride = disableOverride_value
 	o.MachineLearningModels = machineLearningModels_list
-	o.MachineLearningExceptions = machineLearningExceptions_list
+	o.ThreatExceptions = threatExceptions_list
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
+	o.PacketCapture = packetCapture_value
+
+	return diags
+}
+
+func (o *AntivirusSecurityProfileDataSourceThreatExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
+func (o *AntivirusSecurityProfileDataSourceApplicationExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Action = action_value
 
 	return diags
 }
@@ -421,34 +440,6 @@ func (o *AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject) Copy
 	return diags
 }
 
-func (o *AntivirusSecurityProfileDataSourceThreatExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.ThreatException, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
-
-	return diags
-}
-
-func (o *AntivirusSecurityProfileDataSourceApplicationExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
-
-	return diags
-}
-
-func (o *AntivirusSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func AntivirusSecurityProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -481,14 +472,6 @@ func AntivirusSecurityProfileDataSourceSchema() dsschema.Schema {
 				NestedObject: AntivirusSecurityProfileDataSourceDecodersSchema(),
 			},
 
-			"disable_override": dsschema.StringAttribute{
-				Description: "Disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"machine_learning_models": dsschema.ListNestedAttribute{
 				Description:  "Machine learning models",
 				Required:     false,
@@ -507,17 +490,24 @@ func AntivirusSecurityProfileDataSourceSchema() dsschema.Schema {
 				NestedObject: AntivirusSecurityProfileDataSourceMachineLearningExceptionsSchema(),
 			},
 
-			"threat_exceptions": dsschema.ListNestedAttribute{
-				Description:  "Exceptions for specific threats",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AntivirusSecurityProfileDataSourceThreatExceptionsSchema(),
+			"wfrt_hold_mode": dsschema.BoolAttribute{
+				Description: "Enable hold mode for WildFire real time signature lookup",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Profile description",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_override": dsschema.StringAttribute{
+				Description: "Disable object override in child device groups",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -532,12 +522,13 @@ func AntivirusSecurityProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"wfrt_hold_mode": dsschema.BoolAttribute{
-				Description: "Enable hold mode for WildFire real time signature lookup",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+			"threat_exceptions": dsschema.ListNestedAttribute{
+				Description:  "Exceptions for specific threats",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AntivirusSecurityProfileDataSourceThreatExceptionsSchema(),
 			},
 		},
 	}
@@ -845,13 +836,8 @@ func (o *AntivirusSecurityProfileDataSource) Read(ctx context.Context, req datas
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -905,23 +891,15 @@ func AntivirusSecurityProfileResourceLocationSchema() rsschema.Attribute {
 type AntivirusSecurityProfileResourceModel struct {
 	Location                  AntivirusSecurityProfileLocation `tfsdk:"location"`
 	Name                      types.String                     `tfsdk:"name"`
-	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
-	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
 	ApplicationExceptions     types.List                       `tfsdk:"application_exceptions"`
 	Decoders                  types.List                       `tfsdk:"decoders"`
-	DisableOverride           types.String                     `tfsdk:"disable_override"`
 	MachineLearningModels     types.List                       `tfsdk:"machine_learning_models"`
-	Description               types.String                     `tfsdk:"description"`
-	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
+	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
 	WfrtHoldMode              types.Bool                       `tfsdk:"wfrt_hold_mode"`
-}
-type AntivirusSecurityProfileResourceMachineLearningExceptionsObject struct {
-	Name        types.String `tfsdk:"name"`
-	Filename    types.String `tfsdk:"filename"`
-	Description types.String `tfsdk:"description"`
-}
-type AntivirusSecurityProfileResourceThreatExceptionsObject struct {
-	Name types.String `tfsdk:"name"`
+	Description               types.String                     `tfsdk:"description"`
+	DisableOverride           types.String                     `tfsdk:"disable_override"`
+	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
+	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
 }
 type AntivirusSecurityProfileResourceApplicationExceptionsObject struct {
 	Name   types.String `tfsdk:"name"`
@@ -936,6 +914,14 @@ type AntivirusSecurityProfileResourceDecodersObject struct {
 type AntivirusSecurityProfileResourceMachineLearningModelsObject struct {
 	Name   types.String `tfsdk:"name"`
 	Action types.String `tfsdk:"action"`
+}
+type AntivirusSecurityProfileResourceMachineLearningExceptionsObject struct {
+	Name        types.String `tfsdk:"name"`
+	Filename    types.String `tfsdk:"filename"`
+	Description types.String `tfsdk:"description"`
+}
+type AntivirusSecurityProfileResourceThreatExceptionsObject struct {
+	Name types.String `tfsdk:"name"`
 }
 
 func (r *AntivirusSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -957,6 +943,23 @@ func AntivirusSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"packet_capture": rsschema.BoolAttribute{
+				Description: "Enable packet capture",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"threat_exceptions": rsschema.ListNestedAttribute{
+				Description:  "Exceptions for specific threats",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntivirusSecurityProfileResourceThreatExceptionsSchema(),
+			},
+
 			"description": rsschema.StringAttribute{
 				Description: "Profile description",
 				Computed:    false,
@@ -965,12 +968,38 @@ func AntivirusSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"packet_capture": rsschema.BoolAttribute{
-				Description: "Enable packet capture",
-				Computed:    false,
+			"disable_override": rsschema.StringAttribute{
+				Description: "Disable object override in child device groups",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+				Default:     stringdefault.StaticString("no"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"yes",
+						"no",
+					}...),
+				},
+			},
+
+			"machine_learning_models": rsschema.ListNestedAttribute{
+				Description:  "Machine learning models",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntivirusSecurityProfileResourceMachineLearningModelsSchema(),
+			},
+
+			"machine_learning_exceptions": rsschema.ListNestedAttribute{
+				Description:  "Exceptions for ML based file scans.",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AntivirusSecurityProfileResourceMachineLearningExceptionsSchema(),
 			},
 
 			"wfrt_hold_mode": rsschema.BoolAttribute{
@@ -998,55 +1027,135 @@ func AntivirusSecurityProfileResourceSchema() rsschema.Schema {
 				Sensitive:    false,
 				NestedObject: AntivirusSecurityProfileResourceDecodersSchema(),
 			},
-
-			"disable_override": rsschema.StringAttribute{
-				Description: "Disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"no",
-						"yes",
-					}...),
-				},
-			},
-
-			"machine_learning_models": rsschema.ListNestedAttribute{
-				Description:  "Machine learning models",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntivirusSecurityProfileResourceMachineLearningModelsSchema(),
-			},
-
-			"machine_learning_exceptions": rsschema.ListNestedAttribute{
-				Description:  "Exceptions for ML based file scans.",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntivirusSecurityProfileResourceMachineLearningExceptionsSchema(),
-			},
-
-			"threat_exceptions": rsschema.ListNestedAttribute{
-				Description:  "Exceptions for specific threats",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AntivirusSecurityProfileResourceThreatExceptionsSchema(),
-			},
 		},
 	}
 }
 
 func (o *AntivirusSecurityProfileResourceModel) getTypeFor(name string) attr.Type {
 	schema := AntivirusSecurityProfileResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntivirusSecurityProfileResourceThreatExceptionsSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntivirusSecurityProfileResourceThreatExceptionsObject) getTypeFor(name string) attr.Type {
+	schema := AntivirusSecurityProfileResourceThreatExceptionsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntivirusSecurityProfileResourceMachineLearningModelsSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"action": rsschema.StringAttribute{
+				Description: "Action for ML model antivirus signatures. Valid values are: `enable`, `enable(alert-only)`, or `disable`",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntivirusSecurityProfileResourceMachineLearningModelsObject) getTypeFor(name string) attr.Type {
+	schema := AntivirusSecurityProfileResourceMachineLearningModelsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AntivirusSecurityProfileResourceMachineLearningExceptionsSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"filename": rsschema.StringAttribute{
+				Description: "File name to exclude from enforcement",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "Exception description",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AntivirusSecurityProfileResourceMachineLearningExceptionsObject) getTypeFor(name string) attr.Type {
+	schema := AntivirusSecurityProfileResourceMachineLearningExceptionsSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1165,129 +1274,6 @@ func (o *AntivirusSecurityProfileResourceDecodersObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func AntivirusSecurityProfileResourceMachineLearningModelsSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "Action for ML model antivirus signatures. Valid values are: `enable`, `enable(alert-only)`, or `disable`",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntivirusSecurityProfileResourceMachineLearningModelsObject) getTypeFor(name string) attr.Type {
-	schema := AntivirusSecurityProfileResourceMachineLearningModelsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntivirusSecurityProfileResourceMachineLearningExceptionsSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"filename": rsschema.StringAttribute{
-				Description: "File name to exclude from enforcement",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "Exception description",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntivirusSecurityProfileResourceMachineLearningExceptionsObject) getTypeFor(name string) attr.Type {
-	schema := AntivirusSecurityProfileResourceMachineLearningExceptionsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AntivirusSecurityProfileResourceThreatExceptionsSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AntivirusSecurityProfileResourceThreatExceptionsObject) getTypeFor(name string) attr.Type {
-	schema := AntivirusSecurityProfileResourceThreatExceptionsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func (r *AntivirusSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_antivirus_security_profile"
 }
@@ -1315,61 +1301,9 @@ func (r *AntivirusSecurityProfileResource) Configure(ctx context.Context, req re
 
 func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	packetCapture_value := o.PacketCapture.ValueBoolPointer()
-	wfrtHoldMode_value := o.WfrtHoldMode.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
-	var decoders_tf_entries []AntivirusSecurityProfileResourceDecodersObject
-	var decoders_pango_entries []antivirus.Decoder
-	{
-		d := o.Decoders.ElementsAs(ctx, &decoders_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range decoders_tf_entries {
-			var entry *antivirus.Decoder
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			decoders_pango_entries = append(decoders_pango_entries, *entry)
-		}
-	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	var machineLearningModels_tf_entries []AntivirusSecurityProfileResourceMachineLearningModelsObject
-	var machineLearningModels_pango_entries []antivirus.MlavEngineFilebasedEnabled
-	{
-		d := o.MachineLearningModels.ElementsAs(ctx, &machineLearningModels_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range machineLearningModels_tf_entries {
-			var entry *antivirus.MlavEngineFilebasedEnabled
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			machineLearningModels_pango_entries = append(machineLearningModels_pango_entries, *entry)
-		}
-	}
-	var machineLearningExceptions_tf_entries []AntivirusSecurityProfileResourceMachineLearningExceptionsObject
-	var machineLearningExceptions_pango_entries []antivirus.MlavException
-	{
-		d := o.MachineLearningExceptions.ElementsAs(ctx, &machineLearningExceptions_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range machineLearningExceptions_tf_entries {
-			var entry *antivirus.MlavException
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			machineLearningExceptions_pango_entries = append(machineLearningExceptions_pango_entries, *entry)
-		}
-	}
+	packetCapture_value := o.PacketCapture.ValueBoolPointer()
 	var threatExceptions_tf_entries []AntivirusSecurityProfileResourceThreatExceptionsObject
 	var threatExceptions_pango_entries []antivirus.ThreatException
 	{
@@ -1404,20 +1338,100 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 			applicationExceptions_pango_entries = append(applicationExceptions_pango_entries, *entry)
 		}
 	}
+	var decoders_tf_entries []AntivirusSecurityProfileResourceDecodersObject
+	var decoders_pango_entries []antivirus.Decoder
+	{
+		d := o.Decoders.ElementsAs(ctx, &decoders_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range decoders_tf_entries {
+			var entry *antivirus.Decoder
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			decoders_pango_entries = append(decoders_pango_entries, *entry)
+		}
+	}
+	var machineLearningModels_tf_entries []AntivirusSecurityProfileResourceMachineLearningModelsObject
+	var machineLearningModels_pango_entries []antivirus.MlavEngineFilebasedEnabled
+	{
+		d := o.MachineLearningModels.ElementsAs(ctx, &machineLearningModels_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range machineLearningModels_tf_entries {
+			var entry *antivirus.MlavEngineFilebasedEnabled
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			machineLearningModels_pango_entries = append(machineLearningModels_pango_entries, *entry)
+		}
+	}
+	var machineLearningExceptions_tf_entries []AntivirusSecurityProfileResourceMachineLearningExceptionsObject
+	var machineLearningExceptions_pango_entries []antivirus.MlavException
+	{
+		d := o.MachineLearningExceptions.ElementsAs(ctx, &machineLearningExceptions_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range machineLearningExceptions_tf_entries {
+			var entry *antivirus.MlavException
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			machineLearningExceptions_pango_entries = append(machineLearningExceptions_pango_entries, *entry)
+		}
+	}
+	wfrtHoldMode_value := o.WfrtHoldMode.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(antivirus.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).PacketCapture = packetCapture_value
-	(*obj).WfrtHoldMode = wfrtHoldMode_value
 	(*obj).Description = description_value
-	(*obj).Decoder = decoders_pango_entries
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).MlavEngineFilebasedEnabled = machineLearningModels_pango_entries
-	(*obj).MlavException = machineLearningExceptions_pango_entries
+	(*obj).PacketCapture = packetCapture_value
 	(*obj).ThreatException = threatExceptions_pango_entries
 	(*obj).Application = applicationExceptions_pango_entries
+	(*obj).Decoder = decoders_pango_entries
+	(*obj).MlavEngineFilebasedEnabled = machineLearningModels_pango_entries
+	(*obj).MlavException = machineLearningExceptions_pango_entries
+	(*obj).WfrtHoldMode = wfrtHoldMode_value
+
+	return diags
+}
+func (o *AntivirusSecurityProfileResourceApplicationExceptionsObject) CopyToPango(ctx context.Context, obj **antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(antivirus.Application)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Action = action_value
+
+	return diags
+}
+func (o *AntivirusSecurityProfileResourceDecodersObject) CopyToPango(ctx context.Context, obj **antivirus.Decoder, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	wildfireAction_value := o.WildfireAction.ValueStringPointer()
+	mlAction_value := o.MlAction.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(antivirus.Decoder)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Action = action_value
+	(*obj).WildfireAction = wildfireAction_value
+	(*obj).MlavAction = mlAction_value
 
 	return diags
 }
@@ -1457,37 +1471,23 @@ func (o *AntivirusSecurityProfileResourceThreatExceptionsObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *AntivirusSecurityProfileResourceApplicationExceptionsObject) CopyToPango(ctx context.Context, obj **antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(antivirus.Application)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *AntivirusSecurityProfileResourceDecodersObject) CopyToPango(ctx context.Context, obj **antivirus.Decoder, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	wildfireAction_value := o.WildfireAction.ValueStringPointer()
-	mlAction_value := o.MlAction.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(antivirus.Decoder)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).WildfireAction = wildfireAction_value
-	(*obj).MlavAction = mlAction_value
-	(*obj).Action = action_value
-
-	return diags
-}
 
 func (o *AntivirusSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var threatExceptions_list types.List
+	{
+		var threatExceptions_tf_entries []AntivirusSecurityProfileResourceThreatExceptionsObject
+		for _, elt := range obj.ThreatException {
+			var entry AntivirusSecurityProfileResourceThreatExceptionsObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			threatExceptions_tf_entries = append(threatExceptions_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("threat_exceptions")
+		threatExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, threatExceptions_tf_entries)
+		diags.Append(list_diags...)
+	}
 	var applicationExceptions_list types.List
 	{
 		var applicationExceptions_tf_entries []AntivirusSecurityProfileResourceApplicationExceptionsObject
@@ -1544,28 +1544,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyFromPango(ctx context.Contex
 		machineLearningExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, machineLearningExceptions_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var threatExceptions_list types.List
-	{
-		var threatExceptions_tf_entries []AntivirusSecurityProfileResourceThreatExceptionsObject
-		for _, elt := range obj.ThreatException {
-			var entry AntivirusSecurityProfileResourceThreatExceptionsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			threatExceptions_tf_entries = append(threatExceptions_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("threat_exceptions")
-		threatExceptions_list, list_diags = types.ListValueFrom(ctx, schemaType, threatExceptions_tf_entries)
-		diags.Append(list_diags...)
-	}
 
-	var disableOverride_value types.String
-	if obj.DisableOverride != nil {
-		disableOverride_value = types.StringValue(*obj.DisableOverride)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
+	}
+	var disableOverride_value types.String
+	if obj.DisableOverride != nil {
+		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	var packetCapture_value types.Bool
 	if obj.PacketCapture != nil {
@@ -1576,15 +1562,64 @@ func (o *AntivirusSecurityProfileResourceModel) CopyFromPango(ctx context.Contex
 		wfrtHoldMode_value = types.BoolValue(*obj.WfrtHoldMode)
 	}
 	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
+	o.DisableOverride = disableOverride_value
+	o.PacketCapture = packetCapture_value
+	o.ThreatExceptions = threatExceptions_list
 	o.ApplicationExceptions = applicationExceptions_list
 	o.Decoders = decoders_list
-	o.DisableOverride = disableOverride_value
 	o.MachineLearningModels = machineLearningModels_list
 	o.MachineLearningExceptions = machineLearningExceptions_list
-	o.ThreatExceptions = threatExceptions_list
-	o.Description = description_value
-	o.PacketCapture = packetCapture_value
 	o.WfrtHoldMode = wfrtHoldMode_value
+
+	return diags
+}
+
+func (o *AntivirusSecurityProfileResourceApplicationExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Action = action_value
+
+	return diags
+}
+
+func (o *AntivirusSecurityProfileResourceDecodersObject) CopyFromPango(ctx context.Context, obj *antivirus.Decoder, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var mlAction_value types.String
+	if obj.MlavAction != nil {
+		mlAction_value = types.StringValue(*obj.MlavAction)
+	}
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var wildfireAction_value types.String
+	if obj.WildfireAction != nil {
+		wildfireAction_value = types.StringValue(*obj.WildfireAction)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.MlAction = mlAction_value
+	o.Action = action_value
+	o.WildfireAction = wildfireAction_value
+
+	return diags
+}
+
+func (o *AntivirusSecurityProfileResourceMachineLearningModelsObject) CopyFromPango(ctx context.Context, obj *antivirus.MlavEngineFilebasedEnabled, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.MlavPolicyAction != nil {
+		action_value = types.StringValue(*obj.MlavPolicyAction)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Action = action_value
 
 	return diags
 }
@@ -1614,63 +1649,6 @@ func (o *AntivirusSecurityProfileResourceThreatExceptionsObject) CopyFromPango(c
 	return diags
 }
 
-func (o *AntivirusSecurityProfileResourceApplicationExceptionsObject) CopyFromPango(ctx context.Context, obj *antivirus.Application, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
-
-	return diags
-}
-
-func (o *AntivirusSecurityProfileResourceDecodersObject) CopyFromPango(ctx context.Context, obj *antivirus.Decoder, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var wildfireAction_value types.String
-	if obj.WildfireAction != nil {
-		wildfireAction_value = types.StringValue(*obj.WildfireAction)
-	}
-	var mlAction_value types.String
-	if obj.MlavAction != nil {
-		mlAction_value = types.StringValue(*obj.MlavAction)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
-	o.WildfireAction = wildfireAction_value
-	o.MlAction = mlAction_value
-
-	return diags
-}
-
-func (o *AntivirusSecurityProfileResourceMachineLearningModelsObject) CopyFromPango(ctx context.Context, obj *antivirus.MlavEngineFilebasedEnabled, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.MlavPolicyAction != nil {
-		action_value = types.StringValue(*obj.MlavPolicyAction)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Action = action_value
-
-	return diags
-}
-
-func (o *AntivirusSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AntivirusSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -1695,9 +1673,6 @@ func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
 
@@ -1711,6 +1686,9 @@ func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -1733,13 +1711,7 @@ func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -1789,13 +1761,8 @@ func (o *AntivirusSecurityProfileResource) Read(ctx context.Context, req resourc
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1831,21 +1798,21 @@ func (r *AntivirusSecurityProfileResource) Update(ctx context.Context, req resou
 
 	var location antivirus.Location
 
+	if state.Location.Vsys != nil {
+		location.Vsys = &antivirus.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -1860,14 +1827,7 @@ func (r *AntivirusSecurityProfileResource) Update(ctx context.Context, req resou
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -2025,9 +1985,9 @@ type AntivirusSecurityProfileVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type AntivirusSecurityProfileLocation struct {
+	Shared      types.Bool                                   `tfsdk:"shared"`
 	DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 	Vsys        *AntivirusSecurityProfileVsysLocation        `tfsdk:"vsys"`
-	Shared      types.Bool                                   `tfsdk:"shared"`
 }
 
 func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
@@ -2044,9 +2004,9 @@ func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("vsys"),
 					}...),
 				},
 			},

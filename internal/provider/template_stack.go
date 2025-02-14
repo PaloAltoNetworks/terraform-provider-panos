@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/template_stack"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -54,11 +53,11 @@ type TemplateStackDataSourceFilter struct {
 type TemplateStackDataSourceModel struct {
 	Location        TemplateStackLocation                         `tfsdk:"location"`
 	Name            types.String                                  `tfsdk:"name"`
-	Description     types.String                                  `tfsdk:"description"`
 	Templates       types.List                                    `tfsdk:"templates"`
 	Devices         types.List                                    `tfsdk:"devices"`
 	DefaultVsys     types.String                                  `tfsdk:"default_vsys"`
 	UserGroupSource *TemplateStackDataSourceUserGroupSourceObject `tfsdk:"user_group_source"`
+	Description     types.String                                  `tfsdk:"description"`
 }
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
@@ -140,20 +139,20 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, obj *t
 		}
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var defaultVsys_value types.String
 	if obj.DefaultVsys != nil {
 		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
 	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.DefaultVsys = defaultVsys_value
+	o.UserGroupSource = userGroupSource_object
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
-	o.DefaultVsys = defaultVsys_value
-	o.UserGroupSource = userGroupSource_object
 
 	return diags
 }
@@ -170,14 +169,6 @@ func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *TemplateStackDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func TemplateStackDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -191,16 +182,6 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 				Optional:    false,
 				Sensitive:   false,
 			},
-
-			"default_vsys": dsschema.StringAttribute{
-				Description: "Default virtual system",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"user_group_source": TemplateStackDataSourceUserGroupSourceSchema(),
 
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
@@ -227,6 +208,16 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
+
+			"default_vsys": dsschema.StringAttribute{
+				Description: "Default virtual system",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"user_group_source": TemplateStackDataSourceUserGroupSourceSchema(),
 		},
 	}
 }
@@ -339,13 +330,8 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -428,6 +414,8 @@ func TemplateStackResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"user_group_source": TemplateStackResourceUserGroupSourceSchema(),
+
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
 				Computed:    false,
@@ -461,8 +449,6 @@ func TemplateStackResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"user_group_source": TemplateStackResourceUserGroupSourceSchema(),
 		},
 	}
 }
@@ -654,14 +640,6 @@ func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *TemplateStackResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state TemplateStackResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -713,13 +691,7 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -758,13 +730,8 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -818,14 +785,7 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return

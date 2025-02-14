@@ -2,7 +2,6 @@ package manager
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 
@@ -34,15 +33,13 @@ type EntryObject interface {
 }
 
 type EntryLocation interface {
-	XpathWithComponents(version.Number, ...string) ([]string, error)
 	XpathWithEntryName(version.Number, string) ([]string, error)
 }
 
 type SDKEntryService[E EntryObject, L EntryLocation] interface {
-	CreateWithXpath(context.Context, string, E) error
-	ReadWithXpath(context.Context, string, string) (E, error)
 	Create(context.Context, L, E) (E, error)
 	List(context.Context, L, string, string, string) ([]E, error)
+	Read(context.Context, L, string, string) (E, error)
 	Update(context.Context, L, E, string) (E, error)
 	Delete(context.Context, L, ...string) error
 }
@@ -85,13 +82,8 @@ func (o *EntryObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, 
 	return filtered, nil
 }
 
-func (o *EntryObjectManager[E, L, S]) Read(ctx context.Context, location L, components []string) (E, error) {
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), components...)
-	if err != nil {
-		return *new(E), err
-	}
-
-	object, err := o.service.ReadWithXpath(ctx, util.AsXpath(xpath), "get")
+func (o *EntryObjectManager[E, L, S]) Read(ctx context.Context, location L, name string) (E, error) {
+	object, err := o.service.Read(ctx, location, name, "get")
 	if err != nil {
 		if sdkerrors.IsObjectNotFound(err) {
 			return *new(E), ErrObjectNotFound
@@ -102,27 +94,20 @@ func (o *EntryObjectManager[E, L, S]) Read(ctx context.Context, location L, comp
 	return object, nil
 }
 
-func (o *EntryObjectManager[E, L, S]) Create(ctx context.Context, location L, components []string, entry E) (E, error) {
-	_, err := o.Read(ctx, location, components)
-	if err == nil {
-		return *new(E), &Error{err: ErrConflict, message: fmt.Sprintf("entry '%s' already exists", entry.EntryName())}
-	}
-
-	if err != nil && !errors.Is(err, ErrObjectNotFound) {
+func (o *EntryObjectManager[E, T, S]) Create(ctx context.Context, location T, entry E) (E, error) {
+	existing, err := o.service.List(ctx, location, "get", "", "")
+	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return *new(E), err
 	}
 
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), components...)
-	if err != nil {
-		return *new(E), err
+	for _, elt := range existing {
+		if elt.EntryName() == entry.EntryName() {
+			return *new(E), ErrConflict
+		}
 	}
 
-	err = o.service.CreateWithXpath(ctx, util.AsXpath(xpath[:len(xpath)-1]), entry)
-	if err != nil {
-		return *new(E), err
-	}
-
-	return o.Read(ctx, location, components)
+	obj, err := o.service.Create(ctx, location, entry)
+	return obj, err
 }
 
 func (o *EntryObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, entries []E) ([]E, error) {

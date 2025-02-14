@@ -5,6 +5,7 @@ go 1.22.7
 toolchain go1.23.3
 
 require (
+	github.com/PaloAltoNetworks/pango v0.10.3-0.20250214131722-6674231a613b
 	github.com/hashicorp/terraform-plugin-framework v1.13.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.16.0
 	github.com/hashicorp/terraform-plugin-go v0.25.0
@@ -21,7 +22,6 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
-	github.com/PaloAltoNetworks/pango v0.10.3-0.20250213110909-149fa41d9871 // indirect
 	github.com/ProtonMail/go-crypto v1.1.0-alpha.2 // indirect
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect

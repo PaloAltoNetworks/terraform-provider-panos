@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address/group"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -173,14 +172,6 @@ func (o *AddressGroupDataSourceDynamicObject) CopyFromPango(ctx context.Context,
 	o.Filter = filter_value
 
 	return diags
-}
-
-func (o *AddressGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func AddressGroupDataSourceSchema() dsschema.Schema {
@@ -355,13 +346,8 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -444,6 +430,14 @@ func AddressGroupResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -466,14 +460,6 @@ func AddressGroupResourceSchema() rsschema.Schema {
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dynamic": AddressGroupResourceDynamicSchema(),
@@ -684,14 +670,6 @@ func (o *AddressGroupResourceDynamicObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *AddressGroupResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AddressGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -729,8 +707,8 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -754,13 +732,7 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -785,6 +757,13 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -795,13 +774,6 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -810,13 +782,8 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -881,14 +848,7 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1038,12 +998,12 @@ func (r *AddressGroupResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 type AddressGroupVsysLocation struct {
-	Name       types.String `tfsdk:"name"`
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
 }
 type AddressGroupDeviceGroupLocation struct {
-	Name           types.String `tfsdk:"name"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
 }
 type AddressGroupLocation struct {
 	Shared      types.Bool                       `tfsdk:"shared"`
@@ -1075,20 +1035,20 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"name": rsschema.StringAttribute{
 						Description: "The Virtual System name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1129,33 +1089,6 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o AddressGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-		Name:           o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *AddressGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o AddressGroupVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -1183,15 +1116,42 @@ func (o *AddressGroupVsysLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o AddressGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AddressGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o AddressGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                            `json:"shared"`
 		Vsys        *AddressGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
 	}{
-		DeviceGroup: o.DeviceGroup,
 		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
 	}
 
 	return json.Marshal(obj)
@@ -1199,18 +1159,18 @@ func (o AddressGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                            `json:"shared"`
 		Vsys        *AddressGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.DeviceGroup = shadow.DeviceGroup
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil
 }

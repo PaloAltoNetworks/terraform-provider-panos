@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/wildfireanalysis"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -58,9 +57,9 @@ type WildfireAnalysisSecurityProfileDataSourceFilter struct {
 type WildfireAnalysisSecurityProfileDataSourceModel struct {
 	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
 	Name            types.String                            `tfsdk:"name"`
-	Description     types.String                            `tfsdk:"description"`
 	DisableOverride types.String                            `tfsdk:"disable_override"`
 	Rules           types.List                              `tfsdk:"rules"`
+	Description     types.String                            `tfsdk:"description"`
 }
 type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -72,6 +71,8 @@ type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 
 func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
+	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var rules_tf_entries []WildfireAnalysisSecurityProfileDataSourceRulesObject
 	var rules_pango_entries []wildfireanalysis.Rules
 	{
@@ -89,21 +90,21 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
-	disableOverride_value := o.DisableOverride.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Rules = rules_pango_entries
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
+	(*obj).Rules = rules_pango_entries
 
 	return diags
 }
 func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	direction_value := o.Direction.ValueStringPointer()
+	analysis_value := o.Analysis.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
 	if diags.HasError() {
@@ -114,17 +115,15 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx c
 	if diags.HasError() {
 		return diags
 	}
-	direction_value := o.Direction.ValueStringPointer()
-	analysis_value := o.Analysis.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Application = application_pango_entries
-	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
 	(*obj).Analysis = analysis_value
+	(*obj).Application = application_pango_entries
+	(*obj).FileType = fileType_pango_entries
 
 	return diags
 }
@@ -192,14 +191,6 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx
 	o.Analysis = analysis_value
 
 	return diags
-}
-
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
@@ -274,14 +265,6 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Sensitive:   false,
 			},
 
-			"direction": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"analysis": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -306,6 +289,14 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"direction": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -367,15 +358,15 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -385,13 +376,8 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -542,23 +528,6 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 				Sensitive:   false,
 			},
 
-			"direction": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"analysis": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("public-cloud"),
-			},
-
 			"application": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -575,6 +544,23 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"direction": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"analysis": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("public-cloud"),
 			},
 		},
 	}
@@ -625,6 +611,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context,
 
 func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
 	var rules_pango_entries []wildfireanalysis.Rules
@@ -643,25 +630,19 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 			rules_pango_entries = append(rules_pango_entries, *entry)
 		}
 	}
-	description_value := o.Description.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Rules = rules_pango_entries
-	(*obj).Description = description_value
 
 	return diags
 }
 func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	fileType_pango_entries := make([]string, 0)
 	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
 	if diags.HasError() {
@@ -669,15 +650,20 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx con
 	}
 	direction_value := o.Direction.ValueStringPointer()
 	analysis_value := o.Analysis.ValueStringPointer()
+	application_pango_entries := make([]string, 0)
+	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
 	(*obj).Analysis = analysis_value
+	(*obj).Application = application_pango_entries
 
 	return diags
 }
@@ -708,9 +694,9 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Rules = rules_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Rules = rules_list
 
 	return diags
 }
@@ -745,14 +731,6 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx c
 	o.Analysis = analysis_value
 
 	return diags
-}
-
-func (o *WildfireAnalysisSecurityProfileResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -810,13 +788,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -859,13 +831,8 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -907,8 +874,8 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -923,14 +890,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1077,8 +1037,8 @@ type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type WildfireAnalysisSecurityProfileLocation struct {
-	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                                          `tfsdk:"shared"`
+	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
@@ -1095,8 +1055,8 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
@@ -1104,20 +1064,20 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Panorama device name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

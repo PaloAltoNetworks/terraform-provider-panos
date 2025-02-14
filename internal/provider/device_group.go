@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/devicegroup"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -142,19 +141,19 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 		diags.Append(list_diags...)
 	}
 
-	var authorizationCode_value types.String
-	if obj.AuthorizationCode != nil {
-		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var authorizationCode_value types.String
+	if obj.AuthorizationCode != nil {
+		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
 	o.AuthorizationCode = authorizationCode_value
-	o.Description = description_value
 
 	return diags
 }
@@ -172,14 +171,6 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, 
 	o.Vsys = vsys_list
 
 	return diags
-}
-
-func (o *DeviceGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func DeviceGroupDataSourceSchema() dsschema.Schema {
@@ -345,13 +336,8 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -405,10 +391,10 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 type DeviceGroupResourceModel struct {
 	Location          DeviceGroupLocation `tfsdk:"location"`
 	Name              types.String        `tfsdk:"name"`
-	Description       types.String        `tfsdk:"description"`
 	Templates         types.List          `tfsdk:"templates"`
 	Devices           types.List          `tfsdk:"devices"`
 	AuthorizationCode types.String        `tfsdk:"authorization_code"`
+	Description       types.String        `tfsdk:"description"`
 }
 type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -634,19 +620,19 @@ func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devic
 		diags.Append(list_diags...)
 	}
 
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
-	}
 	var authorizationCode_value types.String
 	if obj.AuthorizationCode != nil {
 		authorizationCode_value = types.StringValue(*obj.AuthorizationCode)
 	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.AuthorizationCode = authorizationCode_value
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
-	o.AuthorizationCode = authorizationCode_value
 
 	return diags
 }
@@ -664,14 +650,6 @@ func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, ob
 	o.Vsys = vsys_list
 
 	return diags
-}
-
-func (o *DeviceGroupResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -725,13 +703,7 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -770,13 +742,8 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -830,14 +797,7 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return

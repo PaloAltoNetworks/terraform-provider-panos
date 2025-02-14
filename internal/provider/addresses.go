@@ -12,7 +12,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -57,13 +57,13 @@ type AddressesDataSourceModel struct {
 	Addresses types.Map         `tfsdk:"addresses"`
 }
 type AddressesDataSourceAddressesObject struct {
+	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
-	Description     types.String `tfsdk:"description"`
+	IpWildcard      types.String `tfsdk:"ip_wildcard"`
 	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
 	IpRange         types.String `tfsdk:"ip_range"`
-	IpWildcard      types.String `tfsdk:"ip_wildcard"`
 }
 
 func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -178,14 +178,6 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
 
-			"description": dsschema.StringAttribute{
-				Description: "The description.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Computed:    true,
@@ -203,8 +195,8 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"fqdn": dsschema.StringAttribute{
-				Description: "The FQDN value.",
+			"description": dsschema.StringAttribute{
+				Description: "The description.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -229,6 +221,14 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 
 			"ip_wildcard": dsschema.StringAttribute{
 				Description: "The IP wildcard value.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"fqdn": dsschema.StringAttribute{
+				Description: "The FQDN value.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -301,9 +301,6 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	var location address.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
@@ -317,6 +314,9 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	elements := make(map[string]AddressesDataSourceAddressesObject)
@@ -395,10 +395,10 @@ type AddressesResourceAddressesObject struct {
 	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
+	Fqdn            types.String `tfsdk:"fqdn"`
 	IpNetmask       types.String `tfsdk:"ip_netmask"`
 	IpRange         types.String `tfsdk:"ip_range"`
 	IpWildcard      types.String `tfsdk:"ip_wildcard"`
-	Fqdn            types.String `tfsdk:"fqdn"`
 }
 
 func (r *AddressesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -488,10 +488,10 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("ip_netmask"),
 						path.MatchRelative().AtParent().AtName("ip_range"),
 						path.MatchRelative().AtParent().AtName("ip_wildcard"),
 						path.MatchRelative().AtParent().AtName("fqdn"),
-						path.MatchRelative().AtParent().AtName("ip_netmask"),
 					}...),
 				},
 			},
@@ -575,10 +575,10 @@ func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj 
 	if diags.HasError() {
 		return diags
 	}
+	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
 	ipWildcard_value := o.IpWildcard.ValueStringPointer()
-	fqdn_value := o.Fqdn.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(address.Entry)
@@ -586,10 +586,10 @@ func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj 
 	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tags_pango_entries
+	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).IpRange = ipRange_value
 	(*obj).IpWildcard = ipWildcard_value
-	(*obj).Fqdn = fqdn_value
 
 	return diags
 }
@@ -611,14 +611,6 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var ipRange_value types.String
-	if obj.IpRange != nil {
-		ipRange_value = types.StringValue(*obj.IpRange)
-	}
-	var ipWildcard_value types.String
-	if obj.IpWildcard != nil {
-		ipWildcard_value = types.StringValue(*obj.IpWildcard)
-	}
 	var fqdn_value types.String
 	if obj.Fqdn != nil {
 		fqdn_value = types.StringValue(*obj.Fqdn)
@@ -627,13 +619,21 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	if obj.IpNetmask != nil {
 		ipNetmask_value = types.StringValue(*obj.IpNetmask)
 	}
+	var ipRange_value types.String
+	if obj.IpRange != nil {
+		ipRange_value = types.StringValue(*obj.IpRange)
+	}
+	var ipWildcard_value types.String
+	if obj.IpWildcard != nil {
+		ipWildcard_value = types.StringValue(*obj.IpWildcard)
+	}
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.IpRange = ipRange_value
-	o.IpWildcard = ipWildcard_value
 	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
+	o.IpRange = ipRange_value
+	o.IpWildcard = ipWildcard_value
 
 	return diags
 }
@@ -654,13 +654,6 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 
 	var location address.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -669,6 +662,13 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -819,21 +819,21 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 
 	var location address.Location
 
-	if plan.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !plan.Location.Shared.IsNull() && plan.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if plan.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
-			NgfwDevice: plan.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       plan.Location.Vsys.Name.ValueString(),
+			NgfwDevice: plan.Location.Vsys.NgfwDevice.ValueString(),
+		}
+	}
+	if plan.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
@@ -943,8 +943,8 @@ func (r *AddressesResource) Delete(ctx context.Context, req resource.DeleteReque
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &address.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -964,18 +964,18 @@ func (r *AddressesResource) ImportState(ctx context.Context, req resource.Import
 
 }
 
-type AddressesDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-}
 type AddressesVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type AddressesDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type AddressesLocation struct {
+	Vsys        *AddressesVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *AddressesDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                    `tfsdk:"shared"`
-	Vsys        *AddressesVsysLocation        `tfsdk:"vsys"`
 }
 
 func AddressesLocationSchema() rsschema.Attribute {
@@ -983,34 +983,10 @@ func AddressesLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("device_group"),
-					}...),
-				},
-			},
 			"vsys": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific Virtual System",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"name": rsschema.StringAttribute{
-						Description: "The Virtual System name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device name",
 						Optional:    true,
@@ -1020,9 +996,26 @@ func AddressesLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
+					}...),
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
@@ -1050,6 +1043,13 @@ func AddressesLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"shared": rsschema.BoolAttribute{
+				Description: "Location in Shared Panorama",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
 				},
 			},
 		},

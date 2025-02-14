@@ -52,13 +52,8 @@ type DeviceGroupParentDataSourceFilter struct {
 
 type DeviceGroupParentDataSourceModel struct {
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	DeviceGroup types.String              `tfsdk:"device_group"`
 	Parent      types.String              `tfsdk:"parent"`
-}
-
-func (o *DeviceGroupParentDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	return components, nil
+	DeviceGroup types.String              `tfsdk:"device_group"`
 }
 
 func DeviceGroupParentDataSourceSchema() dsschema.Schema {
@@ -246,11 +241,6 @@ func (r *DeviceGroupParentResource) Configure(ctx context.Context, req resource.
 	}
 
 	r.client = req.ProviderData.(*pango.Client)
-}
-
-func (o *DeviceGroupParentResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	return components, nil
 }
 
 func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

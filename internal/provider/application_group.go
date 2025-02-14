@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/application/group"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -58,8 +57,8 @@ type ApplicationGroupDataSourceFilter struct {
 type ApplicationGroupDataSourceModel struct {
 	Location        ApplicationGroupLocation `tfsdk:"location"`
 	Name            types.String             `tfsdk:"name"`
-	DisableOverride types.String             `tfsdk:"disable_override"`
 	Members         types.List               `tfsdk:"members"`
+	DisableOverride types.String             `tfsdk:"disable_override"`
 }
 
 func (o *ApplicationGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -99,14 +98,6 @@ func (o *ApplicationGroupDataSourceModel) CopyFromPango(ctx context.Context, obj
 	o.Members = members_list
 
 	return diags
-}
-
-func (o *ApplicationGroupDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func ApplicationGroupDataSourceSchema() dsschema.Schema {
@@ -205,8 +196,8 @@ func (o *ApplicationGroupDataSource) Read(ctx context.Context, req datasource.Re
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -224,13 +215,8 @@ func (o *ApplicationGroupDataSource) Read(ctx context.Context, req datasource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -417,14 +403,6 @@ func (o *ApplicationGroupResourceModel) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *ApplicationGroupResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
-}
-
 func (r *ApplicationGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state ApplicationGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -455,15 +433,15 @@ func (r *ApplicationGroupResource) Create(ctx context.Context, req resource.Crea
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -487,13 +465,7 @@ func (r *ApplicationGroupResource) Create(ctx context.Context, req resource.Crea
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -518,6 +490,9 @@ func (o *ApplicationGroupResource) Read(ctx context.Context, req resource.ReadRe
 
 	var location group.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
@@ -528,12 +503,9 @@ func (o *ApplicationGroupResource) Read(ctx context.Context, req resource.ReadRe
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
-	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -543,13 +515,8 @@ func (o *ApplicationGroupResource) Read(ctx context.Context, req resource.ReadRe
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -585,13 +552,6 @@ func (r *ApplicationGroupResource) Update(ctx context.Context, req resource.Upda
 
 	var location group.Location
 
-	if state.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
-		}
-	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
@@ -601,6 +561,13 @@ func (r *ApplicationGroupResource) Update(ctx context.Context, req resource.Upda
 	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
+	}
+	if state.Location.Vsys != nil {
+		location.Vsys = &group.VsysLocation{
+
+			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
 	}
 
 	// Basic logging.
@@ -614,14 +581,7 @@ func (r *ApplicationGroupResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -770,18 +730,18 @@ func (r *ApplicationGroupResource) ImportState(ctx context.Context, req resource
 
 }
 
-type ApplicationGroupDeviceGroupLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-}
 type ApplicationGroupVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
 }
+type ApplicationGroupDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type ApplicationGroupLocation struct {
-	DeviceGroup *ApplicationGroupDeviceGroupLocation `tfsdk:"device_group"`
 	Shared      types.Bool                           `tfsdk:"shared"`
 	Vsys        *ApplicationGroupVsysLocation        `tfsdk:"vsys"`
+	DeviceGroup *ApplicationGroupDeviceGroupLocation `tfsdk:"device_group"`
 }
 
 func ApplicationGroupLocationSchema() rsschema.Attribute {

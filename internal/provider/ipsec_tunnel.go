@@ -12,8 +12,8 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/tunnel/ipsec"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -58,17 +58,17 @@ type IpsecTunnelDataSourceFilter struct {
 type IpsecTunnelDataSourceModel struct {
 	Location               IpsecTunnelLocation                                `tfsdk:"location"`
 	Name                   types.String                                       `tfsdk:"name"`
+	Ipv6                   types.Bool                                         `tfsdk:"ipv6"`
+	TunnelInterface        types.String                                       `tfsdk:"tunnel_interface"`
+	TunnelMonitor          *IpsecTunnelDataSourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
+	Comment                types.String                                       `tfsdk:"comment"`
+	CopyFlowLabel          types.Bool                                         `tfsdk:"copy_flow_label"`
+	CopyTos                types.Bool                                         `tfsdk:"copy_tos"`
 	Disabled               types.Bool                                         `tfsdk:"disabled"`
 	EnableGreEncapsulation types.Bool                                         `tfsdk:"enable_gre_encapsulation"`
-	Ipv6                   types.Bool                                         `tfsdk:"ipv6"`
-	AntiReplay             types.Bool                                         `tfsdk:"anti_replay"`
-	Comment                types.String                                       `tfsdk:"comment"`
-	CopyTos                types.Bool                                         `tfsdk:"copy_tos"`
-	TunnelMonitor          *IpsecTunnelDataSourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
 	IpsecMode              types.String                                       `tfsdk:"ipsec_mode"`
+	AntiReplay             types.Bool                                         `tfsdk:"anti_replay"`
 	AntiReplayWindow       types.String                                       `tfsdk:"anti_replay_window"`
-	CopyFlowLabel          types.Bool                                         `tfsdk:"copy_flow_label"`
-	TunnelInterface        types.String                                       `tfsdk:"tunnel_interface"`
 	AutoKey                *IpsecTunnelDataSourceAutoKeyObject                `tfsdk:"auto_key"`
 	GlobalProtectSatellite *IpsecTunnelDataSourceGlobalProtectSatelliteObject `tfsdk:"global_protect_satellite"`
 	ManualKey              *IpsecTunnelDataSourceManualKeyObject              `tfsdk:"manual_key"`
@@ -85,28 +85,6 @@ type IpsecTunnelDataSourceAutoKeyObject struct {
 	ProxyId            types.List   `tfsdk:"proxy_id"`
 	ProxyIdV6          types.List   `tfsdk:"proxy_id_v6"`
 }
-type IpsecTunnelDataSourceAutoKeyProxyIdObject struct {
-	Name     types.String                                       `tfsdk:"name"`
-	Local    types.String                                       `tfsdk:"local"`
-	Remote   types.String                                       `tfsdk:"remote"`
-	Protocol *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject `tfsdk:"protocol"`
-}
-type IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject struct {
-	Number types.Int64                                           `tfsdk:"number"`
-	Any    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject `tfsdk:"any"`
-	Tcp    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject `tfsdk:"tcp"`
-	Udp    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject `tfsdk:"udp"`
-}
-type IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject struct {
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-}
-type IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject struct {
-}
-type IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject struct {
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-}
 type IpsecTunnelDataSourceAutoKeyProxyIdV6Object struct {
 	Name     types.String                                         `tfsdk:"name"`
 	Local    types.String                                         `tfsdk:"local"`
@@ -114,10 +92,14 @@ type IpsecTunnelDataSourceAutoKeyProxyIdV6Object struct {
 	Protocol *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject `tfsdk:"protocol"`
 }
 type IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject struct {
-	Number types.Int64                                             `tfsdk:"number"`
-	Any    *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject `tfsdk:"any"`
 	Tcp    *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject `tfsdk:"tcp"`
 	Udp    *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject `tfsdk:"udp"`
+	Number types.Int64                                             `tfsdk:"number"`
+	Any    *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject `tfsdk:"any"`
+}
+type IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject struct {
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+	LocalPort  types.Int64 `tfsdk:"local_port"`
 }
 type IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject struct {
 }
@@ -125,20 +107,42 @@ type IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject struct {
 	LocalPort  types.Int64 `tfsdk:"local_port"`
 	RemotePort types.Int64 `tfsdk:"remote_port"`
 }
-type IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject struct {
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-}
 type IpsecTunnelDataSourceAutoKeyIkeGatewayObject struct {
 	Name types.String `tfsdk:"name"`
 }
+type IpsecTunnelDataSourceAutoKeyProxyIdObject struct {
+	Name     types.String                                       `tfsdk:"name"`
+	Remote   types.String                                       `tfsdk:"remote"`
+	Protocol *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject `tfsdk:"protocol"`
+	Local    types.String                                       `tfsdk:"local"`
+}
+type IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject struct {
+	Tcp    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject `tfsdk:"tcp"`
+	Udp    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject `tfsdk:"udp"`
+	Number types.Int64                                           `tfsdk:"number"`
+	Any    *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject `tfsdk:"any"`
+}
+type IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject struct {
+}
+type IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
+type IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
 type IpsecTunnelDataSourceGlobalProtectSatelliteObject struct {
-	ExternalCa             *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject             `tfsdk:"external_ca"`
-	Ipv6Preferred          types.Bool                                                               `tfsdk:"ipv6_preferred"`
-	LocalAddress           *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject           `tfsdk:"local_address"`
 	PortalAddress          types.String                                                             `tfsdk:"portal_address"`
 	PublishConnectedRoutes *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject `tfsdk:"publish_connected_routes"`
 	PublishRoutes          types.List                                                               `tfsdk:"publish_routes"`
+	ExternalCa             *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject             `tfsdk:"external_ca"`
+	Ipv6Preferred          types.Bool                                                               `tfsdk:"ipv6_preferred"`
+	LocalAddress           *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject           `tfsdk:"local_address"`
+}
+type IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject struct {
+	LocalCertificate   types.String `tfsdk:"local_certificate"`
+	CertificateProfile types.String `tfsdk:"certificate_profile"`
 }
 type IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject struct {
 	Interface  types.String                                                             `tfsdk:"interface"`
@@ -156,32 +160,31 @@ type IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject struct {
 type IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject struct {
 	Enable types.Bool `tfsdk:"enable"`
 }
-type IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject struct {
-	CertificateProfile types.String `tfsdk:"certificate_profile"`
-	LocalCertificate   types.String `tfsdk:"local_certificate"`
-}
 type IpsecTunnelDataSourceManualKeyObject struct {
+	LocalAddress *IpsecTunnelDataSourceManualKeyLocalAddressObject `tfsdk:"local_address"`
 	LocalSpi     types.String                                      `tfsdk:"local_spi"`
 	PeerAddress  *IpsecTunnelDataSourceManualKeyPeerAddressObject  `tfsdk:"peer_address"`
 	RemoteSpi    types.String                                      `tfsdk:"remote_spi"`
-	LocalAddress *IpsecTunnelDataSourceManualKeyLocalAddressObject `tfsdk:"local_address"`
 	Ah           *IpsecTunnelDataSourceManualKeyAhObject           `tfsdk:"ah"`
 	Esp          *IpsecTunnelDataSourceManualKeyEspObject          `tfsdk:"esp"`
-}
-type IpsecTunnelDataSourceManualKeyLocalAddressObject struct {
-	Interface  types.String `tfsdk:"interface"`
-	Ip         types.String `tfsdk:"ip"`
-	FloatingIp types.String `tfsdk:"floating_ip"`
 }
 type IpsecTunnelDataSourceManualKeyPeerAddressObject struct {
 	Ip types.String `tfsdk:"ip"`
 }
+type IpsecTunnelDataSourceManualKeyLocalAddressObject struct {
+	Interface  types.String `tfsdk:"interface"`
+	FloatingIp types.String `tfsdk:"floating_ip"`
+	Ip         types.String `tfsdk:"ip"`
+}
 type IpsecTunnelDataSourceManualKeyAhObject struct {
+	Md5    *IpsecTunnelDataSourceManualKeyAhMd5Object    `tfsdk:"md5"`
 	Sha1   *IpsecTunnelDataSourceManualKeyAhSha1Object   `tfsdk:"sha1"`
 	Sha256 *IpsecTunnelDataSourceManualKeyAhSha256Object `tfsdk:"sha256"`
 	Sha384 *IpsecTunnelDataSourceManualKeyAhSha384Object `tfsdk:"sha384"`
 	Sha512 *IpsecTunnelDataSourceManualKeyAhSha512Object `tfsdk:"sha512"`
-	Md5    *IpsecTunnelDataSourceManualKeyAhMd5Object    `tfsdk:"md5"`
+}
+type IpsecTunnelDataSourceManualKeyAhSha512Object struct {
+	Key types.String `tfsdk:"key"`
 }
 type IpsecTunnelDataSourceManualKeyAhMd5Object struct {
 	Key types.String `tfsdk:"key"`
@@ -195,20 +198,17 @@ type IpsecTunnelDataSourceManualKeyAhSha256Object struct {
 type IpsecTunnelDataSourceManualKeyAhSha384Object struct {
 	Key types.String `tfsdk:"key"`
 }
-type IpsecTunnelDataSourceManualKeyAhSha512Object struct {
-	Key types.String `tfsdk:"key"`
-}
 type IpsecTunnelDataSourceManualKeyEspObject struct {
 	Authentication *IpsecTunnelDataSourceManualKeyEspAuthenticationObject `tfsdk:"authentication"`
 	Encryption     *IpsecTunnelDataSourceManualKeyEspEncryptionObject     `tfsdk:"encryption"`
 }
 type IpsecTunnelDataSourceManualKeyEspAuthenticationObject struct {
-	Sha256 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object `tfsdk:"sha256"`
-	Sha384 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object `tfsdk:"sha384"`
-	Sha512 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object `tfsdk:"sha512"`
 	Md5    *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object    `tfsdk:"md5"`
 	None   *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject   `tfsdk:"none"`
 	Sha1   *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object   `tfsdk:"sha1"`
+	Sha256 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object `tfsdk:"sha256"`
+	Sha384 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object `tfsdk:"sha384"`
+	Sha512 *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object `tfsdk:"sha512"`
 }
 type IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object struct {
 	Key types.String `tfsdk:"key"`
@@ -228,20 +228,18 @@ type IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object struct {
 	Key types.String `tfsdk:"key"`
 }
 type IpsecTunnelDataSourceManualKeyEspEncryptionObject struct {
-	Key       types.String `tfsdk:"key"`
 	Algorithm types.String `tfsdk:"algorithm"`
+	Key       types.String `tfsdk:"key"`
 }
 
 func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	antiReplay_value := o.AntiReplay.ValueBoolPointer()
 	comment_value := o.Comment.ValueStringPointer()
+	copyFlowLabel_value := o.CopyFlowLabel.ValueBoolPointer()
 	copyTos_value := o.CopyTos.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	enableGreEncapsulation_value := o.EnableGreEncapsulation.ValueBoolPointer()
 	ipv6_value := o.Ipv6.ValueBoolPointer()
-	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
-	copyFlowLabel_value := o.CopyFlowLabel.ValueBoolPointer()
 	tunnelInterface_value := o.TunnelInterface.ValueStringPointer()
 	var tunnelMonitor_entry *ipsec.TunnelMonitor
 	if o.TunnelMonitor != nil {
@@ -257,19 +255,8 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 		}
 	}
 	ipsecMode_value := o.IpsecMode.ValueStringPointer()
-	var manualKey_entry *ipsec.ManualKey
-	if o.ManualKey != nil {
-		if *obj != nil && (*obj).ManualKey != nil {
-			manualKey_entry = (*obj).ManualKey
-		} else {
-			manualKey_entry = new(ipsec.ManualKey)
-		}
-
-		diags.Append(o.ManualKey.CopyToPango(ctx, &manualKey_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	antiReplay_value := o.AntiReplay.ValueBoolPointer()
+	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
 	var autoKey_entry *ipsec.AutoKey
 	if o.AutoKey != nil {
 		if *obj != nil && (*obj).AutoKey != nil {
@@ -296,66 +283,60 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 			return diags
 		}
 	}
+	var manualKey_entry *ipsec.ManualKey
+	if o.ManualKey != nil {
+		if *obj != nil && (*obj).ManualKey != nil {
+			manualKey_entry = (*obj).ManualKey
+		} else {
+			manualKey_entry = new(ipsec.ManualKey)
+		}
+
+		diags.Append(o.ManualKey.CopyToPango(ctx, &manualKey_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).AntiReplay = antiReplay_value
 	(*obj).Comment = comment_value
+	(*obj).CopyFlowLabel = copyFlowLabel_value
 	(*obj).CopyTos = copyTos_value
 	(*obj).Disabled = disabled_value
 	(*obj).EnableGreEncapsulation = enableGreEncapsulation_value
 	(*obj).Ipv6 = ipv6_value
-	(*obj).AntiReplayWindow = antiReplayWindow_value
-	(*obj).CopyFlowLabel = copyFlowLabel_value
 	(*obj).TunnelInterface = tunnelInterface_value
 	(*obj).TunnelMonitor = tunnelMonitor_entry
 	(*obj).IpsecMode = ipsecMode_value
-	(*obj).ManualKey = manualKey_entry
+	(*obj).AntiReplay = antiReplay_value
+	(*obj).AntiReplayWindow = antiReplayWindow_value
 	(*obj).AutoKey = autoKey_entry
 	(*obj).GlobalProtectSatellite = globalProtectSatellite_entry
+	(*obj).ManualKey = manualKey_entry
 
 	return diags
 }
 func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyToPango(ctx context.Context, obj **ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
 	proxyId_value := o.ProxyId.ValueStringPointer()
 	tunnelMonitorProfile_value := o.TunnelMonitorProfile.ValueStringPointer()
 	destinationIp_value := o.DestinationIp.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.TunnelMonitor)
 	}
+	(*obj).Enable = enable_value
 	(*obj).ProxyId = proxyId_value
 	(*obj).TunnelMonitorProfile = tunnelMonitorProfile_value
 	(*obj).DestinationIp = destinationIp_value
-	(*obj).Enable = enable_value
 
 	return diags
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	publishRoutes_pango_entries := make([]string, 0)
-	diags.Append(o.PublishRoutes.ElementsAs(ctx, &publishRoutes_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	var externalCa_entry *ipsec.GlobalProtectSatelliteExternalCa
-	if o.ExternalCa != nil {
-		if *obj != nil && (*obj).ExternalCa != nil {
-			externalCa_entry = (*obj).ExternalCa
-		} else {
-			externalCa_entry = new(ipsec.GlobalProtectSatelliteExternalCa)
-		}
-
-		diags.Append(o.ExternalCa.CopyToPango(ctx, &externalCa_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	ipv6Preferred_value := o.Ipv6Preferred.ValueBoolPointer()
 	var localAddress_entry *ipsec.GlobalProtectSatelliteLocalAddress
 	if o.LocalAddress != nil {
 		if *obj != nil && (*obj).LocalAddress != nil {
@@ -383,29 +364,35 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx cont
 			return diags
 		}
 	}
+	publishRoutes_pango_entries := make([]string, 0)
+	diags.Append(o.PublishRoutes.ElementsAs(ctx, &publishRoutes_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	var externalCa_entry *ipsec.GlobalProtectSatelliteExternalCa
+	if o.ExternalCa != nil {
+		if *obj != nil && (*obj).ExternalCa != nil {
+			externalCa_entry = (*obj).ExternalCa
+		} else {
+			externalCa_entry = new(ipsec.GlobalProtectSatelliteExternalCa)
+		}
+
+		diags.Append(o.ExternalCa.CopyToPango(ctx, &externalCa_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6Preferred_value := o.Ipv6Preferred.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatellite)
 	}
-	(*obj).PublishRoutes = publishRoutes_pango_entries
-	(*obj).ExternalCa = externalCa_entry
-	(*obj).Ipv6Preferred = ipv6Preferred_value
 	(*obj).LocalAddress = localAddress_entry
 	(*obj).PortalAddress = portalAddress_value
 	(*obj).PublishConnectedRoutes = publishConnectedRoutes_entry
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
-	localCertificate_value := o.LocalCertificate.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.GlobalProtectSatelliteExternalCa)
-	}
-	(*obj).CertificateProfile = certificateProfile_value
-	(*obj).LocalCertificate = localCertificate_value
+	(*obj).PublishRoutes = publishRoutes_pango_entries
+	(*obj).ExternalCa = externalCa_entry
+	(*obj).Ipv6Preferred = ipv6Preferred_value
 
 	return diags
 }
@@ -450,27 +437,27 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPa
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
+	ipv4_value := o.Ipv4.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatelliteLocalAddressFloatingIp)
 	}
-	(*obj).Ipv4 = ipv4_value
 	(*obj).Ipv6 = ipv6_value
+	(*obj).Ipv4 = ipv4_value
 
 	return diags
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
+	ipv4_value := o.Ipv4.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatelliteLocalAddressIp)
 	}
-	(*obj).Ipv4 = ipv4_value
 	(*obj).Ipv6 = ipv6_value
+	(*obj).Ipv4 = ipv4_value
 
 	return diags
 }
@@ -482,6 +469,19 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 		*obj = new(ipsec.GlobalProtectSatellitePublishConnectedRoutes)
 	}
 	(*obj).Enable = enable_value
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
+	localCertificate_value := o.LocalCertificate.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.GlobalProtectSatelliteExternalCa)
+	}
+	(*obj).CertificateProfile = certificateProfile_value
+	(*obj).LocalCertificate = localCertificate_value
 
 	return diags
 }
@@ -554,6 +554,17 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
+func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyPeerAddress)
+	}
+	(*obj).Ip = ip_value
+
+	return diags
+}
 func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
@@ -565,17 +576,6 @@ func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyToPango(ctx conte
 	}
 	(*obj).Interface = interface_value
 	(*obj).FloatingIp = floatingIp_value
-	(*obj).Ip = ip_value
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	ip_value := o.Ip.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyPeerAddress)
-	}
 	(*obj).Ip = ip_value
 
 	return diags
@@ -659,28 +659,6 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyAhSha1)
-	}
-	(*obj).Key = key_value
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyAhSha256)
-	}
-	(*obj).Key = key_value
-
-	return diags
-}
 func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
@@ -709,6 +687,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Cont
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhMd5)
+	}
+	(*obj).Key = key_value
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	key_value := o.Key.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyAhSha1)
+	}
+	(*obj).Key = key_value
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	key_value := o.Key.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyAhSha256)
 	}
 	(*obj).Key = key_value
 
@@ -753,6 +753,19 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Contex
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var sha256_entry *ipsec.ManualKeyEspAuthenticationSha256
+	if o.Sha256 != nil {
+		if *obj != nil && (*obj).Sha256 != nil {
+			sha256_entry = (*obj).Sha256
+		} else {
+			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
+		}
+
+		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var sha384_entry *ipsec.ManualKeyEspAuthenticationSha384
 	if o.Sha384 != nil {
 		if *obj != nil && (*obj).Sha384 != nil {
@@ -818,60 +831,16 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 			return diags
 		}
 	}
-	var sha256_entry *ipsec.ManualKeyEspAuthenticationSha256
-	if o.Sha256 != nil {
-		if *obj != nil && (*obj).Sha256 != nil {
-			sha256_entry = (*obj).Sha256
-		} else {
-			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
-		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthentication)
 	}
+	(*obj).Sha256 = sha256_entry
 	(*obj).Sha384 = sha384_entry
 	(*obj).Sha512 = sha512_entry
 	(*obj).Md5 = md5_entry
 	(*obj).None = none_entry
 	(*obj).Sha1 = sha1_entry
-	(*obj).Sha256 = sha256_entry
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyEspAuthenticationMd5)
-	}
-	(*obj).Key = key_value
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyEspAuthenticationNone)
-	}
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyEspAuthenticationSha1)
-	}
-	(*obj).Key = key_value
 
 	return diags
 }
@@ -908,16 +877,47 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyEspAuthenticationMd5)
+	}
+	(*obj).Key = key_value
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyEspAuthenticationNone)
+	}
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	key_value := o.Key.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyEspAuthenticationSha1)
+	}
+	(*obj).Key = key_value
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
+	key_value := o.Key.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspEncryption)
 	}
-	(*obj).Key = key_value
 	(*obj).Algorithm = algorithm_value
+	(*obj).Key = key_value
 
 	return diags
 }
@@ -988,6 +988,8 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ob
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	local_value := o.Local.ValueStringPointer()
+	remote_value := o.Remote.ValueStringPointer()
 	var protocol_entry *ipsec.AutoKeyProxyIdProtocol
 	if o.Protocol != nil {
 		if *obj != nil && (*obj).Protocol != nil {
@@ -1001,21 +1003,33 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Cont
 			return diags
 		}
 	}
-	local_value := o.Local.ValueStringPointer()
-	remote_value := o.Remote.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.AutoKeyProxyId)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Protocol = protocol_entry
 	(*obj).Local = local_value
 	(*obj).Remote = remote_value
+	(*obj).Protocol = protocol_entry
 
 	return diags
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	number_value := o.Number.ValueInt64Pointer()
+	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
+	if o.Any != nil {
+		if *obj != nil && (*obj).Any != nil {
+			any_entry = (*obj).Any
+		} else {
+			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
+		}
+
+		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var tcp_entry *ipsec.AutoKeyProxyIdProtocolTcp
 	if o.Tcp != nil {
 		if *obj != nil && (*obj).Tcp != nil {
@@ -1042,28 +1056,23 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx cont
 			return diags
 		}
 	}
-	number_value := o.Number.ValueInt64Pointer()
-	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
-	if o.Any != nil {
-		if *obj != nil && (*obj).Any != nil {
-			any_entry = (*obj).Any
-		} else {
-			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
-		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.AutoKeyProxyIdProtocol)
 	}
-	(*obj).Tcp = tcp_entry
-	(*obj).Udp = udp_entry
 	(*obj).Number = number_value
 	(*obj).Any = any_entry
+	(*obj).Tcp = tcp_entry
+	(*obj).Udp = udp_entry
+
+	return diags
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyIdProtocolAny)
+	}
 
 	return diags
 }
@@ -1090,15 +1099,6 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx c
 	}
 	(*obj).LocalPort = localPort_value
 	(*obj).RemotePort = remotePort_value
-
-	return diags
-}
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyIdProtocolAny)
-	}
 
 	return diags
 }
@@ -1132,7 +1132,6 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Co
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	number_value := o.Number.ValueInt64Pointer()
 	var any_entry *ipsec.AutoKeyProxyIdV6ProtocolAny
 	if o.Any != nil {
 		if *obj != nil && (*obj).Any != nil {
@@ -1172,14 +1171,15 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx co
 			return diags
 		}
 	}
+	number_value := o.Number.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.AutoKeyProxyIdV6Protocol)
 	}
-	(*obj).Number = number_value
 	(*obj).Any = any_entry
 	(*obj).Tcp = tcp_entry
 	(*obj).Udp = udp_entry
+	(*obj).Number = number_value
 
 	return diags
 }
@@ -1268,21 +1268,25 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 		}
 	}
 
-	var enableGreEncapsulation_value types.Bool
-	if obj.EnableGreEncapsulation != nil {
-		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
-	}
-	var ipv6_value types.Bool
-	if obj.Ipv6 != nil {
-		ipv6_value = types.BoolValue(*obj.Ipv6)
-	}
 	var antiReplay_value types.Bool
 	if obj.AntiReplay != nil {
 		antiReplay_value = types.BoolValue(*obj.AntiReplay)
 	}
+	var antiReplayWindow_value types.String
+	if obj.AntiReplayWindow != nil {
+		antiReplayWindow_value = types.StringValue(*obj.AntiReplayWindow)
+	}
+	var tunnelInterface_value types.String
+	if obj.TunnelInterface != nil {
+		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
+	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
+	}
+	var copyFlowLabel_value types.Bool
+	if obj.CopyFlowLabel != nil {
+		copyFlowLabel_value = types.BoolValue(*obj.CopyFlowLabel)
 	}
 	var copyTos_value types.Bool
 	if obj.CopyTos != nil {
@@ -1292,34 +1296,30 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
+	var enableGreEncapsulation_value types.Bool
+	if obj.EnableGreEncapsulation != nil {
+		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
+	}
+	var ipv6_value types.Bool
+	if obj.Ipv6 != nil {
+		ipv6_value = types.BoolValue(*obj.Ipv6)
+	}
 	var ipsecMode_value types.String
 	if obj.IpsecMode != nil {
 		ipsecMode_value = types.StringValue(*obj.IpsecMode)
 	}
-	var antiReplayWindow_value types.String
-	if obj.AntiReplayWindow != nil {
-		antiReplayWindow_value = types.StringValue(*obj.AntiReplayWindow)
-	}
-	var copyFlowLabel_value types.Bool
-	if obj.CopyFlowLabel != nil {
-		copyFlowLabel_value = types.BoolValue(*obj.CopyFlowLabel)
-	}
-	var tunnelInterface_value types.String
-	if obj.TunnelInterface != nil {
-		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.EnableGreEncapsulation = enableGreEncapsulation_value
-	o.Ipv6 = ipv6_value
 	o.AntiReplay = antiReplay_value
-	o.Comment = comment_value
-	o.CopyTos = copyTos_value
-	o.Disabled = disabled_value
-	o.IpsecMode = ipsecMode_value
 	o.AntiReplayWindow = antiReplayWindow_value
-	o.CopyFlowLabel = copyFlowLabel_value
 	o.TunnelInterface = tunnelInterface_value
 	o.TunnelMonitor = tunnelMonitor_object
+	o.Comment = comment_value
+	o.CopyFlowLabel = copyFlowLabel_value
+	o.CopyTos = copyTos_value
+	o.Disabled = disabled_value
+	o.EnableGreEncapsulation = enableGreEncapsulation_value
+	o.Ipv6 = ipv6_value
+	o.IpsecMode = ipsecMode_value
 	o.AutoKey = autoKey_object
 	o.GlobalProtectSatellite = globalProtectSatellite_object
 	o.ManualKey = manualKey_object
@@ -1350,6 +1350,391 @@ func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyFromPango(ctx context.Con
 	o.Enable = enable_value
 	o.ProxyId = proxyId_value
 	o.TunnelMonitorProfile = tunnelMonitorProfile_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var localAddress_object *IpsecTunnelDataSourceManualKeyLocalAddressObject
+	if obj.LocalAddress != nil {
+		localAddress_object = new(IpsecTunnelDataSourceManualKeyLocalAddressObject)
+
+		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var peerAddress_object *IpsecTunnelDataSourceManualKeyPeerAddressObject
+	if obj.PeerAddress != nil {
+		peerAddress_object = new(IpsecTunnelDataSourceManualKeyPeerAddressObject)
+
+		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ah_object *IpsecTunnelDataSourceManualKeyAhObject
+	if obj.Ah != nil {
+		ah_object = new(IpsecTunnelDataSourceManualKeyAhObject)
+
+		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var esp_object *IpsecTunnelDataSourceManualKeyEspObject
+	if obj.Esp != nil {
+		esp_object = new(IpsecTunnelDataSourceManualKeyEspObject)
+
+		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var localSpi_value types.String
+	if obj.LocalSpi != nil {
+		localSpi_value = types.StringValue(*obj.LocalSpi)
+	}
+	var remoteSpi_value types.String
+	if obj.RemoteSpi != nil {
+		remoteSpi_value = types.StringValue(*obj.RemoteSpi)
+	}
+	o.LocalAddress = localAddress_object
+	o.LocalSpi = localSpi_value
+	o.PeerAddress = peerAddress_object
+	o.RemoteSpi = remoteSpi_value
+	o.Ah = ah_object
+	o.Esp = esp_object
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ip_value types.String
+	if obj.Ip != nil {
+		ip_value = types.StringValue(*obj.Ip)
+	}
+	o.Ip = ip_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var interface_value types.String
+	if obj.Interface != nil {
+		interface_value = types.StringValue(*obj.Interface)
+	}
+	var floatingIp_value types.String
+	if obj.FloatingIp != nil {
+		floatingIp_value = types.StringValue(*obj.FloatingIp)
+	}
+	var ip_value types.String
+	if obj.Ip != nil {
+		ip_value = types.StringValue(*obj.Ip)
+	}
+	o.Interface = interface_value
+	o.FloatingIp = floatingIp_value
+	o.Ip = ip_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var md5_object *IpsecTunnelDataSourceManualKeyAhMd5Object
+	if obj.Md5 != nil {
+		md5_object = new(IpsecTunnelDataSourceManualKeyAhMd5Object)
+
+		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha1_object *IpsecTunnelDataSourceManualKeyAhSha1Object
+	if obj.Sha1 != nil {
+		sha1_object = new(IpsecTunnelDataSourceManualKeyAhSha1Object)
+
+		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha256_object *IpsecTunnelDataSourceManualKeyAhSha256Object
+	if obj.Sha256 != nil {
+		sha256_object = new(IpsecTunnelDataSourceManualKeyAhSha256Object)
+
+		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha384_object *IpsecTunnelDataSourceManualKeyAhSha384Object
+	if obj.Sha384 != nil {
+		sha384_object = new(IpsecTunnelDataSourceManualKeyAhSha384Object)
+
+		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha512_object *IpsecTunnelDataSourceManualKeyAhSha512Object
+	if obj.Sha512 != nil {
+		sha512_object = new(IpsecTunnelDataSourceManualKeyAhSha512Object)
+
+		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Md5 = md5_object
+	o.Sha1 = sha1_object
+	o.Sha256 = sha256_object
+	o.Sha384 = sha384_object
+	o.Sha512 = sha512_object
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var encryption_object *IpsecTunnelDataSourceManualKeyEspEncryptionObject
+	if obj.Encryption != nil {
+		encryption_object = new(IpsecTunnelDataSourceManualKeyEspEncryptionObject)
+
+		diags.Append(encryption_object.CopyFromPango(ctx, obj.Encryption, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var authentication_object *IpsecTunnelDataSourceManualKeyEspAuthenticationObject
+	if obj.Authentication != nil {
+		authentication_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationObject)
+
+		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Encryption = encryption_object
+	o.Authentication = authentication_object
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var sha1_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object
+	if obj.Sha1 != nil {
+		sha1_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object)
+
+		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha256_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object
+	if obj.Sha256 != nil {
+		sha256_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object)
+
+		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha384_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object
+	if obj.Sha384 != nil {
+		sha384_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object)
+
+		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha512_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object
+	if obj.Sha512 != nil {
+		sha512_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object)
+
+		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var md5_object *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object
+	if obj.Md5 != nil {
+		md5_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object)
+
+		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_object *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject
+	if obj.None != nil {
+		none_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject)
+
+		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Sha1 = sha1_object
+	o.Sha256 = sha256_object
+	o.Sha384 = sha384_object
+	o.Sha512 = sha512_object
+	o.Md5 = md5_object
+	o.None = none_object
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var algorithm_value types.String
+	if obj.Algorithm != nil {
+		algorithm_value = types.StringValue(*obj.Algorithm)
+	}
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Algorithm = algorithm_value
+	o.Key = key_value
 
 	return diags
 }
@@ -1533,18 +1918,18 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.
 		}
 	}
 
-	var local_value types.String
-	if obj.Local != nil {
-		local_value = types.StringValue(*obj.Local)
-	}
 	var remote_value types.String
 	if obj.Remote != nil {
 		remote_value = types.StringValue(*obj.Remote)
 	}
+	var local_value types.String
+	if obj.Local != nil {
+		local_value = types.StringValue(*obj.Local)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.Local = local_value
 	o.Remote = remote_value
 	o.Protocol = protocol_object
+	o.Local = local_value
 
 	return diags
 }
@@ -1591,13 +1976,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -1614,7 +1993,13 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(c
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -1646,15 +2031,6 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx co
 		publishRoutes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PublishRoutes)
 		diags.Append(list_diags...)
 	}
-	var externalCa_object *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject
-	if obj.ExternalCa != nil {
-		externalCa_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject)
-
-		diags.Append(externalCa_object.CopyFromPango(ctx, obj.ExternalCa, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var localAddress_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject)
@@ -1673,33 +2049,30 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx co
 			return diags
 		}
 	}
+	var externalCa_object *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject
+	if obj.ExternalCa != nil {
+		externalCa_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject)
 
-	var ipv6Preferred_value types.Bool
-	if obj.Ipv6Preferred != nil {
-		ipv6Preferred_value = types.BoolValue(*obj.Ipv6Preferred)
+		diags.Append(externalCa_object.CopyFromPango(ctx, obj.ExternalCa, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
+
 	var portalAddress_value types.String
 	if obj.PortalAddress != nil {
 		portalAddress_value = types.StringValue(*obj.PortalAddress)
 	}
-	o.ExternalCa = externalCa_object
-	o.Ipv6Preferred = ipv6Preferred_value
+	var ipv6Preferred_value types.Bool
+	if obj.Ipv6Preferred != nil {
+		ipv6Preferred_value = types.BoolValue(*obj.Ipv6Preferred)
+	}
 	o.LocalAddress = localAddress_object
 	o.PortalAddress = portalAddress_value
 	o.PublishConnectedRoutes = publishConnectedRoutes_object
 	o.PublishRoutes = publishRoutes_list
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
+	o.ExternalCa = externalCa_object
+	o.Ipv6Preferred = ipv6Preferred_value
 
 	return diags
 }
@@ -1707,36 +2080,36 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var certificateProfile_value types.String
-	if obj.CertificateProfile != nil {
-		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
-	}
 	var localCertificate_value types.String
 	if obj.LocalCertificate != nil {
 		localCertificate_value = types.StringValue(*obj.LocalCertificate)
 	}
-	o.CertificateProfile = certificateProfile_value
+	var certificateProfile_value types.String
+	if obj.CertificateProfile != nil {
+		certificateProfile_value = types.StringValue(*obj.CertificateProfile)
+	}
 	o.LocalCertificate = localCertificate_value
+	o.CertificateProfile = certificateProfile_value
 
 	return diags
 }
 
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ip_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject
-	if obj.Ip != nil {
-		ip_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var floatingIp_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 	if obj.FloatingIp != nil {
 		floatingIp_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject)
 
 		diags.Append(floatingIp_object.CopyFromPango(ctx, obj.FloatingIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ip_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject
+	if obj.Ip != nil {
+		ip_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject)
+
+		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1747,8 +2120,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFrom
 		interface_value = types.StringValue(*obj.Interface)
 	}
 	o.Interface = interface_value
-	o.Ip = ip_object
 	o.FloatingIp = floatingIp_object
+	o.Ip = ip_object
 
 	return diags
 }
@@ -1756,16 +2129,16 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFrom
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var ipv6_value types.String
-	if obj.Ipv6 != nil {
-		ipv6_value = types.StringValue(*obj.Ipv6)
-	}
 	var ipv4_value types.String
 	if obj.Ipv4 != nil {
 		ipv4_value = types.StringValue(*obj.Ipv4)
 	}
-	o.Ipv6 = ipv6_value
+	var ipv6_value types.String
+	if obj.Ipv6 != nil {
+		ipv6_value = types.StringValue(*obj.Ipv6)
+	}
 	o.Ipv4 = ipv4_value
+	o.Ipv6 = ipv6_value
 
 	return diags
 }
@@ -1787,397 +2160,16 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var localAddress_object *IpsecTunnelDataSourceManualKeyLocalAddressObject
-	if obj.LocalAddress != nil {
-		localAddress_object = new(IpsecTunnelDataSourceManualKeyLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var peerAddress_object *IpsecTunnelDataSourceManualKeyPeerAddressObject
-	if obj.PeerAddress != nil {
-		peerAddress_object = new(IpsecTunnelDataSourceManualKeyPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var esp_object *IpsecTunnelDataSourceManualKeyEspObject
-	if obj.Esp != nil {
-		esp_object = new(IpsecTunnelDataSourceManualKeyEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ah_object *IpsecTunnelDataSourceManualKeyAhObject
-	if obj.Ah != nil {
-		ah_object = new(IpsecTunnelDataSourceManualKeyAhObject)
-
-		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var localSpi_value types.String
-	if obj.LocalSpi != nil {
-		localSpi_value = types.StringValue(*obj.LocalSpi)
-	}
-	var remoteSpi_value types.String
-	if obj.RemoteSpi != nil {
-		remoteSpi_value = types.StringValue(*obj.RemoteSpi)
-	}
-	o.LocalAddress = localAddress_object
-	o.LocalSpi = localSpi_value
-	o.PeerAddress = peerAddress_object
-	o.RemoteSpi = remoteSpi_value
-	o.Esp = esp_object
-	o.Ah = ah_object
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var interface_value types.String
-	if obj.Interface != nil {
-		interface_value = types.StringValue(*obj.Interface)
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var floatingIp_value types.String
-	if obj.FloatingIp != nil {
-		floatingIp_value = types.StringValue(*obj.FloatingIp)
-	}
-	var ip_value types.String
-	if obj.Ip != nil {
-		ip_value = types.StringValue(*obj.Ip)
-	}
-	o.Interface = interface_value
-	o.FloatingIp = floatingIp_value
-	o.Ip = ip_value
+	o.Enable = enable_value
 
 	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ip_value types.String
-	if obj.Ip != nil {
-		ip_value = types.StringValue(*obj.Ip)
-	}
-	o.Ip = ip_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var md5_object *IpsecTunnelDataSourceManualKeyAhMd5Object
-	if obj.Md5 != nil {
-		md5_object = new(IpsecTunnelDataSourceManualKeyAhMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha1_object *IpsecTunnelDataSourceManualKeyAhSha1Object
-	if obj.Sha1 != nil {
-		sha1_object = new(IpsecTunnelDataSourceManualKeyAhSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha256_object *IpsecTunnelDataSourceManualKeyAhSha256Object
-	if obj.Sha256 != nil {
-		sha256_object = new(IpsecTunnelDataSourceManualKeyAhSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha384_object *IpsecTunnelDataSourceManualKeyAhSha384Object
-	if obj.Sha384 != nil {
-		sha384_object = new(IpsecTunnelDataSourceManualKeyAhSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha512_object *IpsecTunnelDataSourceManualKeyAhSha512Object
-	if obj.Sha512 != nil {
-		sha512_object = new(IpsecTunnelDataSourceManualKeyAhSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Md5 = md5_object
-	o.Sha1 = sha1_object
-	o.Sha256 = sha256_object
-	o.Sha384 = sha384_object
-	o.Sha512 = sha512_object
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var authentication_object *IpsecTunnelDataSourceManualKeyEspAuthenticationObject
-	if obj.Authentication != nil {
-		authentication_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationObject)
-
-		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var encryption_object *IpsecTunnelDataSourceManualKeyEspEncryptionObject
-	if obj.Encryption != nil {
-		encryption_object = new(IpsecTunnelDataSourceManualKeyEspEncryptionObject)
-
-		diags.Append(encryption_object.CopyFromPango(ctx, obj.Encryption, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Authentication = authentication_object
-	o.Encryption = encryption_object
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var none_object *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject
-	if obj.None != nil {
-		none_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha1_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object
-	if obj.Sha1 != nil {
-		sha1_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha256_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object
-	if obj.Sha256 != nil {
-		sha256_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha384_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object
-	if obj.Sha384 != nil {
-		sha384_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha512_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object
-	if obj.Sha512 != nil {
-		sha512_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var md5_object *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object
-	if obj.Md5 != nil {
-		md5_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.None = none_object
-	o.Sha1 = sha1_object
-	o.Sha256 = sha256_object
-	o.Sha384 = sha384_object
-	o.Sha512 = sha512_object
-	o.Md5 = md5_object
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var algorithm_value types.String
-	if obj.Algorithm != nil {
-		algorithm_value = types.StringValue(*obj.Algorithm)
-	}
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Algorithm = algorithm_value
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func IpsecTunnelDataSourceSchema() dsschema.Schema {
@@ -2194,6 +2186,14 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"anti_replay_window": dsschema.StringAttribute{
+				Description: "64,128,256,512,1024,2048,4096",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"anti_replay": dsschema.BoolAttribute{
 				Description: "Enable Anti-Replay check on this tunnel",
 				Computed:    true,
@@ -2202,8 +2202,8 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"comment": dsschema.StringAttribute{
-				Description: "",
+			"copy_flow_label": dsschema.BoolAttribute{
+				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -2242,22 +2242,6 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"anti_replay_window": dsschema.StringAttribute{
-				Description: "64,128,256,512,1024,2048,4096",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"copy_flow_label": dsschema.BoolAttribute{
-				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"tunnel_interface": dsschema.StringAttribute{
 				Description: "to apply IPSec VPN tunnels to tunnel interface",
 				Computed:    true,
@@ -2267,6 +2251,14 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 			},
 
 			"tunnel_monitor": IpsecTunnelDataSourceTunnelMonitorSchema(),
+
+			"comment": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"ipsec_mode": dsschema.StringAttribute{
 				Description: "",
@@ -2374,15 +2366,6 @@ func IpsecTunnelDataSourceAutoKeySchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"ike_gateway": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: IpsecTunnelDataSourceAutoKeyIkeGatewaySchema(),
-			},
-
 			"ipsec_crypto_profile": dsschema.StringAttribute{
 				Description: "IPSec crypto profile name",
 				Computed:    true,
@@ -2408,45 +2391,21 @@ func IpsecTunnelDataSourceAutoKeySchema() dsschema.SingleNestedAttribute {
 				Sensitive:    false,
 				NestedObject: IpsecTunnelDataSourceAutoKeyProxyIdV6Schema(),
 			},
+
+			"ike_gateway": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: IpsecTunnelDataSourceAutoKeyIkeGatewaySchema(),
+			},
 		},
 	}
 }
 
 func (o *IpsecTunnelDataSourceAutoKeyObject) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelDataSourceAutoKeySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceAutoKeyIkeGatewaySchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceAutoKeyIkeGatewaySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2475,14 +2434,6 @@ func IpsecTunnelDataSourceAutoKeyProxyIdSchema() dsschema.NestedAttributeObject 
 				Sensitive:   false,
 			},
 
-			"local": dsschema.StringAttribute{
-				Description: "IP subnet or IP address represents local network",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"remote": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
 				Computed:    true,
@@ -2492,6 +2443,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdSchema() dsschema.NestedAttributeObject 
 			},
 
 			"protocol": IpsecTunnelDataSourceAutoKeyProxyIdProtocolSchema(),
+
+			"local": dsschema.StringAttribute{
+				Description: "IP subnet or IP address represents local network",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -2523,6 +2482,12 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolSchema() dsschema.SingleNestedAt
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"any": IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnySchema(),
+
+			"tcp": IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpSchema(),
+
+			"udp": IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema(),
+
 			"number": dsschema.Int64Attribute{
 				Description: "IP protocol number",
 				Computed:    true,
@@ -2530,12 +2495,6 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolSchema() dsschema.SingleNestedAt
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"any": IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnySchema(),
-
-			"tcp": IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpSchema(),
-
-			"udp": IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema(),
 		},
 	}
 }
@@ -2568,10 +2527,10 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnySchema() dsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
 				path.MatchRelative().AtParent().AtName("any"),
 				path.MatchRelative().AtParent().AtName("tcp"),
 				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("number"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -2606,10 +2565,10 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpSchema() dsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
 				path.MatchRelative().AtParent().AtName("any"),
 				path.MatchRelative().AtParent().AtName("tcp"),
 				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("number"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -2661,15 +2620,15 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema() dsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
 				path.MatchRelative().AtParent().AtName("any"),
 				path.MatchRelative().AtParent().AtName("tcp"),
 				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("number"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"remote_port": dsschema.Int64Attribute{
+			"local_port": dsschema.Int64Attribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -2677,7 +2636,7 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema() dsschema.SingleNeste
 				Sensitive:   false,
 			},
 
-			"local_port": dsschema.Int64Attribute{
+			"remote_port": dsschema.Int64Attribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -2718,14 +2677,6 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6Schema() dsschema.NestedAttributeObjec
 				Sensitive:   false,
 			},
 
-			"local": dsschema.StringAttribute{
-				Description: "IP subnet or IP address represents local network",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"remote": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
 				Computed:    true,
@@ -2735,6 +2686,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6Schema() dsschema.NestedAttributeObjec
 			},
 
 			"protocol": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema(),
+
+			"local": dsschema.StringAttribute{
+				Description: "IP subnet or IP address represents local network",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -2766,10 +2725,6 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema() dsschema.SingleNested
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"tcp": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema(),
-
-			"udp": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpSchema(),
-
 			"number": dsschema.Int64Attribute{
 				Description: "IP protocol number",
 				Computed:    true,
@@ -2779,105 +2734,16 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema() dsschema.SingleNested
 			},
 
 			"any": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema(),
+
+			"tcp": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema(),
+
+			"udp": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpSchema(),
 		},
 	}
 }
 
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("udp"),
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("udp"),
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"local_port": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"remote_port": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2904,10 +2770,10 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpSchema() dsschema.SingleNes
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("udp"),
 				path.MatchRelative().AtParent().AtName("number"),
 				path.MatchRelative().AtParent().AtName("any"),
 				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -2949,6 +2815,132 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) getTypeFor(name
 	panic("unreachable")
 }
 
+func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"local_port": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"remote_port": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceAutoKeyIkeGatewaySchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceAutoKeyIkeGatewaySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func IpsecTunnelDataSourceGlobalProtectSatelliteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -2957,6 +2949,18 @@ func IpsecTunnelDataSourceGlobalProtectSatelliteSchema() dsschema.SingleNestedAt
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
+
+			"external_ca": IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaSchema(),
+
+			"ipv6_preferred": dsschema.BoolAttribute{
+				Description: "Prefer to register to portal in ipv6. Only applicable to fqdn portal-address",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"local_address": IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressSchema(),
 
 			"portal_address": dsschema.StringAttribute{
 				Description: "GlobalProtect portal address",
@@ -2976,18 +2980,6 @@ func IpsecTunnelDataSourceGlobalProtectSatelliteSchema() dsschema.SingleNestedAt
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
-
-			"external_ca": IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaSchema(),
-
-			"ipv6_preferred": dsschema.BoolAttribute{
-				Description: "Prefer to register to portal in ipv6. Only applicable to fqdn portal-address",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"local_address": IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressSchema(),
 		},
 	}
 }
@@ -3019,16 +3011,16 @@ func IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaSchema() dsschema.Sing
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"local_certificate": dsschema.StringAttribute{
-				Description: "GlobalProtect satellite certificate file name",
+			"certificate_profile": dsschema.StringAttribute{
+				Description: "Profile for authenticating GlobalProtect gateway certificates",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"certificate_profile": dsschema.StringAttribute{
-				Description: "Profile for authenticating GlobalProtect gateway certificates",
+			"local_certificate": dsschema.StringAttribute{
+				Description: "GlobalProtect satellite certificate file name",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -3251,16 +3243,6 @@ func IpsecTunnelDataSourceManualKeySchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"peer_address": IpsecTunnelDataSourceManualKeyPeerAddressSchema(),
-
-			"remote_spi": dsschema.StringAttribute{
-				Description: "Inbound SPI, hex format xxxxxxxx.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"local_address": IpsecTunnelDataSourceManualKeyLocalAddressSchema(),
 
 			"local_spi": dsschema.StringAttribute{
@@ -3271,9 +3253,19 @@ func IpsecTunnelDataSourceManualKeySchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"ah": IpsecTunnelDataSourceManualKeyAhSchema(),
+			"peer_address": IpsecTunnelDataSourceManualKeyPeerAddressSchema(),
+
+			"remote_spi": dsschema.StringAttribute{
+				Description: "Inbound SPI, hex format xxxxxxxx.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"esp": IpsecTunnelDataSourceManualKeyEspSchema(),
+
+			"ah": IpsecTunnelDataSourceManualKeyAhSchema(),
 		},
 	}
 }
@@ -3388,6 +3380,293 @@ func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) getTypeFor(name string
 	panic("unreachable")
 }
 
+func IpsecTunnelDataSourceManualKeyAhSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ah"),
+				path.MatchRelative().AtParent().AtName("esp"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"md5": IpsecTunnelDataSourceManualKeyAhMd5Schema(),
+
+			"sha1": IpsecTunnelDataSourceManualKeyAhSha1Schema(),
+
+			"sha256": IpsecTunnelDataSourceManualKeyAhSha256Schema(),
+
+			"sha384": IpsecTunnelDataSourceManualKeyAhSha384Schema(),
+
+			"sha512": IpsecTunnelDataSourceManualKeyAhSha512Schema(),
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyAhSha512Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhSha512Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyAhMd5Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhMd5Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyAhSha1Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhSha1Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyAhSha256Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhSha256Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyAhSha384Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyAhSha384Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func IpsecTunnelDataSourceManualKeyEspSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -3471,55 +3750,6 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) getTypeFor(name 
 	panic("unreachable")
 }
 
-func IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func IpsecTunnelDataSourceManualKeyEspAuthenticationNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -3530,12 +3760,12 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationNoneSchema() dsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
 				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3570,12 +3800,12 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Schema() dsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
 				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3619,12 +3849,12 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Schema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
 				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3668,12 +3898,12 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Schema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
 				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3717,12 +3947,12 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
 				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3740,6 +3970,55 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema() dsschema.Sing
 
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"key": dsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3802,293 +4081,6 @@ func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) getTypeFor(name stri
 	panic("unreachable")
 }
 
-func IpsecTunnelDataSourceManualKeyAhSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ah"),
-				path.MatchRelative().AtParent().AtName("esp"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"md5": IpsecTunnelDataSourceManualKeyAhMd5Schema(),
-
-			"sha1": IpsecTunnelDataSourceManualKeyAhSha1Schema(),
-
-			"sha256": IpsecTunnelDataSourceManualKeyAhSha256Schema(),
-
-			"sha384": IpsecTunnelDataSourceManualKeyAhSha384Schema(),
-
-			"sha512": IpsecTunnelDataSourceManualKeyAhSha512Schema(),
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceManualKeyAhSha1Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhSha1Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceManualKeyAhSha256Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhSha256Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceManualKeyAhSha384Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhSha384Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceManualKeyAhSha512Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhSha512Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelDataSourceManualKeyAhMd5Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"key": dsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelDataSourceManualKeyAhMd5Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func IpsecTunnelDataSourceLocationSchema() rsschema.Attribute {
 	return IpsecTunnelLocationSchema()
 }
@@ -4130,9 +4122,9 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 	if savestate.Location.Template != nil {
 		location.Template = &ipsec.TemplateLocation{
 
+			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
@@ -4151,13 +4143,8 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -4211,20 +4198,20 @@ func IpsecTunnelResourceLocationSchema() rsschema.Attribute {
 type IpsecTunnelResourceModel struct {
 	Location               IpsecTunnelLocation                              `tfsdk:"location"`
 	Name                   types.String                                     `tfsdk:"name"`
+	AntiReplayWindow       types.String                                     `tfsdk:"anti_replay_window"`
+	AntiReplay             types.Bool                                       `tfsdk:"anti_replay"`
+	CopyFlowLabel          types.Bool                                       `tfsdk:"copy_flow_label"`
+	CopyTos                types.Bool                                       `tfsdk:"copy_tos"`
 	Disabled               types.Bool                                       `tfsdk:"disabled"`
 	EnableGreEncapsulation types.Bool                                       `tfsdk:"enable_gre_encapsulation"`
 	Ipv6                   types.Bool                                       `tfsdk:"ipv6"`
-	AntiReplay             types.Bool                                       `tfsdk:"anti_replay"`
-	Comment                types.String                                     `tfsdk:"comment"`
-	CopyTos                types.Bool                                       `tfsdk:"copy_tos"`
-	TunnelMonitor          *IpsecTunnelResourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
-	IpsecMode              types.String                                     `tfsdk:"ipsec_mode"`
-	AntiReplayWindow       types.String                                     `tfsdk:"anti_replay_window"`
-	CopyFlowLabel          types.Bool                                       `tfsdk:"copy_flow_label"`
 	TunnelInterface        types.String                                     `tfsdk:"tunnel_interface"`
+	TunnelMonitor          *IpsecTunnelResourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
+	Comment                types.String                                     `tfsdk:"comment"`
+	IpsecMode              types.String                                     `tfsdk:"ipsec_mode"`
+	AutoKey                *IpsecTunnelResourceAutoKeyObject                `tfsdk:"auto_key"`
 	GlobalProtectSatellite *IpsecTunnelResourceGlobalProtectSatelliteObject `tfsdk:"global_protect_satellite"`
 	ManualKey              *IpsecTunnelResourceManualKeyObject              `tfsdk:"manual_key"`
-	AutoKey                *IpsecTunnelResourceAutoKeyObject                `tfsdk:"auto_key"`
 }
 type IpsecTunnelResourceTunnelMonitorObject struct {
 	DestinationIp        types.String `tfsdk:"destination_ip"`
@@ -4232,71 +4219,102 @@ type IpsecTunnelResourceTunnelMonitorObject struct {
 	ProxyId              types.String `tfsdk:"proxy_id"`
 	TunnelMonitorProfile types.String `tfsdk:"tunnel_monitor_profile"`
 }
+type IpsecTunnelResourceAutoKeyObject struct {
+	IkeGateway         types.List   `tfsdk:"ike_gateway"`
+	IpsecCryptoProfile types.String `tfsdk:"ipsec_crypto_profile"`
+	ProxyId            types.List   `tfsdk:"proxy_id"`
+	ProxyIdV6          types.List   `tfsdk:"proxy_id_v6"`
+}
+type IpsecTunnelResourceAutoKeyIkeGatewayObject struct {
+	Name types.String `tfsdk:"name"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdObject struct {
+	Name     types.String                                     `tfsdk:"name"`
+	Local    types.String                                     `tfsdk:"local"`
+	Remote   types.String                                     `tfsdk:"remote"`
+	Protocol *IpsecTunnelResourceAutoKeyProxyIdProtocolObject `tfsdk:"protocol"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdProtocolObject struct {
+	Number types.Int64                                         `tfsdk:"number"`
+	Any    *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject `tfsdk:"any"`
+	Tcp    *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject `tfsdk:"tcp"`
+	Udp    *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject `tfsdk:"udp"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject struct {
+}
+type IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdV6Object struct {
+	Name     types.String                                       `tfsdk:"name"`
+	Local    types.String                                       `tfsdk:"local"`
+	Remote   types.String                                       `tfsdk:"remote"`
+	Protocol *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject `tfsdk:"protocol"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject struct {
+	Tcp    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject `tfsdk:"tcp"`
+	Udp    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject `tfsdk:"udp"`
+	Number types.Int64                                           `tfsdk:"number"`
+	Any    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject `tfsdk:"any"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject struct {
+}
+type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
+type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject struct {
+	LocalPort  types.Int64 `tfsdk:"local_port"`
+	RemotePort types.Int64 `tfsdk:"remote_port"`
+}
 type IpsecTunnelResourceGlobalProtectSatelliteObject struct {
+	ExternalCa             *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject             `tfsdk:"external_ca"`
 	Ipv6Preferred          types.Bool                                                             `tfsdk:"ipv6_preferred"`
 	LocalAddress           *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject           `tfsdk:"local_address"`
 	PortalAddress          types.String                                                           `tfsdk:"portal_address"`
 	PublishConnectedRoutes *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject `tfsdk:"publish_connected_routes"`
 	PublishRoutes          types.List                                                             `tfsdk:"publish_routes"`
-	ExternalCa             *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject             `tfsdk:"external_ca"`
+}
+type IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject struct {
+	CertificateProfile types.String `tfsdk:"certificate_profile"`
+	LocalCertificate   types.String `tfsdk:"local_certificate"`
 }
 type IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject struct {
 	Interface  types.String                                                           `tfsdk:"interface"`
-	FloatingIp *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject `tfsdk:"floating_ip"`
 	Ip         *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject         `tfsdk:"ip"`
+	FloatingIp *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject `tfsdk:"floating_ip"`
 }
 type IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject struct {
 	Ipv4 types.String `tfsdk:"ipv4"`
 	Ipv6 types.String `tfsdk:"ipv6"`
 }
 type IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject struct {
-	Ipv4 types.String `tfsdk:"ipv4"`
 	Ipv6 types.String `tfsdk:"ipv6"`
+	Ipv4 types.String `tfsdk:"ipv4"`
 }
 type IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject struct {
 	Enable types.Bool `tfsdk:"enable"`
 }
-type IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject struct {
-	CertificateProfile types.String `tfsdk:"certificate_profile"`
-	LocalCertificate   types.String `tfsdk:"local_certificate"`
-}
 type IpsecTunnelResourceManualKeyObject struct {
-	LocalAddress *IpsecTunnelResourceManualKeyLocalAddressObject `tfsdk:"local_address"`
-	LocalSpi     types.String                                    `tfsdk:"local_spi"`
 	PeerAddress  *IpsecTunnelResourceManualKeyPeerAddressObject  `tfsdk:"peer_address"`
 	RemoteSpi    types.String                                    `tfsdk:"remote_spi"`
-	Esp          *IpsecTunnelResourceManualKeyEspObject          `tfsdk:"esp"`
+	LocalAddress *IpsecTunnelResourceManualKeyLocalAddressObject `tfsdk:"local_address"`
+	LocalSpi     types.String                                    `tfsdk:"local_spi"`
 	Ah           *IpsecTunnelResourceManualKeyAhObject           `tfsdk:"ah"`
+	Esp          *IpsecTunnelResourceManualKeyEspObject          `tfsdk:"esp"`
 }
 type IpsecTunnelResourceManualKeyLocalAddressObject struct {
 	Interface  types.String `tfsdk:"interface"`
-	FloatingIp types.String `tfsdk:"floating_ip"`
 	Ip         types.String `tfsdk:"ip"`
+	FloatingIp types.String `tfsdk:"floating_ip"`
 }
 type IpsecTunnelResourceManualKeyPeerAddressObject struct {
 	Ip types.String `tfsdk:"ip"`
-}
-type IpsecTunnelResourceManualKeyAhObject struct {
-	Sha512 *IpsecTunnelResourceManualKeyAhSha512Object `tfsdk:"sha512"`
-	Md5    *IpsecTunnelResourceManualKeyAhMd5Object    `tfsdk:"md5"`
-	Sha1   *IpsecTunnelResourceManualKeyAhSha1Object   `tfsdk:"sha1"`
-	Sha256 *IpsecTunnelResourceManualKeyAhSha256Object `tfsdk:"sha256"`
-	Sha384 *IpsecTunnelResourceManualKeyAhSha384Object `tfsdk:"sha384"`
-}
-type IpsecTunnelResourceManualKeyAhSha512Object struct {
-	Key types.String `tfsdk:"key"`
-}
-type IpsecTunnelResourceManualKeyAhMd5Object struct {
-	Key types.String `tfsdk:"key"`
-}
-type IpsecTunnelResourceManualKeyAhSha1Object struct {
-	Key types.String `tfsdk:"key"`
-}
-type IpsecTunnelResourceManualKeyAhSha256Object struct {
-	Key types.String `tfsdk:"key"`
-}
-type IpsecTunnelResourceManualKeyAhSha384Object struct {
-	Key types.String `tfsdk:"key"`
 }
 type IpsecTunnelResourceManualKeyEspObject struct {
 	Authentication *IpsecTunnelResourceManualKeyEspAuthenticationObject `tfsdk:"authentication"`
@@ -4328,61 +4346,30 @@ type IpsecTunnelResourceManualKeyEspAuthenticationSha384Object struct {
 	Key types.String `tfsdk:"key"`
 }
 type IpsecTunnelResourceManualKeyEspEncryptionObject struct {
-	Key       types.String `tfsdk:"key"`
 	Algorithm types.String `tfsdk:"algorithm"`
+	Key       types.String `tfsdk:"key"`
 }
-type IpsecTunnelResourceAutoKeyObject struct {
-	ProxyId            types.List   `tfsdk:"proxy_id"`
-	ProxyIdV6          types.List   `tfsdk:"proxy_id_v6"`
-	IkeGateway         types.List   `tfsdk:"ike_gateway"`
-	IpsecCryptoProfile types.String `tfsdk:"ipsec_crypto_profile"`
+type IpsecTunnelResourceManualKeyAhObject struct {
+	Sha384 *IpsecTunnelResourceManualKeyAhSha384Object `tfsdk:"sha384"`
+	Sha512 *IpsecTunnelResourceManualKeyAhSha512Object `tfsdk:"sha512"`
+	Md5    *IpsecTunnelResourceManualKeyAhMd5Object    `tfsdk:"md5"`
+	Sha1   *IpsecTunnelResourceManualKeyAhSha1Object   `tfsdk:"sha1"`
+	Sha256 *IpsecTunnelResourceManualKeyAhSha256Object `tfsdk:"sha256"`
 }
-type IpsecTunnelResourceAutoKeyIkeGatewayObject struct {
-	Name types.String `tfsdk:"name"`
+type IpsecTunnelResourceManualKeyAhMd5Object struct {
+	Key types.String `tfsdk:"key"`
 }
-type IpsecTunnelResourceAutoKeyProxyIdObject struct {
-	Name     types.String                                     `tfsdk:"name"`
-	Local    types.String                                     `tfsdk:"local"`
-	Remote   types.String                                     `tfsdk:"remote"`
-	Protocol *IpsecTunnelResourceAutoKeyProxyIdProtocolObject `tfsdk:"protocol"`
+type IpsecTunnelResourceManualKeyAhSha1Object struct {
+	Key types.String `tfsdk:"key"`
 }
-type IpsecTunnelResourceAutoKeyProxyIdProtocolObject struct {
-	Number types.Int64                                         `tfsdk:"number"`
-	Any    *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject `tfsdk:"any"`
-	Tcp    *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject `tfsdk:"tcp"`
-	Udp    *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject `tfsdk:"udp"`
+type IpsecTunnelResourceManualKeyAhSha256Object struct {
+	Key types.String `tfsdk:"key"`
 }
-type IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject struct {
+type IpsecTunnelResourceManualKeyAhSha384Object struct {
+	Key types.String `tfsdk:"key"`
 }
-type IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject struct {
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-}
-type IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject struct {
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-}
-type IpsecTunnelResourceAutoKeyProxyIdV6Object struct {
-	Name     types.String                                       `tfsdk:"name"`
-	Local    types.String                                       `tfsdk:"local"`
-	Remote   types.String                                       `tfsdk:"remote"`
-	Protocol *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject `tfsdk:"protocol"`
-}
-type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject struct {
-	Any    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject `tfsdk:"any"`
-	Tcp    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject `tfsdk:"tcp"`
-	Udp    *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject `tfsdk:"udp"`
-	Number types.Int64                                           `tfsdk:"number"`
-}
-type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject struct {
-}
-type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject struct {
-	LocalPort  types.Int64 `tfsdk:"local_port"`
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-}
-type IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject struct {
-	RemotePort types.Int64 `tfsdk:"remote_port"`
-	LocalPort  types.Int64 `tfsdk:"local_port"`
+type IpsecTunnelResourceManualKeyAhSha512Object struct {
+	Key types.String `tfsdk:"key"`
 }
 
 func (r *IpsecTunnelResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -4404,16 +4391,8 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"anti_replay": rsschema.BoolAttribute{
-				Description: "Enable Anti-Replay check on this tunnel",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"comment": rsschema.StringAttribute{
-				Description: "",
+			"copy_flow_label": rsschema.BoolAttribute{
+				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -4452,35 +4431,6 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"anti_replay_window": rsschema.StringAttribute{
-				Description: "64,128,256,512,1024,2048,4096",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("1024"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"64",
-						"128",
-						"256",
-						"512",
-						"1024",
-						"2048",
-						"4096",
-					}...),
-				},
-			},
-
-			"copy_flow_label": rsschema.BoolAttribute{
-				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"tunnel_interface": rsschema.StringAttribute{
 				Description: "to apply IPSec VPN tunnels to tunnel interface",
 				Computed:    false,
@@ -4490,6 +4440,14 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 			},
 
 			"tunnel_monitor": IpsecTunnelResourceTunnelMonitorSchema(),
+
+			"comment": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"ipsec_mode": rsschema.StringAttribute{
 				Description: "",
@@ -4507,11 +4465,40 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 				},
 			},
 
+			"anti_replay_window": rsschema.StringAttribute{
+				Description: "64,128,256,512,1024,2048,4096",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("1024"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"1024",
+						"2048",
+						"4096",
+						"64",
+						"128",
+						"256",
+						"512",
+					}...),
+				},
+			},
+
+			"anti_replay": rsschema.BoolAttribute{
+				Description: "Enable Anti-Replay check on this tunnel",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_key": IpsecTunnelResourceAutoKeySchema(),
+
 			"global_protect_satellite": IpsecTunnelResourceGlobalProtectSatelliteSchema(),
 
 			"manual_key": IpsecTunnelResourceManualKeySchema(),
-
-			"auto_key": IpsecTunnelResourceAutoKeySchema(),
 		},
 	}
 }
@@ -4596,7 +4583,7 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) getTypeFor(name string) attr.Ty
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceGlobalProtectSatelliteSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceAutoKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -4612,6 +4599,619 @@ func IpsecTunnelResourceGlobalProtectSatelliteSchema() rsschema.SingleNestedAttr
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
+
+			"ike_gateway": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: IpsecTunnelResourceAutoKeyIkeGatewaySchema(),
+			},
+
+			"ipsec_crypto_profile": rsschema.StringAttribute{
+				Description: "IPSec crypto profile name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("default"),
+			},
+
+			"proxy_id": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: IpsecTunnelResourceAutoKeyProxyIdSchema(),
+			},
+
+			"proxy_id_v6": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: IpsecTunnelResourceAutoKeyProxyIdV6Schema(),
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"local": rsschema.StringAttribute{
+				Description: "IP subnet or IP address represents local network",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"remote": rsschema.StringAttribute{
+				Description: "IP subnet or IP address represents remote network",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"protocol": IpsecTunnelResourceAutoKeyProxyIdProtocolSchema(),
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdProtocolSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"any": IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema(),
+
+			"tcp": IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema(),
+
+			"udp": IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema(),
+
+			"number": rsschema.Int64Attribute{
+				Description: "IP protocol number",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"local_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+
+			"remote_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"local_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+
+			"remote_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdV6Schema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"local": rsschema.StringAttribute{
+				Description: "IP subnet or IP address represents local network",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"remote": rsschema.StringAttribute{
+				Description: "IP subnet or IP address represents remote network",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"protocol": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema(),
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdV6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"number": rsschema.Int64Attribute{
+				Description: "IP protocol number",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+
+				Validators: []validator.Int64{
+					int64validator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("number"),
+						path.MatchRelative().AtParent().AtName("any"),
+						path.MatchRelative().AtParent().AtName("tcp"),
+						path.MatchRelative().AtParent().AtName("udp"),
+					}...),
+				},
+			},
+
+			"any": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema(),
+
+			"tcp": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema(),
+
+			"udp": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema(),
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"local_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+
+			"remote_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("number"),
+				path.MatchRelative().AtParent().AtName("any"),
+				path.MatchRelative().AtParent().AtName("tcp"),
+				path.MatchRelative().AtParent().AtName("udp"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"local_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+
+			"remote_port": rsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(0),
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceAutoKeyIkeGatewaySchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceAutoKeyIkeGatewaySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceGlobalProtectSatelliteSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"publish_connected_routes": IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesSchema(),
+
+			"publish_routes": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
 
 			"external_ca": IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema(),
 
@@ -4632,23 +5232,58 @@ func IpsecTunnelResourceGlobalProtectSatelliteSchema() rsschema.SingleNestedAttr
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"publish_connected_routes": IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesSchema(),
-
-			"publish_routes": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
 		},
 	}
 }
 
 func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelResourceGlobalProtectSatelliteSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"certificate_profile": rsschema.StringAttribute{
+				Description: "Profile for authenticating GlobalProtect gateway certificates",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"local_certificate": rsschema.StringAttribute{
+				Description: "GlobalProtect satellite certificate file name",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4851,52 +5486,6 @@ func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) 
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"certificate_profile": rsschema.StringAttribute{
-				Description: "Profile for authenticating GlobalProtect gateway certificates",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"local_certificate": rsschema.StringAttribute{
-				Description: "GlobalProtect satellite certificate file name",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func IpsecTunnelResourceManualKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -4905,6 +5494,8 @@ func IpsecTunnelResourceManualKeySchema() rsschema.SingleNestedAttribute {
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
+
+			"local_address": IpsecTunnelResourceManualKeyLocalAddressSchema(),
 
 			"local_spi": rsschema.StringAttribute{
 				Description: "Outbound SPI, hex format xxxxxxxx. range 00001000 to 1FFFFFFF",
@@ -4924,8 +5515,6 @@ func IpsecTunnelResourceManualKeySchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"local_address": IpsecTunnelResourceManualKeyLocalAddressSchema(),
-
 			"ah": IpsecTunnelResourceManualKeyAhSchema(),
 
 			"esp": IpsecTunnelResourceManualKeyEspSchema(),
@@ -4935,44 +5524,6 @@ func IpsecTunnelResourceManualKeySchema() rsschema.SingleNestedAttribute {
 
 func (o *IpsecTunnelResourceManualKeyObject) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelResourceManualKeySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyPeerAddressSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"ip": rsschema.StringAttribute{
-				Description: "Tunnel peer IP address",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyPeerAddressObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyPeerAddressSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5050,74 +5601,17 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceManualKeyAhSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyPeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("esp"),
-				path.MatchRelative().AtParent().AtName("ah"),
-			}...),
-		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"md5": IpsecTunnelResourceManualKeyAhMd5Schema(),
-
-			"sha1": IpsecTunnelResourceManualKeyAhSha1Schema(),
-
-			"sha256": IpsecTunnelResourceManualKeyAhSha256Schema(),
-
-			"sha384": IpsecTunnelResourceManualKeyAhSha384Schema(),
-
-			"sha512": IpsecTunnelResourceManualKeyAhSha512Schema(),
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyAhObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
+			"ip": rsschema.StringAttribute{
+				Description: "Tunnel peer IP address",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -5127,200 +5621,8 @@ func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
 	}
 }
 
-func (o *IpsecTunnelResourceManualKeyAhMd5Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhMd5Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyAhSha1Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyAhSha1Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhSha1Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyAhSha256Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyAhSha256Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhSha256Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyAhSha384Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyAhSha384Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhSha384Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyAhSha512Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyAhSha512Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyAhSha512Schema()
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyPeerAddressSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5347,8 +5649,8 @@ func IpsecTunnelResourceManualKeyEspSchema() rsschema.SingleNestedAttribute {
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("esp"),
 				path.MatchRelative().AtParent().AtName("ah"),
+				path.MatchRelative().AtParent().AtName("esp"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -5362,6 +5664,333 @@ func IpsecTunnelResourceManualKeyEspSchema() rsschema.SingleNestedAttribute {
 
 func (o *IpsecTunnelResourceManualKeyEspObject) getTypeFor(name string) attr.Type {
 	schema := IpsecTunnelResourceManualKeyEspSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"sha384": IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema(),
+
+			"sha512": IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema(),
+
+			"md5": IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema(),
+
+			"none": IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema(),
+
+			"sha1": IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema(),
+
+			"sha256": IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema(),
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5425,49 +6054,7 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) getTypeFor(name string
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceManualKeyEspAuthenticationSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"md5": IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema(),
-
-			"none": IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema(),
-
-			"sha1": IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema(),
-
-			"sha256": IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema(),
-
-			"sha384": IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema(),
-
-			"sha512": IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema(),
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -5477,29 +6064,27 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("ah"),
+				path.MatchRelative().AtParent().AtName("esp"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"sha1": IpsecTunnelResourceManualKeyAhSha1Schema(),
+
+			"sha256": IpsecTunnelResourceManualKeyAhSha256Schema(),
+
+			"sha384": IpsecTunnelResourceManualKeyAhSha384Schema(),
+
+			"sha512": IpsecTunnelResourceManualKeyAhSha512Schema(),
+
+			"md5": IpsecTunnelResourceManualKeyAhMd5Schema(),
 		},
 	}
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema()
+func (o *IpsecTunnelResourceManualKeyAhObject) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5516,7 +6101,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) getTypeFor(n
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -5526,110 +6111,11 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.Single
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("sha1"),
 				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"key": rsschema.StringAttribute{
-				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -5645,8 +6131,8 @@ func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNes
 	}
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema()
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhMd5Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5663,7 +6149,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) getTypeFor(name
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhSha1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -5673,52 +6159,11 @@ func IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema() rsschema.SingleNe
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("md5"),
 				path.MatchRelative().AtParent().AtName("sha1"),
 				path.MatchRelative().AtParent().AtName("sha256"),
 				path.MatchRelative().AtParent().AtName("sha384"),
 				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("sha1"),
-				path.MatchRelative().AtParent().AtName("sha256"),
-				path.MatchRelative().AtParent().AtName("sha384"),
-				path.MatchRelative().AtParent().AtName("sha512"),
-				path.MatchRelative().AtParent().AtName("md5"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -5734,8 +6179,8 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNe
 	}
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema()
+func (o *IpsecTunnelResourceManualKeyAhSha1Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhSha1Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5752,168 +6197,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) getTypeFor(nam
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceAutoKeySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"ike_gateway": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: IpsecTunnelResourceAutoKeyIkeGatewaySchema(),
-			},
-
-			"ipsec_crypto_profile": rsschema.StringAttribute{
-				Description: "IPSec crypto profile name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("default"),
-			},
-
-			"proxy_id": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: IpsecTunnelResourceAutoKeyProxyIdSchema(),
-			},
-
-			"proxy_id_v6": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: IpsecTunnelResourceAutoKeyProxyIdV6Schema(),
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdV6Schema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"remote": rsschema.StringAttribute{
-				Description: "IP subnet or IP address represents remote network",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"protocol": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema(),
-
-			"local": rsschema.StringAttribute{
-				Description: "IP subnet or IP address represents local network",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdV6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"tcp": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema(),
-
-			"udp": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema(),
-
-			"number": rsschema.Int64Attribute{
-				Description: "IP protocol number",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"any": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema(),
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhSha256Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -5923,249 +6207,17 @@ func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema() rsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"local_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-
-			"remote_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"remote_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-
-			"local_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyIkeGatewaySchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyIkeGatewaySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"local": rsschema.StringAttribute{
-				Description: "IP subnet or IP address represents local network",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"remote": rsschema.StringAttribute{
-				Description: "IP subnet or IP address represents remote network",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"protocol": IpsecTunnelResourceAutoKeyProxyIdProtocolSchema(),
-		},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdProtocolSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"any": IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema(),
-
-			"tcp": IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema(),
-
-			"udp": IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema(),
-
-			"number": rsschema.Int64Attribute{
-				Description: "IP protocol number",
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -6175,8 +6227,8 @@ func IpsecTunnelResourceAutoKeyProxyIdProtocolSchema() rsschema.SingleNestedAttr
 	}
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolSchema()
+func (o *IpsecTunnelResourceManualKeyAhSha256Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhSha256Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6193,7 +6245,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) getTypeFor(name string
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhSha384Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -6203,37 +6255,28 @@ func IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema() rsschema.SingleNestedA
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"local_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-
-			"remote_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
 			},
 		},
 	}
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema()
+func (o *IpsecTunnelResourceManualKeyAhSha384Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhSha384Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6250,7 +6293,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) getTypeFor(name str
 	panic("unreachable")
 }
 
-func IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema() rsschema.SingleNestedAttribute {
+func IpsecTunnelResourceManualKeyAhSha512Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
@@ -6260,75 +6303,28 @@ func IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema() rsschema.SingleNestedA
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
+				path.MatchRelative().AtParent().AtName("md5"),
+				path.MatchRelative().AtParent().AtName("sha1"),
+				path.MatchRelative().AtParent().AtName("sha256"),
+				path.MatchRelative().AtParent().AtName("sha384"),
+				path.MatchRelative().AtParent().AtName("sha512"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"local_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
+			"key": rsschema.StringAttribute{
+				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
-			},
-
-			"remote_port": rsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(0),
 			},
 		},
 	}
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("number"),
-				path.MatchRelative().AtParent().AtName("any"),
-				path.MatchRelative().AtParent().AtName("tcp"),
-				path.MatchRelative().AtParent().AtName("udp"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) getTypeFor(name string) attr.Type {
-	schema := IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema()
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) getTypeFor(name string) attr.Type {
+	schema := IpsecTunnelResourceManualKeyAhSha512Schema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6373,13 +6369,13 @@ func (r *IpsecTunnelResource) Configure(ctx context.Context, req resource.Config
 func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiReplay_value := o.AntiReplay.ValueBoolPointer()
+	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
 	comment_value := o.Comment.ValueStringPointer()
+	copyFlowLabel_value := o.CopyFlowLabel.ValueBoolPointer()
 	copyTos_value := o.CopyTos.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	enableGreEncapsulation_value := o.EnableGreEncapsulation.ValueBoolPointer()
 	ipv6_value := o.Ipv6.ValueBoolPointer()
-	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
-	copyFlowLabel_value := o.CopyFlowLabel.ValueBoolPointer()
 	tunnelInterface_value := o.TunnelInterface.ValueStringPointer()
 	var tunnelMonitor_entry *ipsec.TunnelMonitor
 	if o.TunnelMonitor != nil {
@@ -6440,13 +6436,13 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).AntiReplay = antiReplay_value
+	(*obj).AntiReplayWindow = antiReplayWindow_value
 	(*obj).Comment = comment_value
+	(*obj).CopyFlowLabel = copyFlowLabel_value
 	(*obj).CopyTos = copyTos_value
 	(*obj).Disabled = disabled_value
 	(*obj).EnableGreEncapsulation = enableGreEncapsulation_value
 	(*obj).Ipv6 = ipv6_value
-	(*obj).AntiReplayWindow = antiReplayWindow_value
-	(*obj).CopyFlowLabel = copyFlowLabel_value
 	(*obj).TunnelInterface = tunnelInterface_value
 	(*obj).TunnelMonitor = tunnelMonitor_entry
 	(*obj).IpsecMode = ipsecMode_value
@@ -6475,23 +6471,6 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) CopyToPango(ctx context.Context
 }
 func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKey, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ikeGateway_tf_entries []IpsecTunnelResourceAutoKeyIkeGatewayObject
-	var ikeGateway_pango_entries []ipsec.AutoKeyIkeGateway
-	{
-		d := o.IkeGateway.ElementsAs(ctx, &ikeGateway_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range ikeGateway_tf_entries {
-			var entry *ipsec.AutoKeyIkeGateway
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			ikeGateway_pango_entries = append(ikeGateway_pango_entries, *entry)
-		}
-	}
 	ipsecCryptoProfile_value := o.IpsecCryptoProfile.ValueStringPointer()
 	var proxyId_tf_entries []IpsecTunnelResourceAutoKeyProxyIdObject
 	var proxyId_pango_entries []ipsec.AutoKeyProxyId
@@ -6527,14 +6506,157 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj 
 			proxyIdV6_pango_entries = append(proxyIdV6_pango_entries, *entry)
 		}
 	}
+	var ikeGateway_tf_entries []IpsecTunnelResourceAutoKeyIkeGatewayObject
+	var ikeGateway_pango_entries []ipsec.AutoKeyIkeGateway
+	{
+		d := o.IkeGateway.ElementsAs(ctx, &ikeGateway_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range ikeGateway_tf_entries {
+			var entry *ipsec.AutoKeyIkeGateway
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			ikeGateway_pango_entries = append(ikeGateway_pango_entries, *entry)
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.AutoKey)
 	}
-	(*obj).IkeGateway = ikeGateway_pango_entries
 	(*obj).IpsecCryptoProfile = ipsecCryptoProfile_value
 	(*obj).ProxyId = proxyId_pango_entries
 	(*obj).ProxyIdV6 = proxyIdV6_pango_entries
+	(*obj).IkeGateway = ikeGateway_pango_entries
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyIkeGateway)
+	}
+	(*obj).Name = o.Name.ValueString()
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	local_value := o.Local.ValueStringPointer()
+	remote_value := o.Remote.ValueStringPointer()
+	var protocol_entry *ipsec.AutoKeyProxyIdProtocol
+	if o.Protocol != nil {
+		if *obj != nil && (*obj).Protocol != nil {
+			protocol_entry = (*obj).Protocol
+		} else {
+			protocol_entry = new(ipsec.AutoKeyProxyIdProtocol)
+		}
+
+		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyId)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Local = local_value
+	(*obj).Remote = remote_value
+	(*obj).Protocol = protocol_entry
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var tcp_entry *ipsec.AutoKeyProxyIdProtocolTcp
+	if o.Tcp != nil {
+		if *obj != nil && (*obj).Tcp != nil {
+			tcp_entry = (*obj).Tcp
+		} else {
+			tcp_entry = new(ipsec.AutoKeyProxyIdProtocolTcp)
+		}
+
+		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var udp_entry *ipsec.AutoKeyProxyIdProtocolUdp
+	if o.Udp != nil {
+		if *obj != nil && (*obj).Udp != nil {
+			udp_entry = (*obj).Udp
+		} else {
+			udp_entry = new(ipsec.AutoKeyProxyIdProtocolUdp)
+		}
+
+		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	number_value := o.Number.ValueInt64Pointer()
+	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
+	if o.Any != nil {
+		if *obj != nil && (*obj).Any != nil {
+			any_entry = (*obj).Any
+		} else {
+			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
+		}
+
+		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyIdProtocol)
+	}
+	(*obj).Tcp = tcp_entry
+	(*obj).Udp = udp_entry
+	(*obj).Number = number_value
+	(*obj).Any = any_entry
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyIdProtocolAny)
+	}
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	remotePort_value := o.RemotePort.ValueInt64Pointer()
+	localPort_value := o.LocalPort.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyIdProtocolTcp)
+	}
+	(*obj).RemotePort = remotePort_value
+	(*obj).LocalPort = localPort_value
+
+	return diags
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	remotePort_value := o.RemotePort.ValueInt64Pointer()
+	localPort_value := o.LocalPort.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.AutoKeyProxyIdProtocolUdp)
+	}
+	(*obj).RemotePort = remotePort_value
+	(*obj).LocalPort = localPort_value
 
 	return diags
 }
@@ -6568,6 +6690,20 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Cont
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	number_value := o.Number.ValueInt64Pointer()
+	var any_entry *ipsec.AutoKeyProxyIdV6ProtocolAny
+	if o.Any != nil {
+		if *obj != nil && (*obj).Any != nil {
+			any_entry = (*obj).Any
+		} else {
+			any_entry = new(ipsec.AutoKeyProxyIdV6ProtocolAny)
+		}
+
+		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var tcp_entry *ipsec.AutoKeyProxyIdV6ProtocolTcp
 	if o.Tcp != nil {
 		if *obj != nil && (*obj).Tcp != nil {
@@ -6594,28 +6730,14 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx cont
 			return diags
 		}
 	}
-	number_value := o.Number.ValueInt64Pointer()
-	var any_entry *ipsec.AutoKeyProxyIdV6ProtocolAny
-	if o.Any != nil {
-		if *obj != nil && (*obj).Any != nil {
-			any_entry = (*obj).Any
-		} else {
-			any_entry = new(ipsec.AutoKeyProxyIdV6ProtocolAny)
-		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.AutoKeyProxyIdV6Protocol)
 	}
-	(*obj).Tcp = tcp_entry
-	(*obj).Udp = udp_entry
 	(*obj).Number = number_value
 	(*obj).Any = any_entry
+	(*obj).Tcp = tcp_entry
+	(*obj).Udp = udp_entry
 
 	return diags
 }
@@ -6654,153 +6776,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyIkeGateway)
-	}
-	(*obj).Name = o.Name.ValueString()
-
-	return diags
-}
-func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var protocol_entry *ipsec.AutoKeyProxyIdProtocol
-	if o.Protocol != nil {
-		if *obj != nil && (*obj).Protocol != nil {
-			protocol_entry = (*obj).Protocol
-		} else {
-			protocol_entry = new(ipsec.AutoKeyProxyIdProtocol)
-		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	local_value := o.Local.ValueStringPointer()
-	remote_value := o.Remote.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyId)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Protocol = protocol_entry
-	(*obj).Local = local_value
-	(*obj).Remote = remote_value
-
-	return diags
-}
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	number_value := o.Number.ValueInt64Pointer()
-	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
-	if o.Any != nil {
-		if *obj != nil && (*obj).Any != nil {
-			any_entry = (*obj).Any
-		} else {
-			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
-		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var tcp_entry *ipsec.AutoKeyProxyIdProtocolTcp
-	if o.Tcp != nil {
-		if *obj != nil && (*obj).Tcp != nil {
-			tcp_entry = (*obj).Tcp
-		} else {
-			tcp_entry = new(ipsec.AutoKeyProxyIdProtocolTcp)
-		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var udp_entry *ipsec.AutoKeyProxyIdProtocolUdp
-	if o.Udp != nil {
-		if *obj != nil && (*obj).Udp != nil {
-			udp_entry = (*obj).Udp
-		} else {
-			udp_entry = new(ipsec.AutoKeyProxyIdProtocolUdp)
-		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyIdProtocol)
-	}
-	(*obj).Number = number_value
-	(*obj).Any = any_entry
-	(*obj).Tcp = tcp_entry
-	(*obj).Udp = udp_entry
-
-	return diags
-}
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyIdProtocolAny)
-	}
-
-	return diags
-}
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	localPort_value := o.LocalPort.ValueInt64Pointer()
-	remotePort_value := o.RemotePort.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyIdProtocolTcp)
-	}
-	(*obj).LocalPort = localPort_value
-	(*obj).RemotePort = remotePort_value
-
-	return diags
-}
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	localPort_value := o.LocalPort.ValueInt64Pointer()
-	remotePort_value := o.RemotePort.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.AutoKeyProxyIdProtocolUdp)
-	}
-	(*obj).LocalPort = localPort_value
-	(*obj).RemotePort = remotePort_value
-
-	return diags
-}
 func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	portalAddress_value := o.PortalAddress.ValueStringPointer()
-	var publishConnectedRoutes_entry *ipsec.GlobalProtectSatellitePublishConnectedRoutes
-	if o.PublishConnectedRoutes != nil {
-		if *obj != nil && (*obj).PublishConnectedRoutes != nil {
-			publishConnectedRoutes_entry = (*obj).PublishConnectedRoutes
-		} else {
-			publishConnectedRoutes_entry = new(ipsec.GlobalProtectSatellitePublishConnectedRoutes)
-		}
-
-		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, &publishConnectedRoutes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	publishRoutes_pango_entries := make([]string, 0)
-	diags.Append(o.PublishRoutes.ElementsAs(ctx, &publishRoutes_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var externalCa_entry *ipsec.GlobalProtectSatelliteExternalCa
 	if o.ExternalCa != nil {
 		if *obj != nil && (*obj).ExternalCa != nil {
@@ -6828,16 +6805,35 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx contex
 			return diags
 		}
 	}
+	portalAddress_value := o.PortalAddress.ValueStringPointer()
+	var publishConnectedRoutes_entry *ipsec.GlobalProtectSatellitePublishConnectedRoutes
+	if o.PublishConnectedRoutes != nil {
+		if *obj != nil && (*obj).PublishConnectedRoutes != nil {
+			publishConnectedRoutes_entry = (*obj).PublishConnectedRoutes
+		} else {
+			publishConnectedRoutes_entry = new(ipsec.GlobalProtectSatellitePublishConnectedRoutes)
+		}
+
+		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, &publishConnectedRoutes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	publishRoutes_pango_entries := make([]string, 0)
+	diags.Append(o.PublishRoutes.ElementsAs(ctx, &publishRoutes_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatellite)
 	}
-	(*obj).PortalAddress = portalAddress_value
-	(*obj).PublishConnectedRoutes = publishConnectedRoutes_entry
-	(*obj).PublishRoutes = publishRoutes_pango_entries
 	(*obj).ExternalCa = externalCa_entry
 	(*obj).Ipv6Preferred = ipv6Preferred_value
 	(*obj).LocalAddress = localAddress_entry
+	(*obj).PortalAddress = portalAddress_value
+	(*obj).PublishConnectedRoutes = publishConnectedRoutes_entry
+	(*obj).PublishRoutes = publishRoutes_pango_entries
 
 	return diags
 }
@@ -6857,19 +6853,6 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyToPango(
 func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
-	var floatingIp_entry *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp
-	if o.FloatingIp != nil {
-		if *obj != nil && (*obj).FloatingIp != nil {
-			floatingIp_entry = (*obj).FloatingIp
-		} else {
-			floatingIp_entry = new(ipsec.GlobalProtectSatelliteLocalAddressFloatingIp)
-		}
-
-		diags.Append(o.FloatingIp.CopyToPango(ctx, &floatingIp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ip_entry *ipsec.GlobalProtectSatelliteLocalAddressIp
 	if o.Ip != nil {
 		if *obj != nil && (*obj).Ip != nil {
@@ -6883,13 +6866,26 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPang
 			return diags
 		}
 	}
+	var floatingIp_entry *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp
+	if o.FloatingIp != nil {
+		if *obj != nil && (*obj).FloatingIp != nil {
+			floatingIp_entry = (*obj).FloatingIp
+		} else {
+			floatingIp_entry = new(ipsec.GlobalProtectSatelliteLocalAddressFloatingIp)
+		}
+
+		diags.Append(o.FloatingIp.CopyToPango(ctx, &floatingIp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatelliteLocalAddress)
 	}
 	(*obj).Interface = interface_value
-	(*obj).FloatingIp = floatingIp_entry
 	(*obj).Ip = ip_entry
+	(*obj).FloatingIp = floatingIp_entry
 
 	return diags
 }
@@ -6908,14 +6904,14 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) 
 }
 func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipv6_value := o.Ipv6.ValueStringPointer()
 	ipv4_value := o.Ipv4.ValueStringPointer()
+	ipv6_value := o.Ipv6.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ipsec.GlobalProtectSatelliteLocalAddressIp)
 	}
-	(*obj).Ipv6 = ipv6_value
 	(*obj).Ipv4 = ipv4_value
+	(*obj).Ipv6 = ipv6_value
 
 	return diags
 }
@@ -6932,20 +6928,6 @@ func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) 
 }
 func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var peerAddress_entry *ipsec.ManualKeyPeerAddress
-	if o.PeerAddress != nil {
-		if *obj != nil && (*obj).PeerAddress != nil {
-			peerAddress_entry = (*obj).PeerAddress
-		} else {
-			peerAddress_entry = new(ipsec.ManualKeyPeerAddress)
-		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	remoteSpi_value := o.RemoteSpi.ValueStringPointer()
 	var localAddress_entry *ipsec.ManualKeyLocalAddress
 	if o.LocalAddress != nil {
 		if *obj != nil && (*obj).LocalAddress != nil {
@@ -6960,6 +6942,20 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 		}
 	}
 	localSpi_value := o.LocalSpi.ValueStringPointer()
+	var peerAddress_entry *ipsec.ManualKeyPeerAddress
+	if o.PeerAddress != nil {
+		if *obj != nil && (*obj).PeerAddress != nil {
+			peerAddress_entry = (*obj).PeerAddress
+		} else {
+			peerAddress_entry = new(ipsec.ManualKeyPeerAddress)
+		}
+
+		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	remoteSpi_value := o.RemoteSpi.ValueStringPointer()
 	var ah_entry *ipsec.ManualKeyAh
 	if o.Ah != nil {
 		if *obj != nil && (*obj).Ah != nil {
@@ -6990,23 +6986,12 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKey)
 	}
-	(*obj).PeerAddress = peerAddress_entry
-	(*obj).RemoteSpi = remoteSpi_value
 	(*obj).LocalAddress = localAddress_entry
 	(*obj).LocalSpi = localSpi_value
+	(*obj).PeerAddress = peerAddress_entry
+	(*obj).RemoteSpi = remoteSpi_value
 	(*obj).Ah = ah_entry
 	(*obj).Esp = esp_entry
-
-	return diags
-}
-func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	ip_value := o.Ip.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(ipsec.ManualKeyPeerAddress)
-	}
-	(*obj).Ip = ip_value
 
 	return diags
 }
@@ -7025,21 +7010,19 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyToPango(ctx context
 
 	return diags
 }
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(ipsec.ManualKeyPeerAddress)
+	}
+	(*obj).Ip = ip_value
+
+	return diags
+}
 func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var md5_entry *ipsec.ManualKeyAhMd5
-	if o.Md5 != nil {
-		if *obj != nil && (*obj).Md5 != nil {
-			md5_entry = (*obj).Md5
-		} else {
-			md5_entry = new(ipsec.ManualKeyAhMd5)
-		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var sha1_entry *ipsec.ManualKeyAhSha1
 	if o.Sha1 != nil {
 		if *obj != nil && (*obj).Sha1 != nil {
@@ -7092,15 +7075,28 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 			return diags
 		}
 	}
+	var md5_entry *ipsec.ManualKeyAhMd5
+	if o.Md5 != nil {
+		if *obj != nil && (*obj).Md5 != nil {
+			md5_entry = (*obj).Md5
+		} else {
+			md5_entry = new(ipsec.ManualKeyAhMd5)
+		}
+
+		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAh)
 	}
-	(*obj).Md5 = md5_entry
 	(*obj).Sha1 = sha1_entry
 	(*obj).Sha256 = sha256_entry
 	(*obj).Sha384 = sha384_entry
 	(*obj).Sha512 = sha512_entry
+	(*obj).Md5 = md5_entry
 
 	return diags
 }
@@ -7161,19 +7157,6 @@ func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyToPango(ctx context.Con
 }
 func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var authentication_entry *ipsec.ManualKeyEspAuthentication
-	if o.Authentication != nil {
-		if *obj != nil && (*obj).Authentication != nil {
-			authentication_entry = (*obj).Authentication
-		} else {
-			authentication_entry = new(ipsec.ManualKeyEspAuthentication)
-		}
-
-		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var encryption_entry *ipsec.ManualKeyEspEncryption
 	if o.Encryption != nil {
 		if *obj != nil && (*obj).Encryption != nil {
@@ -7187,56 +7170,30 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context,
 			return diags
 		}
 	}
+	var authentication_entry *ipsec.ManualKeyEspAuthentication
+	if o.Authentication != nil {
+		if *obj != nil && (*obj).Authentication != nil {
+			authentication_entry = (*obj).Authentication
+		} else {
+			authentication_entry = new(ipsec.ManualKeyEspAuthentication)
+		}
+
+		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEsp)
 	}
-	(*obj).Authentication = authentication_entry
 	(*obj).Encryption = encryption_entry
+	(*obj).Authentication = authentication_entry
 
 	return diags
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sha256_entry *ipsec.ManualKeyEspAuthenticationSha256
-	if o.Sha256 != nil {
-		if *obj != nil && (*obj).Sha256 != nil {
-			sha256_entry = (*obj).Sha256
-		} else {
-			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
-		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha384_entry *ipsec.ManualKeyEspAuthenticationSha384
-	if o.Sha384 != nil {
-		if *obj != nil && (*obj).Sha384 != nil {
-			sha384_entry = (*obj).Sha384
-		} else {
-			sha384_entry = new(ipsec.ManualKeyEspAuthenticationSha384)
-		}
-
-		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var sha512_entry *ipsec.ManualKeyEspAuthenticationSha512
-	if o.Sha512 != nil {
-		if *obj != nil && (*obj).Sha512 != nil {
-			sha512_entry = (*obj).Sha512
-		} else {
-			sha512_entry = new(ipsec.ManualKeyEspAuthenticationSha512)
-		}
-
-		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var md5_entry *ipsec.ManualKeyEspAuthenticationMd5
 	if o.Md5 != nil {
 		if *obj != nil && (*obj).Md5 != nil {
@@ -7276,16 +7233,55 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 			return diags
 		}
 	}
+	var sha256_entry *ipsec.ManualKeyEspAuthenticationSha256
+	if o.Sha256 != nil {
+		if *obj != nil && (*obj).Sha256 != nil {
+			sha256_entry = (*obj).Sha256
+		} else {
+			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
+		}
+
+		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha384_entry *ipsec.ManualKeyEspAuthenticationSha384
+	if o.Sha384 != nil {
+		if *obj != nil && (*obj).Sha384 != nil {
+			sha384_entry = (*obj).Sha384
+		} else {
+			sha384_entry = new(ipsec.ManualKeyEspAuthenticationSha384)
+		}
+
+		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var sha512_entry *ipsec.ManualKeyEspAuthenticationSha512
+	if o.Sha512 != nil {
+		if *obj != nil && (*obj).Sha512 != nil {
+			sha512_entry = (*obj).Sha512
+		} else {
+			sha512_entry = new(ipsec.ManualKeyEspAuthenticationSha512)
+		}
+
+		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthentication)
 	}
-	(*obj).Sha256 = sha256_entry
-	(*obj).Sha384 = sha384_entry
-	(*obj).Sha512 = sha512_entry
 	(*obj).Md5 = md5_entry
 	(*obj).None = none_entry
 	(*obj).Sha1 = sha1_entry
+	(*obj).Sha256 = sha256_entry
+	(*obj).Sha384 = sha384_entry
+	(*obj).Sha512 = sha512_entry
 
 	return diags
 }
@@ -7378,6 +7374,15 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 			return diags
 		}
 	}
+	var autoKey_object *IpsecTunnelResourceAutoKeyObject
+	if obj.AutoKey != nil {
+		autoKey_object = new(IpsecTunnelResourceAutoKeyObject)
+
+		diags.Append(autoKey_object.CopyFromPango(ctx, obj.AutoKey, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var globalProtectSatellite_object *IpsecTunnelResourceGlobalProtectSatelliteObject
 	if obj.GlobalProtectSatellite != nil {
 		globalProtectSatellite_object = new(IpsecTunnelResourceGlobalProtectSatelliteObject)
@@ -7396,27 +7401,34 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 			return diags
 		}
 	}
-	var autoKey_object *IpsecTunnelResourceAutoKeyObject
-	if obj.AutoKey != nil {
-		autoKey_object = new(IpsecTunnelResourceAutoKeyObject)
 
-		diags.Append(autoKey_object.CopyFromPango(ctx, obj.AutoKey, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var ipv6_value types.Bool
-	if obj.Ipv6 != nil {
-		ipv6_value = types.BoolValue(*obj.Ipv6)
-	}
 	var antiReplay_value types.Bool
 	if obj.AntiReplay != nil {
 		antiReplay_value = types.BoolValue(*obj.AntiReplay)
 	}
+	var antiReplayWindow_value types.String
+	if obj.AntiReplayWindow != nil {
+		antiReplayWindow_value = types.StringValue(*obj.AntiReplayWindow)
+	}
+	var enableGreEncapsulation_value types.Bool
+	if obj.EnableGreEncapsulation != nil {
+		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
+	}
+	var ipv6_value types.Bool
+	if obj.Ipv6 != nil {
+		ipv6_value = types.BoolValue(*obj.Ipv6)
+	}
+	var tunnelInterface_value types.String
+	if obj.TunnelInterface != nil {
+		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
+	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
+	}
+	var copyFlowLabel_value types.Bool
+	if obj.CopyFlowLabel != nil {
+		copyFlowLabel_value = types.BoolValue(*obj.CopyFlowLabel)
 	}
 	var copyTos_value types.Bool
 	if obj.CopyTos != nil {
@@ -7426,41 +7438,25 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
-	var enableGreEncapsulation_value types.Bool
-	if obj.EnableGreEncapsulation != nil {
-		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
-	}
-	var antiReplayWindow_value types.String
-	if obj.AntiReplayWindow != nil {
-		antiReplayWindow_value = types.StringValue(*obj.AntiReplayWindow)
-	}
-	var copyFlowLabel_value types.Bool
-	if obj.CopyFlowLabel != nil {
-		copyFlowLabel_value = types.BoolValue(*obj.CopyFlowLabel)
-	}
-	var tunnelInterface_value types.String
-	if obj.TunnelInterface != nil {
-		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
-	}
 	var ipsecMode_value types.String
 	if obj.IpsecMode != nil {
 		ipsecMode_value = types.StringValue(*obj.IpsecMode)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Ipv6 = ipv6_value
 	o.AntiReplay = antiReplay_value
-	o.Comment = comment_value
-	o.CopyTos = copyTos_value
-	o.Disabled = disabled_value
-	o.EnableGreEncapsulation = enableGreEncapsulation_value
 	o.AntiReplayWindow = antiReplayWindow_value
-	o.CopyFlowLabel = copyFlowLabel_value
+	o.EnableGreEncapsulation = enableGreEncapsulation_value
+	o.Ipv6 = ipv6_value
 	o.TunnelInterface = tunnelInterface_value
 	o.TunnelMonitor = tunnelMonitor_object
+	o.Comment = comment_value
+	o.CopyFlowLabel = copyFlowLabel_value
+	o.CopyTos = copyTos_value
+	o.Disabled = disabled_value
 	o.IpsecMode = ipsecMode_value
+	o.AutoKey = autoKey_object
 	o.GlobalProtectSatellite = globalProtectSatellite_object
 	o.ManualKey = manualKey_object
-	o.AutoKey = autoKey_object
 
 	return diags
 }
@@ -7468,14 +7464,6 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 func (o *IpsecTunnelResourceTunnelMonitorObject) CopyFromPango(ctx context.Context, obj *ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var proxyId_value types.String
-	if obj.ProxyId != nil {
-		proxyId_value = types.StringValue(*obj.ProxyId)
-	}
-	var tunnelMonitorProfile_value types.String
-	if obj.TunnelMonitorProfile != nil {
-		tunnelMonitorProfile_value = types.StringValue(*obj.TunnelMonitorProfile)
-	}
 	var destinationIp_value types.String
 	if obj.DestinationIp != nil {
 		destinationIp_value = types.StringValue(*obj.DestinationIp)
@@ -7484,10 +7472,18 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) CopyFromPango(ctx context.Conte
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.ProxyId = proxyId_value
-	o.TunnelMonitorProfile = tunnelMonitorProfile_value
+	var proxyId_value types.String
+	if obj.ProxyId != nil {
+		proxyId_value = types.StringValue(*obj.ProxyId)
+	}
+	var tunnelMonitorProfile_value types.String
+	if obj.TunnelMonitorProfile != nil {
+		tunnelMonitorProfile_value = types.StringValue(*obj.TunnelMonitorProfile)
+	}
 	o.DestinationIp = destinationIp_value
 	o.Enable = enable_value
+	o.ProxyId = proxyId_value
+	o.TunnelMonitorProfile = tunnelMonitorProfile_value
 
 	return diags
 }
@@ -7549,13 +7545,6 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
-
-	return diags
-}
-
 func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocol_object *IpsecTunnelResourceAutoKeyProxyIdProtocolObject
@@ -7568,18 +7557,18 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Cont
 		}
 	}
 
-	var local_value types.String
-	if obj.Local != nil {
-		local_value = types.StringValue(*obj.Local)
-	}
 	var remote_value types.String
 	if obj.Remote != nil {
 		remote_value = types.StringValue(*obj.Remote)
 	}
+	var local_value types.String
+	if obj.Local != nil {
+		local_value = types.StringValue(*obj.Local)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Remote = remote_value
 	o.Protocol = protocol_object
 	o.Local = local_value
-	o.Remote = remote_value
 
 	return diags
 }
@@ -7626,13 +7615,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -7649,7 +7632,13 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -7696,15 +7685,6 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Co
 
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var any_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject
-	if obj.Any != nil {
-		any_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject)
-
-		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var tcp_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject)
@@ -7723,15 +7703,24 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx co
 			return diags
 		}
 	}
+	var any_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject
+	if obj.Any != nil {
+		any_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject)
+
+		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var number_value types.Int64
 	if obj.Number != nil {
 		number_value = types.Int64Value(*obj.Number)
 	}
-	o.Number = number_value
-	o.Any = any_object
 	o.Tcp = tcp_object
 	o.Udp = udp_object
+	o.Number = number_value
+	o.Any = any_object
 
 	return diags
 }
@@ -7776,6 +7765,13 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx
 	return diags
 }
 
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
 func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var publishRoutes_list types.List
@@ -7783,6 +7779,15 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx cont
 		var list_diags diag.Diagnostics
 		publishRoutes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PublishRoutes)
 		diags.Append(list_diags...)
+	}
+	var localAddress_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject
+	if obj.LocalAddress != nil {
+		localAddress_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject)
+
+		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var publishConnectedRoutes_object *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject
 	if obj.PublishConnectedRoutes != nil {
@@ -7802,96 +7807,21 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx cont
 			return diags
 		}
 	}
-	var localAddress_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject
-	if obj.LocalAddress != nil {
-		localAddress_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject)
 
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var portalAddress_value types.String
-	if obj.PortalAddress != nil {
-		portalAddress_value = types.StringValue(*obj.PortalAddress)
-	}
 	var ipv6Preferred_value types.Bool
 	if obj.Ipv6Preferred != nil {
 		ipv6Preferred_value = types.BoolValue(*obj.Ipv6Preferred)
 	}
+	var portalAddress_value types.String
+	if obj.PortalAddress != nil {
+		portalAddress_value = types.StringValue(*obj.PortalAddress)
+	}
+	o.Ipv6Preferred = ipv6Preferred_value
+	o.LocalAddress = localAddress_object
 	o.PortalAddress = portalAddress_value
 	o.PublishConnectedRoutes = publishConnectedRoutes_object
 	o.PublishRoutes = publishRoutes_list
 	o.ExternalCa = externalCa_object
-	o.Ipv6Preferred = ipv6Preferred_value
-	o.LocalAddress = localAddress_object
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var ip_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject
-	if obj.Ip != nil {
-		ip_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var floatingIp_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject
-	if obj.FloatingIp != nil {
-		floatingIp_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject)
-
-		diags.Append(floatingIp_object.CopyFromPango(ctx, obj.FloatingIp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var interface_value types.String
-	if obj.Interface != nil {
-		interface_value = types.StringValue(*obj.Interface)
-	}
-	o.Interface = interface_value
-	o.Ip = ip_object
-	o.FloatingIp = floatingIp_object
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ipv4_value types.String
-	if obj.Ipv4 != nil {
-		ipv4_value = types.StringValue(*obj.Ipv4)
-	}
-	var ipv6_value types.String
-	if obj.Ipv6 != nil {
-		ipv6_value = types.StringValue(*obj.Ipv6)
-	}
-	o.Ipv4 = ipv4_value
-	o.Ipv6 = ipv6_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ipv4_value types.String
-	if obj.Ipv4 != nil {
-		ipv4_value = types.StringValue(*obj.Ipv4)
-	}
-	var ipv6_value types.String
-	if obj.Ipv6 != nil {
-		ipv6_value = types.StringValue(*obj.Ipv6)
-	}
-	o.Ipv4 = ipv4_value
-	o.Ipv6 = ipv6_value
 
 	return diags
 }
@@ -7921,6 +7851,72 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyFromPang
 	}
 	o.CertificateProfile = certificateProfile_value
 	o.LocalCertificate = localCertificate_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var floatingIp_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject
+	if obj.FloatingIp != nil {
+		floatingIp_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject)
+
+		diags.Append(floatingIp_object.CopyFromPango(ctx, obj.FloatingIp, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ip_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject
+	if obj.Ip != nil {
+		ip_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject)
+
+		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var interface_value types.String
+	if obj.Interface != nil {
+		interface_value = types.StringValue(*obj.Interface)
+	}
+	o.Interface = interface_value
+	o.FloatingIp = floatingIp_object
+	o.Ip = ip_object
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv6_value types.String
+	if obj.Ipv6 != nil {
+		ipv6_value = types.StringValue(*obj.Ipv6)
+	}
+	var ipv4_value types.String
+	if obj.Ipv4 != nil {
+		ipv4_value = types.StringValue(*obj.Ipv4)
+	}
+	o.Ipv6 = ipv6_value
+	o.Ipv4 = ipv4_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv4_value types.String
+	if obj.Ipv4 != nil {
+		ipv4_value = types.StringValue(*obj.Ipv4)
+	}
+	var ipv6_value types.String
+	if obj.Ipv6 != nil {
+		ipv6_value = types.StringValue(*obj.Ipv6)
+	}
+	o.Ipv4 = ipv4_value
+	o.Ipv6 = ipv6_value
 
 	return diags
 }
@@ -8073,30 +8069,6 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
 func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -8122,6 +8094,30 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyFromPango(ctx context.C
 }
 
 func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8162,24 +8158,6 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyFromPango(ctx context.Contex
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var md5_object *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object
-	if obj.Md5 != nil {
-		md5_object = new(IpsecTunnelResourceManualKeyEspAuthenticationMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_object *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject
-	if obj.None != nil {
-		none_object = new(IpsecTunnelResourceManualKeyEspAuthenticationNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var sha1_object *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(IpsecTunnelResourceManualKeyEspAuthenticationSha1Object)
@@ -8216,31 +8194,31 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 			return diags
 		}
 	}
+	var md5_object *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object
+	if obj.Md5 != nil {
+		md5_object = new(IpsecTunnelResourceManualKeyEspAuthenticationMd5Object)
 
-	o.Md5 = md5_object
-	o.None = none_object
+		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_object *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject
+	if obj.None != nil {
+		none_object = new(IpsecTunnelResourceManualKeyEspAuthenticationNoneObject)
+
+		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Sha1 = sha1_object
 	o.Sha256 = sha256_object
 	o.Sha384 = sha384_object
 	o.Sha512 = sha512_object
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
+	o.Md5 = md5_object
+	o.None = none_object
 
 	return diags
 }
@@ -8293,6 +8271,24 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyFromPang
 	return diags
 }
 
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -8308,14 +8304,6 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx cont
 	o.Key = key_value
 
 	return diags
-}
-
-func (o *IpsecTunnelResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -8379,13 +8367,7 @@ func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -8410,20 +8392,20 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location ipsec.Location
 
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
-
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-		}
-	}
 	if savestate.Location.Template != nil {
 		location.Template = &ipsec.TemplateLocation{
 
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+		}
+	}
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &ipsec.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -8434,13 +8416,8 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -8476,20 +8453,20 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location ipsec.Location
 
-	if state.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-		}
-	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ipsec.TemplateStackLocation{
 
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+		}
+	}
+	if state.Location.Template != nil {
+		location.Template = &ipsec.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -8504,14 +8481,7 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -8573,17 +8543,17 @@ func (r *IpsecTunnelResource) Delete(ctx context.Context, req resource.DeleteReq
 	if state.Location.Template != nil {
 		location.Template = &ipsec.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ipsec.TemplateStackLocation{
 
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -8665,9 +8635,9 @@ type IpsecTunnelTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type IpsecTunnelTemplateStackLocation struct {
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IpsecTunnelLocation struct {
 	Template      *IpsecTunnelTemplateLocation      `tfsdk:"template"`
@@ -8683,6 +8653,15 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -8697,15 +8676,6 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -8726,6 +8696,15 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -8744,15 +8723,6 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
@@ -8764,13 +8734,13 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 
 func (o IpsecTunnelTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
 	}{
-		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -8778,18 +8748,18 @@ func (o IpsecTunnelTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice     *string `json:"ngfw_device"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
+		NgfwDevice     *string `json:"ngfw_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }

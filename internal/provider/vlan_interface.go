@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/vlan"
-	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -59,43 +58,33 @@ type VlanInterfaceDataSourceFilter struct {
 type VlanInterfaceDataSourceModel struct {
 	Location                   VlanInterfaceLocation                      `tfsdk:"location"`
 	Name                       types.String                               `tfsdk:"name"`
-	DdnsConfig                 *VlanInterfaceDataSourceDdnsConfigObject   `tfsdk:"ddns_config"`
-	Mtu                        types.Int64                                `tfsdk:"mtu"`
-	AdjustTcpMss               *VlanInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
-	Bonjour                    *VlanInterfaceDataSourceBonjourObject      `tfsdk:"bonjour"`
-	DfIgnore                   types.Bool                                 `tfsdk:"df_ignore"`
-	DhcpClient                 *VlanInterfaceDataSourceDhcpClientObject   `tfsdk:"dhcp_client"`
-	InterfaceManagementProfile types.String                               `tfsdk:"interface_management_profile"`
-	Ip                         types.List                                 `tfsdk:"ip"`
-	Ipv6                       *VlanInterfaceDataSourceIpv6Object         `tfsdk:"ipv6"`
-	NdpProxy                   *VlanInterfaceDataSourceNdpProxyObject     `tfsdk:"ndp_proxy"`
-	Arp                        types.List                                 `tfsdk:"arp"`
 	Comment                    types.String                               `tfsdk:"comment"`
+	DdnsConfig                 *VlanInterfaceDataSourceDdnsConfigObject   `tfsdk:"ddns_config"`
+	DhcpClient                 *VlanInterfaceDataSourceDhcpClientObject   `tfsdk:"dhcp_client"`
+	Ip                         types.List                                 `tfsdk:"ip"`
+	Arp                        types.List                                 `tfsdk:"arp"`
+	Bonjour                    *VlanInterfaceDataSourceBonjourObject      `tfsdk:"bonjour"`
+	InterfaceManagementProfile types.String                               `tfsdk:"interface_management_profile"`
+	Ipv6                       *VlanInterfaceDataSourceIpv6Object         `tfsdk:"ipv6"`
+	Mtu                        types.Int64                                `tfsdk:"mtu"`
+	NdpProxy                   *VlanInterfaceDataSourceNdpProxyObject     `tfsdk:"ndp_proxy"`
 	NetflowProfile             types.String                               `tfsdk:"netflow_profile"`
+	AdjustTcpMss               *VlanInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
+	DfIgnore                   types.Bool                                 `tfsdk:"df_ignore"`
 }
 type VlanInterfaceDataSourceDdnsConfigObject struct {
-	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
-	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
-	DdnsIp             types.List   `tfsdk:"ddns_ip"`
 	DdnsIpv6           types.List   `tfsdk:"ddns_ipv6"`
 	DdnsUpdateInterval types.Int64  `tfsdk:"ddns_update_interval"`
 	DdnsVendor         types.String `tfsdk:"ddns_vendor"`
 	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
 	DdnsCertProfile    types.String `tfsdk:"ddns_cert_profile"`
+	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
+	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
+	DdnsIp             types.List   `tfsdk:"ddns_ip"`
 }
 type VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
-}
-type VlanInterfaceDataSourceAdjustTcpMssObject struct {
-	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
-	Enable            types.Bool  `tfsdk:"enable"`
-	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
-}
-type VlanInterfaceDataSourceBonjourObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
-	GroupId  types.Int64 `tfsdk:"group_id"`
-	TtlCheck types.Bool  `tfsdk:"ttl_check"`
 }
 type VlanInterfaceDataSourceDhcpClientObject struct {
 	CreateDefaultRoute types.Bool                                           `tfsdk:"create_default_route"`
@@ -110,42 +99,52 @@ type VlanInterfaceDataSourceDhcpClientSendHostnameObject struct {
 type VlanInterfaceDataSourceIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
+type VlanInterfaceDataSourceArpObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+	Interface types.String `tfsdk:"interface"`
+}
+type VlanInterfaceDataSourceBonjourObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	GroupId  types.Int64 `tfsdk:"group_id"`
+	TtlCheck types.Bool  `tfsdk:"ttl_check"`
+}
 type VlanInterfaceDataSourceIpv6Object struct {
-	Enabled           types.Bool                                          `tfsdk:"enabled"`
 	InterfaceId       types.String                                        `tfsdk:"interface_id"`
 	NeighborDiscovery *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
 	DhcpClient        *VlanInterfaceDataSourceIpv6DhcpClientObject        `tfsdk:"dhcp_client"`
 	Inherited         *VlanInterfaceDataSourceIpv6InheritedObject         `tfsdk:"inherited"`
 	Address           types.List                                          `tfsdk:"address"`
+	Enabled           types.Bool                                          `tfsdk:"enabled"`
 }
 type VlanInterfaceDataSourceIpv6NeighborDiscoveryObject struct {
+	EnableNdpMonitor    types.Bool                                                             `tfsdk:"enable_ndp_monitor"`
 	Neighbor            types.List                                                             `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                            `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                            `tfsdk:"reachable_time"`
 	RouterAdvertisement *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
 	DadAttempts         types.Int64                                                            `tfsdk:"dad_attempts"`
 	EnableDad           types.Bool                                                             `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                             `tfsdk:"enable_ndp_monitor"`
 }
 type VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject struct {
-	LinkMtu                types.String                                                                     `tfsdk:"link_mtu"`
-	MinInterval            types.Int64                                                                      `tfsdk:"min_interval"`
-	RetransmissionTimer    types.String                                                                     `tfsdk:"retransmission_timer"`
+	ReachableTime          types.String                                                                     `tfsdk:"reachable_time"`
+	DnsSupport             *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
 	Enable                 types.Bool                                                                       `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                       `tfsdk:"enable_consistency_check"`
 	Lifetime               types.Int64                                                                      `tfsdk:"lifetime"`
 	MaxInterval            types.Int64                                                                      `tfsdk:"max_interval"`
 	OtherFlag              types.Bool                                                                       `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                     `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String                                                                     `tfsdk:"retransmission_timer"`
 	RouterPreference       types.String                                                                     `tfsdk:"router_preference"`
-	DnsSupport             *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
+	EnableConsistencyCheck types.Bool                                                                       `tfsdk:"enable_consistency_check"`
 	HopLimit               types.String                                                                     `tfsdk:"hop_limit"`
+	LinkMtu                types.String                                                                     `tfsdk:"link_mtu"`
 	ManagedFlag            types.Bool                                                                       `tfsdk:"managed_flag"`
+	MinInterval            types.Int64                                                                      `tfsdk:"min_interval"`
 }
 type VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
-	Suffix types.List `tfsdk:"suffix"`
 	Enable types.Bool `tfsdk:"enable"`
 	Server types.List `tfsdk:"server"`
+	Suffix types.List `tfsdk:"suffix"`
 }
 type VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
 	Name     types.String `tfsdk:"name"`
@@ -160,16 +159,31 @@ type VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject struct {
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type VlanInterfaceDataSourceIpv6DhcpClientObject struct {
+	AcceptRaRoute      types.Bool                                                    `tfsdk:"accept_ra_route"`
+	DefaultRouteMetric types.Int64                                                   `tfsdk:"default_route_metric"`
+	Enable             types.Bool                                                    `tfsdk:"enable"`
 	NeighborDiscovery  *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
 	Preference         types.String                                                  `tfsdk:"preference"`
 	PrefixDelegation   *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
 	V6Options          *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
-	AcceptRaRoute      types.Bool                                                    `tfsdk:"accept_ra_route"`
-	DefaultRouteMetric types.Int64                                                   `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                    `tfsdk:"enable"`
+}
+type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject struct {
+	DuidType            types.String                                                `tfsdk:"duid_type"`
+	Enable              *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
+	RapidCommit         types.Bool                                                  `tfsdk:"rapid_commit"`
+	SupportSrvrReconfig types.Bool                                                  `tfsdk:"support_srvr_reconfig"`
+}
+type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject struct {
+	No  *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
+	Yes *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
+}
+type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject struct {
+}
+type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject struct {
+	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
+	TempAddr    types.Bool `tfsdk:"temp_addr"`
 }
 type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject struct {
-	Neighbor         types.List                                                             `tfsdk:"neighbor"`
 	NsInterval       types.Int64                                                            `tfsdk:"ns_interval"`
 	ReachableTime    types.Int64                                                            `tfsdk:"reachable_time"`
 	DadAttempts      types.Int64                                                            `tfsdk:"dad_attempts"`
@@ -177,14 +191,19 @@ type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject struct {
 	DnsSuffix        *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
 	EnableDad        types.Bool                                                             `tfsdk:"enable_dad"`
 	EnableNdpMonitor types.Bool                                                             `tfsdk:"enable_ndp_monitor"`
+	Neighbor         types.List                                                             `tfsdk:"neighbor"`
+}
+type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
 }
 type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject struct {
 	Enable types.Bool                                                                   `tfsdk:"enable"`
 	Source *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
 }
 type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 	Manual *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
 }
 type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 }
@@ -212,10 +231,6 @@ type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
 type VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject struct {
 	Enable *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
 }
@@ -230,22 +245,6 @@ type VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject struct
 	PrefixLen     types.Int64  `tfsdk:"prefix_len"`
 	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
 }
-type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject struct {
-	DuidType            types.String                                                `tfsdk:"duid_type"`
-	Enable              *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
-	RapidCommit         types.Bool                                                  `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                  `tfsdk:"support_srvr_reconfig"`
-}
-type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject struct {
-	No  *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
-	Yes *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
-}
-type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject struct {
-}
-type VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject struct {
-	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
-	TempAddr    types.Bool `tfsdk:"temp_addr"`
-}
 type VlanInterfaceDataSourceIpv6InheritedObject struct {
 	AssignAddr        types.List                                                   `tfsdk:"assign_addr"`
 	Enable            types.Bool                                                   `tfsdk:"enable"`
@@ -256,22 +255,8 @@ type VlanInterfaceDataSourceIpv6InheritedAssignAddrObject struct {
 	Type *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject `tfsdk:"type"`
 }
 type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject struct {
-	Gua *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject `tfsdk:"gua"`
 	Ula *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject `tfsdk:"ula"`
-}
-type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject struct {
-	Prefix            types.Bool                                                            `tfsdk:"prefix"`
-	Anycast           types.Bool                                                            `tfsdk:"anycast"`
-	Advertise         *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
-	EnableOnInterface types.Bool                                                            `tfsdk:"enable_on_interface"`
-	Address           types.String                                                          `tfsdk:"address"`
-}
-type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
-	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
-	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
-	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-	Enable            types.Bool   `tfsdk:"enable"`
-	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
+	Gua *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject `tfsdk:"gua"`
 }
 type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject struct {
 	EnableOnInterface types.Bool                                                            `tfsdk:"enable_on_interface"`
@@ -283,58 +268,40 @@ type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject struct 
 	Dynamic   *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
 	DynamicId *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
 }
-type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
-}
 type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject struct {
 	Identifier types.Int64 `tfsdk:"identifier"`
 }
+type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
+}
 type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
-	Enable         types.Bool `tfsdk:"enable"`
 	OnlinkFlag     types.Bool `tfsdk:"onlink_flag"`
 	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
+	Enable         types.Bool `tfsdk:"enable"`
+}
+type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject struct {
+	Anycast           types.Bool                                                            `tfsdk:"anycast"`
+	Advertise         *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool                                                            `tfsdk:"enable_on_interface"`
+	Address           types.String                                                          `tfsdk:"address"`
+	Prefix            types.Bool                                                            `tfsdk:"prefix"`
+}
+type VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
+	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
+	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
+	Enable            types.Bool   `tfsdk:"enable"`
+	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
+	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 }
 type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject struct {
-	EnableDad           types.Bool                                                                      `tfsdk:"enable_dad"`
+	DnsServer           *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
 	EnableNdpMonitor    types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
 	NsInterval          types.Int64                                                                     `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                                     `tfsdk:"reachable_time"`
 	RouterAdvertisement *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
-	DnsServer           *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
-	DnsSuffix           *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
 	DadAttempts         types.Int64                                                                     `tfsdk:"dad_attempts"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject struct {
-	Source *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
-	Enable types.Bool                                                                  `tfsdk:"enable"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
-	PrefixPool types.String `tfsdk:"prefix_pool"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject struct {
-	Server types.List `tfsdk:"server"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
-	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64  `tfsdk:"max_interval"`
-	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
-	ReachableTime          types.String `tfsdk:"reachable_time"`
-	Enable                 types.Bool   `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String `tfsdk:"hop_limit"`
-	Lifetime               types.Int64  `tfsdk:"lifetime"`
-	LinkMtu                types.String `tfsdk:"link_mtu"`
-	MinInterval            types.Int64  `tfsdk:"min_interval"`
-	OtherFlag              types.Bool   `tfsdk:"other_flag"`
-	RouterPreference       types.String `tfsdk:"router_preference"`
+	DnsSuffix           *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
+	EnableDad           types.Bool                                                                      `tfsdk:"enable_dad"`
 }
 type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject struct {
 	Enable types.Bool                                                                  `tfsdk:"enable"`
@@ -358,6 +325,38 @@ type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject struct 
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
 }
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	RouterPreference       types.String `tfsdk:"router_preference"`
+}
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject struct {
+	Source *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool                                                                  `tfsdk:"enable"`
+}
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
+	Dhcpv6 *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
+	Manual *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+}
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
+	PrefixPool types.String `tfsdk:"prefix_pool"`
+}
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject struct {
+	Server types.List `tfsdk:"server"`
+}
+type VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
 type VlanInterfaceDataSourceIpv6AddressObject struct {
 	Name              types.String                                       `tfsdk:"name"`
 	EnableOnInterface types.Bool                                         `tfsdk:"enable_on_interface"`
@@ -377,23 +376,35 @@ type VlanInterfaceDataSourceIpv6AddressAdvertiseObject struct {
 	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
 }
 type VlanInterfaceDataSourceNdpProxyObject struct {
-	Enabled types.Bool `tfsdk:"enabled"`
 	Address types.List `tfsdk:"address"`
+	Enabled types.Bool `tfsdk:"enabled"`
 }
 type VlanInterfaceDataSourceNdpProxyAddressObject struct {
 	Name   types.String `tfsdk:"name"`
 	Negate types.Bool   `tfsdk:"negate"`
 }
-type VlanInterfaceDataSourceArpObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-	Interface types.String `tfsdk:"interface"`
+type VlanInterfaceDataSourceAdjustTcpMssObject struct {
+	Enable            types.Bool  `tfsdk:"enable"`
+	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
 }
 
 func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vlan.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
+	var ddnsConfig_entry *vlan.DdnsConfig
+	if o.DdnsConfig != nil {
+		if *obj != nil && (*obj).DdnsConfig != nil {
+			ddnsConfig_entry = (*obj).DdnsConfig
+		} else {
+			ddnsConfig_entry = new(vlan.DdnsConfig)
+		}
+
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var dhcpClient_entry *vlan.DhcpClient
 	if o.DhcpClient != nil {
 		if *obj != nil && (*obj).DhcpClient != nil {
@@ -407,7 +418,6 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vl
 			return diags
 		}
 	}
-	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
 	var ip_tf_entries []VlanInterfaceDataSourceIpObject
 	var ip_pango_entries []vlan.Ip
 	{
@@ -423,32 +433,6 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vl
 				return diags
 			}
 			ip_pango_entries = append(ip_pango_entries, *entry)
-		}
-	}
-	var ipv6_entry *vlan.Ipv6
-	if o.Ipv6 != nil {
-		if *obj != nil && (*obj).Ipv6 != nil {
-			ipv6_entry = (*obj).Ipv6
-		} else {
-			ipv6_entry = new(vlan.Ipv6)
-		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ndpProxy_entry *vlan.NdpProxy
-	if o.NdpProxy != nil {
-		if *obj != nil && (*obj).NdpProxy != nil {
-			ndpProxy_entry = (*obj).NdpProxy
-		} else {
-			ndpProxy_entry = new(vlan.NdpProxy)
-		}
-
-		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
 		}
 	}
 	var arp_tf_entries []VlanInterfaceDataSourceArpObject
@@ -468,7 +452,6 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vl
 			arp_pango_entries = append(arp_pango_entries, *entry)
 		}
 	}
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var bonjour_entry *vlan.Bonjour
 	if o.Bonjour != nil {
 		if *obj != nil && (*obj).Bonjour != nil {
@@ -482,20 +465,35 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vl
 			return diags
 		}
 	}
-	var ddnsConfig_entry *vlan.DdnsConfig
-	if o.DdnsConfig != nil {
-		if *obj != nil && (*obj).DdnsConfig != nil {
-			ddnsConfig_entry = (*obj).DdnsConfig
+	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
+	var ipv6_entry *vlan.Ipv6
+	if o.Ipv6 != nil {
+		if *obj != nil && (*obj).Ipv6 != nil {
+			ipv6_entry = (*obj).Ipv6
 		} else {
-			ddnsConfig_entry = new(vlan.DdnsConfig)
+			ipv6_entry = new(vlan.Ipv6)
 		}
 
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	mtu_value := o.Mtu.ValueInt64Pointer()
+	var ndpProxy_entry *vlan.NdpProxy
+	if o.NdpProxy != nil {
+		if *obj != nil && (*obj).NdpProxy != nil {
+			ndpProxy_entry = (*obj).NdpProxy
+		} else {
+			ndpProxy_entry = new(vlan.NdpProxy)
+		}
+
+		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var adjustTcpMss_entry *vlan.AdjustTcpMss
 	if o.AdjustTcpMss != nil {
 		if *obj != nil && (*obj).AdjustTcpMss != nil {
@@ -509,59 +507,44 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vl
 			return diags
 		}
 	}
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Comment = comment_value
-	(*obj).DfIgnore = dfIgnore_value
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
-	(*obj).Ip = ip_pango_entries
-	(*obj).Ipv6 = ipv6_entry
-	(*obj).NdpProxy = ndpProxy_entry
-	(*obj).Arp = arp_pango_entries
-	(*obj).NetflowProfile = netflowProfile_value
-	(*obj).Bonjour = bonjour_entry
 	(*obj).DdnsConfig = ddnsConfig_entry
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Ip = ip_pango_entries
+	(*obj).Arp = arp_pango_entries
+	(*obj).Bonjour = bonjour_entry
+	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
+	(*obj).Ipv6 = ipv6_entry
 	(*obj).Mtu = mtu_value
+	(*obj).NdpProxy = ndpProxy_entry
+	(*obj).NetflowProfile = netflowProfile_value
 	(*obj).AdjustTcpMss = adjustTcpMss_entry
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
-	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.AdjustTcpMss)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
-	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, obj **vlan.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	groupId_value := o.GroupId.ValueInt64Pointer()
-	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Bonjour)
-	}
-	(*obj).Enable = enable_value
-	(*obj).GroupId = groupId_value
-	(*obj).TtlCheck = ttlCheck_value
+	(*obj).DfIgnore = dfIgnore_value
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyToPango(ctx context.Context, obj **vlan.DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
+	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
+	ddnsIp_pango_entries := make([]string, 0)
+	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	ddnsIpv6_pango_entries := make([]string, 0)
+	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
+	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
 	var ddnsVendorConfig_tf_entries []VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject
 	var ddnsVendorConfig_pango_entries []vlan.DdnsConfigDdnsVendorConfig
 	{
@@ -580,32 +563,18 @@ func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyToPango(ctx context.Contex
 		}
 	}
 	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
-	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
-	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
-	ddnsIp_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	ddnsIpv6_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
-	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.DdnsConfig)
 	}
-	(*obj).DdnsVendorConfig = ddnsVendorConfig_pango_entries
-	(*obj).DdnsCertProfile = ddnsCertProfile_value
 	(*obj).DdnsEnabled = ddnsEnabled_value
 	(*obj).DdnsHostname = ddnsHostname_value
 	(*obj).DdnsIp = ddnsIp_pango_entries
 	(*obj).DdnsIpv6 = ddnsIpv6_pango_entries
 	(*obj).DdnsUpdateInterval = ddnsUpdateInterval_value
 	(*obj).DdnsVendor = ddnsVendor_value
+	(*obj).DdnsVendorConfig = ddnsVendorConfig_pango_entries
+	(*obj).DdnsCertProfile = ddnsCertProfile_value
 
 	return diags
 }
@@ -621,9 +590,89 @@ func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ct
 
 	return diags
 }
+func (o *VlanInterfaceDataSourceDhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	var sendHostname_entry *vlan.DhcpClientSendHostname
+	if o.SendHostname != nil {
+		if *obj != nil && (*obj).SendHostname != nil {
+			sendHostname_entry = (*obj).SendHostname
+		} else {
+			sendHostname_entry = new(vlan.DhcpClientSendHostname)
+		}
+
+		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.DhcpClient)
+	}
+	(*obj).CreateDefaultRoute = createDefaultRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).Enable = enable_value
+	(*obj).SendHostname = sendHostname_entry
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	hostname_value := o.Hostname.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.DhcpClientSendHostname)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Hostname = hostname_value
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, obj **vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ip)
+	}
+	(*obj).Name = o.Name.ValueString()
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceArpObject) CopyToPango(ctx context.Context, obj **vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+	interface_value := o.Interface.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Arp)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+	(*obj).Interface = interface_value
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, obj **vlan.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	groupId_value := o.GroupId.ValueInt64Pointer()
+	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Bonjour)
+	}
+	(*obj).Enable = enable_value
+	(*obj).GroupId = groupId_value
+	(*obj).TtlCheck = ttlCheck_value
+
+	return diags
+}
 func (o *VlanInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enabled_value := o.Enabled.ValueBoolPointer()
 	interfaceId_value := o.InterfaceId.ValueStringPointer()
 	var neighborDiscovery_entry *vlan.Ipv6NeighborDiscovery
 	if o.NeighborDiscovery != nil {
@@ -681,113 +730,22 @@ func (o *VlanInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, obj
 			address_pango_entries = append(address_pango_entries, *entry)
 		}
 	}
+	enabled_value := o.Enabled.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6)
 	}
-	(*obj).Enabled = enabled_value
 	(*obj).InterfaceId = interfaceId_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).DhcpClient = dhcpClient_entry
 	(*obj).Inherited = inherited_entry
 	(*obj).Address = address_pango_entries
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var advertise_entry *vlan.Ipv6AddressAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(vlan.Ipv6AddressAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	var prefix_entry *vlan.Ipv6AddressPrefix
-	if o.Prefix != nil {
-		if *obj != nil && (*obj).Prefix != nil {
-			prefix_entry = (*obj).Prefix
-		} else {
-			prefix_entry = new(vlan.Ipv6AddressPrefix)
-		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var anycast_entry *vlan.Ipv6AddressAnycast
-	if o.Anycast != nil {
-		if *obj != nil && (*obj).Anycast != nil {
-			anycast_entry = (*obj).Anycast
-		} else {
-			anycast_entry = new(vlan.Ipv6AddressAnycast)
-		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6Address)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Advertise = advertise_entry
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Prefix = prefix_entry
-	(*obj).Anycast = anycast_entry
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6AddressAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6AddressPrefix)
-	}
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6AddressAnycast)
-	}
+	(*obj).Enabled = enabled_value
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisement
 	if o.RouterAdvertisement != nil {
 		if *obj != nil && (*obj).RouterAdvertisement != nil {
@@ -822,17 +780,18 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) CopyToPango(ctx con
 		}
 	}
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6NeighborDiscovery)
 	}
-	(*obj).ReachableTime = reachableTime_value
 	(*obj).RouterAdvertisement = routerAdvertisement_entry
 	(*obj).DadAttempts = dadAttempts_value
 	(*obj).EnableDad = enableDad_value
 	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
 
 	return diags
 }
@@ -850,18 +809,10 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyToPango
 }
 func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
 	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
 	otherFlag_value := o.OtherFlag.ValueBoolPointer()
 	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
 	var dnsSupport_entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
 		if *obj != nil && (*obj).DnsSupport != nil {
@@ -875,28 +826,37 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) 
 			return diags
 		}
 	}
+	enable_value := o.Enable.ValueBoolPointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6NeighborDiscoveryRouterAdvertisement)
 	}
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
 	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-	(*obj).Enable = enable_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).ManagedFlag = managedFlag_value
 	(*obj).MaxInterval = maxInterval_value
 	(*obj).OtherFlag = otherFlag_value
 	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterPreference = routerPreference_value
 	(*obj).DnsSupport = dnsSupport_entry
+	(*obj).Enable = enable_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
 	var server_pango_entries []vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
 	{
@@ -931,14 +891,13 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 			suffix_pango_entries = append(suffix_pango_entries, *entry)
 		}
 	}
-	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 	}
+	(*obj).Enable = enable_value
 	(*obj).Server = server_pango_entries
 	(*obj).Suffix = suffix_pango_entries
-	(*obj).Enable = enable_value
 
 	return diags
 }
@@ -968,6 +927,23 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 }
 func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *vlan.Ipv6DhcpClientNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(vlan.Ipv6DhcpClientNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	preference_value := o.Preference.ValueStringPointer()
 	var prefixDelegation_entry *vlan.Ipv6DhcpClientPrefixDelegation
 	if o.PrefixDelegation != nil {
 		if *obj != nil && (*obj).PrefixDelegation != nil {
@@ -994,127 +970,23 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) CopyToPango(ctx context.Co
 			return diags
 		}
 	}
-	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *vlan.Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(vlan.Ipv6DhcpClientNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	preference_value := o.Preference.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6DhcpClient)
 	}
-	(*obj).PrefixDelegation = prefixDelegation_entry
-	(*obj).V6Options = v6Options_entry
 	(*obj).AcceptRaRoute = acceptRaRoute_value
 	(*obj).DefaultRouteMetric = defaultRouteMetric_value
 	(*obj).Enable = enable_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).Preference = preference_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *vlan.Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(vlan.Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *vlan.Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *vlan.Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
+	(*obj).PrefixDelegation = prefixDelegation_entry
+	(*obj).V6Options = v6Options_entry
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 	var neighbor_tf_entries []VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject
 	var neighbor_pango_entries []vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor
 	{
@@ -1162,11 +1034,11 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPan
 		}
 	}
 	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6DhcpClientNeighborDiscovery)
 	}
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
@@ -1174,19 +1046,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPan
 	(*obj).DnsServer = dnsServer_entry
 	(*obj).DnsSuffix = dnsSuffix_entry
 	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
@@ -1252,6 +1111,15 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceOb
 
 	return diags
 }
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+
+	return diags
+}
 func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
@@ -1288,15 +1156,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceMa
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
 
 	return diags
 }
@@ -1362,6 +1221,15 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceOb
 
 	return diags
 }
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+
+	return diags
+}
 func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_tf_entries []VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
@@ -1401,12 +1269,15 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceMa
 
 	return diags
 }
-func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
 
 	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		*obj = new(vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor)
 	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
@@ -1494,21 +1365,96 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) Co
 
 	return diags
 }
-func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighborDiscovery_entry *vlan.Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
+	duidType_value := o.DuidType.ValueStringPointer()
+	var enable_entry *vlan.Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
 		} else {
-			neighborDiscovery_entry = new(vlan.Ipv6InheritedNeighborDiscovery)
+			enable_entry = new(vlan.Ipv6DhcpClientV6OptionsEnable)
 		}
 
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6Options)
+	}
+	(*obj).DuidType = duidType_value
+	(*obj).Enable = enable_entry
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *vlan.Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *vlan.Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).NonTempAddr = nonTempAddr_value
+	(*obj).TempAddr = tempAddr_value
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 	var assignAddr_tf_entries []VlanInterfaceDataSourceIpv6InheritedAssignAddrObject
 	var assignAddr_pango_entries []vlan.Ipv6InheritedAssignAddr
 	{
@@ -1527,13 +1473,26 @@ func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Con
 		}
 	}
 	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *vlan.Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(vlan.Ipv6InheritedNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6Inherited)
 	}
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).AssignAddr = assignAddr_pango_entries
 	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
 
 	return diags
 }
@@ -1600,8 +1559,6 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyToPango(c
 }
 func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
 	var poolType_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType
 	if o.PoolType != nil {
 		if *obj != nil && (*obj).PoolType != nil {
@@ -1628,14 +1585,16 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPang
 			return diags
 		}
 	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGua)
 	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).PrefixPool = prefixPool_value
 	(*obj).PoolType = poolType_entry
 	(*obj).Advertise = advertise_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).PrefixPool = prefixPool_value
 
 	return diags
 }
@@ -1713,6 +1672,10 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) C
 }
 func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
+	anycast_value := o.Anycast.ValueBoolPointer()
 	var advertise_entry *vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise
 	if o.Advertise != nil {
 		if *obj != nil && (*obj).Advertise != nil {
@@ -1726,46 +1689,39 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPang
 			return diags
 		}
 	}
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
-	anycast_value := o.Anycast.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUla)
 	}
-	(*obj).Advertise = advertise_entry
 	(*obj).EnableOnInterface = enableOnInterface_value
 	(*obj).Address = address_value
 	(*obj).Prefix = prefix_value
 	(*obj).Anycast = anycast_value
+	(*obj).Advertise = advertise_entry
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
 	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
 	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
 	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-	enable_value := o.Enable.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise)
 	}
+	(*obj).Enable = enable_value
 	(*obj).ValidLifetime = validLifetime_value
 	(*obj).PreferredLifetime = preferredLifetime_value
 	(*obj).OnlinkFlag = onlinkFlag_value
 	(*obj).AutoConfigFlag = autoConfigFlag_value
-	(*obj).Enable = enable_value
 
 	return diags
 }
 func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement
 	if o.RouterAdvertisement != nil {
@@ -1780,19 +1736,7 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPang
 			return diags
 		}
 	}
-	var dnsServer_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsSuffix_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix
 	if o.DnsSuffix != nil {
 		if *obj != nil && (*obj).DnsSuffix != nil {
@@ -1806,6 +1750,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPang
 			return diags
 		}
 	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 	var neighbor_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
 	var neighbor_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryNeighbor
 	{
@@ -1823,20 +1769,78 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPang
 			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
 		}
 	}
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	var dnsServer_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
+		}
+
+		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6InheritedNeighborDiscovery)
 	}
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
 	(*obj).RouterAdvertisement = routerAdvertisement_entry
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).DnsServer = dnsServer_entry
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
 
 	return diags
 }
@@ -1867,19 +1871,6 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) C
 }
 func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var manual_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
 	if o.Manual != nil {
 		if *obj != nil && (*obj).Manual != nil {
@@ -1893,12 +1884,25 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObj
 			return diags
 		}
 	}
+	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
 	}
-	(*obj).Dhcpv6 = dhcpv6_entry
 	(*obj).Manual = manual_entry
+	(*obj).Dhcpv6 = dhcpv6_entry
 
 	return diags
 }
@@ -1949,18 +1953,6 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceMan
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
@@ -2076,36 +2068,94 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceMan
 
 	return diags
 }
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	var prefix_entry *vlan.Ipv6AddressPrefix
+	if o.Prefix != nil {
+		if *obj != nil && (*obj).Prefix != nil {
+			prefix_entry = (*obj).Prefix
+		} else {
+			prefix_entry = new(vlan.Ipv6AddressPrefix)
+		}
+
+		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var anycast_entry *vlan.Ipv6AddressAnycast
+	if o.Anycast != nil {
+		if *obj != nil && (*obj).Anycast != nil {
+			anycast_entry = (*obj).Anycast
+		} else {
+			anycast_entry = new(vlan.Ipv6AddressAnycast)
+		}
+
+		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_entry *vlan.Ipv6AddressAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(vlan.Ipv6AddressAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+		*obj = new(vlan.Ipv6Address)
 	}
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).ReachableTime = reachableTime_value
+	(*obj).Name = o.Name.ValueString()
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).Prefix = prefix_entry
+	(*obj).Anycast = anycast_entry
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6AddressPrefix)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6AddressAnycast)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6AddressAdvertise)
+	}
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
 	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).RouterPreference = routerPreference_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
 
 	return diags
 }
@@ -2150,69 +2200,18 @@ func (o *VlanInterfaceDataSourceNdpProxyAddressObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *VlanInterfaceDataSourceArpObject) CopyToPango(ctx context.Context, obj **vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-	interface_value := o.Interface.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Arp)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-	(*obj).Interface = interface_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceDhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var sendHostname_entry *vlan.DhcpClientSendHostname
-	if o.SendHostname != nil {
-		if *obj != nil && (*obj).SendHostname != nil {
-			sendHostname_entry = (*obj).SendHostname
-		} else {
-			sendHostname_entry = new(vlan.DhcpClientSendHostname)
-		}
-
-		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.DhcpClient)
-	}
-	(*obj).CreateDefaultRoute = createDefaultRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
-	(*obj).SendHostname = sendHostname_entry
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
-	hostname_value := o.Hostname.ValueStringPointer()
+	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
+	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(vlan.DhcpClientSendHostname)
+		*obj = new(vlan.AdjustTcpMss)
 	}
 	(*obj).Enable = enable_value
-	(*obj).Hostname = hostname_value
-
-	return diags
-}
-func (o *VlanInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, obj **vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ip)
-	}
-	(*obj).Name = o.Name.ValueString()
+	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
+	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
@@ -2265,15 +2264,6 @@ func (o *VlanInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj *v
 			return diags
 		}
 	}
-	var adjustTcpMss_object *VlanInterfaceDataSourceAdjustTcpMssObject
-	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(VlanInterfaceDataSourceAdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dhcpClient_object *VlanInterfaceDataSourceDhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(VlanInterfaceDataSourceDhcpClientObject)
@@ -2301,11 +2291,16 @@ func (o *VlanInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj *v
 			return diags
 		}
 	}
+	var adjustTcpMss_object *VlanInterfaceDataSourceAdjustTcpMssObject
+	if obj.AdjustTcpMss != nil {
+		adjustTcpMss_object = new(VlanInterfaceDataSourceAdjustTcpMssObject)
 
-	var mtu_value types.Int64
-	if obj.Mtu != nil {
-		mtu_value = types.Int64Value(*obj.Mtu)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
+
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
@@ -2318,46 +2313,53 @@ func (o *VlanInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj *v
 	if obj.InterfaceManagementProfile != nil {
 		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
 	}
+	var mtu_value types.Int64
+	if obj.Mtu != nil {
+		mtu_value = types.Int64Value(*obj.Mtu)
+	}
 	var netflowProfile_value types.String
 	if obj.NetflowProfile != nil {
 		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Bonjour = bonjour_object
-	o.DdnsConfig = ddnsConfig_object
-	o.Mtu = mtu_value
-	o.AdjustTcpMss = adjustTcpMss_object
 	o.Comment = comment_value
-	o.DfIgnore = dfIgnore_value
+	o.DdnsConfig = ddnsConfig_object
 	o.DhcpClient = dhcpClient_object
-	o.InterfaceManagementProfile = interfaceManagementProfile_value
 	o.Ip = ip_list
-	o.Ipv6 = ipv6_object
-	o.NdpProxy = ndpProxy_object
 	o.Arp = arp_list
+	o.DfIgnore = dfIgnore_value
+	o.InterfaceManagementProfile = interfaceManagementProfile_value
+	o.Ipv6 = ipv6_object
+	o.Mtu = mtu_value
+	o.NdpProxy = ndpProxy_object
 	o.NetflowProfile = netflowProfile_value
+	o.AdjustTcpMss = adjustTcpMss_object
 
 	return diags
 }
 
-func (o *VlanInterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, obj *vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceArpObject) CopyFromPango(ctx context.Context, obj *vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
 	}
-	var ipv4MssAdjustment_value types.Int64
-	if obj.Ipv4MssAdjustment != nil {
-		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
+	var interface_value types.String
+	if obj.Interface != nil {
+		interface_value = types.StringValue(*obj.Interface)
 	}
-	var ipv6MssAdjustment_value types.Int64
-	if obj.Ipv6MssAdjustment != nil {
-		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
-	}
-	o.Enable = enable_value
-	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
-	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+	o.Interface = interface_value
 
 	return diags
 }
@@ -2386,6 +2388,18 @@ func (o *VlanInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context
 
 func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx context.Context, obj *vlan.DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var ddnsIp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+		diags.Append(list_diags...)
+	}
+	var ddnsIpv6_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
+		diags.Append(list_diags...)
+	}
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject
@@ -2400,23 +2414,7 @@ func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx context.Cont
 		ddnsVendorConfig_list, list_diags = types.ListValueFrom(ctx, schemaType, ddnsVendorConfig_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var ddnsIp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
-		diags.Append(list_diags...)
-	}
-	var ddnsIpv6_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
-		diags.Append(list_diags...)
-	}
 
-	var ddnsVendor_value types.String
-	if obj.DdnsVendor != nil {
-		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
-	}
 	var ddnsCertProfile_value types.String
 	if obj.DdnsCertProfile != nil {
 		ddnsCertProfile_value = types.StringValue(*obj.DdnsCertProfile)
@@ -2433,14 +2431,18 @@ func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx context.Cont
 	if obj.DdnsUpdateInterval != nil {
 		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
 	}
-	o.DdnsVendor = ddnsVendor_value
-	o.DdnsVendorConfig = ddnsVendorConfig_list
+	var ddnsVendor_value types.String
+	if obj.DdnsVendor != nil {
+		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
+	}
 	o.DdnsCertProfile = ddnsCertProfile_value
 	o.DdnsEnabled = ddnsEnabled_value
 	o.DdnsHostname = ddnsHostname_value
 	o.DdnsIp = ddnsIp_list
 	o.DdnsIpv6 = ddnsIpv6_list
 	o.DdnsUpdateInterval = ddnsUpdateInterval_value
+	o.DdnsVendor = ddnsVendor_value
+	o.DdnsVendorConfig = ddnsVendorConfig_list
 
 	return diags
 }
@@ -2454,64 +2456,6 @@ func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Value = value_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceNdpProxyObject) CopyFromPango(ctx context.Context, obj *vlan.NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var address_list types.List
-	{
-		var address_tf_entries []VlanInterfaceDataSourceNdpProxyAddressObject
-		for _, elt := range obj.Address {
-			var entry VlanInterfaceDataSourceNdpProxyAddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			address_tf_entries = append(address_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("address")
-		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var enabled_value types.Bool
-	if obj.Enabled != nil {
-		enabled_value = types.BoolValue(*obj.Enabled)
-	}
-	o.Enabled = enabled_value
-	o.Address = address_list
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *vlan.NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var negate_value types.Bool
-	if obj.Negate != nil {
-		negate_value = types.BoolValue(*obj.Negate)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Negate = negate_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceArpObject) CopyFromPango(ctx context.Context, obj *vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	var interface_value types.String
-	if obj.Interface != nil {
-		interface_value = types.StringValue(*obj.Interface)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-	o.Interface = interface_value
 
 	return diags
 }
@@ -2565,9 +2509,64 @@ func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *VlanInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, obj *vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceDataSourceNdpProxyObject) CopyFromPango(ctx context.Context, obj *vlan.NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var address_list types.List
+	{
+		var address_tf_entries []VlanInterfaceDataSourceNdpProxyAddressObject
+		for _, elt := range obj.Address {
+			var entry VlanInterfaceDataSourceNdpProxyAddressObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			address_tf_entries = append(address_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("address")
+		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	var enabled_value types.Bool
+	if obj.Enabled != nil {
+		enabled_value = types.BoolValue(*obj.Enabled)
+	}
+	o.Enabled = enabled_value
+	o.Address = address_list
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *vlan.NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var negate_value types.Bool
+	if obj.Negate != nil {
+		negate_value = types.BoolValue(*obj.Negate)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Negate = negate_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv6MssAdjustment_value types.Int64
+	if obj.Ipv6MssAdjustment != nil {
+		ipv6MssAdjustment_value = types.Int64Value(*obj.Ipv6MssAdjustment)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var ipv4MssAdjustment_value types.Int64
+	if obj.Ipv4MssAdjustment != nil {
+		ipv4MssAdjustment_value = types.Int64Value(*obj.Ipv4MssAdjustment)
+	}
+	o.Ipv6MssAdjustment = ipv6MssAdjustment_value
+	o.Enable = enable_value
+	o.Ipv4MssAdjustment = ipv4MssAdjustment_value
 
 	return diags
 }
@@ -2588,15 +2587,6 @@ func (o *VlanInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, o
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dhcpClient_object *VlanInterfaceDataSourceIpv6DhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(VlanInterfaceDataSourceIpv6DhcpClientObject)
@@ -2615,6 +2605,15 @@ func (o *VlanInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, o
 			return diags
 		}
 	}
+	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryObject)
+
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var enabled_value types.Bool
 	if obj.Enabled != nil {
@@ -2624,933 +2623,18 @@ func (o *VlanInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, o
 	if obj.InterfaceId != nil {
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
+	o.DhcpClient = dhcpClient_object
+	o.Inherited = inherited_object
 	o.Address = address_list
 	o.Enabled = enabled_value
 	o.InterfaceId = interfaceId_value
 	o.NeighborDiscovery = neighborDiscovery_object
-	o.DhcpClient = dhcpClient_object
-	o.Inherited = inherited_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_list types.List
-	{
-		var assignAddr_tf_entries []VlanInterfaceDataSourceIpv6InheritedAssignAddrObject
-		for _, elt := range obj.AssignAddr {
-			var entry VlanInterfaceDataSourceIpv6InheritedAssignAddrObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("assign_addr")
-		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.AssignAddr = assignAddr_list
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject
-	if obj.Type != nil {
-		type_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Type = type_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject)
-
-		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
-	if obj.Ula != nil {
-		ula_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject)
-
-		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Gua = gua_object
-	o.Ula = ula_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var poolType_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
-
-		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.PrefixPool = prefixPool_value
-	o.PoolType = poolType_object
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
-	if obj.DynamicId != nil {
-		dynamicId_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-
-		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dynamic = dynamic_object
-	o.DynamicId = dynamicId_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var identifier_value types.Int64
-	if obj.Identifier != nil {
-		identifier_value = types.Int64Value(*obj.Identifier)
-	}
-	o.Identifier = identifier_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var advertise_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var address_value types.String
-	if obj.Address != nil {
-		address_value = types.StringValue(*obj.Address)
-	}
-	var prefix_value types.Bool
-	if obj.Prefix != nil {
-		prefix_value = types.BoolValue(*obj.Prefix)
-	}
-	var anycast_value types.Bool
-	if obj.Anycast != nil {
-		anycast_value = types.BoolValue(*obj.Anycast)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.Address = address_value
-	o.Prefix = prefix_value
-	o.Anycast = anycast_value
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var routerAdvertisement_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
-	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsServer_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject)
-
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	o.RouterAdvertisement = routerAdvertisement_object
-	o.DnsServer = dnsServer_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-	o.DadAttempts = dadAttempts_value
-	o.DnsSuffix = dnsSuffix_object
-	o.Neighbor = neighbor_list
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RouterPreference = routerPreference_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.RetransmissionTimer = retransmissionTimer_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Source = source_object
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var anycast_object *VlanInterfaceDataSourceIpv6AddressAnycastObject
-	if obj.Anycast != nil {
-		anycast_object = new(VlanInterfaceDataSourceIpv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *VlanInterfaceDataSourceIpv6AddressAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(VlanInterfaceDataSourceIpv6AddressAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var prefix_object *VlanInterfaceDataSourceIpv6AddressPrefixObject
-	if obj.Prefix != nil {
-		prefix_object = new(VlanInterfaceDataSourceIpv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Anycast = anycast_object
-	o.Advertise = advertise_object
-	o.EnableOnInterface = enableOnInterface_value
-	o.Prefix = prefix_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var routerAdvertisement_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
-	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	o.DadAttempts = dadAttempts_value
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-	o.RouterAdvertisement = routerAdvertisement_object
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dnsSupport_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
-	if obj.DnsSupport != nil {
-		dnsSupport_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
-
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.HopLimit = hopLimit_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RouterPreference = routerPreference_value
-	o.DnsSupport = dnsSupport_object
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.MinInterval = minInterval_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-		for _, elt := range obj.Server {
-			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Server = server_list
-	o.Suffix = suffix_list
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
 
 	return diags
 }
 
 func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var prefixDelegation_object *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject
 	if obj.PrefixDelegation != nil {
 		prefixDelegation_object = new(VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject)
@@ -3569,15 +2653,16 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) CopyFromPango(ctx context.
 			return diags
 		}
 	}
+	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject)
 
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
+
 	var preference_value types.String
 	if obj.Preference != nil {
 		preference_value = types.StringValue(*obj.Preference)
@@ -3586,13 +2671,21 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) CopyFromPango(ctx context.
 	if obj.AcceptRaRoute != nil {
 		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
 	}
-	o.DefaultRouteMetric = defaultRouteMetric_value
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
 	o.Preference = preference_value
 	o.PrefixDelegation = prefixDelegation_object
 	o.V6Options = v6Options_object
 	o.AcceptRaRoute = acceptRaRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
 
 	return diags
 }
@@ -3632,10 +2725,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromP
 		}
 	}
 
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
 	var enableDad_value types.Bool
 	if obj.EnableDad != nil {
 		enableDad_value = types.BoolValue(*obj.EnableDad)
@@ -3652,14 +2741,18 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromP
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.Int64Value(*obj.ReachableTime)
 	}
-	o.DadAttempts = dadAttempts_value
-	o.DnsServer = dnsServer_object
-	o.DnsSuffix = dnsSuffix_object
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
 	o.EnableDad = enableDad_value
 	o.EnableNdpMonitor = enableNdpMonitor_value
 	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
+	o.DadAttempts = dadAttempts_value
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
 
 	return diags
 }
@@ -3876,15 +2969,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) CopyFromPa
 
 func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var yes_object *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var no_object *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject
 	if obj.No != nil {
 		no_object = new(VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject)
@@ -3894,9 +2978,18 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) Copy
 			return diags
 		}
 	}
+	var yes_object *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject)
 
-	o.Yes = yes_object
+		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.No = no_object
+	o.Yes = yes_object
 
 	return diags
 }
@@ -3910,10 +3003,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) Co
 func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var prefixLenHint_value types.Bool
-	if obj.PrefixLenHint != nil {
-		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
-	}
 	var pfxPoolName_value types.String
 	if obj.PfxPoolName != nil {
 		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
@@ -3922,9 +3011,13 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) C
 	if obj.PrefixLen != nil {
 		prefixLen_value = types.Int64Value(*obj.PrefixLen)
 	}
-	o.PrefixLenHint = prefixLenHint_value
+	var prefixLenHint_value types.Bool
+	if obj.PrefixLenHint != nil {
+		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
+	}
 	o.PfxPoolName = pfxPoolName_value
 	o.PrefixLen = prefixLen_value
+	o.PrefixLenHint = prefixLenHint_value
 
 	return diags
 }
@@ -3963,15 +3056,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyFromPango(ctx
 
 func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var yes_object *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var no_object *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject
 	if obj.No != nil {
 		no_object = new(VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject)
@@ -3981,9 +3065,18 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPan
 			return diags
 		}
 	}
+	var yes_object *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject)
 
-	o.Yes = yes_object
+		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.No = no_object
+	o.Yes = yes_object
 
 	return diags
 }
@@ -4011,12 +3104,910 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFrom
 	return diags
 }
 
-func (o *VlanInterfaceDataSourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
+func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_list types.List
+	{
+		var assignAddr_tf_entries []VlanInterfaceDataSourceIpv6InheritedAssignAddrObject
+		for _, elt := range obj.AssignAddr {
+			var entry VlanInterfaceDataSourceIpv6InheritedAssignAddrObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("assign_addr")
+		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var neighborDiscovery_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject)
+
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.AssignAddr = assignAddr_list
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject
+	if obj.Type != nil {
+		type_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject)
+
+		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Name = types.StringValue(obj.Name)
+	o.Type = type_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
+	if obj.Gua != nil {
+		gua_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject)
+
+		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
+	if obj.Ula != nil {
+		ula_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject)
+
+		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Gua = gua_object
+	o.Ula = ula_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var poolType_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if obj.PoolType != nil {
+		poolType_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
+
+		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	o.PrefixPool = prefixPool_value
+	o.PoolType = poolType_object
+	o.Advertise = advertise_object
+	o.EnableOnInterface = enableOnInterface_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamicId_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if obj.DynamicId != nil {
+		dynamicId_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+
+		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamic_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if obj.Dynamic != nil {
+		dynamic_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+
+		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.DynamicId = dynamicId_object
+	o.Dynamic = dynamic_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var identifier_value types.Int64
+	if obj.Identifier != nil {
+		identifier_value = types.Int64Value(*obj.Identifier)
+	}
+	o.Identifier = identifier_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_object *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
+	}
+	var prefix_value types.Bool
+	if obj.Prefix != nil {
+		prefix_value = types.BoolValue(*obj.Prefix)
+	}
+	var anycast_value types.Bool
+	if obj.Anycast != nil {
+		anycast_value = types.BoolValue(*obj.Anycast)
+	}
+	o.Advertise = advertise_object
+	o.EnableOnInterface = enableOnInterface_value
+	o.Address = address_value
+	o.Prefix = prefix_value
+	o.Anycast = anycast_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	o.AutoConfigFlag = autoConfigFlag_value
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsSuffix_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
+
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var routerAdvertisement_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	if obj.RouterAdvertisement != nil {
+		routerAdvertisement_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
+
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsServer_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject)
+
+		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+	o.DnsServer = dnsServer_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	o.ReachableTime = reachableTime_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.ManagedFlag = managedFlag_value
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.Enable = enable_value
+	o.Lifetime = lifetime_value
+	o.LinkMtu = linkMtu_value
+	o.MaxInterval = maxInterval_value
+	o.RouterPreference = routerPreference_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
+
+		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+
+		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Suffix = suffix_list
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
+
+		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+
+		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			var entry VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var prefix_object *VlanInterfaceDataSourceIpv6AddressPrefixObject
+	if obj.Prefix != nil {
+		prefix_object = new(VlanInterfaceDataSourceIpv6AddressPrefixObject)
+
+		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var anycast_object *VlanInterfaceDataSourceIpv6AddressAnycastObject
+	if obj.Anycast != nil {
+		anycast_object = new(VlanInterfaceDataSourceIpv6AddressAnycastObject)
+
+		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *VlanInterfaceDataSourceIpv6AddressAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(VlanInterfaceDataSourceIpv6AddressAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.EnableOnInterface = enableOnInterface_value
+	o.Prefix = prefix_object
+	o.Anycast = anycast_object
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var routerAdvertisement_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
+	if obj.RouterAdvertisement != nil {
+		routerAdvertisement_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject)
+
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dnsSupport_object *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+	if obj.DnsSupport != nil {
+		dnsSupport_object = new(VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
+
+		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+	o.MinInterval = minInterval_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.RouterPreference = routerPreference_value
+	o.DnsSupport = dnsSupport_object
+	o.Enable = enable_value
+	o.Lifetime = lifetime_value
+	o.MaxInterval = maxInterval_value
+	o.OtherFlag = otherFlag_value
+	o.ReachableTime = reachableTime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+		for _, elt := range obj.Suffix {
+			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var server_list types.List
+	{
+		var server_tf_entries []VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+		for _, elt := range obj.Server {
+			var entry VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Suffix = suffix_list
+	o.Enable = enable_value
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
 }
 
 func VlanInterfaceDataSourceSchema() dsschema.Schema {
@@ -4033,21 +4024,15 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"mtu": dsschema.Int64Attribute{
-				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+			"adjust_tcp_mss": VlanInterfaceDataSourceAdjustTcpMssSchema(),
+
+			"df_ignore": dsschema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"adjust_tcp_mss": VlanInterfaceDataSourceAdjustTcpMssSchema(),
-
-			"bonjour": VlanInterfaceDataSourceBonjourSchema(),
-
-			"ddns_config": VlanInterfaceDataSourceDdnsConfigSchema(),
-
-			"dhcp_client": VlanInterfaceDataSourceDhcpClientSchema(),
 
 			"interface_management_profile": dsschema.StringAttribute{
 				Description: "Interface management profile",
@@ -4057,18 +4042,25 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"ip": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceDataSourceIpSchema(),
-			},
-
 			"ipv6": VlanInterfaceDataSourceIpv6Schema(),
 
+			"mtu": dsschema.Int64Attribute{
+				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ndp_proxy": VlanInterfaceDataSourceNdpProxySchema(),
+
+			"netflow_profile": dsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"arp": dsschema.ListNestedAttribute{
 				Description:  "",
@@ -4079,6 +4071,8 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 				NestedObject: VlanInterfaceDataSourceArpSchema(),
 			},
 
+			"bonjour": VlanInterfaceDataSourceBonjourSchema(),
+
 			"comment": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -4087,20 +4081,17 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"df_ignore": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"ddns_config": VlanInterfaceDataSourceDdnsConfigSchema(),
 
-			"netflow_profile": dsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
+			"dhcp_client": VlanInterfaceDataSourceDhcpClientSchema(),
+
+			"ip": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceDataSourceIpSchema(),
 			},
 		},
 	}
@@ -4133,6 +4124,14 @@ func VlanInterfaceDataSourceAdjustTcpMssSchema() dsschema.SingleNestedAttribute 
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"ipv4_mss_adjustment": dsschema.Int64Attribute{
+				Description: "IPv4 MSS adjustment size (in bytes)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ipv6_mss_adjustment": dsschema.Int64Attribute{
 				Description: "IPv6 MSS adjustment size (in bytes)",
 				Computed:    true,
@@ -4148,347 +4147,12 @@ func VlanInterfaceDataSourceAdjustTcpMssSchema() dsschema.SingleNestedAttribute 
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"ipv4_mss_adjustment": dsschema.Int64Attribute{
-				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
 
 func (o *VlanInterfaceDataSourceAdjustTcpMssObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceDataSourceAdjustTcpMssSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"ttl_check": dsschema.BoolAttribute{
-				Description: "Set to check and update TTL",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Set to support Bonjour service",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"group_id": dsschema.Int64Attribute{
-				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceBonjourObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceBonjourSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceDdnsConfigSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"ddns_update_interval": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_vendor": dsschema.StringAttribute{
-				Description: "Vendor and product type",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_vendor_config": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema(),
-			},
-
-			"ddns_cert_profile": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_enabled": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_hostname": dsschema.StringAttribute{
-				Description: "ddns hostname variable or real address",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_ip": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"ddns_ipv6": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceDdnsConfigObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceDdnsConfigSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"value": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceDhcpClientSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"send_hostname": VlanInterfaceDataSourceDhcpClientSendHostnameSchema(),
-
-			"create_default_route": dsschema.BoolAttribute{
-				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": dsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceDhcpClientObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceDhcpClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceDhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hostname": dsschema.StringAttribute{
-				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceDhcpClientSendHostnameSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4575,24 +4239,6 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoverySchema() dsschema.SingleNestedA
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"router_advertisement": VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema(),
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "enable duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "enable ndp monitoring",
 				Computed:    true,
@@ -4625,12 +4271,71 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoverySchema() dsschema.SingleNestedA
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"router_advertisement": VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema(),
+
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "enable duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
 func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceDataSourceIpv6NeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4656,22 +4361,6 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"retransmission_timer": dsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"enable_consistency_check": dsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
 				Computed:    true,
@@ -4680,8 +4369,8 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 				Sensitive:   false,
 			},
 
-			"lifetime": dsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+			"hop_limit": dsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4696,6 +4385,14 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 				Sensitive:   false,
 			},
 
+			"managed_flag": dsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"min_interval": dsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
 				Computed:    true,
@@ -4704,8 +4401,8 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 				Sensitive:   false,
 			},
 
-			"reachable_time": dsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+			"retransmission_timer": dsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4722,16 +4419,16 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 
 			"dns_support": VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
 
-			"hop_limit": dsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
+			"enable": dsschema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"managed_flag": dsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+			"lifetime": dsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4748,6 +4445,14 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dss
 
 			"other_flag": dsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4831,47 +4536,6 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 	panic("unreachable")
 }
 
-func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() dsschema.NestedAttributeObject {
 	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
@@ -4913,7 +4577,7 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 	panic("unreachable")
 }
 
-func VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
 	return dsschema.NestedAttributeObject{
 		Attributes: map[string]dsschema.Attribute{
 
@@ -4925,8 +4589,8 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() dsschema.Neste
 				Sensitive:   false,
 			},
 
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4936,8 +4600,8 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() dsschema.Neste
 	}
 }
 
-func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema()
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4963,24 +4627,6 @@ func VlanInterfaceDataSourceIpv6DhcpClientSchema() dsschema.SingleNestedAttribut
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"v6_options": VlanInterfaceDataSourceIpv6DhcpClientV6OptionsSchema(),
-
-			"accept_ra_route": dsschema.BoolAttribute{
-				Description: "Accept Router Advertised Default Route",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": dsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Client",
 				Computed:    true,
@@ -5000,6 +4646,24 @@ func VlanInterfaceDataSourceIpv6DhcpClientSchema() dsschema.SingleNestedAttribut
 			},
 
 			"prefix_delegation": VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema(),
+
+			"v6_options": VlanInterfaceDataSourceIpv6DhcpClientV6OptionsSchema(),
+
+			"accept_ra_route": dsschema.BoolAttribute{
+				Description: "Accept Router Advertised Default Route",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": dsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -5031,6 +4695,31 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema() dsschema.Sin
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": dsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
+			},
+
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
 				Computed:    true,
@@ -5058,37 +4747,53 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema() dsschema.Sin
 			"dns_server": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema(),
 
 			"dns_suffix": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": dsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
-			},
 		},
 	}
 }
 
 func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5154,9 +4859,9 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"manual": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema(),
-
 			"dhcpv6": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
+
+			"manual": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema(),
 		},
 	}
 }
@@ -5499,47 +5204,6 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceMa
 	panic("unreachable")
 }
 
-func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -5845,16 +5509,16 @@ func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesSchema() dsschema.Si
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"temp_addr": dsschema.BoolAttribute{
-				Description: "Request Temporary Address Type",
+			"non_temp_addr": dsschema.BoolAttribute{
+				Description: "Request Non-Temporary Address Type",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"non_temp_addr": dsschema.BoolAttribute{
-				Description: "Request Non-Temporary Address Type",
+			"temp_addr": dsschema.BoolAttribute{
+				Description: "Request Temporary Address Type",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6010,19 +5674,11 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ula"),
 				path.MatchRelative().AtParent().AtName("gua"),
+				path.MatchRelative().AtParent().AtName("ula"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
-
-			"enable_on_interface": dsschema.BoolAttribute{
-				Description: "Enable on Interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
@@ -6035,6 +5691,14 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() dsschema.Sing
 			"pool_type": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
 
 			"advertise": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema(),
+
+			"enable_on_interface": dsschema.BoolAttribute{
+				Description: "Enable on Interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
@@ -6181,6 +5845,14 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() dssc
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"enable": dsschema.BoolAttribute{
+				Description: "Enable advertising this prefix in router advertisements",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
 				Computed:    true,
@@ -6191,14 +5863,6 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() dssc
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "Enable advertising this prefix in router advertisements",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6236,8 +5900,8 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaSchema() dsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ula"),
 				path.MatchRelative().AtParent().AtName("gua"),
+				path.MatchRelative().AtParent().AtName("ula"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -6376,6 +6040,23 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.Sing
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": dsschema.Int64Attribute{
+				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
 				Computed:    true,
@@ -6386,7 +6067,15 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.Sing
 
 			"router_advertisement": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
 
-			"dns_server": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"dns_suffix": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema(),
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection (DAD)",
@@ -6404,32 +6093,7 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.Sing
 				Sensitive:   false,
 			},
 
-			"ns_interval": dsschema.Int64Attribute{
-				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dns_suffix": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema(),
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
-			},
+			"dns_server": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
 		},
 	}
 }
@@ -6461,8 +6125,16 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"hop_limit": dsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
+			"router_preference": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6485,8 +6157,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 				Sensitive:   false,
 			},
 
-			"min_interval": dsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+			"max_interval": dsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6509,8 +6181,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 				Sensitive:   false,
 			},
 
-			"enable": dsschema.BoolAttribute{
-				Description: "",
+			"retransmission_timer": dsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6525,16 +6197,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 				Sensitive:   false,
 			},
 
-			"router_preference": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"retransmission_timer": dsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+			"hop_limit": dsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6549,8 +6213,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 				Sensitive:   false,
 			},
 
-			"max_interval": dsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+			"min_interval": dsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -6562,212 +6226,6 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSch
 
 func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dhcpv6": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
-
-			"manual": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"prefix_pool": dsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"server": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -7031,37 +6489,30 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) ge
 	panic("unreachable")
 }
 
-func VlanInterfaceDataSourceIpv6AddressSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
+func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
+			"source": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
 
-			"enable_on_interface": dsschema.BoolAttribute{
-				Description: "configure this address on interface",
+			"enable": dsschema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"prefix": VlanInterfaceDataSourceIpv6AddressPrefixSchema(),
-
-			"anycast": VlanInterfaceDataSourceIpv6AddressAnycastSchema(),
-
-			"advertise": VlanInterfaceDataSourceIpv6AddressAdvertiseSchema(),
 		},
 	}
 }
 
-func (o *VlanInterfaceDataSourceIpv6AddressObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6AddressSchema()
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -7078,19 +6529,203 @@ func (o *VlanInterfaceDataSourceIpv6AddressObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
-func VlanInterfaceDataSourceIpv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
+func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    true,
 		Optional:    true,
 		Sensitive:   false,
-		Attributes:  map[string]dsschema.Attribute{},
+		Attributes: map[string]dsschema.Attribute{
+
+			"dhcpv6": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
+
+			"manual": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
+		},
 	}
 }
 
-func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceDataSourceIpv6AddressPrefixSchema()
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"prefix_pool": dsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"server": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) Lifetime in Seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpv6AddressSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"advertise": VlanInterfaceDataSourceIpv6AddressAdvertiseSchema(),
+
+			"enable_on_interface": dsschema.BoolAttribute{
+				Description: "configure this address on interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"prefix": VlanInterfaceDataSourceIpv6AddressPrefixSchema(),
+
+			"anycast": VlanInterfaceDataSourceIpv6AddressAnycastSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6AddressSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -7145,6 +6780,22 @@ func VlanInterfaceDataSourceIpv6AddressAdvertiseSchema() dsschema.SingleNestedAt
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"enable": dsschema.BoolAttribute{
+				Description: "enable advertising this prefix in router advertisements",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"valid_lifetime": dsschema.StringAttribute{
+				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"preferred_lifetime": dsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
 				Computed:    true,
@@ -7163,22 +6814,6 @@ func VlanInterfaceDataSourceIpv6AddressAdvertiseSchema() dsschema.SingleNestedAt
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable": dsschema.BoolAttribute{
-				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"valid_lifetime": dsschema.StringAttribute{
-				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -7206,6 +6841,35 @@ func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) getTypeFor(name stri
 	panic("unreachable")
 }
 
+func VlanInterfaceDataSourceIpv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes:  map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpv6AddressPrefixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func VlanInterfaceDataSourceNdpProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -7215,6 +6879,14 @@ func VlanInterfaceDataSourceNdpProxySchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"enabled": dsschema.BoolAttribute{
+				Description: "Enable proxy NDP on the interface",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -7222,14 +6894,6 @@ func VlanInterfaceDataSourceNdpProxySchema() dsschema.SingleNestedAttribute {
 				Computed:     true,
 				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceNdpProxyAddressSchema(),
-			},
-
-			"enabled": dsschema.BoolAttribute{
-				Description: "Enable proxy NDP on the interface",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7343,6 +7007,333 @@ func (o *VlanInterfaceDataSourceArpObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
+func VlanInterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "Set to support Bonjour service",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"group_id": dsschema.Int64Attribute{
+				Description: "default 0: NO-Group",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ttl_check": dsschema.BoolAttribute{
+				Description: "Set to check and update TTL",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceBonjourObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceBonjourSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceDdnsConfigSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"ddns_vendor_config": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema(),
+			},
+
+			"ddns_cert_profile": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_enabled": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_hostname": dsschema.StringAttribute{
+				Description: "ddns hostname variable or real address",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_ip": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"ddns_ipv6": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"ddns_update_interval": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_vendor": dsschema.StringAttribute{
+				Description: "Vendor and product type",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceDdnsConfigObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceDdnsConfigSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"value": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceDhcpClientSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"create_default_route": dsschema.BoolAttribute{
+				Description: "Automatically create default route pointing to default gateway provided by server",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": dsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_hostname": VlanInterfaceDataSourceDhcpClientSendHostnameSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceDhcpClientObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceDhcpClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceDhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hostname": dsschema.StringAttribute{
+				Description: "Set Interface Hostname",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceDhcpClientSendHostnameSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceDataSourceIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func VlanInterfaceDataSourceLocationSchema() rsschema.Attribute {
 	return VlanInterfaceLocationSchema()
 }
@@ -7381,21 +7372,15 @@ func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	var location vlan.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
 
+			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
@@ -7406,6 +7391,12 @@ func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadR
 			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &vlan.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -7414,13 +7405,8 @@ func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -7474,31 +7460,32 @@ func VlanInterfaceResourceLocationSchema() rsschema.Attribute {
 type VlanInterfaceResourceModel struct {
 	Location                   VlanInterfaceLocation                    `tfsdk:"location"`
 	Name                       types.String                             `tfsdk:"name"`
-	AdjustTcpMss               *VlanInterfaceResourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
+	Arp                        types.List                               `tfsdk:"arp"`
 	Bonjour                    *VlanInterfaceResourceBonjourObject      `tfsdk:"bonjour"`
+	Comment                    types.String                             `tfsdk:"comment"`
 	DdnsConfig                 *VlanInterfaceResourceDdnsConfigObject   `tfsdk:"ddns_config"`
+	DhcpClient                 *VlanInterfaceResourceDhcpClientObject   `tfsdk:"dhcp_client"`
+	Ip                         types.List                               `tfsdk:"ip"`
+	NetflowProfile             types.String                             `tfsdk:"netflow_profile"`
+	AdjustTcpMss               *VlanInterfaceResourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
+	DfIgnore                   types.Bool                               `tfsdk:"df_ignore"`
+	InterfaceManagementProfile types.String                             `tfsdk:"interface_management_profile"`
+	Ipv6                       *VlanInterfaceResourceIpv6Object         `tfsdk:"ipv6"`
 	Mtu                        types.Int64                              `tfsdk:"mtu"`
 	NdpProxy                   *VlanInterfaceResourceNdpProxyObject     `tfsdk:"ndp_proxy"`
-	Arp                        types.List                               `tfsdk:"arp"`
-	Comment                    types.String                             `tfsdk:"comment"`
-	DfIgnore                   types.Bool                               `tfsdk:"df_ignore"`
-	DhcpClient                 *VlanInterfaceResourceDhcpClientObject   `tfsdk:"dhcp_client"`
-	InterfaceManagementProfile types.String                             `tfsdk:"interface_management_profile"`
-	Ip                         types.List                               `tfsdk:"ip"`
-	Ipv6                       *VlanInterfaceResourceIpv6Object         `tfsdk:"ipv6"`
-	NetflowProfile             types.String                             `tfsdk:"netflow_profile"`
 }
-type VlanInterfaceResourceAdjustTcpMssObject struct {
-	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
-	Enable            types.Bool  `tfsdk:"enable"`
-	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+type VlanInterfaceResourceArpObject struct {
+	Name      types.String `tfsdk:"name"`
+	Interface types.String `tfsdk:"interface"`
+	HwAddress types.String `tfsdk:"hw_address"`
 }
 type VlanInterfaceResourceBonjourObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
 	GroupId  types.Int64 `tfsdk:"group_id"`
 	TtlCheck types.Bool  `tfsdk:"ttl_check"`
+	Enable   types.Bool  `tfsdk:"enable"`
 }
 type VlanInterfaceResourceDdnsConfigObject struct {
+	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
 	DdnsCertProfile    types.String `tfsdk:"ddns_cert_profile"`
 	DdnsEnabled        types.Bool   `tfsdk:"ddns_enabled"`
 	DdnsHostname       types.String `tfsdk:"ddns_hostname"`
@@ -7506,24 +7493,10 @@ type VlanInterfaceResourceDdnsConfigObject struct {
 	DdnsIpv6           types.List   `tfsdk:"ddns_ipv6"`
 	DdnsUpdateInterval types.Int64  `tfsdk:"ddns_update_interval"`
 	DdnsVendor         types.String `tfsdk:"ddns_vendor"`
-	DdnsVendorConfig   types.List   `tfsdk:"ddns_vendor_config"`
 }
 type VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
-}
-type VlanInterfaceResourceNdpProxyObject struct {
-	Address types.List `tfsdk:"address"`
-	Enabled types.Bool `tfsdk:"enabled"`
-}
-type VlanInterfaceResourceNdpProxyAddressObject struct {
-	Name   types.String `tfsdk:"name"`
-	Negate types.Bool   `tfsdk:"negate"`
-}
-type VlanInterfaceResourceArpObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-	Interface types.String `tfsdk:"interface"`
 }
 type VlanInterfaceResourceDhcpClientObject struct {
 	CreateDefaultRoute types.Bool                                         `tfsdk:"create_default_route"`
@@ -7538,13 +7511,146 @@ type VlanInterfaceResourceDhcpClientSendHostnameObject struct {
 type VlanInterfaceResourceIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
+type VlanInterfaceResourceAdjustTcpMssObject struct {
+	Enable            types.Bool  `tfsdk:"enable"`
+	Ipv4MssAdjustment types.Int64 `tfsdk:"ipv4_mss_adjustment"`
+	Ipv6MssAdjustment types.Int64 `tfsdk:"ipv6_mss_adjustment"`
+}
 type VlanInterfaceResourceIpv6Object struct {
-	DhcpClient        *VlanInterfaceResourceIpv6DhcpClientObject        `tfsdk:"dhcp_client"`
-	Inherited         *VlanInterfaceResourceIpv6InheritedObject         `tfsdk:"inherited"`
 	Address           types.List                                        `tfsdk:"address"`
 	Enabled           types.Bool                                        `tfsdk:"enabled"`
 	InterfaceId       types.String                                      `tfsdk:"interface_id"`
 	NeighborDiscovery *VlanInterfaceResourceIpv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	DhcpClient        *VlanInterfaceResourceIpv6DhcpClientObject        `tfsdk:"dhcp_client"`
+	Inherited         *VlanInterfaceResourceIpv6InheritedObject         `tfsdk:"inherited"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryObject struct {
+	EnableNdpMonitor    types.Bool                                                           `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                           `tfsdk:"neighbor"`
+	NsInterval          types.Int64                                                          `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64                                                          `tfsdk:"reachable_time"`
+	RouterAdvertisement *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DadAttempts         types.Int64                                                          `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool                                                           `tfsdk:"enable_dad"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject struct {
+	RouterPreference       types.String                                                                   `tfsdk:"router_preference"`
+	EnableConsistencyCheck types.Bool                                                                     `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String                                                                   `tfsdk:"hop_limit"`
+	LinkMtu                types.String                                                                   `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool                                                                     `tfsdk:"managed_flag"`
+	MinInterval            types.Int64                                                                    `tfsdk:"min_interval"`
+	RetransmissionTimer    types.String                                                                   `tfsdk:"retransmission_timer"`
+	DnsSupport             *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
+	Enable                 types.Bool                                                                     `tfsdk:"enable"`
+	Lifetime               types.Int64                                                                    `tfsdk:"lifetime"`
+	MaxInterval            types.Int64                                                                    `tfsdk:"max_interval"`
+	OtherFlag              types.Bool                                                                     `tfsdk:"other_flag"`
+	ReachableTime          types.String                                                                   `tfsdk:"reachable_time"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
+	Enable types.Bool `tfsdk:"enable"`
+	Server types.List `tfsdk:"server"`
+	Suffix types.List `tfsdk:"suffix"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type VlanInterfaceResourceIpv6DhcpClientObject struct {
+	AcceptRaRoute      types.Bool                                                  `tfsdk:"accept_ra_route"`
+	DefaultRouteMetric types.Int64                                                 `tfsdk:"default_route_metric"`
+	Enable             types.Bool                                                  `tfsdk:"enable"`
+	NeighborDiscovery  *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	Preference         types.String                                                `tfsdk:"preference"`
+	PrefixDelegation   *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
+	V6Options          *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject struct {
+	NsInterval       types.Int64                                                          `tfsdk:"ns_interval"`
+	ReachableTime    types.Int64                                                          `tfsdk:"reachable_time"`
+	DadAttempts      types.Int64                                                          `tfsdk:"dad_attempts"`
+	DnsServer        *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
+	DnsSuffix        *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
+	EnableDad        types.Bool                                                           `tfsdk:"enable_dad"`
+	EnableNdpMonitor types.Bool                                                           `tfsdk:"enable_ndp_monitor"`
+	Neighbor         types.List                                                           `tfsdk:"neighbor"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject struct {
+	Enable types.Bool                                                                 `tfsdk:"enable"`
+	Source *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
+	Dhcpv6 *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
+	Manual *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject struct {
+	Server types.List `tfsdk:"server"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject struct {
+	Enable types.Bool                                                                 `tfsdk:"enable"`
+	Source *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject struct {
+	Manual *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject struct {
+	Suffix types.List `tfsdk:"suffix"`
+}
+type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject struct {
+	Enable *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
+}
+type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject struct {
+	No  *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject  `tfsdk:"no"`
+	Yes *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject `tfsdk:"yes"`
+}
+type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject struct {
+}
+type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject struct {
+	PrefixLen     types.Int64  `tfsdk:"prefix_len"`
+	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
+	PfxPoolName   types.String `tfsdk:"pfx_pool_name"`
+}
+type VlanInterfaceResourceIpv6DhcpClientV6OptionsObject struct {
+	Enable              *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
+	RapidCommit         types.Bool                                                `tfsdk:"rapid_commit"`
+	SupportSrvrReconfig types.Bool                                                `tfsdk:"support_srvr_reconfig"`
+	DuidType            types.String                                              `tfsdk:"duid_type"`
+}
+type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject struct {
+	No  *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
+	Yes *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
+}
+type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject struct {
+}
+type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject struct {
+	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
+	TempAddr    types.Bool `tfsdk:"temp_addr"`
 }
 type VlanInterfaceResourceIpv6InheritedObject struct {
 	AssignAddr        types.List                                                 `tfsdk:"assign_addr"`
@@ -7569,10 +7675,10 @@ type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject struct {
 	Dynamic   *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
 	DynamicId *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
 }
+type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
+}
 type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject struct {
 	Identifier types.Int64 `tfsdk:"identifier"`
-}
-type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
 }
 type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
 	Enable         types.Bool `tfsdk:"enable"`
@@ -7580,29 +7686,29 @@ type VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject struct {
 	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
 }
 type VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject struct {
+	Anycast           types.Bool                                                          `tfsdk:"anycast"`
+	Advertise         *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
 	EnableOnInterface types.Bool                                                          `tfsdk:"enable_on_interface"`
 	Address           types.String                                                        `tfsdk:"address"`
 	Prefix            types.Bool                                                          `tfsdk:"prefix"`
-	Anycast           types.Bool                                                          `tfsdk:"anycast"`
-	Advertise         *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
 }
 type VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
+	Enable            types.Bool   `tfsdk:"enable"`
+	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
 	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-	Enable            types.Bool   `tfsdk:"enable"`
-	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
 }
 type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject struct {
+	DadAttempts         types.Int64                                                                   `tfsdk:"dad_attempts"`
+	DnsSuffix           *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
+	EnableDad           types.Bool                                                                    `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool                                                                    `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                                    `tfsdk:"neighbor"`
+	NsInterval          types.Int64                                                                   `tfsdk:"ns_interval"`
 	ReachableTime       types.Int64                                                                   `tfsdk:"reachable_time"`
 	RouterAdvertisement *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
 	DnsServer           *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
-	EnableDad           types.Bool                                                                    `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                    `tfsdk:"enable_ndp_monitor"`
-	NsInterval          types.Int64                                                                   `tfsdk:"ns_interval"`
-	DadAttempts         types.Int64                                                                   `tfsdk:"dad_attempts"`
-	DnsSuffix           *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	Neighbor            types.List                                                                    `tfsdk:"neighbor"`
 }
 type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject struct {
 	Enable types.Bool                                                                `tfsdk:"enable"`
@@ -7626,9 +7732,23 @@ type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject struct {
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
 }
+type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	RouterPreference       types.String `tfsdk:"router_preference"`
+}
 type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                `tfsdk:"enable"`
 	Source *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool                                                                `tfsdk:"enable"`
 }
 type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
 	Dhcpv6 *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
@@ -7644,20 +7764,6 @@ type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSer
 	Name     types.String `tfsdk:"name"`
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
-type VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject struct {
-	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64  `tfsdk:"max_interval"`
-	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
-	OtherFlag              types.Bool   `tfsdk:"other_flag"`
-	ReachableTime          types.String `tfsdk:"reachable_time"`
-	Enable                 types.Bool   `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String `tfsdk:"hop_limit"`
-	Lifetime               types.Int64  `tfsdk:"lifetime"`
-	LinkMtu                types.String `tfsdk:"link_mtu"`
-	MinInterval            types.Int64  `tfsdk:"min_interval"`
-	RouterPreference       types.String `tfsdk:"router_preference"`
-}
 type VlanInterfaceResourceIpv6AddressObject struct {
 	Name              types.String                                     `tfsdk:"name"`
 	EnableOnInterface types.Bool                                       `tfsdk:"enable_on_interface"`
@@ -7665,144 +7771,24 @@ type VlanInterfaceResourceIpv6AddressObject struct {
 	Anycast           *VlanInterfaceResourceIpv6AddressAnycastObject   `tfsdk:"anycast"`
 	Advertise         *VlanInterfaceResourceIpv6AddressAdvertiseObject `tfsdk:"advertise"`
 }
-type VlanInterfaceResourceIpv6AddressPrefixObject struct {
-}
 type VlanInterfaceResourceIpv6AddressAnycastObject struct {
 }
 type VlanInterfaceResourceIpv6AddressAdvertiseObject struct {
+	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
+	Enable            types.Bool   `tfsdk:"enable"`
 	ValidLifetime     types.String `tfsdk:"valid_lifetime"`
 	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
-	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-	Enable            types.Bool   `tfsdk:"enable"`
 }
-type VlanInterfaceResourceIpv6NeighborDiscoveryObject struct {
-	NsInterval          types.Int64                                                          `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                          `tfsdk:"reachable_time"`
-	RouterAdvertisement *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
-	DadAttempts         types.Int64                                                          `tfsdk:"dad_attempts"`
-	EnableDad           types.Bool                                                           `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                           `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                           `tfsdk:"neighbor"`
+type VlanInterfaceResourceIpv6AddressPrefixObject struct {
 }
-type VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
+type VlanInterfaceResourceNdpProxyObject struct {
+	Address types.List `tfsdk:"address"`
+	Enabled types.Bool `tfsdk:"enabled"`
 }
-type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject struct {
-	Enable                 types.Bool                                                                     `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                     `tfsdk:"enable_consistency_check"`
-	Lifetime               types.Int64                                                                    `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                   `tfsdk:"link_mtu"`
-	MinInterval            types.Int64                                                                    `tfsdk:"min_interval"`
-	RetransmissionTimer    types.String                                                                   `tfsdk:"retransmission_timer"`
-	DnsSupport             *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	HopLimit               types.String                                                                   `tfsdk:"hop_limit"`
-	ManagedFlag            types.Bool                                                                     `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                    `tfsdk:"max_interval"`
-	OtherFlag              types.Bool                                                                     `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                   `tfsdk:"reachable_time"`
-	RouterPreference       types.String                                                                   `tfsdk:"router_preference"`
-}
-type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
-	Enable types.Bool `tfsdk:"enable"`
-	Server types.List `tfsdk:"server"`
-	Suffix types.List `tfsdk:"suffix"`
-}
-type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type VlanInterfaceResourceIpv6DhcpClientObject struct {
-	AcceptRaRoute      types.Bool                                                  `tfsdk:"accept_ra_route"`
-	DefaultRouteMetric types.Int64                                                 `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                  `tfsdk:"enable"`
-	NeighborDiscovery  *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
-	Preference         types.String                                                `tfsdk:"preference"`
-	PrefixDelegation   *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
-	V6Options          *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
-}
-type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject struct {
-	Enable *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
-}
-type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject struct {
-	No  *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject  `tfsdk:"no"`
-	Yes *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject `tfsdk:"yes"`
-}
-type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject struct {
-	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
-	PfxPoolName   types.String `tfsdk:"pfx_pool_name"`
-	PrefixLen     types.Int64  `tfsdk:"prefix_len"`
-}
-type VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject struct {
-}
-type VlanInterfaceResourceIpv6DhcpClientV6OptionsObject struct {
-	Enable              *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
-	RapidCommit         types.Bool                                                `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                `tfsdk:"support_srvr_reconfig"`
-	DuidType            types.String                                              `tfsdk:"duid_type"`
-}
-type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject struct {
-	No  *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
-	Yes *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
-}
-type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject struct {
-}
-type VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject struct {
-	TempAddr    types.Bool `tfsdk:"temp_addr"`
-	NonTempAddr types.Bool `tfsdk:"non_temp_addr"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject struct {
-	Neighbor         types.List                                                           `tfsdk:"neighbor"`
-	NsInterval       types.Int64                                                          `tfsdk:"ns_interval"`
-	ReachableTime    types.Int64                                                          `tfsdk:"reachable_time"`
-	DadAttempts      types.Int64                                                          `tfsdk:"dad_attempts"`
-	DnsServer        *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
-	DnsSuffix        *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
-	EnableDad        types.Bool                                                           `tfsdk:"enable_dad"`
-	EnableNdpMonitor types.Bool                                                           `tfsdk:"enable_ndp_monitor"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                 `tfsdk:"enable"`
-	Source *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject struct {
-	Server types.List `tfsdk:"server"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                 `tfsdk:"enable"`
-	Source *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject struct {
-	Suffix types.List `tfsdk:"suffix"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
+type VlanInterfaceResourceNdpProxyAddressObject struct {
+	Name   types.String `tfsdk:"name"`
+	Negate types.Bool   `tfsdk:"negate"`
 }
 
 func (r *VlanInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -7824,36 +7810,6 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"ip": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceResourceIpSchema(),
-			},
-
-			"ipv6": VlanInterfaceResourceIpv6Schema(),
-
-			"ndp_proxy": VlanInterfaceResourceNdpProxySchema(),
-
-			"arp": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceResourceArpSchema(),
-			},
-
-			"comment": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -7862,8 +7818,6 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"dhcp_client": VlanInterfaceResourceDhcpClientSchema(),
-
 			"interface_management_profile": rsschema.StringAttribute{
 				Description: "Interface management profile",
 				Computed:    false,
@@ -7871,6 +7825,18 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"ipv6": VlanInterfaceResourceIpv6Schema(),
+
+			"mtu": rsschema.Int64Attribute{
+				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ndp_proxy": VlanInterfaceResourceNdpProxySchema(),
 
 			"netflow_profile": rsschema.StringAttribute{
 				Description: "Netflow Server Profile",
@@ -7884,14 +7850,34 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 
 			"bonjour": VlanInterfaceResourceBonjourSchema(),
 
-			"ddns_config": VlanInterfaceResourceDdnsConfigSchema(),
-
-			"mtu": rsschema.Int64Attribute{
-				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+			"comment": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"ddns_config": VlanInterfaceResourceDdnsConfigSchema(),
+
+			"dhcp_client": VlanInterfaceResourceDhcpClientSchema(),
+
+			"ip": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceResourceIpSchema(),
+			},
+
+			"arp": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceResourceArpSchema(),
 			},
 		},
 	}
@@ -7899,39 +7885,6 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 
 func (o *VlanInterfaceResourceModel) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceResourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -8019,6 +7972,31 @@ func VlanInterfaceResourceIpv6NeighborDiscoverySchema() rsschema.SingleNestedAtt
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"dad_attempts": rsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "enable duplicate address detection",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": rsschema.BoolAttribute{
+				Description: "enable ndp monitoring",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -8047,31 +8025,6 @@ func VlanInterfaceResourceIpv6NeighborDiscoverySchema() rsschema.SingleNestedAtt
 			},
 
 			"router_advertisement": VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema(),
-
-			"dad_attempts": rsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "enable duplicate address detection",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": rsschema.BoolAttribute{
-				Description: "enable ndp monitoring",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 		},
 	}
 }
@@ -8103,12 +8056,32 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"managed_flag": rsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+			"reachable_time": rsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"dns_support": VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1800),
 			},
 
 			"max_interval": rsschema.Int64Attribute{
@@ -8128,8 +8101,8 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 				Sensitive:   false,
 			},
 
-			"reachable_time": rsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+			"retransmission_timer": rsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -8146,7 +8119,13 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 				Default:     stringdefault.StaticString("Medium"),
 			},
 
-			"dns_support": VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+			"enable_consistency_check": rsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
@@ -8155,15 +8134,6 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("64"),
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1800),
 			},
 
 			"link_mtu": rsschema.StringAttribute{
@@ -8175,6 +8145,14 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
+			"managed_flag": rsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"min_interval": rsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
 				Computed:    true,
@@ -8182,31 +8160,6 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rssch
 				Optional:    true,
 				Sensitive:   false,
 				Default:     int64default.StaticInt64(200),
-			},
-
-			"retransmission_timer": rsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": rsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8286,48 +8239,6 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	panic("unreachable")
 }
 
-func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1200),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
@@ -8354,6 +8265,48 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuff
 
 func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1200),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -8420,6 +8373,17 @@ func VlanInterfaceResourceIpv6DhcpClientSchema() rsschema.SingleNestedAttribute 
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"neighbor_discovery": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema(),
+
+			"preference": rsschema.StringAttribute{
+				Description: "Select Low/Medium/High",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("high"),
+			},
+
 			"prefix_delegation": VlanInterfaceResourceIpv6DhcpClientPrefixDelegationSchema(),
 
 			"v6_options": VlanInterfaceResourceIpv6DhcpClientV6OptionsSchema(),
@@ -8447,17 +8411,6 @@ func VlanInterfaceResourceIpv6DhcpClientSchema() rsschema.SingleNestedAttribute 
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"neighbor_discovery": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema(),
-
-			"preference": rsschema.StringAttribute{
-				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("high"),
 			},
 		},
 	}
@@ -8489,18 +8442,6 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() rsschema.Singl
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
-
-			"dns_server": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema(),
-
-			"dns_suffix": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
@@ -8544,6 +8485,18 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() rsschema.Singl
 				Optional:    true,
 				Sensitive:   false,
 				Default:     int64default.StaticInt64(1),
+			},
+
+			"dns_server": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema(),
+
+			"dns_suffix": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -8617,8 +8570,6 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() rssch
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
-
 			"enable": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -8626,6 +8577,8 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() rssch
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
 		},
 	}
 }
@@ -8815,6 +8768,8 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() rssch
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
+
 			"enable": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
@@ -8822,8 +8777,6 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() rssch
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
 		},
 	}
 }
@@ -8855,9 +8808,9 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema()
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"manual": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema(),
-
 			"dhcpv6": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
+
+			"manual": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema(),
 		},
 	}
 }
@@ -9122,6 +9075,14 @@ func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSchema() rssche
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"pfx_pool_name": rsschema.StringAttribute{
+				Description: "Configure unique Prefix Pool Name",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"prefix_len": rsschema.Int64Attribute{
 				Description: "Hint DHCP Prefix Length (bits)",
 				Computed:    true,
@@ -9133,14 +9094,6 @@ func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSchema() rssche
 
 			"prefix_len_hint": rsschema.BoolAttribute{
 				Description: "Send prefix length hint to server",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"pfx_pool_name": rsschema.StringAttribute{
-				Description: "Configure unique Prefix Pool Name",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -9397,6 +9350,683 @@ func (o *VlanInterfaceResourceIpv6InheritedObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"router_advertisement": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
+
+			"dad_attempts": rsschema.Int64Attribute{
+				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"dns_suffix": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema(),
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "Enable Duplicate Address Detection (DAD)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": rsschema.BoolAttribute{
+				Description: "Enable NDP Monitoring",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": rsschema.Int64Attribute{
+				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"reachable_time": rsschema.Int64Attribute{
+				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(30),
+			},
+
+			"dns_server": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
+
+			"manual": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"prefix_pool": rsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("manual"),
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"server": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "(4-3600) Lifetime in Seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1200),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable_consistency_check": rsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": rsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("64"),
+			},
+
+			"managed_flag": rsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"min_interval": rsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(200),
+			},
+
+			"other_flag": rsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": rsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"retransmission_timer": rsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1800),
+			},
+
+			"link_mtu": rsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"max_interval": rsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(600),
+			},
+
+			"router_preference": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("Medium"),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
+
+			"manual": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"prefix_pool": rsschema.StringAttribute{
+				Description: "Prefix-Pool Name",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dhcpv6"),
+				path.MatchRelative().AtParent().AtName("manual"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"suffix": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1200),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": rsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func VlanInterfaceResourceIpv6InheritedAssignAddrSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
@@ -9557,6 +10187,42 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) getT
 	panic("unreachable")
 }
 
+func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("dynamic"),
+				path.MatchRelative().AtParent().AtName("dynamic_id"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -9586,42 +10252,6 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema(
 
 func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dynamic"),
-				path.MatchRelative().AtParent().AtName("dynamic_id"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -9708,6 +10338,8 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rsschema.Single
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"advertise": VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
+
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Configure this address on Interface",
 				Computed:    false,
@@ -9739,8 +10371,6 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rsschema.Single
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"advertise": VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
 		},
 	}
 }
@@ -9835,683 +10465,6 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) get
 	panic("unreachable")
 }
 
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dns_server": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": rsschema.BoolAttribute{
-				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ns_interval": rsschema.Int64Attribute{
-				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"reachable_time": rsschema.Int64Attribute{
-				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(30),
-			},
-
-			"router_advertisement": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
-
-			"dad_attempts": rsschema.Int64Attribute{
-				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"dns_suffix": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema(),
-
-			"neighbor": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
-
-			"manual": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"prefix_pool": rsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"server": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1200),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"managed_flag": rsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": rsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(600),
-			},
-
-			"retransmission_timer": rsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"min_interval": rsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(200),
-			},
-
-			"other_flag": rsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": rsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": rsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hop_limit": rsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("64"),
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1800),
-			},
-
-			"link_mtu": rsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"router_preference": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("Medium"),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
-
-			"manual": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"suffix": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1200),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("dhcpv6"),
-				path.MatchRelative().AtParent().AtName("manual"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"prefix_pool": rsschema.StringAttribute{
-				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": rsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func VlanInterfaceResourceIpv6AddressSchema() rsschema.NestedAttributeObject {
 	return rsschema.NestedAttributeObject{
 		Attributes: map[string]rsschema.Attribute{
@@ -10524,12 +10477,6 @@ func VlanInterfaceResourceIpv6AddressSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"prefix": VlanInterfaceResourceIpv6AddressPrefixSchema(),
-
-			"anycast": VlanInterfaceResourceIpv6AddressAnycastSchema(),
-
-			"advertise": VlanInterfaceResourceIpv6AddressAdvertiseSchema(),
-
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "configure this address on interface",
 				Computed:    false,
@@ -10537,6 +10484,12 @@ func VlanInterfaceResourceIpv6AddressSchema() rsschema.NestedAttributeObject {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"prefix": VlanInterfaceResourceIpv6AddressPrefixSchema(),
+
+			"anycast": VlanInterfaceResourceIpv6AddressAnycastSchema(),
+
+			"advertise": VlanInterfaceResourceIpv6AddressAdvertiseSchema(),
 		},
 	}
 }
@@ -10626,22 +10579,6 @@ func VlanInterfaceResourceIpv6AddressAdvertiseSchema() rsschema.SingleNestedAttr
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"onlink_flag": rsschema.BoolAttribute{
-				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"auto_config_flag": rsschema.BoolAttribute{
-				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"enable": rsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
 				Computed:    false,
@@ -10666,6 +10603,22 @@ func VlanInterfaceResourceIpv6AddressAdvertiseSchema() rsschema.SingleNestedAttr
 				Optional:    true,
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("604800"),
+			},
+
+			"onlink_flag": rsschema.BoolAttribute{
+				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"auto_config_flag": rsschema.BoolAttribute{
+				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -10761,159 +10714,6 @@ func VlanInterfaceResourceNdpProxyAddressSchema() rsschema.NestedAttributeObject
 
 func (o *VlanInterfaceResourceNdpProxyAddressObject) getTypeFor(name string) attr.Type {
 	schema := VlanInterfaceResourceNdpProxyAddressSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceArpSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": rsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"interface": rsschema.StringAttribute{
-				Description: "Egress interface associated with this ARP entry",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceArpObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceArpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceDhcpClientSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"create_default_route": rsschema.BoolAttribute{
-				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_route_metric": rsschema.Int64Attribute{
-				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(10),
-			},
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"send_hostname": VlanInterfaceResourceDhcpClientSendHostnameSchema(),
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceDhcpClientObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceDhcpClientSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func VlanInterfaceResourceDhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hostname": rsschema.StringAttribute{
-				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("system-hostname"),
-			},
-		},
-	}
-}
-
-func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
-	schema := VlanInterfaceResourceDhcpClientSendHostnameSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -11050,32 +10850,6 @@ func VlanInterfaceResourceDdnsConfigSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"ddns_hostname": rsschema.StringAttribute{
-				Description: "ddns hostname variable or real address",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ddns_ip": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"ddns_ipv6": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"ddns_update_interval": rsschema.Int64Attribute{
 				Description: "",
 				Computed:    true,
@@ -11116,6 +10890,32 @@ func VlanInterfaceResourceDdnsConfigSchema() rsschema.SingleNestedAttribute {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"ddns_hostname": rsschema.StringAttribute{
+				Description: "ddns hostname variable or real address",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ddns_ip": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"ddns_ipv6": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -11180,6 +10980,192 @@ func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) getTypeFor(name 
 	panic("unreachable")
 }
 
+func VlanInterfaceResourceDhcpClientSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"create_default_route": rsschema.BoolAttribute{
+				Description: "Automatically create default route pointing to default gateway provided by server",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"default_route_metric": rsschema.Int64Attribute{
+				Description: "Metric of the default route created",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(10),
+			},
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"send_hostname": VlanInterfaceResourceDhcpClientSendHostnameSchema(),
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceDhcpClientObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceDhcpClientSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceDhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hostname": rsschema.StringAttribute{
+				Description: "Set Interface Hostname",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("system-hostname"),
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceDhcpClientSendHostnameSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceIpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func VlanInterfaceResourceArpSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": rsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"interface": rsschema.StringAttribute{
+				Description: "Egress interface associated with this ARP entry",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *VlanInterfaceResourceArpObject) getTypeFor(name string) attr.Type {
+	schema := VlanInterfaceResourceArpSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func (r *VlanInterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_vlan_interface"
 }
@@ -11207,6 +11193,20 @@ func (r *VlanInterfaceResource) Configure(ctx context.Context, req resource.Conf
 
 func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	comment_value := o.Comment.ValueStringPointer()
+	var ddnsConfig_entry *vlan.DdnsConfig
+	if o.DdnsConfig != nil {
+		if *obj != nil && (*obj).DdnsConfig != nil {
+			ddnsConfig_entry = (*obj).DdnsConfig
+		} else {
+			ddnsConfig_entry = new(vlan.DdnsConfig)
+		}
+
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var dhcpClient_entry *vlan.DhcpClient
 	if o.DhcpClient != nil {
 		if *obj != nil && (*obj).DhcpClient != nil {
@@ -11220,7 +11220,6 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan
 			return diags
 		}
 	}
-	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
 	var ip_tf_entries []VlanInterfaceResourceIpObject
 	var ip_pango_entries []vlan.Ip
 	{
@@ -11236,32 +11235,6 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan
 				return diags
 			}
 			ip_pango_entries = append(ip_pango_entries, *entry)
-		}
-	}
-	var ipv6_entry *vlan.Ipv6
-	if o.Ipv6 != nil {
-		if *obj != nil && (*obj).Ipv6 != nil {
-			ipv6_entry = (*obj).Ipv6
-		} else {
-			ipv6_entry = new(vlan.Ipv6)
-		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ndpProxy_entry *vlan.NdpProxy
-	if o.NdpProxy != nil {
-		if *obj != nil && (*obj).NdpProxy != nil {
-			ndpProxy_entry = (*obj).NdpProxy
-		} else {
-			ndpProxy_entry = new(vlan.NdpProxy)
-		}
-
-		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
 		}
 	}
 	var arp_tf_entries []VlanInterfaceResourceArpObject
@@ -11281,23 +11254,6 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan
 			arp_pango_entries = append(arp_pango_entries, *entry)
 		}
 	}
-	comment_value := o.Comment.ValueStringPointer()
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
-	mtu_value := o.Mtu.ValueInt64Pointer()
-	var adjustTcpMss_entry *vlan.AdjustTcpMss
-	if o.AdjustTcpMss != nil {
-		if *obj != nil && (*obj).AdjustTcpMss != nil {
-			adjustTcpMss_entry = (*obj).AdjustTcpMss
-		} else {
-			adjustTcpMss_entry = new(vlan.AdjustTcpMss)
-		}
-
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var bonjour_entry *vlan.Bonjour
 	if o.Bonjour != nil {
 		if *obj != nil && (*obj).Bonjour != nil {
@@ -11311,120 +11267,87 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan
 			return diags
 		}
 	}
-	var ddnsConfig_entry *vlan.DdnsConfig
-	if o.DdnsConfig != nil {
-		if *obj != nil && (*obj).DdnsConfig != nil {
-			ddnsConfig_entry = (*obj).DdnsConfig
+	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
+	var ipv6_entry *vlan.Ipv6
+	if o.Ipv6 != nil {
+		if *obj != nil && (*obj).Ipv6 != nil {
+			ipv6_entry = (*obj).Ipv6
 		} else {
-			ddnsConfig_entry = new(vlan.DdnsConfig)
+			ipv6_entry = new(vlan.Ipv6)
 		}
 
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	mtu_value := o.Mtu.ValueInt64Pointer()
+	var ndpProxy_entry *vlan.NdpProxy
+	if o.NdpProxy != nil {
+		if *obj != nil && (*obj).NdpProxy != nil {
+			ndpProxy_entry = (*obj).NdpProxy
+		} else {
+			ndpProxy_entry = new(vlan.NdpProxy)
+		}
+
+		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
+	var adjustTcpMss_entry *vlan.AdjustTcpMss
+	if o.AdjustTcpMss != nil {
+		if *obj != nil && (*obj).AdjustTcpMss != nil {
+			adjustTcpMss_entry = (*obj).AdjustTcpMss
+		} else {
+			adjustTcpMss_entry = new(vlan.AdjustTcpMss)
+		}
+
+		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
-	(*obj).Ip = ip_pango_entries
-	(*obj).Ipv6 = ipv6_entry
-	(*obj).NdpProxy = ndpProxy_entry
-	(*obj).Arp = arp_pango_entries
 	(*obj).Comment = comment_value
-	(*obj).DfIgnore = dfIgnore_value
-	(*obj).NetflowProfile = netflowProfile_value
-	(*obj).Mtu = mtu_value
-	(*obj).AdjustTcpMss = adjustTcpMss_entry
-	(*obj).Bonjour = bonjour_entry
 	(*obj).DdnsConfig = ddnsConfig_entry
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Ip = ip_pango_entries
+	(*obj).Arp = arp_pango_entries
+	(*obj).Bonjour = bonjour_entry
+	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
+	(*obj).Ipv6 = ipv6_entry
+	(*obj).Mtu = mtu_value
+	(*obj).NdpProxy = ndpProxy_entry
+	(*obj).NetflowProfile = netflowProfile_value
+	(*obj).AdjustTcpMss = adjustTcpMss_entry
+	(*obj).DfIgnore = dfIgnore_value
 
 	return diags
 }
-func (o *VlanInterfaceResourceDhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var sendHostname_entry *vlan.DhcpClientSendHostname
-	if o.SendHostname != nil {
-		if *obj != nil && (*obj).SendHostname != nil {
-			sendHostname_entry = (*obj).SendHostname
-		} else {
-			sendHostname_entry = new(vlan.DhcpClientSendHostname)
-		}
-
-		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.DhcpClient)
-	}
-	(*obj).CreateDefaultRoute = createDefaultRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
-	(*obj).SendHostname = sendHostname_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
-	hostname_value := o.Hostname.ValueStringPointer()
+	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
+	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(vlan.DhcpClientSendHostname)
+		*obj = new(vlan.AdjustTcpMss)
 	}
 	(*obj).Enable = enable_value
-	(*obj).Hostname = hostname_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj **vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ip)
-	}
-	(*obj).Name = o.Name.ValueString()
+	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
+	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
 
 	return diags
 }
 func (o *VlanInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpClient_entry *vlan.Ipv6DhcpClient
-	if o.DhcpClient != nil {
-		if *obj != nil && (*obj).DhcpClient != nil {
-			dhcpClient_entry = (*obj).DhcpClient
-		} else {
-			dhcpClient_entry = new(vlan.Ipv6DhcpClient)
-		}
-
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var inherited_entry *vlan.Ipv6Inherited
-	if o.Inherited != nil {
-		if *obj != nil && (*obj).Inherited != nil {
-			inherited_entry = (*obj).Inherited
-		} else {
-			inherited_entry = new(vlan.Ipv6Inherited)
-		}
-
-		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var address_tf_entries []VlanInterfaceResourceIpv6AddressObject
 	var address_pango_entries []vlan.Ipv6Address
 	{
@@ -11457,16 +11380,657 @@ func (o *VlanInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, obj *
 			return diags
 		}
 	}
+	var dhcpClient_entry *vlan.Ipv6DhcpClient
+	if o.DhcpClient != nil {
+		if *obj != nil && (*obj).DhcpClient != nil {
+			dhcpClient_entry = (*obj).DhcpClient
+		} else {
+			dhcpClient_entry = new(vlan.Ipv6DhcpClient)
+		}
+
+		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var inherited_entry *vlan.Ipv6Inherited
+	if o.Inherited != nil {
+		if *obj != nil && (*obj).Inherited != nil {
+			inherited_entry = (*obj).Inherited
+		} else {
+			inherited_entry = new(vlan.Ipv6Inherited)
+		}
+
+		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6)
 	}
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Inherited = inherited_entry
 	(*obj).Address = address_pango_entries
 	(*obj).Enabled = enabled_value
 	(*obj).InterfaceId = interfaceId_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).DhcpClient = dhcpClient_entry
+	(*obj).Inherited = inherited_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_tf_entries []VlanInterfaceResourceIpv6InheritedAssignAddrObject
+	var assignAddr_pango_entries []vlan.Ipv6InheritedAssignAddr
+	{
+		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range assignAddr_tf_entries {
+			var entry *vlan.Ipv6InheritedAssignAddr
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
+		}
+	}
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *vlan.Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(vlan.Ipv6InheritedNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6Inherited)
+	}
+	(*obj).AssignAddr = assignAddr_pango_entries
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+	var routerAdvertisement_entry *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement
+	if o.RouterAdvertisement != nil {
+		if *obj != nil && (*obj).RouterAdvertisement != nil {
+			routerAdvertisement_entry = (*obj).RouterAdvertisement
+		} else {
+			routerAdvertisement_entry = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+		}
+
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	var dnsSuffix_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix)
+		}
+
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *vlan.Ipv6InheritedNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	var dnsServer_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
+		}
+
+		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscovery)
+	}
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RouterAdvertisement = routerAdvertisement_entry
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).DnsServer = dnsServer_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource)
+		}
+
+		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+		}
+
+		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+		}
+
+		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+		}
+
+		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_entry *vlan.Ipv6InheritedAssignAddrType
+	if o.Type != nil {
+		if *obj != nil && (*obj).Type != nil {
+			type_entry = (*obj).Type
+		} else {
+			type_entry = new(vlan.Ipv6InheritedAssignAddrType)
+		}
+
+		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddr)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Type = type_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_entry *vlan.Ipv6InheritedAssignAddrTypeGua
+	if o.Gua != nil {
+		if *obj != nil && (*obj).Gua != nil {
+			gua_entry = (*obj).Gua
+		} else {
+			gua_entry = new(vlan.Ipv6InheritedAssignAddrTypeGua)
+		}
+
+		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_entry *vlan.Ipv6InheritedAssignAddrTypeUla
+	if o.Ula != nil {
+		if *obj != nil && (*obj).Ula != nil {
+			ula_entry = (*obj).Ula
+		} else {
+			ula_entry = new(vlan.Ipv6InheritedAssignAddrTypeUla)
+		}
+
+		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrType)
+	}
+	(*obj).Gua = gua_entry
+	(*obj).Ula = ula_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+	var poolType_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType
+	if o.PoolType != nil {
+		if *obj != nil && (*obj).PoolType != nil {
+			poolType_entry = (*obj).PoolType
+		} else {
+			poolType_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolType)
+		}
+
+		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_entry *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGua)
+	}
+	(*obj).PrefixPool = prefixPool_value
+	(*obj).PoolType = poolType_entry
+	(*obj).Advertise = advertise_entry
+	(*obj).EnableOnInterface = enableOnInterface_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+		}
+
+		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
+	if o.DynamicId != nil {
+		if *obj != nil && (*obj).DynamicId != nil {
+			dynamicId_entry = (*obj).DynamicId
+		} else {
+			dynamicId_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+		}
+
+		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolType)
+	}
+	(*obj).Dynamic = dynamic_entry
+	(*obj).DynamicId = dynamicId_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	identifier_value := o.Identifier.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+	}
+	(*obj).Identifier = identifier_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
+	anycast_value := o.Anycast.ValueBoolPointer()
+	var advertise_entry *vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise)
+		}
+
+		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUla)
+	}
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).Address = address_value
+	(*obj).Prefix = prefix_value
+	(*obj).Anycast = anycast_value
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
 
 	return diags
 }
@@ -11524,25 +12088,6 @@ func (o *VlanInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-	enable_value := o.Enable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6AddressAdvertise)
-	}
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-	(*obj).Enable = enable_value
-
-	return diags
-}
 func (o *VlanInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -11561,8 +12106,29 @@ func (o *VlanInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.
 
 	return diags
 }
+func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6AddressAdvertise)
+	}
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+
+	return diags
+}
 func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	enableDad_value := o.EnableDad.ValueBoolPointer()
 	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
 	var neighbor_tf_entries []VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject
 	var neighbor_pango_entries []vlan.Ipv6NeighborDiscoveryNeighbor
@@ -11596,24 +12162,36 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) CopyToPango(ctx conte
 			return diags
 		}
 	}
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	enableDad_value := o.EnableDad.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6NeighborDiscovery)
 	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).EnableDad = enableDad_value
 	(*obj).EnableNdpMonitor = enableNdpMonitor_value
 	(*obj).Neighbor = neighbor_pango_entries
 	(*obj).NsInterval = nsInterval_value
 	(*obj).ReachableTime = reachableTime_value
 	(*obj).RouterAdvertisement = routerAdvertisement_entry
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).EnableDad = enableDad_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6NeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
 func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
 	var dnsSupport_entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
 		if *obj != nil && (*obj).DnsSupport != nil {
@@ -11627,35 +12205,33 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) Co
 			return diags
 		}
 	}
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
 	minInterval_value := o.MinInterval.ValueInt64Pointer()
 	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6NeighborDiscoveryRouterAdvertisement)
 	}
-	(*obj).DnsSupport = dnsSupport_entry
-	(*obj).HopLimit = hopLimit_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
 	(*obj).OtherFlag = otherFlag_value
 	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterPreference = routerPreference_value
+	(*obj).DnsSupport = dnsSupport_entry
 	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
 	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
+	(*obj).MaxInterval = maxInterval_value
 	(*obj).MinInterval = minInterval_value
 	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).RouterPreference = routerPreference_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
 
 	return diags
 }
@@ -11730,37 +12306,8 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 
 	return diags
 }
-func (o *VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6NeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
 func (o *VlanInterfaceResourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *vlan.Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(vlan.Ipv6DhcpClientNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	preference_value := o.Preference.ValueStringPointer()
 	var prefixDelegation_entry *vlan.Ipv6DhcpClientPrefixDelegation
 	if o.PrefixDelegation != nil {
 		if *obj != nil && (*obj).PrefixDelegation != nil {
@@ -11787,17 +12334,206 @@ func (o *VlanInterfaceResourceIpv6DhcpClientObject) CopyToPango(ctx context.Cont
 			return diags
 		}
 	}
+	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *vlan.Ipv6DhcpClientNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(vlan.Ipv6DhcpClientNeighborDiscovery)
+		}
+
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	preference_value := o.Preference.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Ipv6DhcpClient)
 	}
+	(*obj).PrefixDelegation = prefixDelegation_entry
+	(*obj).V6Options = v6Options_entry
 	(*obj).AcceptRaRoute = acceptRaRoute_value
 	(*obj).DefaultRouteMetric = defaultRouteMetric_value
 	(*obj).Enable = enable_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
 	(*obj).Preference = preference_value
-	(*obj).PrefixDelegation = prefixDelegation_entry
-	(*obj).V6Options = v6Options_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *vlan.Ipv6DhcpClientPrefixDelegationEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientPrefixDelegation)
+	}
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *vlan.Ipv6DhcpClientPrefixDelegationEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *vlan.Ipv6DhcpClientPrefixDelegationEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnableNo)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
+	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
+	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnableYes)
+	}
+	(*obj).PfxPoolName = pfxPoolName_value
+	(*obj).PrefixLen = prefixLen_value
+	(*obj).PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+	duidType_value := o.DuidType.ValueStringPointer()
+	var enable_entry *vlan.Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(vlan.Ipv6DhcpClientV6OptionsEnable)
+		}
+
+		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6Options)
+	}
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+	(*obj).DuidType = duidType_value
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var yes_entry *vlan.Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
+		}
+
+		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var no_entry *vlan.Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
+		}
+
+		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).Yes = yes_entry
+	(*obj).No = no_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).NonTempAddr = nonTempAddr_value
+	(*obj).TempAddr = tempAddr_value
 
 	return diags
 }
@@ -12098,793 +12834,6 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) Cop
 
 	return diags
 }
-func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_entry *vlan.Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientPrefixDelegation)
-	}
-	(*obj).Enable = enable_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var yes_entry *vlan.Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var no_entry *vlan.Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(vlan.Ipv6DhcpClientPrefixDelegationEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnable)
-	}
-	(*obj).Yes = yes_entry
-	(*obj).No = no_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
-	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
-	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnableYes)
-	}
-	(*obj).PfxPoolName = pfxPoolName_value
-	(*obj).PrefixLen = prefixLen_value
-	(*obj).PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientPrefixDelegationEnableNo)
-	}
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *vlan.Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(vlan.Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var yes_entry *vlan.Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var no_entry *vlan.Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).Yes = yes_entry
-	(*obj).No = no_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighborDiscovery_entry *vlan.Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(vlan.Ipv6InheritedNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var assignAddr_tf_entries []VlanInterfaceResourceIpv6InheritedAssignAddrObject
-	var assignAddr_pango_entries []vlan.Ipv6InheritedAssignAddr
-	{
-		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range assignAddr_tf_entries {
-			var entry *vlan.Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
-		}
-	}
-	enable_value := o.Enable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6Inherited)
-	}
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).AssignAddr = assignAddr_pango_entries
-	(*obj).Enable = enable_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dnsSuffix_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var neighbor_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	var routerAdvertisement_entry *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
-		if *obj != nil && (*obj).RouterAdvertisement != nil {
-			routerAdvertisement_entry = (*obj).RouterAdvertisement
-		} else {
-			routerAdvertisement_entry = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsServer_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscovery)
-	}
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterAdvertisement = routerAdvertisement_entry
-	(*obj).DnsServer = dnsServer_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-	}
-	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterPreference = routerPreference_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enable_value := o.Enable.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Source = source_entry
-	(*obj).Enable = enable_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_entry *vlan.Ipv6InheritedAssignAddrType
-	if o.Type != nil {
-		if *obj != nil && (*obj).Type != nil {
-			type_entry = (*obj).Type
-		} else {
-			type_entry = new(vlan.Ipv6InheritedAssignAddrType)
-		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddr)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_entry *vlan.Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
-		if *obj != nil && (*obj).Gua != nil {
-			gua_entry = (*obj).Gua
-		} else {
-			gua_entry = new(vlan.Ipv6InheritedAssignAddrTypeGua)
-		}
-
-		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_entry *vlan.Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
-		if *obj != nil && (*obj).Ula != nil {
-			ula_entry = (*obj).Ula
-		} else {
-			ula_entry = new(vlan.Ipv6InheritedAssignAddrTypeUla)
-		}
-
-		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrType)
-	}
-	(*obj).Gua = gua_entry
-	(*obj).Ula = ula_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-	var poolType_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
-		if *obj != nil && (*obj).PoolType != nil {
-			poolType_entry = (*obj).PoolType
-		} else {
-			poolType_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolType)
-		}
-
-		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_entry *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGua)
-	}
-	(*obj).PrefixPool = prefixPool_value
-	(*obj).PoolType = poolType_entry
-	(*obj).Advertise = advertise_entry
-	(*obj).EnableOnInterface = enableOnInterface_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_entry *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
-		if *obj != nil && (*obj).DynamicId != nil {
-			dynamicId_entry = (*obj).DynamicId
-		} else {
-			dynamicId_entry = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-		}
-
-		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolType)
-	}
-	(*obj).Dynamic = dynamic_entry
-	(*obj).DynamicId = dynamicId_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-	}
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	identifier_value := o.Identifier.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-	}
-	(*obj).Identifier = identifier_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
-	anycast_value := o.Anycast.ValueBoolPointer()
-	var advertise_entry *vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUla)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Address = address_value
-	(*obj).Prefix = prefix_value
-	(*obj).Anycast = anycast_value
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(vlan.Ipv6InheritedAssignAddrTypeUlaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
 func (o *VlanInterfaceResourceNdpProxyObject) CopyToPango(ctx context.Context, obj **vlan.NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []VlanInterfaceResourceNdpProxyAddressObject
@@ -12928,30 +12877,30 @@ func (o *VlanInterfaceResourceNdpProxyAddressObject) CopyToPango(ctx context.Con
 }
 func (o *VlanInterfaceResourceArpObject) CopyToPango(ctx context.Context, obj **vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
+	hwAddress_value := o.HwAddress.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Arp)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
 	(*obj).Interface = interface_value
+	(*obj).HwAddress = hwAddress_value
 
 	return diags
 }
 func (o *VlanInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, obj **vlan.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	groupId_value := o.GroupId.ValueInt64Pointer()
 	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
 	enable_value := o.Enable.ValueBoolPointer()
-	groupId_value := o.GroupId.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(vlan.Bonjour)
 	}
+	(*obj).GroupId = groupId_value
 	(*obj).TtlCheck = ttlCheck_value
 	(*obj).Enable = enable_value
-	(*obj).GroupId = groupId_value
 
 	return diags
 }
@@ -13016,18 +12965,55 @@ func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *VlanInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *VlanInterfaceResourceDhcpClientObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
-	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
-	ipv6MssAdjustment_value := o.Ipv6MssAdjustment.ValueInt64Pointer()
+	var sendHostname_entry *vlan.DhcpClientSendHostname
+	if o.SendHostname != nil {
+		if *obj != nil && (*obj).SendHostname != nil {
+			sendHostname_entry = (*obj).SendHostname
+		} else {
+			sendHostname_entry = new(vlan.DhcpClientSendHostname)
+		}
+
+		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
-		*obj = new(vlan.AdjustTcpMss)
+		*obj = new(vlan.DhcpClient)
+	}
+	(*obj).CreateDefaultRoute = createDefaultRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).Enable = enable_value
+	(*obj).SendHostname = sendHostname_entry
+
+	return diags
+}
+func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	hostname_value := o.Hostname.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(vlan.DhcpClientSendHostname)
 	}
 	(*obj).Enable = enable_value
-	(*obj).Ipv4MssAdjustment = ipv4MssAdjustment_value
-	(*obj).Ipv6MssAdjustment = ipv6MssAdjustment_value
+	(*obj).Hostname = hostname_value
+
+	return diags
+}
+func (o *VlanInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj **vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(vlan.Ip)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -13071,11 +13057,20 @@ func (o *VlanInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *vla
 			return diags
 		}
 	}
-	var ipv6_object *VlanInterfaceResourceIpv6Object
-	if obj.Ipv6 != nil {
-		ipv6_object = new(VlanInterfaceResourceIpv6Object)
+	var bonjour_object *VlanInterfaceResourceBonjourObject
+	if obj.Bonjour != nil {
+		bonjour_object = new(VlanInterfaceResourceBonjourObject)
 
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ddnsConfig_object *VlanInterfaceResourceDdnsConfigObject
+	if obj.DdnsConfig != nil {
+		ddnsConfig_object = new(VlanInterfaceResourceDdnsConfigObject)
+
+		diags.Append(ddnsConfig_object.CopyFromPango(ctx, obj.DdnsConfig, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -13098,115 +13093,50 @@ func (o *VlanInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *vla
 			return diags
 		}
 	}
-	var bonjour_object *VlanInterfaceResourceBonjourObject
-	if obj.Bonjour != nil {
-		bonjour_object = new(VlanInterfaceResourceBonjourObject)
+	var ipv6_object *VlanInterfaceResourceIpv6Object
+	if obj.Ipv6 != nil {
+		ipv6_object = new(VlanInterfaceResourceIpv6Object)
 
-		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ddnsConfig_object *VlanInterfaceResourceDdnsConfigObject
-	if obj.DdnsConfig != nil {
-		ddnsConfig_object = new(VlanInterfaceResourceDdnsConfigObject)
-
-		diags.Append(ddnsConfig_object.CopyFromPango(ctx, obj.DdnsConfig, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	var interfaceManagementProfile_value types.String
-	if obj.InterfaceManagementProfile != nil {
-		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
-	}
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
-	}
-	var dfIgnore_value types.Bool
-	if obj.DfIgnore != nil {
-		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
-	}
-	var netflowProfile_value types.String
-	if obj.NetflowProfile != nil {
-		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
 	}
 	var mtu_value types.Int64
 	if obj.Mtu != nil {
 		mtu_value = types.Int64Value(*obj.Mtu)
 	}
+	var netflowProfile_value types.String
+	if obj.NetflowProfile != nil {
+		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
+	}
+	var dfIgnore_value types.Bool
+	if obj.DfIgnore != nil {
+		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
+	}
+	var interfaceManagementProfile_value types.String
+	if obj.InterfaceManagementProfile != nil {
+		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.DhcpClient = dhcpClient_object
-	o.InterfaceManagementProfile = interfaceManagementProfile_value
 	o.Ip = ip_list
-	o.Ipv6 = ipv6_object
-	o.NdpProxy = ndpProxy_object
 	o.Arp = arp_list
-	o.Comment = comment_value
-	o.DfIgnore = dfIgnore_value
-	o.NetflowProfile = netflowProfile_value
-	o.Mtu = mtu_value
-	o.AdjustTcpMss = adjustTcpMss_object
 	o.Bonjour = bonjour_object
+	o.Comment = comment_value
 	o.DdnsConfig = ddnsConfig_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceDhcpClientObject) CopyFromPango(ctx context.Context, obj *vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var sendHostname_object *VlanInterfaceResourceDhcpClientSendHostnameObject
-	if obj.SendHostname != nil {
-		sendHostname_object = new(VlanInterfaceResourceDhcpClientSendHostnameObject)
-
-		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var createDefaultRoute_value types.Bool
-	if obj.CreateDefaultRoute != nil {
-		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
-	}
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.CreateDefaultRoute = createDefaultRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
-	o.Enable = enable_value
-	o.SendHostname = sendHostname_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var hostname_value types.String
-	if obj.Hostname != nil {
-		hostname_value = types.StringValue(*obj.Hostname)
-	}
-	o.Enable = enable_value
-	o.Hostname = hostname_value
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpObject) CopyFromPango(ctx context.Context, obj *vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
+	o.Mtu = mtu_value
+	o.NdpProxy = ndpProxy_object
+	o.NetflowProfile = netflowProfile_value
+	o.AdjustTcpMss = adjustTcpMss_object
+	o.DfIgnore = dfIgnore_value
+	o.InterfaceManagementProfile = interfaceManagementProfile_value
+	o.Ipv6 = ipv6_object
 
 	return diags
 }
@@ -13255,20 +13185,20 @@ func (o *VlanInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, obj
 		}
 	}
 
-	var enabled_value types.Bool
-	if obj.Enabled != nil {
-		enabled_value = types.BoolValue(*obj.Enabled)
-	}
 	var interfaceId_value types.String
 	if obj.InterfaceId != nil {
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
-	o.Address = address_list
-	o.Enabled = enabled_value
+	var enabled_value types.Bool
+	if obj.Enabled != nil {
+		enabled_value = types.BoolValue(*obj.Enabled)
+	}
 	o.InterfaceId = interfaceId_value
 	o.NeighborDiscovery = neighborDiscovery_object
 	o.DhcpClient = dhcpClient_object
 	o.Inherited = inherited_object
+	o.Address = address_list
+	o.Enabled = enabled_value
 
 	return diags
 }
@@ -13316,6 +13246,12 @@ func (o *VlanInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
+func (o *VlanInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 func (o *VlanInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -13325,6 +13261,10 @@ func (o *VlanInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx contex
 func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
 	var validLifetime_value types.String
 	if obj.ValidLifetime != nil {
 		validLifetime_value = types.StringValue(*obj.ValidLifetime)
@@ -13341,21 +13281,11 @@ func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) CopyFromPango(ctx cont
 	if obj.AutoConfigFlag != nil {
 		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
 	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
+	o.Enable = enable_value
 	o.ValidLifetime = validLifetime_value
 	o.PreferredLifetime = preferredLifetime_value
 	o.OnlinkFlag = onlinkFlag_value
 	o.AutoConfigFlag = autoConfigFlag_value
-	o.Enable = enable_value
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
 
 	return diags
 }
@@ -13406,13 +13336,13 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx con
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.Int64Value(*obj.ReachableTime)
 	}
+	o.RouterAdvertisement = routerAdvertisement_object
 	o.DadAttempts = dadAttempts_value
 	o.EnableDad = enableDad_value
 	o.EnableNdpMonitor = enableNdpMonitor_value
 	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
-	o.RouterAdvertisement = routerAdvertisement_object
 
 	return diags
 }
@@ -13442,13 +13372,13 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) Co
 		}
 	}
 
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
 	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
 	}
 	var maxInterval_value types.Int64
 	if obj.MaxInterval != nil {
@@ -13462,21 +13392,21 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) Co
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.StringValue(*obj.ReachableTime)
 	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
 	var enableConsistencyCheck_value types.Bool
 	if obj.EnableConsistencyCheck != nil {
 		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
 	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
 	}
 	var linkMtu_value types.String
 	if obj.LinkMtu != nil {
 		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
 	}
 	var minInterval_value types.Int64
 	if obj.MinInterval != nil {
@@ -13486,23 +13416,23 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) Co
 	if obj.RetransmissionTimer != nil {
 		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
 	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
 	}
-	o.HopLimit = hopLimit_value
-	o.ManagedFlag = managedFlag_value
+	o.DnsSupport = dnsSupport_object
+	o.Enable = enable_value
+	o.Lifetime = lifetime_value
 	o.MaxInterval = maxInterval_value
 	o.OtherFlag = otherFlag_value
 	o.ReachableTime = reachableTime_value
-	o.RouterPreference = routerPreference_value
-	o.DnsSupport = dnsSupport_object
 	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.Lifetime = lifetime_value
+	o.HopLimit = hopLimit_value
 	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
 	o.MinInterval = minInterval_value
 	o.RetransmissionTimer = retransmissionTimer_value
-	o.Enable = enable_value
+	o.RouterPreference = routerPreference_value
 
 	return diags
 }
@@ -13577,15 +13507,6 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 
 func (o *VlanInterfaceResourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var v6Options_object *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject
-	if obj.V6Options != nil {
-		v6Options_object = new(VlanInterfaceResourceIpv6DhcpClientV6OptionsObject)
-
-		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var neighborDiscovery_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 	if obj.NeighborDiscovery != nil {
 		neighborDiscovery_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject)
@@ -13600,6 +13521,15 @@ func (o *VlanInterfaceResourceIpv6DhcpClientObject) CopyFromPango(ctx context.Co
 		prefixDelegation_object = new(VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject)
 
 		diags.Append(prefixDelegation_object.CopyFromPango(ctx, obj.PrefixDelegation, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var v6Options_object *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject
+	if obj.V6Options != nil {
+		v6Options_object = new(VlanInterfaceResourceIpv6DhcpClientV6OptionsObject)
+
+		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -13621,13 +13551,13 @@ func (o *VlanInterfaceResourceIpv6DhcpClientObject) CopyFromPango(ctx context.Co
 	if obj.Preference != nil {
 		preference_value = types.StringValue(*obj.Preference)
 	}
-	o.V6Options = v6Options_object
 	o.AcceptRaRoute = acceptRaRoute_value
 	o.DefaultRouteMetric = defaultRouteMetric_value
 	o.Enable = enable_value
 	o.NeighborDiscovery = neighborDiscovery_object
 	o.Preference = preference_value
 	o.PrefixDelegation = prefixDelegation_object
+	o.V6Options = v6Options_object
 
 	return diags
 }
@@ -13667,14 +13597,6 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPan
 		}
 	}
 
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
 	var nsInterval_value types.Int64
 	if obj.NsInterval != nil {
 		nsInterval_value = types.Int64Value(*obj.NsInterval)
@@ -13687,104 +13609,22 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPan
 	if obj.DadAttempts != nil {
 		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
 	}
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
 	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
 	o.DadAttempts = dadAttempts_value
 	o.DnsServer = dnsServer_object
 	o.DnsSuffix = dnsSuffix_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
 
 	return diags
 }
@@ -13892,6 +13732,96 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) Cop
 	return diags
 }
 
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
+
+		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
+
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
+
+		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			var entry VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var enable_object *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
@@ -13945,10 +13875,6 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) Copy
 func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var prefixLenHint_value types.Bool
-	if obj.PrefixLenHint != nil {
-		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
-	}
 	var pfxPoolName_value types.String
 	if obj.PfxPoolName != nil {
 		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
@@ -13957,9 +13883,13 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) Cop
 	if obj.PrefixLen != nil {
 		prefixLen_value = types.Int64Value(*obj.PrefixLen)
 	}
-	o.PrefixLenHint = prefixLenHint_value
+	var prefixLenHint_value types.Bool
+	if obj.PrefixLenHint != nil {
+		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
+	}
 	o.PfxPoolName = pfxPoolName_value
 	o.PrefixLen = prefixLen_value
+	o.PrefixLenHint = prefixLenHint_value
 
 	return diags
 }
@@ -14023,12 +13953,6 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango
 	return diags
 }
 
-func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
 func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -14042,6 +13966,12 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPa
 	}
 	o.NonTempAddr = nonTempAddr_value
 	o.TempAddr = tempAddr_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -14128,6 +14058,110 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(c
 	return diags
 }
 
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
+
+		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var poolType_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if obj.PoolType != nil {
+		poolType_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
+
+		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.Advertise = advertise_object
+	o.EnableOnInterface = enableOnInterface_value
+	o.PrefixPool = prefixPool_value
+	o.PoolType = poolType_object
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if obj.Dynamic != nil {
+		dynamic_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+
+		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if obj.DynamicId != nil {
+		dynamicId_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+
+		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dynamic = dynamic_object
+	o.DynamicId = dynamicId_object
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var identifier_value types.Int64
+	if obj.Identifier != nil {
+		identifier_value = types.Int64Value(*obj.Identifier)
+	}
+	o.Identifier = identifier_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
 func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var advertise_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
@@ -14156,11 +14190,11 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPang
 	if obj.Anycast != nil {
 		anycast_value = types.BoolValue(*obj.Anycast)
 	}
-	o.Advertise = advertise_object
 	o.EnableOnInterface = enableOnInterface_value
 	o.Address = address_value
 	o.Prefix = prefix_value
 	o.Anycast = anycast_value
+	o.Advertise = advertise_object
 
 	return diags
 }
@@ -14197,110 +14231,6 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) Cop
 	return diags
 }
 
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var poolType_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
-
-		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.PrefixPool = prefixPool_value
-	o.PoolType = poolType_object
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_object *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
-	if obj.DynamicId != nil {
-		dynamicId_object = new(VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-
-		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dynamic = dynamic_object
-	o.DynamicId = dynamicId_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var identifier_value types.Int64
-	if obj.Identifier != nil {
-		identifier_value = types.Int64Value(*obj.Identifier)
-	}
-	o.Identifier = identifier_value
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
 func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
@@ -14317,11 +14247,11 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPang
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsSuffix_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
+	var dnsServer_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject)
 
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
+		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -14335,24 +14265,16 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPang
 			return diags
 		}
 	}
-	var dnsServer_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject)
+	var dnsSuffix_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
 
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
 	var enableNdpMonitor_value types.Bool
 	if obj.EnableNdpMonitor != nil {
 		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
@@ -14365,82 +14287,23 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPang
 	if obj.ReachableTime != nil {
 		reachableTime_value = types.Int64Value(*obj.ReachableTime)
 	}
-	o.DnsSuffix = dnsSuffix_object
-	o.Neighbor = neighbor_list
-	o.DadAttempts = dadAttempts_value
-	o.EnableDad = enableDad_value
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	o.DnsServer = dnsServer_object
 	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
 	o.NsInterval = nsInterval_value
 	o.ReachableTime = reachableTime_value
 	o.RouterAdvertisement = routerAdvertisement_object
-	o.DnsServer = dnsServer_object
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RouterPreference = routerPreference_value
+	o.DadAttempts = dadAttempts_value
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
 
 	return diags
 }
@@ -14461,23 +14324,14 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) Cop
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
 	}
-	o.Enable = enable_value
 	o.Source = source_object
+	o.Enable = enable_value
 
 	return diags
 }
 
 func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var manual_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
 	if obj.Manual != nil {
 		manual_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
@@ -14487,9 +14341,18 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObjec
 			return diags
 		}
 	}
+	var dhcpv6_object *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
 
-	o.Dhcpv6 = dhcpv6_object
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.Manual = manual_object
+	o.Dhcpv6 = dhcpv6_object
 
 	return diags
 }
@@ -14537,6 +14400,73 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManua
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *vlan.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	o.Lifetime = lifetime_value
+	o.LinkMtu = linkMtu_value
+	o.MaxInterval = maxInterval_value
+	o.RouterPreference = routerPreference_value
+	o.Enable = enable_value
+	o.HopLimit = hopLimit_value
+	o.ManagedFlag = managedFlag_value
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.ReachableTime = reachableTime_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
 
 	return diags
 }
@@ -14690,98 +14620,6 @@ func (o *VlanInterfaceResourceNdpProxyAddressObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *VlanInterfaceResourceArpObject) CopyFromPango(ctx context.Context, obj *vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	var interface_value types.String
-	if obj.Interface != nil {
-		interface_value = types.StringValue(*obj.Interface)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-	o.Interface = interface_value
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceDdnsConfigObject) CopyFromPango(ctx context.Context, obj *vlan.DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var ddnsVendorConfig_list types.List
-	{
-		var ddnsVendorConfig_tf_entries []VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject
-		for _, elt := range obj.DdnsVendorConfig {
-			var entry VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("ddns_vendor_config")
-		ddnsVendorConfig_list, list_diags = types.ListValueFrom(ctx, schemaType, ddnsVendorConfig_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var ddnsIp_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
-		diags.Append(list_diags...)
-	}
-	var ddnsIpv6_list types.List
-	{
-		var list_diags diag.Diagnostics
-		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
-		diags.Append(list_diags...)
-	}
-
-	var ddnsUpdateInterval_value types.Int64
-	if obj.DdnsUpdateInterval != nil {
-		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
-	}
-	var ddnsVendor_value types.String
-	if obj.DdnsVendor != nil {
-		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
-	}
-	var ddnsCertProfile_value types.String
-	if obj.DdnsCertProfile != nil {
-		ddnsCertProfile_value = types.StringValue(*obj.DdnsCertProfile)
-	}
-	var ddnsEnabled_value types.Bool
-	if obj.DdnsEnabled != nil {
-		ddnsEnabled_value = types.BoolValue(*obj.DdnsEnabled)
-	}
-	var ddnsHostname_value types.String
-	if obj.DdnsHostname != nil {
-		ddnsHostname_value = types.StringValue(*obj.DdnsHostname)
-	}
-	o.DdnsUpdateInterval = ddnsUpdateInterval_value
-	o.DdnsVendor = ddnsVendor_value
-	o.DdnsVendorConfig = ddnsVendorConfig_list
-	o.DdnsCertProfile = ddnsCertProfile_value
-	o.DdnsEnabled = ddnsEnabled_value
-	o.DdnsHostname = ddnsHostname_value
-	o.DdnsIp = ddnsIp_list
-	o.DdnsIpv6 = ddnsIpv6_list
-
-	return diags
-}
-
-func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, obj *vlan.DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var value_value types.String
-	if obj.Value != nil {
-		value_value = types.StringValue(*obj.Value)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Value = value_value
-
-	return diags
-}
-
 func (o *VlanInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *vlan.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -14804,9 +14642,161 @@ func (o *VlanInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
+func (o *VlanInterfaceResourceDdnsConfigObject) CopyFromPango(ctx context.Context, obj *vlan.DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var ddnsIp_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+		diags.Append(list_diags...)
+	}
+	var ddnsIpv6_list types.List
+	{
+		var list_diags diag.Diagnostics
+		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
+		diags.Append(list_diags...)
+	}
+	var ddnsVendorConfig_list types.List
+	{
+		var ddnsVendorConfig_tf_entries []VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject
+		for _, elt := range obj.DdnsVendorConfig {
+			var entry VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("ddns_vendor_config")
+		ddnsVendorConfig_list, list_diags = types.ListValueFrom(ctx, schemaType, ddnsVendorConfig_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	var ddnsHostname_value types.String
+	if obj.DdnsHostname != nil {
+		ddnsHostname_value = types.StringValue(*obj.DdnsHostname)
+	}
+	var ddnsUpdateInterval_value types.Int64
+	if obj.DdnsUpdateInterval != nil {
+		ddnsUpdateInterval_value = types.Int64Value(*obj.DdnsUpdateInterval)
+	}
+	var ddnsVendor_value types.String
+	if obj.DdnsVendor != nil {
+		ddnsVendor_value = types.StringValue(*obj.DdnsVendor)
+	}
+	var ddnsCertProfile_value types.String
+	if obj.DdnsCertProfile != nil {
+		ddnsCertProfile_value = types.StringValue(*obj.DdnsCertProfile)
+	}
+	var ddnsEnabled_value types.Bool
+	if obj.DdnsEnabled != nil {
+		ddnsEnabled_value = types.BoolValue(*obj.DdnsEnabled)
+	}
+	o.DdnsHostname = ddnsHostname_value
+	o.DdnsIp = ddnsIp_list
+	o.DdnsIpv6 = ddnsIpv6_list
+	o.DdnsUpdateInterval = ddnsUpdateInterval_value
+	o.DdnsVendor = ddnsVendor_value
+	o.DdnsVendorConfig = ddnsVendorConfig_list
+	o.DdnsCertProfile = ddnsCertProfile_value
+	o.DdnsEnabled = ddnsEnabled_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, obj *vlan.DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var value_value types.String
+	if obj.Value != nil {
+		value_value = types.StringValue(*obj.Value)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Value = value_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceDhcpClientObject) CopyFromPango(ctx context.Context, obj *vlan.DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var sendHostname_object *VlanInterfaceResourceDhcpClientSendHostnameObject
+	if obj.SendHostname != nil {
+		sendHostname_object = new(VlanInterfaceResourceDhcpClientSendHostnameObject)
+
+		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var createDefaultRoute_value types.Bool
+	if obj.CreateDefaultRoute != nil {
+		createDefaultRoute_value = types.BoolValue(*obj.CreateDefaultRoute)
+	}
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.CreateDefaultRoute = createDefaultRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.SendHostname = sendHostname_object
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *vlan.DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hostname_value types.String
+	if obj.Hostname != nil {
+		hostname_value = types.StringValue(*obj.Hostname)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Hostname = hostname_value
+	o.Enable = enable_value
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceIpObject) CopyFromPango(ctx context.Context, obj *vlan.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
+func (o *VlanInterfaceResourceArpObject) CopyFromPango(ctx context.Context, obj *vlan.Arp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	var interface_value types.String
+	if obj.Interface != nil {
+		interface_value = types.StringValue(*obj.Interface)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+	o.Interface = interface_value
+
+	return diags
+}
+
 func (o *VlanInterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, obj *vlan.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var ttlCheck_value types.Bool
+	if obj.TtlCheck != nil {
+		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
+	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
@@ -14815,23 +14805,11 @@ func (o *VlanInterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, 
 	if obj.GroupId != nil {
 		groupId_value = types.Int64Value(*obj.GroupId)
 	}
-	var ttlCheck_value types.Bool
-	if obj.TtlCheck != nil {
-		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
-	}
+	o.TtlCheck = ttlCheck_value
 	o.Enable = enable_value
 	o.GroupId = groupId_value
-	o.TtlCheck = ttlCheck_value
 
 	return diags
-}
-
-func (o *VlanInterfaceResourceModel) resourceXpathComponents() ([]string, error) {
-	var components []string
-	components = append(components, pangoutil.AsEntryXpath(
-		[]string{o.Name.ValueString()},
-	))
-	return components, nil
 }
 
 func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -14858,9 +14836,6 @@ func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateR
 
 	var location vlan.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if state.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
 
@@ -14883,6 +14858,9 @@ func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateR
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 
 	if err := location.IsValid(); err != nil {
 		resp.Diagnostics.AddError("Invalid location", err.Error())
@@ -14904,13 +14882,7 @@ func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateR
 	*/
 
 	// Perform the operation.
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := r.manager.Create(ctx, location, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -14935,6 +14907,12 @@ func (o *VlanInterfaceResource) Read(ctx context.Context, req resource.ReadReque
 
 	var location vlan.Location
 
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &vlan.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -14954,12 +14932,6 @@ func (o *VlanInterfaceResource) Read(ctx context.Context, req resource.ReadReque
 			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
@@ -14968,13 +14940,8 @@ func (o *VlanInterfaceResource) Read(ctx context.Context, req resource.ReadReque
 		"name":          savestate.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	object, err := o.manager.Read(ctx, location, components)
+	// Perform the operation.
+	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -15010,12 +14977,15 @@ func (r *VlanInterfaceResource) Update(ctx context.Context, req resource.UpdateR
 
 	var location vlan.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
 
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
@@ -15032,9 +15002,6 @@ func (r *VlanInterfaceResource) Update(ctx context.Context, req resource.UpdateR
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
@@ -15047,14 +15014,7 @@ func (r *VlanInterfaceResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-
-	components, err := state.resourceXpathComponents()
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
-		return
-	}
-
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -15113,6 +15073,17 @@ func (r *VlanInterfaceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	var location vlan.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
+	if state.Location.Template != nil {
+		location.Template = &vlan.TemplateLocation{
+
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
+			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &vlan.TemplateStackLocation{
 
@@ -15125,17 +15096,6 @@ func (r *VlanInterfaceResource) Delete(ctx context.Context, req resource.DeleteR
 		location.Ngfw = &vlan.NgfwLocation{
 
 			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
-	if state.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
 		}
 	}
 
@@ -15217,9 +15177,9 @@ type VlanInterfaceTemplateLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type VlanInterfaceTemplateStackLocation struct {
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type VlanInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
@@ -15245,10 +15205,10 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("ngfw"),
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
-						path.MatchRelative().AtParent().AtName("ngfw"),
 					}...),
 				},
 			},
@@ -15292,15 +15252,6 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -15315,6 +15266,15 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -15346,15 +15306,38 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o VlanInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *VlanInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o VlanInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device"`
 	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -15362,18 +15345,18 @@ func (o VlanInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
 		Name           *string `json:"name"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 
 	return nil
 }
@@ -15408,40 +15391,17 @@ func (o *VlanInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
-func (o VlanInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *VlanInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-
-	return nil
-}
 func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
 		Shared        *bool                               `json:"shared"`
 		Template      *VlanInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
 	}{
+		Ngfw:          o.Ngfw,
 		Shared:        o.Shared.ValueBoolPointer(),
 		Template:      o.Template,
 		TemplateStack: o.TemplateStack,
-		Ngfw:          o.Ngfw,
 	}
 
 	return json.Marshal(obj)
@@ -15449,20 +15409,20 @@ func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
 		Shared        *bool                               `json:"shared"`
 		Template      *VlanInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Ngfw = shadow.Ngfw
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Template = shadow.Template
 	o.TemplateStack = shadow.TemplateStack
-	o.Ngfw = shadow.Ngfw
 
 	return nil
 }
