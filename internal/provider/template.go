@@ -575,7 +575,6 @@ func TemplateImportStateCreator(ctx context.Context, resource types.Object) ([]b
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -613,8 +612,10 @@ func (r *TemplateResource) ImportState(ctx context.Context, req resource.ImportS
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type TemplatePanoramaLocation struct {

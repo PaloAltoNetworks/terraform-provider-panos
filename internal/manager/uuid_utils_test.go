@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/PaloAltoNetworks/pango/rule"
+	"github.com/PaloAltoNetworks/pango/movement"
 	"github.com/PaloAltoNetworks/pango/version"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 
@@ -180,7 +180,7 @@ func (o *MockUuidService[E, L]) removeEntriesFromCurrent(entries []*MockUuidObje
 	return firstIdx
 }
 
-func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLocation, position rule.Position, entries []*MockUuidObject) error {
+func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLocation, position movement.Position, entries []*MockUuidObject) error {
 	o.moveGroupEntries = entries
 
 	firstIdx := o.removeEntriesFromCurrent(entries)
@@ -190,34 +190,30 @@ func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLoca
 		entriesList.PushBack(elt)
 	}
 
-	if position.First != nil {
+	switch position.(type) {
+	case movement.PositionFirst:
 		o.client.Current.PushFrontList(entriesList)
 		return nil
-	} else if position.Last != nil {
+	case movement.PositionLast:
 		o.client.Current.PushBackList(entriesList)
 		return nil
+	case movement.PositionBefore, movement.PositionAfter:
 	}
 
 	var pivotEntry string
 	var after bool
 	var directly bool
 
-	if position.DirectlyBefore != nil {
-		pivotEntry = *position.DirectlyBefore
+	switch typed := position.(type) {
+	case movement.PositionBefore:
 		after = false
-		directly = true
-	} else if position.DirectlyAfter != nil {
-		pivotEntry = *position.DirectlyAfter
+		directly = typed.Directly
+		pivotEntry = typed.Pivot
+	case movement.PositionAfter:
 		after = true
-		directly = true
-	} else if position.SomewhereBefore != nil {
-		pivotEntry = *position.SomewhereBefore
-		after = false
-		directly = false
-	} else if position.SomewhereAfter != nil {
-		pivotEntry = *position.SomewhereAfter
-		after = true
-		directly = false
+		directly = typed.Directly
+		pivotEntry = typed.Pivot
+	case movement.PositionFirst, movement.PositionLast:
 	}
 
 	var pivotElt *list.Element

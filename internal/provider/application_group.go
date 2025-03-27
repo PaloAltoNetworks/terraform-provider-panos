@@ -57,8 +57,8 @@ type ApplicationGroupDataSourceFilter struct {
 type ApplicationGroupDataSourceModel struct {
 	Location        ApplicationGroupLocation `tfsdk:"location"`
 	Name            types.String             `tfsdk:"name"`
-	Members         types.List               `tfsdk:"members"`
 	DisableOverride types.String             `tfsdk:"disable_override"`
+	Members         types.List               `tfsdk:"members"`
 }
 
 func (o *ApplicationGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -196,8 +196,8 @@ func (o *ApplicationGroupDataSource) Read(ctx context.Context, req datasource.Re
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -295,11 +295,10 @@ func ApplicationGroupResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -433,8 +432,8 @@ func (r *ApplicationGroupResource) Create(ctx context.Context, req resource.Crea
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -503,8 +502,8 @@ func (o *ApplicationGroupResource) Read(ctx context.Context, req resource.ReadRe
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -552,13 +551,6 @@ func (r *ApplicationGroupResource) Update(ctx context.Context, req resource.Upda
 
 	var location group.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -567,6 +559,13 @@ func (r *ApplicationGroupResource) Update(ctx context.Context, req resource.Upda
 
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &group.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -688,7 +687,6 @@ func ApplicationGroupImportStateCreator(ctx context.Context, resource types.Obje
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -726,8 +724,10 @@ func (r *ApplicationGroupResource) ImportState(ctx context.Context, req resource
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type ApplicationGroupVsysLocation struct {
@@ -750,7 +750,7 @@ func ApplicationGroupLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
+				Description: "Panorama shared object",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),

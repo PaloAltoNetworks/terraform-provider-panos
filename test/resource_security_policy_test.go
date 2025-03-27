@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -26,9 +27,12 @@ type expectServerSecurityRulesOrder struct {
 	RuleNames []string
 }
 
-func ExpectServerSecurityRulesOrder(prefix string, location security.Location, ruleNames []string) *expectServerSecurityRulesOrder {
+func ExpectServerSecurityRulesOrder(prefix string, ruleNames []string) *expectServerSecurityRulesOrder {
+	location := security.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
 	return &expectServerSecurityRulesOrder{
-		Location:  location,
+		Location:  *location,
 		Prefix:    prefix,
 		RuleNames: ruleNames,
 	}
@@ -56,6 +60,11 @@ func (o *expectServerSecurityRulesOrder) CheckState(ctx context.Context, req sta
 		}
 	}
 
+	var serverRules []string
+	for _, elt := range objects {
+		serverRules = append(serverRules, elt.EntryName())
+	}
+
 	var prevActualIdx = -1
 	for actualIdx, elt := range objects {
 		if state, ok := rulesWithIdx[elt.Name]; !ok {
@@ -68,10 +77,10 @@ func (o *expectServerSecurityRulesOrder) CheckState(ctx context.Context, req sta
 				prevActualIdx = actualIdx
 				continue
 			} else if prevActualIdx == -1 {
-				resp.Error = fmt.Errorf("rules missing from the server")
+				resp.Error = fmt.Errorf("rules missing from the server: %s", strings.Join(serverRules, ", "))
 				return
 			} else if actualIdx-prevActualIdx > 1 {
-				resp.Error = fmt.Errorf("invalid rules order on the server")
+				resp.Error = fmt.Errorf("invalid rules order on the server: %s", strings.Join(serverRules, ", "))
 				return
 			}
 			prevActualIdx = actualIdx
@@ -97,10 +106,12 @@ type expectServerSecurityRulesCount struct {
 	Count    int
 }
 
-func ExpectServerSecurityRulesCount(prefix string, location security.Location, count int) *expectServerSecurityRulesCount {
+func ExpectServerSecurityRulesCount(prefix string, count int) *expectServerSecurityRulesCount {
+	location := security.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
 	return &expectServerSecurityRulesCount{
 		Prefix:   prefix,
-		Location: location,
+		Location: *location,
 		Count:    count,
 	}
 }
@@ -127,19 +138,60 @@ func (o *expectServerSecurityRulesCount) CheckState(ctx context.Context, req sta
 	}
 }
 
+const securityPolicyDuplicatedTmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "template" {
+  location = { panorama = {} }
+
+  name = format("%s-tmpl", var.prefix)
+}
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+
+  name = format("%s-dg", var.prefix)
+  templates = [ resource.panos_template.template.name ]
+}
+
+
+resource "panos_security_policy" "policy" {
+  location = { device_group = { name = resource.panos_device_group.dg.name }}
+
+  rules = [
+    {
+      name = format("%s-rule", var.prefix)
+      source_zones     = ["any"]
+      source_addresses = ["any"]
+
+      destination_zones     = ["any"]
+      destination_addresses = ["any"]
+    },
+    {
+      name = format("%s-rule", var.prefix)
+      source_zones     = ["any"]
+      source_addresses = ["any"]
+
+      destination_zones     = ["any"]
+      destination_addresses = ["any"]
+    }
+  ]
+}
+`
+
 const securityPolicyExtendedResource1Tmpl = `
 variable "prefix" { type = string }
 
 resource "panos_template" "template" {
   location = { panorama = {} }
 
-  name = format("%s-secgroup-tmpl1", var.prefix)
+  name = format("%s-tmpl", var.prefix)
 }
 
 resource "panos_device_group" "dg" {
   location = { panorama = {} }
 
-  name = format("%s-secgroup-dg1", var.prefix)
+  name = format("%s-dg", var.prefix)
   templates = [ resource.panos_template.template.name ]
 }
 
@@ -191,6 +243,27 @@ resource "panos_security_policy" "policy" {
   }]
 }
 `
+
+func TestAccSecurityPolicyDuplicatedPlan(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: securityPolicyDuplicatedTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ExpectError: regexp.MustCompile("List entries must have unique names"),
+			},
+		},
+	})
+}
 
 func TestAccSecurityPolicyExtended(t *testing.T) {
 	t.Parallel()
@@ -399,11 +472,11 @@ func TestAccSecurityPolicyExtended(t *testing.T) {
 }
 
 const securityPolicyOrderingTmpl = `
+variable "prefix" { type = string }
 variable "rule_names" { type = list(string) }
-variable "location" { type = map }
 
 resource "panos_security_policy" "policy" {
-  location = var.location
+  location = { device_group = { name = format("%s-dg", var.prefix) }}
 
   rules = [
     for index, name in var.rule_names: {
@@ -444,10 +517,6 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 		return result
 	}
 
-	device := devicePanorama
-
-	sdkLocation, cfgLocation := securityPolicyLocationByDeviceType(device, "pre-rulebase")
-
 	stateExpectedRuleName := func(idx int, value string) statecheck.StateCheck {
 		return statecheck.ExpectKnownValue(
 			"panos_security_policy.policy",
@@ -467,24 +536,24 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
 			testAccPreCheck(t)
-			securityPolicyPreCheck(prefix, sdkLocation)
+			securityPolicyPreCheck(prefix)
 
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             securityPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             securityPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable([]config.Variable{}...),
-					"location":   cfgLocation,
 				},
 			},
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable([]config.Variable{}...),
-					"location":   cfgLocation,
 				},
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
@@ -492,8 +561,8 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
-					"location":   cfgLocation,
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					stateExpectedRuleName(0, "rule-1"),
@@ -501,15 +570,15 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 					stateExpectedRuleName(2, "rule-3"),
 					stateExpectedRuleName(3, "rule-4"),
 					stateExpectedRuleName(4, "rule-5"),
-					ExpectServerSecurityRulesCount(prefix, sdkLocation, len(rulesInitial)),
-					ExpectServerSecurityRulesOrder(prefix, sdkLocation, rulesInitial),
+					ExpectServerSecurityRulesCount(prefix, len(rulesInitial)),
+					ExpectServerSecurityRulesOrder(prefix, rulesInitial),
 				},
 			},
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
-					"location":   cfgLocation,
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -520,8 +589,8 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable(withPrefix(rulesReordered)...),
-					"location":   cfgLocation,
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -538,21 +607,21 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 					stateExpectedRuleName(2, "rule-3"),
 					stateExpectedRuleName(3, "rule-4"),
 					stateExpectedRuleName(4, "rule-5"),
-					ExpectServerSecurityRulesOrder(prefix, sdkLocation, rulesReordered),
+					ExpectServerSecurityRulesOrder(prefix, rulesReordered),
 				},
 			},
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable([]config.Variable{}...),
-					"location":   cfgLocation,
 				},
 			},
 			{
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
 					"rule_names": config.ListVariable([]config.Variable{}...),
-					"location":   cfgLocation,
 				},
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
@@ -561,39 +630,7 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 	})
 }
 
-func securityPolicyLocationByDeviceType(typ deviceType, rulebase string) (security.Location, config.Variable) {
-	var sdkLocation security.Location
-	var cfgLocation config.Variable
-	switch typ {
-	case devicePanorama:
-		sdkLocation = security.Location{
-			Shared: &security.SharedLocation{
-				Rulebase: rulebase,
-			},
-		}
-		cfgLocation = config.ObjectVariable(map[string]config.Variable{
-			"shared": config.ObjectVariable(map[string]config.Variable{
-				"rulebase": config.StringVariable(rulebase),
-			}),
-		})
-	case deviceFirewall:
-		sdkLocation = security.Location{
-			Vsys: &security.VsysLocation{
-				NgfwDevice: "localhost.localdomain",
-				Vsys:       "vsys1",
-			},
-		}
-		cfgLocation = config.ObjectVariable(map[string]config.Variable{
-			"vsys": config.ObjectVariable(map[string]config.Variable{
-				"name": config.StringVariable("vsys1"),
-			}),
-		})
-	}
-
-	return sdkLocation, cfgLocation
-}
-
-func securityPolicyPreCheck(prefix string, location security.Location) {
+func securityPolicyPreCheck(prefix string) {
 	service := security.NewService(sdkClient)
 	ctx := context.TODO()
 
@@ -620,8 +657,11 @@ func securityPolicyPreCheck(prefix string, location security.Location) {
 		},
 	}
 
+	location := security.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
 	for _, elt := range rules {
-		_, err := service.Create(ctx, location, &elt)
+		_, err := service.Create(ctx, *location, &elt)
 		if err != nil {
 			panic(fmt.Sprintf("natPolicyPreCheck failed: %s", err))
 		}
@@ -629,12 +669,15 @@ func securityPolicyPreCheck(prefix string, location security.Location) {
 	}
 }
 
-func securityPolicyCheckDestroy(prefix string, location security.Location) func(s *terraform.State) error {
+func securityPolicyCheckDestroy(prefix string) func(s *terraform.State) error {
 	return func(s *terraform.State) error {
 		service := security.NewService(sdkClient)
 		ctx := context.TODO()
 
-		rules, err := service.List(ctx, location, "get", "", "")
+		location := security.NewDeviceGroupLocation()
+		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
+		rules, err := service.List(ctx, *location, "get", "", "")
 		if err != nil && !sdkerrors.IsObjectNotFound(err) {
 			return err
 		}
@@ -648,7 +691,7 @@ func securityPolicyCheckDestroy(prefix string, location security.Location) func(
 
 		if len(danglingNames) > 0 {
 			err := DanglingObjectsError
-			delErr := service.Delete(ctx, location, danglingNames...)
+			delErr := service.Delete(ctx, *location, danglingNames...)
 			if delErr != nil {
 				err = errors.Join(err, delErr)
 			}
@@ -658,48 +701,4 @@ func securityPolicyCheckDestroy(prefix string, location security.Location) func(
 
 		return nil
 	}
-}
-
-func init() {
-	resource.AddTestSweepers("pango_security_policy", &resource.Sweeper{
-		Name: "pango_security_policy",
-		F: func(typ string) error {
-			service := security.NewService(sdkClient)
-
-			var deviceTyp deviceType
-			switch typ {
-			case "panorama":
-				deviceTyp = devicePanorama
-			case "firewall":
-				deviceTyp = deviceFirewall
-			default:
-				panic("invalid device type")
-			}
-
-			for _, rulebase := range []string{"pre-rulebase", "post-rulebase"} {
-				location, _ := securityPolicyLocationByDeviceType(deviceTyp, rulebase)
-				ctx := context.TODO()
-				objects, err := service.List(ctx, location, "get", "", "")
-				if err != nil && !sdkerrors.IsObjectNotFound(err) {
-					return fmt.Errorf("Failed to list Security Rules during sweep: %w", err)
-				}
-
-				var names []string
-				for _, elt := range objects {
-					if strings.HasPrefix(elt.Name, "test-acc") {
-						names = append(names, elt.Name)
-					}
-				}
-
-				if len(names) > 0 {
-					err = service.Delete(ctx, location, names...)
-					if err != nil {
-						return fmt.Errorf("Failed to delete Security Rules during sweep: %w", err)
-					}
-				}
-			}
-
-			return nil
-		},
-	})
 }

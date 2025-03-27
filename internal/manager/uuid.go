@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/rule"
+	"github.com/PaloAltoNetworks/pango/movement"
 	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/version"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
@@ -36,7 +36,7 @@ type SDKUuidService[E UuidObject, L UuidLocation] interface {
 	Create(context.Context, L, E) (E, error)
 	List(context.Context, L, string, string, string) ([]E, error)
 	Delete(context.Context, L, ...string) error
-	MoveGroup(context.Context, L, rule.Position, []E) error
+	MoveGroup(context.Context, L, movement.Position, []E) error
 }
 
 type uuidObjectWithState[E EntryObject] struct {
@@ -156,7 +156,7 @@ func (o *UuidObjectManager[E, L, S]) entriesProperlySorted(existing []E, planEnt
 	return movementRequired, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) moveExhaustive(ctx context.Context, location L, entriesByName map[string]uuidObjectWithState[E], position rule.Position) error {
+func (o *UuidObjectManager[E, L, S]) moveExhaustive(ctx context.Context, location L, entriesByName map[string]uuidObjectWithState[E], position movement.Position) error {
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil && err.Error() != "Object not found" {
 		return &Error{err: err, message: "Failed to list existing entries"}
@@ -202,87 +202,27 @@ type position struct {
 // When moveNonExhaustive is called, the given list is not entirely managed by the Terraform resource.
 // In that case a care has to be taken to only execute movement on a subset of entries, those that
 // are under Terraform control.
-func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, location L, planEntries []E, planEntriesByName map[string]uuidObjectWithState[E], sdkPosition rule.Position) error {
+func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, location L, planEntries []E, planEntriesByName map[string]uuidObjectWithState[E], sdkPosition movement.Position) error {
+	entries := make([]E, len(planEntriesByName))
+	for _, elt := range planEntriesByName {
+		entries[elt.StateIdx] = elt.Entry
+	}
 
-	existing, err := o.service.List(ctx, location, "get", "", "")
+	err := o.service.MoveGroup(ctx, location, sdkPosition, entries)
 	if err != nil {
-		return fmt.Errorf("failed to list remote entries: %w", err)
-	}
-
-	movementRequired, err := o.entriesProperlySorted(existing, planEntriesByName)
-
-	// If all entries are ordered properly, check if their position matches the requested
-	// position.
-	if !movementRequired {
-		existingEntriesByName := o.entriesByName(existing, entryOk)
-		p, err := parseSDKPosition(sdkPosition)
-		if err != nil {
-			return ErrInvalidPosition
-		}
-
-		switch p.Where {
-		case PositionWhereFirst:
-			planEntryName := planEntries[0].EntryName()
-			movementRequired = existing[0].EntryName() != planEntryName
-		case PositionWhereLast:
-			planEntryName := planEntries[len(planEntries)-1].EntryName()
-			movementRequired = existing[len(existing)-1].EntryName() != planEntryName
-		case PositionWhereBefore:
-			lastPlanElementName := planEntries[len(planEntries)-1].EntryName()
-			if existingPivot, found := existingEntriesByName[p.PivotEntry]; !found {
-				return ErrMissingPivotPoint
-			} else if p.Directly {
-				if existingPivot.StateIdx == 0 {
-					movementRequired = true
-				} else if existing[existingPivot.StateIdx-1].EntryName() != lastPlanElementName {
-					movementRequired = true
-				}
-			} else {
-				if lastPlanElementInExisting, found := existingEntriesByName[lastPlanElementName]; !found {
-					return ErrMissingPivotPoint
-				} else if lastPlanElementInExisting.StateIdx >= existingPivot.StateIdx {
-					movementRequired = true
-				}
-			}
-		case PositionWhereAfter:
-			firstPlanElementName := planEntries[0].EntryName()
-			if existingPivot, found := existingEntriesByName[p.PivotEntry]; !found {
-				return ErrMissingPivotPoint
-			} else if p.Directly {
-				if existingPivot.StateIdx == len(existing)-1 {
-					movementRequired = true
-				} else if existing[existingPivot.StateIdx+1].EntryName() != firstPlanElementName {
-					movementRequired = true
-				}
-			} else {
-				if firstPlanElementInExisting, found := existingEntriesByName[firstPlanElementName]; !found {
-					return ErrMissingPivotPoint
-				} else if firstPlanElementInExisting.StateIdx <= existingPivot.StateIdx {
-					movementRequired = true
-				}
-			}
-		}
-	}
-
-	if movementRequired {
-		entries := make([]E, len(planEntriesByName))
-		for _, elt := range planEntriesByName {
-			entries[elt.StateIdx] = elt.Entry
-		}
-
-		err = o.service.MoveGroup(ctx, location, sdkPosition, entries)
-		if err != nil {
-			return &Error{err: err, message: "Failed to move group of entries"}
-		}
+		return &Error{err: err, message: "Failed to move group of entries"}
 	}
 
 	return nil
 }
 
-func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, planEntries []E, exhaustive ExhaustiveType, sdkPosition rule.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, planEntries []E, exhaustive ExhaustiveType, sdkPosition movement.Position) ([]E, error) {
 	var diags diag.Diagnostics
 
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
+	if len(planEntriesByName) != len(planEntries) {
+		return nil, ErrPlanConflict
+	}
 
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {
@@ -367,9 +307,12 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	return entries, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position rule.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position movement.Position) ([]E, error) {
 	stateEntriesByName := o.entriesByName(stateEntries, entryUnknown)
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
+	if len(planEntriesByName) != len(planEntries) {
+		return nil, ErrPlanConflict
+	}
 
 	findMatchingStateEntry := func(entry E) (E, bool) {
 		var found bool
@@ -684,46 +627,4 @@ func (o *UuidObjectManager[E, L, S]) Delete(ctx context.Context, location L, ent
 		return &Error{err: err, message: "sdk error while deleting"}
 	}
 	return nil
-}
-
-func parseSDKPosition(sdkPosition rule.Position) (position, error) {
-	if sdkPosition.IsValid(false) != nil {
-		return position{}, ErrInvalidPosition
-	}
-
-	if sdkPosition.DirectlyAfter != nil {
-		return position{
-			Directly:   true,
-			Where:      PositionWhereAfter,
-			PivotEntry: *sdkPosition.DirectlyAfter,
-		}, nil
-	} else if sdkPosition.DirectlyBefore != nil {
-		return position{
-			Directly:   true,
-			Where:      PositionWhereBefore,
-			PivotEntry: *sdkPosition.DirectlyBefore,
-		}, nil
-	} else if sdkPosition.SomewhereAfter != nil {
-		return position{
-			Directly:   false,
-			Where:      PositionWhereAfter,
-			PivotEntry: *sdkPosition.SomewhereAfter,
-		}, nil
-	} else if sdkPosition.SomewhereBefore != nil {
-		return position{
-			Directly:   false,
-			Where:      PositionWhereBefore,
-			PivotEntry: *sdkPosition.SomewhereBefore,
-		}, nil
-	} else if sdkPosition.First != nil {
-		return position{
-			Where: PositionWhereFirst,
-		}, nil
-	} else if sdkPosition.Last != nil {
-		return position{
-			Where: PositionWhereLast,
-		}, nil
-	}
-
-	return position{}, ErrInvalidPosition
 }

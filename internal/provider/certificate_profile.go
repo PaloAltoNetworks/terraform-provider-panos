@@ -58,18 +58,18 @@ type CertificateProfileDataSourceFilter struct {
 type CertificateProfileDataSourceModel struct {
 	Location                        CertificateProfileLocation                       `tfsdk:"location"`
 	Name                            types.String                                     `tfsdk:"name"`
+	Certificate                     types.List                                       `tfsdk:"certificate"`
+	BlockExpiredCertificate         types.Bool                                       `tfsdk:"block_expired_certificate"`
 	BlockTimeoutCertificate         types.Bool                                       `tfsdk:"block_timeout_certificate"`
+	BlockUnauthenticatedCertificate types.Bool                                       `tfsdk:"block_unauthenticated_certificate"`
 	BlockUnknownCertificate         types.Bool                                       `tfsdk:"block_unknown_certificate"`
 	CertificateStatusTimeout        types.Int64                                      `tfsdk:"certificate_status_timeout"`
 	CrlReceiveTimeout               types.Int64                                      `tfsdk:"crl_receive_timeout"`
-	OcspExcludeNonce                types.Bool                                       `tfsdk:"ocsp_exclude_nonce"`
-	UseOcsp                         types.Bool                                       `tfsdk:"use_ocsp"`
-	Certificate                     types.List                                       `tfsdk:"certificate"`
-	BlockExpiredCertificate         types.Bool                                       `tfsdk:"block_expired_certificate"`
-	BlockUnauthenticatedCertificate types.Bool                                       `tfsdk:"block_unauthenticated_certificate"`
 	Domain                          types.String                                     `tfsdk:"domain"`
+	OcspExcludeNonce                types.Bool                                       `tfsdk:"ocsp_exclude_nonce"`
 	OcspReceiveTimeout              types.Int64                                      `tfsdk:"ocsp_receive_timeout"`
 	UseCrl                          types.Bool                                       `tfsdk:"use_crl"`
+	UseOcsp                         types.Bool                                       `tfsdk:"use_ocsp"`
 	UsernameField                   *CertificateProfileDataSourceUsernameFieldObject `tfsdk:"username_field"`
 }
 type CertificateProfileDataSourceCertificateObject struct {
@@ -79,33 +79,12 @@ type CertificateProfileDataSourceCertificateObject struct {
 	TemplateName          types.String `tfsdk:"template_name"`
 }
 type CertificateProfileDataSourceUsernameFieldObject struct {
-	SubjectAlt types.String `tfsdk:"subject_alt"`
 	Subject    types.String `tfsdk:"subject"`
+	SubjectAlt types.String `tfsdk:"subject_alt"`
 }
 
 func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ocspExcludeNonce_value := o.OcspExcludeNonce.ValueBoolPointer()
-	useOcsp_value := o.UseOcsp.ValueBoolPointer()
-	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
-	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
-	certificateStatusTimeout_value := o.CertificateStatusTimeout.ValueInt64Pointer()
-	crlReceiveTimeout_value := o.CrlReceiveTimeout.ValueInt64Pointer()
-	ocspReceiveTimeout_value := o.OcspReceiveTimeout.ValueInt64Pointer()
-	useCrl_value := o.UseCrl.ValueBoolPointer()
-	var usernameField_entry *certificate.UsernameField
-	if o.UsernameField != nil {
-		if *obj != nil && (*obj).UsernameField != nil {
-			usernameField_entry = (*obj).UsernameField
-		} else {
-			usernameField_entry = new(certificate.UsernameField)
-		}
-
-		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var certificate_tf_entries []CertificateProfileDataSourceCertificateObject
 	var certificate_pango_entries []certificate.Certificate
 	{
@@ -124,39 +103,47 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		}
 	}
 	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
+	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
 	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
+	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
+	certificateStatusTimeout_value := o.CertificateStatusTimeout.ValueInt64Pointer()
+	crlReceiveTimeout_value := o.CrlReceiveTimeout.ValueInt64Pointer()
 	domain_value := o.Domain.ValueStringPointer()
+	ocspExcludeNonce_value := o.OcspExcludeNonce.ValueBoolPointer()
+	ocspReceiveTimeout_value := o.OcspReceiveTimeout.ValueInt64Pointer()
+	useCrl_value := o.UseCrl.ValueBoolPointer()
+	useOcsp_value := o.UseOcsp.ValueBoolPointer()
+	var usernameField_entry *certificate.UsernameField
+	if o.UsernameField != nil {
+		if *obj != nil && (*obj).UsernameField != nil {
+			usernameField_entry = (*obj).UsernameField
+		} else {
+			usernameField_entry = new(certificate.UsernameField)
+		}
+
+		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(certificate.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).OcspExcludeNonce = ocspExcludeNonce_value
-	(*obj).UseOcsp = useOcsp_value
+	(*obj).Certificate = certificate_pango_entries
+	(*obj).BlockExpiredCertificate = blockExpiredCertificate_value
 	(*obj).BlockTimeoutCertificate = blockTimeoutCertificate_value
+	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	(*obj).BlockUnknownCertificate = blockUnknownCertificate_value
 	(*obj).CertificateStatusTimeout = certificateStatusTimeout_value
 	(*obj).CrlReceiveTimeout = crlReceiveTimeout_value
+	(*obj).Domain = domain_value
+	(*obj).OcspExcludeNonce = ocspExcludeNonce_value
 	(*obj).OcspReceiveTimeout = ocspReceiveTimeout_value
 	(*obj).UseCrl = useCrl_value
+	(*obj).UseOcsp = useOcsp_value
 	(*obj).UsernameField = usernameField_entry
-	(*obj).Certificate = certificate_pango_entries
-	(*obj).BlockExpiredCertificate = blockExpiredCertificate_value
-	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
-	(*obj).Domain = domain_value
-
-	return diags
-}
-func (o *CertificateProfileDataSourceUsernameFieldObject) CopyToPango(ctx context.Context, obj **certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	subject_value := o.Subject.ValueStringPointer()
-	subjectAlt_value := o.SubjectAlt.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(certificate.UsernameField)
-	}
-	(*obj).Subject = subject_value
-	(*obj).SubjectAlt = subjectAlt_value
 
 	return diags
 }
@@ -173,6 +160,19 @@ func (o *CertificateProfileDataSourceCertificateObject) CopyToPango(ctx context.
 	(*obj).DefaultOcspUrl = defaultOcspUrl_value
 	(*obj).OcspVerifyCertificate = ocspVerifyCertificate_value
 	(*obj).TemplateName = templateName_value
+
+	return diags
+}
+func (o *CertificateProfileDataSourceUsernameFieldObject) CopyToPango(ctx context.Context, obj **certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	subject_value := o.Subject.ValueStringPointer()
+	subjectAlt_value := o.SubjectAlt.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(certificate.UsernameField)
+	}
+	(*obj).Subject = subject_value
+	(*obj).SubjectAlt = subjectAlt_value
 
 	return diags
 }
@@ -207,21 +207,13 @@ func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	if obj.BlockExpiredCertificate != nil {
 		blockExpiredCertificate_value = types.BoolValue(*obj.BlockExpiredCertificate)
 	}
+	var blockTimeoutCertificate_value types.Bool
+	if obj.BlockTimeoutCertificate != nil {
+		blockTimeoutCertificate_value = types.BoolValue(*obj.BlockTimeoutCertificate)
+	}
 	var blockUnauthenticatedCertificate_value types.Bool
 	if obj.BlockUnauthenticatedCertificate != nil {
 		blockUnauthenticatedCertificate_value = types.BoolValue(*obj.BlockUnauthenticatedCertificate)
-	}
-	var domain_value types.String
-	if obj.Domain != nil {
-		domain_value = types.StringValue(*obj.Domain)
-	}
-	var ocspReceiveTimeout_value types.Int64
-	if obj.OcspReceiveTimeout != nil {
-		ocspReceiveTimeout_value = types.Int64Value(*obj.OcspReceiveTimeout)
-	}
-	var useCrl_value types.Bool
-	if obj.UseCrl != nil {
-		useCrl_value = types.BoolValue(*obj.UseCrl)
 	}
 	var blockUnknownCertificate_value types.Bool
 	if obj.BlockUnknownCertificate != nil {
@@ -235,49 +227,40 @@ func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	if obj.CrlReceiveTimeout != nil {
 		crlReceiveTimeout_value = types.Int64Value(*obj.CrlReceiveTimeout)
 	}
+	var domain_value types.String
+	if obj.Domain != nil {
+		domain_value = types.StringValue(*obj.Domain)
+	}
 	var ocspExcludeNonce_value types.Bool
 	if obj.OcspExcludeNonce != nil {
 		ocspExcludeNonce_value = types.BoolValue(*obj.OcspExcludeNonce)
+	}
+	var ocspReceiveTimeout_value types.Int64
+	if obj.OcspReceiveTimeout != nil {
+		ocspReceiveTimeout_value = types.Int64Value(*obj.OcspReceiveTimeout)
+	}
+	var useCrl_value types.Bool
+	if obj.UseCrl != nil {
+		useCrl_value = types.BoolValue(*obj.UseCrl)
 	}
 	var useOcsp_value types.Bool
 	if obj.UseOcsp != nil {
 		useOcsp_value = types.BoolValue(*obj.UseOcsp)
 	}
-	var blockTimeoutCertificate_value types.Bool
-	if obj.BlockTimeoutCertificate != nil {
-		blockTimeoutCertificate_value = types.BoolValue(*obj.BlockTimeoutCertificate)
-	}
 	o.Name = types.StringValue(obj.Name)
-	o.BlockExpiredCertificate = blockExpiredCertificate_value
-	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
-	o.Domain = domain_value
-	o.OcspReceiveTimeout = ocspReceiveTimeout_value
-	o.UseCrl = useCrl_value
-	o.UsernameField = usernameField_object
 	o.Certificate = certificate_list
+	o.BlockExpiredCertificate = blockExpiredCertificate_value
+	o.BlockTimeoutCertificate = blockTimeoutCertificate_value
+	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	o.BlockUnknownCertificate = blockUnknownCertificate_value
 	o.CertificateStatusTimeout = certificateStatusTimeout_value
 	o.CrlReceiveTimeout = crlReceiveTimeout_value
+	o.Domain = domain_value
 	o.OcspExcludeNonce = ocspExcludeNonce_value
+	o.OcspReceiveTimeout = ocspReceiveTimeout_value
+	o.UseCrl = useCrl_value
 	o.UseOcsp = useOcsp_value
-	o.BlockTimeoutCertificate = blockTimeoutCertificate_value
-
-	return diags
-}
-
-func (o *CertificateProfileDataSourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var subject_value types.String
-	if obj.Subject != nil {
-		subject_value = types.StringValue(*obj.Subject)
-	}
-	var subjectAlt_value types.String
-	if obj.SubjectAlt != nil {
-		subjectAlt_value = types.StringValue(*obj.SubjectAlt)
-	}
-	o.Subject = subject_value
-	o.SubjectAlt = subjectAlt_value
+	o.UsernameField = usernameField_object
 
 	return diags
 }
@@ -305,6 +288,23 @@ func (o *CertificateProfileDataSourceCertificateObject) CopyFromPango(ctx contex
 	return diags
 }
 
+func (o *CertificateProfileDataSourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var subject_value types.String
+	if obj.Subject != nil {
+		subject_value = types.StringValue(*obj.Subject)
+	}
+	var subjectAlt_value types.String
+	if obj.SubjectAlt != nil {
+		subjectAlt_value = types.StringValue(*obj.SubjectAlt)
+	}
+	o.Subject = subject_value
+	o.SubjectAlt = subjectAlt_value
+
+	return diags
+}
+
 func CertificateProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -319,8 +319,25 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"certificate": dsschema.ListNestedAttribute{
+				Description:  "CA Certificate to assign to the profile.",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: CertificateProfileDataSourceCertificateSchema(),
+			},
+
 			"block_expired_certificate": dsschema.BoolAttribute{
 				Description: "Whether to block a session if certificate status is expired.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"block_timeout_certificate": dsschema.BoolAttribute{
+				Description: "Whether to block a session if cert. status can't be retrieved within timeout.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -333,41 +350,6 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-			},
-
-			"domain": dsschema.StringAttribute{
-				Description: "NetBIOS domain so the PAN-OS software can map users through User-ID.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ocsp_receive_timeout": dsschema.Int64Attribute{
-				Description: "OCSP receive timeout value in seconds.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"use_crl": dsschema.BoolAttribute{
-				Description: "Enable use of CRL to verify the revocation status of certificates.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"username_field": CertificateProfileDataSourceUsernameFieldSchema(),
-
-			"certificate": dsschema.ListNestedAttribute{
-				Description:  "CA Certificate to assign to the profile.",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: CertificateProfileDataSourceCertificateSchema(),
 			},
 
 			"block_unknown_certificate": dsschema.BoolAttribute{
@@ -394,8 +376,32 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"domain": dsschema.StringAttribute{
+				Description: "NetBIOS domain so the PAN-OS software can map users through User-ID.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ocsp_exclude_nonce": dsschema.BoolAttribute{
 				Description: "Whether to exclude nonce extension for OCSP requests.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ocsp_receive_timeout": dsschema.Int64Attribute{
+				Description: "OCSP receive timeout value in seconds.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"use_crl": dsschema.BoolAttribute{
+				Description: "Enable use of CRL to verify the revocation status of certificates.",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -410,8 +416,59 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"block_timeout_certificate": dsschema.BoolAttribute{
-				Description: "Whether to block a session if cert. status can't be retrieved within timeout.",
+			"username_field": CertificateProfileDataSourceUsernameFieldSchema(),
+		},
+	}
+}
+
+func (o *CertificateProfileDataSourceModel) getTypeFor(name string) attr.Type {
+	schema := CertificateProfileDataSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func CertificateProfileDataSourceCertificateSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"default_ocsp_url": dsschema.StringAttribute{
+				Description: "Default URL for ocsp verification.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ocsp_verify_certificate": dsschema.StringAttribute{
+				Description: "Certificate to verify signature in OCSP response.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"template_name": dsschema.StringAttribute{
+				Description: "Certificate Template Name / OID for the certificate",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -421,8 +478,8 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 	}
 }
 
-func (o *CertificateProfileDataSourceModel) getTypeFor(name string) attr.Type {
-	schema := CertificateProfileDataSourceSchema()
+func (o *CertificateProfileDataSourceCertificateObject) getTypeFor(name string) attr.Type {
+	schema := CertificateProfileDataSourceCertificateSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -469,63 +526,6 @@ func CertificateProfileDataSourceUsernameFieldSchema() dsschema.SingleNestedAttr
 
 func (o *CertificateProfileDataSourceUsernameFieldObject) getTypeFor(name string) attr.Type {
 	schema := CertificateProfileDataSourceUsernameFieldSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func CertificateProfileDataSourceCertificateSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"default_ocsp_url": dsschema.StringAttribute{
-				Description: "Default URL for ocsp verification.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ocsp_verify_certificate": dsschema.StringAttribute{
-				Description: "Certificate to verify signature in OCSP response.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"template_name": dsschema.StringAttribute{
-				Description: "Template Name/OID that was used to sign the certificate.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *CertificateProfileDataSourceCertificateObject) getTypeFor(name string) attr.Type {
-	schema := CertificateProfileDataSourceCertificateSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -681,29 +681,29 @@ func CertificateProfileResourceLocationSchema() rsschema.Attribute {
 type CertificateProfileResourceModel struct {
 	Location                        CertificateProfileLocation                     `tfsdk:"location"`
 	Name                            types.String                                   `tfsdk:"name"`
-	UseOcsp                         types.Bool                                     `tfsdk:"use_ocsp"`
+	Certificate                     types.List                                     `tfsdk:"certificate"`
+	BlockExpiredCertificate         types.Bool                                     `tfsdk:"block_expired_certificate"`
 	BlockTimeoutCertificate         types.Bool                                     `tfsdk:"block_timeout_certificate"`
+	BlockUnauthenticatedCertificate types.Bool                                     `tfsdk:"block_unauthenticated_certificate"`
 	BlockUnknownCertificate         types.Bool                                     `tfsdk:"block_unknown_certificate"`
 	CertificateStatusTimeout        types.Int64                                    `tfsdk:"certificate_status_timeout"`
 	CrlReceiveTimeout               types.Int64                                    `tfsdk:"crl_receive_timeout"`
-	OcspExcludeNonce                types.Bool                                     `tfsdk:"ocsp_exclude_nonce"`
-	UseCrl                          types.Bool                                     `tfsdk:"use_crl"`
-	UsernameField                   *CertificateProfileResourceUsernameFieldObject `tfsdk:"username_field"`
-	Certificate                     types.List                                     `tfsdk:"certificate"`
-	BlockExpiredCertificate         types.Bool                                     `tfsdk:"block_expired_certificate"`
-	BlockUnauthenticatedCertificate types.Bool                                     `tfsdk:"block_unauthenticated_certificate"`
 	Domain                          types.String                                   `tfsdk:"domain"`
+	OcspExcludeNonce                types.Bool                                     `tfsdk:"ocsp_exclude_nonce"`
 	OcspReceiveTimeout              types.Int64                                    `tfsdk:"ocsp_receive_timeout"`
-}
-type CertificateProfileResourceUsernameFieldObject struct {
-	Subject    types.String `tfsdk:"subject"`
-	SubjectAlt types.String `tfsdk:"subject_alt"`
+	UseCrl                          types.Bool                                     `tfsdk:"use_crl"`
+	UseOcsp                         types.Bool                                     `tfsdk:"use_ocsp"`
+	UsernameField                   *CertificateProfileResourceUsernameFieldObject `tfsdk:"username_field"`
 }
 type CertificateProfileResourceCertificateObject struct {
 	Name                  types.String `tfsdk:"name"`
 	DefaultOcspUrl        types.String `tfsdk:"default_ocsp_url"`
 	OcspVerifyCertificate types.String `tfsdk:"ocsp_verify_certificate"`
 	TemplateName          types.String `tfsdk:"template_name"`
+}
+type CertificateProfileResourceUsernameFieldObject struct {
+	Subject    types.String `tfsdk:"subject"`
+	SubjectAlt types.String `tfsdk:"subject_alt"`
 }
 
 func (r *CertificateProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -725,6 +725,47 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"certificate": rsschema.ListNestedAttribute{
+				Description:  "CA Certificate to assign to the profile.",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: CertificateProfileResourceCertificateSchema(),
+			},
+
+			"block_expired_certificate": rsschema.BoolAttribute{
+				Description: "Whether to block a session if certificate status is expired.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"block_timeout_certificate": rsschema.BoolAttribute{
+				Description: "Whether to block a session if cert. status can't be retrieved within timeout.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"block_unauthenticated_certificate": rsschema.BoolAttribute{
+				Description: "Whether to block session if the certificate was not issued to the authenticating device.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"block_unknown_certificate": rsschema.BoolAttribute{
+				Description: "Whether to block a session if cert. status is unknown.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"certificate_status_timeout": rsschema.Int64Attribute{
 				Description: "Certificate status query timeout value in seconds.",
 				Computed:    true,
@@ -743,48 +784,16 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 				Default:     int64default.StaticInt64(5),
 			},
 
-			"ocsp_exclude_nonce": rsschema.BoolAttribute{
-				Description: "Whether to exclude nonce extension for OCSP requests.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"use_ocsp": rsschema.BoolAttribute{
-				Description: "Enable use of OCSP to verify the revocation status of certificates.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"block_timeout_certificate": rsschema.BoolAttribute{
-				Description: "Whether to block a session if cert. status can't be retrieved within timeout.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"block_unknown_certificate": rsschema.BoolAttribute{
-				Description: "Whether to block a session if cert. status is unknown.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"block_unauthenticated_certificate": rsschema.BoolAttribute{
-				Description: "Whether to block session if the certificate was not issued to the authenticating device.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"domain": rsschema.StringAttribute{
 				Description: "NetBIOS domain so the PAN-OS software can map users through User-ID.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ocsp_exclude_nonce": rsschema.BoolAttribute{
+				Description: "Whether to exclude nonce extension for OCSP requests.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -808,19 +817,67 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"username_field": CertificateProfileResourceUsernameFieldSchema(),
-
-			"certificate": rsschema.ListNestedAttribute{
-				Description:  "CA Certificate to assign to the profile.",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: CertificateProfileResourceCertificateSchema(),
+			"use_ocsp": rsschema.BoolAttribute{
+				Description: "Enable use of OCSP to verify the revocation status of certificates.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 
-			"block_expired_certificate": rsschema.BoolAttribute{
-				Description: "Whether to block a session if certificate status is expired.",
+			"username_field": CertificateProfileResourceUsernameFieldSchema(),
+		},
+	}
+}
+
+func (o *CertificateProfileResourceModel) getTypeFor(name string) attr.Type {
+	schema := CertificateProfileResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func CertificateProfileResourceCertificateSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"default_ocsp_url": rsschema.StringAttribute{
+				Description: "Default URL for ocsp verification.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ocsp_verify_certificate": rsschema.StringAttribute{
+				Description: "Certificate to verify signature in OCSP response.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"template_name": rsschema.StringAttribute{
+				Description: "Certificate Template Name / OID for the certificate",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -830,8 +887,8 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 	}
 }
 
-func (o *CertificateProfileResourceModel) getTypeFor(name string) attr.Type {
-	schema := CertificateProfileResourceSchema()
+func (o *CertificateProfileResourceCertificateObject) getTypeFor(name string) attr.Type {
+	schema := CertificateProfileResourceCertificateSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -901,63 +958,6 @@ func (o *CertificateProfileResourceUsernameFieldObject) getTypeFor(name string) 
 	panic("unreachable")
 }
 
-func CertificateProfileResourceCertificateSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"template_name": rsschema.StringAttribute{
-				Description: "Template Name/OID that was used to sign the certificate.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"default_ocsp_url": rsschema.StringAttribute{
-				Description: "Default URL for ocsp verification.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ocsp_verify_certificate": rsschema.StringAttribute{
-				Description: "Certificate to verify signature in OCSP response.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *CertificateProfileResourceCertificateObject) getTypeFor(name string) attr.Type {
-	schema := CertificateProfileResourceCertificateSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func (r *CertificateProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_certificate_profile"
 }
@@ -985,19 +985,6 @@ func (r *CertificateProfileResource) Configure(ctx context.Context, req resource
 
 func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var usernameField_entry *certificate.UsernameField
-	if o.UsernameField != nil {
-		if *obj != nil && (*obj).UsernameField != nil {
-			usernameField_entry = (*obj).UsernameField
-		} else {
-			usernameField_entry = new(certificate.UsernameField)
-		}
-
-		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var certificate_tf_entries []CertificateProfileResourceCertificateObject
 	var certificate_pango_entries []certificate.Certificate
 	{
@@ -1016,34 +1003,47 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		}
 	}
 	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
-	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
-	domain_value := o.Domain.ValueStringPointer()
-	ocspReceiveTimeout_value := o.OcspReceiveTimeout.ValueInt64Pointer()
-	useCrl_value := o.UseCrl.ValueBoolPointer()
 	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
+	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
 	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
 	certificateStatusTimeout_value := o.CertificateStatusTimeout.ValueInt64Pointer()
 	crlReceiveTimeout_value := o.CrlReceiveTimeout.ValueInt64Pointer()
+	domain_value := o.Domain.ValueStringPointer()
 	ocspExcludeNonce_value := o.OcspExcludeNonce.ValueBoolPointer()
+	ocspReceiveTimeout_value := o.OcspReceiveTimeout.ValueInt64Pointer()
+	useCrl_value := o.UseCrl.ValueBoolPointer()
 	useOcsp_value := o.UseOcsp.ValueBoolPointer()
+	var usernameField_entry *certificate.UsernameField
+	if o.UsernameField != nil {
+		if *obj != nil && (*obj).UsernameField != nil {
+			usernameField_entry = (*obj).UsernameField
+		} else {
+			usernameField_entry = new(certificate.UsernameField)
+		}
+
+		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(certificate.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).UsernameField = usernameField_entry
 	(*obj).Certificate = certificate_pango_entries
 	(*obj).BlockExpiredCertificate = blockExpiredCertificate_value
-	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
-	(*obj).Domain = domain_value
-	(*obj).OcspReceiveTimeout = ocspReceiveTimeout_value
-	(*obj).UseCrl = useCrl_value
 	(*obj).BlockTimeoutCertificate = blockTimeoutCertificate_value
+	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	(*obj).BlockUnknownCertificate = blockUnknownCertificate_value
 	(*obj).CertificateStatusTimeout = certificateStatusTimeout_value
 	(*obj).CrlReceiveTimeout = crlReceiveTimeout_value
+	(*obj).Domain = domain_value
 	(*obj).OcspExcludeNonce = ocspExcludeNonce_value
+	(*obj).OcspReceiveTimeout = ocspReceiveTimeout_value
+	(*obj).UseCrl = useCrl_value
 	(*obj).UseOcsp = useOcsp_value
+	(*obj).UsernameField = usernameField_entry
 
 	return diags
 }
@@ -1107,25 +1107,13 @@ func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	if obj.BlockExpiredCertificate != nil {
 		blockExpiredCertificate_value = types.BoolValue(*obj.BlockExpiredCertificate)
 	}
-	var blockUnauthenticatedCertificate_value types.Bool
-	if obj.BlockUnauthenticatedCertificate != nil {
-		blockUnauthenticatedCertificate_value = types.BoolValue(*obj.BlockUnauthenticatedCertificate)
-	}
-	var domain_value types.String
-	if obj.Domain != nil {
-		domain_value = types.StringValue(*obj.Domain)
-	}
-	var ocspReceiveTimeout_value types.Int64
-	if obj.OcspReceiveTimeout != nil {
-		ocspReceiveTimeout_value = types.Int64Value(*obj.OcspReceiveTimeout)
-	}
-	var useCrl_value types.Bool
-	if obj.UseCrl != nil {
-		useCrl_value = types.BoolValue(*obj.UseCrl)
-	}
 	var blockTimeoutCertificate_value types.Bool
 	if obj.BlockTimeoutCertificate != nil {
 		blockTimeoutCertificate_value = types.BoolValue(*obj.BlockTimeoutCertificate)
+	}
+	var blockUnauthenticatedCertificate_value types.Bool
+	if obj.BlockUnauthenticatedCertificate != nil {
+		blockUnauthenticatedCertificate_value = types.BoolValue(*obj.BlockUnauthenticatedCertificate)
 	}
 	var blockUnknownCertificate_value types.Bool
 	if obj.BlockUnknownCertificate != nil {
@@ -1139,45 +1127,40 @@ func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	if obj.CrlReceiveTimeout != nil {
 		crlReceiveTimeout_value = types.Int64Value(*obj.CrlReceiveTimeout)
 	}
+	var domain_value types.String
+	if obj.Domain != nil {
+		domain_value = types.StringValue(*obj.Domain)
+	}
 	var ocspExcludeNonce_value types.Bool
 	if obj.OcspExcludeNonce != nil {
 		ocspExcludeNonce_value = types.BoolValue(*obj.OcspExcludeNonce)
+	}
+	var ocspReceiveTimeout_value types.Int64
+	if obj.OcspReceiveTimeout != nil {
+		ocspReceiveTimeout_value = types.Int64Value(*obj.OcspReceiveTimeout)
+	}
+	var useCrl_value types.Bool
+	if obj.UseCrl != nil {
+		useCrl_value = types.BoolValue(*obj.UseCrl)
 	}
 	var useOcsp_value types.Bool
 	if obj.UseOcsp != nil {
 		useOcsp_value = types.BoolValue(*obj.UseOcsp)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.UsernameField = usernameField_object
 	o.Certificate = certificate_list
 	o.BlockExpiredCertificate = blockExpiredCertificate_value
-	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
-	o.Domain = domain_value
-	o.OcspReceiveTimeout = ocspReceiveTimeout_value
-	o.UseCrl = useCrl_value
 	o.BlockTimeoutCertificate = blockTimeoutCertificate_value
+	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	o.BlockUnknownCertificate = blockUnknownCertificate_value
 	o.CertificateStatusTimeout = certificateStatusTimeout_value
 	o.CrlReceiveTimeout = crlReceiveTimeout_value
+	o.Domain = domain_value
 	o.OcspExcludeNonce = ocspExcludeNonce_value
+	o.OcspReceiveTimeout = ocspReceiveTimeout_value
+	o.UseCrl = useCrl_value
 	o.UseOcsp = useOcsp_value
-
-	return diags
-}
-
-func (o *CertificateProfileResourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var subject_value types.String
-	if obj.Subject != nil {
-		subject_value = types.StringValue(*obj.Subject)
-	}
-	var subjectAlt_value types.String
-	if obj.SubjectAlt != nil {
-		subjectAlt_value = types.StringValue(*obj.SubjectAlt)
-	}
-	o.Subject = subject_value
-	o.SubjectAlt = subjectAlt_value
+	o.UsernameField = usernameField_object
 
 	return diags
 }
@@ -1201,6 +1184,23 @@ func (o *CertificateProfileResourceCertificateObject) CopyFromPango(ctx context.
 	o.DefaultOcspUrl = defaultOcspUrl_value
 	o.OcspVerifyCertificate = ocspVerifyCertificate_value
 	o.TemplateName = templateName_value
+
+	return diags
+}
+
+func (o *CertificateProfileResourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var subject_value types.String
+	if obj.Subject != nil {
+		subject_value = types.StringValue(*obj.Subject)
+	}
+	var subjectAlt_value types.String
+	if obj.SubjectAlt != nil {
+		subjectAlt_value = types.StringValue(*obj.SubjectAlt)
+	}
+	o.Subject = subject_value
+	o.SubjectAlt = subjectAlt_value
 
 	return diags
 }
@@ -1229,25 +1229,6 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 
 	var location certificate.Location
 
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-		}
-	}
-	if state.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
-
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
-			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
 		location.Panorama = true
 	}
@@ -1266,6 +1247,25 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
 			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &certificate.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+		}
+	}
+	if state.Location.TemplateStackVsys != nil {
+		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
+
+			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
+			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
+		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -1326,10 +1326,10 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 	if savestate.Location.TemplateVsys != nil {
 		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			Vsys:           savestate.Location.TemplateVsys.Vsys.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateVsys.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.TemplateVsys.Template.ValueString(),
 			NgfwDevice:     savestate.Location.TemplateVsys.NgfwDevice.ValueString(),
+			Vsys:           savestate.Location.TemplateVsys.Vsys.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStack != nil {
@@ -1505,18 +1505,6 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 
 	var location certificate.Location
 
-	if state.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
-
-			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
-			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
 		location.Panorama = true
 	}
@@ -1530,10 +1518,10 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 	if state.Location.TemplateVsys != nil {
 		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
 			Template:       state.Location.TemplateVsys.Template.ValueString(),
+			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
@@ -1542,6 +1530,18 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 		}
+	}
+	if state.Location.TemplateStackVsys != nil {
+		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
+
+			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
+			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
+		}
+	}
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -1574,7 +1574,6 @@ func CertificateProfileImportStateCreator(ctx context.Context, resource types.Ob
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -1612,19 +1611,15 @@ func (r *CertificateProfileResource) ImportState(ctx context.Context, req resour
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
-type CertificateProfileTemplateStackVsysLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	TemplateStack  types.String `tfsdk:"template_stack"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-	Vsys           types.String `tfsdk:"vsys"`
-}
 type CertificateProfileTemplateLocation struct {
-	Name           types.String `tfsdk:"name"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
 }
 type CertificateProfileTemplateVsysLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -1636,13 +1631,19 @@ type CertificateProfileTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type CertificateProfileTemplateStackVsysLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	TemplateStack  types.String `tfsdk:"template_stack"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+	Vsys           types.String `tfsdk:"vsys"`
+}
 type CertificateProfileLocation struct {
-	TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
-	Shared            types.Bool                                   `tfsdk:"shared"`
 	Panorama          types.Bool                                   `tfsdk:"panorama"`
 	Template          *CertificateProfileTemplateLocation          `tfsdk:"template"`
 	TemplateVsys      *CertificateProfileTemplateVsysLocation      `tfsdk:"template_vsys"`
 	TemplateStack     *CertificateProfileTemplateStackLocation     `tfsdk:"template_stack"`
+	TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
+	Shared            types.Bool                                   `tfsdk:"shared"`
 }
 
 func CertificateProfileLocationSchema() rsschema.Attribute {
@@ -1699,15 +1700,6 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template, device and vsys.",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"vsys": rsschema.StringAttribute{
-						Description: "The vsys.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "The panorama device.",
 						Optional:    true,
@@ -1731,6 +1723,15 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"vsys": rsschema.StringAttribute{
+						Description: "The vsys.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1823,6 +1824,33 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o CertificateProfileTemplateLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *CertificateProfileTemplateLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o CertificateProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1887,15 +1915,15 @@ func (o *CertificateProfileTemplateStackLocation) UnmarshalJSON(data []byte) err
 }
 func (o CertificateProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
 		TemplateStack  *string `json:"template_stack"`
 		NgfwDevice     *string `json:"ngfw_device"`
 		Vsys           *string `json:"vsys"`
-		PanoramaDevice *string `json:"panorama_device"`
 	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		TemplateStack:  o.TemplateStack.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 		Vsys:           o.Vsys.ValueStringPointer(),
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1903,65 +1931,38 @@ func (o CertificateProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, erro
 
 func (o *CertificateProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
 		TemplateStack  *string `json:"template_stack"`
 		NgfwDevice     *string `json:"ngfw_device"`
 		Vsys           *string `json:"vsys"`
-		PanoramaDevice *string `json:"panorama_device"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.TemplateStack = types.StringPointerValue(shadow.TemplateStack)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 	o.Vsys = types.StringPointerValue(shadow.Vsys)
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-
-	return nil
-}
-func (o CertificateProfileTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-		Name:           o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *CertificateProfileTemplateLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
 
 	return nil
 }
 func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
+		Panorama          *bool                                        `json:"panorama"`
+		Template          *CertificateProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
 		Shared            *bool                                        `json:"shared"`
-		Panorama          *bool                                        `json:"panorama"`
-		Template          *CertificateProfileTemplateLocation          `json:"template"`
 	}{
+		Panorama:          o.Panorama.ValueBoolPointer(),
+		Template:          o.Template,
 		TemplateVsys:      o.TemplateVsys,
 		TemplateStack:     o.TemplateStack,
 		TemplateStackVsys: o.TemplateStackVsys,
 		Shared:            o.Shared.ValueBoolPointer(),
-		Panorama:          o.Panorama.ValueBoolPointer(),
-		Template:          o.Template,
 	}
 
 	return json.Marshal(obj)
@@ -1969,24 +1970,24 @@ func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Panorama          *bool                                        `json:"panorama"`
+		Template          *CertificateProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
 		Shared            *bool                                        `json:"shared"`
-		Panorama          *bool                                        `json:"panorama"`
-		Template          *CertificateProfileTemplateLocation          `json:"template"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
+	o.Panorama = types.BoolPointerValue(shadow.Panorama)
+	o.Template = shadow.Template
 	o.TemplateVsys = shadow.TemplateVsys
 	o.TemplateStack = shadow.TemplateStack
 	o.TemplateStackVsys = shadow.TemplateStackVsys
 	o.Shared = types.BoolPointerValue(shadow.Shared)
-	o.Panorama = types.BoolPointerValue(shadow.Panorama)
-	o.Template = shadow.Template
 
 	return nil
 }

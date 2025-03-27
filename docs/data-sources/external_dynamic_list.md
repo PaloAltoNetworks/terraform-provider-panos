@@ -25,13 +25,17 @@ description: |-
 - `disable_override` (String) disable object override in child device groups
 - `type` (Attributes) (see [below for nested schema](#nestedatt--type))
 
+### Read-Only
+
+- `encrypted_values` (Map of String, Sensitive)
+
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
-- `shared` (Boolean) Location in Shared Panorama
+- `shared` (Boolean) Panorama shared object
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
@@ -74,7 +78,7 @@ Optional:
 
 Optional:
 
-- `password` (String)
+- `password` (String, Sensitive)
 - `username` (String)
 
 
@@ -142,7 +146,7 @@ Optional:
 
 Optional:
 
-- `password` (String)
+- `password` (String, Sensitive)
 - `username` (String)
 
 
@@ -210,7 +214,7 @@ Optional:
 
 Optional:
 
-- `password` (String)
+- `password` (String, Sensitive)
 - `username` (String)
 
 
@@ -278,7 +282,7 @@ Optional:
 
 Optional:
 
-- `password` (String)
+- `password` (String, Sensitive)
 - `username` (String)
 
 
@@ -366,7 +370,7 @@ Optional:
 
 Optional:
 
-- `password` (String)
+- `password` (String, Sensitive)
 - `username` (String)
 
 

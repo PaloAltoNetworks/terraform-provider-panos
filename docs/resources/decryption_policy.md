@@ -89,7 +89,6 @@ Optional:
 - `tag` (List of String)
 - `target` (Attributes) (see [below for nested schema](#nestedatt--rules--target))
 - `type` (Attributes) (see [below for nested schema](#nestedatt--rules--type))
-- `uuid` (String) Entry UUID value
 
 <a id="nestedatt--rules--target"></a>
 ### Nested Schema for `rules.target`

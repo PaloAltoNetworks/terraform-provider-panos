@@ -64,17 +64,17 @@ type AdministrativeTagDataSourceModel struct {
 
 func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	color_value := o.Color.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Color = color_value
 	(*obj).Comments = comments_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).Color = color_value
 
 	return diags
 }
@@ -279,9 +279,9 @@ func AdministrativeTagResourceLocationSchema() rsschema.Attribute {
 type AdministrativeTagResourceModel struct {
 	Location        AdministrativeTagLocation `tfsdk:"location"`
 	Name            types.String              `tfsdk:"name"`
-	DisableOverride types.String              `tfsdk:"disable_override"`
 	Color           types.String              `tfsdk:"color"`
 	Comments        types.String              `tfsdk:"comments"`
+	DisableOverride types.String              `tfsdk:"disable_override"`
 }
 
 func (r *AdministrativeTagResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -312,47 +312,47 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
-						"color31",
-						"color34",
-						"color21",
-						"color25",
-						"color19",
-						"color22",
-						"color29",
-						"color33",
-						"color38",
-						"color7",
-						"color15",
-						"color13",
-						"color30",
-						"color35",
-						"color4",
-						"color10",
-						"color8",
-						"color14",
-						"color20",
-						"color28",
-						"color37",
-						"color42",
-						"color2",
-						"color5",
-						"color41",
 						"color1",
-						"color23",
-						"color17",
-						"color40",
-						"color12",
-						"color24",
-						"color36",
+						"color2",
 						"color3",
+						"color4",
+						"color5",
 						"color6",
+						"color7",
+						"color8",
+						"color9",
+						"color10",
+						"color11",
+						"color12",
+						"color13",
+						"color14",
+						"color15",
 						"color16",
+						"color17",
+						"color19",
+						"color20",
+						"color21",
+						"color22",
+						"color23",
+						"color24",
+						"color25",
 						"color26",
 						"color27",
+						"color28",
+						"color29",
+						"color30",
+						"color31",
 						"color32",
+						"color33",
+						"color34",
+						"color35",
+						"color36",
+						"color37",
+						"color38",
 						"color39",
-						"color9",
-						"color11",
+						"color40",
+						"color41",
+						"color42",
 					}...),
 				},
 			},
@@ -367,11 +367,10 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -428,17 +427,17 @@ func (r *AdministrativeTagResource) Configure(ctx context.Context, req resource.
 
 func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	color_value := o.Color.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(admintag.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Color = color_value
 	(*obj).Comments = comments_value
 	(*obj).DisableOverride = disableOverride_value
-	(*obj).Color = color_value
 
 	return diags
 }
@@ -566,8 +565,8 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &admintag.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -615,6 +614,9 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 
 	var location admintag.Location
 
+	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &admintag.VsysLocation{
 
@@ -628,9 +630,6 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -751,7 +750,6 @@ func AdministrativeTagImportStateCreator(ctx context.Context, resource types.Obj
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -789,8 +787,10 @@ func (r *AdministrativeTagResource) ImportState(ctx context.Context, req resourc
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type AdministrativeTagVsysLocation struct {
@@ -813,7 +813,7 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
+				Description: "Panorama shared object",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
@@ -858,20 +858,20 @@ func AdministrativeTagLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific Device Group",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Panorama device name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

@@ -57,16 +57,16 @@ type WildfireAnalysisSecurityProfileDataSourceFilter struct {
 type WildfireAnalysisSecurityProfileDataSourceModel struct {
 	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
 	Name            types.String                            `tfsdk:"name"`
+	Description     types.String                            `tfsdk:"description"`
 	DisableOverride types.String                            `tfsdk:"disable_override"`
 	Rules           types.List                              `tfsdk:"rules"`
-	Description     types.String                            `tfsdk:"description"`
 }
 type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
-	Analysis    types.String `tfsdk:"analysis"`
 	Application types.List   `tfsdk:"application"`
 	FileType    types.List   `tfsdk:"file_type"`
 	Direction   types.String `tfsdk:"direction"`
+	Analysis    types.String `tfsdk:"analysis"`
 }
 
 func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -103,8 +103,6 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 }
 func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	direction_value := o.Direction.ValueStringPointer()
-	analysis_value := o.Analysis.ValueStringPointer()
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
 	if diags.HasError() {
@@ -115,15 +113,17 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx c
 	if diags.HasError() {
 		return diags
 	}
+	direction_value := o.Direction.ValueStringPointer()
+	analysis_value := o.Analysis.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Direction = direction_value
-	(*obj).Analysis = analysis_value
 	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
+	(*obj).Direction = direction_value
+	(*obj).Analysis = analysis_value
 
 	return diags
 }
@@ -265,14 +265,6 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 				Sensitive:   false,
 			},
 
-			"analysis": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"application": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -292,6 +284,14 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 			},
 
 			"direction": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"analysis": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -358,15 +358,15 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
 
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -437,10 +437,10 @@ type WildfireAnalysisSecurityProfileResourceModel struct {
 }
 type WildfireAnalysisSecurityProfileResourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
-	Direction   types.String `tfsdk:"direction"`
-	Analysis    types.String `tfsdk:"analysis"`
 	Application types.List   `tfsdk:"application"`
 	FileType    types.List   `tfsdk:"file_type"`
+	Direction   types.String `tfsdk:"direction"`
+	Analysis    types.String `tfsdk:"analysis"`
 }
 
 func (r *WildfireAnalysisSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -472,11 +472,10 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -643,6 +642,11 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 }
 func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	application_pango_entries := make([]string, 0)
+	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	fileType_pango_entries := make([]string, 0)
 	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
 	if diags.HasError() {
@@ -650,20 +654,15 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx con
 	}
 	direction_value := o.Direction.ValueStringPointer()
 	analysis_value := o.Analysis.ValueStringPointer()
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(wildfireanalysis.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Application = application_pango_entries
 	(*obj).FileType = fileType_pango_entries
 	(*obj).Direction = direction_value
 	(*obj).Analysis = analysis_value
-	(*obj).Application = application_pango_entries
 
 	return diags
 }
@@ -990,7 +989,6 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -1028,8 +1026,10 @@ func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Contex
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
@@ -1047,7 +1047,7 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
+				Description: "Panorama shared object",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
@@ -1055,8 +1055,8 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
 				},
 			},

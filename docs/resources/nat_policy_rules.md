@@ -96,7 +96,6 @@ Optional:
 - `tag` (List of String)
 - `target` (Attributes) (see [below for nested schema](#nestedatt--rules--target))
 - `to_interface` (String) Egress interface from route lookup
-- `uuid` (String) Entry UUID value
 
 <a id="nestedatt--rules--destination_translation"></a>
 ### Nested Schema for `rules.destination_translation`

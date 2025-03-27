@@ -22,26 +22,39 @@ resource "panos_address_group" "example" {
 
   name        = "example-address-group"
   description = "example address group"
-  static      = [for k, v in panos_addresses.example.addresses : k]
+  static      = [for k in panos_address.example : k.name]
 }
 
-resource "panos_addresses" "example" {
+resource "panos_address" "example" {
   location = {
     device_group = {
       name = panos_device_group.example.name
     }
   }
 
-  addresses = {
-    "foo" = {
-      description = "foo example"
-      ip_netmask  = "1.1.1.1"
+  for_each = tomap({
+    "addr1" = {
+      description = "example address 1"
+      ip_netmask  = "10.0.0.1/32"
     }
-    "bar" = {
-      description = "bar example"
-      ip_netmask  = "2.2.2.2"
+    "addr2" = {
+      description = "example address 2"
+      fqdn        = "example.com"
     }
+  })
+
+  name        = each.key
+  description = each.value.description
+  ip_netmask  = lookup(each.value, "ip_netmask", null)
+  fqdn        = lookup(each.value, "fqdn", null)
+}
+
+resource "panos_device_group" "example" {
+  location = {
+    panorama = {}
   }
+
+  name = "example-device-group"
 }
 ```
 
@@ -67,7 +80,7 @@ resource "panos_addresses" "example" {
 Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
-- `shared` (Boolean) Location in Shared Panorama
+- `shared` (Boolean) Panorama shared object
 - `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
@@ -95,3 +108,22 @@ Optional:
 Optional:
 
 - `filter` (String) tag-based filter
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+# Addresses can be imported by providing the following base64 encoded object as the ID
+# {
+#   location = {
+#     device_group = {
+#       name            = "example-device-group"
+#       panorama_device = "localhost.localdomain"
+#     }
+#   }
+# 
+#   name = "example-address-group"
+# }
+terraform import panos_address_group.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain"}},"name":"example-address-group"}' | base64)
+```

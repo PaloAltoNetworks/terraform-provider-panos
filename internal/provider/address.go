@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -68,13 +68,13 @@ type AddressDataSourceModel struct {
 
 func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	tags_pango_entries := make([]string, 0)
 	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	description_value := o.Description.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -84,9 +84,9 @@ func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, obj **address.
 		*obj = new(address.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Description = description_value
 	(*obj).DisableOverride = disableOverride_value
 	(*obj).Tag = tags_pango_entries
-	(*obj).Description = description_value
 	(*obj).Fqdn = fqdn_value
 	(*obj).IpNetmask = ipNetmask_value
 	(*obj).IpRange = ipRange_value
@@ -112,10 +112,6 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 	if obj.DisableOverride != nil {
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
-	var ipWildcard_value types.String
-	if obj.IpWildcard != nil {
-		ipWildcard_value = types.StringValue(*obj.IpWildcard)
-	}
 	var fqdn_value types.String
 	if obj.Fqdn != nil {
 		fqdn_value = types.StringValue(*obj.Fqdn)
@@ -128,14 +124,18 @@ func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, obj *address
 	if obj.IpRange != nil {
 		ipRange_value = types.StringValue(*obj.IpRange)
 	}
+	var ipWildcard_value types.String
+	if obj.IpWildcard != nil {
+		ipWildcard_value = types.StringValue(*obj.IpWildcard)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
 	o.Tags = tags_list
-	o.IpWildcard = ipWildcard_value
 	o.Fqdn = fqdn_value
 	o.IpNetmask = ipNetmask_value
 	o.IpRange = ipRange_value
+	o.IpWildcard = ipWildcard_value
 
 	return diags
 }
@@ -270,13 +270,6 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	var location address.Location
 
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -285,6 +278,13 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -353,10 +353,10 @@ type AddressResourceModel struct {
 	Description     types.String    `tfsdk:"description"`
 	DisableOverride types.String    `tfsdk:"disable_override"`
 	Tags            types.List      `tfsdk:"tags"`
+	Fqdn            types.String    `tfsdk:"fqdn"`
 	IpNetmask       types.String    `tfsdk:"ip_netmask"`
 	IpRange         types.String    `tfsdk:"ip_range"`
 	IpWildcard      types.String    `tfsdk:"ip_wildcard"`
-	Fqdn            types.String    `tfsdk:"fqdn"`
 }
 
 func (r *AddressResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -388,11 +388,10 @@ func AddressResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -411,8 +410,8 @@ func AddressResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"ip_range": rsschema.StringAttribute{
-				Description: "The IP range value.",
+			"fqdn": rsschema.StringAttribute{
+				Description: "The FQDN value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -420,32 +419,32 @@ func AddressResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("fqdn"),
 						path.MatchRelative().AtParent().AtName("ip_netmask"),
 						path.MatchRelative().AtParent().AtName("ip_range"),
 						path.MatchRelative().AtParent().AtName("ip_wildcard"),
-						path.MatchRelative().AtParent().AtName("fqdn"),
 					}...),
 				},
 			},
 
-			"ip_wildcard": rsschema.StringAttribute{
-				Description: "The IP wildcard value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"fqdn": rsschema.StringAttribute{
-				Description: "The FQDN value.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"ip_netmask": rsschema.StringAttribute{
 				Description: "The IP netmask value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_range": rsschema.StringAttribute{
+				Description: "The IP range value.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ip_wildcard": rsschema.StringAttribute{
+				Description: "The IP wildcard value.",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -659,13 +658,6 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	var location address.Location
 
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -674,6 +666,13 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if savestate.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -809,21 +808,21 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	var location address.Location
 
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &address.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-		}
-	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &address.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
+		}
+	}
+	if state.Location.DeviceGroup != nil {
+		location.DeviceGroup = &address.DeviceGroupLocation{
+
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 
@@ -857,7 +856,6 @@ func AddressImportStateCreator(ctx context.Context, resource types.Object) ([]by
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -895,8 +893,10 @@ func (r *AddressResource) ImportState(ctx context.Context, req resource.ImportSt
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type AddressVsysLocation struct {
@@ -918,46 +918,19 @@ func AddressLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific Device Group",
+			"shared": rsschema.BoolAttribute{
+				Description: "Panorama shared object",
 				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"panorama_device": rsschema.StringAttribute{
-						Description: "Panorama device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "Device Group name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString(""),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
-				},
-			},
-			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
@@ -978,6 +951,33 @@ func AddressLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"device_group": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Device Group",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "Panorama device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Device Group name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

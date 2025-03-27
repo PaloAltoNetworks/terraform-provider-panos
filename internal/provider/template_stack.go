@@ -53,11 +53,11 @@ type TemplateStackDataSourceFilter struct {
 type TemplateStackDataSourceModel struct {
 	Location        TemplateStackLocation                         `tfsdk:"location"`
 	Name            types.String                                  `tfsdk:"name"`
+	Description     types.String                                  `tfsdk:"description"`
 	Templates       types.List                                    `tfsdk:"templates"`
 	Devices         types.List                                    `tfsdk:"devices"`
 	DefaultVsys     types.String                                  `tfsdk:"default_vsys"`
 	UserGroupSource *TemplateStackDataSourceUserGroupSourceObject `tfsdk:"user_group_source"`
-	Description     types.String                                  `tfsdk:"description"`
 }
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
@@ -139,20 +139,20 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, obj *t
 		}
 	}
 
-	var defaultVsys_value types.String
-	if obj.DefaultVsys != nil {
-		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
-	}
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var defaultVsys_value types.String
+	if obj.DefaultVsys != nil {
+		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.DefaultVsys = defaultVsys_value
-	o.UserGroupSource = userGroupSource_object
 	o.Description = description_value
 	o.Templates = templates_list
 	o.Devices = devices_list
+	o.DefaultVsys = defaultVsys_value
+	o.UserGroupSource = userGroupSource_object
 
 	return diags
 }
@@ -414,8 +414,6 @@ func TemplateStackResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"user_group_source": TemplateStackResourceUserGroupSourceSchema(),
-
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
 				Computed:    false,
@@ -449,6 +447,8 @@ func TemplateStackResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"user_group_source": TemplateStackResourceUserGroupSourceSchema(),
 		},
 	}
 }
@@ -881,7 +881,6 @@ func TemplateStackImportStateCreator(ctx context.Context, resource types.Object)
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -919,8 +918,10 @@ func (r *TemplateStackResource) ImportState(ctx context.Context, req resource.Im
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type TemplateStackPanoramaLocation struct {

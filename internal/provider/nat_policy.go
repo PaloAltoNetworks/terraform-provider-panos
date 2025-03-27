@@ -5,15 +5,15 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/movement"
 	"github.com/PaloAltoNetworks/pango/policies/rules/nat"
-	"github.com/PaloAltoNetworks/pango/rule"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -29,6 +29,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -59,21 +60,20 @@ type NatPolicyDataSourceModel struct {
 }
 type NatPolicyDataSourceRulesObject struct {
 	Name                          types.String                                                 `tfsdk:"name"`
-	SourceZones                   types.List                                                   `tfsdk:"source_zones"`
-	SourceTranslation             *NatPolicyDataSourceRulesSourceTranslationObject             `tfsdk:"source_translation"`
-	Uuid                          types.String                                                 `tfsdk:"uuid"`
-	DestinationZone               types.List                                                   `tfsdk:"destination_zone"`
-	ToInterface                   types.String                                                 `tfsdk:"to_interface"`
-	Disabled                      types.Bool                                                   `tfsdk:"disabled"`
-	SourceAddresses               types.List                                                   `tfsdk:"source_addresses"`
-	Tag                           types.List                                                   `tfsdk:"tag"`
-	Target                        *NatPolicyDataSourceRulesTargetObject                        `tfsdk:"target"`
+	ActiveActiveDeviceBinding     types.String                                                 `tfsdk:"active_active_device_binding"`
 	Description                   types.String                                                 `tfsdk:"description"`
+	DestinationAddresses          types.List                                                   `tfsdk:"destination_addresses"`
+	Disabled                      types.Bool                                                   `tfsdk:"disabled"`
+	SourceZones                   types.List                                                   `tfsdk:"source_zones"`
+	GroupTag                      types.String                                                 `tfsdk:"group_tag"`
 	NatType                       types.String                                                 `tfsdk:"nat_type"`
 	Service                       types.String                                                 `tfsdk:"service"`
-	ActiveActiveDeviceBinding     types.String                                                 `tfsdk:"active_active_device_binding"`
-	DestinationAddresses          types.List                                                   `tfsdk:"destination_addresses"`
-	GroupTag                      types.String                                                 `tfsdk:"group_tag"`
+	SourceAddresses               types.List                                                   `tfsdk:"source_addresses"`
+	SourceTranslation             *NatPolicyDataSourceRulesSourceTranslationObject             `tfsdk:"source_translation"`
+	Tag                           types.List                                                   `tfsdk:"tag"`
+	Target                        *NatPolicyDataSourceRulesTargetObject                        `tfsdk:"target"`
+	DestinationZone               types.List                                                   `tfsdk:"destination_zone"`
+	ToInterface                   types.String                                                 `tfsdk:"to_interface"`
 	DestinationTranslation        *NatPolicyDataSourceRulesDestinationTranslationObject        `tfsdk:"destination_translation"`
 	DynamicDestinationTranslation *NatPolicyDataSourceRulesDynamicDestinationTranslationObject `tfsdk:"dynamic_destination_translation"`
 }
@@ -121,23 +121,39 @@ type NatPolicyDataSourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
 }
 type NatPolicyDataSourceRulesDestinationTranslationObject struct {
+	TranslatedAddress types.String                                                    `tfsdk:"translated_address"`
 	TranslatedPort    types.Int64                                                     `tfsdk:"translated_port"`
 	DnsRewrite        *NatPolicyDataSourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
-	TranslatedAddress types.String                                                    `tfsdk:"translated_address"`
 }
 type NatPolicyDataSourceRulesDestinationTranslationDnsRewriteObject struct {
 	Direction types.String `tfsdk:"direction"`
 }
 type NatPolicyDataSourceRulesDynamicDestinationTranslationObject struct {
-	TranslatedPort    types.Int64  `tfsdk:"translated_port"`
 	Distribution      types.String `tfsdk:"distribution"`
 	TranslatedAddress types.String `tfsdk:"translated_address"`
+	TranslatedPort    types.Int64  `tfsdk:"translated_port"`
 }
 
 func (o *NatPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	destinationAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	disabled_value := o.Disabled.ValueBoolPointer()
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	groupTag_value := o.GroupTag.ValueStringPointer()
+	natType_value := o.NatType.ValueStringPointer()
+	service_value := o.Service.ValueStringPointer()
+	sourceAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -154,7 +170,11 @@ func (o *NatPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, obj **
 			return diags
 		}
 	}
-	uuid_value := o.Uuid.ValueStringPointer()
+	tag_pango_entries := make([]string, 0)
+	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	var target_entry *nat.Target
 	if o.Target != nil {
 		if *obj != nil && (*obj).Target != nil {
@@ -174,27 +194,6 @@ func (o *NatPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, obj **
 		return diags
 	}
 	toInterface_value := o.ToInterface.ValueStringPointer()
-	disabled_value := o.Disabled.ValueBoolPointer()
-	sourceAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	description_value := o.Description.ValueStringPointer()
-	natType_value := o.NatType.ValueStringPointer()
-	service_value := o.Service.ValueStringPointer()
-	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
-	destinationAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	groupTag_value := o.GroupTag.ValueStringPointer()
 	var destinationTranslation_entry *nat.DestinationTranslation
 	if o.DestinationTranslation != nil {
 		if *obj != nil && (*obj).DestinationTranslation != nil {
@@ -226,21 +225,20 @@ func (o *NatPolicyDataSourceRulesObject) CopyToPango(ctx context.Context, obj **
 		*obj = new(nat.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
+	(*obj).Description = description_value
+	(*obj).Destination = destinationAddresses_pango_entries
+	(*obj).Disabled = disabled_value
 	(*obj).From = sourceZones_pango_entries
+	(*obj).GroupTag = groupTag_value
+	(*obj).NatType = natType_value
+	(*obj).Service = service_value
+	(*obj).Source = sourceAddresses_pango_entries
 	(*obj).SourceTranslation = sourceTranslation_entry
-	(*obj).Uuid = uuid_value
+	(*obj).Tag = tag_pango_entries
 	(*obj).Target = target_entry
 	(*obj).To = destinationZone_pango_entries
 	(*obj).ToInterface = toInterface_value
-	(*obj).Disabled = disabled_value
-	(*obj).Source = sourceAddresses_pango_entries
-	(*obj).Tag = tag_pango_entries
-	(*obj).Description = description_value
-	(*obj).NatType = natType_value
-	(*obj).Service = service_value
-	(*obj).ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
-	(*obj).Destination = destinationAddresses_pango_entries
-	(*obj).GroupTag = groupTag_value
 	(*obj).DestinationTranslation = destinationTranslation_entry
 	(*obj).DynamicDestinationTranslation = dynamicDestinationTranslation_entry
 
@@ -372,11 +370,6 @@ func (o *NatPolicyDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddr
 }
 func (o *NatPolicyDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	translatedAddress_pango_entries := make([]string, 0)
-	diags.Append(o.TranslatedAddress.ElementsAs(ctx, &translatedAddress_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var interfaceAddress_entry *nat.SourceTranslationDynamicIpAndPortInterfaceAddress
 	if o.InterfaceAddress != nil {
 		if *obj != nil && (*obj).InterfaceAddress != nil {
@@ -390,12 +383,17 @@ func (o *NatPolicyDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyTo
 			return diags
 		}
 	}
+	translatedAddress_pango_entries := make([]string, 0)
+	diags.Append(o.TranslatedAddress.ElementsAs(ctx, &translatedAddress_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(nat.SourceTranslationDynamicIpAndPort)
 	}
-	(*obj).TranslatedAddress = translatedAddress_pango_entries
 	(*obj).InterfaceAddress = interfaceAddress_entry
+	(*obj).TranslatedAddress = translatedAddress_pango_entries
 
 	return diags
 }
@@ -429,11 +427,6 @@ func (o *NatPolicyDataSourceRulesSourceTranslationStaticIpObject) CopyToPango(ct
 }
 func (o *NatPolicyDataSourceRulesTargetObject) CopyToPango(ctx context.Context, obj **nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 	var devices_tf_entries []NatPolicyDataSourceRulesTargetDevicesObject
 	var devices_pango_entries []nat.TargetDevices
 	{
@@ -452,13 +445,18 @@ func (o *NatPolicyDataSourceRulesTargetObject) CopyToPango(ctx context.Context, 
 		}
 	}
 	negate_value := o.Negate.ValueBoolPointer()
+	tags_pango_entries := make([]string, 0)
+	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 
 	if (*obj) == nil {
 		*obj = new(nat.Target)
 	}
-	(*obj).Tags = tags_pango_entries
 	(*obj).Devices = devices_pango_entries
 	(*obj).Negate = negate_value
+	(*obj).Tags = tags_pango_entries
 
 	return diags
 }
@@ -502,6 +500,7 @@ func (o *NatPolicyDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx contex
 }
 func (o *NatPolicyDataSourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
 	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 	var dnsRewrite_entry *nat.DestinationTranslationDnsRewrite
 	if o.DnsRewrite != nil {
@@ -516,14 +515,13 @@ func (o *NatPolicyDataSourceRulesDestinationTranslationObject) CopyToPango(ctx c
 			return diags
 		}
 	}
-	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(nat.DestinationTranslation)
 	}
+	(*obj).TranslatedAddress = translatedAddress_value
 	(*obj).TranslatedPort = translatedPort_value
 	(*obj).DnsRewrite = dnsRewrite_entry
-	(*obj).TranslatedAddress = translatedAddress_value
 
 	return diags
 }
@@ -568,12 +566,6 @@ func (o *NatPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context, obj 
 		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
 	}
-	var destinationZone_list types.List
-	{
-		var list_diags diag.Diagnostics
-		destinationZone_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
-		diags.Append(list_diags...)
-	}
 	var sourceAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -584,6 +576,12 @@ func (o *NatPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context, obj 
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+		diags.Append(list_diags...)
+	}
+	var destinationZone_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationZone_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
 	}
 	var sourceTranslation_object *NatPolicyDataSourceRulesSourceTranslationObject
@@ -627,25 +625,17 @@ func (o *NatPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context, obj 
 	if obj.ActiveActiveDeviceBinding != nil {
 		activeActiveDeviceBinding_value = types.StringValue(*obj.ActiveActiveDeviceBinding)
 	}
-	var groupTag_value types.String
-	if obj.GroupTag != nil {
-		groupTag_value = types.StringValue(*obj.GroupTag)
-	}
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
-	}
-	var toInterface_value types.String
-	if obj.ToInterface != nil {
-		toInterface_value = types.StringValue(*obj.ToInterface)
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
+	var groupTag_value types.String
+	if obj.GroupTag != nil {
+		groupTag_value = types.StringValue(*obj.GroupTag)
 	}
 	var natType_value types.String
 	if obj.NatType != nil {
@@ -655,22 +645,25 @@ func (o *NatPolicyDataSourceRulesObject) CopyFromPango(ctx context.Context, obj 
 	if obj.Service != nil {
 		service_value = types.StringValue(*obj.Service)
 	}
+	var toInterface_value types.String
+	if obj.ToInterface != nil {
+		toInterface_value = types.StringValue(*obj.ToInterface)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
-	o.DestinationAddresses = destinationAddresses_list
-	o.GroupTag = groupTag_value
-	o.SourceZones = sourceZones_list
-	o.SourceTranslation = sourceTranslation_object
-	o.Uuid = uuid_value
-	o.DestinationZone = destinationZone_list
-	o.ToInterface = toInterface_value
-	o.Disabled = disabled_value
-	o.SourceAddresses = sourceAddresses_list
-	o.Tag = tag_list
-	o.Target = target_object
 	o.Description = description_value
+	o.DestinationAddresses = destinationAddresses_list
+	o.Disabled = disabled_value
+	o.SourceZones = sourceZones_list
+	o.GroupTag = groupTag_value
 	o.NatType = natType_value
 	o.Service = service_value
+	o.SourceAddresses = sourceAddresses_list
+	o.SourceTranslation = sourceTranslation_object
+	o.Tag = tag_list
+	o.Target = target_object
+	o.DestinationZone = destinationZone_list
+	o.ToInterface = toInterface_value
 	o.DestinationTranslation = destinationTranslation_object
 	o.DynamicDestinationTranslation = dynamicDestinationTranslation_object
 
@@ -911,28 +904,6 @@ func (o *NatPolicyDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *NatPolicyDataSourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var distribution_value types.String
-	if obj.Distribution != nil {
-		distribution_value = types.StringValue(*obj.Distribution)
-	}
-	var translatedAddress_value types.String
-	if obj.TranslatedAddress != nil {
-		translatedAddress_value = types.StringValue(*obj.TranslatedAddress)
-	}
-	var translatedPort_value types.Int64
-	if obj.TranslatedPort != nil {
-		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
-	}
-	o.Distribution = distribution_value
-	o.TranslatedAddress = translatedAddress_value
-	o.TranslatedPort = translatedPort_value
-
-	return diags
-}
-
 func (o *NatPolicyDataSourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsRewrite_object *NatPolicyDataSourceRulesDestinationTranslationDnsRewriteObject
@@ -968,6 +939,28 @@ func (o *NatPolicyDataSourceRulesDestinationTranslationDnsRewriteObject) CopyFro
 		direction_value = types.StringValue(*obj.Direction)
 	}
 	o.Direction = direction_value
+
+	return diags
+}
+
+func (o *NatPolicyDataSourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var distribution_value types.String
+	if obj.Distribution != nil {
+		distribution_value = types.StringValue(*obj.Distribution)
+	}
+	var translatedAddress_value types.String
+	if obj.TranslatedAddress != nil {
+		translatedAddress_value = types.StringValue(*obj.TranslatedAddress)
+	}
+	var translatedPort_value types.Int64
+	if obj.TranslatedPort != nil {
+		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
+	}
+	o.Distribution = distribution_value
+	o.TranslatedAddress = translatedAddress_value
+	o.TranslatedPort = translatedPort_value
 
 	return diags
 }
@@ -1028,7 +1021,32 @@ func NatPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
+			"description": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"destination_addresses": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"disabled": dsschema.BoolAttribute{
+				Description: "Disable the rule",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_zones": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1045,27 +1063,16 @@ func NatPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"source_zones": dsschema.ListAttribute{
+			"nat_type": dsschema.StringAttribute{
+				Description: "type of nat",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"service": dsschema.StringAttribute{
 				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_translation": NatPolicyDataSourceRulesSourceTranslationSchema(),
-
-			"uuid": dsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"disabled": dsschema.BoolAttribute{
-				Description: "Disable the rule",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1080,6 +1087,8 @@ func NatPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
+
+			"source_translation": NatPolicyDataSourceRulesSourceTranslationSchema(),
 
 			"tag": dsschema.ListAttribute{
 				Description: "",
@@ -1109,33 +1118,9 @@ func NatPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"description": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"nat_type": dsschema.StringAttribute{
-				Description: "type of nat",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"service": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"destination_translation": NatPolicyDataSourceRulesDestinationTranslationSchema(),
 
 			"dynamic_destination_translation": NatPolicyDataSourceRulesDynamicDestinationTranslationSchema(),
-
-			"destination_translation": NatPolicyDataSourceRulesDestinationTranslationSchema(),
 		},
 	}
 }
@@ -1418,16 +1403,16 @@ func NatPolicyDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressSc
 				Sensitive:   false,
 			},
 
-			"ip": dsschema.StringAttribute{
-				Description: "specify exact IP address if interface has multiple addresses",
+			"floating_ip": dsschema.StringAttribute{
+				Description: "Floating IP address in HA Active-Active configuration",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"floating_ip": dsschema.StringAttribute{
-				Description: "Floating IP address in HA Active-Active configuration",
+			"ip": dsschema.StringAttribute{
+				Description: "specify exact IP address if interface has multiple addresses",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1472,16 +1457,16 @@ func NatPolicyDataSourceRulesSourceTranslationStaticIpSchema() dsschema.SingleNe
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"translated_address": dsschema.StringAttribute{
-				Description: "",
+			"bi_directional": dsschema.StringAttribute{
+				Description: "allow reverse translation from translated address to original address",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"bi_directional": dsschema.StringAttribute{
-				Description: "allow reverse translation from translated address to original address",
+			"translated_address": dsschema.StringAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1518,15 +1503,6 @@ func NatPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"tags": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
 			"devices": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     false,
@@ -1542,6 +1518,15 @@ func NatPolicyDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"tags": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -1624,60 +1609,6 @@ func NatPolicyDataSourceRulesTargetDevicesVsysSchema() dsschema.NestedAttributeO
 
 func (o *NatPolicyDataSourceRulesTargetDevicesVsysObject) getTypeFor(name string) attr.Type {
 	schema := NatPolicyDataSourceRulesTargetDevicesVsysSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func NatPolicyDataSourceRulesDynamicDestinationTranslationSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"distribution": dsschema.StringAttribute{
-				Description: "Distribution algorithm for destination address pool",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"translated_address": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"translated_port": dsschema.Int64Attribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *NatPolicyDataSourceRulesDynamicDestinationTranslationObject) getTypeFor(name string) attr.Type {
-	schema := NatPolicyDataSourceRulesDynamicDestinationTranslationSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1780,6 +1711,60 @@ func (o *NatPolicyDataSourceRulesDestinationTranslationDnsRewriteObject) getType
 	panic("unreachable")
 }
 
+func NatPolicyDataSourceRulesDynamicDestinationTranslationSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"distribution": dsschema.StringAttribute{
+				Description: "Distribution algorithm for destination address pool",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"translated_address": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"translated_port": dsschema.Int64Attribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *NatPolicyDataSourceRulesDynamicDestinationTranslationObject) getTypeFor(name string) attr.Type {
+	schema := NatPolicyDataSourceRulesDynamicDestinationTranslationSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func NatPolicyDataSourceLocationSchema() rsschema.Attribute {
 	return NatPolicyLocationSchema()
 }
@@ -1848,8 +1833,8 @@ func (o *NatPolicyDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	var elements []NatPolicyDataSourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
-	if len(elements) == 0 {
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() || len(elements) == 0 {
 		return
 	}
 
@@ -1903,6 +1888,11 @@ var (
 )
 
 func NewNatPolicyResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_nat_policy"]; !found {
+		resourceFuncMap["panos_nat_policy"] = resourceFuncs{
+			CreateImportId: NatPolicyImportStateCreator,
+		}
+	}
 	return &NatPolicyResource{}
 }
 
@@ -1921,53 +1911,27 @@ type NatPolicyResourceModel struct {
 }
 type NatPolicyResourceRulesObject struct {
 	Name                          types.String                                               `tfsdk:"name"`
+	ActiveActiveDeviceBinding     types.String                                               `tfsdk:"active_active_device_binding"`
+	Description                   types.String                                               `tfsdk:"description"`
+	DestinationAddresses          types.List                                                 `tfsdk:"destination_addresses"`
+	Disabled                      types.Bool                                                 `tfsdk:"disabled"`
+	SourceZones                   types.List                                                 `tfsdk:"source_zones"`
+	GroupTag                      types.String                                               `tfsdk:"group_tag"`
+	NatType                       types.String                                               `tfsdk:"nat_type"`
+	Service                       types.String                                               `tfsdk:"service"`
+	SourceAddresses               types.List                                                 `tfsdk:"source_addresses"`
+	SourceTranslation             *NatPolicyResourceRulesSourceTranslationObject             `tfsdk:"source_translation"`
+	Tag                           types.List                                                 `tfsdk:"tag"`
 	Target                        *NatPolicyResourceRulesTargetObject                        `tfsdk:"target"`
 	DestinationZone               types.List                                                 `tfsdk:"destination_zone"`
 	ToInterface                   types.String                                               `tfsdk:"to_interface"`
-	Disabled                      types.Bool                                                 `tfsdk:"disabled"`
-	SourceAddresses               types.List                                                 `tfsdk:"source_addresses"`
-	Tag                           types.List                                                 `tfsdk:"tag"`
-	Description                   types.String                                               `tfsdk:"description"`
-	NatType                       types.String                                               `tfsdk:"nat_type"`
-	Service                       types.String                                               `tfsdk:"service"`
-	ActiveActiveDeviceBinding     types.String                                               `tfsdk:"active_active_device_binding"`
-	DestinationAddresses          types.List                                                 `tfsdk:"destination_addresses"`
-	GroupTag                      types.String                                               `tfsdk:"group_tag"`
-	SourceZones                   types.List                                                 `tfsdk:"source_zones"`
-	SourceTranslation             *NatPolicyResourceRulesSourceTranslationObject             `tfsdk:"source_translation"`
-	Uuid                          types.String                                               `tfsdk:"uuid"`
 	DestinationTranslation        *NatPolicyResourceRulesDestinationTranslationObject        `tfsdk:"destination_translation"`
 	DynamicDestinationTranslation *NatPolicyResourceRulesDynamicDestinationTranslationObject `tfsdk:"dynamic_destination_translation"`
-}
-type NatPolicyResourceRulesTargetObject struct {
-	Devices types.List `tfsdk:"devices"`
-	Negate  types.Bool `tfsdk:"negate"`
-	Tags    types.List `tfsdk:"tags"`
-}
-type NatPolicyResourceRulesTargetDevicesObject struct {
-	Name types.String `tfsdk:"name"`
-	Vsys types.List   `tfsdk:"vsys"`
-}
-type NatPolicyResourceRulesTargetDevicesVsysObject struct {
-	Name types.String `tfsdk:"name"`
 }
 type NatPolicyResourceRulesSourceTranslationObject struct {
 	DynamicIp        *NatPolicyResourceRulesSourceTranslationDynamicIpObject        `tfsdk:"dynamic_ip"`
 	DynamicIpAndPort *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject `tfsdk:"dynamic_ip_and_port"`
 	StaticIp         *NatPolicyResourceRulesSourceTranslationStaticIpObject         `tfsdk:"static_ip"`
-}
-type NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject struct {
-	InterfaceAddress  *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject `tfsdk:"interface_address"`
-	TranslatedAddress types.List                                                                     `tfsdk:"translated_address"`
-}
-type NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject struct {
-	Interface  types.String `tfsdk:"interface"`
-	Ip         types.String `tfsdk:"ip"`
-	FloatingIp types.String `tfsdk:"floating_ip"`
-}
-type NatPolicyResourceRulesSourceTranslationStaticIpObject struct {
-	BiDirectional     types.String `tfsdk:"bi_directional"`
-	TranslatedAddress types.String `tfsdk:"translated_address"`
 }
 type NatPolicyResourceRulesSourceTranslationDynamicIpObject struct {
 	Fallback          *NatPolicyResourceRulesSourceTranslationDynamicIpFallbackObject `tfsdk:"fallback"`
@@ -1982,10 +1946,35 @@ type NatPolicyResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObj
 	FloatingIp types.String `tfsdk:"floating_ip"`
 	Ip         types.String `tfsdk:"ip"`
 }
+type NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject struct {
+	InterfaceAddress  *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject `tfsdk:"interface_address"`
+	TranslatedAddress types.List                                                                     `tfsdk:"translated_address"`
+}
+type NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject struct {
+	Interface  types.String `tfsdk:"interface"`
+	FloatingIp types.String `tfsdk:"floating_ip"`
+	Ip         types.String `tfsdk:"ip"`
+}
+type NatPolicyResourceRulesSourceTranslationStaticIpObject struct {
+	BiDirectional     types.String `tfsdk:"bi_directional"`
+	TranslatedAddress types.String `tfsdk:"translated_address"`
+}
+type NatPolicyResourceRulesTargetObject struct {
+	Devices types.List `tfsdk:"devices"`
+	Negate  types.Bool `tfsdk:"negate"`
+	Tags    types.List `tfsdk:"tags"`
+}
+type NatPolicyResourceRulesTargetDevicesObject struct {
+	Name types.String `tfsdk:"name"`
+	Vsys types.List   `tfsdk:"vsys"`
+}
+type NatPolicyResourceRulesTargetDevicesVsysObject struct {
+	Name types.String `tfsdk:"name"`
+}
 type NatPolicyResourceRulesDestinationTranslationObject struct {
-	DnsRewrite        *NatPolicyResourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 	TranslatedAddress types.String                                                  `tfsdk:"translated_address"`
 	TranslatedPort    types.Int64                                                   `tfsdk:"translated_port"`
+	DnsRewrite        *NatPolicyResourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 }
 type NatPolicyResourceRulesDestinationTranslationDnsRewriteObject struct {
 	Direction types.String `tfsdk:"direction"`
@@ -1997,6 +1986,26 @@ type NatPolicyResourceRulesDynamicDestinationTranslationObject struct {
 }
 
 func (r *NatPolicyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	{
+		var resource NatPolicyResourceModel
+		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		entries := make(map[string]struct{})
+		var elements []NatPolicyResourceRulesObject
+		resource.Rules.ElementsAs(ctx, &elements, false)
+
+		for _, elt := range elements {
+			entry := elt.Name.ValueString()
+			if _, found := entries[entry]; found {
+				resp.Diagnostics.AddError("Failed to validate resource", "List entries must have unique names")
+				return
+			}
+			entries[entry] = struct{}{}
+		}
+	}
 }
 
 // <ResourceSchema>
@@ -2049,40 +2058,6 @@ func NatPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"nat_type": rsschema.StringAttribute{
-				Description: "type of nat",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("ipv4"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"nat64",
-						"nptv6",
-						"ipv4",
-					}...),
-				},
-			},
-
-			"service": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("any"),
-			},
-
 			"active_active_device_binding": rsschema.StringAttribute{
 				Description: "Device binding configuration in HA Active-Active mode",
 				Computed:    false,
@@ -2100,7 +2075,32 @@ func NatPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				},
 			},
 
+			"description": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"destination_addresses": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"disabled": rsschema.BoolAttribute{
+				Description: "Disable the rule",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"source_zones": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -2117,7 +2117,33 @@ func NatPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"source_zones": rsschema.ListAttribute{
+			"nat_type": rsschema.StringAttribute{
+				Description: "type of nat",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("ipv4"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"ipv4",
+						"nat64",
+						"nptv6",
+					}...),
+				},
+			},
+
+			"service": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("any"),
+			},
+
+			"source_addresses": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -2128,13 +2154,16 @@ func NatPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"source_translation": NatPolicyResourceRulesSourceTranslationSchema(),
 
-			"uuid": rsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
+			"tag": rsschema.ListAttribute{
+				Description: "",
 				Required:    false,
 				Optional:    true,
+				Computed:    false,
 				Sensitive:   false,
+				ElementType: types.StringType,
 			},
+
+			"target": NatPolicyResourceRulesTargetSchema(),
 
 			"destination_zone": rsschema.ListAttribute{
 				Description: "",
@@ -2153,34 +2182,6 @@ func NatPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 				Default:     stringdefault.StaticString("any"),
 			},
-
-			"disabled": rsschema.BoolAttribute{
-				Description: "Disable the rule",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_addresses": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"tag": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"target": NatPolicyResourceRulesTargetSchema(),
 
 			"destination_translation": NatPolicyResourceRulesDestinationTranslationSchema(),
 
@@ -2260,6 +2261,8 @@ func NatPolicyResourceRulesSourceTranslationDynamicIpSchema() rsschema.SingleNes
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"fallback": NatPolicyResourceRulesSourceTranslationDynamicIpFallbackSchema(),
+
 			"translated_address": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -2268,8 +2271,6 @@ func NatPolicyResourceRulesSourceTranslationDynamicIpSchema() rsschema.SingleNes
 				Sensitive:   false,
 				ElementType: types.StringType,
 			},
-
-			"fallback": NatPolicyResourceRulesSourceTranslationDynamicIpFallbackSchema(),
 		},
 	}
 }
@@ -2418,6 +2419,8 @@ func NatPolicyResourceRulesSourceTranslationDynamicIpAndPortSchema() rsschema.Si
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"interface_address": NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressSchema(),
+
 			"translated_address": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -2425,16 +2428,7 @@ func NatPolicyResourceRulesSourceTranslationDynamicIpAndPortSchema() rsschema.Si
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
-
-				Validators: []validator.List{
-					listvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("interface_address"),
-						path.MatchRelative().AtParent().AtName("translated_address"),
-					}...),
-				},
 			},
-
-			"interface_address": NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressSchema(),
 		},
 	}
 }
@@ -2727,8 +2721,6 @@ func NatPolicyResourceRulesDestinationTranslationSchema() rsschema.SingleNestedA
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"dns_rewrite": NatPolicyResourceRulesDestinationTranslationDnsRewriteSchema(),
-
 			"translated_address": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -2744,6 +2736,8 @@ func NatPolicyResourceRulesDestinationTranslationSchema() rsschema.SingleNestedA
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"dns_rewrite": NatPolicyResourceRulesDestinationTranslationDnsRewriteSchema(),
 		},
 	}
 }
@@ -2887,8 +2881,24 @@ func (r *NatPolicyResource) Configure(ctx context.Context, req resource.Configur
 
 func (o *NatPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
+	description_value := o.Description.ValueStringPointer()
+	destinationAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	disabled_value := o.Disabled.ValueBoolPointer()
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	groupTag_value := o.GroupTag.ValueStringPointer()
+	natType_value := o.NatType.ValueStringPointer()
+	service_value := o.Service.ValueStringPointer()
+	sourceAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2904,13 +2914,6 @@ func (o *NatPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **na
 		if diags.HasError() {
 			return diags
 		}
-	}
-	uuid_value := o.Uuid.ValueStringPointer()
-	disabled_value := o.Disabled.ValueBoolPointer()
-	sourceAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
 	}
 	tag_pango_entries := make([]string, 0)
 	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
@@ -2936,16 +2939,6 @@ func (o *NatPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **na
 		return diags
 	}
 	toInterface_value := o.ToInterface.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	natType_value := o.NatType.ValueStringPointer()
-	service_value := o.Service.ValueStringPointer()
-	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
-	destinationAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	groupTag_value := o.GroupTag.ValueStringPointer()
 	var destinationTranslation_entry *nat.DestinationTranslation
 	if o.DestinationTranslation != nil {
 		if *obj != nil && (*obj).DestinationTranslation != nil {
@@ -2977,21 +2970,20 @@ func (o *NatPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **na
 		*obj = new(nat.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).From = sourceZones_pango_entries
-	(*obj).SourceTranslation = sourceTranslation_entry
-	(*obj).Uuid = uuid_value
+	(*obj).ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
+	(*obj).Description = description_value
+	(*obj).Destination = destinationAddresses_pango_entries
 	(*obj).Disabled = disabled_value
+	(*obj).From = sourceZones_pango_entries
+	(*obj).GroupTag = groupTag_value
+	(*obj).NatType = natType_value
+	(*obj).Service = service_value
 	(*obj).Source = sourceAddresses_pango_entries
+	(*obj).SourceTranslation = sourceTranslation_entry
 	(*obj).Tag = tag_pango_entries
 	(*obj).Target = target_entry
 	(*obj).To = destinationZone_pango_entries
 	(*obj).ToInterface = toInterface_value
-	(*obj).Description = description_value
-	(*obj).NatType = natType_value
-	(*obj).Service = service_value
-	(*obj).ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
-	(*obj).Destination = destinationAddresses_pango_entries
-	(*obj).GroupTag = groupTag_value
 	(*obj).DestinationTranslation = destinationTranslation_entry
 	(*obj).DynamicDestinationTranslation = dynamicDestinationTranslation_entry
 
@@ -3045,63 +3037,6 @@ func (o *NatPolicyResourceRulesSourceTranslationObject) CopyToPango(ctx context.
 	(*obj).DynamicIp = dynamicIp_entry
 	(*obj).DynamicIpAndPort = dynamicIpAndPort_entry
 	(*obj).StaticIp = staticIp_entry
-
-	return diags
-}
-func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var interfaceAddress_entry *nat.SourceTranslationDynamicIpAndPortInterfaceAddress
-	if o.InterfaceAddress != nil {
-		if *obj != nil && (*obj).InterfaceAddress != nil {
-			interfaceAddress_entry = (*obj).InterfaceAddress
-		} else {
-			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
-		}
-
-		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	translatedAddress_pango_entries := make([]string, 0)
-	diags.Append(o.TranslatedAddress.ElementsAs(ctx, &translatedAddress_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(nat.SourceTranslationDynamicIpAndPort)
-	}
-	(*obj).InterfaceAddress = interfaceAddress_entry
-	(*obj).TranslatedAddress = translatedAddress_pango_entries
-
-	return diags
-}
-func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	interface_value := o.Interface.ValueStringPointer()
-	floatingIp_value := o.FloatingIp.ValueStringPointer()
-	ip_value := o.Ip.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
-	}
-	(*obj).Interface = interface_value
-	(*obj).FloatingIp = floatingIp_value
-	(*obj).Ip = ip_value
-
-	return diags
-}
-func (o *NatPolicyResourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	biDirectional_value := o.BiDirectional.ValueStringPointer()
-	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(nat.SourceTranslationStaticIp)
-	}
-	(*obj).BiDirectional = biDirectional_value
-	(*obj).TranslatedAddress = translatedAddress_value
 
 	return diags
 }
@@ -3175,6 +3110,63 @@ func (o *NatPolicyResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddres
 	(*obj).Interface = interface_value
 	(*obj).FloatingIp = floatingIp_value
 	(*obj).Ip = ip_value
+
+	return diags
+}
+func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var interfaceAddress_entry *nat.SourceTranslationDynamicIpAndPortInterfaceAddress
+	if o.InterfaceAddress != nil {
+		if *obj != nil && (*obj).InterfaceAddress != nil {
+			interfaceAddress_entry = (*obj).InterfaceAddress
+		} else {
+			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
+		}
+
+		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	translatedAddress_pango_entries := make([]string, 0)
+	diags.Append(o.TranslatedAddress.ElementsAs(ctx, &translatedAddress_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+
+	if (*obj) == nil {
+		*obj = new(nat.SourceTranslationDynamicIpAndPort)
+	}
+	(*obj).InterfaceAddress = interfaceAddress_entry
+	(*obj).TranslatedAddress = translatedAddress_pango_entries
+
+	return diags
+}
+func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	interface_value := o.Interface.ValueStringPointer()
+	floatingIp_value := o.FloatingIp.ValueStringPointer()
+	ip_value := o.Ip.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
+	}
+	(*obj).Interface = interface_value
+	(*obj).FloatingIp = floatingIp_value
+	(*obj).Ip = ip_value
+
+	return diags
+}
+func (o *NatPolicyResourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	biDirectional_value := o.BiDirectional.ValueStringPointer()
+	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(nat.SourceTranslationStaticIp)
+	}
+	(*obj).BiDirectional = biDirectional_value
+	(*obj).TranslatedAddress = translatedAddress_value
 
 	return diags
 }
@@ -3253,6 +3245,7 @@ func (o *NatPolicyResourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.
 }
 func (o *NatPolicyResourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
 	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 	var dnsRewrite_entry *nat.DestinationTranslationDnsRewrite
 	if o.DnsRewrite != nil {
@@ -3267,14 +3260,13 @@ func (o *NatPolicyResourceRulesDestinationTranslationObject) CopyToPango(ctx con
 			return diags
 		}
 	}
-	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(nat.DestinationTranslation)
 	}
+	(*obj).TranslatedAddress = translatedAddress_value
 	(*obj).TranslatedPort = translatedPort_value
 	(*obj).DnsRewrite = dnsRewrite_entry
-	(*obj).TranslatedAddress = translatedAddress_value
 
 	return diags
 }
@@ -3307,6 +3299,12 @@ func (o *NatPolicyResourceRulesDynamicDestinationTranslationObject) CopyToPango(
 
 func (o *NatPolicyResourceRulesObject) CopyFromPango(ctx context.Context, obj *nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var destinationAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
+		diags.Append(list_diags...)
+	}
 	var sourceZones_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -3329,12 +3327,6 @@ func (o *NatPolicyResourceRulesObject) CopyFromPango(ctx context.Context, obj *n
 	{
 		var list_diags diag.Diagnostics
 		destinationZone_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
-		diags.Append(list_diags...)
-	}
-	var destinationAddresses_list types.List
-	{
-		var list_diags diag.Diagnostics
-		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
 	}
 	var sourceTranslation_object *NatPolicyResourceRulesSourceTranslationObject
@@ -3374,21 +3366,21 @@ func (o *NatPolicyResourceRulesObject) CopyFromPango(ctx context.Context, obj *n
 		}
 	}
 
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
+	var activeActiveDeviceBinding_value types.String
+	if obj.ActiveActiveDeviceBinding != nil {
+		activeActiveDeviceBinding_value = types.StringValue(*obj.ActiveActiveDeviceBinding)
+	}
+	var description_value types.String
+	if obj.Description != nil {
+		description_value = types.StringValue(*obj.Description)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
 		disabled_value = types.BoolValue(*obj.Disabled)
 	}
-	var toInterface_value types.String
-	if obj.ToInterface != nil {
-		toInterface_value = types.StringValue(*obj.ToInterface)
-	}
-	var description_value types.String
-	if obj.Description != nil {
-		description_value = types.StringValue(*obj.Description)
+	var groupTag_value types.String
+	if obj.GroupTag != nil {
+		groupTag_value = types.StringValue(*obj.GroupTag)
 	}
 	var natType_value types.String
 	if obj.NatType != nil {
@@ -3398,96 +3390,27 @@ func (o *NatPolicyResourceRulesObject) CopyFromPango(ctx context.Context, obj *n
 	if obj.Service != nil {
 		service_value = types.StringValue(*obj.Service)
 	}
-	var activeActiveDeviceBinding_value types.String
-	if obj.ActiveActiveDeviceBinding != nil {
-		activeActiveDeviceBinding_value = types.StringValue(*obj.ActiveActiveDeviceBinding)
-	}
-	var groupTag_value types.String
-	if obj.GroupTag != nil {
-		groupTag_value = types.StringValue(*obj.GroupTag)
+	var toInterface_value types.String
+	if obj.ToInterface != nil {
+		toInterface_value = types.StringValue(*obj.ToInterface)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.SourceZones = sourceZones_list
-	o.SourceTranslation = sourceTranslation_object
-	o.Uuid = uuid_value
+	o.ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
+	o.Description = description_value
+	o.DestinationAddresses = destinationAddresses_list
 	o.Disabled = disabled_value
+	o.SourceZones = sourceZones_list
+	o.GroupTag = groupTag_value
+	o.NatType = natType_value
+	o.Service = service_value
 	o.SourceAddresses = sourceAddresses_list
+	o.SourceTranslation = sourceTranslation_object
 	o.Tag = tag_list
 	o.Target = target_object
 	o.DestinationZone = destinationZone_list
 	o.ToInterface = toInterface_value
-	o.Description = description_value
-	o.NatType = natType_value
-	o.Service = service_value
-	o.ActiveActiveDeviceBinding = activeActiveDeviceBinding_value
-	o.DestinationAddresses = destinationAddresses_list
-	o.GroupTag = groupTag_value
 	o.DestinationTranslation = destinationTranslation_object
 	o.DynamicDestinationTranslation = dynamicDestinationTranslation_object
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
-		diags.Append(list_diags...)
-	}
-	var devices_list types.List
-	{
-		var devices_tf_entries []NatPolicyResourceRulesTargetDevicesObject
-		for _, elt := range obj.Devices {
-			var entry NatPolicyResourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			devices_tf_entries = append(devices_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("devices")
-		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var negate_value types.Bool
-	if obj.Negate != nil {
-		negate_value = types.BoolValue(*obj.Negate)
-	}
-	o.Negate = negate_value
-	o.Tags = tags_list
-	o.Devices = devices_list
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var vsys_list types.List
-	{
-		var vsys_tf_entries []NatPolicyResourceRulesTargetDevicesVsysObject
-		for _, elt := range obj.Vsys {
-			var entry NatPolicyResourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			vsys_tf_entries = append(vsys_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("vsys")
-		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Vsys = vsys_list
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -3525,69 +3448,6 @@ func (o *NatPolicyResourceRulesSourceTranslationObject) CopyFromPango(ctx contex
 	o.DynamicIp = dynamicIp_object
 	o.DynamicIpAndPort = dynamicIpAndPort_object
 	o.StaticIp = staticIp_object
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var translatedAddress_list types.List
-	{
-		var list_diags diag.Diagnostics
-		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
-		diags.Append(list_diags...)
-	}
-	var interfaceAddress_object *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
-	if obj.InterfaceAddress != nil {
-		interfaceAddress_object = new(NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject)
-
-		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.TranslatedAddress = translatedAddress_list
-	o.InterfaceAddress = interfaceAddress_object
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var interface_value types.String
-	if obj.Interface != nil {
-		interface_value = types.StringValue(*obj.Interface)
-	}
-	var ip_value types.String
-	if obj.Ip != nil {
-		ip_value = types.StringValue(*obj.Ip)
-	}
-	var floatingIp_value types.String
-	if obj.FloatingIp != nil {
-		floatingIp_value = types.StringValue(*obj.FloatingIp)
-	}
-	o.Interface = interface_value
-	o.Ip = ip_value
-	o.FloatingIp = floatingIp_value
-
-	return diags
-}
-
-func (o *NatPolicyResourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var biDirectional_value types.String
-	if obj.BiDirectional != nil {
-		biDirectional_value = types.StringValue(*obj.BiDirectional)
-	}
-	var translatedAddress_value types.String
-	if obj.TranslatedAddress != nil {
-		translatedAddress_value = types.StringValue(*obj.TranslatedAddress)
-	}
-	o.BiDirectional = biDirectional_value
-	o.TranslatedAddress = translatedAddress_value
 
 	return diags
 }
@@ -3662,6 +3522,133 @@ func (o *NatPolicyResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddres
 	return diags
 }
 
+func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var translatedAddress_list types.List
+	{
+		var list_diags diag.Diagnostics
+		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
+		diags.Append(list_diags...)
+	}
+	var interfaceAddress_object *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
+	if obj.InterfaceAddress != nil {
+		interfaceAddress_object = new(NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject)
+
+		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.InterfaceAddress = interfaceAddress_object
+	o.TranslatedAddress = translatedAddress_list
+
+	return diags
+}
+
+func (o *NatPolicyResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var interface_value types.String
+	if obj.Interface != nil {
+		interface_value = types.StringValue(*obj.Interface)
+	}
+	var floatingIp_value types.String
+	if obj.FloatingIp != nil {
+		floatingIp_value = types.StringValue(*obj.FloatingIp)
+	}
+	var ip_value types.String
+	if obj.Ip != nil {
+		ip_value = types.StringValue(*obj.Ip)
+	}
+	o.Interface = interface_value
+	o.FloatingIp = floatingIp_value
+	o.Ip = ip_value
+
+	return diags
+}
+
+func (o *NatPolicyResourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var biDirectional_value types.String
+	if obj.BiDirectional != nil {
+		biDirectional_value = types.StringValue(*obj.BiDirectional)
+	}
+	var translatedAddress_value types.String
+	if obj.TranslatedAddress != nil {
+		translatedAddress_value = types.StringValue(*obj.TranslatedAddress)
+	}
+	o.BiDirectional = biDirectional_value
+	o.TranslatedAddress = translatedAddress_value
+
+	return diags
+}
+
+func (o *NatPolicyResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var devices_list types.List
+	{
+		var devices_tf_entries []NatPolicyResourceRulesTargetDevicesObject
+		for _, elt := range obj.Devices {
+			var entry NatPolicyResourceRulesTargetDevicesObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			devices_tf_entries = append(devices_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("devices")
+		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
+		diags.Append(list_diags...)
+	}
+
+	var negate_value types.Bool
+	if obj.Negate != nil {
+		negate_value = types.BoolValue(*obj.Negate)
+	}
+	o.Devices = devices_list
+	o.Negate = negate_value
+	o.Tags = tags_list
+
+	return diags
+}
+
+func (o *NatPolicyResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var vsys_list types.List
+	{
+		var vsys_tf_entries []NatPolicyResourceRulesTargetDevicesVsysObject
+		for _, elt := range obj.Vsys {
+			var entry NatPolicyResourceRulesTargetDevicesVsysObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			vsys_tf_entries = append(vsys_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("vsys")
+		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Name = types.StringValue(obj.Name)
+	o.Vsys = vsys_list
+
+	return diags
+}
+
+func (o *NatPolicyResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
+
+	return diags
+}
+
 func (o *NatPolicyResourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsRewrite_object *NatPolicyResourceRulesDestinationTranslationDnsRewriteObject
@@ -3682,9 +3669,9 @@ func (o *NatPolicyResourceRulesDestinationTranslationObject) CopyFromPango(ctx c
 	if obj.TranslatedPort != nil {
 		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
 	}
-	o.DnsRewrite = dnsRewrite_object
 	o.TranslatedAddress = translatedAddress_value
 	o.TranslatedPort = translatedPort_value
+	o.DnsRewrite = dnsRewrite_object
 
 	return diags
 }
@@ -3704,10 +3691,6 @@ func (o *NatPolicyResourceRulesDestinationTranslationDnsRewriteObject) CopyFromP
 func (o *NatPolicyResourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var translatedPort_value types.Int64
-	if obj.TranslatedPort != nil {
-		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
-	}
 	var distribution_value types.String
 	if obj.Distribution != nil {
 		distribution_value = types.StringValue(*obj.Distribution)
@@ -3716,9 +3699,13 @@ func (o *NatPolicyResourceRulesDynamicDestinationTranslationObject) CopyFromPang
 	if obj.TranslatedAddress != nil {
 		translatedAddress_value = types.StringValue(*obj.TranslatedAddress)
 	}
-	o.TranslatedPort = translatedPort_value
+	var translatedPort_value types.Int64
+	if obj.TranslatedPort != nil {
+		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
+	}
 	o.Distribution = distribution_value
 	o.TranslatedAddress = translatedAddress_value
+	o.TranslatedPort = translatedPort_value
 
 	return diags
 }
@@ -3762,7 +3749,11 @@ func (r *NatPolicyResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	var elements []NatPolicyResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	entries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *nat.Entry
@@ -3772,8 +3763,7 @@ func (r *NatPolicyResource) Create(ctx context.Context, req resource.CreateReque
 		}
 		entries[idx] = entry
 	}
-	trueVal := true
-	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.Exhaustive, rule.Position{First: &trueVal})
+	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.Exhaustive, movement.PositionFirst{})
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
@@ -3832,15 +3822,15 @@ func (o *NatPolicyResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
 		}
 	}
 
 	var elements []NatPolicyResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
-	if len(elements) == 0 {
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() || len(elements) == 0 {
 		return
 	}
 
@@ -3918,14 +3908,17 @@ func (r *NatPolicyResource) Update(ctx context.Context, req resource.UpdateReque
 	if plan.Location.DeviceGroup != nil {
 		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
 			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
+			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
 		}
 	}
 
 	var elements []NatPolicyResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	stateEntries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *nat.Entry
@@ -3936,8 +3929,7 @@ func (r *NatPolicyResource) Update(ctx context.Context, req resource.UpdateReque
 		stateEntries[idx] = entry
 	}
 
-	trueValue := true
-	position := rule.Position{First: &trueValue}
+	position := movement.PositionFirst{}
 
 	existing, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.Exhaustive)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -3950,7 +3942,11 @@ func (r *NatPolicyResource) Update(ctx context.Context, req resource.UpdateReque
 		existingEntriesByName[elt.Name] = elt
 	}
 
-	plan.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	planEntries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		entry, _ := existingEntriesByName[elt.Name.ValueString()]
@@ -4001,7 +3997,10 @@ func (r *NatPolicyResource) Delete(ctx context.Context, req resource.DeleteReque
 		"function":      "Delete",
 	})
 	var elements []NatPolicyResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	var location nat.Location
 
@@ -4039,8 +4038,88 @@ func (r *NatPolicyResource) Delete(ctx context.Context, req resource.DeleteReque
 
 }
 
+type NatPolicyImportState struct {
+	Location NatPolicyLocation `json:"location"`
+	Names    []string          `json:"names"`
+}
+
+func NatPolicyImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location NatPolicyLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+	itemsAttr, ok := attrs["rules"]
+	if !ok {
+		return nil, fmt.Errorf("rules attribute missing")
+	}
+
+	var items []*NatPolicyResourceRulesObject
+	switch value := itemsAttr.(type) {
+	case types.List:
+		diags := value.ElementsAs(ctx, &items, false)
+		if diags.HasError() {
+			return nil, fmt.Errorf("Invalid rules attribute element type, expected list of valid objects")
+		}
+	default:
+		return nil, fmt.Errorf("Invalid names attribute type, expected list of strings")
+	}
+
+	var names []string
+	for _, elt := range items {
+		names = append(names, elt.Name.ValueString())
+	}
+
+	importStruct := NatPolicyImportState{
+		Location: location,
+		Names:    names,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *NatPolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
+	var obj NatPolicyImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var names []*NatPolicyResourceRulesObject
+	for _, elt := range obj.Names {
+		object := &NatPolicyResourceRulesObject{}
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, &nat.Entry{}, nil)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		object.Name = types.StringValue(elt)
+		names = append(names, object)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("rules"), names)...)
 }
 
 type NatPolicySharedLocation struct {
@@ -4051,9 +4130,9 @@ type NatPolicyVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type NatPolicyDeviceGroupLocation struct {
-	Rulebase       types.String `tfsdk:"rulebase"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	Rulebase       types.String `tfsdk:"rulebase"`
 }
 type NatPolicyLocation struct {
 	Shared      *NatPolicySharedLocation      `tfsdk:"shared"`

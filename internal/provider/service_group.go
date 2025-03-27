@@ -57,9 +57,9 @@ type ServiceGroupDataSourceFilter struct {
 type ServiceGroupDataSourceModel struct {
 	Location        ServiceGroupLocation `tfsdk:"location"`
 	Name            types.String         `tfsdk:"name"`
+	DisableOverride types.String         `tfsdk:"disable_override"`
 	Members         types.List           `tfsdk:"members"`
 	Tags            types.List           `tfsdk:"tags"`
-	DisableOverride types.String         `tfsdk:"disable_override"`
 }
 
 func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -89,16 +89,16 @@ func (o *ServiceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **gro
 
 func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
-		diags.Append(list_diags...)
-	}
 	var members_list types.List
 	{
 		var list_diags diag.Diagnostics
 		members_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Members)
+		diags.Append(list_diags...)
+	}
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
 	}
 
@@ -107,9 +107,9 @@ func (o *ServiceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *gr
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Tags = tags_list
 	o.DisableOverride = disableOverride_value
 	o.Members = members_list
+	o.Tags = tags_list
 
 	return diags
 }
@@ -219,8 +219,8 @@ func (o *ServiceGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if savestate.Location.DeviceGroup != nil {
@@ -319,11 +319,10 @@ func ServiceGroupResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -535,6 +534,9 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
@@ -548,9 +550,6 @@ func (o *ServiceGroupResource) Read(ctx context.Context, req resource.ReadReques
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
-	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -603,8 +602,8 @@ func (r *ServiceGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	if state.Location.Vsys != nil {
 		location.Vsys = &group.VsysLocation{
 
-			Vsys:       state.Location.Vsys.Name.ValueString(),
 			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
+			Vsys:       state.Location.Vsys.Name.ValueString(),
 		}
 	}
 	if state.Location.DeviceGroup != nil {
@@ -733,7 +732,6 @@ func ServiceGroupImportStateCreator(ctx context.Context, resource types.Object) 
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -771,8 +769,10 @@ func (r *ServiceGroupResource) ImportState(ctx context.Context, req resource.Imp
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type ServiceGroupVsysLocation struct {
@@ -795,7 +795,7 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
+				Description: "Panorama shared object",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
@@ -803,9 +803,9 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
+						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
 				},
 			},
@@ -867,33 +867,6 @@ func ServiceGroupLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o ServiceGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
-		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
-		Name:           o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *ServiceGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o ServiceGroupVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -921,15 +894,42 @@ func (o *ServiceGroupVsysLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o ServiceGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device"`
+		Name           *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
 	}{
-		DeviceGroup: o.DeviceGroup,
 		Shared:      o.Shared.ValueBoolPointer(),
 		Vsys:        o.Vsys,
+		DeviceGroup: o.DeviceGroup,
 	}
 
 	return json.Marshal(obj)
@@ -937,18 +937,18 @@ func (o ServiceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
 		Shared      *bool                            `json:"shared"`
 		Vsys        *ServiceGroupVsysLocation        `json:"vsys"`
+		DeviceGroup *ServiceGroupDeviceGroupLocation `json:"device_group"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.DeviceGroup = shadow.DeviceGroup
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.Vsys = shadow.Vsys
+	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil
 }

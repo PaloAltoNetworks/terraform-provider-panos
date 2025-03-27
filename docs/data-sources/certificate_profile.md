@@ -100,7 +100,7 @@ Optional:
 
 - `default_ocsp_url` (String) Default URL for ocsp verification.
 - `ocsp_verify_certificate` (String) Certificate to verify signature in OCSP response.
-- `template_name` (String) Template Name/OID that was used to sign the certificate.
+- `template_name` (String) Certificate Template Name / OID for the certificate
 
 
 <a id="nestedatt--username_field"></a>

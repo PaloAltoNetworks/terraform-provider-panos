@@ -671,14 +671,9 @@ Optional:
 
 - `none` (Attributes) (see [below for nested schema](#nestedatt--protocol--bgp--policy--aggregation--address--aggregate_route_attributes--as_path--none))
 - `prepend` (Number) prepend local AS for specified number of times
-- `remove` (Attributes) (see [below for nested schema](#nestedatt--protocol--bgp--policy--aggregation--address--aggregate_route_attributes--as_path--remove))
 
 <a id="nestedatt--protocol--bgp--policy--aggregation--address--aggregate_route_attributes--as_path--none"></a>
 ### Nested Schema for `protocol.bgp.policy.aggregation.address.aggregate_route_attributes.as_path.none`
-
-
-<a id="nestedatt--protocol--bgp--policy--aggregation--address--aggregate_route_attributes--as_path--remove"></a>
-### Nested Schema for `protocol.bgp.policy.aggregation.address.aggregate_route_attributes.as_path.remove`
 
 
 
@@ -2456,7 +2451,6 @@ Optional:
 - `interface` (String)
 - `metric` (Number) metric value (path cost)
 - `nexthop` (Attributes) (see [below for nested schema](#nestedatt--routing_table--ipv6--static_route--nexthop))
-- `option` (Attributes) (see [below for nested schema](#nestedatt--routing_table--ipv6--static_route--option))
 - `path_monitor` (Attributes) (see [below for nested schema](#nestedatt--routing_table--ipv6--static_route--path_monitor))
 - `route_table` (Attributes) (see [below for nested schema](#nestedatt--routing_table--ipv6--static_route--route_table))
 
@@ -2485,10 +2479,6 @@ Optional:
 <a id="nestedatt--routing_table--ipv6--static_route--nexthop--receive"></a>
 ### Nested Schema for `routing_table.ipv6.static_route.nexthop.receive`
 
-
-
-<a id="nestedatt--routing_table--ipv6--static_route--option"></a>
-### Nested Schema for `routing_table.ipv6.static_route.option`
 
 
 <a id="nestedatt--routing_table--ipv6--static_route--path_monitor"></a>

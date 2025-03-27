@@ -40,9 +40,12 @@ type expectServerNatRulesOrder struct {
 	RuleNames []string
 }
 
-func ExpectServerNatRulesOrder(prefix string, location nat.Location, ruleNames []string) *expectServerNatRulesOrder {
+func ExpectServerNatRulesOrder(prefix string, ruleNames []string) *expectServerNatRulesOrder {
+	location := nat.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
 	return &expectServerNatRulesOrder{
-		Location:  location,
+		Location:  *location,
 		Prefix:    prefix,
 		RuleNames: ruleNames,
 	}
@@ -111,10 +114,13 @@ type expectServerNatRulesCount struct {
 	Count    int
 }
 
-func ExpectServerNatRulesCount(prefix string, location nat.Location, count int) *expectServerNatRulesCount {
+func ExpectServerNatRulesCount(prefix string, count int) *expectServerNatRulesCount {
+	location := nat.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
 	return &expectServerNatRulesCount{
 		Prefix:   prefix,
-		Location: location,
+		Location: *location,
 		Count:    count,
 	}
 }
@@ -143,10 +149,23 @@ func (o *expectServerNatRulesCount) CheckState(ctx context.Context, req stateche
 
 const natPolicyExtendedResource1Tmpl = `
 variable "prefix" { type = string }
-variable "location" { type = map }
+
+resource "panos_template" "template" {
+  location = { panorama = {} }
+
+  name = format("%s-tmpl", var.prefix)
+}
+
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+
+  name = format("%s-dg", var.prefix)
+  templates = [ resource.panos_template.template.name ]
+}
 
 resource "panos_nat_policy" "policy" {
-  location = var.location
+  location = { device_group = { name = resource.panos_device_group.dg.name }}
 
   rules = [{
       name = format("%s-rule1", var.prefix)
@@ -331,19 +350,15 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
 	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 
-	device := devicePanorama
-	sdkLocation, cfgLocation := natPolicyLocationByDeviceType(device, "post-rulebase")
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource1Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":   config.StringVariable(prefix),
-					"location": cfgLocation,
+					"prefix": config.StringVariable(prefix),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
@@ -433,13 +448,12 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource2Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":   config.StringVariable(prefix),
-					"location": cfgLocation,
+					"prefix": config.StringVariable(prefix),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
@@ -517,13 +531,12 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource3Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":   config.StringVariable(prefix),
-					"location": cfgLocation,
+					"prefix": config.StringVariable(prefix),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
@@ -565,13 +578,12 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource4Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":   config.StringVariable(prefix),
-					"location": cfgLocation,
+					"prefix": config.StringVariable(prefix),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
@@ -645,7 +657,7 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 
 	device := devicePanorama
 
-	sdkLocation, cfgLocation := natPolicyLocationByDeviceType(device, "pre-rulebase")
+	sdkLocation, _ := natPolicyLocationByDeviceType(device, "pre-rulebase")
 
 	stateExpectedRuleName := func(idx int, value string) statecheck.StateCheck {
 		return statecheck.ExpectKnownValue(
@@ -670,27 +682,27 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix, sdkLocation),
+		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: makeNatPolicyConfig(prefix),
 				ConfigVariables: map[string]config.Variable{
 					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
-					"location":   cfgLocation,
+					"prefix":     config.StringVariable(prefix),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					stateExpectedRuleName(0, "rule-1"),
 					stateExpectedRuleName(1, "rule-2"),
 					stateExpectedRuleName(2, "rule-3"),
-					ExpectServerNatRulesCount(prefix, sdkLocation, len(rulesInitial)),
-					ExpectServerNatRulesOrder(prefix, sdkLocation, rulesInitial),
+					ExpectServerNatRulesCount(prefix, len(rulesInitial)),
+					ExpectServerNatRulesOrder(prefix, rulesInitial),
 				},
 			},
 			{
 				Config: makeNatPolicyConfig(prefix),
 				ConfigVariables: map[string]config.Variable{
 					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
-					"location":   cfgLocation,
+					"prefix":     config.StringVariable(prefix),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -702,7 +714,7 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 				Config: makeNatPolicyConfig(prefix),
 				ConfigVariables: map[string]config.Variable{
 					"rule_names": config.ListVariable(withPrefix(rulesReordered)...),
-					"location":   cfgLocation,
+					"prefix":     config.StringVariable(prefix),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -715,7 +727,7 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 					stateExpectedRuleName(0, "rule-2"),
 					stateExpectedRuleName(1, "rule-1"),
 					stateExpectedRuleName(2, "rule-3"),
-					ExpectServerNatRulesOrder(prefix, sdkLocation, rulesReordered),
+					ExpectServerNatRulesOrder(prefix, rulesReordered),
 				},
 			},
 		},
@@ -723,11 +735,24 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 }
 
 const configTmpl = `
+variable "prefix" { type = string }
 variable "rule_names" { type = list(string) }
-variable "location" { type = map }
+
+resource "panos_template" "template" {
+  location = { panorama = {} }
+
+  name = format("%s-tmpl", var.prefix)
+}
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+
+  name = format("%s-dg", var.prefix)
+  templates = [ resource.panos_template.template.name ]
+}
 
 resource "panos_nat_policy" "{{ .ResourceName }}" {
-  location = var.location
+  location = { device_group = { name = resource.panos_device_group.dg.name }}
 
   rules = [
     for index, name in var.rule_names: {
@@ -830,12 +855,15 @@ func natPolicyPreCheck(prefix string, location nat.Location) {
 	}
 }
 
-func natPolicyCheckDestroy(prefix string, location nat.Location) func(s *terraform.State) error {
+func natPolicyCheckDestroy(prefix string) func(s *terraform.State) error {
 	return func(s *terraform.State) error {
 		service := nat.NewService(sdkClient)
 		ctx := context.TODO()
 
-		rules, err := service.List(ctx, location, "get", "", "")
+		location := nat.NewDeviceGroupLocation()
+		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
+		rules, err := service.List(ctx, *location, "get", "", "")
 		if err != nil && !sdkerrors.IsObjectNotFound(err) {
 			return err
 		}
@@ -849,7 +877,7 @@ func natPolicyCheckDestroy(prefix string, location nat.Location) func(s *terrafo
 
 		if len(danglingNames) > 0 {
 			err := DanglingObjectsError
-			delErr := service.Delete(ctx, location, danglingNames...)
+			delErr := service.Delete(ctx, *location, danglingNames...)
 			if delErr != nil {
 				err = errors.Join(err, delErr)
 			}

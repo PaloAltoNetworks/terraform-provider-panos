@@ -53,14 +53,14 @@ type SslDecryptDataSourceFilter struct {
 
 type SslDecryptDataSourceModel struct {
 	Location                             SslDecryptLocation `tfsdk:"location"`
+	DisabledSslExcludeCertFromPredefined types.List         `tfsdk:"disabled_ssl_exclude_cert_from_predefined"`
+	RootCaExcludeList                    types.List         `tfsdk:"root_ca_exclude_list"`
 	SslExcludeCert                       types.List         `tfsdk:"ssl_exclude_cert"`
 	TrustedRootCa                        types.List         `tfsdk:"trusted_root_ca"`
 	ForwardTrustCertificateEcdsa         types.String       `tfsdk:"forward_trust_certificate_ecdsa"`
 	ForwardTrustCertificateRsa           types.String       `tfsdk:"forward_trust_certificate_rsa"`
 	ForwardUntrustCertificateEcdsa       types.String       `tfsdk:"forward_untrust_certificate_ecdsa"`
 	ForwardUntrustCertificateRsa         types.String       `tfsdk:"forward_untrust_certificate_rsa"`
-	DisabledSslExcludeCertFromPredefined types.List         `tfsdk:"disabled_ssl_exclude_cert_from_predefined"`
-	RootCaExcludeList                    types.List         `tfsdk:"root_ca_exclude_list"`
 }
 type SslDecryptDataSourceSslExcludeCertObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -70,6 +70,16 @@ type SslDecryptDataSourceSslExcludeCertObject struct {
 
 func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, obj **ssldecrypt.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	disabledSslExcludeCertFromPredefined_pango_entries := make([]string, 0)
+	diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &disabledSslExcludeCertFromPredefined_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	rootCaExcludeList_pango_entries := make([]string, 0)
+	diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &rootCaExcludeList_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	var sslExcludeCert_tf_entries []SslDecryptDataSourceSslExcludeCertObject
 	var sslExcludeCert_pango_entries []ssldecrypt.SslExcludeCert
 	{
@@ -96,28 +106,18 @@ func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, obj **sslde
 	forwardTrustCertificateRsa_value := o.ForwardTrustCertificateRsa.ValueStringPointer()
 	forwardUntrustCertificateEcdsa_value := o.ForwardUntrustCertificateEcdsa.ValueStringPointer()
 	forwardUntrustCertificateRsa_value := o.ForwardUntrustCertificateRsa.ValueStringPointer()
-	disabledSslExcludeCertFromPredefined_pango_entries := make([]string, 0)
-	diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &disabledSslExcludeCertFromPredefined_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	rootCaExcludeList_pango_entries := make([]string, 0)
-	diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &rootCaExcludeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(ssldecrypt.Config)
 	}
+	(*obj).DisabledSslExcludeCertFromPredefined = disabledSslExcludeCertFromPredefined_pango_entries
+	(*obj).RootCaExcludeList = rootCaExcludeList_pango_entries
 	(*obj).SslExcludeCert = sslExcludeCert_pango_entries
 	(*obj).TrustedRootCa = trustedRootCa_pango_entries
 	(*obj).ForwardTrustCertificateEcdsa = forwardTrustCertificateEcdsa_value
 	(*obj).ForwardTrustCertificateRsa = forwardTrustCertificateRsa_value
 	(*obj).ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
 	(*obj).ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
-	(*obj).DisabledSslExcludeCertFromPredefined = disabledSslExcludeCertFromPredefined_pango_entries
-	(*obj).RootCaExcludeList = rootCaExcludeList_pango_entries
 
 	return diags
 }
@@ -171,10 +171,6 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, obj *ssld
 		diags.Append(list_diags...)
 	}
 
-	var forwardUntrustCertificateRsa_value types.String
-	if obj.ForwardUntrustCertificateRsa != nil {
-		forwardUntrustCertificateRsa_value = types.StringValue(*obj.ForwardUntrustCertificateRsa)
-	}
 	var forwardTrustCertificateEcdsa_value types.String
 	if obj.ForwardTrustCertificateEcdsa != nil {
 		forwardTrustCertificateEcdsa_value = types.StringValue(*obj.ForwardTrustCertificateEcdsa)
@@ -187,7 +183,10 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, obj *ssld
 	if obj.ForwardUntrustCertificateEcdsa != nil {
 		forwardUntrustCertificateEcdsa_value = types.StringValue(*obj.ForwardUntrustCertificateEcdsa)
 	}
-	o.ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
+	var forwardUntrustCertificateRsa_value types.String
+	if obj.ForwardUntrustCertificateRsa != nil {
+		forwardUntrustCertificateRsa_value = types.StringValue(*obj.ForwardUntrustCertificateRsa)
+	}
 	o.DisabledSslExcludeCertFromPredefined = disabledSslExcludeCertFromPredefined_list
 	o.RootCaExcludeList = rootCaExcludeList_list
 	o.SslExcludeCert = sslExcludeCert_list
@@ -195,6 +194,7 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, obj *ssld
 	o.ForwardTrustCertificateEcdsa = forwardTrustCertificateEcdsa_value
 	o.ForwardTrustCertificateRsa = forwardTrustCertificateRsa_value
 	o.ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
+	o.ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
 
 	return diags
 }
@@ -222,38 +222,6 @@ func SslDecryptDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": SslDecryptDataSourceLocationSchema(),
-
-			"forward_trust_certificate_ecdsa": dsschema.StringAttribute{
-				Description: "Forward trust ECDSA certificate.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"forward_trust_certificate_rsa": dsschema.StringAttribute{
-				Description: "Forward trust RSA certificate.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"forward_untrust_certificate_ecdsa": dsschema.StringAttribute{
-				Description: "Forward untrust ECDSA certificate.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"forward_untrust_certificate_rsa": dsschema.StringAttribute{
-				Description: "Forward untrust RSA certificate.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 
 			"disabled_ssl_exclude_cert_from_predefined": dsschema.ListAttribute{
 				Description: "List of disabled predefined exclude certificates.",
@@ -289,6 +257,38 @@ func SslDecryptDataSourceSchema() dsschema.Schema {
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"forward_trust_certificate_ecdsa": dsschema.StringAttribute{
+				Description: "Forward trust ECDSA certificate.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"forward_trust_certificate_rsa": dsschema.StringAttribute{
+				Description: "Forward trust RSA certificate.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"forward_untrust_certificate_ecdsa": dsschema.StringAttribute{
+				Description: "Forward untrust ECDSA certificate.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"forward_untrust_certificate_rsa": dsschema.StringAttribute{
+				Description: "Forward untrust RSA certificate.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -399,17 +399,14 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	var location ssldecrypt.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
-	}
 	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
 		location.Panorama = true
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
 
-			Template:       savestate.Location.Template.Name.ValueString(),
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
+			Template:       savestate.Location.Template.Name.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateVsys != nil {
@@ -424,8 +421,8 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &ssldecrypt.TemplateStackLocation{
 
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
 		}
 	}
 	if savestate.Location.TemplateStackVsys != nil {
@@ -436,6 +433,9 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			NgfwDevice:     savestate.Location.TemplateStackVsys.NgfwDevice.ValueString(),
 			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
+	}
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
 	}
 
 	// Basic logging.
@@ -493,7 +493,6 @@ func SslDecryptResourceLocationSchema() rsschema.Attribute {
 
 type SslDecryptResourceModel struct {
 	Location                             SslDecryptLocation `tfsdk:"location"`
-	ForwardUntrustCertificateRsa         types.String       `tfsdk:"forward_untrust_certificate_rsa"`
 	DisabledSslExcludeCertFromPredefined types.List         `tfsdk:"disabled_ssl_exclude_cert_from_predefined"`
 	RootCaExcludeList                    types.List         `tfsdk:"root_ca_exclude_list"`
 	SslExcludeCert                       types.List         `tfsdk:"ssl_exclude_cert"`
@@ -501,6 +500,7 @@ type SslDecryptResourceModel struct {
 	ForwardTrustCertificateEcdsa         types.String       `tfsdk:"forward_trust_certificate_ecdsa"`
 	ForwardTrustCertificateRsa           types.String       `tfsdk:"forward_trust_certificate_rsa"`
 	ForwardUntrustCertificateEcdsa       types.String       `tfsdk:"forward_untrust_certificate_ecdsa"`
+	ForwardUntrustCertificateRsa         types.String       `tfsdk:"forward_untrust_certificate_rsa"`
 }
 type SslDecryptResourceSslExcludeCertObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -684,8 +684,6 @@ func (r *SslDecryptResource) Configure(ctx context.Context, req resource.Configu
 
 func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, obj **ssldecrypt.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	forwardUntrustCertificateEcdsa_value := o.ForwardUntrustCertificateEcdsa.ValueStringPointer()
-	forwardUntrustCertificateRsa_value := o.ForwardUntrustCertificateRsa.ValueStringPointer()
 	disabledSslExcludeCertFromPredefined_pango_entries := make([]string, 0)
 	diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &disabledSslExcludeCertFromPredefined_pango_entries, false)...)
 	if diags.HasError() {
@@ -720,18 +718,20 @@ func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, obj **ssldecr
 	}
 	forwardTrustCertificateEcdsa_value := o.ForwardTrustCertificateEcdsa.ValueStringPointer()
 	forwardTrustCertificateRsa_value := o.ForwardTrustCertificateRsa.ValueStringPointer()
+	forwardUntrustCertificateEcdsa_value := o.ForwardUntrustCertificateEcdsa.ValueStringPointer()
+	forwardUntrustCertificateRsa_value := o.ForwardUntrustCertificateRsa.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ssldecrypt.Config)
 	}
-	(*obj).ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
-	(*obj).ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
 	(*obj).DisabledSslExcludeCertFromPredefined = disabledSslExcludeCertFromPredefined_pango_entries
 	(*obj).RootCaExcludeList = rootCaExcludeList_pango_entries
 	(*obj).SslExcludeCert = sslExcludeCert_pango_entries
 	(*obj).TrustedRootCa = trustedRootCa_pango_entries
 	(*obj).ForwardTrustCertificateEcdsa = forwardTrustCertificateEcdsa_value
 	(*obj).ForwardTrustCertificateRsa = forwardTrustCertificateRsa_value
+	(*obj).ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
+	(*obj).ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
 
 	return diags
 }
@@ -785,6 +785,10 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, obj *ssldec
 		diags.Append(list_diags...)
 	}
 
+	var forwardTrustCertificateEcdsa_value types.String
+	if obj.ForwardTrustCertificateEcdsa != nil {
+		forwardTrustCertificateEcdsa_value = types.StringValue(*obj.ForwardTrustCertificateEcdsa)
+	}
 	var forwardTrustCertificateRsa_value types.String
 	if obj.ForwardTrustCertificateRsa != nil {
 		forwardTrustCertificateRsa_value = types.StringValue(*obj.ForwardTrustCertificateRsa)
@@ -797,18 +801,14 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, obj *ssldec
 	if obj.ForwardUntrustCertificateRsa != nil {
 		forwardUntrustCertificateRsa_value = types.StringValue(*obj.ForwardUntrustCertificateRsa)
 	}
-	var forwardTrustCertificateEcdsa_value types.String
-	if obj.ForwardTrustCertificateEcdsa != nil {
-		forwardTrustCertificateEcdsa_value = types.StringValue(*obj.ForwardTrustCertificateEcdsa)
-	}
-	o.ForwardTrustCertificateRsa = forwardTrustCertificateRsa_value
-	o.ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
-	o.ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
 	o.DisabledSslExcludeCertFromPredefined = disabledSslExcludeCertFromPredefined_list
 	o.RootCaExcludeList = rootCaExcludeList_list
 	o.SslExcludeCert = sslExcludeCert_list
 	o.TrustedRootCa = trustedRootCa_list
 	o.ForwardTrustCertificateEcdsa = forwardTrustCertificateEcdsa_value
+	o.ForwardTrustCertificateRsa = forwardTrustCertificateRsa_value
+	o.ForwardUntrustCertificateEcdsa = forwardUntrustCertificateEcdsa_value
+	o.ForwardUntrustCertificateRsa = forwardUntrustCertificateRsa_value
 
 	return diags
 }
@@ -867,10 +867,10 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 	if state.Location.TemplateVsys != nil {
 		location.TemplateVsys = &ssldecrypt.TemplateVsysLocation{
 
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
 			Template:       state.Location.TemplateVsys.Template.ValueString(),
 			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
@@ -883,10 +883,10 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 	if state.Location.TemplateStackVsys != nil {
 		location.TemplateStackVsys = &ssldecrypt.TemplateStackVsysLocation{
 
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
+			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
 	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
@@ -1133,24 +1133,24 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if state.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
 
-			Template:       state.Location.Template.Name.ValueString(),
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
+			Template:       state.Location.Template.Name.ValueString(),
 		}
 	}
 	if state.Location.TemplateVsys != nil {
 		location.TemplateVsys = &ssldecrypt.TemplateVsysLocation{
 
-			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
 			Template:       state.Location.TemplateVsys.Template.ValueString(),
+			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
+			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ssldecrypt.TemplateStackLocation{
 
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 		}
 	}
 	if state.Location.TemplateStackVsys != nil {
@@ -1188,28 +1188,28 @@ type SslDecryptTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type SslDecryptTemplateVsysLocation struct {
-	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Template       types.String `tfsdk:"template"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+	Vsys           types.String `tfsdk:"vsys"`
 }
 type SslDecryptTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type SslDecryptTemplateStackVsysLocation struct {
-	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	TemplateStack  types.String `tfsdk:"template_stack"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+	Vsys           types.String `tfsdk:"vsys"`
 }
 type SslDecryptLocation struct {
+	Panorama          types.Bool                           `tfsdk:"panorama"`
 	Template          *SslDecryptTemplateLocation          `tfsdk:"template"`
 	TemplateVsys      *SslDecryptTemplateVsysLocation      `tfsdk:"template_vsys"`
 	TemplateStack     *SslDecryptTemplateStackLocation     `tfsdk:"template_stack"`
 	TemplateStackVsys *SslDecryptTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
 	Shared            types.Bool                           `tfsdk:"shared"`
-	Panorama          types.Bool                           `tfsdk:"panorama"`
 }
 
 func SslDecryptLocationSchema() rsschema.Attribute {
@@ -1217,8 +1217,8 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
-				Description: "Located in shared.",
+			"panorama": rsschema.BoolAttribute{
+				Description: "Located in a panorama.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
@@ -1226,20 +1226,13 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("panorama"),
+						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
 						path.MatchRelative().AtParent().AtName("template_stack_vsys"),
 						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("panorama"),
-						path.MatchRelative().AtParent().AtName("template"),
 					}...),
-				},
-			},
-			"panorama": rsschema.BoolAttribute{
-				Description: "Located in a panorama.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
@@ -1345,24 +1338,6 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template stack, device and vsys.",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"vsys": rsschema.StringAttribute{
-						Description: "The vsys.",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "The panorama device.",
 						Optional:    true,
@@ -1381,9 +1356,34 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"vsys": rsschema.StringAttribute{
+						Description: "The vsys.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"shared": rsschema.BoolAttribute{
+				Description: "Located in shared.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
 				},
 			},
 		},
@@ -1419,15 +1419,15 @@ func (o *SslDecryptTemplateLocation) UnmarshalJSON(data []byte) error {
 }
 func (o SslDecryptTemplateVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Vsys           *string `json:"vsys"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Template       *string `json:"template"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		Vsys           *string `json:"vsys"`
 	}{
-		Vsys:           o.Vsys.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Template:       o.Template.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1435,20 +1435,20 @@ func (o SslDecryptTemplateVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SslDecryptTemplateVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Vsys           *string `json:"vsys"`
 		PanoramaDevice *string `json:"panorama_device"`
 		Template       *string `json:"template"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		Vsys           *string `json:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Vsys = types.StringPointerValue(shadow.Vsys)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Template = types.StringPointerValue(shadow.Template)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -1481,15 +1481,15 @@ func (o *SslDecryptTemplateStackLocation) UnmarshalJSON(data []byte) error {
 }
 func (o SslDecryptTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Vsys           *string `json:"vsys"`
 		PanoramaDevice *string `json:"panorama_device"`
 		TemplateStack  *string `json:"template_stack"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		Vsys           *string `json:"vsys"`
 	}{
-		Vsys:           o.Vsys.ValueStringPointer(),
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		TemplateStack:  o.TemplateStack.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1497,20 +1497,20 @@ func (o SslDecryptTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SslDecryptTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Vsys           *string `json:"vsys"`
 		PanoramaDevice *string `json:"panorama_device"`
 		TemplateStack  *string `json:"template_stack"`
 		NgfwDevice     *string `json:"ngfw_device"`
+		Vsys           *string `json:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Vsys = types.StringPointerValue(shadow.Vsys)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.TemplateStack = types.StringPointerValue(shadow.TemplateStack)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }

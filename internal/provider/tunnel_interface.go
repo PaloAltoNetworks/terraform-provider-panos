@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/tunnel"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -57,15 +57,20 @@ type TunnelInterfaceDataSourceFilter struct {
 type TunnelInterfaceDataSourceModel struct {
 	Location                   TunnelInterfaceLocation                 `tfsdk:"location"`
 	Name                       types.String                            `tfsdk:"name"`
+	Bonjour                    *TunnelInterfaceDataSourceBonjourObject `tfsdk:"bonjour"`
 	Comment                    types.String                            `tfsdk:"comment"`
+	DfIgnore                   types.Bool                              `tfsdk:"df_ignore"`
 	InterfaceManagementProfile types.String                            `tfsdk:"interface_management_profile"`
 	Ip                         types.List                              `tfsdk:"ip"`
 	Ipv6                       *TunnelInterfaceDataSourceIpv6Object    `tfsdk:"ipv6"`
-	NetflowProfile             types.String                            `tfsdk:"netflow_profile"`
-	Bonjour                    *TunnelInterfaceDataSourceBonjourObject `tfsdk:"bonjour"`
-	DfIgnore                   types.Bool                              `tfsdk:"df_ignore"`
 	LinkTag                    types.String                            `tfsdk:"link_tag"`
 	Mtu                        types.Int64                             `tfsdk:"mtu"`
+	NetflowProfile             types.String                            `tfsdk:"netflow_profile"`
+}
+type TunnelInterfaceDataSourceBonjourObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	GroupId  types.Int64 `tfsdk:"group_id"`
+	TtlCheck types.Bool  `tfsdk:"ttl_check"`
 }
 type TunnelInterfaceDataSourceIpObject struct {
 	Name types.String `tfsdk:"name"`
@@ -85,16 +90,24 @@ type TunnelInterfaceDataSourceIpv6AddressPrefixObject struct {
 }
 type TunnelInterfaceDataSourceIpv6AddressAnycastObject struct {
 }
-type TunnelInterfaceDataSourceBonjourObject struct {
-	GroupId  types.Int64 `tfsdk:"group_id"`
-	TtlCheck types.Bool  `tfsdk:"ttl_check"`
-	Enable   types.Bool  `tfsdk:"enable"`
-}
 
 func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **tunnel.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
+	var bonjour_entry *tunnel.Bonjour
+	if o.Bonjour != nil {
+		if *obj != nil && (*obj).Bonjour != nil {
+			bonjour_entry = (*obj).Bonjour
+		} else {
+			bonjour_entry = new(tunnel.Bonjour)
+		}
+
+		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	comment_value := o.Comment.ValueStringPointer()
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
 	var ip_tf_entries []TunnelInterfaceDataSourceIpObject
 	var ip_pango_entries []tunnel.Ip
@@ -126,36 +139,23 @@ func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **
 			return diags
 		}
 	}
-	var bonjour_entry *tunnel.Bonjour
-	if o.Bonjour != nil {
-		if *obj != nil && (*obj).Bonjour != nil {
-			bonjour_entry = (*obj).Bonjour
-		} else {
-			bonjour_entry = new(tunnel.Bonjour)
-		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	linkTag_value := o.LinkTag.ValueStringPointer()
 	mtu_value := o.Mtu.ValueInt64Pointer()
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(tunnel.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).NetflowProfile = netflowProfile_value
+	(*obj).Bonjour = bonjour_entry
 	(*obj).Comment = comment_value
+	(*obj).DfIgnore = dfIgnore_value
 	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
 	(*obj).Ip = ip_pango_entries
 	(*obj).Ipv6 = ipv6_entry
-	(*obj).Bonjour = bonjour_entry
-	(*obj).DfIgnore = dfIgnore_value
 	(*obj).LinkTag = linkTag_value
 	(*obj).Mtu = mtu_value
+	(*obj).NetflowProfile = netflowProfile_value
 
 	return diags
 }
@@ -186,8 +186,6 @@ func (o *TunnelInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, obj
 }
 func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, obj **tunnel.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	enabled_value := o.Enabled.ValueBoolPointer()
-	interfaceId_value := o.InterfaceId.ValueStringPointer()
 	var address_tf_entries []TunnelInterfaceDataSourceIpv6AddressObject
 	var address_pango_entries []tunnel.Ipv6Address
 	{
@@ -205,13 +203,15 @@ func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, o
 			address_pango_entries = append(address_pango_entries, *entry)
 		}
 	}
+	enabled_value := o.Enabled.ValueBoolPointer()
+	interfaceId_value := o.InterfaceId.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(tunnel.Ipv6)
 	}
+	(*obj).Address = address_pango_entries
 	(*obj).Enabled = enabled_value
 	(*obj).InterfaceId = interfaceId_value
-	(*obj).Address = address_pango_entries
 
 	return diags
 }
@@ -290,15 +290,6 @@ func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj 
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var ipv6_object *TunnelInterfaceDataSourceIpv6Object
-	if obj.Ipv6 != nil {
-		ipv6_object = new(TunnelInterfaceDataSourceIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var bonjour_object *TunnelInterfaceDataSourceBonjourObject
 	if obj.Bonjour != nil {
 		bonjour_object = new(TunnelInterfaceDataSourceBonjourObject)
@@ -308,22 +299,27 @@ func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj 
 			return diags
 		}
 	}
+	var ipv6_object *TunnelInterfaceDataSourceIpv6Object
+	if obj.Ipv6 != nil {
+		ipv6_object = new(TunnelInterfaceDataSourceIpv6Object)
+
+		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var comment_value types.String
 	if obj.Comment != nil {
 		comment_value = types.StringValue(*obj.Comment)
 	}
-	var interfaceManagementProfile_value types.String
-	if obj.InterfaceManagementProfile != nil {
-		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
-	}
-	var netflowProfile_value types.String
-	if obj.NetflowProfile != nil {
-		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
-	}
 	var dfIgnore_value types.Bool
 	if obj.DfIgnore != nil {
 		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
+	}
+	var interfaceManagementProfile_value types.String
+	if obj.InterfaceManagementProfile != nil {
+		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
 	}
 	var linkTag_value types.String
 	if obj.LinkTag != nil {
@@ -333,16 +329,20 @@ func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj 
 	if obj.Mtu != nil {
 		mtu_value = types.Int64Value(*obj.Mtu)
 	}
+	var netflowProfile_value types.String
+	if obj.NetflowProfile != nil {
+		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
+	}
 	o.Name = types.StringValue(obj.Name)
+	o.Bonjour = bonjour_object
 	o.Comment = comment_value
+	o.DfIgnore = dfIgnore_value
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
 	o.Ip = ip_list
 	o.Ipv6 = ipv6_object
-	o.NetflowProfile = netflowProfile_value
-	o.Bonjour = bonjour_object
-	o.DfIgnore = dfIgnore_value
 	o.LinkTag = linkTag_value
 	o.Mtu = mtu_value
+	o.NetflowProfile = netflowProfile_value
 
 	return diags
 }
@@ -350,10 +350,6 @@ func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj 
 func (o *TunnelInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context, obj *tunnel.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var ttlCheck_value types.Bool
-	if obj.TtlCheck != nil {
-		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
-	}
 	var enable_value types.Bool
 	if obj.Enable != nil {
 		enable_value = types.BoolValue(*obj.Enable)
@@ -362,9 +358,13 @@ func (o *TunnelInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Conte
 	if obj.GroupId != nil {
 		groupId_value = types.Int64Value(*obj.GroupId)
 	}
-	o.TtlCheck = ttlCheck_value
+	var ttlCheck_value types.Bool
+	if obj.TtlCheck != nil {
+		ttlCheck_value = types.BoolValue(*obj.TtlCheck)
+	}
 	o.Enable = enable_value
 	o.GroupId = groupId_value
+	o.TtlCheck = ttlCheck_value
 
 	return diags
 }
@@ -467,43 +467,17 @@ func TunnelInterfaceDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"mtu": dsschema.Int64Attribute{
-				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"bonjour": TunnelInterfaceDataSourceBonjourSchema(),
 
-			"df_ignore": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"link_tag": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"ipv6": TunnelInterfaceDataSourceIpv6Schema(),
-
-			"netflow_profile": dsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"comment": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"df_ignore": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -526,6 +500,32 @@ func TunnelInterfaceDataSourceSchema() dsschema.Schema {
 				Computed:     true,
 				Sensitive:    false,
 				NestedObject: TunnelInterfaceDataSourceIpSchema(),
+			},
+
+			"ipv6": TunnelInterfaceDataSourceIpv6Schema(),
+
+			"link_tag": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"mtu": dsschema.Int64Attribute{
+				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"netflow_profile": dsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 		},
 	}
@@ -587,6 +587,39 @@ func TunnelInterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
 
 func (o *TunnelInterfaceDataSourceBonjourObject) getTypeFor(name string) attr.Type {
 	schema := TunnelInterfaceDataSourceBonjourSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func TunnelInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *TunnelInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
+	schema := TunnelInterfaceDataSourceIpSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -761,39 +794,6 @@ func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) getTypeFor(name stri
 	panic("unreachable")
 }
 
-func TunnelInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *TunnelInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
-	schema := TunnelInterfaceDataSourceIpSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func TunnelInterfaceDataSourceLocationSchema() rsschema.Attribute {
 	return TunnelInterfaceLocationSchema()
 }
@@ -832,20 +832,6 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 
 	var location tunnel.Location
 
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
-
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
 	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
 		location.Shared = true
 	}
@@ -855,6 +841,20 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
 			Template:       savestate.Location.Template.Name.ValueString(),
 			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.TemplateStack != nil {
+		location.TemplateStack = &tunnel.TemplateStackLocation{
+
+			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		}
+	}
+	if savestate.Location.Ngfw != nil {
+		location.Ngfw = &tunnel.NgfwLocation{
+
+			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -920,15 +920,20 @@ func TunnelInterfaceResourceLocationSchema() rsschema.Attribute {
 type TunnelInterfaceResourceModel struct {
 	Location                   TunnelInterfaceLocation               `tfsdk:"location"`
 	Name                       types.String                          `tfsdk:"name"`
+	Bonjour                    *TunnelInterfaceResourceBonjourObject `tfsdk:"bonjour"`
+	Comment                    types.String                          `tfsdk:"comment"`
+	DfIgnore                   types.Bool                            `tfsdk:"df_ignore"`
 	InterfaceManagementProfile types.String                          `tfsdk:"interface_management_profile"`
 	Ip                         types.List                            `tfsdk:"ip"`
 	Ipv6                       *TunnelInterfaceResourceIpv6Object    `tfsdk:"ipv6"`
-	NetflowProfile             types.String                          `tfsdk:"netflow_profile"`
-	Comment                    types.String                          `tfsdk:"comment"`
-	DfIgnore                   types.Bool                            `tfsdk:"df_ignore"`
 	LinkTag                    types.String                          `tfsdk:"link_tag"`
 	Mtu                        types.Int64                           `tfsdk:"mtu"`
-	Bonjour                    *TunnelInterfaceResourceBonjourObject `tfsdk:"bonjour"`
+	NetflowProfile             types.String                          `tfsdk:"netflow_profile"`
+}
+type TunnelInterfaceResourceBonjourObject struct {
+	Enable   types.Bool  `tfsdk:"enable"`
+	GroupId  types.Int64 `tfsdk:"group_id"`
+	TtlCheck types.Bool  `tfsdk:"ttl_check"`
 }
 type TunnelInterfaceResourceIpObject struct {
 	Name types.String `tfsdk:"name"`
@@ -940,18 +945,13 @@ type TunnelInterfaceResourceIpv6Object struct {
 }
 type TunnelInterfaceResourceIpv6AddressObject struct {
 	Name              types.String                                     `tfsdk:"name"`
+	EnableOnInterface types.Bool                                       `tfsdk:"enable_on_interface"`
 	Prefix            *TunnelInterfaceResourceIpv6AddressPrefixObject  `tfsdk:"prefix"`
 	Anycast           *TunnelInterfaceResourceIpv6AddressAnycastObject `tfsdk:"anycast"`
-	EnableOnInterface types.Bool                                       `tfsdk:"enable_on_interface"`
 }
 type TunnelInterfaceResourceIpv6AddressPrefixObject struct {
 }
 type TunnelInterfaceResourceIpv6AddressAnycastObject struct {
-}
-type TunnelInterfaceResourceBonjourObject struct {
-	Enable   types.Bool  `tfsdk:"enable"`
-	GroupId  types.Int64 `tfsdk:"group_id"`
-	TtlCheck types.Bool  `tfsdk:"ttl_check"`
 }
 
 func (r *TunnelInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -973,7 +973,17 @@ func TunnelInterfaceResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"bonjour": TunnelInterfaceResourceBonjourSchema(),
+
 			"comment": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -1000,24 +1010,6 @@ func TunnelInterfaceResourceSchema() rsschema.Schema {
 
 			"ipv6": TunnelInterfaceResourceIpv6Schema(),
 
-			"netflow_profile": rsschema.StringAttribute{
-				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"bonjour": TunnelInterfaceResourceBonjourSchema(),
-
-			"df_ignore": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"link_tag": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -1033,12 +1025,75 @@ func TunnelInterfaceResourceSchema() rsschema.Schema {
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"netflow_profile": rsschema.StringAttribute{
+				Description: "Netflow Server Profile",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
 func (o *TunnelInterfaceResourceModel) getTypeFor(name string) attr.Type {
 	schema := TunnelInterfaceResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func TunnelInterfaceResourceBonjourSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "Set to support Bonjour service",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"group_id": rsschema.Int64Attribute{
+				Description: "default 0: NO-Group",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(40),
+			},
+
+			"ttl_check": rsschema.BoolAttribute{
+				Description: "Set to check and update TTL",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *TunnelInterfaceResourceBonjourObject) getTypeFor(name string) attr.Type {
+	schema := TunnelInterfaceResourceBonjourSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1189,35 +1244,6 @@ func (o *TunnelInterfaceResourceIpv6AddressObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
-func TunnelInterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes:  map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) getTypeFor(name string) attr.Type {
-	schema := TunnelInterfaceResourceIpv6AddressAnycastSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func TunnelInterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -1247,45 +1273,19 @@ func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func TunnelInterfaceResourceBonjourSchema() rsschema.SingleNestedAttribute {
+func TunnelInterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    false,
 		Computed:    false,
 		Optional:    true,
 		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "Set to support Bonjour service",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"group_id": rsschema.Int64Attribute{
-				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(40),
-			},
-
-			"ttl_check": rsschema.BoolAttribute{
-				Description: "Set to check and update TTL",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
+		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
 
-func (o *TunnelInterfaceResourceBonjourObject) getTypeFor(name string) attr.Type {
-	schema := TunnelInterfaceResourceBonjourSchema()
+func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) getTypeFor(name string) attr.Type {
+	schema := TunnelInterfaceResourceIpv6AddressAnycastSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1329,7 +1329,21 @@ func (r *TunnelInterfaceResource) Configure(ctx context.Context, req resource.Co
 
 func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, obj **tunnel.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var bonjour_entry *tunnel.Bonjour
+	if o.Bonjour != nil {
+		if *obj != nil && (*obj).Bonjour != nil {
+			bonjour_entry = (*obj).Bonjour
+		} else {
+			bonjour_entry = new(tunnel.Bonjour)
+		}
+
+		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	comment_value := o.Comment.ValueStringPointer()
+	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	interfaceManagementProfile_value := o.InterfaceManagementProfile.ValueStringPointer()
 	var ip_tf_entries []TunnelInterfaceResourceIpObject
 	var ip_pango_entries []tunnel.Ip
@@ -1361,37 +1375,38 @@ func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, obj **tu
 			return diags
 		}
 	}
-	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
-	var bonjour_entry *tunnel.Bonjour
-	if o.Bonjour != nil {
-		if *obj != nil && (*obj).Bonjour != nil {
-			bonjour_entry = (*obj).Bonjour
-		} else {
-			bonjour_entry = new(tunnel.Bonjour)
-		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	linkTag_value := o.LinkTag.ValueStringPointer()
 	mtu_value := o.Mtu.ValueInt64Pointer()
+	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(tunnel.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
+	(*obj).Bonjour = bonjour_entry
 	(*obj).Comment = comment_value
+	(*obj).DfIgnore = dfIgnore_value
 	(*obj).InterfaceManagementProfile = interfaceManagementProfile_value
 	(*obj).Ip = ip_pango_entries
 	(*obj).Ipv6 = ipv6_entry
-	(*obj).NetflowProfile = netflowProfile_value
-	(*obj).Bonjour = bonjour_entry
-	(*obj).DfIgnore = dfIgnore_value
 	(*obj).LinkTag = linkTag_value
 	(*obj).Mtu = mtu_value
+	(*obj).NetflowProfile = netflowProfile_value
+
+	return diags
+}
+func (o *TunnelInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, obj **tunnel.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	groupId_value := o.GroupId.ValueInt64Pointer()
+	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(tunnel.Bonjour)
+	}
+	(*obj).Enable = enable_value
+	(*obj).GroupId = groupId_value
+	(*obj).TtlCheck = ttlCheck_value
 
 	return diags
 }
@@ -1407,7 +1422,6 @@ func (o *TunnelInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj *
 }
 func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, obj **tunnel.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	interfaceId_value := o.InterfaceId.ValueStringPointer()
 	var address_tf_entries []TunnelInterfaceResourceIpv6AddressObject
 	var address_pango_entries []tunnel.Ipv6Address
 	{
@@ -1426,31 +1440,19 @@ func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, obj
 		}
 	}
 	enabled_value := o.Enabled.ValueBoolPointer()
+	interfaceId_value := o.InterfaceId.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(tunnel.Ipv6)
 	}
-	(*obj).InterfaceId = interfaceId_value
 	(*obj).Address = address_pango_entries
 	(*obj).Enabled = enabled_value
+	(*obj).InterfaceId = interfaceId_value
 
 	return diags
 }
 func (o *TunnelInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **tunnel.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var anycast_entry *tunnel.Ipv6AddressAnycast
-	if o.Anycast != nil {
-		if *obj != nil && (*obj).Anycast != nil {
-			anycast_entry = (*obj).Anycast
-		} else {
-			anycast_entry = new(tunnel.Ipv6AddressAnycast)
-		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *tunnel.Ipv6AddressPrefix
 	if o.Prefix != nil {
@@ -1465,14 +1467,27 @@ func (o *TunnelInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
+	var anycast_entry *tunnel.Ipv6AddressAnycast
+	if o.Anycast != nil {
+		if *obj != nil && (*obj).Anycast != nil {
+			anycast_entry = (*obj).Anycast
+		} else {
+			anycast_entry = new(tunnel.Ipv6AddressAnycast)
+		}
+
+		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(tunnel.Ipv6Address)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Anycast = anycast_entry
 	(*obj).EnableOnInterface = enableOnInterface_value
 	(*obj).Prefix = prefix_entry
+	(*obj).Anycast = anycast_entry
 
 	return diags
 }
@@ -1491,21 +1506,6 @@ func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx contex
 	if (*obj) == nil {
 		*obj = new(tunnel.Ipv6AddressAnycast)
 	}
-
-	return diags
-}
-func (o *TunnelInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, obj **tunnel.Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	groupId_value := o.GroupId.ValueInt64Pointer()
-	ttlCheck_value := o.TtlCheck.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(tunnel.Bonjour)
-	}
-	(*obj).Enable = enable_value
-	(*obj).GroupId = groupId_value
-	(*obj).TtlCheck = ttlCheck_value
 
 	return diags
 }
@@ -1545,9 +1545,17 @@ func (o *TunnelInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *t
 		}
 	}
 
+	var comment_value types.String
+	if obj.Comment != nil {
+		comment_value = types.StringValue(*obj.Comment)
+	}
 	var dfIgnore_value types.Bool
 	if obj.DfIgnore != nil {
 		dfIgnore_value = types.BoolValue(*obj.DfIgnore)
+	}
+	var interfaceManagementProfile_value types.String
+	if obj.InterfaceManagementProfile != nil {
+		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
 	}
 	var linkTag_value types.String
 	if obj.LinkTag != nil {
@@ -1557,27 +1565,19 @@ func (o *TunnelInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *t
 	if obj.Mtu != nil {
 		mtu_value = types.Int64Value(*obj.Mtu)
 	}
-	var comment_value types.String
-	if obj.Comment != nil {
-		comment_value = types.StringValue(*obj.Comment)
-	}
-	var interfaceManagementProfile_value types.String
-	if obj.InterfaceManagementProfile != nil {
-		interfaceManagementProfile_value = types.StringValue(*obj.InterfaceManagementProfile)
-	}
 	var netflowProfile_value types.String
 	if obj.NetflowProfile != nil {
 		netflowProfile_value = types.StringValue(*obj.NetflowProfile)
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.Bonjour = bonjour_object
-	o.DfIgnore = dfIgnore_value
-	o.LinkTag = linkTag_value
-	o.Mtu = mtu_value
 	o.Comment = comment_value
+	o.DfIgnore = dfIgnore_value
 	o.InterfaceManagementProfile = interfaceManagementProfile_value
 	o.Ip = ip_list
 	o.Ipv6 = ipv6_object
+	o.LinkTag = linkTag_value
+	o.Mtu = mtu_value
 	o.NetflowProfile = netflowProfile_value
 
 	return diags
@@ -1727,9 +1727,9 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 	if state.Location.Ngfw != nil {
@@ -1798,9 +1798,9 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 	if savestate.Location.TemplateStack != nil {
 		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 	if savestate.Location.Ngfw != nil {
@@ -2006,7 +2006,6 @@ func TunnelInterfaceImportStateCreator(ctx context.Context, resource types.Objec
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -2044,19 +2043,21 @@ func (r *TunnelInterfaceResource) ImportState(ctx context.Context, req resource.
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type TunnelInterfaceTemplateLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type TunnelInterfaceTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type TunnelInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
@@ -2073,38 +2074,20 @@ func TunnelInterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"ngfw": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific NGFW device",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-						path.MatchRelative().AtParent().AtName("ngfw"),
-						path.MatchRelative().AtParent().AtName("shared"),
-					}...),
-				},
-			},
 			"shared": rsschema.BoolAttribute{
-				Description: "Location in Shared Panorama",
+				Description: "Panorama shared object",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+						path.MatchRelative().AtParent().AtName("ngfw"),
+					}...),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
@@ -2165,6 +2148,24 @@ func TunnelInterfaceLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"ngfw": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific NGFW device",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device",
 						Optional:    true,

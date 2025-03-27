@@ -289,7 +289,6 @@ func TestAccDecryptionPolicyExtended(t *testing.T) {
 								"ssl_forward_proxy":      knownvalue.Null(),
 								"ssl_inbound_inspection": knownvalue.Null(),
 							}),
-							"uuid": knownvalue.NotNull(),
 						}),
 					),
 				},

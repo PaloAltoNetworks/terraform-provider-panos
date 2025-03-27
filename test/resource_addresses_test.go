@@ -58,7 +58,8 @@ func TestAccAddresses(t *testing.T) {
 							"ip_range":    config.StringVariable("172.16.0.1-172.16.0.255"),
 						}),
 						fmt.Sprintf("%s-ip-wildcard", prefix): config.ObjectVariable(map[string]config.Variable{
-							"ip_wildcard": config.StringVariable("172.16.0.0/0.0.0.255"),
+							"ip_wildcard":      config.StringVariable("172.16.0.0/0.0.0.255"),
+							"disable_override": config.StringVariable("no"),
 						}),
 						fmt.Sprintf("%s-fqdn", prefix): config.ObjectVariable(map[string]config.Variable{
 							"fqdn": config.StringVariable("example.com"),
@@ -76,7 +77,7 @@ func TestAccAddresses(t *testing.T) {
 									knownvalue.StringExact(fmt.Sprintf("%s-tag", prefix)),
 								}),
 								"description":      knownvalue.Null(),
-								"disable_override": knownvalue.StringExact("no"),
+								"disable_override": knownvalue.Null(),
 								"ip_netmask":       knownvalue.StringExact("172.16.0.1/32"),
 								"ip_range":         knownvalue.Null(),
 								"ip_wildcard":      knownvalue.Null(),
@@ -85,7 +86,7 @@ func TestAccAddresses(t *testing.T) {
 							fmt.Sprintf("%s-ip-range", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
 								"tags":             knownvalue.Null(),
 								"description":      knownvalue.StringExact("description"),
-								"disable_override": knownvalue.StringExact("no"),
+								"disable_override": knownvalue.Null(),
 								"ip_netmask":       knownvalue.Null(),
 								"ip_range":         knownvalue.StringExact("172.16.0.1-172.16.0.255"),
 								"ip_wildcard":      knownvalue.Null(),
@@ -103,7 +104,7 @@ func TestAccAddresses(t *testing.T) {
 							fmt.Sprintf("%s-fqdn", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
 								"tags":             knownvalue.Null(),
 								"description":      knownvalue.Null(),
-								"disable_override": knownvalue.StringExact("no"),
+								"disable_override": knownvalue.Null(),
 								"ip_netmask":       knownvalue.Null(),
 								"ip_range":         knownvalue.Null(),
 								"ip_wildcard":      knownvalue.Null(),
@@ -136,7 +137,7 @@ func TestAccAddresses(t *testing.T) {
 							fmt.Sprintf("%s-ip-range", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
 								"tags":             knownvalue.Null(),
 								"description":      knownvalue.StringExact("description"),
-								"disable_override": knownvalue.StringExact("no"),
+								"disable_override": knownvalue.Null(),
 								"ip_netmask":       knownvalue.Null(),
 								"ip_range":         knownvalue.StringExact("172.16.0.1-172.16.0.255"),
 								"ip_wildcard":      knownvalue.Null(),
@@ -145,7 +146,7 @@ func TestAccAddresses(t *testing.T) {
 							fmt.Sprintf("%s-fqdn", prefix): knownvalue.ObjectExact(map[string]knownvalue.Check{
 								"tags":             knownvalue.Null(),
 								"description":      knownvalue.Null(),
-								"disable_override": knownvalue.StringExact("no"),
+								"disable_override": knownvalue.Null(),
 								"ip_netmask":       knownvalue.Null(),
 								"ip_range":         knownvalue.Null(),
 								"ip_wildcard":      knownvalue.Null(),
@@ -177,7 +178,7 @@ const testAccAddressesResourceTmpl = `
 variable prefix { type = string }
 variable "addresses" {
   type = map(object({
-    disable_override = optional(bool),
+    disable_override = optional(string),
     description = optional(string),
     ip_netmask = optional(string),
     ip_range = optional(string),

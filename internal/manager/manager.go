@@ -30,6 +30,7 @@ func (o *Error) Unwrap() error {
 }
 
 var (
+	ErrPlanConflict      = errors.New("multiple plan entries with shared name")
 	ErrConflict          = errors.New("entry from the plan already exists on the server")
 	ErrMissingUuid       = errors.New("entry is missing required uuid")
 	ErrMarshaling        = errors.New("failed to marshal entry to XML document")

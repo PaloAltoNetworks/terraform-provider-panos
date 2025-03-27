@@ -55,6 +55,7 @@ type DynamicUpdatesDataSourceModel struct {
 	UpdateSchedule *DynamicUpdatesDataSourceUpdateScheduleObject `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleObject struct {
+	AntiVirus                  *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject                  `tfsdk:"anti_virus"`
 	AppProfile                 *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject                 `tfsdk:"app_profile"`
 	GlobalProtectClientlessVpn *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject `tfsdk:"global_protect_clientless_vpn"`
 	GlobalProtectDatafile      *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject      `tfsdk:"global_protect_datafile"`
@@ -62,7 +63,53 @@ type DynamicUpdatesDataSourceUpdateScheduleObject struct {
 	Threats                    *DynamicUpdatesDataSourceUpdateScheduleThreatsObject                    `tfsdk:"threats"`
 	WfPrivate                  *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject                  `tfsdk:"wf_private"`
 	Wildfire                   *DynamicUpdatesDataSourceUpdateScheduleWildfireObject                   `tfsdk:"wildfire"`
-	AntiVirus                  *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject                  `tfsdk:"anti_virus"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject struct {
+	Recurring *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject struct {
+	SyncToPeer types.Bool                                                            `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64                                                           `tfsdk:"threshold"`
+	Daily      *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
+	Hourly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
+	None       *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
+	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject struct {
+}
+type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject struct {
+	Action    types.String `tfsdk:"action"`
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAppProfileObject struct {
+	Recurring *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject struct {
+	SyncToPeer types.Bool                                                             `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64                                                            `tfsdk:"threshold"`
+	Daily      *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
+	None       *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
+	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject struct {
+}
+type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject struct {
+	Action    types.String `tfsdk:"action"`
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject struct {
 	Recurring *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject `tfsdk:"recurring"`
@@ -74,12 +121,12 @@ type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringOb
 	Weekly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject struct {
-	At     types.String `tfsdk:"at"`
 	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject struct {
-	At     types.Int64  `tfsdk:"at"`
 	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject struct {
 }
@@ -92,18 +139,18 @@ type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject struct {
 	Recurring *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject struct {
-	None   *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject   `tfsdk:"none"`
-	Weekly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject `tfsdk:"weekly"`
 	Daily  *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject  `tfsdk:"daily"`
 	Hourly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject `tfsdk:"hourly"`
+	None   *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject   `tfsdk:"none"`
+	Weekly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
 	At     types.String `tfsdk:"at"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject struct {
-	At     types.Int64  `tfsdk:"at"`
 	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject struct {
 }
@@ -113,14 +160,14 @@ type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyO
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject struct {
+	ApplicationReports          types.Bool `tfsdk:"application_reports"`
+	FileIdentificationReports   types.Bool `tfsdk:"file_identification_reports"`
+	HealthPerformanceReports    types.Bool `tfsdk:"health_performance_reports"`
 	PassiveDnsMonitoring        types.Bool `tfsdk:"passive_dns_monitoring"`
 	ThreatPreventionInformation types.Bool `tfsdk:"threat_prevention_information"`
 	ThreatPreventionPcap        types.Bool `tfsdk:"threat_prevention_pcap"`
 	ThreatPreventionReports     types.Bool `tfsdk:"threat_prevention_reports"`
 	UrlReports                  types.Bool `tfsdk:"url_reports"`
-	ApplicationReports          types.Bool `tfsdk:"application_reports"`
-	FileIdentificationReports   types.Bool `tfsdk:"file_identification_reports"`
-	HealthPerformanceReports    types.Bool `tfsdk:"health_performance_reports"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleThreatsObject struct {
 	Recurring *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject `tfsdk:"recurring"`
@@ -129,24 +176,11 @@ type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject struct {
 	NewAppThreshold types.Int64                                                              `tfsdk:"new_app_threshold"`
 	SyncToPeer      types.Bool                                                               `tfsdk:"sync_to_peer"`
 	Threshold       types.Int64                                                              `tfsdk:"threshold"`
+	Daily           *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject       `tfsdk:"daily"`
+	Every30Mins     *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
 	Hourly          *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject      `tfsdk:"hourly"`
 	None            *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject        `tfsdk:"none"`
 	Weekly          *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject      `tfsdk:"weekly"`
-	Daily           *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject       `tfsdk:"daily"`
-	Every30Mins     *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject struct {
-	At                types.Int64  `tfsdk:"at"`
-	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
-	Action            types.String `tfsdk:"action"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject struct {
-}
-type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject struct {
-	Action            types.String `tfsdk:"action"`
-	At                types.String `tfsdk:"at"`
-	DayOfWeek         types.String `tfsdk:"day_of_week"`
-	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject struct {
 	Action            types.String `tfsdk:"action"`
@@ -156,6 +190,19 @@ type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject struct {
 type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject struct {
 	Action            types.String `tfsdk:"action"`
 	At                types.Int64  `tfsdk:"at"`
+	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject struct {
+	Action            types.String `tfsdk:"action"`
+	At                types.Int64  `tfsdk:"at"`
+	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject struct {
+}
+type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject struct {
+	Action            types.String `tfsdk:"action"`
+	At                types.String `tfsdk:"at"`
+	DayOfWeek         types.String `tfsdk:"day_of_week"`
 	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject struct {
@@ -169,12 +216,6 @@ type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject struct {
 	EveryHour   *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject   `tfsdk:"every_hour"`
 	None        *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject        `tfsdk:"none"`
 }
-type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.Int64  `tfsdk:"at"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject struct {
-}
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject struct {
 	Action types.String `tfsdk:"action"`
 	At     types.Int64  `tfsdk:"at"`
@@ -187,16 +228,22 @@ type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject st
 	Action types.String `tfsdk:"action"`
 	At     types.Int64  `tfsdk:"at"`
 }
+type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
+}
+type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject struct {
+}
 type DynamicUpdatesDataSourceUpdateScheduleWildfireObject struct {
 	Recurring *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject struct {
-	None        *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject        `tfsdk:"none"`
-	RealTime    *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject    `tfsdk:"real_time"`
 	Every15Mins *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
 	Every30Mins *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
 	EveryHour   *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject   `tfsdk:"every_hour"`
 	EveryMin    *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject    `tfsdk:"every_min"`
+	None        *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject        `tfsdk:"none"`
+	RealTime    *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject    `tfsdk:"real_time"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject struct {
 	Action     types.String `tfsdk:"action"`
@@ -220,53 +267,6 @@ type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject struc
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject struct {
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject struct {
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject struct {
-	SyncToPeer types.Bool                                                            `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                           `tfsdk:"threshold"`
-	Hourly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
-	None       *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
-	Daily      *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject struct {
-	Action    types.String `tfsdk:"action"`
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.String `tfsdk:"at"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.Int64  `tfsdk:"at"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject struct {
-}
-type DynamicUpdatesDataSourceUpdateScheduleAppProfileObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject struct {
-	SyncToPeer types.Bool                                                             `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                            `tfsdk:"threshold"`
-	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
-	Daily      *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
-	None       *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject struct {
-	At     types.String `tfsdk:"at"`
-	Action types.String `tfsdk:"action"`
-}
-type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject struct {
-}
-type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject struct {
-	Action    types.String `tfsdk:"action"`
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 
 func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, obj **dynamicupdates.Config, encrypted *map[string]types.String) diag.Diagnostics {
@@ -294,45 +294,6 @@ func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, obj **d
 }
 func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateSchedule, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var threats_entry *dynamicupdates.UpdateScheduleThreats
-	if o.Threats != nil {
-		if *obj != nil && (*obj).Threats != nil {
-			threats_entry = (*obj).Threats
-		} else {
-			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
-		}
-
-		diags.Append(o.Threats.CopyToPango(ctx, &threats_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
-	if o.WfPrivate != nil {
-		if *obj != nil && (*obj).WfPrivate != nil {
-			wfPrivate_entry = (*obj).WfPrivate
-		} else {
-			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
-		}
-
-		diags.Append(o.WfPrivate.CopyToPango(ctx, &wfPrivate_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
-	if o.Wildfire != nil {
-		if *obj != nil && (*obj).Wildfire != nil {
-			wildfire_entry = (*obj).Wildfire
-		} else {
-			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
-		}
-
-		diags.Append(o.Wildfire.CopyToPango(ctx, &wildfire_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var antiVirus_entry *dynamicupdates.UpdateScheduleAntiVirus
 	if o.AntiVirus != nil {
 		if *obj != nil && (*obj).AntiVirus != nil {
@@ -398,18 +359,615 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyToPango(ctx context.C
 			return diags
 		}
 	}
+	var threats_entry *dynamicupdates.UpdateScheduleThreats
+	if o.Threats != nil {
+		if *obj != nil && (*obj).Threats != nil {
+			threats_entry = (*obj).Threats
+		} else {
+			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
+		}
+
+		diags.Append(o.Threats.CopyToPango(ctx, &threats_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
+	if o.WfPrivate != nil {
+		if *obj != nil && (*obj).WfPrivate != nil {
+			wfPrivate_entry = (*obj).WfPrivate
+		} else {
+			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
+		}
+
+		diags.Append(o.WfPrivate.CopyToPango(ctx, &wfPrivate_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
+	if o.Wildfire != nil {
+		if *obj != nil && (*obj).Wildfire != nil {
+			wildfire_entry = (*obj).Wildfire
+		} else {
+			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
+		}
+
+		diags.Append(o.Wildfire.CopyToPango(ctx, &wildfire_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateSchedule)
 	}
-	(*obj).Threats = threats_entry
-	(*obj).WfPrivate = wfPrivate_entry
-	(*obj).Wildfire = wildfire_entry
 	(*obj).AntiVirus = antiVirus_entry
 	(*obj).AppProfile = appProfile_entry
 	(*obj).GlobalProtectClientlessVpn = globalProtectClientlessVpn_entry
 	(*obj).GlobalProtectDatafile = globalProtectDatafile_entry
 	(*obj).StatisticsService = statisticsService_entry
+	(*obj).Threats = threats_entry
+	(*obj).WfPrivate = wfPrivate_entry
+	(*obj).Wildfire = wildfire_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirus, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirus)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
+	threshold_value := o.Threshold.ValueInt64Pointer()
+	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
+	}
+	(*obj).SyncToPeer = syncToPeer_value
+	(*obj).Threshold = threshold_value
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfile, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfile)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
+	threshold_value := o.Threshold.ValueInt64Pointer()
+	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
+	}
+	(*obj).SyncToPeer = syncToPeer_value
+	(*obj).Threshold = threshold_value
+	(*obj).Daily = daily_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
+	}
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
+	}
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleStatisticsService, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	applicationReports_value := o.ApplicationReports.ValueBoolPointer()
+	fileIdentificationReports_value := o.FileIdentificationReports.ValueBoolPointer()
+	healthPerformanceReports_value := o.HealthPerformanceReports.ValueBoolPointer()
+	passiveDnsMonitoring_value := o.PassiveDnsMonitoring.ValueBoolPointer()
+	threatPreventionInformation_value := o.ThreatPreventionInformation.ValueBoolPointer()
+	threatPreventionPcap_value := o.ThreatPreventionPcap.ValueBoolPointer()
+	threatPreventionReports_value := o.ThreatPreventionReports.ValueBoolPointer()
+	urlReports_value := o.UrlReports.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleStatisticsService)
+	}
+	(*obj).ApplicationReports = applicationReports_value
+	(*obj).FileIdentificationReports = fileIdentificationReports_value
+	(*obj).HealthPerformanceReports = healthPerformanceReports_value
+	(*obj).PassiveDnsMonitoring = passiveDnsMonitoring_value
+	(*obj).ThreatPreventionInformation = threatPreventionInformation_value
+	(*obj).ThreatPreventionPcap = threatPreventionPcap_value
+	(*obj).ThreatPreventionReports = threatPreventionReports_value
+	(*obj).UrlReports = urlReports_value
 
 	return diags
 }
@@ -618,19 +1176,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyToPango(ctx 
 func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWfPrivateRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
-	var none_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins
 	if o.Every15Mins != nil {
 		if *obj != nil && (*obj).Every15Mins != nil {
@@ -683,16 +1228,55 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyToP
 			return diags
 		}
 	}
+	var none_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleWfPrivateRecurring)
 	}
 	(*obj).SyncToPeer = syncToPeer_value
-	(*obj).None = none_entry
 	(*obj).Every15Mins = every15Mins_entry
 	(*obj).Every30Mins = every30Mins_entry
 	(*obj).Every5Mins = every5Mins_entry
 	(*obj).EveryHour = everyHour_entry
+	(*obj).None = none_entry
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
 
 	return diags
 }
@@ -731,32 +1315,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
 func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWildfire, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleWildfireRecurring
@@ -782,6 +1340,19 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyToPango(ctx c
 }
 func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWildfireRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var every15Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins
+	if o.Every15Mins != nil {
+		if *obj != nil && (*obj).Every15Mins != nil {
+			every15Mins_entry = (*obj).Every15Mins
+		} else {
+			every15Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins)
+		}
+
+		diags.Append(o.Every15Mins.CopyToPango(ctx, &every15Mins_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins
 	if o.Every30Mins != nil {
 		if *obj != nil && (*obj).Every30Mins != nil {
@@ -847,29 +1418,16 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyToPa
 			return diags
 		}
 	}
-	var every15Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins
-	if o.Every15Mins != nil {
-		if *obj != nil && (*obj).Every15Mins != nil {
-			every15Mins_entry = (*obj).Every15Mins
-		} else {
-			every15Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins)
-		}
-
-		diags.Append(o.Every15Mins.CopyToPango(ctx, &every15Mins_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleWildfireRecurring)
 	}
+	(*obj).Every15Mins = every15Mins_entry
 	(*obj).Every30Mins = every30Mins_entry
 	(*obj).EveryHour = everyHour_entry
 	(*obj).EveryMin = everyMin_entry
 	(*obj).None = none_entry
 	(*obj).RealTime = realTime_entry
-	(*obj).Every15Mins = every15Mins_entry
 
 	return diags
 }
@@ -890,16 +1448,16 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObjec
 }
 func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
+	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins)
 	}
-	(*obj).SyncToPeer = syncToPeer_value
 	(*obj).Action = action_value
 	(*obj).At = at_value
+	(*obj).SyncToPeer = syncToPeer_value
 
 	return diags
 }
@@ -949,564 +1507,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) 
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirus, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirus)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
-	threshold_value := o.Threshold.ValueInt64Pointer()
-	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
-	}
-	(*obj).SyncToPeer = syncToPeer_value
-	(*obj).Threshold = threshold_value
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueInt64Pointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfile, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfile)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
-	threshold_value := o.Threshold.ValueInt64Pointer()
-	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
-	}
-	(*obj).SyncToPeer = syncToPeer_value
-	(*obj).Threshold = threshold_value
-	(*obj).Daily = daily_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
-	}
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
-	}
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
-	}
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleStatisticsService, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	applicationReports_value := o.ApplicationReports.ValueBoolPointer()
-	fileIdentificationReports_value := o.FileIdentificationReports.ValueBoolPointer()
-	healthPerformanceReports_value := o.HealthPerformanceReports.ValueBoolPointer()
-	passiveDnsMonitoring_value := o.PassiveDnsMonitoring.ValueBoolPointer()
-	threatPreventionInformation_value := o.ThreatPreventionInformation.ValueBoolPointer()
-	threatPreventionPcap_value := o.ThreatPreventionPcap.ValueBoolPointer()
-	threatPreventionReports_value := o.ThreatPreventionReports.ValueBoolPointer()
-	urlReports_value := o.UrlReports.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleStatisticsService)
-	}
-	(*obj).ApplicationReports = applicationReports_value
-	(*obj).FileIdentificationReports = fileIdentificationReports_value
-	(*obj).HealthPerformanceReports = healthPerformanceReports_value
-	(*obj).PassiveDnsMonitoring = passiveDnsMonitoring_value
-	(*obj).ThreatPreventionInformation = threatPreventionInformation_value
-	(*obj).ThreatPreventionPcap = threatPreventionPcap_value
-	(*obj).ThreatPreventionReports = threatPreventionReports_value
-	(*obj).UrlReports = urlReports_value
-
-	return diags
-}
 
 func (o *DynamicUpdatesDataSourceModel) CopyFromPango(ctx context.Context, obj *dynamicupdates.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -1527,24 +1527,6 @@ func (o *DynamicUpdatesDataSourceModel) CopyFromPango(ctx context.Context, obj *
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateSchedule, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var wfPrivate_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
-	if obj.WfPrivate != nil {
-		wfPrivate_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject)
-
-		diags.Append(wfPrivate_object.CopyFromPango(ctx, obj.WfPrivate, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var wildfire_object *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
-	if obj.Wildfire != nil {
-		wildfire_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireObject)
-
-		diags.Append(wildfire_object.CopyFromPango(ctx, obj.Wildfire, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var antiVirus_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject
 	if obj.AntiVirus != nil {
 		antiVirus_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject)
@@ -1599,15 +1581,33 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyFromPango(ctx context
 			return diags
 		}
 	}
+	var wfPrivate_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
+	if obj.WfPrivate != nil {
+		wfPrivate_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject)
 
-	o.WfPrivate = wfPrivate_object
-	o.Wildfire = wildfire_object
+		diags.Append(wfPrivate_object.CopyFromPango(ctx, obj.WfPrivate, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var wildfire_object *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
+	if obj.Wildfire != nil {
+		wildfire_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireObject)
+
+		diags.Append(wildfire_object.CopyFromPango(ctx, obj.Wildfire, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
 	o.AntiVirus = antiVirus_object
 	o.AppProfile = appProfile_object
 	o.GlobalProtectClientlessVpn = globalProtectClientlessVpn_object
 	o.GlobalProtectDatafile = globalProtectDatafile_object
 	o.StatisticsService = statisticsService_object
 	o.Threats = threats_object
+	o.WfPrivate = wfPrivate_object
+	o.Wildfire = wildfire_object
 
 	return diags
 }
@@ -1689,16 +1689,16 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyFro
 func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
 	}
-	o.At = at_value
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
 	o.Action = action_value
+	o.At = at_value
 
 	return diags
 }
@@ -1838,6 +1838,10 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) Co
 func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
 	var at_value types.String
 	if obj.At != nil {
 		at_value = types.StringValue(*obj.At)
@@ -1846,13 +1850,9 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) 
 	if obj.DayOfWeek != nil {
 		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
 	}
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
+	o.Action = action_value
 	o.At = at_value
 	o.DayOfWeek = dayOfWeek_value
-	o.Action = action_value
 
 	return diags
 }
@@ -2112,6 +2112,10 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWee
 func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleStatisticsService, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var applicationReports_value types.Bool
+	if obj.ApplicationReports != nil {
+		applicationReports_value = types.BoolValue(*obj.ApplicationReports)
+	}
 	var fileIdentificationReports_value types.Bool
 	if obj.FileIdentificationReports != nil {
 		fileIdentificationReports_value = types.BoolValue(*obj.FileIdentificationReports)
@@ -2140,10 +2144,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFrom
 	if obj.UrlReports != nil {
 		urlReports_value = types.BoolValue(*obj.UrlReports)
 	}
-	var applicationReports_value types.Bool
-	if obj.ApplicationReports != nil {
-		applicationReports_value = types.BoolValue(*obj.ApplicationReports)
-	}
+	o.ApplicationReports = applicationReports_value
 	o.FileIdentificationReports = fileIdentificationReports_value
 	o.HealthPerformanceReports = healthPerformanceReports_value
 	o.PassiveDnsMonitoring = passiveDnsMonitoring_value
@@ -2151,7 +2152,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFrom
 	o.ThreatPreventionPcap = threatPreventionPcap_value
 	o.ThreatPreventionReports = threatPreventionReports_value
 	o.UrlReports = urlReports_value
-	o.ApplicationReports = applicationReports_value
 
 	return diags
 }
@@ -2221,6 +2221,10 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyFromP
 		}
 	}
 
+	var newAppThreshold_value types.Int64
+	if obj.NewAppThreshold != nil {
+		newAppThreshold_value = types.Int64Value(*obj.NewAppThreshold)
+	}
 	var syncToPeer_value types.Bool
 	if obj.SyncToPeer != nil {
 		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
@@ -2229,18 +2233,58 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyFromP
 	if obj.Threshold != nil {
 		threshold_value = types.Int64Value(*obj.Threshold)
 	}
-	var newAppThreshold_value types.Int64
-	if obj.NewAppThreshold != nil {
-		newAppThreshold_value = types.Int64Value(*obj.NewAppThreshold)
-	}
+	o.NewAppThreshold = newAppThreshold_value
 	o.SyncToPeer = syncToPeer_value
 	o.Threshold = threshold_value
-	o.NewAppThreshold = newAppThreshold_value
 	o.Daily = daily_object
 	o.Every30Mins = every30Mins_object
 	o.Hourly = hourly_object
 	o.None = none_object
 	o.Weekly = weekly_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var disableNewContent_value types.Bool
+	if obj.DisableNewContent != nil {
+		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DisableNewContent = disableNewContent_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var disableNewContent_value types.Bool
+	if obj.DisableNewContent != nil {
+		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DisableNewContent = disableNewContent_value
 
 	return diags
 }
@@ -2300,50 +2344,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var disableNewContent_value types.Bool
-	if obj.DisableNewContent != nil {
-		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.DisableNewContent = disableNewContent_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var disableNewContent_value types.Bool
-	if obj.DisableNewContent != nil {
-		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.DisableNewContent = disableNewContent_value
-
-	return diags
-}
-
 func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivate, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject
@@ -2363,24 +2363,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyFromPango(ct
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var everyHour_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
-	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject)
-
-		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
-	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var every15Mins_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
 	if obj.Every15Mins != nil {
 		every15Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
@@ -2408,23 +2390,35 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyFro
 			return diags
 		}
 	}
+	var everyHour_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
+	if obj.EveryHour != nil {
+		everyHour_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject)
+
+		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
+	if obj.None != nil {
+		none_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject)
+
+		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var syncToPeer_value types.Bool
 	if obj.SyncToPeer != nil {
 		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
 	}
 	o.SyncToPeer = syncToPeer_value
-	o.EveryHour = everyHour_object
-	o.None = none_object
 	o.Every15Mins = every15Mins_object
 	o.Every30Mins = every30Mins_object
 	o.Every5Mins = every5Mins_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
+	o.EveryHour = everyHour_object
+	o.None = none_object
 
 	return diags
 }
@@ -2497,6 +2491,12 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
 	return diags
 }
 
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
 func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfire, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject
@@ -2516,6 +2516,24 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyFromPango(ctx
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var every15Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
+	if obj.Every15Mins != nil {
+		every15Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject)
+
+		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var every30Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
+	if obj.Every30Mins != nil {
+		every30Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject)
+
+		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var everyHour_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject
 	if obj.EveryHour != nil {
 		everyHour_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
@@ -2552,31 +2570,35 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyFrom
 			return diags
 		}
 	}
-	var every15Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
-	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject)
 
-		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var every30Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
-	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject)
-
-		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Every15Mins = every15Mins_object
+	o.Every30Mins = every30Mins_object
 	o.EveryHour = everyHour_object
 	o.EveryMin = everyMin_object
 	o.None = none_object
 	o.RealTime = realTime_object
-	o.Every15Mins = every15Mins_object
-	o.Every30Mins = every30Mins_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.SyncToPeer = syncToPeer_value
 
 	return diags
 }
@@ -2654,28 +2676,6 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.SyncToPeer = syncToPeer_value
-
-	return diags
-}
-
 func DynamicUpdatesDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -2714,10 +2714,6 @@ func DynamicUpdatesDataSourceUpdateScheduleSchema() dsschema.SingleNestedAttribu
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"wf_private": DynamicUpdatesDataSourceUpdateScheduleWfPrivateSchema(),
-
-			"wildfire": DynamicUpdatesDataSourceUpdateScheduleWildfireSchema(),
-
 			"anti_virus": DynamicUpdatesDataSourceUpdateScheduleAntiVirusSchema(),
 
 			"app_profile": DynamicUpdatesDataSourceUpdateScheduleAppProfileSchema(),
@@ -2729,418 +2725,16 @@ func DynamicUpdatesDataSourceUpdateScheduleSchema() dsschema.SingleNestedAttribu
 			"statistics_service": DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceSchema(),
 
 			"threats": DynamicUpdatesDataSourceUpdateScheduleThreatsSchema(),
+
+			"wf_private": DynamicUpdatesDataSourceUpdateScheduleWfPrivateSchema(),
+
+			"wildfire": DynamicUpdatesDataSourceUpdateScheduleWildfireSchema(),
 		},
 	}
 }
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesDataSourceUpdateScheduleSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"recurring": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"every_15_mins": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema(),
-
-			"every_30_mins": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema(),
-
-			"every_hour": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema(),
-
-			"every_min": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema(),
-
-			"none": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema(),
-
-			"real_time": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": dsschema.Int64Attribute{
-				Description: "Minutes past quarter-hour",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"sync_to_peer": dsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": dsschema.Int64Attribute{
-				Description: "Minutes past half-hour",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"sync_to_peer": dsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": dsschema.Int64Attribute{
-				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"sync_to_peer": dsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"sync_to_peer": dsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -3198,16 +2792,16 @@ func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringSchema() dsschema.S
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"threshold": dsschema.Int64Attribute{
-				Description: "ignore if release date is new (hours)",
+			"sync_to_peer": dsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"sync_to_peer": dsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
+			"threshold": dsschema.Int64Attribute{
+				Description: "ignore if release date is new (hours)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -3771,10 +3365,10 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDa
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3826,10 +3420,10 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHo
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -3881,10 +3475,10 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNo
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -3919,10 +3513,10 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWe
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("weekly"),
 				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -4026,69 +3620,6 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringSchema(
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4253,6 +3784,69 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNon
 	panic("unreachable")
 }
 
+func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -4261,6 +3855,14 @@ func DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceSchema() dsschema.Si
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
+
+			"application_reports": dsschema.BoolAttribute{
+				Description: "Application Reports",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"file_identification_reports": dsschema.BoolAttribute{
 				Description: "File Type Identification Reports",
@@ -4312,14 +3914,6 @@ func DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceSchema() dsschema.Si
 
 			"url_reports": dsschema.BoolAttribute{
 				Description: "URL Reports",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"application_reports": dsschema.BoolAttribute{
-				Description: "Application Reports",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -4388,14 +3982,6 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringSchema() dsschema.Sin
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"threshold": dsschema.Int64Attribute{
-				Description: "ignore if release date is new (hours)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"new_app_threshold": dsschema.Int64Attribute{
 				Description: "ignore new apps if release date is new (hours)",
 				Computed:    true,
@@ -4412,93 +3998,29 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringSchema() dsschema.Sin
 				Sensitive:   false,
 			},
 
+			"threshold": dsschema.Int64Attribute{
+				Description: "ignore if release date is new (hours)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"daily": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema(),
+
+			"every_30_mins": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsSchema(),
+
 			"hourly": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlySchema(),
 
 			"none": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneSchema(),
 
 			"weekly": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema(),
-
-			"daily": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema(),
-
-			"every_30_mins": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsSchema(),
 		},
 	}
 }
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"day_of_week": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"disable_new_content": dsschema.BoolAttribute{
-				Description: "Disable new applications after installation",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": dsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4525,11 +4047,11 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema() dsschem
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -4589,11 +4111,11 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsSchema() d
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -4653,11 +4175,11 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlySchema() dssche
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{
@@ -4717,11 +4239,11 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneSchema() dsschema
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("hourly"),
 				path.MatchRelative().AtParent().AtName("none"),
 				path.MatchRelative().AtParent().AtName("weekly"),
-				path.MatchRelative().AtParent().AtName("daily"),
 			}...),
 		},
 		Attributes: map[string]dsschema.Attribute{},
@@ -4730,6 +4252,78 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneSchema() dsschema
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": dsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_new_content": dsschema.BoolAttribute{
+				Description: "Disable new applications after installation",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -4957,16 +4551,16 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() 
 		},
 		Attributes: map[string]dsschema.Attribute{
 
-			"at": dsschema.Int64Attribute{
-				Description: "Minutes Past five minutes",
+			"action": dsschema.StringAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"action": dsschema.StringAttribute{
-				Description: "",
+			"at": dsschema.Int64Attribute{
+				Description: "Minutes Past five minutes",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -5073,6 +4667,412 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneSchema() dssche
 
 func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"recurring": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"every_15_mins": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema(),
+
+			"every_30_mins": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema(),
+
+			"every_hour": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema(),
+
+			"every_min": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema(),
+
+			"none": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema(),
+
+			"real_time": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": dsschema.Int64Attribute{
+				Description: "Minutes past quarter-hour",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"sync_to_peer": dsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": dsschema.Int64Attribute{
+				Description: "Minutes past half-hour",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"sync_to_peer": dsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": dsschema.Int64Attribute{
+				Description: "Minutes past hour",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"sync_to_peer": dsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"sync_to_peer": dsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5208,14 +5208,61 @@ type DynamicUpdatesResourceModel struct {
 	UpdateSchedule *DynamicUpdatesResourceUpdateScheduleObject `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesResourceUpdateScheduleObject struct {
-	StatisticsService          *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject          `tfsdk:"statistics_service"`
-	Threats                    *DynamicUpdatesResourceUpdateScheduleThreatsObject                    `tfsdk:"threats"`
-	WfPrivate                  *DynamicUpdatesResourceUpdateScheduleWfPrivateObject                  `tfsdk:"wf_private"`
-	Wildfire                   *DynamicUpdatesResourceUpdateScheduleWildfireObject                   `tfsdk:"wildfire"`
 	AntiVirus                  *DynamicUpdatesResourceUpdateScheduleAntiVirusObject                  `tfsdk:"anti_virus"`
 	AppProfile                 *DynamicUpdatesResourceUpdateScheduleAppProfileObject                 `tfsdk:"app_profile"`
 	GlobalProtectClientlessVpn *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject `tfsdk:"global_protect_clientless_vpn"`
 	GlobalProtectDatafile      *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject      `tfsdk:"global_protect_datafile"`
+	StatisticsService          *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject          `tfsdk:"statistics_service"`
+	Threats                    *DynamicUpdatesResourceUpdateScheduleThreatsObject                    `tfsdk:"threats"`
+	WfPrivate                  *DynamicUpdatesResourceUpdateScheduleWfPrivateObject                  `tfsdk:"wf_private"`
+	Wildfire                   *DynamicUpdatesResourceUpdateScheduleWildfireObject                   `tfsdk:"wildfire"`
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusObject struct {
+	Recurring *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject struct {
+	SyncToPeer types.Bool                                                          `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64                                                         `tfsdk:"threshold"`
+	Daily      *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
+	Hourly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
+	None       *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
+	Weekly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject struct {
+}
+type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject struct {
+	Action    types.String `tfsdk:"action"`
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+type DynamicUpdatesResourceUpdateScheduleAppProfileObject struct {
+	Recurring *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
+}
+type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject struct {
+	SyncToPeer types.Bool                                                           `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64                                                          `tfsdk:"threshold"`
+	Daily      *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
+	None       *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
+	Weekly     *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
+}
+type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
+}
+type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject struct {
+}
+type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject struct {
+	Action    types.String `tfsdk:"action"`
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject struct {
 	Recurring *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject `tfsdk:"recurring"`
@@ -5250,14 +5297,9 @@ type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject st
 	None   *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject   `tfsdk:"none"`
 	Weekly *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject `tfsdk:"weekly"`
 }
-type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject struct {
-	Action    types.String `tfsdk:"action"`
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject struct {
-	At     types.String `tfsdk:"at"`
 	Action types.String `tfsdk:"action"`
+	At     types.String `tfsdk:"at"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -5265,15 +5307,20 @@ type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObj
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject struct {
 }
+type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject struct {
+	Action    types.String `tfsdk:"action"`
+	At        types.String `tfsdk:"at"`
+	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
 type DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject struct {
-	ThreatPreventionInformation types.Bool `tfsdk:"threat_prevention_information"`
-	ThreatPreventionPcap        types.Bool `tfsdk:"threat_prevention_pcap"`
-	ThreatPreventionReports     types.Bool `tfsdk:"threat_prevention_reports"`
-	UrlReports                  types.Bool `tfsdk:"url_reports"`
 	ApplicationReports          types.Bool `tfsdk:"application_reports"`
 	FileIdentificationReports   types.Bool `tfsdk:"file_identification_reports"`
 	HealthPerformanceReports    types.Bool `tfsdk:"health_performance_reports"`
 	PassiveDnsMonitoring        types.Bool `tfsdk:"passive_dns_monitoring"`
+	ThreatPreventionInformation types.Bool `tfsdk:"threat_prevention_information"`
+	ThreatPreventionPcap        types.Bool `tfsdk:"threat_prevention_pcap"`
+	ThreatPreventionReports     types.Bool `tfsdk:"threat_prevention_reports"`
+	UrlReports                  types.Bool `tfsdk:"url_reports"`
 }
 type DynamicUpdatesResourceUpdateScheduleThreatsObject struct {
 	Recurring *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject `tfsdk:"recurring"`
@@ -5316,11 +5363,15 @@ type DynamicUpdatesResourceUpdateScheduleWfPrivateObject struct {
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject struct {
 	SyncToPeer  types.Bool                                                               `tfsdk:"sync_to_peer"`
+	Every15Mins *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
 	Every30Mins *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
 	Every5Mins  *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject  `tfsdk:"every_5_mins"`
 	EveryHour   *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject   `tfsdk:"every_hour"`
 	None        *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject        `tfsdk:"none"`
-	Every15Mins *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
+}
+type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject struct {
+	Action types.String `tfsdk:"action"`
+	At     types.Int64  `tfsdk:"at"`
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject struct {
 	Action types.String `tfsdk:"action"`
@@ -5336,10 +5387,6 @@ type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject struc
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject struct {
 }
-type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.Int64  `tfsdk:"at"`
-}
 type DynamicUpdatesResourceUpdateScheduleWildfireObject struct {
 	Recurring *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject `tfsdk:"recurring"`
 }
@@ -5350,6 +5397,16 @@ type DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject struct {
 	EveryMin    *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject    `tfsdk:"every_min"`
 	None        *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject        `tfsdk:"none"`
 	RealTime    *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject    `tfsdk:"real_time"`
+}
+type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject struct {
+	Action     types.String `tfsdk:"action"`
+	At         types.Int64  `tfsdk:"at"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
+}
+type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject struct {
+	Action     types.String `tfsdk:"action"`
+	At         types.Int64  `tfsdk:"at"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
 }
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject struct {
 	Action     types.String `tfsdk:"action"`
@@ -5363,63 +5420,6 @@ type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject struct 
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject struct {
 }
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject struct {
-}
-type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject struct {
-	Action     types.String `tfsdk:"action"`
-	At         types.Int64  `tfsdk:"at"`
-	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
-}
-type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject struct {
-	Action     types.String `tfsdk:"action"`
-	At         types.Int64  `tfsdk:"at"`
-	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject struct {
-	SyncToPeer types.Bool                                                          `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                         `tfsdk:"threshold"`
-	Daily      *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
-	Hourly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
-	None       *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.String `tfsdk:"at"`
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.Int64  `tfsdk:"at"`
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject struct {
-}
-type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject struct {
-	Action    types.String `tfsdk:"action"`
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type DynamicUpdatesResourceUpdateScheduleAppProfileObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
-}
-type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject struct {
-	SyncToPeer types.Bool                                                           `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                          `tfsdk:"threshold"`
-	Weekly     *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
-	Daily      *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
-	None       *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
-}
-type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject struct {
-}
-type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject struct {
-	Action    types.String `tfsdk:"action"`
-	At        types.String `tfsdk:"at"`
-	DayOfWeek types.String `tfsdk:"day_of_week"`
-}
-type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject struct {
-	Action types.String `tfsdk:"action"`
-	At     types.String `tfsdk:"at"`
 }
 
 func (r *DynamicUpdatesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -5465,6 +5465,8 @@ func DynamicUpdatesResourceUpdateScheduleSchema() rsschema.SingleNestedAttribute
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"anti_virus": DynamicUpdatesResourceUpdateScheduleAntiVirusSchema(),
+
 			"app_profile": DynamicUpdatesResourceUpdateScheduleAppProfileSchema(),
 
 			"global_protect_clientless_vpn": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema(),
@@ -5478,14 +5480,1108 @@ func DynamicUpdatesResourceUpdateScheduleSchema() rsschema.SingleNestedAttribute
 			"wf_private": DynamicUpdatesResourceUpdateScheduleWfPrivateSchema(),
 
 			"wildfire": DynamicUpdatesResourceUpdateScheduleWildfireSchema(),
-
-			"anti_virus": DynamicUpdatesResourceUpdateScheduleAntiVirusSchema(),
 		},
 	}
 }
 
 func (o *DynamicUpdatesResourceUpdateScheduleObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesResourceUpdateScheduleSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"recurring": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"sync_to_peer": rsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"threshold": rsschema.Int64Attribute{
+				Description: "ignore if release date is new (hours)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"daily": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema(),
+
+			"hourly": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema(),
+
+			"none": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema(),
+
+			"weekly": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes past hour",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAppProfileSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"recurring": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAppProfileSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"sync_to_peer": rsschema.BoolAttribute{
+				Description: "Synchronize content with HA peer after download/install",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"threshold": rsschema.Int64Attribute{
+				Description: "ignore if release date is new (hours)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"daily": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema(),
+
+			"none": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema(),
+
+			"weekly": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema(),
+
+			"hourly": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema(),
+
+			"none": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema(),
+
+			"weekly": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes past hour",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema(),
+
+			"hourly": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema(),
+
+			"none": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema(),
+
+			"weekly": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema(),
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes past hour",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("daily"),
+				path.MatchRelative().AtParent().AtName("hourly"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("weekly"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.StringAttribute{
+				Description: "Time specification hh:mm (e.g. 20:10)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"day_of_week": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -5510,6 +6606,30 @@ func DynamicUpdatesResourceUpdateScheduleStatisticsServiceSchema() rsschema.Sing
 		Optional:    true,
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
+
+			"application_reports": rsschema.BoolAttribute{
+				Description: "Application Reports",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"file_identification_reports": rsschema.BoolAttribute{
+				Description: "File Type Identification Reports",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"health_performance_reports": rsschema.BoolAttribute{
+				Description: "Health and Performance Reports",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"passive_dns_monitoring": rsschema.BoolAttribute{
 				Description: "Passive DNS Monitor",
@@ -5545,30 +6665,6 @@ func DynamicUpdatesResourceUpdateScheduleStatisticsServiceSchema() rsschema.Sing
 
 			"url_reports": rsschema.BoolAttribute{
 				Description: "URL Reports",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"application_reports": rsschema.BoolAttribute{
-				Description: "Application Reports",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"file_identification_reports": rsschema.BoolAttribute{
-				Description: "File Type Identification Reports",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"health_performance_reports": rsschema.BoolAttribute{
-				Description: "Health and Performance Reports",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -5942,6 +7038,14 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklySchema() rsschema
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
 				Computed:    false,
@@ -5960,14 +7064,6 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklySchema() rsschema
 
 			"disable_new_content": rsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -6075,157 +7171,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) getTypeFo
 	panic("unreachable")
 }
 
-func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_5_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes Past five minutes",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_5_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes Past Hour",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_5_mins"),
-				path.MatchRelative().AtParent().AtName("every_hour"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -6236,11 +7181,11 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema() r
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_5_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
 				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6292,25 +7237,25 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema() r
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_5_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
 				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("every_15_mins"),
-				path.MatchRelative().AtParent().AtName("every_30_mins"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
 
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes Past Half-Hour",
+			"action": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"action": rsschema.StringAttribute{
-				Description: "",
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes Past Half-Hour",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -6322,6 +7267,157 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema() r
 
 func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_5_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("none"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes Past five minutes",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_5_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("none"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"at": rsschema.Int64Attribute{
+				Description: "Minutes Past Hour",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("every_15_mins"),
+				path.MatchRelative().AtParent().AtName("every_30_mins"),
+				path.MatchRelative().AtParent().AtName("every_5_mins"),
+				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("none"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{},
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) getTypeFor(name string) attr.Type {
+	schema := DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -6422,12 +7518,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsSchema() rs
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6487,12 +7583,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsSchema() rs
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6552,12 +7648,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourSchema() rssc
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6617,12 +7713,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinSchema() rssch
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{
@@ -6674,12 +7770,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneSchema() rsschema.
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -6714,12 +7810,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeSchema() rssch
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("every_min"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("real_time"),
 				path.MatchRelative().AtParent().AtName("every_15_mins"),
 				path.MatchRelative().AtParent().AtName("every_30_mins"),
 				path.MatchRelative().AtParent().AtName("every_hour"),
+				path.MatchRelative().AtParent().AtName("every_min"),
+				path.MatchRelative().AtParent().AtName("none"),
+				path.MatchRelative().AtParent().AtName("real_time"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -6728,1102 +7824,6 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeSchema() rssch
 
 func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) getTypeFor(name string) attr.Type {
 	schema := DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"recurring": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"sync_to_peer": rsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"threshold": rsschema.Int64Attribute{
-				Description: "ignore if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"daily": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema(),
-
-			"hourly": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema(),
-
-			"none": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema(),
-
-			"weekly": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAppProfileSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"recurring": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAppProfileSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"sync_to_peer": rsschema.BoolAttribute{
-				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"threshold": rsschema.Int64Attribute{
-				Description: "ignore if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"weekly": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema(),
-
-			"daily": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema(),
-
-			"none": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"hourly": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema(),
-
-			"none": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema(),
-
-			"weekly": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema(),
-
-			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"none": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema(),
-
-			"weekly": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema(),
-
-			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema(),
-
-			"hourly": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema(),
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"at": rsschema.Int64Attribute{
-				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"day_of_week": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("daily"),
-				path.MatchRelative().AtParent().AtName("hourly"),
-				path.MatchRelative().AtParent().AtName("none"),
-				path.MatchRelative().AtParent().AtName("weekly"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"at": rsschema.StringAttribute{
-				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) getTypeFor(name string) attr.Type {
-	schema := DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -7890,45 +7890,6 @@ func (o *DynamicUpdatesResourceModel) CopyToPango(ctx context.Context, obj **dyn
 }
 func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateSchedule, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var threats_entry *dynamicupdates.UpdateScheduleThreats
-	if o.Threats != nil {
-		if *obj != nil && (*obj).Threats != nil {
-			threats_entry = (*obj).Threats
-		} else {
-			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
-		}
-
-		diags.Append(o.Threats.CopyToPango(ctx, &threats_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
-	if o.WfPrivate != nil {
-		if *obj != nil && (*obj).WfPrivate != nil {
-			wfPrivate_entry = (*obj).WfPrivate
-		} else {
-			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
-		}
-
-		diags.Append(o.WfPrivate.CopyToPango(ctx, &wfPrivate_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
-	if o.Wildfire != nil {
-		if *obj != nil && (*obj).Wildfire != nil {
-			wildfire_entry = (*obj).Wildfire
-		} else {
-			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
-		}
-
-		diags.Append(o.Wildfire.CopyToPango(ctx, &wildfire_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var antiVirus_entry *dynamicupdates.UpdateScheduleAntiVirus
 	if o.AntiVirus != nil {
 		if *obj != nil && (*obj).AntiVirus != nil {
@@ -7994,43 +7955,615 @@ func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
+	var threats_entry *dynamicupdates.UpdateScheduleThreats
+	if o.Threats != nil {
+		if *obj != nil && (*obj).Threats != nil {
+			threats_entry = (*obj).Threats
+		} else {
+			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
+		}
+
+		diags.Append(o.Threats.CopyToPango(ctx, &threats_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
+	if o.WfPrivate != nil {
+		if *obj != nil && (*obj).WfPrivate != nil {
+			wfPrivate_entry = (*obj).WfPrivate
+		} else {
+			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
+		}
+
+		diags.Append(o.WfPrivate.CopyToPango(ctx, &wfPrivate_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
+	if o.Wildfire != nil {
+		if *obj != nil && (*obj).Wildfire != nil {
+			wildfire_entry = (*obj).Wildfire
+		} else {
+			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
+		}
+
+		diags.Append(o.Wildfire.CopyToPango(ctx, &wildfire_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateSchedule)
 	}
-	(*obj).Threats = threats_entry
-	(*obj).WfPrivate = wfPrivate_entry
-	(*obj).Wildfire = wildfire_entry
 	(*obj).AntiVirus = antiVirus_entry
 	(*obj).AppProfile = appProfile_entry
 	(*obj).GlobalProtectClientlessVpn = globalProtectClientlessVpn_entry
 	(*obj).GlobalProtectDatafile = globalProtectDatafile_entry
 	(*obj).StatisticsService = statisticsService_entry
+	(*obj).Threats = threats_entry
+	(*obj).WfPrivate = wfPrivate_entry
+	(*obj).Wildfire = wildfire_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirus, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirus)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
+	threshold_value := o.Threshold.ValueInt64Pointer()
+	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
+	}
+	(*obj).SyncToPeer = syncToPeer_value
+	(*obj).Threshold = threshold_value
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfile, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfile)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
+	threshold_value := o.Threshold.ValueInt64Pointer()
+	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
+	}
+	(*obj).SyncToPeer = syncToPeer_value
+	(*obj).Threshold = threshold_value
+	(*obj).Daily = daily_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
+	}
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
+	if o.Recurring != nil {
+		if *obj != nil && (*obj).Recurring != nil {
+			recurring_entry = (*obj).Recurring
+		} else {
+			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
+		}
+
+		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
+	}
+	(*obj).Recurring = recurring_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
+	if o.Daily != nil {
+		if *obj != nil && (*obj).Daily != nil {
+			daily_entry = (*obj).Daily
+		} else {
+			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
+		}
+
+		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
+	if o.Hourly != nil {
+		if *obj != nil && (*obj).Hourly != nil {
+			hourly_entry = (*obj).Hourly
+		} else {
+			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
+		}
+
+		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
+	}
+	(*obj).Daily = daily_entry
+	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
+	}
+
+	return diags
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	at_value := o.At.ValueStringPointer()
+	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
+	}
+	(*obj).Action = action_value
+	(*obj).At = at_value
+	(*obj).DayOfWeek = dayOfWeek_value
 
 	return diags
 }
 func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleStatisticsService, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	threatPreventionPcap_value := o.ThreatPreventionPcap.ValueBoolPointer()
-	threatPreventionReports_value := o.ThreatPreventionReports.ValueBoolPointer()
-	urlReports_value := o.UrlReports.ValueBoolPointer()
 	applicationReports_value := o.ApplicationReports.ValueBoolPointer()
 	fileIdentificationReports_value := o.FileIdentificationReports.ValueBoolPointer()
 	healthPerformanceReports_value := o.HealthPerformanceReports.ValueBoolPointer()
 	passiveDnsMonitoring_value := o.PassiveDnsMonitoring.ValueBoolPointer()
 	threatPreventionInformation_value := o.ThreatPreventionInformation.ValueBoolPointer()
+	threatPreventionPcap_value := o.ThreatPreventionPcap.ValueBoolPointer()
+	threatPreventionReports_value := o.ThreatPreventionReports.ValueBoolPointer()
+	urlReports_value := o.UrlReports.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleStatisticsService)
 	}
-	(*obj).ThreatPreventionPcap = threatPreventionPcap_value
-	(*obj).ThreatPreventionReports = threatPreventionReports_value
-	(*obj).UrlReports = urlReports_value
 	(*obj).ApplicationReports = applicationReports_value
 	(*obj).FileIdentificationReports = fileIdentificationReports_value
 	(*obj).HealthPerformanceReports = healthPerformanceReports_value
 	(*obj).PassiveDnsMonitoring = passiveDnsMonitoring_value
 	(*obj).ThreatPreventionInformation = threatPreventionInformation_value
+	(*obj).ThreatPreventionPcap = threatPreventionPcap_value
+	(*obj).ThreatPreventionReports = threatPreventionReports_value
+	(*obj).UrlReports = urlReports_value
 
 	return diags
 }
@@ -8062,32 +8595,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango
 	newAppThreshold_value := o.NewAppThreshold.ValueInt64Pointer()
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
-	var none_entry *dynamicupdates.UpdateScheduleThreatsRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleThreatsRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_entry *dynamicupdates.UpdateScheduleThreatsRecurringDaily
 	if o.Daily != nil {
 		if *obj != nil && (*obj).Daily != nil {
@@ -8127,6 +8634,32 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango
 			return diags
 		}
 	}
+	var none_entry *dynamicupdates.UpdateScheduleThreatsRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var weekly_entry *dynamicupdates.UpdateScheduleThreatsRecurringWeekly
+	if o.Weekly != nil {
+		if *obj != nil && (*obj).Weekly != nil {
+			weekly_entry = (*obj).Weekly
+		} else {
+			weekly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringWeekly)
+		}
+
+		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleThreatsRecurring)
@@ -8134,11 +8667,11 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango
 	(*obj).NewAppThreshold = newAppThreshold_value
 	(*obj).SyncToPeer = syncToPeer_value
 	(*obj).Threshold = threshold_value
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
 	(*obj).Daily = daily_entry
 	(*obj).Every30Mins = every30Mins_entry
 	(*obj).Hourly = hourly_entry
+	(*obj).None = none_entry
+	(*obj).Weekly = weekly_entry
 
 	return diags
 }
@@ -8403,32 +8936,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyToPango(ctx con
 }
 func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleWildfireRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var none_entry *dynamicupdates.UpdateScheduleWildfireRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var realTime_entry *dynamicupdates.UpdateScheduleWildfireRecurringRealTime
-	if o.RealTime != nil {
-		if *obj != nil && (*obj).RealTime != nil {
-			realTime_entry = (*obj).RealTime
-		} else {
-			realTime_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringRealTime)
-		}
-
-		diags.Append(o.RealTime.CopyToPango(ctx, &realTime_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins
 	if o.Every15Mins != nil {
 		if *obj != nil && (*obj).Every15Mins != nil {
@@ -8481,16 +8988,42 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyToPang
 			return diags
 		}
 	}
+	var none_entry *dynamicupdates.UpdateScheduleWildfireRecurringNone
+	if o.None != nil {
+		if *obj != nil && (*obj).None != nil {
+			none_entry = (*obj).None
+		} else {
+			none_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringNone)
+		}
+
+		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var realTime_entry *dynamicupdates.UpdateScheduleWildfireRecurringRealTime
+	if o.RealTime != nil {
+		if *obj != nil && (*obj).RealTime != nil {
+			realTime_entry = (*obj).RealTime
+		} else {
+			realTime_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringRealTime)
+		}
+
+		diags.Append(o.RealTime.CopyToPango(ctx, &realTime_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(dynamicupdates.UpdateScheduleWildfireRecurring)
 	}
-	(*obj).None = none_entry
-	(*obj).RealTime = realTime_entry
 	(*obj).Every15Mins = every15Mins_entry
 	(*obj).Every30Mins = every30Mins_entry
 	(*obj).EveryHour = everyHour_entry
 	(*obj).EveryMin = everyMin_entry
+	(*obj).None = none_entry
+	(*obj).RealTime = realTime_entry
 
 	return diags
 }
@@ -8570,539 +9103,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) Co
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirus, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirus)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	threshold_value := o.Threshold.ValueInt64Pointer()
-	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
-	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
-	}
-	(*obj).Threshold = threshold_value
-	(*obj).SyncToPeer = syncToPeer_value
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueInt64Pointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfile, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfile)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
-	threshold_value := o.Threshold.ValueInt64Pointer()
-	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
-	}
-	(*obj).SyncToPeer = syncToPeer_value
-	(*obj).Threshold = threshold_value
-	(*obj).Weekly = weekly_entry
-	(*obj).Daily = daily_entry
-	(*obj).None = none_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	at_value := o.At.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
-	}
-	(*obj).At = at_value
-	(*obj).Action = action_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
-	}
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
-	}
-	(*obj).DayOfWeek = dayOfWeek_value
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
-	if o.Recurring != nil {
-		if *obj != nil && (*obj).Recurring != nil {
-			recurring_entry = (*obj).Recurring
-		} else {
-			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
-		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
-	}
-	(*obj).Recurring = recurring_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
-	if o.Daily != nil {
-		if *obj != nil && (*obj).Daily != nil {
-			daily_entry = (*obj).Daily
-		} else {
-			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
-		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
-	if o.Hourly != nil {
-		if *obj != nil && (*obj).Hourly != nil {
-			hourly_entry = (*obj).Hourly
-		} else {
-			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
-		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
-	if o.None != nil {
-		if *obj != nil && (*obj).None != nil {
-			none_entry = (*obj).None
-		} else {
-			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
-		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
-	if o.Weekly != nil {
-		if *obj != nil && (*obj).Weekly != nil {
-			weekly_entry = (*obj).Weekly
-		} else {
-			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
-		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
-	}
-	(*obj).Daily = daily_entry
-	(*obj).Hourly = hourly_entry
-	(*obj).None = none_entry
-	(*obj).Weekly = weekly_entry
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
-	}
-
-	return diags
-}
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
-	at_value := o.At.ValueStringPointer()
-	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
-	}
-	(*obj).Action = action_value
-	(*obj).At = at_value
-	(*obj).DayOfWeek = dayOfWeek_value
-
-	return diags
-}
 
 func (o *DynamicUpdatesResourceModel) CopyFromPango(ctx context.Context, obj *dynamicupdates.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -9123,6 +9123,33 @@ func (o *DynamicUpdatesResourceModel) CopyFromPango(ctx context.Context, obj *dy
 
 func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateSchedule, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var antiVirus_object *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+	if obj.AntiVirus != nil {
+		antiVirus_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusObject)
+
+		diags.Append(antiVirus_object.CopyFromPango(ctx, obj.AntiVirus, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var appProfile_object *DynamicUpdatesResourceUpdateScheduleAppProfileObject
+	if obj.AppProfile != nil {
+		appProfile_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileObject)
+
+		diags.Append(appProfile_object.CopyFromPango(ctx, obj.AppProfile, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var globalProtectClientlessVpn_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+	if obj.GlobalProtectClientlessVpn != nil {
+		globalProtectClientlessVpn_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject)
+
+		diags.Append(globalProtectClientlessVpn_object.CopyFromPango(ctx, obj.GlobalProtectClientlessVpn, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var globalProtectDatafile_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
 	if obj.GlobalProtectDatafile != nil {
 		globalProtectDatafile_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject)
@@ -9168,374 +9195,15 @@ func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyFromPango(ctx context.C
 			return diags
 		}
 	}
-	var antiVirus_object *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
-	if obj.AntiVirus != nil {
-		antiVirus_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusObject)
 
-		diags.Append(antiVirus_object.CopyFromPango(ctx, obj.AntiVirus, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var appProfile_object *DynamicUpdatesResourceUpdateScheduleAppProfileObject
-	if obj.AppProfile != nil {
-		appProfile_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileObject)
-
-		diags.Append(appProfile_object.CopyFromPango(ctx, obj.AppProfile, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var globalProtectClientlessVpn_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
-	if obj.GlobalProtectClientlessVpn != nil {
-		globalProtectClientlessVpn_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject)
-
-		diags.Append(globalProtectClientlessVpn_object.CopyFromPango(ctx, obj.GlobalProtectClientlessVpn, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.AntiVirus = antiVirus_object
+	o.AppProfile = appProfile_object
+	o.GlobalProtectClientlessVpn = globalProtectClientlessVpn_object
 	o.GlobalProtectDatafile = globalProtectDatafile_object
 	o.StatisticsService = statisticsService_object
 	o.Threats = threats_object
 	o.WfPrivate = wfPrivate_object
 	o.Wildfire = wildfire_object
-	o.AntiVirus = antiVirus_object
-	o.AppProfile = appProfile_object
-	o.GlobalProtectClientlessVpn = globalProtectClientlessVpn_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivate, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
-	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Recurring = recurring_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
-	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
-
-		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
-	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
-
-		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var every5Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
-	if obj.Every5Mins != nil {
-		every5Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
-
-		diags.Append(every5Mins_object.CopyFromPango(ctx, obj.Every5Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
-	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject)
-
-		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
-	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.SyncToPeer = syncToPeer_value
-	o.Every15Mins = every15Mins_object
-	o.Every30Mins = every30Mins_object
-	o.Every5Mins = every5Mins_object
-	o.EveryHour = everyHour_object
-	o.None = none_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	o.Action = action_value
-	o.At = at_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	o.Action = action_value
-	o.At = at_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	o.Action = action_value
-	o.At = at_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	o.Action = action_value
-	o.At = at_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfire, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
-	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Recurring = recurring_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurring, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
-	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject)
-
-		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var everyMin_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
-	if obj.EveryMin != nil {
-		everyMin_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject)
-
-		diags.Append(everyMin_object.CopyFromPango(ctx, obj.EveryMin, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
-	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var realTime_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
-	if obj.RealTime != nil {
-		realTime_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject)
-
-		diags.Append(realTime_object.CopyFromPango(ctx, obj.RealTime, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
-	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
-
-		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
-	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
-
-		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.EveryHour = everyHour_object
-	o.EveryMin = everyMin_object
-	o.None = none_object
-	o.RealTime = realTime_object
-	o.Every15Mins = every15Mins_object
-	o.Every30Mins = every30Mins_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.SyncToPeer = syncToPeer_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.SyncToPeer = syncToPeer_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.SyncToPeer = syncToPeer_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var syncToPeer_value types.Bool
-	if obj.SyncToPeer != nil {
-		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
-	}
-	o.Action = action_value
-	o.SyncToPeer = syncToPeer_value
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
 
 	return diags
 }
@@ -9596,16 +9264,16 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyFromP
 		}
 	}
 
-	var threshold_value types.Int64
-	if obj.Threshold != nil {
-		threshold_value = types.Int64Value(*obj.Threshold)
-	}
 	var syncToPeer_value types.Bool
 	if obj.SyncToPeer != nil {
 		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
 	}
-	o.Threshold = threshold_value
+	var threshold_value types.Int64
+	if obj.Threshold != nil {
+		threshold_value = types.Int64Value(*obj.Threshold)
+	}
 	o.SyncToPeer = syncToPeer_value
+	o.Threshold = threshold_value
 	o.Daily = daily_object
 	o.Hourly = hourly_object
 	o.None = none_object
@@ -9740,28 +9408,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyFrom
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	o.DayOfWeek = dayOfWeek_value
-	o.Action = action_value
-	o.At = at_value
-
-	return diags
-}
-
 func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAppProfileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -9781,6 +9427,28 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) Cop
 
 func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAppProfileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
 
 	return diags
 }
@@ -9892,6 +9560,10 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
 	var at_value types.String
 	if obj.At != nil {
 		at_value = types.StringValue(*obj.At)
@@ -9900,13 +9572,9 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 	if obj.DayOfWeek != nil {
 		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
 	}
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
+	o.Action = action_value
 	o.At = at_value
 	o.DayOfWeek = dayOfWeek_value
-	o.Action = action_value
 
 	return diags
 }
@@ -9930,6 +9598,15 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyFr
 
 func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var daily_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+	if obj.Daily != nil {
+		daily_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
+
+		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var hourly_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject)
@@ -9957,48 +9634,11 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObjec
 			return diags
 		}
 	}
-	var daily_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
-	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
 
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.Daily = daily_object
 	o.Hourly = hourly_object
 	o.None = none_object
 	o.Weekly = weekly_object
-	o.Daily = daily_object
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var dayOfWeek_value types.String
-	if obj.DayOfWeek != nil {
-		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
-	}
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
-	}
-	o.At = at_value
-	o.DayOfWeek = dayOfWeek_value
-	o.Action = action_value
 
 	return diags
 }
@@ -10006,16 +9646,16 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeekl
 func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
 	}
-	o.At = at_value
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
 	o.Action = action_value
+	o.At = at_value
 
 	return diags
 }
@@ -10037,17 +9677,37 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourl
 	return diags
 }
 
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var dayOfWeek_value types.String
+	if obj.DayOfWeek != nil {
+		dayOfWeek_value = types.StringValue(*obj.DayOfWeek)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DayOfWeek = dayOfWeek_value
+
+	return diags
+}
+
 func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleStatisticsService, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var threatPreventionReports_value types.Bool
-	if obj.ThreatPreventionReports != nil {
-		threatPreventionReports_value = types.BoolValue(*obj.ThreatPreventionReports)
-	}
-	var urlReports_value types.Bool
-	if obj.UrlReports != nil {
-		urlReports_value = types.BoolValue(*obj.UrlReports)
-	}
 	var applicationReports_value types.Bool
 	if obj.ApplicationReports != nil {
 		applicationReports_value = types.BoolValue(*obj.ApplicationReports)
@@ -10072,14 +9732,22 @@ func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyFromPa
 	if obj.ThreatPreventionPcap != nil {
 		threatPreventionPcap_value = types.BoolValue(*obj.ThreatPreventionPcap)
 	}
-	o.ThreatPreventionReports = threatPreventionReports_value
-	o.UrlReports = urlReports_value
+	var threatPreventionReports_value types.Bool
+	if obj.ThreatPreventionReports != nil {
+		threatPreventionReports_value = types.BoolValue(*obj.ThreatPreventionReports)
+	}
+	var urlReports_value types.Bool
+	if obj.UrlReports != nil {
+		urlReports_value = types.BoolValue(*obj.UrlReports)
+	}
 	o.ApplicationReports = applicationReports_value
 	o.FileIdentificationReports = fileIdentificationReports_value
 	o.HealthPerformanceReports = healthPerformanceReports_value
 	o.PassiveDnsMonitoring = passiveDnsMonitoring_value
 	o.ThreatPreventionInformation = threatPreventionInformation_value
 	o.ThreatPreventionPcap = threatPreventionPcap_value
+	o.ThreatPreventionReports = threatPreventionReports_value
+	o.UrlReports = urlReports_value
 
 	return diags
 }
@@ -10103,15 +9771,6 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyFromPango(ctx co
 
 func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurring, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
-	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var daily_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject)
@@ -10148,6 +9807,15 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPan
 			return diags
 		}
 	}
+	var weekly_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+	if obj.Weekly != nil {
+		weekly_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject)
+
+		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	var newAppThreshold_value types.Int64
 	if obj.NewAppThreshold != nil {
@@ -10164,11 +9832,55 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPan
 	o.NewAppThreshold = newAppThreshold_value
 	o.SyncToPeer = syncToPeer_value
 	o.Threshold = threshold_value
-	o.Weekly = weekly_object
 	o.Daily = daily_object
 	o.Every30Mins = every30Mins_object
 	o.Hourly = hourly_object
 	o.None = none_object
+	o.Weekly = weekly_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.String
+	if obj.At != nil {
+		at_value = types.StringValue(*obj.At)
+	}
+	var disableNewContent_value types.Bool
+	if obj.DisableNewContent != nil {
+		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DisableNewContent = disableNewContent_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var disableNewContent_value types.Bool
+	if obj.DisableNewContent != nil {
+		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.DisableNewContent = disableNewContent_value
 
 	return diags
 }
@@ -10228,46 +9940,334 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyF
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivate, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var recurring_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+	if obj.Recurring != nil {
+		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject)
 
-	var action_value types.String
-	if obj.Action != nil {
-		action_value = types.StringValue(*obj.Action)
+		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
-	var at_value types.String
-	if obj.At != nil {
-		at_value = types.StringValue(*obj.At)
-	}
-	var disableNewContent_value types.Bool
-	if obj.DisableNewContent != nil {
-		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
-	}
-	o.Action = action_value
-	o.At = at_value
-	o.DisableNewContent = disableNewContent_value
+
+	o.Recurring = recurring_object
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+	if obj.Every15Mins != nil {
+		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
+
+		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+	if obj.Every30Mins != nil {
+		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
+
+		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var every5Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+	if obj.Every5Mins != nil {
+		every5Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
+
+		diags.Append(every5Mins_object.CopyFromPango(ctx, obj.Every5Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+	if obj.EveryHour != nil {
+		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject)
+
+		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+	if obj.None != nil {
+		none_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject)
+
+		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.SyncToPeer = syncToPeer_value
+	o.Every15Mins = every15Mins_object
+	o.Every30Mins = every30Mins_object
+	o.Every5Mins = every5Mins_object
+	o.EveryHour = everyHour_object
+	o.None = none_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var at_value types.Int64
-	if obj.At != nil {
-		at_value = types.Int64Value(*obj.At)
-	}
-	var disableNewContent_value types.Bool
-	if obj.DisableNewContent != nil {
-		disableNewContent_value = types.BoolValue(*obj.DisableNewContent)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
 	}
-	o.At = at_value
-	o.DisableNewContent = disableNewContent_value
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
 	o.Action = action_value
+	o.At = at_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	o.Action = action_value
+	o.At = at_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	o.Action = action_value
+	o.At = at_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	o.Action = action_value
+	o.At = at_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfire, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var recurring_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+	if obj.Recurring != nil {
+		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject)
+
+		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Recurring = recurring_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+	if obj.Every15Mins != nil {
+		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
+
+		diags.Append(every15Mins_object.CopyFromPango(ctx, obj.Every15Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+	if obj.Every30Mins != nil {
+		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
+
+		diags.Append(every30Mins_object.CopyFromPango(ctx, obj.Every30Mins, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+	if obj.EveryHour != nil {
+		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject)
+
+		diags.Append(everyHour_object.CopyFromPango(ctx, obj.EveryHour, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var everyMin_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+	if obj.EveryMin != nil {
+		everyMin_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject)
+
+		diags.Append(everyMin_object.CopyFromPango(ctx, obj.EveryMin, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var none_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+	if obj.None != nil {
+		none_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject)
+
+		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var realTime_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+	if obj.RealTime != nil {
+		realTime_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject)
+
+		diags.Append(realTime_object.CopyFromPango(ctx, obj.RealTime, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Every15Mins = every15Mins_object
+	o.Every30Mins = every30Mins_object
+	o.EveryHour = everyHour_object
+	o.EveryMin = everyMin_object
+	o.None = none_object
+	o.RealTime = realTime_object
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.SyncToPeer = syncToPeer_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.SyncToPeer = syncToPeer_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var at_value types.Int64
+	if obj.At != nil {
+		at_value = types.Int64Value(*obj.At)
+	}
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.Action = action_value
+	o.At = at_value
+	o.SyncToPeer = syncToPeer_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var action_value types.String
+	if obj.Action != nil {
+		action_value = types.StringValue(*obj.Action)
+	}
+	var syncToPeer_value types.Bool
+	if obj.SyncToPeer != nil {
+		syncToPeer_value = types.BoolValue(*obj.SyncToPeer)
+	}
+	o.Action = action_value
+	o.SyncToPeer = syncToPeer_value
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
 
 	return diags
 }
@@ -10295,14 +10295,6 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 
 	var location dynamicupdates.Location
 
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
 	if state.Location.System != nil {
 		location.System = &dynamicupdates.SystemLocation{
 
@@ -10315,6 +10307,14 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -10437,9 +10437,9 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 	if state.Location.Template != nil {
 		location.Template = &dynamicupdates.TemplateLocation{
 
+			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 		}
 	}
 	if state.Location.TemplateStack != nil {
@@ -10560,11 +10560,6 @@ func (r *DynamicUpdatesResource) ImportState(ctx context.Context, req resource.I
 
 }
 
-type DynamicUpdatesTemplateStackLocation struct {
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
-	Name           types.String `tfsdk:"name"`
-	NgfwDevice     types.String `tfsdk:"ngfw_device"`
-}
 type DynamicUpdatesSystemLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
@@ -10573,10 +10568,15 @@ type DynamicUpdatesTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
+type DynamicUpdatesTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+}
 type DynamicUpdatesLocation struct {
-	TemplateStack *DynamicUpdatesTemplateStackLocation `tfsdk:"template_stack"`
 	System        *DynamicUpdatesSystemLocation        `tfsdk:"system"`
 	Template      *DynamicUpdatesTemplateLocation      `tfsdk:"template"`
+	TemplateStack *DynamicUpdatesTemplateStackLocation `tfsdk:"template_stack"`
 }
 
 func DynamicUpdatesLocationSchema() rsschema.Attribute {

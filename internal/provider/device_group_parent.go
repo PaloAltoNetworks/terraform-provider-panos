@@ -52,8 +52,8 @@ type DeviceGroupParentDataSourceFilter struct {
 
 type DeviceGroupParentDataSourceModel struct {
 	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	Parent      types.String              `tfsdk:"parent"`
 	DeviceGroup types.String              `tfsdk:"device_group"`
+	Parent      types.String              `tfsdk:"parent"`
 }
 
 func DeviceGroupParentDataSourceSchema() dsschema.Schema {

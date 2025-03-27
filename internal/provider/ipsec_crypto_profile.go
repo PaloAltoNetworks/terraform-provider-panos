@@ -57,23 +57,23 @@ type IpsecCryptoProfileDataSourceFilter struct {
 type IpsecCryptoProfileDataSourceModel struct {
 	Location IpsecCryptoProfileLocation                  `tfsdk:"location"`
 	Name     types.String                                `tfsdk:"name"`
-	Lifetime *IpsecCryptoProfileDataSourceLifetimeObject `tfsdk:"lifetime"`
 	DhGroup  types.String                                `tfsdk:"dh_group"`
 	Lifesize *IpsecCryptoProfileDataSourceLifesizeObject `tfsdk:"lifesize"`
+	Lifetime *IpsecCryptoProfileDataSourceLifetimeObject `tfsdk:"lifetime"`
 	Ah       *IpsecCryptoProfileDataSourceAhObject       `tfsdk:"ah"`
 	Esp      *IpsecCryptoProfileDataSourceEspObject      `tfsdk:"esp"`
-}
-type IpsecCryptoProfileDataSourceLifetimeObject struct {
-	Seconds types.Int64 `tfsdk:"seconds"`
-	Days    types.Int64 `tfsdk:"days"`
-	Hours   types.Int64 `tfsdk:"hours"`
-	Minutes types.Int64 `tfsdk:"minutes"`
 }
 type IpsecCryptoProfileDataSourceLifesizeObject struct {
 	Gb types.Int64 `tfsdk:"gb"`
 	Kb types.Int64 `tfsdk:"kb"`
 	Mb types.Int64 `tfsdk:"mb"`
 	Tb types.Int64 `tfsdk:"tb"`
+}
+type IpsecCryptoProfileDataSourceLifetimeObject struct {
+	Days    types.Int64 `tfsdk:"days"`
+	Hours   types.Int64 `tfsdk:"hours"`
+	Minutes types.Int64 `tfsdk:"minutes"`
+	Seconds types.Int64 `tfsdk:"seconds"`
 }
 type IpsecCryptoProfileDataSourceAhObject struct {
 	Authentication types.List `tfsdk:"authentication"`
@@ -112,19 +112,6 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 			return diags
 		}
 	}
-	var esp_entry *ipseccrypto.Esp
-	if o.Esp != nil {
-		if *obj != nil && (*obj).Esp != nil {
-			esp_entry = (*obj).Esp
-		} else {
-			esp_entry = new(ipseccrypto.Esp)
-		}
-
-		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ah_entry *ipseccrypto.Ah
 	if o.Ah != nil {
 		if *obj != nil && (*obj).Ah != nil {
@@ -138,6 +125,19 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 			return diags
 		}
 	}
+	var esp_entry *ipseccrypto.Esp
+	if o.Esp != nil {
+		if *obj != nil && (*obj).Esp != nil {
+			esp_entry = (*obj).Esp
+		} else {
+			esp_entry = new(ipseccrypto.Esp)
+		}
+
+		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipseccrypto.Entry)
@@ -146,42 +146,42 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 	(*obj).DhGroup = dhGroup_value
 	(*obj).Lifesize = lifesize_entry
 	(*obj).Lifetime = lifetime_entry
-	(*obj).Esp = esp_entry
 	(*obj).Ah = ah_entry
+	(*obj).Esp = esp_entry
 
 	return diags
 }
 func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	gb_value := o.Gb.ValueInt64Pointer()
 	kb_value := o.Kb.ValueInt64Pointer()
 	mb_value := o.Mb.ValueInt64Pointer()
 	tb_value := o.Tb.ValueInt64Pointer()
-	gb_value := o.Gb.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(ipseccrypto.Lifesize)
 	}
+	(*obj).Gb = gb_value
 	(*obj).Kb = kb_value
 	(*obj).Mb = mb_value
 	(*obj).Tb = tb_value
-	(*obj).Gb = gb_value
 
 	return diags
 }
 func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
 	minutes_value := o.Minutes.ValueInt64Pointer()
 	seconds_value := o.Seconds.ValueInt64Pointer()
-	days_value := o.Days.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(ipseccrypto.Lifetime)
 	}
+	(*obj).Days = days_value
 	(*obj).Hours = hours_value
 	(*obj).Minutes = minutes_value
 	(*obj).Seconds = seconds_value
-	(*obj).Days = days_value
 
 	return diags
 }
@@ -242,20 +242,20 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 			return diags
 		}
 	}
-	var esp_object *IpsecCryptoProfileDataSourceEspObject
-	if obj.Esp != nil {
-		esp_object = new(IpsecCryptoProfileDataSourceEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var ah_object *IpsecCryptoProfileDataSourceAhObject
 	if obj.Ah != nil {
 		ah_object = new(IpsecCryptoProfileDataSourceAhObject)
 
 		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var esp_object *IpsecCryptoProfileDataSourceEspObject
+	if obj.Esp != nil {
+		esp_object = new(IpsecCryptoProfileDataSourceEspObject)
+
+		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -269,8 +269,8 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	o.DhGroup = dhGroup_value
 	o.Lifesize = lifesize_object
 	o.Lifetime = lifetime_object
-	o.Esp = esp_object
 	o.Ah = ah_object
+	o.Esp = esp_object
 
 	return diags
 }
@@ -424,14 +424,6 @@ func IpsecCryptoProfileDataSourceLifesizeSchema() dsschema.SingleNestedAttribute
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"tb": dsschema.Int64Attribute{
-				Description: "specify lifesize in terabytes(TB)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"gb": dsschema.Int64Attribute{
 				Description: "specify lifesize in gigabytes(GB)",
 				Computed:    true,
@@ -450,6 +442,14 @@ func IpsecCryptoProfileDataSourceLifesizeSchema() dsschema.SingleNestedAttribute
 
 			"mb": dsschema.Int64Attribute{
 				Description: "specify lifesize in megabytes(MB)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"tb": dsschema.Int64Attribute{
+				Description: "specify lifesize in terabytes(TB)",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -587,7 +587,7 @@ func IpsecCryptoProfileDataSourceEspSchema() dsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"encryption": dsschema.ListAttribute{
+			"authentication": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -596,7 +596,7 @@ func IpsecCryptoProfileDataSourceEspSchema() dsschema.SingleNestedAttribute {
 				ElementType: types.StringType,
 			},
 
-			"authentication": dsschema.ListAttribute{
+			"encryption": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -749,17 +749,17 @@ func IpsecCryptoProfileResourceLocationSchema() rsschema.Attribute {
 type IpsecCryptoProfileResourceModel struct {
 	Location IpsecCryptoProfileLocation                `tfsdk:"location"`
 	Name     types.String                              `tfsdk:"name"`
+	DhGroup  types.String                              `tfsdk:"dh_group"`
 	Lifesize *IpsecCryptoProfileResourceLifesizeObject `tfsdk:"lifesize"`
 	Lifetime *IpsecCryptoProfileResourceLifetimeObject `tfsdk:"lifetime"`
-	DhGroup  types.String                              `tfsdk:"dh_group"`
 	Ah       *IpsecCryptoProfileResourceAhObject       `tfsdk:"ah"`
 	Esp      *IpsecCryptoProfileResourceEspObject      `tfsdk:"esp"`
 }
 type IpsecCryptoProfileResourceLifesizeObject struct {
-	Tb types.Int64 `tfsdk:"tb"`
 	Gb types.Int64 `tfsdk:"gb"`
 	Kb types.Int64 `tfsdk:"kb"`
 	Mb types.Int64 `tfsdk:"mb"`
+	Tb types.Int64 `tfsdk:"tb"`
 }
 type IpsecCryptoProfileResourceLifetimeObject struct {
 	Days    types.Int64 `tfsdk:"days"`
@@ -794,8 +794,6 @@ func IpsecCryptoProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"lifetime": IpsecCryptoProfileResourceLifetimeSchema(),
-
 			"dh_group": rsschema.StringAttribute{
 				Description: "phase-2 DH group (PFS DH group)",
 				Computed:    true,
@@ -806,21 +804,23 @@ func IpsecCryptoProfileResourceSchema() rsschema.Schema {
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
+						"no-pfs",
 						"group1",
+						"group2",
+						"group5",
 						"group14",
+						"group15",
 						"group16",
 						"group19",
 						"group20",
-						"no-pfs",
-						"group2",
-						"group5",
-						"group15",
 						"group21",
 					}...),
 				},
 			},
 
 			"lifesize": IpsecCryptoProfileResourceLifesizeSchema(),
+
+			"lifetime": IpsecCryptoProfileResourceLifetimeSchema(),
 
 			"ah": IpsecCryptoProfileResourceAhSchema(),
 
@@ -847,77 +847,6 @@ func (o *IpsecCryptoProfileResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func IpsecCryptoProfileResourceLifetimeSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"minutes": rsschema.Int64Attribute{
-				Description: "specify lifetime in minutes",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-
-				Validators: []validator.Int64{
-					int64validator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("days"),
-						path.MatchRelative().AtParent().AtName("hours"),
-						path.MatchRelative().AtParent().AtName("minutes"),
-						path.MatchRelative().AtParent().AtName("seconds"),
-					}...),
-				},
-			},
-
-			"seconds": rsschema.Int64Attribute{
-				Description: "specify lifetime in seconds",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"days": rsschema.Int64Attribute{
-				Description: "specify lifetime in days",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hours": rsschema.Int64Attribute{
-				Description: "specify lifetime in hours",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *IpsecCryptoProfileResourceLifetimeObject) getTypeFor(name string) attr.Type {
-	schema := IpsecCryptoProfileResourceLifetimeSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -927,8 +856,8 @@ func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"kb": rsschema.Int64Attribute{
-				Description: "specify lifesize in kilobytes(KB)",
+			"gb": rsschema.Int64Attribute{
+				Description: "specify lifesize in gigabytes(GB)",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -936,12 +865,20 @@ func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("gb"),
 						path.MatchRelative().AtParent().AtName("kb"),
 						path.MatchRelative().AtParent().AtName("mb"),
 						path.MatchRelative().AtParent().AtName("tb"),
-						path.MatchRelative().AtParent().AtName("gb"),
 					}...),
 				},
+			},
+
+			"kb": rsschema.Int64Attribute{
+				Description: "specify lifesize in kilobytes(KB)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
 			},
 
 			"mb": rsschema.Int64Attribute{
@@ -959,9 +896,72 @@ func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
+		},
+	}
+}
 
-			"gb": rsschema.Int64Attribute{
-				Description: "specify lifesize in gigabytes(GB)",
+func (o *IpsecCryptoProfileResourceLifesizeObject) getTypeFor(name string) attr.Type {
+	schema := IpsecCryptoProfileResourceLifesizeSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func IpsecCryptoProfileResourceLifetimeSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"days": rsschema.Int64Attribute{
+				Description: "specify lifetime in days",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+
+				Validators: []validator.Int64{
+					int64validator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("days"),
+						path.MatchRelative().AtParent().AtName("hours"),
+						path.MatchRelative().AtParent().AtName("minutes"),
+						path.MatchRelative().AtParent().AtName("seconds"),
+					}...),
+				},
+			},
+
+			"hours": rsschema.Int64Attribute{
+				Description: "specify lifetime in hours",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"minutes": rsschema.Int64Attribute{
+				Description: "specify lifetime in minutes",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"seconds": rsschema.Int64Attribute{
+				Description: "specify lifetime in seconds",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -971,8 +971,8 @@ func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 	}
 }
 
-func (o *IpsecCryptoProfileResourceLifesizeObject) getTypeFor(name string) attr.Type {
-	schema := IpsecCryptoProfileResourceLifesizeSchema()
+func (o *IpsecCryptoProfileResourceLifetimeObject) getTypeFor(name string) attr.Type {
+	schema := IpsecCryptoProfileResourceLifetimeSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1178,18 +1178,18 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 }
 func (o *IpsecCryptoProfileResourceLifesizeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	tb_value := o.Tb.ValueInt64Pointer()
 	gb_value := o.Gb.ValueInt64Pointer()
 	kb_value := o.Kb.ValueInt64Pointer()
 	mb_value := o.Mb.ValueInt64Pointer()
+	tb_value := o.Tb.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(ipseccrypto.Lifesize)
 	}
-	(*obj).Tb = tb_value
 	(*obj).Gb = gb_value
 	(*obj).Kb = kb_value
 	(*obj).Mb = mb_value
+	(*obj).Tb = tb_value
 
 	return diags
 }
@@ -1354,6 +1354,20 @@ func (o *IpsecCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
+func (o *IpsecCryptoProfileResourceAhObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var authentication_list types.List
+	{
+		var list_diags diag.Diagnostics
+		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
+		diags.Append(list_diags...)
+	}
+
+	o.Authentication = authentication_list
+
+	return diags
+}
+
 func (o *IpsecCryptoProfileResourceEspObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Esp, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_list types.List
@@ -1371,20 +1385,6 @@ func (o *IpsecCryptoProfileResourceEspObject) CopyFromPango(ctx context.Context,
 
 	o.Authentication = authentication_list
 	o.Encryption = encryption_list
-
-	return diags
-}
-
-func (o *IpsecCryptoProfileResourceAhObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var authentication_list types.List
-	{
-		var list_diags diag.Diagnostics
-		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
-		diags.Append(list_diags...)
-	}
-
-	o.Authentication = authentication_list
 
 	return diags
 }
@@ -1413,6 +1413,12 @@ func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 
 	var location ipseccrypto.Location
 
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &ipseccrypto.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
 		location.Template = &ipseccrypto.TemplateLocation{
 
@@ -1427,12 +1433,6 @@ func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ipseccrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1548,14 +1548,6 @@ func (r *IpsecCryptoProfileResource) Update(ctx context.Context, req resource.Up
 
 	var location ipseccrypto.Location
 
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ipseccrypto.TemplateStackLocation{
-
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-		}
-	}
 	if state.Location.Ngfw != nil {
 		location.Ngfw = &ipseccrypto.NgfwLocation{
 
@@ -1568,6 +1560,14 @@ func (r *IpsecCryptoProfileResource) Update(ctx context.Context, req resource.Up
 			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
 			Template:       state.Location.Template.Name.ValueString(),
 			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		}
+	}
+	if state.Location.TemplateStack != nil {
+		location.TemplateStack = &ipseccrypto.TemplateStackLocation{
+
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
+			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1641,6 +1641,12 @@ func (r *IpsecCryptoProfileResource) Delete(ctx context.Context, req resource.De
 
 	var location ipseccrypto.Location
 
+	if state.Location.Ngfw != nil {
+		location.Ngfw = &ipseccrypto.NgfwLocation{
+
+			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		}
+	}
 	if state.Location.Template != nil {
 		location.Template = &ipseccrypto.TemplateLocation{
 
@@ -1652,15 +1658,9 @@ func (r *IpsecCryptoProfileResource) Delete(ctx context.Context, req resource.De
 	if state.Location.TemplateStack != nil {
 		location.TemplateStack = &ipseccrypto.TemplateStackLocation{
 
+			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
 			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
 			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ipseccrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
 		}
 	}
 
@@ -1694,7 +1694,6 @@ func IpsecCryptoProfileImportStateCreator(ctx context.Context, resource types.Ob
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -1732,8 +1731,10 @@ func (r *IpsecCryptoProfileResource) ImportState(ctx context.Context, req resour
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type IpsecCryptoProfileNgfwLocation struct {

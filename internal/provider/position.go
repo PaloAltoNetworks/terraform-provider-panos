@@ -8,7 +8,7 @@ import (
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/PaloAltoNetworks/pango/rule"
+	"github.com/PaloAltoNetworks/pango/movement"
 )
 
 type TerraformPositionObject struct {
@@ -34,36 +34,21 @@ func TerraformPositionObjectSchema() rsschema.SingleNestedAttribute {
 	}
 }
 
-func (o *TerraformPositionObject) CopyToPango() rule.Position {
-	trueVal := true
+func (o *TerraformPositionObject) CopyToPango() movement.Position {
 	switch o.Where.ValueString() {
 	case "first":
-		return rule.Position{
-			First: &trueVal,
-		}
+		return movement.PositionFirst{}
 	case "last":
-		return rule.Position{
-			Last: &trueVal,
-		}
+		return movement.PositionLast{}
 	case "before":
-		if o.Directly.ValueBool() == true {
-			return rule.Position{
-				DirectlyBefore: o.Pivot.ValueStringPointer(),
-			}
-		} else {
-			return rule.Position{
-				SomewhereBefore: o.Pivot.ValueStringPointer(),
-			}
+		return movement.PositionBefore{
+			Pivot:    o.Pivot.ValueString(),
+			Directly: o.Directly.ValueBool(),
 		}
 	case "after":
-		if o.Directly.ValueBool() == true {
-			return rule.Position{
-				DirectlyAfter: o.Pivot.ValueStringPointer(),
-			}
-		} else {
-			return rule.Position{
-				SomewhereAfter: o.Pivot.ValueStringPointer(),
-			}
+		return movement.PositionAfter{
+			Pivot:    o.Pivot.ValueString(),
+			Directly: o.Directly.ValueBool(),
 		}
 	default:
 		panic("unreachable")

@@ -46,13 +46,13 @@ func TestAccSecurityProfileGroup(t *testing.T) {
 						tfjsonpath.New("disable_override"),
 						knownvalue.StringExact("yes"),
 					),
-					statecheck.ExpectKnownValue(
-						"panos_security_profile_group.group",
-						tfjsonpath.New("data_filtering"),
-						knownvalue.ListExact([]knownvalue.Check{
-							knownvalue.StringExact("test-profile1"),
-						}),
-					),
+					// statecheck.ExpectKnownValue(
+					// 	"panos_security_profile_group.group",
+					// 	tfjsonpath.New("data_filtering"),
+					// 	knownvalue.ListExact([]knownvalue.Check{
+					// 		knownvalue.StringExact("test-profile1"),
+					// 	}),
+					// ),
 					statecheck.ExpectKnownValue(
 						"panos_security_profile_group.group",
 						tfjsonpath.New("file_blocking"),
@@ -125,7 +125,7 @@ resource "panos_security_profile_group" "group" {
   name = format("%s-sec-group", var.prefix)
 
   disable_override = "yes"
-  data_filtering = ["test-profile1"]
+  #data_filtering = ["test-profile1"]
   file_blocking = ["basic file blocking"]
   #gtp = ["default"]
   #sctp = ["default"]

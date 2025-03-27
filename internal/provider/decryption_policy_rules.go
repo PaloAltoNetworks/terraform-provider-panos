@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,6 +28,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -59,29 +61,40 @@ type DecryptionPolicyRulesDataSourceModel struct {
 type DecryptionPolicyRulesDataSourceRulesObject struct {
 	Name                 types.String                                      `tfsdk:"name"`
 	Action               types.String                                      `tfsdk:"action"`
+	Category             types.List                                        `tfsdk:"category"`
 	Description          types.String                                      `tfsdk:"description"`
 	DestinationAddresses types.List                                        `tfsdk:"destination_addresses"`
-	SourceZones          types.List                                        `tfsdk:"source_zones"`
-	NegateDestination    types.Bool                                        `tfsdk:"negate_destination"`
-	Profile              types.String                                      `tfsdk:"profile"`
-	SourceAddresses      types.List                                        `tfsdk:"source_addresses"`
-	SourceUser           types.List                                        `tfsdk:"source_user"`
-	Tag                  types.List                                        `tfsdk:"tag"`
-	Type                 *DecryptionPolicyRulesDataSourceRulesTypeObject   `tfsdk:"type"`
-	LogSuccess           types.Bool                                        `tfsdk:"log_success"`
-	DestinationZones     types.List                                        `tfsdk:"destination_zones"`
 	DestinationHip       types.List                                        `tfsdk:"destination_hip"`
 	Disabled             types.Bool                                        `tfsdk:"disabled"`
+	SourceZones          types.List                                        `tfsdk:"source_zones"`
 	GroupTag             types.String                                      `tfsdk:"group_tag"`
+	LogFail              types.Bool                                        `tfsdk:"log_fail"`
 	LogSetting           types.String                                      `tfsdk:"log_setting"`
+	LogSuccess           types.Bool                                        `tfsdk:"log_success"`
+	NegateDestination    types.Bool                                        `tfsdk:"negate_destination"`
 	NegateSource         types.Bool                                        `tfsdk:"negate_source"`
 	PacketBrokerProfile  types.String                                      `tfsdk:"packet_broker_profile"`
-	SourceHip            types.List                                        `tfsdk:"source_hip"`
-	Uuid                 types.String                                      `tfsdk:"uuid"`
-	Category             types.List                                        `tfsdk:"category"`
-	LogFail              types.Bool                                        `tfsdk:"log_fail"`
+	Profile              types.String                                      `tfsdk:"profile"`
 	Services             types.List                                        `tfsdk:"services"`
+	SourceAddresses      types.List                                        `tfsdk:"source_addresses"`
+	SourceHip            types.List                                        `tfsdk:"source_hip"`
+	SourceUser           types.List                                        `tfsdk:"source_user"`
+	Tag                  types.List                                        `tfsdk:"tag"`
 	Target               *DecryptionPolicyRulesDataSourceRulesTargetObject `tfsdk:"target"`
+	DestinationZones     types.List                                        `tfsdk:"destination_zones"`
+	Type                 *DecryptionPolicyRulesDataSourceRulesTypeObject   `tfsdk:"type"`
+}
+type DecryptionPolicyRulesDataSourceRulesTargetObject struct {
+	Devices types.List `tfsdk:"devices"`
+	Negate  types.Bool `tfsdk:"negate"`
+	Tags    types.List `tfsdk:"tags"`
+}
+type DecryptionPolicyRulesDataSourceRulesTargetDevicesObject struct {
+	Name types.String `tfsdk:"name"`
+	Vsys types.List   `tfsdk:"vsys"`
+}
+type DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject struct {
+	Name types.String `tfsdk:"name"`
 }
 type DecryptionPolicyRulesDataSourceRulesTypeObject struct {
 	SshProxy             *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject             `tfsdk:"ssh_proxy"`
@@ -95,24 +108,47 @@ type DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject struct {
 type DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject struct {
 	Certificates types.List `tfsdk:"certificates"`
 }
-type DecryptionPolicyRulesDataSourceRulesTargetObject struct {
-	Negate  types.Bool `tfsdk:"negate"`
-	Tags    types.List `tfsdk:"tags"`
-	Devices types.List `tfsdk:"devices"`
-}
-type DecryptionPolicyRulesDataSourceRulesTargetDevicesObject struct {
-	Name types.String `tfsdk:"name"`
-	Vsys types.List   `tfsdk:"vsys"`
-}
-type DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject struct {
-	Name types.String `tfsdk:"name"`
-}
 
 func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	category_pango_entries := make([]string, 0)
+	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	description_value := o.Description.ValueStringPointer()
+	destinationAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	destinationHip_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	disabled_value := o.Disabled.ValueBoolPointer()
+	sourceZones_pango_entries := make([]string, 0)
+	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	groupTag_value := o.GroupTag.ValueStringPointer()
+	logFail_value := o.LogFail.ValueBoolPointer()
+	logSetting_value := o.LogSetting.ValueStringPointer()
 	logSuccess_value := o.LogSuccess.ValueBoolPointer()
-	destinationZones_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
+	negateDestination_value := o.NegateDestination.ValueBoolPointer()
+	negateSource_value := o.NegateSource.ValueBoolPointer()
+	packetBrokerProfile_value := o.PacketBrokerProfile.ValueStringPointer()
+	profile_value := o.Profile.ValueStringPointer()
+	services_pango_entries := make([]string, 0)
+	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -121,25 +157,13 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Con
 	if diags.HasError() {
 		return diags
 	}
-	uuid_value := o.Uuid.ValueStringPointer()
-	destinationHip_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
+	sourceUser_pango_entries := make([]string, 0)
+	diags.Append(o.SourceUser.ElementsAs(ctx, &sourceUser_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	disabled_value := o.Disabled.ValueBoolPointer()
-	groupTag_value := o.GroupTag.ValueStringPointer()
-	logSetting_value := o.LogSetting.ValueStringPointer()
-	negateSource_value := o.NegateSource.ValueBoolPointer()
-	packetBrokerProfile_value := o.PacketBrokerProfile.ValueStringPointer()
-	category_pango_entries := make([]string, 0)
-	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	logFail_value := o.LogFail.ValueBoolPointer()
-	services_pango_entries := make([]string, 0)
-	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
+	tag_pango_entries := make([]string, 0)
+	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -156,32 +180,8 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
-	sourceAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceUser_pango_entries := make([]string, 0)
-	diags.Append(o.SourceUser.ElementsAs(ctx, &sourceUser_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	action_value := o.Action.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	destinationAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceZones_pango_entries := make([]string, 0)
-	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	negateDestination_value := o.NegateDestination.ValueBoolPointer()
-	profile_value := o.Profile.ValueStringPointer()
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
+	destinationZones_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -203,30 +203,102 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Con
 		*obj = new(decryption.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).LogSuccess = logSuccess_value
-	(*obj).To = destinationZones_pango_entries
-	(*obj).SourceHip = sourceHip_pango_entries
-	(*obj).Uuid = uuid_value
-	(*obj).DestinationHip = destinationHip_pango_entries
-	(*obj).Disabled = disabled_value
-	(*obj).GroupTag = groupTag_value
-	(*obj).LogSetting = logSetting_value
-	(*obj).NegateSource = negateSource_value
-	(*obj).PacketBrokerProfile = packetBrokerProfile_value
-	(*obj).Category = category_pango_entries
-	(*obj).LogFail = logFail_value
-	(*obj).Service = services_pango_entries
-	(*obj).Target = target_entry
-	(*obj).Source = sourceAddresses_pango_entries
-	(*obj).SourceUser = sourceUser_pango_entries
 	(*obj).Action = action_value
+	(*obj).Category = category_pango_entries
 	(*obj).Description = description_value
 	(*obj).Destination = destinationAddresses_pango_entries
+	(*obj).DestinationHip = destinationHip_pango_entries
+	(*obj).Disabled = disabled_value
 	(*obj).From = sourceZones_pango_entries
+	(*obj).GroupTag = groupTag_value
+	(*obj).LogFail = logFail_value
+	(*obj).LogSetting = logSetting_value
+	(*obj).LogSuccess = logSuccess_value
 	(*obj).NegateDestination = negateDestination_value
+	(*obj).NegateSource = negateSource_value
+	(*obj).PacketBrokerProfile = packetBrokerProfile_value
 	(*obj).Profile = profile_value
+	(*obj).Service = services_pango_entries
+	(*obj).Source = sourceAddresses_pango_entries
+	(*obj).SourceHip = sourceHip_pango_entries
+	(*obj).SourceUser = sourceUser_pango_entries
 	(*obj).Tag = tag_pango_entries
+	(*obj).Target = target_entry
+	(*obj).To = destinationZones_pango_entries
 	(*obj).Type = type_entry
+
+	return diags
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, obj **decryption.Target, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var devices_tf_entries []DecryptionPolicyRulesDataSourceRulesTargetDevicesObject
+	var devices_pango_entries []decryption.TargetDevices
+	{
+		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range devices_tf_entries {
+			var entry *decryption.TargetDevices
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			devices_pango_entries = append(devices_pango_entries, *entry)
+		}
+	}
+	negate_value := o.Negate.ValueBoolPointer()
+	tags_pango_entries := make([]string, 0)
+	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+
+	if (*obj) == nil {
+		*obj = new(decryption.Target)
+	}
+	(*obj).Devices = devices_pango_entries
+	(*obj).Negate = negate_value
+	(*obj).Tags = tags_pango_entries
+
+	return diags
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **decryption.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var vsys_tf_entries []DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject
+	var vsys_pango_entries []decryption.TargetDevicesVsys
+	{
+		d := o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range vsys_tf_entries {
+			var entry *decryption.TargetDevicesVsys
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			vsys_pango_entries = append(vsys_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(decryption.TargetDevices)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Vsys = vsys_pango_entries
+
+	return diags
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **decryption.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(decryption.TargetDevicesVsys)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -314,92 +386,13 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject) Cop
 
 	return diags
 }
-func (o *DecryptionPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, obj **decryption.Target, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var devices_tf_entries []DecryptionPolicyRulesDataSourceRulesTargetDevicesObject
-	var devices_pango_entries []decryption.TargetDevices
-	{
-		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range devices_tf_entries {
-			var entry *decryption.TargetDevices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			devices_pango_entries = append(devices_pango_entries, *entry)
-		}
-	}
-	negate_value := o.Negate.ValueBoolPointer()
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-
-	if (*obj) == nil {
-		*obj = new(decryption.Target)
-	}
-	(*obj).Devices = devices_pango_entries
-	(*obj).Negate = negate_value
-	(*obj).Tags = tags_pango_entries
-
-	return diags
-}
-func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **decryption.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var vsys_tf_entries []DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject
-	var vsys_pango_entries []decryption.TargetDevicesVsys
-	{
-		d := o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range vsys_tf_entries {
-			var entry *decryption.TargetDevicesVsys
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			vsys_pango_entries = append(vsys_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(decryption.TargetDevices)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Vsys = vsys_pango_entries
-
-	return diags
-}
-func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **decryption.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(decryption.TargetDevicesVsys)
-	}
-	(*obj).Name = o.Name.ValueString()
-
-	return diags
-}
 
 func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sourceAddresses_list types.List
+	var category_list types.List
 	{
 		var list_diags diag.Diagnostics
-		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
-		diags.Append(list_diags...)
-	}
-	var sourceUser_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceUser_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
+		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
 	}
 	var destinationAddresses_list types.List
@@ -408,10 +401,40 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.C
 		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
 	}
+	var destinationHip_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
+		diags.Append(list_diags...)
+	}
 	var sourceZones_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
+		diags.Append(list_diags...)
+	}
+	var services_list types.List
+	{
+		var list_diags diag.Diagnostics
+		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
+		diags.Append(list_diags...)
+	}
+	var sourceAddresses_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
+		diags.Append(list_diags...)
+	}
+	var sourceHip_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
+		diags.Append(list_diags...)
+	}
+	var sourceUser_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceUser_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceUser)
 		diags.Append(list_diags...)
 	}
 	var tag_list types.List
@@ -426,29 +449,14 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.C
 		destinationZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
 	}
-	var sourceHip_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
-		diags.Append(list_diags...)
-	}
-	var destinationHip_list types.List
-	{
-		var list_diags diag.Diagnostics
-		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
-		diags.Append(list_diags...)
-	}
-	var category_list types.List
-	{
-		var list_diags diag.Diagnostics
-		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
-		diags.Append(list_diags...)
-	}
-	var services_list types.List
-	{
-		var list_diags diag.Diagnostics
-		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
-		diags.Append(list_diags...)
+	var target_object *DecryptionPolicyRulesDataSourceRulesTargetObject
+	if obj.Target != nil {
+		target_object = new(DecryptionPolicyRulesDataSourceRulesTargetObject)
+
+		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var type_object *DecryptionPolicyRulesDataSourceRulesTypeObject
 	if obj.Type != nil {
@@ -459,24 +467,7 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.C
 			return diags
 		}
 	}
-	var target_object *DecryptionPolicyRulesDataSourceRulesTargetObject
-	if obj.Target != nil {
-		target_object = new(DecryptionPolicyRulesDataSourceRulesTargetObject)
 
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var negateDestination_value types.Bool
-	if obj.NegateDestination != nil {
-		negateDestination_value = types.BoolValue(*obj.NegateDestination)
-	}
-	var profile_value types.String
-	if obj.Profile != nil {
-		profile_value = types.StringValue(*obj.Profile)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
@@ -484,22 +475,6 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.C
 	var description_value types.String
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
-	}
-	var logSuccess_value types.Bool
-	if obj.LogSuccess != nil {
-		logSuccess_value = types.BoolValue(*obj.LogSuccess)
-	}
-	var negateSource_value types.Bool
-	if obj.NegateSource != nil {
-		negateSource_value = types.BoolValue(*obj.NegateSource)
-	}
-	var packetBrokerProfile_value types.String
-	if obj.PacketBrokerProfile != nil {
-		packetBrokerProfile_value = types.StringValue(*obj.PacketBrokerProfile)
-	}
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
@@ -509,39 +484,58 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.C
 	if obj.GroupTag != nil {
 		groupTag_value = types.StringValue(*obj.GroupTag)
 	}
-	var logSetting_value types.String
-	if obj.LogSetting != nil {
-		logSetting_value = types.StringValue(*obj.LogSetting)
-	}
 	var logFail_value types.Bool
 	if obj.LogFail != nil {
 		logFail_value = types.BoolValue(*obj.LogFail)
 	}
+	var logSetting_value types.String
+	if obj.LogSetting != nil {
+		logSetting_value = types.StringValue(*obj.LogSetting)
+	}
+	var logSuccess_value types.Bool
+	if obj.LogSuccess != nil {
+		logSuccess_value = types.BoolValue(*obj.LogSuccess)
+	}
+	var negateDestination_value types.Bool
+	if obj.NegateDestination != nil {
+		negateDestination_value = types.BoolValue(*obj.NegateDestination)
+	}
+	var negateSource_value types.Bool
+	if obj.NegateSource != nil {
+		negateSource_value = types.BoolValue(*obj.NegateSource)
+	}
+	var packetBrokerProfile_value types.String
+	if obj.PacketBrokerProfile != nil {
+		packetBrokerProfile_value = types.StringValue(*obj.PacketBrokerProfile)
+	}
+	var profile_value types.String
+	if obj.Profile != nil {
+		profile_value = types.StringValue(*obj.Profile)
+	}
 	o.Name = types.StringValue(obj.Name)
-	o.NegateDestination = negateDestination_value
-	o.Profile = profile_value
-	o.SourceAddresses = sourceAddresses_list
-	o.SourceUser = sourceUser_list
 	o.Action = action_value
+	o.Category = category_list
 	o.Description = description_value
 	o.DestinationAddresses = destinationAddresses_list
-	o.SourceZones = sourceZones_list
-	o.Tag = tag_list
-	o.Type = type_object
-	o.LogSuccess = logSuccess_value
-	o.DestinationZones = destinationZones_list
-	o.NegateSource = negateSource_value
-	o.PacketBrokerProfile = packetBrokerProfile_value
-	o.SourceHip = sourceHip_list
-	o.Uuid = uuid_value
 	o.DestinationHip = destinationHip_list
 	o.Disabled = disabled_value
+	o.SourceZones = sourceZones_list
 	o.GroupTag = groupTag_value
-	o.LogSetting = logSetting_value
-	o.Category = category_list
 	o.LogFail = logFail_value
+	o.LogSetting = logSetting_value
+	o.LogSuccess = logSuccess_value
+	o.NegateDestination = negateDestination_value
+	o.NegateSource = negateSource_value
+	o.PacketBrokerProfile = packetBrokerProfile_value
+	o.Profile = profile_value
 	o.Services = services_list
+	o.SourceAddresses = sourceAddresses_list
+	o.SourceHip = sourceHip_list
+	o.SourceUser = sourceUser_list
+	o.Tag = tag_list
 	o.Target = target_object
+	o.DestinationZones = destinationZones_list
+	o.Type = type_object
 
 	return diags
 }
@@ -612,6 +606,15 @@ func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyFromPa
 
 func (o *DecryptionPolicyRulesDataSourceRulesTypeObject) CopyFromPango(ctx context.Context, obj *decryption.Type, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	var sshProxy_object *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject
+	if obj.SshProxy != nil {
+		sshProxy_object = new(DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject)
+
+		diags.Append(sshProxy_object.CopyFromPango(ctx, obj.SshProxy, encrypted)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
 	var sslForwardProxy_object *DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject
 	if obj.SslForwardProxy != nil {
 		sslForwardProxy_object = new(DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject)
@@ -630,19 +633,10 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeObject) CopyFromPango(ctx conte
 			return diags
 		}
 	}
-	var sshProxy_object *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject
-	if obj.SshProxy != nil {
-		sshProxy_object = new(DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject)
 
-		diags.Append(sshProxy_object.CopyFromPango(ctx, obj.SshProxy, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
+	o.SshProxy = sshProxy_object
 	o.SslForwardProxy = sslForwardProxy_object
 	o.SslInboundInspection = sslInboundInspection_object
-	o.SshProxy = sshProxy_object
 
 	return diags
 }
@@ -723,6 +717,14 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				Sensitive:   false,
 			},
 
+			"action": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"category": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -730,67 +732,6 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"log_fail": dsschema.BoolAttribute{
-				Description: "Log unsuccessful TLS handshakes",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"services": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"target": DecryptionPolicyRulesDataSourceRulesTargetSchema(),
-
-			"negate_destination": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"profile": dsschema.StringAttribute{
-				Description: "decryption profile",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"source_addresses": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_user": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"action": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
@@ -810,6 +751,23 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				ElementType: types.StringType,
 			},
 
+			"destination_hip": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"disabled": dsschema.BoolAttribute{
+				Description: "Disable the rule",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"source_zones": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -819,16 +777,29 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				ElementType: types.StringType,
 			},
 
-			"tag": dsschema.ListAttribute{
+			"group_tag": dsschema.StringAttribute{
 				Description: "",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
-				Computed:    true,
 				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
-			"type": DecryptionPolicyRulesDataSourceRulesTypeSchema(),
+			"log_fail": dsschema.BoolAttribute{
+				Description: "Log unsuccessful TLS handshakes",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_setting": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 
 			"log_success": dsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
@@ -838,13 +809,12 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				Sensitive:   false,
 			},
 
-			"destination_zones": dsschema.ListAttribute{
+			"negate_destination": dsschema.BoolAttribute{
 				Description: "",
+				Computed:    true,
 				Required:    false,
 				Optional:    true,
-				Computed:    true,
 				Sensitive:   false,
-				ElementType: types.StringType,
 			},
 
 			"negate_source": dsschema.BoolAttribute{
@@ -863,6 +833,32 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				Sensitive:   false,
 			},
 
+			"profile": dsschema.StringAttribute{
+				Description: "decryption profile",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"services": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_addresses": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"source_hip": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
@@ -872,15 +868,7 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				ElementType: types.StringType,
 			},
 
-			"uuid": dsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"destination_hip": dsschema.ListAttribute{
+			"source_user": dsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -889,29 +877,27 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				ElementType: types.StringType,
 			},
 
-			"disabled": dsschema.BoolAttribute{
-				Description: "Disable the rule",
-				Computed:    true,
+			"tag": dsschema.ListAttribute{
+				Description: "",
 				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 
-			"group_tag": dsschema.StringAttribute{
+			"target": DecryptionPolicyRulesDataSourceRulesTargetSchema(),
+
+			"destination_zones": dsschema.ListAttribute{
 				Description: "",
-				Computed:    true,
 				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   false,
+				ElementType: types.StringType,
 			},
 
-			"log_setting": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
+			"type": DecryptionPolicyRulesDataSourceRulesTypeSchema(),
 		},
 	}
 }
@@ -1101,53 +1087,6 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeObject) getTypeFor(name string)
 	panic("unreachable")
 }
 
-func DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ssh_proxy"),
-				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
-				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
-			}...),
-		},
-		Attributes: map[string]dsschema.Attribute{
-
-			"certificates": dsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject) getTypeFor(name string) attr.Type {
-	schema := DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func DecryptionPolicyRulesDataSourceRulesTypeSshProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -1206,6 +1145,53 @@ func DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxySchema() dsschema.Si
 
 func (o *DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject) getTypeFor(name string) attr.Type {
 	schema := DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ssh_proxy"),
+				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
+				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
+			}...),
+		},
+		Attributes: map[string]dsschema.Attribute{
+
+			"certificates": dsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    true,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject) getTypeFor(name string) attr.Type {
+	schema := DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -1290,8 +1276,8 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 	}
 
 	var elements []DecryptionPolicyRulesDataSourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
-	if len(elements) == 0 {
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() || len(elements) == 0 {
 		return
 	}
 
@@ -1345,6 +1331,11 @@ var (
 )
 
 func NewDecryptionPolicyRulesResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_decryption_policy_rules"]; !found {
+		resourceFuncMap["panos_decryption_policy_rules"] = resourceFuncs{
+			CreateImportId: DecryptionPolicyRulesImportStateCreator,
+		}
+	}
 	return &DecryptionPolicyRulesResource{}
 }
 
@@ -1364,29 +1355,28 @@ type DecryptionPolicyRulesResourceModel struct {
 }
 type DecryptionPolicyRulesResourceRulesObject struct {
 	Name                 types.String                                    `tfsdk:"name"`
-	LogSuccess           types.Bool                                      `tfsdk:"log_success"`
-	DestinationZones     types.List                                      `tfsdk:"destination_zones"`
-	DestinationHip       types.List                                      `tfsdk:"destination_hip"`
-	Disabled             types.Bool                                      `tfsdk:"disabled"`
-	GroupTag             types.String                                    `tfsdk:"group_tag"`
-	LogSetting           types.String                                    `tfsdk:"log_setting"`
-	NegateSource         types.Bool                                      `tfsdk:"negate_source"`
-	PacketBrokerProfile  types.String                                    `tfsdk:"packet_broker_profile"`
-	SourceHip            types.List                                      `tfsdk:"source_hip"`
-	Uuid                 types.String                                    `tfsdk:"uuid"`
-	Category             types.List                                      `tfsdk:"category"`
-	LogFail              types.Bool                                      `tfsdk:"log_fail"`
-	Services             types.List                                      `tfsdk:"services"`
-	Target               *DecryptionPolicyRulesResourceRulesTargetObject `tfsdk:"target"`
 	Action               types.String                                    `tfsdk:"action"`
+	Category             types.List                                      `tfsdk:"category"`
 	Description          types.String                                    `tfsdk:"description"`
 	DestinationAddresses types.List                                      `tfsdk:"destination_addresses"`
+	DestinationHip       types.List                                      `tfsdk:"destination_hip"`
+	Disabled             types.Bool                                      `tfsdk:"disabled"`
 	SourceZones          types.List                                      `tfsdk:"source_zones"`
+	GroupTag             types.String                                    `tfsdk:"group_tag"`
+	LogFail              types.Bool                                      `tfsdk:"log_fail"`
+	LogSetting           types.String                                    `tfsdk:"log_setting"`
+	LogSuccess           types.Bool                                      `tfsdk:"log_success"`
 	NegateDestination    types.Bool                                      `tfsdk:"negate_destination"`
+	NegateSource         types.Bool                                      `tfsdk:"negate_source"`
+	PacketBrokerProfile  types.String                                    `tfsdk:"packet_broker_profile"`
 	Profile              types.String                                    `tfsdk:"profile"`
+	Services             types.List                                      `tfsdk:"services"`
 	SourceAddresses      types.List                                      `tfsdk:"source_addresses"`
+	SourceHip            types.List                                      `tfsdk:"source_hip"`
 	SourceUser           types.List                                      `tfsdk:"source_user"`
 	Tag                  types.List                                      `tfsdk:"tag"`
+	Target               *DecryptionPolicyRulesResourceRulesTargetObject `tfsdk:"target"`
+	DestinationZones     types.List                                      `tfsdk:"destination_zones"`
 	Type                 *DecryptionPolicyRulesResourceRulesTypeObject   `tfsdk:"type"`
 }
 type DecryptionPolicyRulesResourceRulesTargetObject struct {
@@ -1415,13 +1405,34 @@ type DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject struct {
 }
 
 func (r *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	var resource DecryptionPolicyRulesResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-	if resp.Diagnostics.HasError() {
-		return
+	{
+		var resource DecryptionPolicyRulesResourceModel
+		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		resource.Position.ValidateConfig(resp)
 	}
+	{
+		var resource DecryptionPolicyRulesResourceModel
+		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-	resource.Position.ValidateConfig(resp)
+		entries := make(map[string]struct{})
+		var elements []DecryptionPolicyRulesResourceRulesObject
+		resource.Rules.ElementsAs(ctx, &elements, false)
+
+		for _, elt := range elements {
+			entry := elt.Name.ValueString()
+			if _, found := entries[entry]; found {
+				resp.Diagnostics.AddError("Failed to validate resource", "List entries must have unique names")
+				return
+			}
+			entries[entry] = struct{}{}
+		}
+	}
 }
 
 // <ResourceSchema>
@@ -1476,15 +1487,41 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"log_success": rsschema.BoolAttribute{
-				Description: "Log successful TLS handshakes",
+			"action": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("no-decrypt"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"no-decrypt",
+						"decrypt",
+						"decrypt-and-forward",
+					}...),
+				},
+			},
+
+			"category": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"description": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"destination_zones": rsschema.ListAttribute{
+			"destination_addresses": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1510,6 +1547,15 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
+			"source_zones": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
 			"group_tag": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -1518,7 +1564,31 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
+			"log_fail": rsschema.BoolAttribute{
+				Description: "Log unsuccessful TLS handshakes",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"log_setting": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"log_success": rsschema.BoolAttribute{
+				Description: "Log successful TLS handshakes",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"negate_destination": rsschema.BoolAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -1542,34 +1612,8 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
-			"source_hip": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"uuid": rsschema.StringAttribute{
-				Description: "Entry UUID value",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"category": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"log_fail": rsschema.BoolAttribute{
-				Description: "Log unsuccessful TLS handshakes",
+			"profile": rsschema.StringAttribute{
+				Description: "decryption profile",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -1585,68 +1629,16 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				ElementType: types.StringType,
 			},
 
-			"target": DecryptionPolicyRulesResourceRulesTargetSchema(),
-
-			"action": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("no-decrypt"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"no-decrypt",
-						"decrypt",
-						"decrypt-and-forward",
-					}...),
-				},
-			},
-
-			"description": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"destination_addresses": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"source_zones": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-
-			"negate_destination": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"profile": rsschema.StringAttribute{
-				Description: "decryption profile",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"source_addresses": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"source_hip": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1665,6 +1657,17 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 			},
 
 			"tag": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+
+			"target": DecryptionPolicyRulesResourceRulesTargetSchema(),
+
+			"destination_zones": rsschema.ListAttribute{
 				Description: "",
 				Required:    false,
 				Optional:    true,
@@ -1863,53 +1866,6 @@ func (o *DecryptionPolicyRulesResourceRulesTypeObject) getTypeFor(name string) a
 	panic("unreachable")
 }
 
-func DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-
-		Validators: []validator.Object{
-			objectvalidator.ExactlyOneOf(path.Expressions{
-				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
-				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
-				path.MatchRelative().AtParent().AtName("ssh_proxy"),
-			}...),
-		},
-		Attributes: map[string]rsschema.Attribute{
-
-			"certificates": rsschema.ListAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
-			},
-		},
-	}
-}
-
-func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) getTypeFor(name string) attr.Type {
-	schema := DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
 func DecryptionPolicyRulesResourceRulesTypeSshProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -1920,9 +1876,9 @@ func DecryptionPolicyRulesResourceRulesTypeSshProxySchema() rsschema.SingleNeste
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ssh_proxy"),
 				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
 				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
-				path.MatchRelative().AtParent().AtName("ssh_proxy"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -1957,9 +1913,9 @@ func DecryptionPolicyRulesResourceRulesTypeSslForwardProxySchema() rsschema.Sing
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ssh_proxy"),
 				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
 				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
-				path.MatchRelative().AtParent().AtName("ssh_proxy"),
 			}...),
 		},
 		Attributes: map[string]rsschema.Attribute{},
@@ -1968,6 +1924,53 @@ func DecryptionPolicyRulesResourceRulesTypeSslForwardProxySchema() rsschema.Sing
 
 func (o *DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject) getTypeFor(name string) attr.Type {
 	schema := DecryptionPolicyRulesResourceRulesTypeSslForwardProxySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(path.Expressions{
+				path.MatchRelative().AtParent().AtName("ssh_proxy"),
+				path.MatchRelative().AtParent().AtName("ssl_forward_proxy"),
+				path.MatchRelative().AtParent().AtName("ssl_inbound_inspection"),
+			}...),
+		},
+		Attributes: map[string]rsschema.Attribute{
+
+			"certificates": rsschema.ListAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    true,
+				Computed:    false,
+				Sensitive:   false,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) getTypeFor(name string) attr.Type {
+	schema := DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -2011,30 +2014,59 @@ func (r *DecryptionPolicyRulesResource) Configure(ctx context.Context, req resou
 
 func (o *DecryptionPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
+	action_value := o.Action.ValueStringPointer()
+	category_pango_entries := make([]string, 0)
+	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	description_value := o.Description.ValueStringPointer()
+	destinationAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	destinationHip_pango_entries := make([]string, 0)
 	diags.Append(o.DestinationHip.ElementsAs(ctx, &destinationHip_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
 	disabled_value := o.Disabled.ValueBoolPointer()
+	sourceZones_pango_entries := make([]string, 0)
+	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	groupTag_value := o.GroupTag.ValueStringPointer()
+	logFail_value := o.LogFail.ValueBoolPointer()
 	logSetting_value := o.LogSetting.ValueStringPointer()
+	logSuccess_value := o.LogSuccess.ValueBoolPointer()
+	negateDestination_value := o.NegateDestination.ValueBoolPointer()
 	negateSource_value := o.NegateSource.ValueBoolPointer()
 	packetBrokerProfile_value := o.PacketBrokerProfile.ValueStringPointer()
+	profile_value := o.Profile.ValueStringPointer()
+	services_pango_entries := make([]string, 0)
+	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
+	sourceAddresses_pango_entries := make([]string, 0)
+	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
+	if diags.HasError() {
+		return diags
+	}
 	sourceHip_pango_entries := make([]string, 0)
 	diags.Append(o.SourceHip.ElementsAs(ctx, &sourceHip_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	uuid_value := o.Uuid.ValueStringPointer()
-	category_pango_entries := make([]string, 0)
-	diags.Append(o.Category.ElementsAs(ctx, &category_pango_entries, false)...)
+	sourceUser_pango_entries := make([]string, 0)
+	diags.Append(o.SourceUser.ElementsAs(ctx, &sourceUser_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
-	logFail_value := o.LogFail.ValueBoolPointer()
-	services_pango_entries := make([]string, 0)
-	diags.Append(o.Services.ElementsAs(ctx, &services_pango_entries, false)...)
+	tag_pango_entries := make([]string, 0)
+	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2051,32 +2083,8 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
-	action_value := o.Action.ValueStringPointer()
-	description_value := o.Description.ValueStringPointer()
-	destinationAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationAddresses.ElementsAs(ctx, &destinationAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceZones_pango_entries := make([]string, 0)
-	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	negateDestination_value := o.NegateDestination.ValueBoolPointer()
-	profile_value := o.Profile.ValueStringPointer()
-	sourceAddresses_pango_entries := make([]string, 0)
-	diags.Append(o.SourceAddresses.ElementsAs(ctx, &sourceAddresses_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	sourceUser_pango_entries := make([]string, 0)
-	diags.Append(o.SourceUser.ElementsAs(ctx, &sourceUser_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
+	destinationZones_pango_entries := make([]string, 0)
+	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
 	if diags.HasError() {
 		return diags
 	}
@@ -2093,41 +2101,34 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyToPango(ctx context.Conte
 			return diags
 		}
 	}
-	logSuccess_value := o.LogSuccess.ValueBoolPointer()
-	destinationZones_pango_entries := make([]string, 0)
-	diags.Append(o.DestinationZones.ElementsAs(ctx, &destinationZones_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
-	}
 
 	if (*obj) == nil {
 		*obj = new(decryption.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).DestinationHip = destinationHip_pango_entries
-	(*obj).Disabled = disabled_value
-	(*obj).GroupTag = groupTag_value
-	(*obj).LogSetting = logSetting_value
-	(*obj).NegateSource = negateSource_value
-	(*obj).PacketBrokerProfile = packetBrokerProfile_value
-	(*obj).SourceHip = sourceHip_pango_entries
-	(*obj).Uuid = uuid_value
-	(*obj).Category = category_pango_entries
-	(*obj).LogFail = logFail_value
-	(*obj).Service = services_pango_entries
-	(*obj).Target = target_entry
 	(*obj).Action = action_value
+	(*obj).Category = category_pango_entries
 	(*obj).Description = description_value
 	(*obj).Destination = destinationAddresses_pango_entries
+	(*obj).DestinationHip = destinationHip_pango_entries
+	(*obj).Disabled = disabled_value
 	(*obj).From = sourceZones_pango_entries
+	(*obj).GroupTag = groupTag_value
+	(*obj).LogFail = logFail_value
+	(*obj).LogSetting = logSetting_value
+	(*obj).LogSuccess = logSuccess_value
 	(*obj).NegateDestination = negateDestination_value
+	(*obj).NegateSource = negateSource_value
+	(*obj).PacketBrokerProfile = packetBrokerProfile_value
 	(*obj).Profile = profile_value
+	(*obj).Service = services_pango_entries
 	(*obj).Source = sourceAddresses_pango_entries
+	(*obj).SourceHip = sourceHip_pango_entries
 	(*obj).SourceUser = sourceUser_pango_entries
 	(*obj).Tag = tag_pango_entries
-	(*obj).Type = type_entry
-	(*obj).LogSuccess = logSuccess_value
+	(*obj).Target = target_entry
 	(*obj).To = destinationZones_pango_entries
+	(*obj).Type = type_entry
 
 	return diags
 }
@@ -2291,12 +2292,6 @@ func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) CopyT
 
 func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, obj *decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var services_list types.List
-	{
-		var list_diags diag.Diagnostics
-		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
-		diags.Append(list_diags...)
-	}
 	var category_list types.List
 	{
 		var list_diags diag.Diagnostics
@@ -2309,16 +2304,34 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Con
 		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
 	}
+	var destinationHip_list types.List
+	{
+		var list_diags diag.Diagnostics
+		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
+		diags.Append(list_diags...)
+	}
 	var sourceZones_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
 	}
+	var services_list types.List
+	{
+		var list_diags diag.Diagnostics
+		services_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Service)
+		diags.Append(list_diags...)
+	}
 	var sourceAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
+		diags.Append(list_diags...)
+	}
+	var sourceHip_list types.List
+	{
+		var list_diags diag.Diagnostics
+		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
 		diags.Append(list_diags...)
 	}
 	var sourceUser_list types.List
@@ -2337,18 +2350,6 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Con
 	{
 		var list_diags diag.Diagnostics
 		destinationZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
-		diags.Append(list_diags...)
-	}
-	var sourceHip_list types.List
-	{
-		var list_diags diag.Diagnostics
-		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
-		diags.Append(list_diags...)
-	}
-	var destinationHip_list types.List
-	{
-		var list_diags diag.Diagnostics
-		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
 		diags.Append(list_diags...)
 	}
 	var target_object *DecryptionPolicyRulesResourceRulesTargetObject
@@ -2370,18 +2371,6 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Con
 		}
 	}
 
-	var logFail_value types.Bool
-	if obj.LogFail != nil {
-		logFail_value = types.BoolValue(*obj.LogFail)
-	}
-	var negateDestination_value types.Bool
-	if obj.NegateDestination != nil {
-		negateDestination_value = types.BoolValue(*obj.NegateDestination)
-	}
-	var profile_value types.String
-	if obj.Profile != nil {
-		profile_value = types.StringValue(*obj.Profile)
-	}
 	var action_value types.String
 	if obj.Action != nil {
 		action_value = types.StringValue(*obj.Action)
@@ -2390,17 +2379,29 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Con
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
-	var logSuccess_value types.Bool
-	if obj.LogSuccess != nil {
-		logSuccess_value = types.BoolValue(*obj.LogSuccess)
+	var disabled_value types.Bool
+	if obj.Disabled != nil {
+		disabled_value = types.BoolValue(*obj.Disabled)
 	}
 	var groupTag_value types.String
 	if obj.GroupTag != nil {
 		groupTag_value = types.StringValue(*obj.GroupTag)
 	}
+	var logFail_value types.Bool
+	if obj.LogFail != nil {
+		logFail_value = types.BoolValue(*obj.LogFail)
+	}
 	var logSetting_value types.String
 	if obj.LogSetting != nil {
 		logSetting_value = types.StringValue(*obj.LogSetting)
+	}
+	var logSuccess_value types.Bool
+	if obj.LogSuccess != nil {
+		logSuccess_value = types.BoolValue(*obj.LogSuccess)
+	}
+	var negateDestination_value types.Bool
+	if obj.NegateDestination != nil {
+		negateDestination_value = types.BoolValue(*obj.NegateDestination)
 	}
 	var negateSource_value types.Bool
 	if obj.NegateSource != nil {
@@ -2410,39 +2411,98 @@ func (o *DecryptionPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Con
 	if obj.PacketBrokerProfile != nil {
 		packetBrokerProfile_value = types.StringValue(*obj.PacketBrokerProfile)
 	}
-	var uuid_value types.String
-	if obj.Uuid != nil {
-		uuid_value = types.StringValue(*obj.Uuid)
-	}
-	var disabled_value types.Bool
-	if obj.Disabled != nil {
-		disabled_value = types.BoolValue(*obj.Disabled)
+	var profile_value types.String
+	if obj.Profile != nil {
+		profile_value = types.StringValue(*obj.Profile)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Services = services_list
-	o.Target = target_object
-	o.Category = category_list
-	o.LogFail = logFail_value
-	o.DestinationAddresses = destinationAddresses_list
-	o.SourceZones = sourceZones_list
-	o.NegateDestination = negateDestination_value
-	o.Profile = profile_value
-	o.SourceAddresses = sourceAddresses_list
-	o.SourceUser = sourceUser_list
 	o.Action = action_value
+	o.Category = category_list
 	o.Description = description_value
-	o.Tag = tag_list
-	o.Type = type_object
-	o.LogSuccess = logSuccess_value
-	o.DestinationZones = destinationZones_list
-	o.GroupTag = groupTag_value
-	o.LogSetting = logSetting_value
-	o.NegateSource = negateSource_value
-	o.PacketBrokerProfile = packetBrokerProfile_value
-	o.SourceHip = sourceHip_list
-	o.Uuid = uuid_value
+	o.DestinationAddresses = destinationAddresses_list
 	o.DestinationHip = destinationHip_list
 	o.Disabled = disabled_value
+	o.SourceZones = sourceZones_list
+	o.GroupTag = groupTag_value
+	o.LogFail = logFail_value
+	o.LogSetting = logSetting_value
+	o.LogSuccess = logSuccess_value
+	o.NegateDestination = negateDestination_value
+	o.NegateSource = negateSource_value
+	o.PacketBrokerProfile = packetBrokerProfile_value
+	o.Profile = profile_value
+	o.Services = services_list
+	o.SourceAddresses = sourceAddresses_list
+	o.SourceHip = sourceHip_list
+	o.SourceUser = sourceUser_list
+	o.Tag = tag_list
+	o.Target = target_object
+	o.DestinationZones = destinationZones_list
+	o.Type = type_object
+
+	return diags
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *decryption.Target, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var devices_list types.List
+	{
+		var devices_tf_entries []DecryptionPolicyRulesResourceRulesTargetDevicesObject
+		for _, elt := range obj.Devices {
+			var entry DecryptionPolicyRulesResourceRulesTargetDevicesObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			devices_tf_entries = append(devices_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("devices")
+		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var tags_list types.List
+	{
+		var list_diags diag.Diagnostics
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
+		diags.Append(list_diags...)
+	}
+
+	var negate_value types.Bool
+	if obj.Negate != nil {
+		negate_value = types.BoolValue(*obj.Negate)
+	}
+	o.Devices = devices_list
+	o.Negate = negate_value
+	o.Tags = tags_list
+
+	return diags
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *decryption.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var vsys_list types.List
+	{
+		var vsys_tf_entries []DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject
+		for _, elt := range obj.Vsys {
+			var entry DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			vsys_tf_entries = append(vsys_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("vsys")
+		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Name = types.StringValue(obj.Name)
+	o.Vsys = vsys_list
+
+	return diags
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *decryption.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -2510,70 +2570,6 @@ func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) CopyF
 	return diags
 }
 
-func (o *DecryptionPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *decryption.Target, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var tags_list types.List
-	{
-		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
-		diags.Append(list_diags...)
-	}
-	var devices_list types.List
-	{
-		var devices_tf_entries []DecryptionPolicyRulesResourceRulesTargetDevicesObject
-		for _, elt := range obj.Devices {
-			var entry DecryptionPolicyRulesResourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			devices_tf_entries = append(devices_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("devices")
-		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	var negate_value types.Bool
-	if obj.Negate != nil {
-		negate_value = types.BoolValue(*obj.Negate)
-	}
-	o.Tags = tags_list
-	o.Devices = devices_list
-	o.Negate = negate_value
-
-	return diags
-}
-
-func (o *DecryptionPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *decryption.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var vsys_list types.List
-	{
-		var vsys_tf_entries []DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject
-		for _, elt := range obj.Vsys {
-			var entry DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			vsys_tf_entries = append(vsys_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("vsys")
-		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Vsys = vsys_list
-
-	return diags
-}
-
-func (o *DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *decryption.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	o.Name = types.StringValue(obj.Name)
-
-	return diags
-}
-
 func (r *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
 	var state DecryptionPolicyRulesResourceModel
@@ -2613,7 +2609,11 @@ func (r *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource
 	}
 
 	var elements []DecryptionPolicyRulesResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	entries := make([]*decryption.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *decryption.Entry
@@ -2683,15 +2683,15 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
+			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
 		}
 	}
 
 	var elements []DecryptionPolicyRulesResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
-	if len(elements) == 0 {
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() || len(elements) == 0 {
 		return
 	}
 
@@ -2776,7 +2776,10 @@ func (r *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 	}
 
 	var elements []DecryptionPolicyRulesResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	stateEntries := make([]*decryption.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *decryption.Entry
@@ -2787,7 +2790,7 @@ func (r *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 		stateEntries[idx] = entry
 	}
 
-	position := state.Position.CopyToPango()
+	position := plan.Position.CopyToPango()
 
 	existing, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -2800,7 +2803,11 @@ func (r *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 		existingEntriesByName[elt.Name] = elt
 	}
 
-	plan.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	planEntries := make([]*decryption.Entry, len(elements))
 	for idx, elt := range elements {
 		entry, _ := existingEntriesByName[elt.Name.ValueString()]
@@ -2851,7 +2858,10 @@ func (r *DecryptionPolicyRulesResource) Delete(ctx context.Context, req resource
 		"function":      "Delete",
 	})
 	var elements []DecryptionPolicyRulesResourceRulesObject
-	state.Rules.ElementsAs(ctx, &elements, false)
+	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	var location decryption.Location
 
@@ -2889,8 +2899,88 @@ func (r *DecryptionPolicyRulesResource) Delete(ctx context.Context, req resource
 
 }
 
+type DecryptionPolicyRulesImportState struct {
+	Location DecryptionPolicyRulesLocation `json:"location"`
+	Names    []string                      `json:"names"`
+}
+
+func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+
+	var location DecryptionPolicyRulesLocation
+	switch value := locationAttr.(type) {
+	case types.Object:
+		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+	itemsAttr, ok := attrs["rules"]
+	if !ok {
+		return nil, fmt.Errorf("rules attribute missing")
+	}
+
+	var items []*DecryptionPolicyRulesResourceRulesObject
+	switch value := itemsAttr.(type) {
+	case types.List:
+		diags := value.ElementsAs(ctx, &items, false)
+		if diags.HasError() {
+			return nil, fmt.Errorf("Invalid rules attribute element type, expected list of valid objects")
+		}
+	default:
+		return nil, fmt.Errorf("Invalid names attribute type, expected list of strings")
+	}
+
+	var names []string
+	for _, elt := range items {
+		names = append(names, elt.Name.ValueString())
+	}
+
+	importStruct := DecryptionPolicyRulesImportState{
+		Location: location,
+		Names:    names,
+	}
+
+	return json.Marshal(importStruct)
+}
+
 func (r *DecryptionPolicyRulesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
+	var obj DecryptionPolicyRulesImportState
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var names []*DecryptionPolicyRulesResourceRulesObject
+	for _, elt := range obj.Names {
+		object := &DecryptionPolicyRulesResourceRulesObject{}
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, &decryption.Entry{}, nil)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		object.Name = types.StringValue(elt)
+		names = append(names, object)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("rules"), names)...)
 }
 
 type DecryptionPolicyRulesSharedLocation struct {
@@ -2901,9 +2991,9 @@ type DecryptionPolicyRulesVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type DecryptionPolicyRulesDeviceGroupLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	Rulebase       types.String `tfsdk:"rulebase"`
-	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type DecryptionPolicyRulesLocation struct {
 	Shared      *DecryptionPolicyRulesSharedLocation      `tfsdk:"shared"`
@@ -2936,9 +3026,9 @@ func DecryptionPolicyRulesLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},

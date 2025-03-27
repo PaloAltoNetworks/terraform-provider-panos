@@ -32,6 +32,14 @@ resource "panos_addresses" "example" {
   }
 }
 
+resource "panos_device_group" "example" {
+  location = {
+    panorama = {}
+  }
+
+  name = "example-device-group"
+}
+
 # Provider function to get the address values
 
 # Example 1: Get the value of a single address object.
@@ -73,7 +81,7 @@ Optional:
 Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
-- `shared` (Boolean) Location in Shared Panorama
+- `shared` (Boolean) Panorama shared object
 - `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
@@ -92,3 +100,25 @@ Optional:
 
 - `name` (String) The Virtual System name
 - `ngfw_device` (String) The NGFW device name
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+# Addresses can be imported by providing the following base64 encoded object as the ID
+# {
+#   location = {
+#     device_group = {
+#       name = "example-device-group"
+#       panorama_device = "localhost.localdomain"
+#     }
+#   }
+#
+#   names = [
+#     "foo",
+#     "bar"
+#   ]
+# }
+terraform import panos_addresses.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain"}},"names":["foo","bar"]}' | base64)
+```

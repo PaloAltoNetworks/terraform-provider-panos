@@ -81,12 +81,12 @@ Required:
 Optional:
 
 - `action` (String)
-- `applications` (List of String)
+- `applications` (Set of String)
 - `category` (List of String)
 - `description` (String)
-- `destination_addresses` (List of String)
+- `destination_addresses` (Set of String)
 - `destination_hip` (List of String)
-- `destination_zones` (List of String)
+- `destination_zones` (Set of String)
 - `disable_inspect` (Boolean)
 - `disable_server_response_inspection` (Boolean) Disable inspection of server side traffic
 - `disabled` (Boolean) Disable the rule
@@ -101,17 +101,16 @@ Optional:
 - `qos` (Attributes) (see [below for nested schema](#nestedatt--rules--qos))
 - `rule_type` (String)
 - `schedule` (String)
-- `services` (List of String)
-- `source_addresses` (List of String)
+- `services` (Set of String)
+- `source_addresses` (Set of String)
 - `source_hip` (List of String)
 - `source_imei` (List of String)
 - `source_imsi` (List of String)
 - `source_nw_slice` (List of String)
-- `source_users` (List of String)
-- `source_zones` (List of String)
+- `source_users` (Set of String)
+- `source_zones` (Set of String)
 - `tag` (List of String)
 - `target` (Attributes) (see [below for nested schema](#nestedatt--rules--target))
-- `uuid` (String) Entry UUID value
 
 <a id="nestedatt--rules--profile_setting"></a>
 ### Nested Schema for `rules.profile_setting`

@@ -103,7 +103,6 @@ func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 }
 func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	action_value := o.Action.ValueStringPointer()
 	applications_pango_entries := make([]string, 0)
 	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
 	if diags.HasError() {
@@ -115,15 +114,16 @@ func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx conte
 		return diags
 	}
 	direction_value := o.Direction.ValueStringPointer()
+	action_value := o.Action.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(fileblocking.Rules)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Action = action_value
 	(*obj).Application = applications_pango_entries
 	(*obj).FileType = fileTypes_pango_entries
 	(*obj).Direction = direction_value
+	(*obj).Action = action_value
 
 	return diags
 }
@@ -358,11 +358,14 @@ func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req da
 
 	var location fileblocking.Location
 
+	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
+		location.Shared = true
+	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 	if savestate.Location.Vsys != nil {
@@ -371,9 +374,6 @@ func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req da
 			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
 			Vsys:       savestate.Location.Vsys.Name.ValueString(),
 		}
-	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
 	}
 
 	// Basic logging.
@@ -479,11 +479,10 @@ func FileBlockingSecurityProfileResourceSchema() rsschema.Schema {
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "Disable object override in child device groups.",
-				Computed:    true,
+				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -535,23 +534,6 @@ func FileBlockingSecurityProfileResourceRulesSchema() rsschema.NestedAttributeOb
 				Sensitive:   false,
 			},
 
-			"direction": rsschema.StringAttribute{
-				Description: "File transfer direction.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"action": rsschema.StringAttribute{
-				Description: "Action to take on matching files.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("alert"),
-			},
-
 			"applications": rsschema.ListAttribute{
 				Description: "List of applications.",
 				Required:    false,
@@ -568,6 +550,23 @@ func FileBlockingSecurityProfileResourceRulesSchema() rsschema.NestedAttributeOb
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
+			},
+
+			"direction": rsschema.StringAttribute{
+				Description: "File transfer direction.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"action": rsschema.StringAttribute{
+				Description: "Action to take on matching files.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("alert"),
 			},
 		},
 	}
@@ -701,9 +700,9 @@ func (o *FileBlockingSecurityProfileResourceModel) CopyFromPango(ctx context.Con
 		disableOverride_value = types.StringValue(*obj.DisableOverride)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Rules = rules_list
 	o.Description = description_value
 	o.DisableOverride = disableOverride_value
+	o.Rules = rules_list
 
 	return diags
 }
@@ -770,8 +769,8 @@ func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req re
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 	if state.Location.Vsys != nil {
@@ -833,8 +832,8 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 	if savestate.Location.Vsys != nil {
@@ -895,8 +894,8 @@ func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req re
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
 
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
+			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
 		}
 	}
 	if state.Location.Vsys != nil {
@@ -1025,7 +1024,6 @@ func FileBlockingSecurityProfileImportStateCreator(ctx context.Context, resource
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
-
 	nameAttr, ok := attrs["name"]
 	if !ok {
 		return nil, fmt.Errorf("name attribute missing")
@@ -1063,8 +1061,10 @@ func (r *FileBlockingSecurityProfileResource) ImportState(ctx context.Context, r
 	}
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
-
 }
 
 type FileBlockingSecurityProfileDeviceGroupLocation struct {
@@ -1095,9 +1095,9 @@ func FileBlockingSecurityProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("vsys"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
@@ -1159,33 +1159,6 @@ func FileBlockingSecurityProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o FileBlockingSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-		Name:       o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *FileBlockingSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o FileBlockingSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1213,15 +1186,42 @@ func (o *FileBlockingSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []by
 
 	return nil
 }
+func (o FileBlockingSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *FileBlockingSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device"`
+		Name       *string `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o FileBlockingSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 		Shared      *bool                                           `json:"shared"`
 		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 	}{
-		Vsys:        o.Vsys,
 		Shared:      o.Shared.ValueBoolPointer(),
 		DeviceGroup: o.DeviceGroup,
+		Vsys:        o.Vsys,
 	}
 
 	return json.Marshal(obj)
@@ -1229,18 +1229,18 @@ func (o FileBlockingSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *FileBlockingSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 		Shared      *bool                                           `json:"shared"`
 		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Vsys = shadow.Vsys
 	o.Shared = types.BoolPointerValue(shadow.Shared)
 	o.DeviceGroup = shadow.DeviceGroup
+	o.Vsys = shadow.Vsys
 
 	return nil
 }
