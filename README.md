@@ -1,29 +1,24 @@
-Terraform Provider for Palo Alto Networks PANOS
-===============================================
+# Terraform Provider for Palo Alto Networks PANOS
 
 > [!NOTE]  
 > This provider is auto-generated via [pan-os-codegen](https://github.com/PaloAltoNetworks/pan-os-codegen)
-
-> [!CAUTION]
-> This software is currently in alpha development stage. It is strongly recommended not to use this package in production environments. If you choose to use it for experimental or developmental purposes, please do so with caution.
 
 - Website: https://www.terraform.io
 - Documentation: https://www.terraform.io/docs/providers/panos/index.html
 - [Roadmap](https://github.com/orgs/PaloAltoNetworks/projects/62/views/11)
 
 > [!TIP]
+>
 > ### Getting Started
+>
 > [Guide on Wiki](https://github.com/PaloAltoNetworks/pan-os-codegen/wiki/Getting-Started)
 
-
-Requirements
-------------
+## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) 1.8.x or higher
 - [Go](https://golang.org/doc/install) 1.22 (to build the provider plugin)
 
-Building The Provider
----------------------
+## Building The Provider
 
 1. Install [Go](https://go.dev/dl)
 
@@ -48,9 +43,7 @@ go build .
 
 5. Specify the `dev_overrides` configuration per the next section below. This tells Terraform where to find the provider you just built. The directory to specify is the full path to the cloned provider repo.
 
-
-Developing the Provider
------------------------
+## Developing the Provider
 
 With Terraform v1 and later, [development overrides for provider developers](https://www.terraform.io/docs/cli/config/config-file.html#development-overrides-for-provider-developers) can be leveraged in order to use the provider built from source.
 
