@@ -103,7 +103,7 @@ func makeAddressGroupConfig(label string) string {
 
     resource "panos_addresses" "google_dns_servers" {
       location = {
-        shared = true
+        shared = {}
       }
 
       addresses = {
@@ -116,7 +116,7 @@ func makeAddressGroupConfig(label string) string {
     resource "panos_address_group" "%s_base" {
       count = var.from_address_group ? 1 : 0
       location = {
-        shared = true
+        shared = {}
       }
 
       name   = "${var.address_group_name}-base-${var.name_suffix}"
@@ -126,7 +126,7 @@ func makeAddressGroupConfig(label string) string {
     resource "panos_address_group" "%s" {
 
       location = {
-        shared = true
+        shared = {}
       }
 
       name = "${var.address_group_name}-${var.name_suffix}"

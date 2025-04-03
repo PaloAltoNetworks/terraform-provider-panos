@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/logforwarding"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -1211,13 +1209,15 @@ func (d *LogForwardingProfileDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := logforwarding.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, logforwarding.NewService(d.client), specifier, logforwarding.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, logforwarding.NewService(d.client), batchSize, specifier, logforwarding.SpecMatches)
 }
 func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1229,8 +1229,8 @@ func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasourc
 
 	var location logforwarding.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &logforwarding.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
@@ -1912,13 +1912,15 @@ func (r *LogForwardingProfileResource) Configure(ctx context.Context, req resour
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := logforwarding.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, logforwarding.NewService(r.client), specifier, logforwarding.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, logforwarding.NewService(r.client), batchSize, specifier, logforwarding.SpecMatches)
 }
 
 func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj **logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -2500,8 +2502,8 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &logforwarding.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
@@ -2556,8 +2558,8 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 
 	var location logforwarding.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &logforwarding.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
@@ -2611,8 +2613,8 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &logforwarding.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
@@ -2692,8 +2694,8 @@ func (r *LogForwardingProfileResource) Delete(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &logforwarding.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
@@ -2776,12 +2778,14 @@ func (r *LogForwardingProfileResource) ImportState(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type LogForwardingProfileSharedLocation struct {
+}
 type LogForwardingProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type LogForwardingProfileLocation struct {
-	Shared      types.Bool                               `tfsdk:"shared"`
+	Shared      *LogForwardingProfileSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *LogForwardingProfileDeviceGroupLocation `tfsdk:"device_group"`
 }
 
@@ -2790,15 +2794,15 @@ func LogForwardingProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
@@ -2835,6 +2839,24 @@ func LogForwardingProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o LogForwardingProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *LogForwardingProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o LogForwardingProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -2864,10 +2886,10 @@ func (o *LogForwardingProfileDeviceGroupLocation) UnmarshalJSON(data []byte) err
 }
 func (o LogForwardingProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                    `json:"shared"`
+		Shared      *LogForwardingProfileSharedLocation      `json:"shared"`
 		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 	}
 
@@ -2876,7 +2898,7 @@ func (o LogForwardingProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LogForwardingProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                    `json:"shared"`
+		Shared      *LogForwardingProfileSharedLocation      `json:"shared"`
 		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group"`
 	}
 
@@ -2884,7 +2906,7 @@ func (o *LogForwardingProfileLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil

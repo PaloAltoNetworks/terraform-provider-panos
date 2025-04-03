@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/vlan"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +21,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -7354,13 +7352,15 @@ func (d *VlanInterfaceDataSource) Configure(_ context.Context, req datasource.Co
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := vlan.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, vlan.NewService(d.client), specifier, vlan.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, vlan.NewService(d.client), batchSize, specifier, vlan.SpecMatches)
 }
 func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -7372,8 +7372,8 @@ func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	var location vlan.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &vlan.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
@@ -11182,13 +11182,15 @@ func (r *VlanInterfaceResource) Configure(ctx context.Context, req resource.Conf
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := vlan.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, vlan.NewService(r.client), specifier, vlan.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, vlan.NewService(r.client), batchSize, specifier, vlan.SpecMatches)
 }
 
 func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -14836,8 +14838,8 @@ func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateR
 
 	var location vlan.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &vlan.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
@@ -14907,8 +14909,8 @@ func (o *VlanInterfaceResource) Read(ctx context.Context, req resource.ReadReque
 
 	var location vlan.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &vlan.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
@@ -14977,8 +14979,8 @@ func (r *VlanInterfaceResource) Update(ctx context.Context, req resource.UpdateR
 
 	var location vlan.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &vlan.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
@@ -15073,8 +15075,8 @@ func (r *VlanInterfaceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	var location vlan.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &vlan.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &vlan.TemplateLocation{
@@ -15172,6 +15174,8 @@ func (r *VlanInterfaceResource) ImportState(ctx context.Context, req resource.Im
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type VlanInterfaceSharedLocation struct {
+}
 type VlanInterfaceTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -15186,7 +15190,7 @@ type VlanInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type VlanInterfaceLocation struct {
-	Shared        types.Bool                          `tfsdk:"shared"`
+	Shared        *VlanInterfaceSharedLocation        `tfsdk:"shared"`
 	Template      *VlanInterfaceTemplateLocation      `tfsdk:"template"`
 	TemplateStack *VlanInterfaceTemplateStackLocation `tfsdk:"template_stack"`
 	Ngfw          *VlanInterfaceNgfwLocation          `tfsdk:"ngfw"`
@@ -15197,15 +15201,15 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
@@ -15307,6 +15311,24 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o VlanInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *VlanInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o VlanInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -15394,12 +15416,12 @@ func (o *VlanInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 }
 func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared        *bool                               `json:"shared"`
+		Shared        *VlanInterfaceSharedLocation        `json:"shared"`
 		Template      *VlanInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
 	}{
-		Shared:        o.Shared.ValueBoolPointer(),
+		Shared:        o.Shared,
 		Template:      o.Template,
 		TemplateStack: o.TemplateStack,
 		Ngfw:          o.Ngfw,
@@ -15410,7 +15432,7 @@ func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *bool                               `json:"shared"`
+		Shared        *VlanInterfaceSharedLocation        `json:"shared"`
 		Template      *VlanInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
@@ -15420,7 +15442,7 @@ func (o *VlanInterfaceLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Template = shadow.Template
 	o.TemplateStack = shadow.TemplateStack
 	o.Ngfw = shadow.Ngfw

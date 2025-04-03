@@ -2079,13 +2079,15 @@ func (d *IkeGatewayDataSource) Configure(_ context.Context, req datasource.Confi
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := gateway.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, gateway.NewService(d.client), specifier, gateway.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, gateway.NewService(d.client), batchSize, specifier, gateway.SpecMatches)
 }
 func (o *IkeGatewayDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -3231,13 +3233,15 @@ func (r *IkeGatewayResource) Configure(ctx context.Context, req resource.Configu
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := gateway.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, gateway.NewService(r.client), specifier, gateway.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, gateway.NewService(r.client), batchSize, specifier, gateway.SpecMatches)
 }
 
 func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {

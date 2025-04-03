@@ -27,7 +27,7 @@ func TestAccAdministrativeTag(t *testing.T) {
 	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 
 	location := config.ObjectVariable(map[string]config.Variable{
-		"shared": config.BoolVariable(true),
+		"shared": config.ObjectVariable(map[string]config.Variable{}),
 	})
 
 	resource.Test(t, resource.TestCase{

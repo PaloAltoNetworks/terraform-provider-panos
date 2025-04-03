@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/wildfireanalysis"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -340,13 +339,15 @@ func (d *WildfireAnalysisSecurityProfileDataSource) Configure(_ context.Context,
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := wildfireanalysis.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, wildfireanalysis.NewService(d.client), specifier, wildfireanalysis.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, wildfireanalysis.NewService(d.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -358,8 +359,8 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &wildfireanalysis.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
@@ -599,13 +600,15 @@ func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context,
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := wildfireanalysis.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, wildfireanalysis.NewService(r.client), specifier, wildfireanalysis.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, wildfireanalysis.NewService(r.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 
 func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -756,8 +759,8 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &wildfireanalysis.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
@@ -812,8 +815,8 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 
 	var location wildfireanalysis.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &wildfireanalysis.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
@@ -867,8 +870,8 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &wildfireanalysis.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
@@ -948,8 +951,8 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &wildfireanalysis.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
@@ -1032,12 +1035,14 @@ func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Contex
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type WildfireAnalysisSecurityProfileSharedLocation struct {
+}
 type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type WildfireAnalysisSecurityProfileLocation struct {
-	Shared      types.Bool                                          `tfsdk:"shared"`
+	Shared      *WildfireAnalysisSecurityProfileSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 }
 
@@ -1046,15 +1051,15 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
@@ -1091,6 +1096,24 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o WildfireAnalysisSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *WildfireAnalysisSecurityProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o WildfireAnalysisSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1120,10 +1143,10 @@ func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) UnmarshalJSON(data 
 }
 func (o WildfireAnalysisSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                               `json:"shared"`
+		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 	}
 
@@ -1132,7 +1155,7 @@ func (o WildfireAnalysisSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *WildfireAnalysisSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                               `json:"shared"`
+		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
 	}
 
@@ -1140,7 +1163,7 @@ func (o *WildfireAnalysisSecurityProfileLocation) UnmarshalJSON(data []byte) err
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil

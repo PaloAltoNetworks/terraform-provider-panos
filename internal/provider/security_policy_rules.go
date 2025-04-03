@@ -1676,13 +1676,15 @@ func (d *SecurityPolicyRulesDataSource) Configure(_ context.Context, req datasou
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := security.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), specifier, security.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), batchSize, specifier, security.SpecMatches)
 }
 func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2672,13 +2674,15 @@ func (r *SecurityPolicyRulesResource) Configure(ctx context.Context, req resourc
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := security.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), specifier, security.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), batchSize, specifier, security.SpecMatches)
 }
 
 func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -3816,6 +3820,7 @@ func (r *SecurityPolicyRulesResource) Delete(ctx context.Context, req resource.D
 type SecurityPolicyRulesImportState struct {
 	Location SecurityPolicyRulesLocation `json:"location"`
 	Names    []string                    `json:"names"`
+	Position TerraformPositionObject     `json:"position"`
 }
 
 func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -3836,6 +3841,19 @@ func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.O
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
+	positionAttr, ok := attrs["position"]
+	if !ok {
+		return nil, fmt.Errorf("position attribute missing")
+	}
+
+	var position TerraformPositionObject
+	switch value := positionAttr.(type) {
+	case types.Object:
+		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("position attribute expected to be an object")
+	}
+
 	itemsAttr, ok := attrs["rules"]
 	if !ok {
 		return nil, fmt.Errorf("rules attribute missing")
@@ -3859,6 +3877,7 @@ func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.O
 
 	importStruct := SecurityPolicyRulesImportState{
 		Location: location,
+		Position: position,
 		Names:    names,
 	}
 
@@ -3884,6 +3903,11 @@ func (r *SecurityPolicyRulesResource) ImportState(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("position"), obj.Position)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	var names []*SecurityPolicyRulesResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &SecurityPolicyRulesResourceRulesObject{}

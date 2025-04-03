@@ -27798,13 +27798,15 @@ func (d *VirtualRouterDataSource) Configure(_ context.Context, req datasource.Co
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := virtual_router.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, virtual_router.NewService(d.client), specifier, virtual_router.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, virtual_router.NewService(d.client), batchSize, specifier, virtual_router.SpecMatches)
 }
 func (o *VirtualRouterDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -42056,13 +42058,15 @@ func (r *VirtualRouterResource) Configure(ctx context.Context, req resource.Conf
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := virtual_router.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, virtual_router.NewService(r.client), specifier, virtual_router.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, virtual_router.NewService(r.client), batchSize, specifier, virtual_router.SpecMatches)
 }
 
 func (o *VirtualRouterResourceModel) CopyToPango(ctx context.Context, obj **virtual_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {

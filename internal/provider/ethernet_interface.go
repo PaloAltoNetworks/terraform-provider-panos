@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/ethernet"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -9868,7 +9866,8 @@ func (d *EthernetInterfaceDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := ethernet.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
@@ -9886,8 +9885,8 @@ func (o *EthernetInterfaceDataSource) Read(ctx context.Context, req datasource.R
 
 	var location ethernet.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ethernet.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ethernet.TemplateLocation{
@@ -14997,7 +14996,8 @@ func (r *EthernetInterfaceResource) Configure(ctx context.Context, req resource.
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := ethernet.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
@@ -19917,8 +19917,8 @@ func (r *EthernetInterfaceResource) Create(ctx context.Context, req resource.Cre
 
 	var location ethernet.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ethernet.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ethernet.TemplateLocation{
@@ -19997,8 +19997,8 @@ func (o *EthernetInterfaceResource) Read(ctx context.Context, req resource.ReadR
 
 	var location ethernet.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ethernet.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ethernet.TemplateLocation{
@@ -20067,8 +20067,8 @@ func (r *EthernetInterfaceResource) Update(ctx context.Context, req resource.Upd
 
 	var location ethernet.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ethernet.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ethernet.TemplateLocation{
@@ -20163,8 +20163,8 @@ func (r *EthernetInterfaceResource) Delete(ctx context.Context, req resource.Del
 
 	var location ethernet.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ethernet.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ethernet.TemplateLocation{
@@ -20271,6 +20271,8 @@ func (r *EthernetInterfaceResource) ImportState(ctx context.Context, req resourc
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type EthernetInterfaceSharedLocation struct {
+}
 type EthernetInterfaceTemplateLocation struct {
 	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -20286,7 +20288,7 @@ type EthernetInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type EthernetInterfaceLocation struct {
-	Shared        types.Bool                              `tfsdk:"shared"`
+	Shared        *EthernetInterfaceSharedLocation        `tfsdk:"shared"`
 	Template      *EthernetInterfaceTemplateLocation      `tfsdk:"template"`
 	TemplateStack *EthernetInterfaceTemplateStackLocation `tfsdk:"template_stack"`
 	Ngfw          *EthernetInterfaceNgfwLocation          `tfsdk:"ngfw"`
@@ -20297,15 +20299,15 @@ func EthernetInterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
@@ -20414,6 +20416,24 @@ func EthernetInterfaceLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o EthernetInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *EthernetInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o EthernetInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -20505,12 +20525,12 @@ func (o *EthernetInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 }
 func (o EthernetInterfaceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared        *bool                                   `json:"shared"`
+		Shared        *EthernetInterfaceSharedLocation        `json:"shared"`
 		Template      *EthernetInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *EthernetInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *EthernetInterfaceNgfwLocation          `json:"ngfw"`
 	}{
-		Shared:        o.Shared.ValueBoolPointer(),
+		Shared:        o.Shared,
 		Template:      o.Template,
 		TemplateStack: o.TemplateStack,
 		Ngfw:          o.Ngfw,
@@ -20521,7 +20541,7 @@ func (o EthernetInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *EthernetInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *bool                                   `json:"shared"`
+		Shared        *EthernetInterfaceSharedLocation        `json:"shared"`
 		Template      *EthernetInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *EthernetInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *EthernetInterfaceNgfwLocation          `json:"ngfw"`
@@ -20531,7 +20551,7 @@ func (o *EthernetInterfaceLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Template = shadow.Template
 	o.TemplateStack = shadow.TemplateStack
 	o.Ngfw = shadow.Ngfw

@@ -80,14 +80,14 @@ variable "groups" {
 }
 
 resource "panos_service" "svc" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-svc", var.prefix)
   protocol = { tcp = { source_port = 80, destination_port = 443 }}
 }
 
 resource "panos_administrative_tag" "tag" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-tag", var.prefix)
 }
@@ -97,7 +97,7 @@ resource "panos_service_group" "group1" {
     resource.panos_service.svc,
     resource.panos_administrative_tag.tag
   ]
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-group1", var.prefix)
   members = var.groups["group1"].members
@@ -105,7 +105,7 @@ resource "panos_service_group" "group1" {
 }
 
 resource "panos_service_group" "group2" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-group2", var.prefix)
   members = var.groups["group2"].members

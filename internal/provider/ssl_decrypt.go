@@ -12,7 +12,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/ssldecrypt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -20,7 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -381,7 +380,8 @@ func (d *SslDecryptDataSource) Configure(_ context.Context, req datasource.Confi
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := ssldecrypt.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
@@ -399,8 +399,8 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	var location ssldecrypt.Location
 
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &ssldecrypt.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
@@ -434,8 +434,8 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ssldecrypt.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -673,7 +673,8 @@ func (r *SslDecryptResource) Configure(ctx context.Context, req resource.Configu
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := ssldecrypt.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
@@ -854,8 +855,8 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 
 	var location ssldecrypt.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssldecrypt.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
@@ -889,8 +890,8 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssldecrypt.SharedLocation{}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -937,8 +938,8 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	var location ssldecrypt.Location
 
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &ssldecrypt.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
@@ -972,8 +973,8 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ssldecrypt.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -1019,8 +1020,8 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	var location ssldecrypt.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssldecrypt.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
@@ -1054,8 +1055,8 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssldecrypt.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -1127,8 +1128,8 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	var location ssldecrypt.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssldecrypt.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssldecrypt.TemplateLocation{
@@ -1162,8 +1163,8 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssldecrypt.SharedLocation{}
 	}
 
 	var obj *ssldecrypt.Config
@@ -1183,6 +1184,8 @@ func (r *SslDecryptResource) ImportState(ctx context.Context, req resource.Impor
 
 }
 
+type SslDecryptPanoramaLocation struct {
+}
 type SslDecryptTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -1203,13 +1206,15 @@ type SslDecryptTemplateStackVsysLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	Vsys           types.String `tfsdk:"vsys"`
 }
+type SslDecryptSharedLocation struct {
+}
 type SslDecryptLocation struct {
-	Panorama          types.Bool                           `tfsdk:"panorama"`
+	Panorama          *SslDecryptPanoramaLocation          `tfsdk:"panorama"`
 	Template          *SslDecryptTemplateLocation          `tfsdk:"template"`
 	TemplateVsys      *SslDecryptTemplateVsysLocation      `tfsdk:"template_vsys"`
 	TemplateStack     *SslDecryptTemplateStackLocation     `tfsdk:"template_stack"`
 	TemplateStackVsys *SslDecryptTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
-	Shared            types.Bool                           `tfsdk:"shared"`
+	Shared            *SslDecryptSharedLocation            `tfsdk:"shared"`
 }
 
 func SslDecryptLocationSchema() rsschema.Attribute {
@@ -1217,15 +1222,15 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"panorama": rsschema.BoolAttribute{
+			"panorama": rsschema.SingleNestedAttribute{
 				Description: "Located in a panorama.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("panorama"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
@@ -1379,17 +1384,35 @@ func SslDecryptLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Located in shared.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
 	}
 }
 
+func (o SslDecryptPanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SslDecryptPanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o SslDecryptTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1514,21 +1537,39 @@ func (o *SslDecryptTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o SslDecryptSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SslDecryptSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o SslDecryptLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Panorama          *bool                                `json:"panorama"`
+		Panorama          *SslDecryptPanoramaLocation          `json:"panorama"`
 		Template          *SslDecryptTemplateLocation          `json:"template"`
 		TemplateVsys      *SslDecryptTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *SslDecryptTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *SslDecryptTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *bool                                `json:"shared"`
+		Shared            *SslDecryptSharedLocation            `json:"shared"`
 	}{
-		Panorama:          o.Panorama.ValueBoolPointer(),
+		Panorama:          o.Panorama,
 		Template:          o.Template,
 		TemplateVsys:      o.TemplateVsys,
 		TemplateStack:     o.TemplateStack,
 		TemplateStackVsys: o.TemplateStackVsys,
-		Shared:            o.Shared.ValueBoolPointer(),
+		Shared:            o.Shared,
 	}
 
 	return json.Marshal(obj)
@@ -1536,24 +1577,24 @@ func (o SslDecryptLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SslDecryptLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama          *bool                                `json:"panorama"`
+		Panorama          *SslDecryptPanoramaLocation          `json:"panorama"`
 		Template          *SslDecryptTemplateLocation          `json:"template"`
 		TemplateVsys      *SslDecryptTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *SslDecryptTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *SslDecryptTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *bool                                `json:"shared"`
+		Shared            *SslDecryptSharedLocation            `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = types.BoolPointerValue(shadow.Panorama)
+	o.Panorama = shadow.Panorama
 	o.Template = shadow.Template
 	o.TemplateVsys = shadow.TemplateVsys
 	o.TemplateStack = shadow.TemplateStack
 	o.TemplateStackVsys = shadow.TemplateStackVsys
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 
 	return nil
 }

@@ -73,6 +73,15 @@ const (
 	entryOk      entryState = "ok"
 )
 
+func (o *MockEntryClient[E]) ChunkedMultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, strict bool, extras url.Values) ([]xmlapi.ChunkedMultiConfigResponse, error) {
+	data, httpResponse, mcResponse, err := o.MultiConfig(ctx, updates, strict, extras)
+	if err != nil {
+		return nil, err
+	}
+
+	return []xmlapi.ChunkedMultiConfigResponse{{Data: data, HttpResponse: httpResponse, MultiConfigResponse: mcResponse}}, nil
+}
+
 func (o *MockEntryClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, arg1 bool, arg2 url.Values) ([]byte, *http.Response, *xmlapi.MultiConfigResponse, error) {
 	o.MultiConfigOpers, _ = MultiConfig[E](updates, &o.Initial, multiConfigEntry, 0)
 

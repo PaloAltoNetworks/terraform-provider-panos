@@ -2,6 +2,7 @@ package manager
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -36,7 +37,7 @@ type SDKUuidService[E UuidObject, L UuidLocation] interface {
 	Create(context.Context, L, E) (E, error)
 	List(context.Context, L, string, string, string) ([]E, error)
 	Delete(context.Context, L, ...string) error
-	MoveGroup(context.Context, L, movement.Position, []E) error
+	MoveGroup(context.Context, L, movement.Position, []E, int) error
 }
 
 type uuidObjectWithState[E EntryObject] struct {
@@ -54,14 +55,16 @@ type TFUuidObject[E any] interface {
 }
 
 type UuidObjectManager[E UuidObject, L UuidLocation, S SDKUuidService[E, L]] struct {
+	batchSize int
 	service   S
 	client    SDKClient
 	specifier func(E) (any, error)
 	matcher   func(E, E) bool
 }
 
-func NewUuidObjectManager[E UuidObject, L UuidLocation, S SDKUuidService[E, L]](client SDKClient, service S, specifier func(E) (any, error), matcher func(E, E) bool) *UuidObjectManager[E, L, S] {
+func NewUuidObjectManager[E UuidObject, L UuidLocation, S SDKUuidService[E, L]](client SDKClient, service S, batchSize int, specifier func(E) (any, error), matcher func(E, E) bool) *UuidObjectManager[E, L, S] {
 	return &UuidObjectManager[E, L, S]{
+		batchSize: batchSize,
 		service:   service,
 		client:    client,
 		specifier: specifier,
@@ -173,7 +176,7 @@ func (o *UuidObjectManager[E, L, S]) moveExhaustive(ctx context.Context, locatio
 			entries[elt.StateIdx] = elt.Entry
 		}
 
-		err = o.service.MoveGroup(ctx, location, position, entries)
+		err = o.service.MoveGroup(ctx, location, position, entries, o.batchSize)
 		if err != nil {
 			return &Error{err: err, message: "Failed to move group of entries"}
 		}
@@ -208,7 +211,7 @@ func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, loca
 		entries[elt.StateIdx] = elt.Entry
 	}
 
-	err := o.service.MoveGroup(ctx, location, sdkPosition, entries)
+	err := o.service.MoveGroup(ctx, location, sdkPosition, entries, o.batchSize)
 	if err != nil {
 		return &Error{err: err, message: "Failed to move group of entries"}
 	}
@@ -229,7 +232,7 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
 
-	updates := xmlapi.NewMultiConfig(len(planEntriesByName))
+	updates := xmlapi.NewChunkedMultiConfig(len(planEntries), o.batchSize)
 
 	switch exhaustive {
 	case Exhaustive:
@@ -274,8 +277,10 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	}
 
 	if len(updates.Operations) > 0 {
-		if _, _, _, err := o.client.MultiConfig(ctx, updates, false, nil); err != nil {
-			return nil, fmt.Errorf("failed to create entries on the server: %w", err)
+		_, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil)
+		if err != nil {
+			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, planEntriesByName, exhaustive)
+			return nil, errors.Join(fmt.Errorf("failed to create entries on the server: %w", err), cleanupErr)
 		}
 	}
 
@@ -403,7 +408,7 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		return nil, &Error{err: err, message: "sdk error while listing resources"}
 	}
 
-	updates := xmlapi.NewMultiConfig(len(planEntries))
+	updates := xmlapi.NewChunkedMultiConfig(len(existing), o.batchSize)
 
 	// Next, we compare existing entries from the server against entries processed in the previous
 	// state to find any required updates.
@@ -541,8 +546,9 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	}
 
 	if len(updates.Operations) > 0 {
-		if _, _, _, err := o.client.MultiConfig(ctx, updates, false, nil); err != nil {
-			return nil, &Error{err: err, message: "failed to execute MultiConfig command"}
+		if _, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil); err != nil {
+			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, processedStateEntries, exhaustive)
+			return nil, errors.Join(&Error{err: err, message: "failed to execute MultiConfig command"}, cleanupErr)
 		}
 	}
 
@@ -622,9 +628,34 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 }
 
 func (o *UuidObjectManager[E, L, S]) Delete(ctx context.Context, location L, entryNames []string, exhaustive ExhaustiveType) error {
-	err := o.service.Delete(ctx, location, entryNames...)
-	if err != nil {
-		return &Error{err: err, message: "sdk error while deleting"}
+
+	var batches [][]string
+	for i := 0; i < len(entryNames); i += o.batchSize {
+		end := i + o.batchSize
+		if end > len(entryNames) {
+			end = len(entryNames)
+		}
+
+		batches = append(batches, entryNames[i:end])
 	}
+
+	for _, elt := range batches {
+		err := o.service.Delete(ctx, location, elt...)
+		if err != nil {
+			return &Error{err: err, message: "sdk error while deleting"}
+		}
+	}
+
 	return nil
+}
+
+func (o *UuidObjectManager[E, L, S]) cleanUpIncompleteUpdate(ctx context.Context, location L, entries map[string]uuidObjectWithState[E], exhaustive ExhaustiveType) error {
+	var names []string
+	for _, elt := range entries {
+		if elt.State == entryMissing {
+			names = append(names, elt.Entry.EntryName())
+		}
+	}
+
+	return o.Delete(ctx, location, names, exhaustive)
 }

@@ -16,15 +16,17 @@ var _ = Describe("Entry", func() {
 	var client *MockEntryClient[*MockEntryObject]
 	var service manager.SDKEntryService[*MockEntryObject, MockLocation]
 	var sdk *manager.EntryObjectManager[*MockEntryObject, MockLocation, manager.SDKEntryService[*MockEntryObject, MockLocation]]
+	var batchSize int
 
 	location := MockLocation{}
 
 	ctx := context.Background()
 
 	BeforeEach(func() {
+		batchSize = 500
 		client = NewMockEntryClient(existing)
 		service = NewMockEntryService[*MockEntryObject, MockLocation](client)
-		sdk = manager.NewEntryObjectManager(client, service, MockEntrySpecifier, MockEntryMatcher)
+		sdk = manager.NewEntryObjectManager(client, service, batchSize, MockEntrySpecifier, MockEntryMatcher)
 	})
 
 	Context("Read()", func() {

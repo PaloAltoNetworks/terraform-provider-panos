@@ -42,7 +42,7 @@ description: |-
 Optional:
 
 - `ngfw` (Attributes) Located in a specific NGFW device (see [below for nested schema](#nestedatt--location--ngfw))
-- `shared` (Boolean) Panorama shared object
+- `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
 - `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
 - `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
 
@@ -52,6 +52,10 @@ Optional:
 Optional:
 
 - `ngfw_device` (String) The NGFW device
+
+
+<a id="nestedatt--location--shared"></a>
+### Nested Schema for `location.shared`
 
 
 <a id="nestedatt--location--template"></a>

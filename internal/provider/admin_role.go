@@ -14932,13 +14932,15 @@ func (d *AdminRoleDataSource) Configure(_ context.Context, req datasource.Config
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := adminrole.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, adminrole.NewService(d.client), specifier, adminrole.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, adminrole.NewService(d.client), batchSize, specifier, adminrole.SpecMatches)
 }
 func (o *AdminRoleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -22885,13 +22887,15 @@ func (r *AdminRoleResource) Configure(ctx context.Context, req resource.Configur
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := adminrole.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, adminrole.NewService(r.client), specifier, adminrole.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, adminrole.NewService(r.client), batchSize, specifier, adminrole.SpecMatches)
 }
 
 func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, obj **adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {

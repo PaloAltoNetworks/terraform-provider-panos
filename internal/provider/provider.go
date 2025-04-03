@@ -36,6 +36,7 @@ type PanosProviderModel struct {
 	AuthFile              types.String `tfsdk:"auth_file"`
 	ConfigFile            types.String `tfsdk:"config_file"`
 	Hostname              types.String `tfsdk:"hostname"`
+	MultiConfigBatchSize  types.Int64  `tfsdk:"multi_config_batch_size"`
 	PanosVersion          types.String `tfsdk:"panos_version"`
 	Password              types.String `tfsdk:"password"`
 	Port                  types.Int64  `tfsdk:"port"`
@@ -110,6 +111,15 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 					"",
 					"PANOS_HOST",
 					"hostname",
+				),
+				Optional: true,
+			},
+			"multi_config_batch_size": schema.Int64Attribute{
+				Description: ProviderParamDescription(
+					"Number of operations to send as part of a single MultiConfig update",
+					"500",
+					"PANOS_MULTI_CONFIG_BATCH_SIZE",
+					"multi_config_batch_size",
 				),
 				Optional: true,
 			},
@@ -199,6 +209,11 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 	}
 }
 
+type ProviderData struct {
+	Client               *sdk.Client
+	MultiConfigBatchSize int
+}
+
 // Configure prepares the provider.
 func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	tflog.Info(ctx, "Configuring the provider client...")
@@ -275,8 +290,21 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		}
 	}
 
-	resp.DataSourceData = con
-	resp.ResourceData = con
+	batchSize := config.MultiConfigBatchSize.ValueInt64()
+	if batchSize == 0 {
+		batchSize = 500
+	} else if batchSize < 0 || batchSize > 10000 {
+		resp.Diagnostics.AddError("Failed to configure Terraform provider", fmt.Sprintf("multi_config_batch_size must be between 1 and 10000, value: %d", batchSize))
+		return
+	}
+
+	providerData := &ProviderData{
+		Client:               con,
+		MultiConfigBatchSize: int(batchSize),
+	}
+
+	resp.DataSourceData = providerData
+	resp.ResourceData = providerData
 	resp.EphemeralResourceData = con
 
 	// Done.

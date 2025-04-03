@@ -119,7 +119,8 @@ func (d *DeviceGroupParentDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 }
 func (o *DeviceGroupParentDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -240,7 +241,8 @@ func (r *DeviceGroupParentResource) Configure(ctx context.Context, req resource.
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 }
 
 func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

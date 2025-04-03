@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"encoding/json"
 	"slices"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -78,4 +79,37 @@ func (o *TerraformPositionObject) ValidateConfig(resp *resource.ValidateConfigRe
 			"Missing attribute configuration",
 			"Expected pivot to be configured with directly")
 	}
+}
+
+func (o TerraformPositionObject) MarshalJSON() ([]byte, error) {
+	obj := struct {
+		Where    *string `json:"where,omitempty"`
+		Directly *bool   `json:"directly,omitempty"`
+		Pivot    *string `json:"pivot,omitempty"`
+	}{
+		Where:    o.Where.ValueStringPointer(),
+		Directly: o.Directly.ValueBoolPointer(),
+		Pivot:    o.Pivot.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TerraformPositionObject) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Where    *string `json:"where"`
+		Directly *bool   `json:"directly"`
+		Pivot    *string `json:"pivot"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	o.Where = types.StringPointerValue(shadow.Where)
+	o.Directly = types.BoolPointerValue(shadow.Directly)
+	o.Pivot = types.StringPointerValue(shadow.Pivot)
+
+	return nil
 }

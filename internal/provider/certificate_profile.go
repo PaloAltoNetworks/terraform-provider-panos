@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/profile/certificate"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -562,13 +561,15 @@ func (d *CertificateProfileDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := certificate.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, certificate.NewService(d.client), specifier, certificate.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, certificate.NewService(d.client), batchSize, specifier, certificate.SpecMatches)
 }
 func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -580,8 +581,8 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 
 	var location certificate.Location
 
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &certificate.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &certificate.TemplateLocation{
@@ -615,8 +616,8 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &certificate.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -974,13 +975,15 @@ func (r *CertificateProfileResource) Configure(ctx context.Context, req resource
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := certificate.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, certificate.NewService(r.client), specifier, certificate.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, certificate.NewService(r.client), batchSize, specifier, certificate.SpecMatches)
 }
 
 func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1229,8 +1232,8 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 
 	var location certificate.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &certificate.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &certificate.TemplateLocation{
@@ -1264,8 +1267,8 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &certificate.SharedLocation{}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -1313,8 +1316,8 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 
 	var location certificate.Location
 
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &certificate.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &certificate.TemplateLocation{
@@ -1348,8 +1351,8 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &certificate.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -1396,8 +1399,8 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 
 	var location certificate.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &certificate.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &certificate.TemplateLocation{
@@ -1431,8 +1434,8 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &certificate.SharedLocation{}
 	}
 
 	// Basic logging.
@@ -1505,8 +1508,8 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 
 	var location certificate.Location
 
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &certificate.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &certificate.TemplateLocation{
@@ -1540,8 +1543,8 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
 		}
 	}
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &certificate.SharedLocation{}
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -1617,6 +1620,8 @@ func (r *CertificateProfileResource) ImportState(ctx context.Context, req resour
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type CertificateProfilePanoramaLocation struct {
+}
 type CertificateProfileTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -1637,13 +1642,15 @@ type CertificateProfileTemplateStackVsysLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	Vsys           types.String `tfsdk:"vsys"`
 }
+type CertificateProfileSharedLocation struct {
+}
 type CertificateProfileLocation struct {
-	Panorama          types.Bool                                   `tfsdk:"panorama"`
+	Panorama          *CertificateProfilePanoramaLocation          `tfsdk:"panorama"`
 	Template          *CertificateProfileTemplateLocation          `tfsdk:"template"`
 	TemplateVsys      *CertificateProfileTemplateVsysLocation      `tfsdk:"template_vsys"`
 	TemplateStack     *CertificateProfileTemplateStackLocation     `tfsdk:"template_stack"`
 	TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
-	Shared            types.Bool                                   `tfsdk:"shared"`
+	Shared            *CertificateProfileSharedLocation            `tfsdk:"shared"`
 }
 
 func CertificateProfileLocationSchema() rsschema.Attribute {
@@ -1651,15 +1658,15 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"panorama": rsschema.BoolAttribute{
+			"panorama": rsschema.SingleNestedAttribute{
 				Description: "Located in a panorama.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("panorama"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
@@ -1813,17 +1820,35 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Located in shared.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
 	}
 }
 
+func (o CertificateProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *CertificateProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o CertificateProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1948,21 +1973,39 @@ func (o *CertificateProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte)
 
 	return nil
 }
+func (o CertificateProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *CertificateProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Panorama          *bool                                        `json:"panorama"`
+		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama"`
 		Template          *CertificateProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *bool                                        `json:"shared"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared"`
 	}{
-		Panorama:          o.Panorama.ValueBoolPointer(),
+		Panorama:          o.Panorama,
 		Template:          o.Template,
 		TemplateVsys:      o.TemplateVsys,
 		TemplateStack:     o.TemplateStack,
 		TemplateStackVsys: o.TemplateStackVsys,
-		Shared:            o.Shared.ValueBoolPointer(),
+		Shared:            o.Shared,
 	}
 
 	return json.Marshal(obj)
@@ -1970,24 +2013,24 @@ func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama          *bool                                        `json:"panorama"`
+		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama"`
 		Template          *CertificateProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *bool                                        `json:"shared"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = types.BoolPointerValue(shadow.Panorama)
+	o.Panorama = shadow.Panorama
 	o.Template = shadow.Template
 	o.TemplateVsys = shadow.TemplateVsys
 	o.TemplateStack = shadow.TemplateStack
 	o.TemplateStackVsys = shadow.TemplateStackVsys
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 
 	return nil
 }

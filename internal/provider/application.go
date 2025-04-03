@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/application"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -2145,13 +2143,15 @@ func (d *ApplicationDataSource) Configure(_ context.Context, req datasource.Conf
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := application.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, application.NewService(d.client), specifier, application.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, application.NewService(d.client), batchSize, specifier, application.SpecMatches)
 }
 func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2163,8 +2163,8 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location application.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &application.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
@@ -3352,13 +3352,15 @@ func (r *ApplicationResource) Configure(ctx context.Context, req resource.Config
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := application.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, application.NewService(r.client), specifier, application.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, application.NewService(r.client), batchSize, specifier, application.SpecMatches)
 }
 
 func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4372,8 +4374,8 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location application.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &application.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
@@ -4435,8 +4437,8 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location application.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &application.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
@@ -4497,8 +4499,8 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location application.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &application.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
@@ -4585,8 +4587,8 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location application.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &application.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &application.VsysLocation{
@@ -4676,6 +4678,8 @@ func (r *ApplicationResource) ImportState(ctx context.Context, req resource.Impo
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type ApplicationSharedLocation struct {
+}
 type ApplicationVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
@@ -4685,7 +4689,7 @@ type ApplicationDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type ApplicationLocation struct {
-	Shared      types.Bool                      `tfsdk:"shared"`
+	Shared      *ApplicationSharedLocation      `tfsdk:"shared"`
 	Vsys        *ApplicationVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *ApplicationDeviceGroupLocation `tfsdk:"device_group"`
 }
@@ -4695,15 +4699,15 @@ func ApplicationLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
@@ -4768,6 +4772,24 @@ func ApplicationLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o ApplicationSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *ApplicationSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o ApplicationVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -4824,11 +4846,11 @@ func (o *ApplicationDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                           `json:"shared"`
+		Shared      *ApplicationSharedLocation      `json:"shared"`
 		Vsys        *ApplicationVsysLocation        `json:"vsys"`
 		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
 	}
@@ -4838,7 +4860,7 @@ func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                           `json:"shared"`
+		Shared      *ApplicationSharedLocation      `json:"shared"`
 		Vsys        *ApplicationVsysLocation        `json:"vsys"`
 		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
 	}
@@ -4847,7 +4869,7 @@ func (o *ApplicationLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
 

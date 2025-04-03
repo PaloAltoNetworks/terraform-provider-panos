@@ -94,7 +94,7 @@ variable type { type = string }
 variable list { type = list(string) }
 
 resource "panos_custom_url_category" "category" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-category", var.prefix)
   type = var.type

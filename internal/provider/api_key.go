@@ -109,7 +109,8 @@ func (r *ApiKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureR
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 }
 
 func (r *ApiKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {

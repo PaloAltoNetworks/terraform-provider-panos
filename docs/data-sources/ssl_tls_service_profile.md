@@ -30,12 +30,20 @@ description: |-
 
 Optional:
 
-- `panorama` (Boolean) Located in a panorama.
-- `shared` (Boolean) Panorama shared object
+- `panorama` (Attributes) Located in a panorama. (see [below for nested schema](#nestedatt--location--panorama))
+- `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
 - `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
 - `template_stack` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template_stack))
 - `template_stack_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
 - `template_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_vsys))
+
+<a id="nestedatt--location--panorama"></a>
+### Nested Schema for `location.panorama`
+
+
+<a id="nestedatt--location--shared"></a>
+### Nested Schema for `location.shared`
+
 
 <a id="nestedatt--location--template"></a>
 ### Nested Schema for `location.template`

@@ -646,13 +646,15 @@ func (d *IpsecCryptoProfileDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := ipseccrypto.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipseccrypto.NewService(d.client), specifier, ipseccrypto.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipseccrypto.NewService(d.client), batchSize, specifier, ipseccrypto.SpecMatches)
 }
 func (o *IpsecCryptoProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1099,13 +1101,15 @@ func (r *IpsecCryptoProfileResource) Configure(ctx context.Context, req resource
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := ipseccrypto.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipseccrypto.NewService(r.client), specifier, ipseccrypto.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipseccrypto.NewService(r.client), batchSize, specifier, ipseccrypto.SpecMatches)
 }
 
 func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **ipseccrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {

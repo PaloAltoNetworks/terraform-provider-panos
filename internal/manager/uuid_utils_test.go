@@ -86,6 +86,15 @@ func (o *MockUuidClient[E]) Versioning() version.Number {
 	return v
 }
 
+func (o *MockUuidClient[E]) ChunkedMultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, strict bool, extras url.Values) ([]xmlapi.ChunkedMultiConfigResponse, error) {
+	data, httpResponse, mcResponse, err := o.MultiConfig(ctx, updates, strict, extras)
+	if err != nil {
+		return nil, err
+	}
+
+	return []xmlapi.ChunkedMultiConfigResponse{{Data: data, HttpResponse: httpResponse, MultiConfigResponse: mcResponse}}, nil
+}
+
 func (o *MockUuidClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, arg1 bool, arg2 url.Values) ([]byte, *http.Response, *xmlapi.MultiConfigResponse, error) {
 	o.MultiConfigOpers, o.Uuid = MultiConfig[E](updates, &o.Current, multiConfigUuid, o.Uuid)
 
@@ -180,7 +189,7 @@ func (o *MockUuidService[E, L]) removeEntriesFromCurrent(entries []*MockUuidObje
 	return firstIdx
 }
 
-func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLocation, position movement.Position, entries []*MockUuidObject) error {
+func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLocation, position movement.Position, entries []*MockUuidObject, batchSize int) error {
 	o.moveGroupEntries = entries
 
 	firstIdx := o.removeEntriesFromCurrent(entries)

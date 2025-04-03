@@ -36,12 +36,14 @@ var _ = Describe("Server", func() {
 	var mockService *MockUuidService[*MockUuidObject, MockLocation]
 	var location MockLocation
 	var ctx context.Context
+	var batchSize int
 
 	var position movement.Position
 	var entries []*MockUuidObject
 	var mode sdkmanager.ExhaustiveType
 
 	BeforeEach(func() {
+		batchSize = 500
 		location = MockLocation{}
 		ctx = context.Background()
 		initial = []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
@@ -51,7 +53,7 @@ var _ = Describe("Server", func() {
 		if mockService, ok = service.(*MockUuidService[*MockUuidObject, MockLocation]); !ok {
 			panic("failed to cast service to mockService")
 		}
-		manager = sdkmanager.NewUuidObjectManager(client, service, MockUuidSpecifier, MockUuidMatcher)
+		manager = sdkmanager.NewUuidObjectManager(client, service, batchSize, MockUuidSpecifier, MockUuidMatcher)
 	})
 
 	Describe("Creating new resources on the server", func() {
@@ -60,7 +62,7 @@ var _ = Describe("Server", func() {
 				initial := []*MockUuidObject{}
 				client = NewMockUuidClient(initial)
 				service = NewMockUuidService[*MockUuidObject, MockLocation](client)
-				manager = sdkmanager.NewUuidObjectManager(client, service, MockUuidSpecifier, MockUuidMatcher)
+				manager = sdkmanager.NewUuidObjectManager(client, service, batchSize, MockUuidSpecifier, MockUuidMatcher)
 			})
 
 			It("CreateMany() should create new entries on the server, and return them with uuid set", func() {
@@ -157,7 +159,7 @@ var _ = Describe("Server", func() {
 				if mockService, ok = service.(*MockUuidService[*MockUuidObject, MockLocation]); !ok {
 					panic("failed to cast service to mockService")
 				}
-				manager = sdkmanager.NewUuidObjectManager(client, service, MockUuidSpecifier, MockUuidMatcher)
+				manager = sdkmanager.NewUuidObjectManager(client, service, batchSize, MockUuidSpecifier, MockUuidMatcher)
 
 			})
 			It("should move the entries in order", func() {

@@ -47,7 +47,7 @@ description: |-
 Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
-- `shared` (Boolean) Panorama shared object
+- `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
@@ -56,6 +56,10 @@ Optional:
 
 - `name` (String) Device Group name
 - `panorama_device` (String) Panorama device name
+
+
+<a id="nestedatt--location--shared"></a>
+### Nested Schema for `location.shared`
 
 
 

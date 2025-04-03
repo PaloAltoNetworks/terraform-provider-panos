@@ -1226,13 +1226,15 @@ func (d *DecryptionPolicyDataSource) Configure(_ context.Context, req datasource
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := decryption.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, decryption.NewService(d.client), specifier, decryption.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, decryption.NewService(d.client), batchSize, specifier, decryption.SpecMatches)
 }
 func (o *DecryptionPolicyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1990,13 +1992,15 @@ func (r *DecryptionPolicyResource) Configure(ctx context.Context, req resource.C
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := decryption.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, decryption.NewService(r.client), specifier, decryption.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, decryption.NewService(r.client), batchSize, specifier, decryption.SpecMatches)
 }
 
 func (o *DecryptionPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -2956,6 +2960,7 @@ func (r *DecryptionPolicyResource) ImportState(ctx context.Context, req resource
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
 	var names []*DecryptionPolicyResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &DecryptionPolicyResourceRulesObject{}

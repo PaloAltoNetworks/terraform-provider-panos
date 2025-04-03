@@ -1674,13 +1674,15 @@ func (d *SecurityPolicyDataSource) Configure(_ context.Context, req datasource.C
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := security.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), specifier, security.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), batchSize, specifier, security.SpecMatches)
 }
 func (o *SecurityPolicyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2659,13 +2661,15 @@ func (r *SecurityPolicyResource) Configure(ctx context.Context, req resource.Con
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := security.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), specifier, security.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), batchSize, specifier, security.SpecMatches)
 }
 
 func (o *SecurityPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -3870,6 +3874,7 @@ func (r *SecurityPolicyResource) ImportState(ctx context.Context, req resource.I
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
 	var names []*SecurityPolicyResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &SecurityPolicyResourceRulesObject{}

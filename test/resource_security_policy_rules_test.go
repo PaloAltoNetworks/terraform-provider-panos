@@ -2,6 +2,8 @@ package provider_test
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -15,10 +17,147 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	//"github.com/hashicorp/terraform-plugin-testing/plancheck"
+	"github.com/PaloAltoNetworks/terraform-provider-panos/internal/provider"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
+
+const securityPolicyRulesImportInitial = `
+variable "prefix" { type = string }
+
+resource "panos_security_policy_rules" "rules" {
+  location = {
+    device_group = {
+      name = format("%s-dg", var.prefix)
+      ruleset = "pre-ruleset"
+    }
+  }
+
+  position = { where = "last" }
+
+  rules = [
+    for idx in range(2, 4) : {
+        name = format("rule-%s", idx)
+
+        source_addresses = ["any"]
+        source_zones = ["any"]
+
+        destination_addresses = ["any"]
+        destination_zones = ["any"]
+
+        services = ["any"]
+        applications = ["any"]
+    }
+  ]
+}
+`
+
+func TestAccSecurityPolicyRulesImport(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			securityPolicyRulesPreCheck(prefix)
+
+		},
+		ProtoV6ProviderFactories: testAccProviders,
+		CheckDestroy:             securityPolicyRulesCheckDestroy(prefix),
+		Steps: []resource.TestStep{
+			{
+				Config: securityPolicyRulesImportInitial,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config:            `resource "panos_security_policy_rules" "imported" {}`,
+				ResourceName:      "panos_security_policy_rules.imported",
+				ImportStateIdFunc: securityPolicyRulesGenerateImportID,
+				ImportState:       true,
+				// ImportPlanChecks: []plancheck.StateCheck{
+				// 	statecheck.ExpectKnownValue(
+				// 		"panos_security_policy_rules.imported",
+				// 		tfjsonpath.New("position"),
+				// 		knownvalue.ObjectExact(map[string]knownvalue.Check{
+				// 			"where":    knownvalue.StringExact("last"),
+				// 			"directly": knownvalue.Null(),
+				// 			"pivota":   knownvalue.Null(),
+				// 		}),
+				// 	),
+				// },
+			},
+		},
+	})
+}
+
+func securityPolicyRulesGenerateImportID(state *terraform.State) (string, error) {
+	resourceName := "panos_security_policy_rules.rules"
+
+	var resource map[string]string
+	for _, module := range state.Modules {
+		if res, ok := module.Resources[resourceName]; ok {
+			resource = res.Primary.Attributes
+			break
+		}
+	}
+
+	if resource == nil {
+		return "", fmt.Errorf("Could not find resource %s in the state", resourceName)
+	}
+
+	locationData := map[string]any{
+		"device_group": map[string]any{
+			"panorama_device": "localhost.localdomain",
+			"name":            resource["location.device_group.name"],
+			"rulebase":        "pre-rulebase",
+		},
+	}
+
+	locationJSON, err := json.Marshal(locationData)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal location into JSON: %w", err)
+	}
+
+	var location *provider.SecurityPolicyRulesLocation
+	err = json.Unmarshal(locationJSON, &location)
+	if err != nil {
+		return "", fmt.Errorf("Failed to unmarshal: %w", err)
+	}
+
+	positionData := map[string]any{
+		"where": "last",
+	}
+
+	positionJSON, err := json.Marshal(positionData)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal position into JSON: %w", err)
+	}
+
+	var position *provider.TerraformPositionObject
+	err = json.Unmarshal(positionJSON, &position)
+	if err != nil {
+		return "", fmt.Errorf("Failed to unmarshal position: %w", err)
+	}
+
+	names := []string{"rule-2", "rule-3", "rule-4"}
+	importState := provider.SecurityPolicyRulesImportState{
+		Location: *location,
+		Position: *position,
+		Names:    names,
+	}
+
+	marshalled, err := json.Marshal(importState)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal import state into JSON: %w", err)
+	}
+
+	return base64.StdEncoding.EncodeToString(marshalled), nil
+}
 
 const securityPolicyRulesPositionFirst = `
 variable "prefix" { type = string }

@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/profile/ssltls"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -21,7 +21,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -447,13 +446,15 @@ func (d *SslTlsServiceProfileDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := ssltls.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ssltls.NewService(d.client), specifier, ssltls.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, ssltls.NewService(d.client), batchSize, specifier, ssltls.SpecMatches)
 }
 func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -465,11 +466,11 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 
 	var location ssltls.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ssltls.SharedLocation{}
 	}
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &ssltls.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ssltls.TemplateLocation{
@@ -796,13 +797,15 @@ func (r *SslTlsServiceProfileResource) Configure(ctx context.Context, req resour
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := ssltls.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ssltls.NewService(r.client), specifier, ssltls.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, ssltls.NewService(r.client), batchSize, specifier, ssltls.SpecMatches)
 }
 
 func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, obj **ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -993,11 +996,11 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 
 	var location ssltls.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssltls.SharedLocation{}
 	}
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssltls.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssltls.TemplateLocation{
@@ -1077,11 +1080,11 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 
 	var location ssltls.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &ssltls.SharedLocation{}
 	}
-	if !savestate.Location.Panorama.IsNull() && savestate.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if savestate.Location.Panorama != nil {
+		location.Panorama = &ssltls.PanoramaLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &ssltls.TemplateLocation{
@@ -1160,11 +1163,11 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 
 	var location ssltls.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssltls.SharedLocation{}
 	}
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssltls.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssltls.TemplateLocation{
@@ -1269,11 +1272,11 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 
 	var location ssltls.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &ssltls.SharedLocation{}
 	}
-	if !state.Location.Panorama.IsNull() && state.Location.Panorama.ValueBool() {
-		location.Panorama = true
+	if state.Location.Panorama != nil {
+		location.Panorama = &ssltls.PanoramaLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &ssltls.TemplateLocation{
@@ -1381,6 +1384,10 @@ func (r *SslTlsServiceProfileResource) ImportState(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type SslTlsServiceProfileSharedLocation struct {
+}
+type SslTlsServiceProfilePanoramaLocation struct {
+}
 type SslTlsServiceProfileTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -1402,8 +1409,8 @@ type SslTlsServiceProfileTemplateStackVsysLocation struct {
 	Vsys           types.String `tfsdk:"vsys"`
 }
 type SslTlsServiceProfileLocation struct {
-	Shared            types.Bool                                     `tfsdk:"shared"`
-	Panorama          types.Bool                                     `tfsdk:"panorama"`
+	Shared            *SslTlsServiceProfileSharedLocation            `tfsdk:"shared"`
+	Panorama          *SslTlsServiceProfilePanoramaLocation          `tfsdk:"panorama"`
 	Template          *SslTlsServiceProfileTemplateLocation          `tfsdk:"template"`
 	TemplateVsys      *SslTlsServiceProfileTemplateVsysLocation      `tfsdk:"template_vsys"`
 	TemplateStack     *SslTlsServiceProfileTemplateStackLocation     `tfsdk:"template_stack"`
@@ -1415,15 +1422,15 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("panorama"),
 						path.MatchRelative().AtParent().AtName("template"),
@@ -1433,11 +1440,11 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 					}...),
 				},
 			},
-			"panorama": rsschema.BoolAttribute{
+			"panorama": rsschema.SingleNestedAttribute{
 				Description: "Located in a panorama.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
@@ -1588,6 +1595,42 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o SslTlsServiceProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SslTlsServiceProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (o SslTlsServiceProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SslTlsServiceProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o SslTlsServiceProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1714,15 +1757,15 @@ func (o *SslTlsServiceProfileTemplateStackVsysLocation) UnmarshalJSON(data []byt
 }
 func (o SslTlsServiceProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared            *bool                                          `json:"shared"`
-		Panorama          *bool                                          `json:"panorama"`
+		Shared            *SslTlsServiceProfileSharedLocation            `json:"shared"`
+		Panorama          *SslTlsServiceProfilePanoramaLocation          `json:"panorama"`
 		Template          *SslTlsServiceProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *SslTlsServiceProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *SslTlsServiceProfileTemplateStackLocation     `json:"template_stack"`
 		TemplateStackVsys *SslTlsServiceProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
 	}{
-		Shared:            o.Shared.ValueBoolPointer(),
-		Panorama:          o.Panorama.ValueBoolPointer(),
+		Shared:            o.Shared,
+		Panorama:          o.Panorama,
 		Template:          o.Template,
 		TemplateVsys:      o.TemplateVsys,
 		TemplateStack:     o.TemplateStack,
@@ -1734,8 +1777,8 @@ func (o SslTlsServiceProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared            *bool                                          `json:"shared"`
-		Panorama          *bool                                          `json:"panorama"`
+		Shared            *SslTlsServiceProfileSharedLocation            `json:"shared"`
+		Panorama          *SslTlsServiceProfilePanoramaLocation          `json:"panorama"`
 		Template          *SslTlsServiceProfileTemplateLocation          `json:"template"`
 		TemplateVsys      *SslTlsServiceProfileTemplateVsysLocation      `json:"template_vsys"`
 		TemplateStack     *SslTlsServiceProfileTemplateStackLocation     `json:"template_stack"`
@@ -1746,8 +1789,8 @@ func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
-	o.Panorama = types.BoolPointerValue(shadow.Panorama)
+	o.Shared = shadow.Shared
+	o.Panorama = shadow.Panorama
 	o.Template = shadow.Template
 	o.TemplateVsys = shadow.TemplateVsys
 	o.TemplateStack = shadow.TemplateStack

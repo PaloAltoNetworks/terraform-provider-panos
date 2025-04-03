@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/security/profiles/spyware"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -3487,13 +3485,15 @@ func (d *AntiSpywareSecurityProfileDataSource) Configure(_ context.Context, req 
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := spyware.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, spyware.NewService(d.client), specifier, spyware.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, spyware.NewService(d.client), batchSize, specifier, spyware.SpecMatches)
 }
 func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -3505,8 +3505,8 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 
 	var location spyware.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &spyware.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &spyware.VsysLocation{
@@ -5396,13 +5396,15 @@ func (r *AntiSpywareSecurityProfileResource) Configure(ctx context.Context, req 
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := spyware.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, spyware.NewService(r.client), specifier, spyware.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, spyware.NewService(r.client), batchSize, specifier, spyware.SpecMatches)
 }
 
 func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -7069,8 +7071,8 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &spyware.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &spyware.VsysLocation{
@@ -7132,8 +7134,8 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 
 	var location spyware.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &spyware.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &spyware.VsysLocation{
@@ -7194,8 +7196,8 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &spyware.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &spyware.VsysLocation{
@@ -7282,8 +7284,8 @@ func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &spyware.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &spyware.VsysLocation{
@@ -7373,6 +7375,8 @@ func (r *AntiSpywareSecurityProfileResource) ImportState(ctx context.Context, re
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type AntiSpywareSecurityProfileSharedLocation struct {
+}
 type AntiSpywareSecurityProfileVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
@@ -7382,7 +7386,7 @@ type AntiSpywareSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type AntiSpywareSecurityProfileLocation struct {
-	Shared      types.Bool                                     `tfsdk:"shared"`
+	Shared      *AntiSpywareSecurityProfileSharedLocation      `tfsdk:"shared"`
 	Vsys        *AntiSpywareSecurityProfileVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 }
@@ -7392,15 +7396,15 @@ func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
@@ -7465,6 +7469,24 @@ func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o AntiSpywareSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *AntiSpywareSecurityProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o AntiSpywareSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -7521,11 +7543,11 @@ func (o *AntiSpywareSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byt
 }
 func (o AntiSpywareSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                          `json:"shared"`
+		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared"`
 		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys"`
 		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
 	}
@@ -7535,7 +7557,7 @@ func (o AntiSpywareSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntiSpywareSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                          `json:"shared"`
+		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared"`
 		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys"`
 		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group"`
 	}
@@ -7544,7 +7566,7 @@ func (o *AntiSpywareSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
 

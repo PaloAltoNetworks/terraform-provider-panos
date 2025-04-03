@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/service"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -707,13 +705,15 @@ func (d *ServiceDataSource) Configure(_ context.Context, req datasource.Configur
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := service.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, service.NewService(d.client), specifier, service.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, service.NewService(d.client), batchSize, specifier, service.SpecMatches)
 }
 func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -725,8 +725,8 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	var location service.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &service.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &service.VsysLocation{
@@ -1159,13 +1159,15 @@ func (r *ServiceResource) Configure(ctx context.Context, req resource.ConfigureR
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := service.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, service.NewService(r.client), specifier, service.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, service.NewService(r.client), batchSize, specifier, service.SpecMatches)
 }
 
 func (o *ServiceResourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1494,8 +1496,8 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 
 	var location service.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &service.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &service.VsysLocation{
@@ -1557,8 +1559,8 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	var location service.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &service.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &service.VsysLocation{
@@ -1619,8 +1621,8 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	var location service.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &service.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &service.VsysLocation{
@@ -1707,8 +1709,8 @@ func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	var location service.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &service.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &service.VsysLocation{
@@ -1798,6 +1800,8 @@ func (r *ServiceResource) ImportState(ctx context.Context, req resource.ImportSt
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type ServiceSharedLocation struct {
+}
 type ServiceVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
@@ -1807,7 +1811,7 @@ type ServiceDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type ServiceLocation struct {
-	Shared      types.Bool                  `tfsdk:"shared"`
+	Shared      *ServiceSharedLocation      `tfsdk:"shared"`
 	Vsys        *ServiceVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *ServiceDeviceGroupLocation `tfsdk:"device_group"`
 }
@@ -1817,15 +1821,15 @@ func ServiceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
@@ -1890,6 +1894,24 @@ func ServiceLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o ServiceSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o ServiceVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -1946,11 +1968,11 @@ func (o *ServiceDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 }
 func (o ServiceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                       `json:"shared"`
+		Shared      *ServiceSharedLocation      `json:"shared"`
 		Vsys        *ServiceVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
 	}
@@ -1960,7 +1982,7 @@ func (o ServiceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                       `json:"shared"`
+		Shared      *ServiceSharedLocation      `json:"shared"`
 		Vsys        *ServiceVsysLocation        `json:"vsys"`
 		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
 	}
@@ -1969,7 +1991,7 @@ func (o *ServiceLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
 

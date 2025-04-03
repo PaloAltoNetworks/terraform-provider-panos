@@ -1,0 +1,114 @@
+---
+layout: ""
+page_title: "Provider: panos"
+description: |-
+  Terraform provider to interact with Palo Alto Networks PAN-OS.
+---
+
+# Palo Alto Networks PAN-OS Provider
+
+PAN-OS&reg; is the operating system for Palo Alto Networks&reg; NGFWs and Panorama&trade;. The panos provider allows you to manage various aspects of a firewall's or a Panorama's config, such as data interfaces and security policies.
+
+Use the navigation to the left to read about the available Panorama and NGFW resources.
+
+~> **NOTE:** The provider requires the use of Terraform 1.8 or later.
+
+-> **NOTE:** The panos provider resources and data sources are auto-generated based on [specs](https://github.com/PaloAltoNetworks/pan-os-codegen/tree/main/specs) using [pan-os-codegen(https://github.com/PaloAltoNetworks/pan-os-codegen/tree/main)
+
+## Example Usage
+
+```terraform
+terraform {
+  required_providers {
+    panos = {
+      source = "PaloAltoNetworks/panos"
+      version = "2.0.0"
+    }
+  }
+}
+
+# Configure the PANOS Provider
+provider "panos" {
+  hostname = "hostname"
+  username = "username"
+  password = "password"
+}
+
+```
+
+## Authentication
+
+The following authentication methods are supported. From highest to lowest priority; 
+
+- Static credentials via provider block
+- Environment variables
+- Configuration file
+
+### Static Credentials
+
+!> **Warning:** Including hard-coded credentials in Terraform configurations is discouraged due to the risk of secret leakage.
+
+Static credentials can be provided through either username-password combinations or API key-based authentication.
+
+Usage:
+
+```terraform
+provider "panos" {
+  hostname = "hostname"
+  username = "username"
+  password = "password"
+}
+
+# API key based authentication
+provider "panos" {
+  hostname = "hostname"
+  api_key  = "api_key"
+}
+```
+
+### Environment Variables
+
+You can provide your credentials using the `PANOS_USERNAME` and `PANOS_PASSWORD` environment variables for username-password based authentication, or use `PANOS_API_KEY` for API key based authentication, along with `PANOS_HOST`.
+
+```terraform
+provider "panos" {}
+```
+
+Usage:
+
+```sh
+$ export PANOS_HOST="1.2.3.4"
+$ export PANOS_USERNAME="username"
+$ export PANOS_PASSWORD="password"
+$ terraform plan
+```
+
+### Configuration Files
+
+You can also supply configuration parameters for the provider using a JSON configuration file.
+
+Usage:
+
+```terraform
+provider "panos" {
+  auth_file = "/path/to/auth_file.json"
+}
+```
+
+
+```json
+{
+  "hostname": "1.2.3.4",
+  "username": "username",
+  "password": "password",
+}
+```
+
+```json
+{
+  "hostname": "1.2.3.4",
+  "api_key": "api_key"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

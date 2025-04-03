@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/antivirus"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -793,13 +792,15 @@ func (d *AntivirusSecurityProfileDataSource) Configure(_ context.Context, req da
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := antivirus.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, antivirus.NewService(d.client), specifier, antivirus.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, antivirus.NewService(d.client), batchSize, specifier, antivirus.SpecMatches)
 }
 func (o *AntivirusSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -811,8 +812,8 @@ func (o *AntivirusSecurityProfileDataSource) Read(ctx context.Context, req datas
 
 	var location antivirus.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &antivirus.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
@@ -1289,13 +1290,15 @@ func (r *AntivirusSecurityProfileResource) Configure(ctx context.Context, req re
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := antivirus.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, antivirus.NewService(r.client), specifier, antivirus.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, antivirus.NewService(r.client), batchSize, specifier, antivirus.SpecMatches)
 }
 
 func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1672,8 +1675,8 @@ func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &antivirus.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
@@ -1735,8 +1738,8 @@ func (o *AntivirusSecurityProfileResource) Read(ctx context.Context, req resourc
 
 	var location antivirus.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &antivirus.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
@@ -1797,8 +1800,8 @@ func (r *AntivirusSecurityProfileResource) Update(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &antivirus.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
@@ -1885,8 +1888,8 @@ func (r *AntivirusSecurityProfileResource) Delete(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &antivirus.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &antivirus.DeviceGroupLocation{
@@ -1976,6 +1979,8 @@ func (r *AntivirusSecurityProfileResource) ImportState(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type AntivirusSecurityProfileSharedLocation struct {
+}
 type AntivirusSecurityProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -1985,7 +1990,7 @@ type AntivirusSecurityProfileVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type AntivirusSecurityProfileLocation struct {
-	Shared      types.Bool                                   `tfsdk:"shared"`
+	Shared      *AntivirusSecurityProfileSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 	Vsys        *AntivirusSecurityProfileVsysLocation        `tfsdk:"vsys"`
 }
@@ -1995,15 +2000,15 @@ func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("vsys"),
@@ -2068,6 +2073,24 @@ func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o AntivirusSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *AntivirusSecurityProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o AntivirusSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -2124,11 +2147,11 @@ func (o *AntivirusSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error 
 }
 func (o AntivirusSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                        `json:"shared"`
+		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group"`
 		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 		Vsys:        o.Vsys,
 	}
@@ -2138,7 +2161,7 @@ func (o AntivirusSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntivirusSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                        `json:"shared"`
+		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group"`
 		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys"`
 	}
@@ -2147,7 +2170,7 @@ func (o *AntivirusSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 	o.Vsys = shadow.Vsys
 

@@ -1228,13 +1228,15 @@ func (d *DecryptionPolicyRulesDataSource) Configure(_ context.Context, req datas
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := decryption.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, decryption.NewService(d.client), specifier, decryption.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, decryption.NewService(d.client), batchSize, specifier, decryption.SpecMatches)
 }
 func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2003,13 +2005,15 @@ func (r *DecryptionPolicyRulesResource) Configure(ctx context.Context, req resou
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := decryption.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, decryption.NewService(r.client), specifier, decryption.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, decryption.NewService(r.client), batchSize, specifier, decryption.SpecMatches)
 }
 
 func (o *DecryptionPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -2902,6 +2906,7 @@ func (r *DecryptionPolicyRulesResource) Delete(ctx context.Context, req resource
 type DecryptionPolicyRulesImportState struct {
 	Location DecryptionPolicyRulesLocation `json:"location"`
 	Names    []string                      `json:"names"`
+	Position TerraformPositionObject       `json:"position"`
 }
 
 func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -2922,6 +2927,19 @@ func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
+	positionAttr, ok := attrs["position"]
+	if !ok {
+		return nil, fmt.Errorf("position attribute missing")
+	}
+
+	var position TerraformPositionObject
+	switch value := positionAttr.(type) {
+	case types.Object:
+		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("position attribute expected to be an object")
+	}
+
 	itemsAttr, ok := attrs["rules"]
 	if !ok {
 		return nil, fmt.Errorf("rules attribute missing")
@@ -2945,6 +2963,7 @@ func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types
 
 	importStruct := DecryptionPolicyRulesImportState{
 		Location: location,
+		Position: position,
 		Names:    names,
 	}
 
@@ -2970,6 +2989,11 @@ func (r *DecryptionPolicyRulesResource) ImportState(ctx context.Context, req res
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("position"), obj.Position)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	var names []*DecryptionPolicyRulesResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &DecryptionPolicyRulesResourceRulesObject{}

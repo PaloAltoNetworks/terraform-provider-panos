@@ -223,7 +223,7 @@ variable "services" {
 }
 
 resource "panos_administrative_tag" "tag" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-tag", var.prefix)
 }
@@ -231,7 +231,7 @@ resource "panos_administrative_tag" "tag" {
 resource "panos_service" "svc1" {
   depends_on = [ resource.panos_administrative_tag.tag ]
 
-  location = { shared = true }
+  location = { shared = {} }
 
   name        = format("%s-svc1", var.prefix)
   description = var.services["svc1"].description
@@ -243,7 +243,7 @@ resource "panos_service" "svc1" {
 resource "panos_service" "svc2" {
   depends_on = [ resource.panos_administrative_tag.tag ]
 
-  location = { shared = true }
+  location = { shared = {} }
 
   name        = format("%s-svc2", var.prefix)
   description = var.services["svc2"].description
@@ -255,7 +255,7 @@ resource "panos_service" "svc2" {
 resource "panos_service" "svc3" {
   depends_on = [ resource.panos_administrative_tag.tag ]
 
-  location = { shared = true }
+  location = { shared = {} }
 
   name        = format("%s-svc3", var.prefix)
   description = var.services["svc3"].description
@@ -267,7 +267,7 @@ resource "panos_service" "svc3" {
 resource "panos_service" "svc4" {
   depends_on = [ resource.panos_administrative_tag.tag ]
 
-  location = { shared = true }
+  location = { shared = {} }
 
   name        = format("%s-svc4", var.prefix)
   description = var.services["svc4"].description

@@ -1787,13 +1787,15 @@ func (d *NatPolicyRulesDataSource) Configure(_ context.Context, req datasource.C
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := nat.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, nat.NewService(d.client), specifier, nat.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, nat.NewService(d.client), batchSize, specifier, nat.SpecMatches)
 }
 func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2883,13 +2885,15 @@ func (r *NatPolicyRulesResource) Configure(ctx context.Context, req resource.Con
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := nat.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), specifier, nat.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), batchSize, specifier, nat.SpecMatches)
 }
 
 func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4053,8 +4057,9 @@ func (r *NatPolicyRulesResource) Delete(ctx context.Context, req resource.Delete
 }
 
 type NatPolicyRulesImportState struct {
-	Location NatPolicyRulesLocation `json:"location"`
-	Names    []string               `json:"names"`
+	Location NatPolicyRulesLocation  `json:"location"`
+	Names    []string                `json:"names"`
+	Position TerraformPositionObject `json:"position"`
 }
 
 func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -4075,6 +4080,19 @@ func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
+	positionAttr, ok := attrs["position"]
+	if !ok {
+		return nil, fmt.Errorf("position attribute missing")
+	}
+
+	var position TerraformPositionObject
+	switch value := positionAttr.(type) {
+	case types.Object:
+		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+	default:
+		return nil, fmt.Errorf("position attribute expected to be an object")
+	}
+
 	itemsAttr, ok := attrs["rules"]
 	if !ok {
 		return nil, fmt.Errorf("rules attribute missing")
@@ -4098,6 +4116,7 @@ func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object
 
 	importStruct := NatPolicyRulesImportState{
 		Location: location,
+		Position: position,
 		Names:    names,
 	}
 
@@ -4123,6 +4142,11 @@ func (r *NatPolicyRulesResource) ImportState(ctx context.Context, req resource.I
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("position"), obj.Position)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	var names []*NatPolicyRulesResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &NatPolicyRulesResourceRulesObject{}

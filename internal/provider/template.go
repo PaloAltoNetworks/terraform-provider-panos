@@ -145,13 +145,15 @@ func (d *TemplateDataSource) Configure(_ context.Context, req datasource.Configu
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := template.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, template.NewService(d.client), specifier, template.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, template.NewService(d.client), batchSize, specifier, template.SpecMatches)
 }
 func (o *TemplateDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -299,13 +301,15 @@ func (r *TemplateResource) Configure(ctx context.Context, req resource.Configure
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := template.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, template.NewService(r.client), specifier, template.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, template.NewService(r.client), batchSize, specifier, template.SpecMatches)
 }
 
 func (o *TemplateResourceModel) CopyToPango(ctx context.Context, obj **template.Entry, encrypted *map[string]types.String) diag.Diagnostics {

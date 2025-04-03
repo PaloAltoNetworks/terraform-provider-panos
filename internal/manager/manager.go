@@ -54,6 +54,7 @@ const (
 type SDKClient interface {
 	Versioning() version.Number
 	GetTarget() string
+	ChunkedMultiConfig(context.Context, *xmlapi.MultiConfig, bool, url.Values) ([]xmlapi.ChunkedMultiConfigResponse, error)
 	MultiConfig(context.Context, *xmlapi.MultiConfig, bool, url.Values) ([]byte, *http.Response, *xmlapi.MultiConfigResponse, error)
 }
 

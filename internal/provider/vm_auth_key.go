@@ -113,7 +113,8 @@ func (r *VmAuthKeyResource) Configure(ctx context.Context, req ephemeral.Configu
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 }
 
 func (r *VmAuthKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {

@@ -189,7 +189,7 @@ variable "addresses" {
 }
 
 resource "panos_administrative_tag" "tag" {
-  location = { shared = true }
+  location = { shared = {} }
 
   name = format("%s-tag", var.prefix)
 }
@@ -197,7 +197,7 @@ resource "panos_administrative_tag" "tag" {
 resource "panos_addresses" "addresses" {
   depends_on = [ resource.panos_administrative_tag.tag ]
 
-  location = { shared = true }
+  location = { shared = {} }
 
   addresses = { for name, value in var.addresses : name => {
     disable_override = value.disable_override,

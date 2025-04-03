@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/fileblocking"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -340,13 +339,15 @@ func (d *FileBlockingSecurityProfileDataSource) Configure(_ context.Context, req
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := fileblocking.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, fileblocking.NewService(d.client), specifier, fileblocking.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, fileblocking.NewService(d.client), batchSize, specifier, fileblocking.SpecMatches)
 }
 func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -358,8 +359,8 @@ func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req da
 
 	var location fileblocking.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &fileblocking.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
@@ -606,13 +607,15 @@ func (r *FileBlockingSecurityProfileResource) Configure(ctx context.Context, req
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := fileblocking.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, fileblocking.NewService(r.client), specifier, fileblocking.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, fileblocking.NewService(r.client), batchSize, specifier, fileblocking.SpecMatches)
 }
 
 func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -763,8 +766,8 @@ func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req re
 
 	var location fileblocking.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &fileblocking.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
@@ -826,8 +829,8 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 
 	var location fileblocking.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &fileblocking.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
@@ -888,8 +891,8 @@ func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req re
 
 	var location fileblocking.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &fileblocking.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
@@ -976,8 +979,8 @@ func (r *FileBlockingSecurityProfileResource) Delete(ctx context.Context, req re
 
 	var location fileblocking.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &fileblocking.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &fileblocking.DeviceGroupLocation{
@@ -1067,6 +1070,8 @@ func (r *FileBlockingSecurityProfileResource) ImportState(ctx context.Context, r
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type FileBlockingSecurityProfileSharedLocation struct {
+}
 type FileBlockingSecurityProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -1076,7 +1081,7 @@ type FileBlockingSecurityProfileVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type FileBlockingSecurityProfileLocation struct {
-	Shared      types.Bool                                      `tfsdk:"shared"`
+	Shared      *FileBlockingSecurityProfileSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
 	Vsys        *FileBlockingSecurityProfileVsysLocation        `tfsdk:"vsys"`
 }
@@ -1086,15 +1091,15 @@ func FileBlockingSecurityProfileLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 						path.MatchRelative().AtParent().AtName("vsys"),
@@ -1159,6 +1164,24 @@ func FileBlockingSecurityProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o FileBlockingSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *FileBlockingSecurityProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o FileBlockingSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1215,11 +1238,11 @@ func (o *FileBlockingSecurityProfileVsysLocation) UnmarshalJSON(data []byte) err
 }
 func (o FileBlockingSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                           `json:"shared"`
+		Shared      *FileBlockingSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
 		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 		Vsys:        o.Vsys,
 	}
@@ -1229,7 +1252,7 @@ func (o FileBlockingSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *FileBlockingSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                           `json:"shared"`
+		Shared      *FileBlockingSecurityProfileSharedLocation      `json:"shared"`
 		DeviceGroup *FileBlockingSecurityProfileDeviceGroupLocation `json:"device_group"`
 		Vsys        *FileBlockingSecurityProfileVsysLocation        `json:"vsys"`
 	}
@@ -1238,7 +1261,7 @@ func (o *FileBlockingSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 	o.Vsys = shadow.Vsys
 

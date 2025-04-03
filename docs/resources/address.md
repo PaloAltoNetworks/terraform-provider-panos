@@ -70,7 +70,7 @@ resource "panos_device_group" "example" {
 Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
-- `shared` (Boolean) Panorama shared object
+- `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
 - `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
@@ -80,6 +80,10 @@ Optional:
 
 - `name` (String) Device Group name
 - `panorama_device` (String) Panorama device name
+
+
+<a id="nestedatt--location--shared"></a>
+### Nested Schema for `location.shared`
 
 
 <a id="nestedatt--location--vsys"></a>
@@ -95,7 +99,7 @@ Optional:
 Import is supported using the following syntax:
 
 ```shell
-# Addresses can be imported by providing the following base64 encoded object as the ID
+# An address can be imported by providing the following base64 encoded object as the ID
 # {
 #   location = {
 #     device_group = {
@@ -103,7 +107,7 @@ Import is supported using the following syntax:
 #       panorama_device = "localhost.localdomain"
 #     }
 #   }
-# 
+#
 #   name = "addr1"
 # }
 terraform import panos_address.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain"}},"name":"addr1"}' | base64)

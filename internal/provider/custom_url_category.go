@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/customurlcategory"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -204,13 +203,15 @@ func (d *CustomUrlCategoryDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := customurlcategory.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, customurlcategory.NewService(d.client), specifier, customurlcategory.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, customurlcategory.NewService(d.client), batchSize, specifier, customurlcategory.SpecMatches)
 }
 func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -222,8 +223,8 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 
 	var location customurlcategory.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &customurlcategory.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
@@ -404,13 +405,15 @@ func (r *CustomUrlCategoryResource) Configure(ctx context.Context, req resource.
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := customurlcategory.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, customurlcategory.NewService(r.client), specifier, customurlcategory.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, customurlcategory.NewService(r.client), batchSize, specifier, customurlcategory.SpecMatches)
 }
 
 func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -490,8 +493,8 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 
 	var location customurlcategory.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &customurlcategory.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
@@ -553,8 +556,8 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 
 	var location customurlcategory.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &customurlcategory.SharedLocation{}
 	}
 	if savestate.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
@@ -615,8 +618,8 @@ func (r *CustomUrlCategoryResource) Update(ctx context.Context, req resource.Upd
 
 	var location customurlcategory.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &customurlcategory.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
@@ -703,8 +706,8 @@ func (r *CustomUrlCategoryResource) Delete(ctx context.Context, req resource.Del
 
 	var location customurlcategory.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &customurlcategory.SharedLocation{}
 	}
 	if state.Location.Vsys != nil {
 		location.Vsys = &customurlcategory.VsysLocation{
@@ -794,6 +797,8 @@ func (r *CustomUrlCategoryResource) ImportState(ctx context.Context, req resourc
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type CustomUrlCategorySharedLocation struct {
+}
 type CustomUrlCategoryVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
@@ -803,7 +808,7 @@ type CustomUrlCategoryDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type CustomUrlCategoryLocation struct {
-	Shared      types.Bool                            `tfsdk:"shared"`
+	Shared      *CustomUrlCategorySharedLocation      `tfsdk:"shared"`
 	Vsys        *CustomUrlCategoryVsysLocation        `tfsdk:"vsys"`
 	DeviceGroup *CustomUrlCategoryDeviceGroupLocation `tfsdk:"device_group"`
 }
@@ -813,15 +818,15 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
@@ -886,6 +891,24 @@ func CustomUrlCategoryLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o CustomUrlCategorySharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *CustomUrlCategorySharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o CustomUrlCategoryVsysLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		NgfwDevice *string `json:"ngfw_device"`
@@ -942,11 +965,11 @@ func (o *CustomUrlCategoryDeviceGroupLocation) UnmarshalJSON(data []byte) error 
 }
 func (o CustomUrlCategoryLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                 `json:"shared"`
+		Shared      *CustomUrlCategorySharedLocation      `json:"shared"`
 		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 		DeviceGroup *CustomUrlCategoryDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		Vsys:        o.Vsys,
 		DeviceGroup: o.DeviceGroup,
 	}
@@ -956,7 +979,7 @@ func (o CustomUrlCategoryLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CustomUrlCategoryLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                 `json:"shared"`
+		Shared      *CustomUrlCategorySharedLocation      `json:"shared"`
 		Vsys        *CustomUrlCategoryVsysLocation        `json:"vsys"`
 		DeviceGroup *CustomUrlCategoryDeviceGroupLocation `json:"device_group"`
 	}
@@ -965,7 +988,7 @@ func (o *CustomUrlCategoryLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Vsys = shadow.Vsys
 	o.DeviceGroup = shadow.DeviceGroup
 

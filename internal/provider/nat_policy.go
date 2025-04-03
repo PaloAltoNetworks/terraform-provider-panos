@@ -1785,13 +1785,15 @@ func (d *NatPolicyDataSource) Configure(_ context.Context, req datasource.Config
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := nat.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, nat.NewService(d.client), specifier, nat.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewUuidObjectManager(d.client, nat.NewService(d.client), batchSize, specifier, nat.SpecMatches)
 }
 func (o *NatPolicyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -2870,13 +2872,15 @@ func (r *NatPolicyResource) Configure(ctx context.Context, req resource.Configur
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := nat.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), specifier, nat.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), batchSize, specifier, nat.SpecMatches)
 }
 
 func (o *NatPolicyResourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4109,6 +4113,7 @@ func (r *NatPolicyResource) ImportState(ctx context.Context, req resource.Import
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
 	var names []*NatPolicyResourceRulesObject
 	for _, elt := range obj.Names {
 		object := &NatPolicyResourceRulesObject{}

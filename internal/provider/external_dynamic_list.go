@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/extdynlist"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -4760,13 +4758,15 @@ func (d *ExternalDynamicListDataSource) Configure(_ context.Context, req datasou
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := extdynlist.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, extdynlist.NewService(d.client), specifier, extdynlist.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, extdynlist.NewService(d.client), batchSize, specifier, extdynlist.SpecMatches)
 }
 func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -4778,8 +4778,8 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 
 	var location extdynlist.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &extdynlist.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
@@ -7363,13 +7363,15 @@ func (r *ExternalDynamicListResource) Configure(ctx context.Context, req resourc
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := extdynlist.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, extdynlist.NewService(r.client), specifier, extdynlist.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, extdynlist.NewService(r.client), batchSize, specifier, extdynlist.SpecMatches)
 }
 
 func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -9628,8 +9630,8 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 
 	var location extdynlist.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &extdynlist.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
@@ -9691,8 +9693,8 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 
 	var location extdynlist.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &extdynlist.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
@@ -9760,8 +9762,8 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 
 	var location extdynlist.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &extdynlist.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
@@ -9844,8 +9846,8 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 
 	var location extdynlist.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &extdynlist.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
@@ -9928,12 +9930,14 @@ func (r *ExternalDynamicListResource) ImportState(ctx context.Context, req resou
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type ExternalDynamicListSharedLocation struct {
+}
 type ExternalDynamicListDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type ExternalDynamicListLocation struct {
-	Shared      types.Bool                              `tfsdk:"shared"`
+	Shared      *ExternalDynamicListSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *ExternalDynamicListDeviceGroupLocation `tfsdk:"device_group"`
 }
 
@@ -9942,15 +9946,15 @@ func ExternalDynamicListLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
@@ -9987,6 +9991,24 @@ func ExternalDynamicListLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o ExternalDynamicListSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *ExternalDynamicListSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o ExternalDynamicListDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -10016,10 +10038,10 @@ func (o *ExternalDynamicListDeviceGroupLocation) UnmarshalJSON(data []byte) erro
 }
 func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                   `json:"shared"`
+		Shared      *ExternalDynamicListSharedLocation      `json:"shared"`
 		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 	}
 
@@ -10028,7 +10050,7 @@ func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                   `json:"shared"`
+		Shared      *ExternalDynamicListSharedLocation      `json:"shared"`
 		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group"`
 	}
 
@@ -10036,7 +10058,7 @@ func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil

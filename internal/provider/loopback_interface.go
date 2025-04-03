@@ -781,13 +781,15 @@ func (d *LoopbackInterfaceDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := loopback.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, loopback.NewService(d.client), specifier, loopback.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, loopback.NewService(d.client), batchSize, specifier, loopback.SpecMatches)
 }
 func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1265,13 +1267,15 @@ func (r *LoopbackInterfaceResource) Configure(ctx context.Context, req resource.
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := loopback.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, loopback.NewService(r.client), specifier, loopback.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, loopback.NewService(r.client), batchSize, specifier, loopback.SpecMatches)
 }
 
 func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {

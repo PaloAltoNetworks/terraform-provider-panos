@@ -13,7 +13,6 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/aggregate"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -9474,13 +9472,15 @@ func (d *AggregateInterfaceDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := aggregate.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, aggregate.NewService(d.client), specifier, aggregate.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, aggregate.NewService(d.client), batchSize, specifier, aggregate.SpecMatches)
 }
 func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -9492,8 +9492,8 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 
 	var location aggregate.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &aggregate.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
@@ -14385,13 +14385,15 @@ func (r *AggregateInterfaceResource) Configure(ctx context.Context, req resource
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := aggregate.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, aggregate.NewService(r.client), specifier, aggregate.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, aggregate.NewService(r.client), batchSize, specifier, aggregate.SpecMatches)
 }
 
 func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -19104,8 +19106,8 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 
 	var location aggregate.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &aggregate.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
@@ -19175,8 +19177,8 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 
 	var location aggregate.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &aggregate.SharedLocation{}
 	}
 	if savestate.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
@@ -19245,8 +19247,8 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 
 	var location aggregate.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &aggregate.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
@@ -19341,8 +19343,8 @@ func (r *AggregateInterfaceResource) Delete(ctx context.Context, req resource.De
 
 	var location aggregate.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &aggregate.SharedLocation{}
 	}
 	if state.Location.Template != nil {
 		location.Template = &aggregate.TemplateLocation{
@@ -19440,6 +19442,8 @@ func (r *AggregateInterfaceResource) ImportState(ctx context.Context, req resour
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type AggregateInterfaceSharedLocation struct {
+}
 type AggregateInterfaceTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -19454,7 +19458,7 @@ type AggregateInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type AggregateInterfaceLocation struct {
-	Shared        types.Bool                               `tfsdk:"shared"`
+	Shared        *AggregateInterfaceSharedLocation        `tfsdk:"shared"`
 	Template      *AggregateInterfaceTemplateLocation      `tfsdk:"template"`
 	TemplateStack *AggregateInterfaceTemplateStackLocation `tfsdk:"template_stack"`
 	Ngfw          *AggregateInterfaceNgfwLocation          `tfsdk:"ngfw"`
@@ -19465,15 +19469,15 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
@@ -19575,6 +19579,24 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o AggregateInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *AggregateInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o AggregateInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -19662,12 +19684,12 @@ func (o *AggregateInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 }
 func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared        *bool                                    `json:"shared"`
+		Shared        *AggregateInterfaceSharedLocation        `json:"shared"`
 		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
 	}{
-		Shared:        o.Shared.ValueBoolPointer(),
+		Shared:        o.Shared,
 		Template:      o.Template,
 		TemplateStack: o.TemplateStack,
 		Ngfw:          o.Ngfw,
@@ -19678,7 +19700,7 @@ func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *bool                                    `json:"shared"`
+		Shared        *AggregateInterfaceSharedLocation        `json:"shared"`
 		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
 		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
 		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
@@ -19688,7 +19710,7 @@ func (o *AggregateInterfaceLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.Template = shadow.Template
 	o.TemplateStack = shadow.TemplateStack
 	o.Ngfw = shadow.Ngfw

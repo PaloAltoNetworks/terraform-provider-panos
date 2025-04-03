@@ -45,14 +45,16 @@ type SDKEntryService[E EntryObject, L EntryLocation] interface {
 }
 
 type EntryObjectManager[E EntryObject, L EntryLocation, S SDKEntryService[E, L]] struct {
+	batchSize int
 	service   S
 	client    SDKClient
 	specifier func(E) (any, error)
 	matcher   func(E, E) bool
 }
 
-func NewEntryObjectManager[E EntryObject, L EntryLocation, S SDKEntryService[E, L]](client SDKClient, service S, specifier func(E) (any, error), matcher func(E, E) bool) *EntryObjectManager[E, L, S] {
+func NewEntryObjectManager[E EntryObject, L EntryLocation, S SDKEntryService[E, L]](client SDKClient, service S, batchSize int, specifier func(E) (any, error), matcher func(E, E) bool) *EntryObjectManager[E, L, S] {
 	return &EntryObjectManager[E, L, S]{
+		batchSize: batchSize,
 		service:   service,
 		client:    client,
 		specifier: specifier,
@@ -125,7 +127,7 @@ func (o *EntryObjectManager[E, L, S]) CreateMany(ctx context.Context, location L
 		}
 	}
 
-	updates := xmlapi.NewMultiConfig(len(entries))
+	updates := xmlapi.NewChunkedMultiConfig(len(existing), o.batchSize)
 
 	for _, elt := range entries {
 		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.EntryName())
@@ -147,7 +149,7 @@ func (o *EntryObjectManager[E, L, S]) CreateMany(ctx context.Context, location L
 	}
 
 	if len(updates.Operations) > 0 {
-		if _, _, _, err := o.client.MultiConfig(ctx, updates, false, nil); err != nil {
+		if _, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil); err != nil {
 			return nil, &Error{err: err, message: "Failed to execute MultiConfig command"}
 		}
 	}
@@ -282,7 +284,7 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 		}
 	}
 
-	updates := xmlapi.NewMultiConfig(len(planEntries))
+	updates := xmlapi.NewChunkedMultiConfig(len(planEntries), o.batchSize)
 
 	for _, existingEntry := range existing {
 		existingEntryName := existingEntry.EntryName()
@@ -377,7 +379,7 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 	}
 
 	if len(updates.Operations) > 0 {
-		if _, _, _, err := o.client.MultiConfig(ctx, updates, false, nil); err != nil {
+		if _, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil); err != nil {
 			return nil, &Error{err: err, message: "Failed to execute MultiConfig command"}
 		}
 	}

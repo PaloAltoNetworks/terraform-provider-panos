@@ -13,7 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/secgroup"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -22,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -356,13 +355,15 @@ func (d *SecurityProfileGroupDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := secgroup.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, secgroup.NewService(d.client), specifier, secgroup.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, secgroup.NewService(d.client), batchSize, specifier, secgroup.SpecMatches)
 }
 func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -374,8 +375,8 @@ func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasourc
 
 	var location secgroup.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &secgroup.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
@@ -611,13 +612,15 @@ func (r *SecurityProfileGroupResource) Configure(ctx context.Context, req resour
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := secgroup.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, secgroup.NewService(r.client), specifier, secgroup.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, secgroup.NewService(r.client), batchSize, specifier, secgroup.SpecMatches)
 }
 
 func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, obj **secgroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -787,8 +790,8 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 
 	var location secgroup.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &secgroup.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
@@ -843,8 +846,8 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 
 	var location secgroup.Location
 
-	if !savestate.Location.Shared.IsNull() && savestate.Location.Shared.ValueBool() {
-		location.Shared = true
+	if savestate.Location.Shared != nil {
+		location.Shared = &secgroup.SharedLocation{}
 	}
 	if savestate.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
@@ -898,8 +901,8 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 
 	var location secgroup.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &secgroup.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
@@ -979,8 +982,8 @@ func (r *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.
 
 	var location secgroup.Location
 
-	if !state.Location.Shared.IsNull() && state.Location.Shared.ValueBool() {
-		location.Shared = true
+	if state.Location.Shared != nil {
+		location.Shared = &secgroup.SharedLocation{}
 	}
 	if state.Location.DeviceGroup != nil {
 		location.DeviceGroup = &secgroup.DeviceGroupLocation{
@@ -1063,12 +1066,14 @@ func (r *SecurityProfileGroupResource) ImportState(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type SecurityProfileGroupSharedLocation struct {
+}
 type SecurityProfileGroupDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type SecurityProfileGroupLocation struct {
-	Shared      types.Bool                               `tfsdk:"shared"`
+	Shared      *SecurityProfileGroupSharedLocation      `tfsdk:"shared"`
 	DeviceGroup *SecurityProfileGroupDeviceGroupLocation `tfsdk:"device_group"`
 }
 
@@ -1077,15 +1082,15 @@ func SecurityProfileGroupLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.BoolAttribute{
+			"shared": rsschema.SingleNestedAttribute{
 				Description: "Panorama shared object",
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 
-				Validators: []validator.Bool{
-					boolvalidator.ExactlyOneOf(path.Expressions{
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
@@ -1122,6 +1127,24 @@ func SecurityProfileGroupLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o SecurityProfileGroupSharedLocation) MarshalJSON() ([]byte, error) {
+	obj := struct {
+	}{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SecurityProfileGroupSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o SecurityProfileGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
 		PanoramaDevice *string `json:"panorama_device"`
@@ -1151,10 +1174,10 @@ func (o *SecurityProfileGroupDeviceGroupLocation) UnmarshalJSON(data []byte) err
 }
 func (o SecurityProfileGroupLocation) MarshalJSON() ([]byte, error) {
 	obj := struct {
-		Shared      *bool                                    `json:"shared"`
+		Shared      *SecurityProfileGroupSharedLocation      `json:"shared"`
 		DeviceGroup *SecurityProfileGroupDeviceGroupLocation `json:"device_group"`
 	}{
-		Shared:      o.Shared.ValueBoolPointer(),
+		Shared:      o.Shared,
 		DeviceGroup: o.DeviceGroup,
 	}
 
@@ -1163,7 +1186,7 @@ func (o SecurityProfileGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityProfileGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *bool                                    `json:"shared"`
+		Shared      *SecurityProfileGroupSharedLocation      `json:"shared"`
 		DeviceGroup *SecurityProfileGroupDeviceGroupLocation `json:"device_group"`
 	}
 
@@ -1171,7 +1194,7 @@ func (o *SecurityProfileGroupLocation) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	o.Shared = types.BoolPointerValue(shadow.Shared)
+	o.Shared = shadow.Shared
 	o.DeviceGroup = shadow.DeviceGroup
 
 	return nil

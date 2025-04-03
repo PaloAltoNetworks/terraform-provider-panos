@@ -4101,13 +4101,15 @@ func (d *IpsecTunnelDataSource) Configure(_ context.Context, req datasource.Conf
 		return
 	}
 
-	d.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	d.client = providerData.Client
 	specifier, _, err := ipsec.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipsec.NewService(d.client), specifier, ipsec.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipsec.NewService(d.client), batchSize, specifier, ipsec.SpecMatches)
 }
 func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -6366,13 +6368,15 @@ func (r *IpsecTunnelResource) Configure(ctx context.Context, req resource.Config
 		return
 	}
 
-	r.client = req.ProviderData.(*pango.Client)
+	providerData := req.ProviderData.(*ProviderData)
+	r.client = providerData.Client
 	specifier, _, err := ipsec.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipsec.NewService(r.client), specifier, ipsec.SpecMatches)
+	batchSize := providerData.MultiConfigBatchSize
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipsec.NewService(r.client), batchSize, specifier, ipsec.SpecMatches)
 }
 
 func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
