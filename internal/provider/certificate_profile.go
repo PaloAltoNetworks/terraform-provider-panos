@@ -55,7 +55,7 @@ type CertificateProfileDataSourceFilter struct {
 }
 
 type CertificateProfileDataSourceModel struct {
-	Location                        CertificateProfileLocation                       `tfsdk:"location"`
+	Location                        types.Object                                     `tfsdk:"location"`
 	Name                            types.String                                     `tfsdk:"name"`
 	Certificate                     types.List                                       `tfsdk:"certificate"`
 	BlockExpiredCertificate         types.Bool                                       `tfsdk:"block_expired_certificate"`
@@ -80,6 +80,50 @@ type CertificateProfileDataSourceCertificateObject struct {
 type CertificateProfileDataSourceUsernameFieldObject struct {
 	Subject    types.String `tfsdk:"subject"`
 	SubjectAlt types.String `tfsdk:"subject_alt"`
+}
+
+func (o *CertificateProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj CertificateProfileLocation
+
+	var usernameFieldObj *CertificateProfileDataSourceUsernameFieldObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                              types.StringType,
+		"certificate":                       types.ListType{},
+		"block_expired_certificate":         types.BoolType,
+		"block_timeout_certificate":         types.BoolType,
+		"block_unauthenticated_certificate": types.BoolType,
+		"block_unknown_certificate":         types.BoolType,
+		"certificate_status_timeout":        types.Int64Type,
+		"crl_receive_timeout":               types.Int64Type,
+		"domain":                            types.StringType,
+		"ocsp_exclude_nonce":                types.BoolType,
+		"ocsp_receive_timeout":              types.Int64Type,
+		"use_crl":                           types.BoolType,
+		"use_ocsp":                          types.BoolType,
+		"username_field": types.ObjectType{
+			AttrTypes: usernameFieldObj.AttributeTypes(),
+		},
+	}
+}
+func (o *CertificateProfileDataSourceCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"default_ocsp_url":        types.StringType,
+		"ocsp_verify_certificate": types.StringType,
+		"template_name":           types.StringType,
+	}
+}
+func (o *CertificateProfileDataSourceUsernameFieldObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"subject":     types.StringType,
+		"subject_alt": types.StringType,
+	}
 }
 
 func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -581,43 +625,78 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 
 	var location certificate.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &certificate.PanoramaLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &certificate.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
+	{
+		var terraformLocation CertificateProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateVsys != nil {
-		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			PanoramaDevice: savestate.Location.TemplateVsys.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.TemplateVsys.Template.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.TemplateVsys.Vsys.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &certificate.PanoramaLocation{}
+			var innerLocation CertificateProfilePanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &certificate.TemplateLocation{}
+			var innerLocation CertificateProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
+		if !terraformLocation.TemplateVsys.IsNull() {
+			location.TemplateVsys = &certificate.TemplateVsysLocation{}
+			var innerLocation CertificateProfileTemplateVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateVsys.Template = innerLocation.Template.ValueString()
+			location.TemplateVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateVsys.Vsys = innerLocation.Vsys.ValueString()
 		}
-	}
-	if savestate.Location.Shared != nil {
-		location.Shared = &certificate.SharedLocation{}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &certificate.TemplateStackLocation{}
+			var innerLocation CertificateProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.TemplateStackVsys.IsNull() {
+			location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{}
+			var innerLocation CertificateProfileTemplateStackVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStackVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
+			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 	}
 
 	// Basic logging.
@@ -680,7 +759,7 @@ func CertificateProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type CertificateProfileResourceModel struct {
-	Location                        CertificateProfileLocation                     `tfsdk:"location"`
+	Location                        types.Object                                   `tfsdk:"location"`
 	Name                            types.String                                   `tfsdk:"name"`
 	Certificate                     types.List                                     `tfsdk:"certificate"`
 	BlockExpiredCertificate         types.Bool                                     `tfsdk:"block_expired_certificate"`
@@ -986,6 +1065,50 @@ func (r *CertificateProfileResource) Configure(ctx context.Context, req resource
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, certificate.NewService(r.client), batchSize, specifier, certificate.SpecMatches)
 }
 
+func (o *CertificateProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj CertificateProfileLocation
+
+	var usernameFieldObj *CertificateProfileResourceUsernameFieldObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                              types.StringType,
+		"certificate":                       types.ListType{},
+		"block_expired_certificate":         types.BoolType,
+		"block_timeout_certificate":         types.BoolType,
+		"block_unauthenticated_certificate": types.BoolType,
+		"block_unknown_certificate":         types.BoolType,
+		"certificate_status_timeout":        types.Int64Type,
+		"crl_receive_timeout":               types.Int64Type,
+		"domain":                            types.StringType,
+		"ocsp_exclude_nonce":                types.BoolType,
+		"ocsp_receive_timeout":              types.Int64Type,
+		"use_crl":                           types.BoolType,
+		"use_ocsp":                          types.BoolType,
+		"username_field": types.ObjectType{
+			AttrTypes: usernameFieldObj.AttributeTypes(),
+		},
+	}
+}
+func (o *CertificateProfileResourceCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"default_ocsp_url":        types.StringType,
+		"ocsp_verify_certificate": types.StringType,
+		"template_name":           types.StringType,
+	}
+}
+func (o *CertificateProfileResourceUsernameFieldObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"subject":     types.StringType,
+		"subject_alt": types.StringType,
+	}
+}
+
 func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_tf_entries []CertificateProfileResourceCertificateObject
@@ -1232,43 +1355,78 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 
 	var location certificate.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &certificate.PanoramaLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &certificate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+	{
+		var terraformLocation CertificateProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateVsys != nil {
-		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
-			Template:       state.Location.TemplateVsys.Template.ValueString(),
-			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &certificate.PanoramaLocation{}
+			var innerLocation CertificateProfilePanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &certificate.TemplateLocation{}
+			var innerLocation CertificateProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
+		if !terraformLocation.TemplateVsys.IsNull() {
+			location.TemplateVsys = &certificate.TemplateVsysLocation{}
+			var innerLocation CertificateProfileTemplateVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateVsys.Template = innerLocation.Template.ValueString()
+			location.TemplateVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateVsys.Vsys = innerLocation.Vsys.ValueString()
 		}
-	}
-	if state.Location.Shared != nil {
-		location.Shared = &certificate.SharedLocation{}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &certificate.TemplateStackLocation{}
+			var innerLocation CertificateProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.TemplateStackVsys.IsNull() {
+			location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{}
+			var innerLocation CertificateProfileTemplateStackVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStackVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
+			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -1316,43 +1474,78 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 
 	var location certificate.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &certificate.PanoramaLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &certificate.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
+	{
+		var terraformLocation CertificateProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateVsys != nil {
-		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			PanoramaDevice: savestate.Location.TemplateVsys.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.TemplateVsys.Template.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.TemplateVsys.Vsys.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &certificate.PanoramaLocation{}
+			var innerLocation CertificateProfilePanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &certificate.TemplateLocation{}
+			var innerLocation CertificateProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.TemplateStackVsys.Vsys.ValueString(),
+		if !terraformLocation.TemplateVsys.IsNull() {
+			location.TemplateVsys = &certificate.TemplateVsysLocation{}
+			var innerLocation CertificateProfileTemplateVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateVsys.Template = innerLocation.Template.ValueString()
+			location.TemplateVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateVsys.Vsys = innerLocation.Vsys.ValueString()
 		}
-	}
-	if savestate.Location.Shared != nil {
-		location.Shared = &certificate.SharedLocation{}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &certificate.TemplateStackLocation{}
+			var innerLocation CertificateProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.TemplateStackVsys.IsNull() {
+			location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{}
+			var innerLocation CertificateProfileTemplateStackVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStackVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
+			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 	}
 
 	// Basic logging.
@@ -1399,43 +1592,78 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 
 	var location certificate.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &certificate.PanoramaLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &certificate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+	{
+		var terraformLocation CertificateProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateVsys != nil {
-		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
-			Template:       state.Location.TemplateVsys.Template.ValueString(),
-			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &certificate.PanoramaLocation{}
+			var innerLocation CertificateProfilePanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &certificate.TemplateLocation{}
+			var innerLocation CertificateProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
+		if !terraformLocation.TemplateVsys.IsNull() {
+			location.TemplateVsys = &certificate.TemplateVsysLocation{}
+			var innerLocation CertificateProfileTemplateVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateVsys.Template = innerLocation.Template.ValueString()
+			location.TemplateVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateVsys.Vsys = innerLocation.Vsys.ValueString()
 		}
-	}
-	if state.Location.Shared != nil {
-		location.Shared = &certificate.SharedLocation{}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &certificate.TemplateStackLocation{}
+			var innerLocation CertificateProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.TemplateStackVsys.IsNull() {
+			location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{}
+			var innerLocation CertificateProfileTemplateStackVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStackVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
+			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 	}
 
 	// Basic logging.
@@ -1508,43 +1736,78 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 
 	var location certificate.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &certificate.PanoramaLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &certificate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+	{
+		var terraformLocation CertificateProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateVsys != nil {
-		location.TemplateVsys = &certificate.TemplateVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateVsys.PanoramaDevice.ValueString(),
-			Template:       state.Location.TemplateVsys.Template.ValueString(),
-			NgfwDevice:     state.Location.TemplateVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateVsys.Vsys.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &certificate.PanoramaLocation{}
+			var innerLocation CertificateProfilePanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &certificate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &certificate.TemplateLocation{}
+			var innerLocation CertificateProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStackVsys != nil {
-		location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{
 
-			PanoramaDevice: state.Location.TemplateStackVsys.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStackVsys.TemplateStack.ValueString(),
-			NgfwDevice:     state.Location.TemplateStackVsys.NgfwDevice.ValueString(),
-			Vsys:           state.Location.TemplateStackVsys.Vsys.ValueString(),
+		if !terraformLocation.TemplateVsys.IsNull() {
+			location.TemplateVsys = &certificate.TemplateVsysLocation{}
+			var innerLocation CertificateProfileTemplateVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateVsys.Template = innerLocation.Template.ValueString()
+			location.TemplateVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateVsys.Vsys = innerLocation.Vsys.ValueString()
 		}
-	}
-	if state.Location.Shared != nil {
-		location.Shared = &certificate.SharedLocation{}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &certificate.TemplateStackLocation{}
+			var innerLocation CertificateProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.TemplateStackVsys.IsNull() {
+			location.TemplateStackVsys = &certificate.TemplateStackVsysLocation{}
+			var innerLocation CertificateProfileTemplateStackVsysLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStackVsys.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
+			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 	}
 
 	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
@@ -1555,8 +1818,53 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 }
 
 type CertificateProfileImportState struct {
-	Location CertificateProfileLocation `json:"location"`
-	Name     string                     `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o CertificateProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *CertificateProfileLocation `json:"location"`
+		Name     *string                     `json:"name"`
+	}
+	var location_object *CertificateProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *CertificateProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *CertificateProfileLocation `json:"location"`
+		Name     *string                     `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func CertificateProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1570,10 +1878,10 @@ func CertificateProfileImportStateCreator(ctx context.Context, resource types.Ob
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location CertificateProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1582,10 +1890,10 @@ func CertificateProfileImportStateCreator(ctx context.Context, resource types.Ob
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1609,7 +1917,12 @@ func (r *CertificateProfileResource) ImportState(ctx context.Context, req resour
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1645,12 +1958,12 @@ type CertificateProfileTemplateStackVsysLocation struct {
 type CertificateProfileSharedLocation struct {
 }
 type CertificateProfileLocation struct {
-	Panorama          *CertificateProfilePanoramaLocation          `tfsdk:"panorama"`
-	Template          *CertificateProfileTemplateLocation          `tfsdk:"template"`
-	TemplateVsys      *CertificateProfileTemplateVsysLocation      `tfsdk:"template_vsys"`
-	TemplateStack     *CertificateProfileTemplateStackLocation     `tfsdk:"template_stack"`
-	TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `tfsdk:"template_stack_vsys"`
-	Shared            *CertificateProfileSharedLocation            `tfsdk:"shared"`
+	Panorama          types.Object `tfsdk:"panorama"`
+	Template          types.Object `tfsdk:"template"`
+	TemplateVsys      types.Object `tfsdk:"template_vsys"`
+	TemplateStack     types.Object `tfsdk:"template_stack"`
+	TemplateStackVsys types.Object `tfsdk:"template_stack_vsys"`
+	Shared            types.Object `tfsdk:"shared"`
 }
 
 func CertificateProfileLocationSchema() rsschema.Attribute {
@@ -1832,8 +2145,10 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o CertificateProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -1850,10 +2165,12 @@ func (o *CertificateProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o CertificateProfileTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -1863,8 +2180,8 @@ func (o CertificateProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1877,12 +2194,14 @@ func (o *CertificateProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o CertificateProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Template       *string `json:"template"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Template       *string `json:"template,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Template:       o.Template.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1894,10 +2213,10 @@ func (o CertificateProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileTemplateVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Template       *string `json:"template"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Template       *string `json:"template,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1912,10 +2231,12 @@ func (o *CertificateProfileTemplateVsysLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o CertificateProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -1925,8 +2246,8 @@ func (o CertificateProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1939,12 +2260,14 @@ func (o *CertificateProfileTemplateStackLocation) UnmarshalJSON(data []byte) err
 	return nil
 }
 func (o CertificateProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		TemplateStack  *string `json:"template_stack"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		TemplateStack  *string `json:"template_stack,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		TemplateStack:  o.TemplateStack.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1956,10 +2279,10 @@ func (o CertificateProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, erro
 
 func (o *CertificateProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		TemplateStack  *string `json:"template_stack"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		TemplateStack  *string `json:"template_stack,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1974,8 +2297,10 @@ func (o *CertificateProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte)
 	return nil
 }
 func (o CertificateProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -1992,20 +2317,64 @@ func (o *CertificateProfileSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama"`
-		Template          *CertificateProfileTemplateLocation          `json:"template"`
-		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
-		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
-		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *CertificateProfileSharedLocation            `json:"shared"`
-	}{
-		Panorama:          o.Panorama,
-		Template:          o.Template,
-		TemplateVsys:      o.TemplateVsys,
-		TemplateStack:     o.TemplateStack,
-		TemplateStackVsys: o.TemplateStackVsys,
-		Shared:            o.Shared,
+	type shadow struct {
+		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Template          *CertificateProfileTemplateLocation          `json:"template,omitempty"`
+		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
+		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack,omitempty"`
+		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
+	}
+	var panorama_object *CertificateProfilePanoramaLocation
+	{
+		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+	var template_object *CertificateProfileTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateVsys_object *CertificateProfileTemplateVsysLocation
+	{
+		diags := o.TemplateVsys.As(context.TODO(), &templateVsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_vsys into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *CertificateProfileTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+	var templateStackVsys_object *CertificateProfileTemplateStackVsysLocation
+	{
+		diags := o.TemplateStackVsys.As(context.TODO(), &templateStackVsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack_vsys into JSON document", diags.Errors())
+		}
+	}
+	var shared_object *CertificateProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Panorama:          panorama_object,
+		Template:          template_object,
+		TemplateVsys:      templateVsys_object,
+		TemplateStack:     templateStack_object,
+		TemplateStackVsys: templateStackVsys_object,
+		Shared:            shared_object,
 	}
 
 	return json.Marshal(obj)
@@ -2013,24 +2382,135 @@ func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama"`
-		Template          *CertificateProfileTemplateLocation          `json:"template"`
-		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys"`
-		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack"`
-		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys"`
-		Shared            *CertificateProfileSharedLocation            `json:"shared"`
+		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Template          *CertificateProfileTemplateLocation          `json:"template,omitempty"`
+		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
+		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack,omitempty"`
+		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = shadow.Panorama
-	o.Template = shadow.Template
-	o.TemplateVsys = shadow.TemplateVsys
-	o.TemplateStack = shadow.TemplateStack
-	o.TemplateStackVsys = shadow.TemplateStackVsys
-	o.Shared = shadow.Shared
+	var panorama_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateVsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateVsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateVsys.AttributeTypes(), shadow.TemplateVsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_vsys", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	var templateStackVsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStackVsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStackVsys.AttributeTypes(), shadow.TemplateStackVsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack_vsys", diags_tmp.Errors())
+		}
+	}
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	o.Panorama = panorama_object
+	o.Template = template_object
+	o.TemplateVsys = templateVsys_object
+	o.TemplateStack = templateStack_object
+	o.TemplateStackVsys = templateStackVsys_object
+	o.Shared = shared_object
 
 	return nil
+}
+
+func (o *CertificateProfilePanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *CertificateProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *CertificateProfileTemplateVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"template":        types.StringType,
+		"ngfw_device":     types.StringType,
+		"vsys":            types.StringType,
+	}
+}
+func (o *CertificateProfileTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *CertificateProfileTemplateStackVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"template_stack":  types.StringType,
+		"ngfw_device":     types.StringType,
+		"vsys":            types.StringType,
+	}
+}
+func (o *CertificateProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *CertificateProfileLocation) AttributeTypes() map[string]attr.Type {
+	var panoramaObj CertificateProfilePanoramaLocation
+	var templateObj CertificateProfileTemplateLocation
+	var templateVsysObj CertificateProfileTemplateVsysLocation
+	var templateStackObj CertificateProfileTemplateStackLocation
+	var templateStackVsysObj CertificateProfileTemplateStackVsysLocation
+	var sharedObj CertificateProfileSharedLocation
+	return map[string]attr.Type{
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_vsys": types.ObjectType{
+			AttrTypes: templateVsysObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+		"template_stack_vsys": types.ObjectType{
+			AttrTypes: templateStackVsysObj.AttributeTypes(),
+		},
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+	}
 }

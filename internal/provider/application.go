@@ -54,7 +54,7 @@ type ApplicationDataSourceFilter struct {
 }
 
 type ApplicationDataSourceModel struct {
-	Location               ApplicationLocation                 `tfsdk:"location"`
+	Location               types.Object                        `tfsdk:"location"`
 	Name                   types.String                        `tfsdk:"name"`
 	AbleToTransferFile     types.Bool                          `tfsdk:"able_to_transfer_file"`
 	AlgDisableCapability   types.String                        `tfsdk:"alg_disable_capability"`
@@ -152,6 +152,186 @@ type ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject 
 	Position types.String `tfsdk:"position"`
 	Mask     types.String `tfsdk:"mask"`
 	Value    types.String `tfsdk:"value"`
+}
+
+func (o *ApplicationDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ApplicationLocation
+
+	var defaultObj *ApplicationDataSourceDefaultObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                   types.StringType,
+		"able_to_transfer_file":  types.BoolType,
+		"alg_disable_capability": types.StringType,
+		"category":               types.StringType,
+		"consume_big_bandwidth":  types.BoolType,
+		"data_ident":             types.BoolType,
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"description":              types.StringType,
+		"disable_override":         types.StringType,
+		"evasive_behavior":         types.BoolType,
+		"file_type_ident":          types.BoolType,
+		"has_known_vulnerability":  types.BoolType,
+		"no_appid_caching":         types.BoolType,
+		"parent_app":               types.StringType,
+		"pervasive_use":            types.BoolType,
+		"prone_to_misuse":          types.BoolType,
+		"risk":                     types.Int64Type,
+		"signature":                types.ListType{},
+		"subcategory":              types.StringType,
+		"tcp_half_closed_timeout":  types.Int64Type,
+		"tcp_time_wait_timeout":    types.Int64Type,
+		"tcp_timeout":              types.Int64Type,
+		"technology":               types.StringType,
+		"timeout":                  types.Int64Type,
+		"tunnel_applications":      types.BoolType,
+		"tunnel_other_application": types.BoolType,
+		"udp_timeout":              types.Int64Type,
+		"used_by_malware":          types.BoolType,
+		"virus_ident":              types.BoolType,
+	}
+}
+func (o *ApplicationDataSourceDefaultObject) AttributeTypes() map[string]attr.Type {
+
+	var identByIcmpTypeObj *ApplicationDataSourceDefaultIdentByIcmpTypeObject
+
+	var identByIcmp6TypeObj *ApplicationDataSourceDefaultIdentByIcmp6TypeObject
+
+	return map[string]attr.Type{
+		"ident_by_icmp_type": types.ObjectType{
+			AttrTypes: identByIcmpTypeObj.AttributeTypes(),
+		},
+		"ident_by_icmp6_type": types.ObjectType{
+			AttrTypes: identByIcmp6TypeObj.AttributeTypes(),
+		},
+		"ident_by_ip_protocol": types.StringType,
+		"port":                 types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"code": types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"code": types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *ApplicationDataSourceSignatureObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"comment":       types.StringType,
+		"scope":         types.StringType,
+		"order_free":    types.BoolType,
+		"and_condition": types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":         types.StringType,
+		"or_condition": types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) AttributeTypes() map[string]attr.Type {
+
+	var operatorObj *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"operator": types.ObjectType{
+			AttrTypes: operatorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) AttributeTypes() map[string]attr.Type {
+
+	var patternMatchObj *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject
+
+	var greaterThanObj *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject
+
+	var lessThanObj *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject
+
+	var equalToObj *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject
+	return map[string]attr.Type{
+		"pattern_match": types.ObjectType{
+			AttrTypes: patternMatchObj.AttributeTypes(),
+		},
+		"greater_than": types.ObjectType{
+			AttrTypes: greaterThanObj.AttributeTypes(),
+		},
+		"less_than": types.ObjectType{
+			AttrTypes: lessThanObj.AttributeTypes(),
+		},
+		"equal_to": types.ObjectType{
+			AttrTypes: equalToObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"pattern":   types.StringType,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"value":     types.Int64Type,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"value":     types.Int64Type,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":  types.StringType,
+		"position": types.StringType,
+		"mask":     types.StringType,
+		"value":    types.StringType,
+	}
 }
 
 func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -2163,21 +2343,42 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location application.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &application.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &application.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ApplicationLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &application.SharedLocation{}
+			var innerLocation ApplicationSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &application.VsysLocation{}
+			var innerLocation ApplicationVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &application.DeviceGroupLocation{}
+			var innerLocation ApplicationDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2241,7 +2442,7 @@ func ApplicationResourceLocationSchema() rsschema.Attribute {
 }
 
 type ApplicationResourceModel struct {
-	Location               ApplicationLocation               `tfsdk:"location"`
+	Location               types.Object                      `tfsdk:"location"`
 	Name                   types.String                      `tfsdk:"name"`
 	AbleToTransferFile     types.Bool                        `tfsdk:"able_to_transfer_file"`
 	AlgDisableCapability   types.String                      `tfsdk:"alg_disable_capability"`
@@ -3363,6 +3564,186 @@ func (r *ApplicationResource) Configure(ctx context.Context, req resource.Config
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, application.NewService(r.client), batchSize, specifier, application.SpecMatches)
 }
 
+func (o *ApplicationResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ApplicationLocation
+
+	var defaultObj *ApplicationResourceDefaultObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                   types.StringType,
+		"able_to_transfer_file":  types.BoolType,
+		"alg_disable_capability": types.StringType,
+		"category":               types.StringType,
+		"consume_big_bandwidth":  types.BoolType,
+		"data_ident":             types.BoolType,
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"description":              types.StringType,
+		"disable_override":         types.StringType,
+		"evasive_behavior":         types.BoolType,
+		"file_type_ident":          types.BoolType,
+		"has_known_vulnerability":  types.BoolType,
+		"no_appid_caching":         types.BoolType,
+		"parent_app":               types.StringType,
+		"pervasive_use":            types.BoolType,
+		"prone_to_misuse":          types.BoolType,
+		"risk":                     types.Int64Type,
+		"signature":                types.ListType{},
+		"subcategory":              types.StringType,
+		"tcp_half_closed_timeout":  types.Int64Type,
+		"tcp_time_wait_timeout":    types.Int64Type,
+		"tcp_timeout":              types.Int64Type,
+		"technology":               types.StringType,
+		"timeout":                  types.Int64Type,
+		"tunnel_applications":      types.BoolType,
+		"tunnel_other_application": types.BoolType,
+		"udp_timeout":              types.Int64Type,
+		"used_by_malware":          types.BoolType,
+		"virus_ident":              types.BoolType,
+	}
+}
+func (o *ApplicationResourceDefaultObject) AttributeTypes() map[string]attr.Type {
+
+	var identByIcmpTypeObj *ApplicationResourceDefaultIdentByIcmpTypeObject
+
+	var identByIcmp6TypeObj *ApplicationResourceDefaultIdentByIcmp6TypeObject
+
+	return map[string]attr.Type{
+		"ident_by_icmp_type": types.ObjectType{
+			AttrTypes: identByIcmpTypeObj.AttributeTypes(),
+		},
+		"ident_by_icmp6_type": types.ObjectType{
+			AttrTypes: identByIcmp6TypeObj.AttributeTypes(),
+		},
+		"ident_by_ip_protocol": types.StringType,
+		"port":                 types.ListType{},
+	}
+}
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"code": types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"code": types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *ApplicationResourceSignatureObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"comment":       types.StringType,
+		"scope":         types.StringType,
+		"order_free":    types.BoolType,
+		"and_condition": types.ListType{},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":         types.StringType,
+		"or_condition": types.ListType{},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionObject) AttributeTypes() map[string]attr.Type {
+
+	var operatorObj *ApplicationResourceSignatureAndConditionOrConditionOperatorObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"operator": types.ObjectType{
+			AttrTypes: operatorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) AttributeTypes() map[string]attr.Type {
+
+	var patternMatchObj *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject
+
+	var greaterThanObj *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject
+
+	var lessThanObj *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject
+
+	var equalToObj *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject
+	return map[string]attr.Type{
+		"pattern_match": types.ObjectType{
+			AttrTypes: patternMatchObj.AttributeTypes(),
+		},
+		"greater_than": types.ObjectType{
+			AttrTypes: greaterThanObj.AttributeTypes(),
+		},
+		"less_than": types.ObjectType{
+			AttrTypes: lessThanObj.AttributeTypes(),
+		},
+		"equal_to": types.ObjectType{
+			AttrTypes: equalToObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"pattern":   types.StringType,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"value":     types.Int64Type,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":   types.StringType,
+		"value":     types.Int64Type,
+		"qualifier": types.ListType{},
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"context":  types.StringType,
+		"position": types.StringType,
+		"mask":     types.StringType,
+		"value":    types.StringType,
+	}
+}
+
 func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ableToTransferFile_value := o.AbleToTransferFile.ValueBoolPointer()
@@ -4374,21 +4755,42 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location application.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &application.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &application.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ApplicationLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &application.SharedLocation{}
+			var innerLocation ApplicationSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &application.VsysLocation{}
+			var innerLocation ApplicationVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &application.DeviceGroupLocation{}
+			var innerLocation ApplicationDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -4437,21 +4839,42 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location application.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &application.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &application.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ApplicationLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &application.SharedLocation{}
+			var innerLocation ApplicationSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &application.VsysLocation{}
+			var innerLocation ApplicationVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &application.DeviceGroupLocation{}
+			var innerLocation ApplicationDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -4499,21 +4922,42 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location application.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &application.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &application.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ApplicationLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &application.SharedLocation{}
+			var innerLocation ApplicationSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &application.VsysLocation{}
+			var innerLocation ApplicationVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &application.DeviceGroupLocation{}
+			var innerLocation ApplicationDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -4587,21 +5031,42 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location application.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &application.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &application.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ApplicationLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &application.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &application.SharedLocation{}
+			var innerLocation ApplicationSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &application.VsysLocation{}
+			var innerLocation ApplicationVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &application.DeviceGroupLocation{}
+			var innerLocation ApplicationDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -4613,8 +5078,53 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 }
 
 type ApplicationImportState struct {
-	Location ApplicationLocation `json:"location"`
-	Name     string              `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o ApplicationImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *ApplicationLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+	var location_object *ApplicationLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ApplicationImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *ApplicationLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func ApplicationImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -4628,10 +5138,10 @@ func ApplicationImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location ApplicationLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -4640,10 +5150,10 @@ func ApplicationImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -4667,7 +5177,12 @@ func (r *ApplicationResource) ImportState(ctx context.Context, req resource.Impo
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -4689,9 +5204,9 @@ type ApplicationDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type ApplicationLocation struct {
-	Shared      *ApplicationSharedLocation      `tfsdk:"shared"`
-	Vsys        *ApplicationVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *ApplicationDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func ApplicationLocationSchema() rsschema.Attribute {
@@ -4773,8 +5288,10 @@ func ApplicationLocationSchema() rsschema.Attribute {
 }
 
 func (o ApplicationSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -4791,10 +5308,12 @@ func (o *ApplicationSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ApplicationVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -4804,8 +5323,8 @@ func (o ApplicationVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4818,10 +5337,12 @@ func (o *ApplicationVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ApplicationDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -4831,8 +5352,8 @@ func (o ApplicationDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4845,14 +5366,37 @@ func (o *ApplicationDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *ApplicationSharedLocation      `json:"shared"`
-		Vsys        *ApplicationVsysLocation        `json:"vsys"`
-		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *ApplicationSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ApplicationVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *ApplicationSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *ApplicationVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *ApplicationDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -4860,18 +5404,74 @@ func (o ApplicationLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *ApplicationSharedLocation      `json:"shared"`
-		Vsys        *ApplicationVsysLocation        `json:"vsys"`
-		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group"`
+		Shared      *ApplicationSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ApplicationVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *ApplicationDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *ApplicationSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ApplicationVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *ApplicationDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *ApplicationLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj ApplicationSharedLocation
+	var vsysObj ApplicationVsysLocation
+	var deviceGroupObj ApplicationDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

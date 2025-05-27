@@ -26,6 +26,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -51,7 +52,7 @@ type DynamicUpdatesDataSourceFilter struct {
 }
 
 type DynamicUpdatesDataSourceModel struct {
-	Location       DynamicUpdatesLocation                        `tfsdk:"location"`
+	Location       types.Object                                  `tfsdk:"location"`
 	UpdateSchedule *DynamicUpdatesDataSourceUpdateScheduleObject `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleObject struct {
@@ -267,6 +268,529 @@ type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject struc
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject struct {
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject struct {
+}
+
+func (o *DynamicUpdatesDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DynamicUpdatesLocation
+
+	var updateScheduleObj *DynamicUpdatesDataSourceUpdateScheduleObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"update_schedule": types.ObjectType{
+			AttrTypes: updateScheduleObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleObject) AttributeTypes() map[string]attr.Type {
+
+	var antiVirusObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject
+
+	var appProfileObj *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject
+
+	var globalProtectClientlessVpnObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject
+
+	var globalProtectDatafileObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject
+
+	var statisticsServiceObj *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject
+
+	var threatsObj *DynamicUpdatesDataSourceUpdateScheduleThreatsObject
+
+	var wfPrivateObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
+
+	var wildfireObj *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
+	return map[string]attr.Type{
+		"anti_virus": types.ObjectType{
+			AttrTypes: antiVirusObj.AttributeTypes(),
+		},
+		"app_profile": types.ObjectType{
+			AttrTypes: appProfileObj.AttributeTypes(),
+		},
+		"global_protect_clientless_vpn": types.ObjectType{
+			AttrTypes: globalProtectClientlessVpnObj.AttributeTypes(),
+		},
+		"global_protect_datafile": types.ObjectType{
+			AttrTypes: globalProtectDatafileObj.AttributeTypes(),
+		},
+		"statistics_service": types.ObjectType{
+			AttrTypes: statisticsServiceObj.AttributeTypes(),
+		},
+		"threats": types.ObjectType{
+			AttrTypes: threatsObj.AttributeTypes(),
+		},
+		"wf_private": types.ObjectType{
+			AttrTypes: wfPrivateObj.AttributeTypes(),
+		},
+		"wildfire": types.ObjectType{
+			AttrTypes: wildfireObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"threshold":    types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"threshold":    types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_reports":           types.BoolType,
+		"file_identification_reports":   types.BoolType,
+		"health_performance_reports":    types.BoolType,
+		"passive_dns_monitoring":        types.BoolType,
+		"threat_prevention_information": types.BoolType,
+		"threat_prevention_pcap":        types.BoolType,
+		"threat_prevention_reports":     types.BoolType,
+		"url_reports":                   types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject
+
+	var every30MinsObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
+
+	var hourlyObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject
+	return map[string]attr.Type{
+		"new_app_threshold": types.Int64Type,
+		"sync_to_peer":      types.BoolType,
+		"threshold":         types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.StringType,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.Int64Type,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.Int64Type,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.StringType,
+		"day_of_week":         types.StringType,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var every15MinsObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+
+	var every30MinsObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+
+	var every5MinsObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+
+	var everyHourObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"every_15_mins": types.ObjectType{
+			AttrTypes: every15MinsObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"every_5_mins": types.ObjectType{
+			AttrTypes: every5MinsObj.AttributeTypes(),
+		},
+		"every_hour": types.ObjectType{
+			AttrTypes: everyHourObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var every15MinsObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
+
+	var every30MinsObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
+
+	var everyHourObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject
+
+	var everyMinObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject
+
+	var noneObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject
+
+	var realTimeObj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject
+	return map[string]attr.Type{
+		"every_15_mins": types.ObjectType{
+			AttrTypes: every15MinsObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"every_hour": types.ObjectType{
+			AttrTypes: everyHourObj.AttributeTypes(),
+		},
+		"every_min": types.ObjectType{
+			AttrTypes: everyMinObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"real_time": types.ObjectType{
+			AttrTypes: realTimeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
 }
 
 func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, obj **dynamicupdates.Config, encrypted *map[string]types.String) diag.Diagnostics {
@@ -5128,26 +5652,45 @@ func (o *DynamicUpdatesDataSource) Read(ctx context.Context, req datasource.Read
 
 	var location dynamicupdates.Location
 
-	if savestate.Location.System != nil {
-		location.System = &dynamicupdates.SystemLocation{
-
-			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation DynamicUpdatesLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &dynamicupdates.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &dynamicupdates.SystemLocation{}
+			var innerLocation DynamicUpdatesSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &dynamicupdates.TemplateLocation{}
+			var innerLocation DynamicUpdatesTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &dynamicupdates.TemplateStackLocation{}
+			var innerLocation DynamicUpdatesTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -5205,7 +5748,7 @@ func DynamicUpdatesResourceLocationSchema() rsschema.Attribute {
 }
 
 type DynamicUpdatesResourceModel struct {
-	Location       DynamicUpdatesLocation                      `tfsdk:"location"`
+	Location       types.Object                                `tfsdk:"location"`
 	UpdateSchedule *DynamicUpdatesResourceUpdateScheduleObject `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesResourceUpdateScheduleObject struct {
@@ -7867,6 +8410,529 @@ func (r *DynamicUpdatesResource) Configure(ctx context.Context, req resource.Con
 	r.manager = sdkmanager.NewConfigObjectManager(r.client, dynamicupdates.NewService(r.client), specifier)
 }
 
+func (o *DynamicUpdatesResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DynamicUpdatesLocation
+
+	var updateScheduleObj *DynamicUpdatesResourceUpdateScheduleObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"update_schedule": types.ObjectType{
+			AttrTypes: updateScheduleObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleObject) AttributeTypes() map[string]attr.Type {
+
+	var antiVirusObj *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+
+	var appProfileObj *DynamicUpdatesResourceUpdateScheduleAppProfileObject
+
+	var globalProtectClientlessVpnObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+
+	var globalProtectDatafileObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
+
+	var statisticsServiceObj *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject
+
+	var threatsObj *DynamicUpdatesResourceUpdateScheduleThreatsObject
+
+	var wfPrivateObj *DynamicUpdatesResourceUpdateScheduleWfPrivateObject
+
+	var wildfireObj *DynamicUpdatesResourceUpdateScheduleWildfireObject
+	return map[string]attr.Type{
+		"anti_virus": types.ObjectType{
+			AttrTypes: antiVirusObj.AttributeTypes(),
+		},
+		"app_profile": types.ObjectType{
+			AttrTypes: appProfileObj.AttributeTypes(),
+		},
+		"global_protect_clientless_vpn": types.ObjectType{
+			AttrTypes: globalProtectClientlessVpnObj.AttributeTypes(),
+		},
+		"global_protect_datafile": types.ObjectType{
+			AttrTypes: globalProtectDatafileObj.AttributeTypes(),
+		},
+		"statistics_service": types.ObjectType{
+			AttrTypes: statisticsServiceObj.AttributeTypes(),
+		},
+		"threats": types.ObjectType{
+			AttrTypes: threatsObj.AttributeTypes(),
+		},
+		"wf_private": types.ObjectType{
+			AttrTypes: wfPrivateObj.AttributeTypes(),
+		},
+		"wildfire": types.ObjectType{
+			AttrTypes: wildfireObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"threshold":    types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"threshold":    types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+
+	var hourlyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":      types.StringType,
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_reports":           types.BoolType,
+		"file_identification_reports":   types.BoolType,
+		"health_performance_reports":    types.BoolType,
+		"passive_dns_monitoring":        types.BoolType,
+		"threat_prevention_information": types.BoolType,
+		"threat_prevention_pcap":        types.BoolType,
+		"threat_prevention_reports":     types.BoolType,
+		"url_reports":                   types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
+
+	var every30MinsObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject
+
+	var hourlyObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject
+
+	var weeklyObj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+	return map[string]attr.Type{
+		"new_app_threshold": types.Int64Type,
+		"sync_to_peer":      types.BoolType,
+		"threshold":         types.Int64Type,
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.StringType,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.Int64Type,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.Int64Type,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":              types.StringType,
+		"at":                  types.StringType,
+		"day_of_week":         types.StringType,
+		"disable_new_content": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var every15MinsObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+
+	var every30MinsObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+
+	var every5MinsObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+
+	var everyHourObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+	return map[string]attr.Type{
+		"sync_to_peer": types.BoolType,
+		"every_15_mins": types.ObjectType{
+			AttrTypes: every15MinsObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"every_5_mins": types.ObjectType{
+			AttrTypes: every5MinsObj.AttributeTypes(),
+		},
+		"every_hour": types.ObjectType{
+			AttrTypes: everyHourObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"at":     types.Int64Type,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) AttributeTypes() map[string]attr.Type {
+
+	var recurringObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+	return map[string]attr.Type{
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var every15MinsObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+
+	var every30MinsObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+
+	var everyHourObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+
+	var everyMinObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+
+	var noneObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+
+	var realTimeObj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+	return map[string]attr.Type{
+		"every_15_mins": types.ObjectType{
+			AttrTypes: every15MinsObj.AttributeTypes(),
+		},
+		"every_30_mins": types.ObjectType{
+			AttrTypes: every30MinsObj.AttributeTypes(),
+		},
+		"every_hour": types.ObjectType{
+			AttrTypes: everyHourObj.AttributeTypes(),
+		},
+		"every_min": types.ObjectType{
+			AttrTypes: everyMinObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"real_time": types.ObjectType{
+			AttrTypes: realTimeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"at":           types.Int64Type,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action":       types.StringType,
+		"sync_to_peer": types.BoolType,
+	}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+
 func (o *DynamicUpdatesResourceModel) CopyToPango(ctx context.Context, obj **dynamicupdates.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var updateSchedule_entry *dynamicupdates.UpdateSchedule
@@ -10297,26 +11363,45 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 
 	var location dynamicupdates.Location
 
-	if state.Location.System != nil {
-		location.System = &dynamicupdates.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation DynamicUpdatesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &dynamicupdates.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &dynamicupdates.SystemLocation{}
+			var innerLocation DynamicUpdatesSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &dynamicupdates.TemplateLocation{}
+			var innerLocation DynamicUpdatesTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &dynamicupdates.TemplateStackLocation{}
+			var innerLocation DynamicUpdatesTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -10364,26 +11449,45 @@ func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequ
 
 	var location dynamicupdates.Location
 
-	if savestate.Location.System != nil {
-		location.System = &dynamicupdates.SystemLocation{
-
-			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation DynamicUpdatesLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &dynamicupdates.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &dynamicupdates.SystemLocation{}
+			var innerLocation DynamicUpdatesSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &dynamicupdates.TemplateLocation{}
+			var innerLocation DynamicUpdatesTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &dynamicupdates.TemplateStackLocation{}
+			var innerLocation DynamicUpdatesTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -10430,26 +11534,45 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 
 	var location dynamicupdates.Location
 
-	if state.Location.System != nil {
-		location.System = &dynamicupdates.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation DynamicUpdatesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &dynamicupdates.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &dynamicupdates.SystemLocation{}
+			var innerLocation DynamicUpdatesSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &dynamicupdates.TemplateLocation{}
+			var innerLocation DynamicUpdatesTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &dynamicupdates.TemplateStackLocation{}
+			var innerLocation DynamicUpdatesTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -10522,26 +11645,45 @@ func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.Delete
 
 	var location dynamicupdates.Location
 
-	if state.Location.System != nil {
-		location.System = &dynamicupdates.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation DynamicUpdatesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &dynamicupdates.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &dynamicupdates.SystemLocation{}
+			var innerLocation DynamicUpdatesSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &dynamicupdates.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &dynamicupdates.TemplateLocation{}
+			var innerLocation DynamicUpdatesTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &dynamicupdates.TemplateStackLocation{}
+			var innerLocation DynamicUpdatesTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -10576,9 +11718,9 @@ type DynamicUpdatesTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type DynamicUpdatesLocation struct {
-	System        *DynamicUpdatesSystemLocation        `tfsdk:"system"`
-	Template      *DynamicUpdatesTemplateLocation      `tfsdk:"template"`
-	TemplateStack *DynamicUpdatesTemplateStackLocation `tfsdk:"template_stack"`
+	System        types.Object `tfsdk:"system"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func DynamicUpdatesLocationSchema() rsschema.Attribute {
@@ -10689,9 +11831,11 @@ func DynamicUpdatesLocationSchema() rsschema.Attribute {
 }
 
 func (o DynamicUpdatesSystemLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -10700,7 +11844,7 @@ func (o DynamicUpdatesSystemLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DynamicUpdatesSystemLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -10712,11 +11856,13 @@ func (o *DynamicUpdatesSystemLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DynamicUpdatesTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -10727,9 +11873,9 @@ func (o DynamicUpdatesTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DynamicUpdatesTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -10743,11 +11889,13 @@ func (o *DynamicUpdatesTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DynamicUpdatesTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -10758,9 +11906,9 @@ func (o DynamicUpdatesTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DynamicUpdatesTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -10774,14 +11922,37 @@ func (o *DynamicUpdatesTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DynamicUpdatesLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		System        *DynamicUpdatesSystemLocation        `json:"system"`
-		Template      *DynamicUpdatesTemplateLocation      `json:"template"`
-		TemplateStack *DynamicUpdatesTemplateStackLocation `json:"template_stack"`
-	}{
-		System:        o.System,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		System        *DynamicUpdatesSystemLocation        `json:"system,omitempty"`
+		Template      *DynamicUpdatesTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *DynamicUpdatesTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var system_object *DynamicUpdatesSystemLocation
+	{
+		diags := o.System.As(context.TODO(), &system_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal system into JSON document", diags.Errors())
+		}
+	}
+	var template_object *DynamicUpdatesTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *DynamicUpdatesTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		System:        system_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -10789,18 +11960,78 @@ func (o DynamicUpdatesLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DynamicUpdatesLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		System        *DynamicUpdatesSystemLocation        `json:"system"`
-		Template      *DynamicUpdatesTemplateLocation      `json:"template"`
-		TemplateStack *DynamicUpdatesTemplateStackLocation `json:"template_stack"`
+		System        *DynamicUpdatesSystemLocation        `json:"system,omitempty"`
+		Template      *DynamicUpdatesTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *DynamicUpdatesTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.System = shadow.System
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var system_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		system_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.System.AttributeTypes(), shadow.System)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into system", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.System = system_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *DynamicUpdatesSystemLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *DynamicUpdatesTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *DynamicUpdatesLocation) AttributeTypes() map[string]attr.Type {
+	var systemObj DynamicUpdatesSystemLocation
+	var templateObj DynamicUpdatesTemplateLocation
+	var templateStackObj DynamicUpdatesTemplateStackLocation
+	return map[string]attr.Type{
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

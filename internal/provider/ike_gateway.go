@@ -55,7 +55,7 @@ type IkeGatewayDataSourceFilter struct {
 }
 
 type IkeGatewayDataSourceModel struct {
-	Location       IkeGatewayLocation                        `tfsdk:"location"`
+	Location       types.Object                              `tfsdk:"location"`
 	Name           types.String                              `tfsdk:"name"`
 	Authentication *IkeGatewayDataSourceAuthenticationObject `tfsdk:"authentication"`
 	Comment        types.String                              `tfsdk:"comment"`
@@ -147,6 +147,230 @@ type IkeGatewayDataSourceProtocolCommonNatTraversalObject struct {
 	Enable            types.Bool  `tfsdk:"enable"`
 	KeepAliveInterval types.Int64 `tfsdk:"keep_alive_interval"`
 	UdpChecksumEnable types.Bool  `tfsdk:"udp_checksum_enable"`
+}
+
+func (o *IkeGatewayDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IkeGatewayLocation
+
+	var authenticationObj *IkeGatewayDataSourceAuthenticationObject
+
+	var localAddressObj *IkeGatewayDataSourceLocalAddressObject
+
+	var localIdObj *IkeGatewayDataSourceLocalIdObject
+
+	var peerAddressObj *IkeGatewayDataSourcePeerAddressObject
+
+	var peerIdObj *IkeGatewayDataSourcePeerIdObject
+
+	var protocolObj *IkeGatewayDataSourceProtocolObject
+
+	var protocolCommonObj *IkeGatewayDataSourceProtocolCommonObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"comment":  types.StringType,
+		"disabled": types.BoolType,
+		"ipv6":     types.BoolType,
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"local_id": types.ObjectType{
+			AttrTypes: localIdObj.AttributeTypes(),
+		},
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"peer_id": types.ObjectType{
+			AttrTypes: peerIdObj.AttributeTypes(),
+		},
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"protocol_common": types.ObjectType{
+			AttrTypes: protocolCommonObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeGatewayDataSourceAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateObj *IkeGatewayDataSourceAuthenticationCertificateObject
+
+	var preSharedKeyObj *IkeGatewayDataSourceAuthenticationPreSharedKeyObject
+	return map[string]attr.Type{
+		"certificate": types.ObjectType{
+			AttrTypes: certificateObj.AttributeTypes(),
+		},
+		"pre_shared_key": types.ObjectType{
+			AttrTypes: preSharedKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeGatewayDataSourceAuthenticationCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	var localCertificateObj *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject
+
+	return map[string]attr.Type{
+		"allow_id_payload_mismatch": types.BoolType,
+		"certificate_profile":       types.StringType,
+		"local_certificate": types.ObjectType{
+			AttrTypes: localCertificateObj.AttributeTypes(),
+		},
+		"strict_validation_revocation": types.BoolType,
+		"use_management_as_source":     types.BoolType,
+	}
+}
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	var hashAndUrlObj *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject
+
+	return map[string]attr.Type{
+		"hash_and_url": types.ObjectType{
+			AttrTypes: hashAndUrlObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"base_url": types.StringType,
+		"enable":   types.BoolType,
+	}
+}
+func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceLocalIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"id":   types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourcePeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *IkeGatewayDataSourcePeerAddressDynamicObject
+
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"fqdn": types.StringType,
+		"ip":   types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourcePeerAddressDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IkeGatewayDataSourcePeerIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"id":       types.StringType,
+		"matching": types.StringType,
+		"type":     types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var ikev1Obj *IkeGatewayDataSourceProtocolIkev1Object
+
+	var ikev2Obj *IkeGatewayDataSourceProtocolIkev2Object
+
+	return map[string]attr.Type{
+		"ikev1": types.ObjectType{
+			AttrTypes: ikev1Obj.AttributeTypes(),
+		},
+		"ikev2": types.ObjectType{
+			AttrTypes: ikev2Obj.AttributeTypes(),
+		},
+		"version": types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolIkev1Object) AttributeTypes() map[string]attr.Type {
+
+	var dpdObj *IkeGatewayDataSourceProtocolIkev1DpdObject
+
+	return map[string]attr.Type{
+		"dpd": types.ObjectType{
+			AttrTypes: dpdObj.AttributeTypes(),
+		},
+		"exchange_mode":      types.StringType,
+		"ike_crypto_profile": types.StringType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"interval": types.Int64Type,
+		"retry":    types.Int64Type,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolIkev2Object) AttributeTypes() map[string]attr.Type {
+
+	var dpdObj *IkeGatewayDataSourceProtocolIkev2DpdObject
+
+	return map[string]attr.Type{
+		"dpd": types.ObjectType{
+			AttrTypes: dpdObj.AttributeTypes(),
+		},
+		"ike_crypto_profile": types.StringType,
+		"require_cookie":     types.BoolType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"interval": types.Int64Type,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolCommonObject) AttributeTypes() map[string]attr.Type {
+
+	var fragmentationObj *IkeGatewayDataSourceProtocolCommonFragmentationObject
+
+	var natTraversalObj *IkeGatewayDataSourceProtocolCommonNatTraversalObject
+
+	return map[string]attr.Type{
+		"fragmentation": types.ObjectType{
+			AttrTypes: fragmentationObj.AttributeTypes(),
+		},
+		"nat_traversal": types.ObjectType{
+			AttrTypes: natTraversalObj.AttributeTypes(),
+		},
+		"passive_mode": types.BoolType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+	}
+}
+func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"keep_alive_interval": types.Int64Type,
+		"udp_checksum_enable": types.BoolType,
+	}
 }
 
 func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -2099,26 +2323,45 @@ func (o *IkeGatewayDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	var location gateway.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeGatewayLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &gateway.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &gateway.NgfwLocation{}
+			var innerLocation IkeGatewayNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &gateway.TemplateLocation{}
+			var innerLocation IkeGatewayTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &gateway.TemplateStackLocation{}
+			var innerLocation IkeGatewayTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -2182,7 +2425,7 @@ func IkeGatewayResourceLocationSchema() rsschema.Attribute {
 }
 
 type IkeGatewayResourceModel struct {
-	Location       IkeGatewayLocation                      `tfsdk:"location"`
+	Location       types.Object                            `tfsdk:"location"`
 	Name           types.String                            `tfsdk:"name"`
 	Authentication *IkeGatewayResourceAuthenticationObject `tfsdk:"authentication"`
 	Comment        types.String                            `tfsdk:"comment"`
@@ -2615,7 +2858,7 @@ func IkeGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 
 				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
+					stringvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("floating_ip"),
 						path.MatchRelative().AtParent().AtName("ip"),
 					}...),
@@ -3242,6 +3485,230 @@ func (r *IkeGatewayResource) Configure(ctx context.Context, req resource.Configu
 	}
 	batchSize := providerData.MultiConfigBatchSize
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, gateway.NewService(r.client), batchSize, specifier, gateway.SpecMatches)
+}
+
+func (o *IkeGatewayResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IkeGatewayLocation
+
+	var authenticationObj *IkeGatewayResourceAuthenticationObject
+
+	var localAddressObj *IkeGatewayResourceLocalAddressObject
+
+	var localIdObj *IkeGatewayResourceLocalIdObject
+
+	var peerAddressObj *IkeGatewayResourcePeerAddressObject
+
+	var peerIdObj *IkeGatewayResourcePeerIdObject
+
+	var protocolObj *IkeGatewayResourceProtocolObject
+
+	var protocolCommonObj *IkeGatewayResourceProtocolCommonObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"comment":  types.StringType,
+		"disabled": types.BoolType,
+		"ipv6":     types.BoolType,
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"local_id": types.ObjectType{
+			AttrTypes: localIdObj.AttributeTypes(),
+		},
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"peer_id": types.ObjectType{
+			AttrTypes: peerIdObj.AttributeTypes(),
+		},
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"protocol_common": types.ObjectType{
+			AttrTypes: protocolCommonObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeGatewayResourceAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateObj *IkeGatewayResourceAuthenticationCertificateObject
+
+	var preSharedKeyObj *IkeGatewayResourceAuthenticationPreSharedKeyObject
+	return map[string]attr.Type{
+		"certificate": types.ObjectType{
+			AttrTypes: certificateObj.AttributeTypes(),
+		},
+		"pre_shared_key": types.ObjectType{
+			AttrTypes: preSharedKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeGatewayResourceAuthenticationCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	var localCertificateObj *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject
+
+	return map[string]attr.Type{
+		"allow_id_payload_mismatch": types.BoolType,
+		"certificate_profile":       types.StringType,
+		"local_certificate": types.ObjectType{
+			AttrTypes: localCertificateObj.AttributeTypes(),
+		},
+		"strict_validation_revocation": types.BoolType,
+		"use_management_as_source":     types.BoolType,
+	}
+}
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) AttributeTypes() map[string]attr.Type {
+
+	var hashAndUrlObj *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
+
+	return map[string]attr.Type{
+		"hash_and_url": types.ObjectType{
+			AttrTypes: hashAndUrlObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+	}
+}
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"base_url": types.StringType,
+		"enable":   types.BoolType,
+	}
+}
+func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IkeGatewayResourceLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *IkeGatewayResourceLocalIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"id":   types.StringType,
+		"type": types.StringType,
+	}
+}
+func (o *IkeGatewayResourcePeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *IkeGatewayResourcePeerAddressDynamicObject
+
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"fqdn": types.StringType,
+		"ip":   types.StringType,
+	}
+}
+func (o *IkeGatewayResourcePeerAddressDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IkeGatewayResourcePeerIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"id":       types.StringType,
+		"matching": types.StringType,
+		"type":     types.StringType,
+	}
+}
+func (o *IkeGatewayResourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var ikev1Obj *IkeGatewayResourceProtocolIkev1Object
+
+	var ikev2Obj *IkeGatewayResourceProtocolIkev2Object
+
+	return map[string]attr.Type{
+		"ikev1": types.ObjectType{
+			AttrTypes: ikev1Obj.AttributeTypes(),
+		},
+		"ikev2": types.ObjectType{
+			AttrTypes: ikev2Obj.AttributeTypes(),
+		},
+		"version": types.StringType,
+	}
+}
+func (o *IkeGatewayResourceProtocolIkev1Object) AttributeTypes() map[string]attr.Type {
+
+	var dpdObj *IkeGatewayResourceProtocolIkev1DpdObject
+
+	return map[string]attr.Type{
+		"dpd": types.ObjectType{
+			AttrTypes: dpdObj.AttributeTypes(),
+		},
+		"exchange_mode":      types.StringType,
+		"ike_crypto_profile": types.StringType,
+	}
+}
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"interval": types.Int64Type,
+		"retry":    types.Int64Type,
+	}
+}
+func (o *IkeGatewayResourceProtocolIkev2Object) AttributeTypes() map[string]attr.Type {
+
+	var dpdObj *IkeGatewayResourceProtocolIkev2DpdObject
+
+	return map[string]attr.Type{
+		"dpd": types.ObjectType{
+			AttrTypes: dpdObj.AttributeTypes(),
+		},
+		"ike_crypto_profile": types.StringType,
+		"require_cookie":     types.BoolType,
+	}
+}
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"interval": types.Int64Type,
+	}
+}
+func (o *IkeGatewayResourceProtocolCommonObject) AttributeTypes() map[string]attr.Type {
+
+	var fragmentationObj *IkeGatewayResourceProtocolCommonFragmentationObject
+
+	var natTraversalObj *IkeGatewayResourceProtocolCommonNatTraversalObject
+
+	return map[string]attr.Type{
+		"fragmentation": types.ObjectType{
+			AttrTypes: fragmentationObj.AttributeTypes(),
+		},
+		"nat_traversal": types.ObjectType{
+			AttrTypes: natTraversalObj.AttributeTypes(),
+		},
+		"passive_mode": types.BoolType,
+	}
+}
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+	}
+}
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"keep_alive_interval": types.Int64Type,
+		"udp_checksum_enable": types.BoolType,
+	}
 }
 
 func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4258,26 +4725,45 @@ func (r *IkeGatewayResource) Create(ctx context.Context, req resource.CreateRequ
 
 	var location gateway.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeGatewayLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &gateway.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &gateway.NgfwLocation{}
+			var innerLocation IkeGatewayNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &gateway.TemplateLocation{}
+			var innerLocation IkeGatewayTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &gateway.TemplateStackLocation{}
+			var innerLocation IkeGatewayTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -4326,26 +4812,45 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	var location gateway.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeGatewayLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &gateway.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &gateway.NgfwLocation{}
+			var innerLocation IkeGatewayNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &gateway.TemplateLocation{}
+			var innerLocation IkeGatewayTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &gateway.TemplateStackLocation{}
+			var innerLocation IkeGatewayTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -4393,26 +4898,45 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	var location gateway.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeGatewayLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &gateway.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &gateway.NgfwLocation{}
+			var innerLocation IkeGatewayNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &gateway.TemplateLocation{}
+			var innerLocation IkeGatewayTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &gateway.TemplateStackLocation{}
+			var innerLocation IkeGatewayTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -4486,26 +5010,45 @@ func (r *IkeGatewayResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	var location gateway.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &gateway.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeGatewayLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &gateway.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &gateway.NgfwLocation{}
+			var innerLocation IkeGatewayNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &gateway.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &gateway.TemplateLocation{}
+			var innerLocation IkeGatewayTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &gateway.TemplateStackLocation{}
+			var innerLocation IkeGatewayTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -4517,8 +5060,53 @@ func (r *IkeGatewayResource) Delete(ctx context.Context, req resource.DeleteRequ
 }
 
 type IkeGatewayImportState struct {
-	Location IkeGatewayLocation `json:"location"`
-	Name     string             `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o IkeGatewayImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *IkeGatewayLocation `json:"location"`
+		Name     *string             `json:"name"`
+	}
+	var location_object *IkeGatewayLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *IkeGatewayImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *IkeGatewayLocation `json:"location"`
+		Name     *string             `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func IkeGatewayImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -4532,10 +5120,10 @@ func IkeGatewayImportStateCreator(ctx context.Context, resource types.Object) ([
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location IkeGatewayLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -4544,10 +5132,10 @@ func IkeGatewayImportStateCreator(ctx context.Context, resource types.Object) ([
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -4571,7 +5159,12 @@ func (r *IkeGatewayResource) ImportState(ctx context.Context, req resource.Impor
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -4596,9 +5189,9 @@ type IkeGatewayTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IkeGatewayLocation struct {
-	Ngfw          *IkeGatewayNgfwLocation          `tfsdk:"ngfw"`
-	Template      *IkeGatewayTemplateLocation      `tfsdk:"template"`
-	TemplateStack *IkeGatewayTemplateStackLocation `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func IkeGatewayLocationSchema() rsschema.Attribute {
@@ -4709,9 +5302,11 @@ func IkeGatewayLocationSchema() rsschema.Attribute {
 }
 
 func (o IkeGatewayNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -4720,7 +5315,7 @@ func (o IkeGatewayNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeGatewayNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4732,11 +5327,13 @@ func (o *IkeGatewayNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IkeGatewayTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -4747,9 +5344,9 @@ func (o IkeGatewayTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeGatewayTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4763,11 +5360,13 @@ func (o *IkeGatewayTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IkeGatewayTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -4778,9 +5377,9 @@ func (o IkeGatewayTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeGatewayTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4794,14 +5393,37 @@ func (o *IkeGatewayTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IkeGatewayLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Ngfw          *IkeGatewayNgfwLocation          `json:"ngfw"`
-		Template      *IkeGatewayTemplateLocation      `json:"template"`
-		TemplateStack *IkeGatewayTemplateStackLocation `json:"template_stack"`
-	}{
-		Ngfw:          o.Ngfw,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Ngfw          *IkeGatewayNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *IkeGatewayTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IkeGatewayTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *IkeGatewayNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+	var template_object *IkeGatewayTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *IkeGatewayTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Ngfw:          ngfw_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -4809,18 +5431,78 @@ func (o IkeGatewayLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeGatewayLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Ngfw          *IkeGatewayNgfwLocation          `json:"ngfw"`
-		Template      *IkeGatewayTemplateLocation      `json:"template"`
-		TemplateStack *IkeGatewayTemplateStackLocation `json:"template_stack"`
+		Ngfw          *IkeGatewayNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *IkeGatewayTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IkeGatewayTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Ngfw = shadow.Ngfw
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Ngfw = ngfw_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *IkeGatewayNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *IkeGatewayTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IkeGatewayTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IkeGatewayLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj IkeGatewayNgfwLocation
+	var templateObj IkeGatewayTemplateLocation
+	var templateStackObj IkeGatewayTemplateStackLocation
+	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

@@ -27,6 +27,8 @@ import (
 import (
 	"encoding/xml"
 
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
@@ -51,9 +53,9 @@ type DeviceGroupParentDataSourceFilter struct {
 }
 
 type DeviceGroupParentDataSourceModel struct {
-	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	DeviceGroup types.String              `tfsdk:"device_group"`
-	Parent      types.String              `tfsdk:"parent"`
+	Location    types.Object `tfsdk:"location"`
+	DeviceGroup types.String `tfsdk:"device_group"`
+	Parent      types.String `tfsdk:"parent"`
 }
 
 func DeviceGroupParentDataSourceSchema() dsschema.Schema {
@@ -172,9 +174,9 @@ func DeviceGroupParentResourceLocationSchema() rsschema.Attribute {
 }
 
 type DeviceGroupParentResourceModel struct {
-	Location    DeviceGroupParentLocation `tfsdk:"location"`
-	DeviceGroup types.String              `tfsdk:"device_group"`
-	Parent      types.String              `tfsdk:"parent"`
+	Location    types.Object `tfsdk:"location"`
+	DeviceGroup types.String `tfsdk:"device_group"`
+	Parent      types.String `tfsdk:"parent"`
 }
 
 func (r *DeviceGroupParentResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -349,7 +351,7 @@ type DeviceGroupParentPanoramaLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type DeviceGroupParentLocation struct {
-	Panorama *DeviceGroupParentPanoramaLocation `tfsdk:"panorama"`
+	Panorama types.Object `tfsdk:"panorama"`
 }
 
 func DeviceGroupParentLocationSchema() rsschema.Attribute {
@@ -380,9 +382,11 @@ func DeviceGroupParentLocationSchema() rsschema.Attribute {
 }
 
 func (o DeviceGroupParentPanoramaLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
@@ -391,7 +395,7 @@ func (o DeviceGroupParentPanoramaLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DeviceGroupParentPanoramaLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -403,10 +407,19 @@ func (o *DeviceGroupParentPanoramaLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DeviceGroupParentLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama"`
-	}{
-		Panorama: o.Panorama,
+	type shadow struct {
+		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama,omitempty"`
+	}
+	var panorama_object *DeviceGroupParentPanoramaLocation
+	{
+		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Panorama: panorama_object,
 	}
 
 	return json.Marshal(obj)
@@ -414,16 +427,38 @@ func (o DeviceGroupParentLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DeviceGroupParentLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama"`
+		Panorama *DeviceGroupParentPanoramaLocation `json:"panorama,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = shadow.Panorama
+	var panorama_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	o.Panorama = panorama_object
 
 	return nil
+}
+
+func (o *DeviceGroupParentPanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+	}
+}
+func (o *DeviceGroupParentLocation) AttributeTypes() map[string]attr.Type {
+	var panoramaObj DeviceGroupParentPanoramaLocation
+	return map[string]attr.Type{
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+	}
 }
 
 var _ = tflog.Warn

@@ -55,7 +55,7 @@ type AggregateInterfaceDataSourceFilter struct {
 }
 
 type AggregateInterfaceDataSourceModel struct {
-	Location      AggregateInterfaceLocation                       `tfsdk:"location"`
+	Location      types.Object                                     `tfsdk:"location"`
 	Name          types.String                                     `tfsdk:"name"`
 	Comment       types.String                                     `tfsdk:"comment"`
 	DecryptMirror *AggregateInterfaceDataSourceDecryptMirrorObject `tfsdk:"decrypt_mirror"`
@@ -484,6 +484,935 @@ type AggregateInterfaceDataSourceVirtualWireLldpObject struct {
 }
 type AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject struct {
 	PassivePreNegotiation types.Bool `tfsdk:"passive_pre_negotiation"`
+}
+
+func (o *AggregateInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AggregateInterfaceLocation
+
+	var decryptMirrorObj *AggregateInterfaceDataSourceDecryptMirrorObject
+
+	var haObj *AggregateInterfaceDataSourceHaObject
+
+	var layer2Obj *AggregateInterfaceDataSourceLayer2Object
+
+	var layer3Obj *AggregateInterfaceDataSourceLayer3Object
+
+	var virtualWireObj *AggregateInterfaceDataSourceVirtualWireObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":    types.StringType,
+		"comment": types.StringType,
+		"decrypt_mirror": types.ObjectType{
+			AttrTypes: decryptMirrorObj.AttributeTypes(),
+		},
+		"ha": types.ObjectType{
+			AttrTypes: haObj.AttributeTypes(),
+		},
+		"layer2": types.ObjectType{
+			AttrTypes: layer2Obj.AttributeTypes(),
+		},
+		"layer3": types.ObjectType{
+			AttrTypes: layer3Obj.AttributeTypes(),
+		},
+		"virtual_wire": types.ObjectType{
+			AttrTypes: virtualWireObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceDecryptMirrorObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceHaObject) AttributeTypes() map[string]attr.Type {
+
+	var lacpObj *AggregateInterfaceDataSourceHaLacpObject
+	return map[string]attr.Type{
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceHaLacpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":            types.BoolType,
+		"fast_failover":     types.BoolType,
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer2Object) AttributeTypes() map[string]attr.Type {
+
+	var lacpObj *AggregateInterfaceDataSourceLayer2LacpObject
+
+	var lldpObj *AggregateInterfaceDataSourceLayer2LldpObject
+
+	return map[string]attr.Type{
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer2LacpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable":        types.BoolType,
+		"fast_failover": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer2LldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Object) AttributeTypes() map[string]attr.Type {
+
+	var adjustTcpMssObj *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject
+
+	var bonjourObj *AggregateInterfaceDataSourceLayer3BonjourObject
+
+	var ddnsConfigObj *AggregateInterfaceDataSourceLayer3DdnsConfigObject
+
+	var dhcpClientObj *AggregateInterfaceDataSourceLayer3DhcpClientObject
+
+	var ipv6Obj *AggregateInterfaceDataSourceLayer3Ipv6Object
+
+	var lacpObj *AggregateInterfaceDataSourceLayer3LacpObject
+
+	var lldpObj *AggregateInterfaceDataSourceLayer3LldpObject
+
+	var ndpProxyObj *AggregateInterfaceDataSourceLayer3NdpProxyObject
+
+	var sdwanLinkSettingsObj *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject
+
+	return map[string]attr.Type{
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"arp": types.ListType{},
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"ddns_config": types.ObjectType{
+			AttrTypes: ddnsConfigObj.AttributeTypes(),
+		},
+		"decrypt_forward": types.BoolType,
+		"df_ignore":       types.BoolType,
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"mtu": types.Int64Type,
+		"ndp_proxy": types.ObjectType{
+			AttrTypes: ndpProxyObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+		"sdwan_link_settings": types.ObjectType{
+			AttrTypes: sdwanLinkSettingsObj.AttributeTypes(),
+		},
+		"untagged_sub_interface": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ddns_cert_profile":    types.StringType,
+		"ddns_enabled":         types.BoolType,
+		"ddns_hostname":        types.StringType,
+		"ddns_ip":              types.ListType{},
+		"ddns_ipv6":            types.ListType{},
+		"ddns_update_interval": types.Int64Type,
+		"ddns_vendor":          types.StringType,
+		"ddns_vendor_config":   types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var sendHostnameObj *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject
+	return map[string]attr.Type{
+		"create_default_route": types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"send_hostname": types.ObjectType{
+			AttrTypes: sendHostnameObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"hostname": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3IpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"sdwan_gateway": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
+
+	var dhcpClientObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject
+
+	var inheritedObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject
+
+	var anycastObj *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject
+
+	var advertiseObj *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
+
+	var prefixDelegationObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject
+
+	var v6OptionsObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject
+	return map[string]attr.Type{
+		"accept_ra_route":      types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"preference": types.StringType,
+		"prefix_delegation": types.ObjectType{
+			AttrTypes: prefixDelegationObj.AttributeTypes(),
+		},
+		"v6_options": types.ObjectType{
+			AttrTypes: v6OptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
+
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
+	return map[string]attr.Type{
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
+
+	var yesObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"pfx_pool_name":   types.StringType,
+		"prefix_len":      types.Int64Type,
+		"prefix_len_hint": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject
+
+	return map[string]attr.Type{
+		"duid_type": types.StringType,
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+		"rapid_commit":          types.BoolType,
+		"support_srvr_reconfig": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
+
+	var yesObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"non_temp_addr": types.BoolType,
+		"temp_addr":     types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject
+	return map[string]attr.Type{
+		"assign_addr": types.ListType{},
+		"enable":      types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var guaObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+
+	var ulaObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
+	return map[string]attr.Type{
+		"gua": types.ObjectType{
+			AttrTypes: guaObj.AttributeTypes(),
+		},
+		"ula": types.ObjectType{
+			AttrTypes: ulaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
+
+	var poolTypeObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
+
+	var advertiseObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"prefix_pool":         types.StringType,
+		"pool_type": types.ObjectType{
+			AttrTypes: poolTypeObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+
+	var dynamicIdObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"dynamic_id": types.ObjectType{
+			AttrTypes: dynamicIdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"identifier": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":           types.BoolType,
+		"onlink_flag":      types.BoolType,
+		"auto_config_flag": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"address":             types.StringType,
+		"prefix":              types.BoolType,
+		"anycast":             types.BoolType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var routerAdvertisementObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3LacpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable":        types.BoolType,
+		"fast_failover": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3LldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+		"enabled": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"negate": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	var upstreamNatObj *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject
+	return map[string]attr.Type{
+		"enable":                  types.BoolType,
+		"sdwan_interface_profile": types.StringType,
+		"upstream_nat": types.ObjectType{
+			AttrTypes: upstreamNatObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) AttributeTypes() map[string]attr.Type {
+
+	var ddnsObj *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
+
+	var staticIpObj *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"ddns": types.ObjectType{
+			AttrTypes: ddnsObj.AttributeTypes(),
+		},
+		"static_ip": types.ObjectType{
+			AttrTypes: staticIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"fqdn":       types.StringType,
+		"ip_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceVirtualWireObject) AttributeTypes() map[string]attr.Type {
+
+	var lldpObj *AggregateInterfaceDataSourceVirtualWireLldpObject
+
+	return map[string]attr.Type{
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
 }
 
 func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -9492,29 +10421,54 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 
 	var location aggregate.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &aggregate.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &aggregate.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &aggregate.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &aggregate.SharedLocation{}
+			var innerLocation AggregateInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &aggregate.TemplateLocation{}
+			var innerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &aggregate.TemplateStackLocation{}
+			var innerLocation AggregateInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &aggregate.NgfwLocation{}
+			var innerLocation AggregateInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -9578,7 +10532,7 @@ func AggregateInterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type AggregateInterfaceResourceModel struct {
-	Location      AggregateInterfaceLocation                     `tfsdk:"location"`
+	Location      types.Object                                   `tfsdk:"location"`
 	Name          types.String                                   `tfsdk:"name"`
 	Comment       types.String                                   `tfsdk:"comment"`
 	DecryptMirror *AggregateInterfaceResourceDecryptMirrorObject `tfsdk:"decrypt_mirror"`
@@ -14396,6 +15350,935 @@ func (r *AggregateInterfaceResource) Configure(ctx context.Context, req resource
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, aggregate.NewService(r.client), batchSize, specifier, aggregate.SpecMatches)
 }
 
+func (o *AggregateInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AggregateInterfaceLocation
+
+	var decryptMirrorObj *AggregateInterfaceResourceDecryptMirrorObject
+
+	var haObj *AggregateInterfaceResourceHaObject
+
+	var layer2Obj *AggregateInterfaceResourceLayer2Object
+
+	var layer3Obj *AggregateInterfaceResourceLayer3Object
+
+	var virtualWireObj *AggregateInterfaceResourceVirtualWireObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":    types.StringType,
+		"comment": types.StringType,
+		"decrypt_mirror": types.ObjectType{
+			AttrTypes: decryptMirrorObj.AttributeTypes(),
+		},
+		"ha": types.ObjectType{
+			AttrTypes: haObj.AttributeTypes(),
+		},
+		"layer2": types.ObjectType{
+			AttrTypes: layer2Obj.AttributeTypes(),
+		},
+		"layer3": types.ObjectType{
+			AttrTypes: layer3Obj.AttributeTypes(),
+		},
+		"virtual_wire": types.ObjectType{
+			AttrTypes: virtualWireObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceDecryptMirrorObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceHaObject) AttributeTypes() map[string]attr.Type {
+
+	var lacpObj *AggregateInterfaceResourceHaLacpObject
+	return map[string]attr.Type{
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceHaLacpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":            types.BoolType,
+		"fast_failover":     types.BoolType,
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer2Object) AttributeTypes() map[string]attr.Type {
+
+	var lacpObj *AggregateInterfaceResourceLayer2LacpObject
+
+	var lldpObj *AggregateInterfaceResourceLayer2LldpObject
+
+	return map[string]attr.Type{
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer2LacpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable":        types.BoolType,
+		"fast_failover": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer2LldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Object) AttributeTypes() map[string]attr.Type {
+
+	var adjustTcpMssObj *AggregateInterfaceResourceLayer3AdjustTcpMssObject
+
+	var bonjourObj *AggregateInterfaceResourceLayer3BonjourObject
+
+	var ddnsConfigObj *AggregateInterfaceResourceLayer3DdnsConfigObject
+
+	var dhcpClientObj *AggregateInterfaceResourceLayer3DhcpClientObject
+
+	var ipv6Obj *AggregateInterfaceResourceLayer3Ipv6Object
+
+	var lacpObj *AggregateInterfaceResourceLayer3LacpObject
+
+	var lldpObj *AggregateInterfaceResourceLayer3LldpObject
+
+	var ndpProxyObj *AggregateInterfaceResourceLayer3NdpProxyObject
+
+	var sdwanLinkSettingsObj *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject
+
+	return map[string]attr.Type{
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"arp": types.ListType{},
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"ddns_config": types.ObjectType{
+			AttrTypes: ddnsConfigObj.AttributeTypes(),
+		},
+		"decrypt_forward": types.BoolType,
+		"df_ignore":       types.BoolType,
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"lacp": types.ObjectType{
+			AttrTypes: lacpObj.AttributeTypes(),
+		},
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"mtu": types.Int64Type,
+		"ndp_proxy": types.ObjectType{
+			AttrTypes: ndpProxyObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+		"sdwan_link_settings": types.ObjectType{
+			AttrTypes: sdwanLinkSettingsObj.AttributeTypes(),
+		},
+		"untagged_sub_interface": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3ArpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3BonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ddns_cert_profile":    types.StringType,
+		"ddns_enabled":         types.BoolType,
+		"ddns_hostname":        types.StringType,
+		"ddns_ip":              types.ListType{},
+		"ddns_ipv6":            types.ListType{},
+		"ddns_update_interval": types.Int64Type,
+		"ddns_vendor":          types.StringType,
+		"ddns_vendor_config":   types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var sendHostnameObj *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject
+	return map[string]attr.Type{
+		"create_default_route": types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"send_hostname": types.ObjectType{
+			AttrTypes: sendHostnameObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"hostname": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3IpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"sdwan_gateway": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject
+
+	var dhcpClientObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject
+
+	var inheritedObj *AggregateInterfaceResourceLayer3Ipv6InheritedObject
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject
+
+	var anycastObj *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject
+
+	var advertiseObj *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
+
+	var prefixDelegationObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject
+
+	var v6OptionsObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject
+	return map[string]attr.Type{
+		"accept_ra_route":      types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"preference": types.StringType,
+		"prefix_delegation": types.ObjectType{
+			AttrTypes: prefixDelegationObj.AttributeTypes(),
+		},
+		"v6_options": types.ObjectType{
+			AttrTypes: v6OptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
+
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
+	return map[string]attr.Type{
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
+
+	var yesObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"pfx_pool_name":   types.StringType,
+		"prefix_len":      types.Int64Type,
+		"prefix_len_hint": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject
+
+	return map[string]attr.Type{
+		"duid_type": types.StringType,
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+		"rapid_commit":          types.BoolType,
+		"support_srvr_reconfig": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
+
+	var yesObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"non_temp_addr": types.BoolType,
+		"temp_addr":     types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject
+	return map[string]attr.Type{
+		"assign_addr": types.ListType{},
+		"enable":      types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var guaObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+
+	var ulaObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
+	return map[string]attr.Type{
+		"gua": types.ObjectType{
+			AttrTypes: guaObj.AttributeTypes(),
+		},
+		"ula": types.ObjectType{
+			AttrTypes: ulaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
+
+	var poolTypeObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
+
+	var advertiseObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"prefix_pool":         types.StringType,
+		"pool_type": types.ObjectType{
+			AttrTypes: poolTypeObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+
+	var dynamicIdObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"dynamic_id": types.ObjectType{
+			AttrTypes: dynamicIdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"identifier": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":           types.BoolType,
+		"onlink_flag":      types.BoolType,
+		"auto_config_flag": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"address":             types.StringType,
+		"prefix":              types.BoolType,
+		"anycast":             types.BoolType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var routerAdvertisementObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3LacpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable":        types.BoolType,
+		"fast_failover": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"max_ports":         types.Int64Type,
+		"mode":              types.StringType,
+		"system_priority":   types.Int64Type,
+		"transmission_rate": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3LldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3NdpProxyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+		"enabled": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"negate": types.BoolType,
+	}
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	var upstreamNatObj *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject
+	return map[string]attr.Type{
+		"enable":                  types.BoolType,
+		"sdwan_interface_profile": types.StringType,
+		"upstream_nat": types.ObjectType{
+			AttrTypes: upstreamNatObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) AttributeTypes() map[string]attr.Type {
+
+	var ddnsObj *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
+
+	var staticIpObj *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"ddns": types.ObjectType{
+			AttrTypes: ddnsObj.AttributeTypes(),
+		},
+		"static_ip": types.ObjectType{
+			AttrTypes: staticIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"fqdn":       types.StringType,
+		"ip_address": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceVirtualWireObject) AttributeTypes() map[string]attr.Type {
+
+	var lldpObj *AggregateInterfaceResourceVirtualWireLldpObject
+
+	return map[string]attr.Type{
+		"lldp": types.ObjectType{
+			AttrTypes: lldpObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceVirtualWireLldpObject) AttributeTypes() map[string]attr.Type {
+
+	var highAvailabilityObj *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"high_availability": types.ObjectType{
+			AttrTypes: highAvailabilityObj.AttributeTypes(),
+		},
+		"profile": types.StringType,
+	}
+}
+func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"passive_pre_negotiation": types.BoolType,
+	}
+}
+
 func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
@@ -19106,29 +20989,54 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 
 	var location aggregate.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &aggregate.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &aggregate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &aggregate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &aggregate.SharedLocation{}
+			var innerLocation AggregateInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &aggregate.TemplateLocation{}
+			var innerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &aggregate.TemplateStackLocation{}
+			var innerLocation AggregateInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &aggregate.NgfwLocation{}
+			var innerLocation AggregateInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -19177,29 +21085,54 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 
 	var location aggregate.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &aggregate.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &aggregate.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &aggregate.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &aggregate.SharedLocation{}
+			var innerLocation AggregateInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &aggregate.TemplateLocation{}
+			var innerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &aggregate.TemplateStackLocation{}
+			var innerLocation AggregateInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &aggregate.NgfwLocation{}
+			var innerLocation AggregateInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -19247,29 +21180,54 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 
 	var location aggregate.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &aggregate.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &aggregate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &aggregate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &aggregate.SharedLocation{}
+			var innerLocation AggregateInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &aggregate.TemplateLocation{}
+			var innerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &aggregate.TemplateStackLocation{}
+			var innerLocation AggregateInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &aggregate.NgfwLocation{}
+			var innerLocation AggregateInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -19343,29 +21301,54 @@ func (r *AggregateInterfaceResource) Delete(ctx context.Context, req resource.De
 
 	var location aggregate.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &aggregate.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &aggregate.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &aggregate.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &aggregate.SharedLocation{}
+			var innerLocation AggregateInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &aggregate.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &aggregate.TemplateLocation{}
+			var innerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &aggregate.TemplateStackLocation{}
+			var innerLocation AggregateInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &aggregate.NgfwLocation{}
+			var innerLocation AggregateInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -19377,8 +21360,53 @@ func (r *AggregateInterfaceResource) Delete(ctx context.Context, req resource.De
 }
 
 type AggregateInterfaceImportState struct {
-	Location AggregateInterfaceLocation `json:"location"`
-	Name     string                     `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o AggregateInterfaceImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *AggregateInterfaceLocation `json:"location"`
+		Name     *string                     `json:"name"`
+	}
+	var location_object *AggregateInterfaceLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AggregateInterfaceImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *AggregateInterfaceLocation `json:"location"`
+		Name     *string                     `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func AggregateInterfaceImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -19392,10 +21420,10 @@ func AggregateInterfaceImportStateCreator(ctx context.Context, resource types.Ob
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location AggregateInterfaceLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -19404,10 +21432,10 @@ func AggregateInterfaceImportStateCreator(ctx context.Context, resource types.Ob
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -19431,7 +21459,12 @@ func (r *AggregateInterfaceResource) ImportState(ctx context.Context, req resour
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -19458,10 +21491,10 @@ type AggregateInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type AggregateInterfaceLocation struct {
-	Shared        *AggregateInterfaceSharedLocation        `tfsdk:"shared"`
-	Template      *AggregateInterfaceTemplateLocation      `tfsdk:"template"`
-	TemplateStack *AggregateInterfaceTemplateStackLocation `tfsdk:"template_stack"`
-	Ngfw          *AggregateInterfaceNgfwLocation          `tfsdk:"ngfw"`
+	Shared        types.Object `tfsdk:"shared"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
 }
 
 func AggregateInterfaceLocationSchema() rsschema.Attribute {
@@ -19580,8 +21613,10 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 }
 
 func (o AggregateInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -19598,11 +21633,13 @@ func (o *AggregateInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AggregateInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -19613,9 +21650,9 @@ func (o AggregateInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -19629,11 +21666,13 @@ func (o *AggregateInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AggregateInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -19644,9 +21683,9 @@ func (o AggregateInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -19660,9 +21699,11 @@ func (o *AggregateInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) err
 	return nil
 }
 func (o AggregateInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -19671,7 +21712,7 @@ func (o AggregateInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -19683,16 +21724,46 @@ func (o *AggregateInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared        *AggregateInterfaceSharedLocation        `json:"shared"`
-		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
-	}{
-		Shared:        o.Shared,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
-		Ngfw:          o.Ngfw,
+	type shadow struct {
+		Shared        *AggregateInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *AggregateInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw,omitempty"`
+	}
+	var shared_object *AggregateInterfaceSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var template_object *AggregateInterfaceTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *AggregateInterfaceTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+	var ngfw_object *AggregateInterfaceNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:        shared_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
+		Ngfw:          ngfw_object,
 	}
 
 	return json.Marshal(obj)
@@ -19700,20 +21771,95 @@ func (o AggregateInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *AggregateInterfaceSharedLocation        `json:"shared"`
-		Template      *AggregateInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw"`
+		Shared        *AggregateInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *AggregateInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *AggregateInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *AggregateInterfaceNgfwLocation          `json:"ngfw,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
-	o.Ngfw = shadow.Ngfw
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
+	o.Ngfw = ngfw_object
 
 	return nil
+}
+
+func (o *AggregateInterfaceSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AggregateInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *AggregateInterfaceTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *AggregateInterfaceNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *AggregateInterfaceLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj AggregateInterfaceSharedLocation
+	var templateObj AggregateInterfaceTemplateLocation
+	var templateStackObj AggregateInterfaceTemplateStackLocation
+	var ngfwObj AggregateInterfaceNgfwLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+	}
 }

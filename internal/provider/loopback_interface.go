@@ -54,7 +54,7 @@ type LoopbackInterfaceDataSourceFilter struct {
 }
 
 type LoopbackInterfaceDataSourceModel struct {
-	Location                   LoopbackInterfaceLocation                      `tfsdk:"location"`
+	Location                   types.Object                                   `tfsdk:"location"`
 	Name                       types.String                                   `tfsdk:"name"`
 	AdjustTcpMss               *LoopbackInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
 	Comment                    types.String                                   `tfsdk:"comment"`
@@ -86,6 +86,77 @@ type LoopbackInterfaceDataSourceIpv6AddressObject struct {
 type LoopbackInterfaceDataSourceIpv6AddressPrefixObject struct {
 }
 type LoopbackInterfaceDataSourceIpv6AddressAnycastObject struct {
+}
+
+func (o *LoopbackInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj LoopbackInterfaceLocation
+
+	var adjustTcpMssObj *LoopbackInterfaceDataSourceAdjustTcpMssObject
+
+	var ipv6Obj *LoopbackInterfaceDataSourceIpv6Object
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"comment":                      types.StringType,
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"mtu":             types.Int64Type,
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *LoopbackInterfaceDataSourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceDataSourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *LoopbackInterfaceDataSourceIpv6AddressPrefixObject
+
+	var anycastObj *LoopbackInterfaceDataSourceIpv6AddressAnycastObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
 }
 
 func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -801,26 +872,45 @@ func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.R
 
 	var location loopback.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &loopback.NgfwLocation{}
+			var innerLocation LoopbackInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &loopback.TemplateLocation{}
+			var innerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &loopback.TemplateStackLocation{}
+			var innerLocation LoopbackInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -884,7 +974,7 @@ func LoopbackInterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type LoopbackInterfaceResourceModel struct {
-	Location                   LoopbackInterfaceLocation                    `tfsdk:"location"`
+	Location                   types.Object                                 `tfsdk:"location"`
 	Name                       types.String                                 `tfsdk:"name"`
 	AdjustTcpMss               *LoopbackInterfaceResourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
 	Comment                    types.String                                 `tfsdk:"comment"`
@@ -1278,6 +1368,77 @@ func (r *LoopbackInterfaceResource) Configure(ctx context.Context, req resource.
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, loopback.NewService(r.client), batchSize, specifier, loopback.SpecMatches)
 }
 
+func (o *LoopbackInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj LoopbackInterfaceLocation
+
+	var adjustTcpMssObj *LoopbackInterfaceResourceAdjustTcpMssObject
+
+	var ipv6Obj *LoopbackInterfaceResourceIpv6Object
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"comment":                      types.StringType,
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"mtu":             types.Int64Type,
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceResourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *LoopbackInterfaceResourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceResourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *LoopbackInterfaceResourceIpv6AddressPrefixObject
+
+	var anycastObj *LoopbackInterfaceResourceIpv6AddressAnycastObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+
 func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *loopback.AdjustTcpMss
@@ -1650,26 +1811,45 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 
 	var location loopback.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &loopback.NgfwLocation{}
+			var innerLocation LoopbackInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &loopback.TemplateLocation{}
+			var innerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &loopback.TemplateStackLocation{}
+			var innerLocation LoopbackInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1718,26 +1898,45 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 
 	var location loopback.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &loopback.NgfwLocation{}
+			var innerLocation LoopbackInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &loopback.TemplateLocation{}
+			var innerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &loopback.TemplateStackLocation{}
+			var innerLocation LoopbackInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1785,26 +1984,45 @@ func (r *LoopbackInterfaceResource) Update(ctx context.Context, req resource.Upd
 
 	var location loopback.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &loopback.NgfwLocation{}
+			var innerLocation LoopbackInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &loopback.TemplateLocation{}
+			var innerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &loopback.TemplateStackLocation{}
+			var innerLocation LoopbackInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1878,26 +2096,45 @@ func (r *LoopbackInterfaceResource) Delete(ctx context.Context, req resource.Del
 
 	var location loopback.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &loopback.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &loopback.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &loopback.NgfwLocation{}
+			var innerLocation LoopbackInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &loopback.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &loopback.TemplateLocation{}
+			var innerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &loopback.TemplateStackLocation{}
+			var innerLocation LoopbackInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1909,8 +2146,53 @@ func (r *LoopbackInterfaceResource) Delete(ctx context.Context, req resource.Del
 }
 
 type LoopbackInterfaceImportState struct {
-	Location LoopbackInterfaceLocation `json:"location"`
-	Name     string                    `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o LoopbackInterfaceImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *LoopbackInterfaceLocation `json:"location"`
+		Name     *string                    `json:"name"`
+	}
+	var location_object *LoopbackInterfaceLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *LoopbackInterfaceImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *LoopbackInterfaceLocation `json:"location"`
+		Name     *string                    `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func LoopbackInterfaceImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1924,10 +2206,10 @@ func LoopbackInterfaceImportStateCreator(ctx context.Context, resource types.Obj
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location LoopbackInterfaceLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1936,10 +2218,10 @@ func LoopbackInterfaceImportStateCreator(ctx context.Context, resource types.Obj
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1963,7 +2245,12 @@ func (r *LoopbackInterfaceResource) ImportState(ctx context.Context, req resourc
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1988,9 +2275,9 @@ type LoopbackInterfaceTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type LoopbackInterfaceLocation struct {
-	Ngfw          *LoopbackInterfaceNgfwLocation          `tfsdk:"ngfw"`
-	Template      *LoopbackInterfaceTemplateLocation      `tfsdk:"template"`
-	TemplateStack *LoopbackInterfaceTemplateStackLocation `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func LoopbackInterfaceLocationSchema() rsschema.Attribute {
@@ -2101,9 +2388,11 @@ func LoopbackInterfaceLocationSchema() rsschema.Attribute {
 }
 
 func (o LoopbackInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -2112,7 +2401,7 @@ func (o LoopbackInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LoopbackInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2124,11 +2413,13 @@ func (o *LoopbackInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o LoopbackInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -2139,9 +2430,9 @@ func (o LoopbackInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LoopbackInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2155,11 +2446,13 @@ func (o *LoopbackInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o LoopbackInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -2170,9 +2463,9 @@ func (o LoopbackInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LoopbackInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2186,14 +2479,37 @@ func (o *LoopbackInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o LoopbackInterfaceLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Ngfw          *LoopbackInterfaceNgfwLocation          `json:"ngfw"`
-		Template      *LoopbackInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *LoopbackInterfaceTemplateStackLocation `json:"template_stack"`
-	}{
-		Ngfw:          o.Ngfw,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Ngfw          *LoopbackInterfaceNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *LoopbackInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *LoopbackInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *LoopbackInterfaceNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+	var template_object *LoopbackInterfaceTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *LoopbackInterfaceTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Ngfw:          ngfw_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -2201,18 +2517,78 @@ func (o LoopbackInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LoopbackInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Ngfw          *LoopbackInterfaceNgfwLocation          `json:"ngfw"`
-		Template      *LoopbackInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *LoopbackInterfaceTemplateStackLocation `json:"template_stack"`
+		Ngfw          *LoopbackInterfaceNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *LoopbackInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *LoopbackInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Ngfw = shadow.Ngfw
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Ngfw = ngfw_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *LoopbackInterfaceNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *LoopbackInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *LoopbackInterfaceTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *LoopbackInterfaceLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj LoopbackInterfaceNgfwLocation
+	var templateObj LoopbackInterfaceTemplateLocation
+	var templateStackObj LoopbackInterfaceTemplateStackLocation
+	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

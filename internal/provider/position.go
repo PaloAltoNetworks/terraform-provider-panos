@@ -2,8 +2,10 @@ package provider
 
 import (
 	"encoding/json"
+	"fmt"
 	"slices"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,6 +18,14 @@ type TerraformPositionObject struct {
 	Where    types.String `tfsdk:"where"`
 	Pivot    types.String `tfsdk:"pivot"`
 	Directly types.Bool   `tfsdk:"directly"`
+}
+
+func (o *TerraformPositionObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"where":    types.StringType,
+		"pivot":    types.StringType,
+		"directly": types.BoolType,
+	}
 }
 
 func TerraformPositionObjectSchema() rsschema.SingleNestedAttribute {
@@ -60,10 +70,10 @@ func (o *TerraformPositionObject) ValidateConfig(resp *resource.ValidateConfigRe
 	allowedPositions := []string{"first", "last", "before", "after"}
 
 	if !slices.Contains(allowedPositions, o.Where.ValueString()) {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("position").AtName("directly"),
+		resp.Diagnostics.AddAttributeWarning(
+			path.Root("position").AtName("where"),
 			"Missing attribute configuration",
-			"where attribute must be one of the valid values: first, last, before, after")
+			fmt.Sprintf("where attribute must be one of the valid values: first, last, before, after, found: '%s'", o.Where.ValueString()))
 	}
 
 	if !o.Pivot.IsNull() && o.Directly.IsNull() {

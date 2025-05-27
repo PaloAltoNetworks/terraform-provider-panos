@@ -53,7 +53,7 @@ type AdminRoleDataSourceFilter struct {
 }
 
 type AdminRoleDataSourceModel struct {
-	Location    AdminRoleLocation              `tfsdk:"location"`
+	Location    types.Object                   `tfsdk:"location"`
 	Name        types.String                   `tfsdk:"name"`
 	Description types.String                   `tfsdk:"description"`
 	Role        *AdminRoleDataSourceRoleObject `tfsdk:"role"`
@@ -856,6 +856,1323 @@ type AdminRoleDataSourceRoleVsysXmlapiObject struct {
 	Op     types.String `tfsdk:"op"`
 	Report types.String `tfsdk:"report"`
 	UserId types.String `tfsdk:"user_id"`
+}
+
+func (o *AdminRoleDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AdminRoleLocation
+
+	var roleObj *AdminRoleDataSourceRoleObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":        types.StringType,
+		"description": types.StringType,
+		"role": types.ObjectType{
+			AttrTypes: roleObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleDataSourceRoleDeviceObject
+
+	var vsysObj *AdminRoleDataSourceRoleVsysObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var restapiObj *AdminRoleDataSourceRoleDeviceRestapiObject
+
+	var webuiObj *AdminRoleDataSourceRoleDeviceWebuiObject
+
+	var xmlapiObj *AdminRoleDataSourceRoleDeviceXmlapiObject
+	return map[string]attr.Type{
+		"cli": types.StringType,
+		"restapi": types.ObjectType{
+			AttrTypes: restapiObj.AttributeTypes(),
+		},
+		"webui": types.ObjectType{
+			AttrTypes: webuiObj.AttributeTypes(),
+		},
+		"xmlapi": types.ObjectType{
+			AttrTypes: xmlapiObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleDataSourceRoleDeviceRestapiDeviceObject
+
+	var networkObj *AdminRoleDataSourceRoleDeviceRestapiNetworkObject
+
+	var objectsObj *AdminRoleDataSourceRoleDeviceRestapiObjectsObject
+
+	var policiesObj *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject
+
+	var systemObj *AdminRoleDataSourceRoleDeviceRestapiSystemObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_server_profiles":     types.StringType,
+		"http_server_profiles":      types.StringType,
+		"ldap_server_profiles":      types.StringType,
+		"log_interface_setting":     types.StringType,
+		"snmp_trap_server_profiles": types.StringType,
+		"syslog_server_profiles":    types.StringType,
+		"virtual_systems":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"aggregate_ethernet_interfaces":               types.StringType,
+		"bfd_network_profiles":                        types.StringType,
+		"bgp_routing_profiles":                        types.StringType,
+		"dhcp_relays":                                 types.StringType,
+		"dhcp_servers":                                types.StringType,
+		"dns_proxies":                                 types.StringType,
+		"ethernet_interfaces":                         types.StringType,
+		"globalprotect_clientless_app_groups":         types.StringType,
+		"globalprotect_clientless_apps":               types.StringType,
+		"globalprotect_gateways":                      types.StringType,
+		"globalprotect_ipsec_crypto_network_profiles": types.StringType,
+		"globalprotect_mdm_servers":                   types.StringType,
+		"globalprotect_portals":                       types.StringType,
+		"gre_tunnels":                                 types.StringType,
+		"ike_crypto_network_profiles":                 types.StringType,
+		"ike_gateway_network_profiles":                types.StringType,
+		"interface_management_network_profiles":       types.StringType,
+		"ipsec_crypto_network_profiles":               types.StringType,
+		"ipsec_tunnels":                               types.StringType,
+		"lldp":                                        types.StringType,
+		"lldp_network_profiles":                       types.StringType,
+		"logical_routers":                             types.StringType,
+		"loopback_interfaces":                         types.StringType,
+		"qos_interfaces":                              types.StringType,
+		"qos_network_profiles":                        types.StringType,
+		"sdwan_interface_profiles":                    types.StringType,
+		"sdwan_interfaces":                            types.StringType,
+		"tunnel_interfaces":                           types.StringType,
+		"tunnel_monitor_network_profiles":             types.StringType,
+		"virtual_routers":                             types.StringType,
+		"virtual_wires":                               types.StringType,
+		"vlan_interfaces":                             types.StringType,
+		"vlans":                                       types.StringType,
+		"zone_protection_network_profiles":            types.StringType,
+		"zones":                                       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address_groups":                             types.StringType,
+		"addresses":                                  types.StringType,
+		"anti_spyware_security_profiles":             types.StringType,
+		"antivirus_security_profiles":                types.StringType,
+		"application_filters":                        types.StringType,
+		"application_groups":                         types.StringType,
+		"applications":                               types.StringType,
+		"authentication_enforcements":                types.StringType,
+		"custom_data_patterns":                       types.StringType,
+		"custom_spyware_signatures":                  types.StringType,
+		"custom_url_categories":                      types.StringType,
+		"custom_vulnerability_signatures":            types.StringType,
+		"data_filtering_security_profiles":           types.StringType,
+		"decryption_profiles":                        types.StringType,
+		"devices":                                    types.StringType,
+		"dos_protection_security_profiles":           types.StringType,
+		"dynamic_user_groups":                        types.StringType,
+		"external_dynamic_lists":                     types.StringType,
+		"file_blocking_security_profiles":            types.StringType,
+		"globalprotect_hip_objects":                  types.StringType,
+		"globalprotect_hip_profiles":                 types.StringType,
+		"gtp_protection_security_profiles":           types.StringType,
+		"log_forwarding_profiles":                    types.StringType,
+		"packet_broker_profiles":                     types.StringType,
+		"regions":                                    types.StringType,
+		"schedules":                                  types.StringType,
+		"sctp_protection_security_profiles":          types.StringType,
+		"sdwan_error_correction_profiles":            types.StringType,
+		"sdwan_path_quality_profiles":                types.StringType,
+		"sdwan_saas_quality_profiles":                types.StringType,
+		"sdwan_traffic_distribution_profiles":        types.StringType,
+		"security_profile_groups":                    types.StringType,
+		"service_groups":                             types.StringType,
+		"services":                                   types.StringType,
+		"tags":                                       types.StringType,
+		"url_filtering_security_profiles":            types.StringType,
+		"vulnerability_protection_security_profiles": types.StringType,
+		"wildfire_analysis_security_profiles":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rules":    types.StringType,
+		"authentication_rules":          types.StringType,
+		"decryption_rules":              types.StringType,
+		"dos_rules":                     types.StringType,
+		"nat_rules":                     types.StringType,
+		"network_packet_broker_rules":   types.StringType,
+		"policy_based_forwarding_rules": types.StringType,
+		"qos_rules":                     types.StringType,
+		"sdwan_rules":                   types.StringType,
+		"security_rules":                types.StringType,
+		"tunnel_inspection_rules":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"configuration": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObject) AttributeTypes() map[string]attr.Type {
+
+	var commitObj *AdminRoleDataSourceRoleDeviceWebuiCommitObject
+
+	var deviceObj *AdminRoleDataSourceRoleDeviceWebuiDeviceObject
+
+	var globalObj *AdminRoleDataSourceRoleDeviceWebuiGlobalObject
+
+	var monitorObj *AdminRoleDataSourceRoleDeviceWebuiMonitorObject
+
+	var networkObj *AdminRoleDataSourceRoleDeviceWebuiNetworkObject
+
+	var objectsObj *AdminRoleDataSourceRoleDeviceWebuiObjectsObject
+
+	var operationsObj *AdminRoleDataSourceRoleDeviceWebuiOperationsObject
+
+	var policiesObj *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject
+
+	var privacyObj *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject
+
+	var saveObj *AdminRoleDataSourceRoleDeviceWebuiSaveObject
+
+	return map[string]attr.Type{
+		"acc": types.StringType,
+		"commit": types.ObjectType{
+			AttrTypes: commitObj.AttributeTypes(),
+		},
+		"dashboard": types.StringType,
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"global": types.ObjectType{
+			AttrTypes: globalObj.AttributeTypes(),
+		},
+		"monitor": types.ObjectType{
+			AttrTypes: monitorObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"operations": types.ObjectType{
+			AttrTypes: operationsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"privacy": types.ObjectType{
+			AttrTypes: privacyObj.AttributeTypes(),
+		},
+		"save": types.ObjectType{
+			AttrTypes: saveObj.AttributeTypes(),
+		},
+		"tasks":    types.StringType,
+		"validate": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit_for_other_admins": types.StringType,
+		"device":                  types.StringType,
+		"object_level_changes":    types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateManagementObj *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject
+
+	var localUserDatabaseObj *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject
+
+	var logSettingsObj *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject
+
+	var policyRecommendationsObj *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject
+
+	var serverProfileObj *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject
+
+	var setupObj *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject
+
+	return map[string]attr.Type{
+		"access_domain":           types.StringType,
+		"admin_roles":             types.StringType,
+		"administrators":          types.StringType,
+		"authentication_profile":  types.StringType,
+		"authentication_sequence": types.StringType,
+		"block_pages":             types.StringType,
+		"certificate_management": types.ObjectType{
+			AttrTypes: certificateManagementObj.AttributeTypes(),
+		},
+		"config_audit":          types.StringType,
+		"data_redistribution":   types.StringType,
+		"device_quarantine":     types.StringType,
+		"dynamic_updates":       types.StringType,
+		"global_protect_client": types.StringType,
+		"high_availability":     types.StringType,
+		"licenses":              types.StringType,
+		"local_user_database": types.ObjectType{
+			AttrTypes: localUserDatabaseObj.AttributeTypes(),
+		},
+		"log_fwd_card": types.StringType,
+		"log_settings": types.ObjectType{
+			AttrTypes: logSettingsObj.AttributeTypes(),
+		},
+		"master_key": types.StringType,
+		"plugins":    types.StringType,
+		"policy_recommendations": types.ObjectType{
+			AttrTypes: policyRecommendationsObj.AttributeTypes(),
+		},
+		"scheduled_log_export": types.StringType,
+		"server_profile": types.ObjectType{
+			AttrTypes: serverProfileObj.AttributeTypes(),
+		},
+		"setup": types.ObjectType{
+			AttrTypes: setupObj.AttributeTypes(),
+		},
+		"shared_gateways":     types.StringType,
+		"software":            types.StringType,
+		"support":             types.StringType,
+		"troubleshooting":     types.StringType,
+		"user_identification": types.StringType,
+		"virtual_systems":     types.StringType,
+		"vm_info_source":      types.StringType,
+		"dhcp_syslog_server":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile":      types.StringType,
+		"certificates":             types.StringType,
+		"ocsp_responder":           types.StringType,
+		"scep":                     types.StringType,
+		"ssh_service_profile":      types.StringType,
+		"ssl_decryption_exclusion": types.StringType,
+		"ssl_tls_service_profile":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"user_groups": types.StringType,
+		"users":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"cc_alarm":      types.StringType,
+		"config":        types.StringType,
+		"correlation":   types.StringType,
+		"globalprotect": types.StringType,
+		"hipmatch":      types.StringType,
+		"iptag":         types.StringType,
+		"manage_log":    types.StringType,
+		"system":        types.StringType,
+		"user_id":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"iot":  types.StringType,
+		"saas": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"dns":       types.StringType,
+		"email":     types.StringType,
+		"http":      types.StringType,
+		"kerberos":  types.StringType,
+		"ldap":      types.StringType,
+		"mfa":       types.StringType,
+		"netflow":   types.StringType,
+		"radius":    types.StringType,
+		"saml_idp":  types.StringType,
+		"scp":       types.StringType,
+		"snmp_trap": types.StringType,
+		"syslog":    types.StringType,
+		"tacplus":   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"content_id": types.StringType,
+		"hsm":        types.StringType,
+		"interfaces": types.StringType,
+		"management": types.StringType,
+		"operations": types.StringType,
+		"services":   types.StringType,
+		"session":    types.StringType,
+		"telemetry":  types.StringType,
+		"wildfire":   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"system_alarms": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	var automatedCorrelationEngineObj *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
+
+	var customReportsObj *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject
+
+	var logsObj *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject
+
+	var pdfReportsObj *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject
+
+	return map[string]attr.Type{
+		"app_scope":           types.StringType,
+		"application_reports": types.StringType,
+		"automated_correlation_engine": types.ObjectType{
+			AttrTypes: automatedCorrelationEngineObj.AttributeTypes(),
+		},
+		"block_ip_list": types.StringType,
+		"botnet":        types.StringType,
+		"custom_reports": types.ObjectType{
+			AttrTypes: customReportsObj.AttributeTypes(),
+		},
+		"external_logs": types.StringType,
+		"gtp_reports":   types.StringType,
+		"logs": types.ObjectType{
+			AttrTypes: logsObj.AttributeTypes(),
+		},
+		"packet_capture": types.StringType,
+		"pdf_reports": types.ObjectType{
+			AttrTypes: pdfReportsObj.AttributeTypes(),
+		},
+		"sctp_reports":          types.StringType,
+		"session_browser":       types.StringType,
+		"threat_reports":        types.StringType,
+		"traffic_reports":       types.StringType,
+		"url_filtering_reports": types.StringType,
+		"view_custom_reports":   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"correlated_events":   types.StringType,
+		"correlation_objects": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_statistics": types.StringType,
+		"auth":                   types.StringType,
+		"data_filtering_log":     types.StringType,
+		"decryption_log":         types.StringType,
+		"decryption_summary":     types.StringType,
+		"globalprotect":          types.StringType,
+		"gtp_log":                types.StringType,
+		"gtp_summary":            types.StringType,
+		"hipmatch":               types.StringType,
+		"iptag":                  types.StringType,
+		"sctp_log":               types.StringType,
+		"sctp_summary":           types.StringType,
+		"threat_log":             types.StringType,
+		"threat_summary":         types.StringType,
+		"traffic_log":            types.StringType,
+		"traffic_summary":        types.StringType,
+		"tunnel_log":             types.StringType,
+		"tunnel_summary":         types.StringType,
+		"url_log":                types.StringType,
+		"url_summary":            types.StringType,
+		"userid":                 types.StringType,
+		"wildfire_log":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"alarm":          types.StringType,
+		"authentication": types.StringType,
+		"configuration":  types.StringType,
+		"data_filtering": types.StringType,
+		"decryption":     types.StringType,
+		"globalprotect":  types.StringType,
+		"gtp":            types.StringType,
+		"hipmatch":       types.StringType,
+		"iptag":          types.StringType,
+		"sctp":           types.StringType,
+		"system":         types.StringType,
+		"threat":         types.StringType,
+		"traffic":        types.StringType,
+		"tunnel":         types.StringType,
+		"url":            types.StringType,
+		"userid":         types.StringType,
+		"wildfire":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_scheduler":               types.StringType,
+		"manage_pdf_summary":            types.StringType,
+		"pdf_summary_reports":           types.StringType,
+		"report_groups":                 types.StringType,
+		"saas_application_usage_report": types.StringType,
+		"user_activity_report":          types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var globalProtectObj *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject
+
+	var networkProfilesObj *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject
+
+	var routingObj *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject
+
+	return map[string]attr.Type{
+		"dhcp":      types.StringType,
+		"dns_proxy": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"gre_tunnels":   types.StringType,
+		"interfaces":    types.StringType,
+		"ipsec_tunnels": types.StringType,
+		"lldp":          types.StringType,
+		"network_profiles": types.ObjectType{
+			AttrTypes: networkProfilesObj.AttributeTypes(),
+		},
+		"qos": types.StringType,
+		"routing": types.ObjectType{
+			AttrTypes: routingObj.AttributeTypes(),
+		},
+		"sdwan_interface_profile": types.StringType,
+		"virtual_routers":         types.StringType,
+		"virtual_wires":           types.StringType,
+		"vlans":                   types.StringType,
+		"zones":                   types.StringType,
+		"secure_web_gateway":      types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"clientless_app_groups": types.StringType,
+		"clientless_apps":       types.StringType,
+		"gateways":              types.StringType,
+		"mdm":                   types.StringType,
+		"portals":               types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bfd_profile":         types.StringType,
+		"gp_app_ipsec_crypto": types.StringType,
+		"ike_crypto":          types.StringType,
+		"ike_gateways":        types.StringType,
+		"interface_mgmt":      types.StringType,
+		"ipsec_crypto":        types.StringType,
+		"lldp_profile":        types.StringType,
+		"qos_profile":         types.StringType,
+		"tunnel_monitor":      types.StringType,
+		"zone_protection":     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes() map[string]attr.Type {
+
+	var routingProfilesObj *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
+	return map[string]attr.Type{
+		"logical_routers": types.StringType,
+		"routing_profiles": types.ObjectType{
+			AttrTypes: routingProfilesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bfd":       types.StringType,
+		"bgp":       types.StringType,
+		"filters":   types.StringType,
+		"multicast": types.StringType,
+		"ospf":      types.StringType,
+		"ospfv3":    types.StringType,
+		"ripv2":     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	var customObjectsObj *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject
+
+	var decryptionObj *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject
+
+	var globalProtectObj *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject
+
+	var sdwanObj *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject
+
+	var securityProfilesObj *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject
+
+	return map[string]attr.Type{
+		"address_groups":      types.StringType,
+		"addresses":           types.StringType,
+		"application_filters": types.StringType,
+		"application_groups":  types.StringType,
+		"applications":        types.StringType,
+		"authentication":      types.StringType,
+		"custom_objects": types.ObjectType{
+			AttrTypes: customObjectsObj.AttributeTypes(),
+		},
+		"decryption": types.ObjectType{
+			AttrTypes: decryptionObj.AttributeTypes(),
+		},
+		"devices":             types.StringType,
+		"dynamic_block_lists": types.StringType,
+		"dynamic_user_groups": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"log_forwarding":        types.StringType,
+		"packet_broker_profile": types.StringType,
+		"regions":               types.StringType,
+		"schedules":             types.StringType,
+		"sdwan": types.ObjectType{
+			AttrTypes: sdwanObj.AttributeTypes(),
+		},
+		"security_profile_groups": types.StringType,
+		"security_profiles": types.ObjectType{
+			AttrTypes: securityProfilesObj.AttributeTypes(),
+		},
+		"service_groups": types.StringType,
+		"services":       types.StringType,
+		"tags":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_patterns": types.StringType,
+		"spyware":       types.StringType,
+		"url_category":  types.StringType,
+		"vulnerability": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"decryption_profile": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hip_objects":  types.StringType,
+		"hip_profiles": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"sdwan_dist_profile":             types.StringType,
+		"sdwan_error_correction_profile": types.StringType,
+		"sdwan_profile":                  types.StringType,
+		"sdwan_saas_quality_profile":     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"anti_spyware":             types.StringType,
+		"antivirus":                types.StringType,
+		"data_filtering":           types.StringType,
+		"dos_protection":           types.StringType,
+		"file_blocking":            types.StringType,
+		"gtp_protection":           types.StringType,
+		"sctp_protection":          types.StringType,
+		"url_filtering":            types.StringType,
+		"vulnerability_protection": types.StringType,
+		"wildfire_analysis":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"download_core_files":        types.StringType,
+		"download_pcap_files":        types.StringType,
+		"generate_stats_dump_file":   types.StringType,
+		"generate_tech_support_file": types.StringType,
+		"reboot":                     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rulebase":  types.StringType,
+		"authentication_rulebase":        types.StringType,
+		"dos_rulebase":                   types.StringType,
+		"nat_rulebase":                   types.StringType,
+		"network_packet_broker_rulebase": types.StringType,
+		"pbf_rulebase":                   types.StringType,
+		"qos_rulebase":                   types.StringType,
+		"rule_hit_count_reset":           types.StringType,
+		"sdwan_rulebase":                 types.StringType,
+		"security_rulebase":              types.StringType,
+		"ssl_decryption_rulebase":        types.StringType,
+		"tunnel_inspect_rulebase":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"show_full_ip_addresses":              types.StringType,
+		"show_user_names_in_logs_and_reports": types.StringType,
+		"view_pcap_files":                     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"partial_save":          types.StringType,
+		"save_for_other_admins": types.StringType,
+		"object_level_changes":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit":  types.StringType,
+		"config":  types.StringType,
+		"export":  types.StringType,
+		"import":  types.StringType,
+		"iot":     types.StringType,
+		"log":     types.StringType,
+		"op":      types.StringType,
+		"report":  types.StringType,
+		"user_id": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysObject) AttributeTypes() map[string]attr.Type {
+
+	var restapiObj *AdminRoleDataSourceRoleVsysRestapiObject
+
+	var webuiObj *AdminRoleDataSourceRoleVsysWebuiObject
+
+	var xmlapiObj *AdminRoleDataSourceRoleVsysXmlapiObject
+	return map[string]attr.Type{
+		"cli": types.StringType,
+		"restapi": types.ObjectType{
+			AttrTypes: restapiObj.AttributeTypes(),
+		},
+		"webui": types.ObjectType{
+			AttrTypes: webuiObj.AttributeTypes(),
+		},
+		"xmlapi": types.ObjectType{
+			AttrTypes: xmlapiObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleDataSourceRoleVsysRestapiDeviceObject
+
+	var networkObj *AdminRoleDataSourceRoleVsysRestapiNetworkObject
+
+	var objectsObj *AdminRoleDataSourceRoleVsysRestapiObjectsObject
+
+	var policiesObj *AdminRoleDataSourceRoleVsysRestapiPoliciesObject
+
+	var systemObj *AdminRoleDataSourceRoleVsysRestapiSystemObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_server_profiles":     types.StringType,
+		"http_server_profiles":      types.StringType,
+		"ldap_server_profiles":      types.StringType,
+		"log_interface_setting":     types.StringType,
+		"snmp_trap_server_profiles": types.StringType,
+		"syslog_server_profiles":    types.StringType,
+		"virtual_systems":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"globalprotect_clientless_app_groups": types.StringType,
+		"globalprotect_clientless_apps":       types.StringType,
+		"globalprotect_gateways":              types.StringType,
+		"globalprotect_mdm_servers":           types.StringType,
+		"globalprotect_portals":               types.StringType,
+		"zones":                               types.StringType,
+		"sdwan_interface_profiles":            types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address_groups":                             types.StringType,
+		"addresses":                                  types.StringType,
+		"anti_spyware_security_profiles":             types.StringType,
+		"antivirus_security_profiles":                types.StringType,
+		"application_filters":                        types.StringType,
+		"application_groups":                         types.StringType,
+		"applications":                               types.StringType,
+		"authentication_enforcements":                types.StringType,
+		"custom_data_patterns":                       types.StringType,
+		"custom_spyware_signatures":                  types.StringType,
+		"custom_url_categories":                      types.StringType,
+		"custom_vulnerability_signatures":            types.StringType,
+		"data_filtering_security_profiles":           types.StringType,
+		"decryption_profiles":                        types.StringType,
+		"devices":                                    types.StringType,
+		"dos_protection_security_profiles":           types.StringType,
+		"dynamic_user_groups":                        types.StringType,
+		"external_dynamic_lists":                     types.StringType,
+		"file_blocking_security_profiles":            types.StringType,
+		"globalprotect_hip_objects":                  types.StringType,
+		"globalprotect_hip_profiles":                 types.StringType,
+		"gtp_protection_security_profiles":           types.StringType,
+		"log_forwarding_profiles":                    types.StringType,
+		"packet_broker_profiles":                     types.StringType,
+		"regions":                                    types.StringType,
+		"schedules":                                  types.StringType,
+		"sctp_protection_security_profiles":          types.StringType,
+		"sdwan_error_correction_profiles":            types.StringType,
+		"sdwan_path_quality_profiles":                types.StringType,
+		"sdwan_saas_quality_profiles":                types.StringType,
+		"sdwan_traffic_distribution_profiles":        types.StringType,
+		"security_profile_groups":                    types.StringType,
+		"service_groups":                             types.StringType,
+		"services":                                   types.StringType,
+		"tags":                                       types.StringType,
+		"url_filtering_security_profiles":            types.StringType,
+		"vulnerability_protection_security_profiles": types.StringType,
+		"wildfire_analysis_security_profiles":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rules":    types.StringType,
+		"authentication_rules":          types.StringType,
+		"decryption_rules":              types.StringType,
+		"dos_rules":                     types.StringType,
+		"nat_rules":                     types.StringType,
+		"network_packet_broker_rules":   types.StringType,
+		"policy_based_forwarding_rules": types.StringType,
+		"qos_rules":                     types.StringType,
+		"sdwan_rules":                   types.StringType,
+		"security_rules":                types.StringType,
+		"tunnel_inspection_rules":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"configuration": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObject) AttributeTypes() map[string]attr.Type {
+
+	var commitObj *AdminRoleDataSourceRoleVsysWebuiCommitObject
+
+	var deviceObj *AdminRoleDataSourceRoleVsysWebuiDeviceObject
+
+	var monitorObj *AdminRoleDataSourceRoleVsysWebuiMonitorObject
+
+	var networkObj *AdminRoleDataSourceRoleVsysWebuiNetworkObject
+
+	var objectsObj *AdminRoleDataSourceRoleVsysWebuiObjectsObject
+
+	var operationsObj *AdminRoleDataSourceRoleVsysWebuiOperationsObject
+
+	var policiesObj *AdminRoleDataSourceRoleVsysWebuiPoliciesObject
+
+	var privacyObj *AdminRoleDataSourceRoleVsysWebuiPrivacyObject
+
+	var saveObj *AdminRoleDataSourceRoleVsysWebuiSaveObject
+
+	return map[string]attr.Type{
+		"acc": types.StringType,
+		"commit": types.ObjectType{
+			AttrTypes: commitObj.AttributeTypes(),
+		},
+		"dashboard": types.StringType,
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"monitor": types.ObjectType{
+			AttrTypes: monitorObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"operations": types.ObjectType{
+			AttrTypes: operationsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"privacy": types.ObjectType{
+			AttrTypes: privacyObj.AttributeTypes(),
+		},
+		"save": types.ObjectType{
+			AttrTypes: saveObj.AttributeTypes(),
+		},
+		"tasks":    types.StringType,
+		"validate": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit_for_other_admins": types.StringType,
+		"virtual_systems":         types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateManagementObj *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject
+
+	var localUserDatabaseObj *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject
+
+	var logSettingsObj *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject
+
+	var policyRecommendationsObj *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject
+
+	var serverProfileObj *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject
+
+	var setupObj *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject
+
+	return map[string]attr.Type{
+		"administrators":          types.StringType,
+		"authentication_profile":  types.StringType,
+		"authentication_sequence": types.StringType,
+		"block_pages":             types.StringType,
+		"certificate_management": types.ObjectType{
+			AttrTypes: certificateManagementObj.AttributeTypes(),
+		},
+		"data_redistribution": types.StringType,
+		"device_quarantine":   types.StringType,
+		"local_user_database": types.ObjectType{
+			AttrTypes: localUserDatabaseObj.AttributeTypes(),
+		},
+		"log_settings": types.ObjectType{
+			AttrTypes: logSettingsObj.AttributeTypes(),
+		},
+		"policy_recommendations": types.ObjectType{
+			AttrTypes: policyRecommendationsObj.AttributeTypes(),
+		},
+		"server_profile": types.ObjectType{
+			AttrTypes: serverProfileObj.AttributeTypes(),
+		},
+		"setup": types.ObjectType{
+			AttrTypes: setupObj.AttributeTypes(),
+		},
+		"troubleshooting":     types.StringType,
+		"user_identification": types.StringType,
+		"vm_info_source":      types.StringType,
+		"dhcp_syslog_server":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile":      types.StringType,
+		"certificates":             types.StringType,
+		"ocsp_responder":           types.StringType,
+		"scep":                     types.StringType,
+		"ssh_service_profile":      types.StringType,
+		"ssl_decryption_exclusion": types.StringType,
+		"ssl_tls_service_profile":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"user_groups": types.StringType,
+		"users":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"config":        types.StringType,
+		"correlation":   types.StringType,
+		"globalprotect": types.StringType,
+		"hipmatch":      types.StringType,
+		"iptag":         types.StringType,
+		"system":        types.StringType,
+		"user_id":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"iot":  types.StringType,
+		"saas": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"dns":       types.StringType,
+		"email":     types.StringType,
+		"http":      types.StringType,
+		"kerberos":  types.StringType,
+		"ldap":      types.StringType,
+		"mfa":       types.StringType,
+		"netflow":   types.StringType,
+		"radius":    types.StringType,
+		"saml_idp":  types.StringType,
+		"scp":       types.StringType,
+		"snmp_trap": types.StringType,
+		"syslog":    types.StringType,
+		"tacplus":   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"content_id": types.StringType,
+		"hsm":        types.StringType,
+		"interfaces": types.StringType,
+		"management": types.StringType,
+		"operations": types.StringType,
+		"services":   types.StringType,
+		"session":    types.StringType,
+		"telemetry":  types.StringType,
+		"wildfire":   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	var automatedCorrelationEngineObj *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
+
+	var customReportsObj *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject
+
+	var logsObj *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject
+
+	var pdfReportsObj *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject
+
+	return map[string]attr.Type{
+		"app_scope": types.StringType,
+		"automated_correlation_engine": types.ObjectType{
+			AttrTypes: automatedCorrelationEngineObj.AttributeTypes(),
+		},
+		"block_ip_list": types.StringType,
+		"custom_reports": types.ObjectType{
+			AttrTypes: customReportsObj.AttributeTypes(),
+		},
+		"external_logs": types.StringType,
+		"logs": types.ObjectType{
+			AttrTypes: logsObj.AttributeTypes(),
+		},
+		"pdf_reports": types.ObjectType{
+			AttrTypes: pdfReportsObj.AttributeTypes(),
+		},
+		"session_browser":     types.StringType,
+		"view_custom_reports": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"correlated_events":   types.StringType,
+		"correlation_objects": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_statistics": types.StringType,
+		"auth":                   types.StringType,
+		"data_filtering_log":     types.StringType,
+		"decryption_log":         types.StringType,
+		"decryption_summary":     types.StringType,
+		"globalprotect":          types.StringType,
+		"gtp_log":                types.StringType,
+		"gtp_summary":            types.StringType,
+		"hipmatch":               types.StringType,
+		"iptag":                  types.StringType,
+		"sctp_log":               types.StringType,
+		"sctp_summary":           types.StringType,
+		"threat_log":             types.StringType,
+		"threat_summary":         types.StringType,
+		"traffic_log":            types.StringType,
+		"traffic_summary":        types.StringType,
+		"tunnel_log":             types.StringType,
+		"tunnel_summary":         types.StringType,
+		"url_log":                types.StringType,
+		"url_summary":            types.StringType,
+		"userid":                 types.StringType,
+		"wildfire_log":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication": types.StringType,
+		"data_filtering": types.StringType,
+		"decryption":     types.StringType,
+		"globalprotect":  types.StringType,
+		"gtp":            types.StringType,
+		"hipmatch":       types.StringType,
+		"iptag":          types.StringType,
+		"sctp":           types.StringType,
+		"threat":         types.StringType,
+		"traffic":        types.StringType,
+		"tunnel":         types.StringType,
+		"url":            types.StringType,
+		"userid":         types.StringType,
+		"wildfire":       types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_scheduler":               types.StringType,
+		"manage_pdf_summary":            types.StringType,
+		"pdf_summary_reports":           types.StringType,
+		"report_groups":                 types.StringType,
+		"saas_application_usage_report": types.StringType,
+		"user_activity_report":          types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var globalProtectObj *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject
+
+	return map[string]attr.Type{
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"sdwan_interface_profile": types.StringType,
+		"zones":                   types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"clientless_app_groups": types.StringType,
+		"clientless_apps":       types.StringType,
+		"gateways":              types.StringType,
+		"mdm":                   types.StringType,
+		"portals":               types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	var customObjectsObj *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject
+
+	var decryptionObj *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject
+
+	var globalProtectObj *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject
+
+	var sdwanObj *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject
+
+	var securityProfilesObj *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject
+
+	return map[string]attr.Type{
+		"address_groups":      types.StringType,
+		"addresses":           types.StringType,
+		"application_filters": types.StringType,
+		"application_groups":  types.StringType,
+		"applications":        types.StringType,
+		"authentication":      types.StringType,
+		"custom_objects": types.ObjectType{
+			AttrTypes: customObjectsObj.AttributeTypes(),
+		},
+		"decryption": types.ObjectType{
+			AttrTypes: decryptionObj.AttributeTypes(),
+		},
+		"devices":             types.StringType,
+		"dynamic_block_lists": types.StringType,
+		"dynamic_user_groups": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"log_forwarding":        types.StringType,
+		"packet_broker_profile": types.StringType,
+		"regions":               types.StringType,
+		"schedules":             types.StringType,
+		"sdwan": types.ObjectType{
+			AttrTypes: sdwanObj.AttributeTypes(),
+		},
+		"security_profile_groups": types.StringType,
+		"security_profiles": types.ObjectType{
+			AttrTypes: securityProfilesObj.AttributeTypes(),
+		},
+		"service_groups": types.StringType,
+		"services":       types.StringType,
+		"tags":           types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_patterns": types.StringType,
+		"spyware":       types.StringType,
+		"url_category":  types.StringType,
+		"vulnerability": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"decryption_profile": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hip_objects":  types.StringType,
+		"hip_profiles": types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"sdwan_dist_profile":             types.StringType,
+		"sdwan_error_correction_profile": types.StringType,
+		"sdwan_profile":                  types.StringType,
+		"sdwan_saas_quality_profile":     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"anti_spyware":             types.StringType,
+		"antivirus":                types.StringType,
+		"data_filtering":           types.StringType,
+		"dos_protection":           types.StringType,
+		"file_blocking":            types.StringType,
+		"gtp_protection":           types.StringType,
+		"sctp_protection":          types.StringType,
+		"url_filtering":            types.StringType,
+		"vulnerability_protection": types.StringType,
+		"wildfire_analysis":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"download_core_files":        types.StringType,
+		"download_pcap_files":        types.StringType,
+		"generate_stats_dump_file":   types.StringType,
+		"generate_tech_support_file": types.StringType,
+		"reboot":                     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rulebase":  types.StringType,
+		"authentication_rulebase":        types.StringType,
+		"dos_rulebase":                   types.StringType,
+		"nat_rulebase":                   types.StringType,
+		"network_packet_broker_rulebase": types.StringType,
+		"pbf_rulebase":                   types.StringType,
+		"qos_rulebase":                   types.StringType,
+		"rule_hit_count_reset":           types.StringType,
+		"sdwan_rulebase":                 types.StringType,
+		"security_rulebase":              types.StringType,
+		"ssl_decryption_rulebase":        types.StringType,
+		"tunnel_inspect_rulebase":        types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"show_full_ip_addresses":              types.StringType,
+		"show_user_names_in_logs_and_reports": types.StringType,
+		"view_pcap_files":                     types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"partial_save":          types.StringType,
+		"save_for_other_admins": types.StringType,
+		"object_level_changes":  types.StringType,
+	}
+}
+func (o *AdminRoleDataSourceRoleVsysXmlapiObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit":  types.StringType,
+		"config":  types.StringType,
+		"export":  types.StringType,
+		"import":  types.StringType,
+		"iot":     types.StringType,
+		"log":     types.StringType,
+		"op":      types.StringType,
+		"report":  types.StringType,
+		"user_id": types.StringType,
+	}
 }
 
 func (o *AdminRoleDataSourceModel) CopyToPango(ctx context.Context, obj **adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -14952,11 +16269,22 @@ func (o *AdminRoleDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	var location adminrole.Location
 
-	if savestate.Location.Template != nil {
-		location.Template = &adminrole.TemplateLocation{
+	{
+		var terraformLocation AdminRoleLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &adminrole.TemplateLocation{}
+			var innerLocation AdminRoleTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -15020,7 +16348,7 @@ func AdminRoleResourceLocationSchema() rsschema.Attribute {
 }
 
 type AdminRoleResourceModel struct {
-	Location    AdminRoleLocation            `tfsdk:"location"`
+	Location    types.Object                 `tfsdk:"location"`
 	Name        types.String                 `tfsdk:"name"`
 	Description types.String                 `tfsdk:"description"`
 	Role        *AdminRoleResourceRoleObject `tfsdk:"role"`
@@ -22898,6 +24226,1323 @@ func (r *AdminRoleResource) Configure(ctx context.Context, req resource.Configur
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, adminrole.NewService(r.client), batchSize, specifier, adminrole.SpecMatches)
 }
 
+func (o *AdminRoleResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AdminRoleLocation
+
+	var roleObj *AdminRoleResourceRoleObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":        types.StringType,
+		"description": types.StringType,
+		"role": types.ObjectType{
+			AttrTypes: roleObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleResourceRoleDeviceObject
+
+	var vsysObj *AdminRoleResourceRoleVsysObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var restapiObj *AdminRoleResourceRoleDeviceRestapiObject
+
+	var webuiObj *AdminRoleResourceRoleDeviceWebuiObject
+
+	var xmlapiObj *AdminRoleResourceRoleDeviceXmlapiObject
+	return map[string]attr.Type{
+		"cli": types.StringType,
+		"restapi": types.ObjectType{
+			AttrTypes: restapiObj.AttributeTypes(),
+		},
+		"webui": types.ObjectType{
+			AttrTypes: webuiObj.AttributeTypes(),
+		},
+		"xmlapi": types.ObjectType{
+			AttrTypes: xmlapiObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleResourceRoleDeviceRestapiDeviceObject
+
+	var networkObj *AdminRoleResourceRoleDeviceRestapiNetworkObject
+
+	var objectsObj *AdminRoleResourceRoleDeviceRestapiObjectsObject
+
+	var policiesObj *AdminRoleResourceRoleDeviceRestapiPoliciesObject
+
+	var systemObj *AdminRoleResourceRoleDeviceRestapiSystemObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_server_profiles":     types.StringType,
+		"http_server_profiles":      types.StringType,
+		"ldap_server_profiles":      types.StringType,
+		"log_interface_setting":     types.StringType,
+		"snmp_trap_server_profiles": types.StringType,
+		"syslog_server_profiles":    types.StringType,
+		"virtual_systems":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"aggregate_ethernet_interfaces":               types.StringType,
+		"bfd_network_profiles":                        types.StringType,
+		"bgp_routing_profiles":                        types.StringType,
+		"dhcp_relays":                                 types.StringType,
+		"dhcp_servers":                                types.StringType,
+		"dns_proxies":                                 types.StringType,
+		"ethernet_interfaces":                         types.StringType,
+		"globalprotect_clientless_app_groups":         types.StringType,
+		"globalprotect_clientless_apps":               types.StringType,
+		"globalprotect_gateways":                      types.StringType,
+		"globalprotect_ipsec_crypto_network_profiles": types.StringType,
+		"globalprotect_mdm_servers":                   types.StringType,
+		"globalprotect_portals":                       types.StringType,
+		"gre_tunnels":                                 types.StringType,
+		"ike_crypto_network_profiles":                 types.StringType,
+		"ike_gateway_network_profiles":                types.StringType,
+		"interface_management_network_profiles":       types.StringType,
+		"ipsec_crypto_network_profiles":               types.StringType,
+		"ipsec_tunnels":                               types.StringType,
+		"lldp":                                        types.StringType,
+		"lldp_network_profiles":                       types.StringType,
+		"logical_routers":                             types.StringType,
+		"loopback_interfaces":                         types.StringType,
+		"qos_interfaces":                              types.StringType,
+		"qos_network_profiles":                        types.StringType,
+		"sdwan_interface_profiles":                    types.StringType,
+		"sdwan_interfaces":                            types.StringType,
+		"tunnel_interfaces":                           types.StringType,
+		"tunnel_monitor_network_profiles":             types.StringType,
+		"virtual_routers":                             types.StringType,
+		"virtual_wires":                               types.StringType,
+		"vlan_interfaces":                             types.StringType,
+		"vlans":                                       types.StringType,
+		"zone_protection_network_profiles":            types.StringType,
+		"zones":                                       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address_groups":                             types.StringType,
+		"addresses":                                  types.StringType,
+		"anti_spyware_security_profiles":             types.StringType,
+		"antivirus_security_profiles":                types.StringType,
+		"application_filters":                        types.StringType,
+		"application_groups":                         types.StringType,
+		"applications":                               types.StringType,
+		"authentication_enforcements":                types.StringType,
+		"custom_data_patterns":                       types.StringType,
+		"custom_spyware_signatures":                  types.StringType,
+		"custom_url_categories":                      types.StringType,
+		"custom_vulnerability_signatures":            types.StringType,
+		"data_filtering_security_profiles":           types.StringType,
+		"decryption_profiles":                        types.StringType,
+		"devices":                                    types.StringType,
+		"dos_protection_security_profiles":           types.StringType,
+		"dynamic_user_groups":                        types.StringType,
+		"external_dynamic_lists":                     types.StringType,
+		"file_blocking_security_profiles":            types.StringType,
+		"globalprotect_hip_objects":                  types.StringType,
+		"globalprotect_hip_profiles":                 types.StringType,
+		"gtp_protection_security_profiles":           types.StringType,
+		"log_forwarding_profiles":                    types.StringType,
+		"packet_broker_profiles":                     types.StringType,
+		"regions":                                    types.StringType,
+		"schedules":                                  types.StringType,
+		"sctp_protection_security_profiles":          types.StringType,
+		"sdwan_error_correction_profiles":            types.StringType,
+		"sdwan_path_quality_profiles":                types.StringType,
+		"sdwan_saas_quality_profiles":                types.StringType,
+		"sdwan_traffic_distribution_profiles":        types.StringType,
+		"security_profile_groups":                    types.StringType,
+		"service_groups":                             types.StringType,
+		"services":                                   types.StringType,
+		"tags":                                       types.StringType,
+		"url_filtering_security_profiles":            types.StringType,
+		"vulnerability_protection_security_profiles": types.StringType,
+		"wildfire_analysis_security_profiles":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rules":    types.StringType,
+		"authentication_rules":          types.StringType,
+		"decryption_rules":              types.StringType,
+		"dos_rules":                     types.StringType,
+		"nat_rules":                     types.StringType,
+		"network_packet_broker_rules":   types.StringType,
+		"policy_based_forwarding_rules": types.StringType,
+		"qos_rules":                     types.StringType,
+		"sdwan_rules":                   types.StringType,
+		"security_rules":                types.StringType,
+		"tunnel_inspection_rules":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"configuration": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObject) AttributeTypes() map[string]attr.Type {
+
+	var commitObj *AdminRoleResourceRoleDeviceWebuiCommitObject
+
+	var deviceObj *AdminRoleResourceRoleDeviceWebuiDeviceObject
+
+	var globalObj *AdminRoleResourceRoleDeviceWebuiGlobalObject
+
+	var monitorObj *AdminRoleResourceRoleDeviceWebuiMonitorObject
+
+	var networkObj *AdminRoleResourceRoleDeviceWebuiNetworkObject
+
+	var objectsObj *AdminRoleResourceRoleDeviceWebuiObjectsObject
+
+	var operationsObj *AdminRoleResourceRoleDeviceWebuiOperationsObject
+
+	var policiesObj *AdminRoleResourceRoleDeviceWebuiPoliciesObject
+
+	var privacyObj *AdminRoleResourceRoleDeviceWebuiPrivacyObject
+
+	var saveObj *AdminRoleResourceRoleDeviceWebuiSaveObject
+
+	return map[string]attr.Type{
+		"acc": types.StringType,
+		"commit": types.ObjectType{
+			AttrTypes: commitObj.AttributeTypes(),
+		},
+		"dashboard": types.StringType,
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"global": types.ObjectType{
+			AttrTypes: globalObj.AttributeTypes(),
+		},
+		"monitor": types.ObjectType{
+			AttrTypes: monitorObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"operations": types.ObjectType{
+			AttrTypes: operationsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"privacy": types.ObjectType{
+			AttrTypes: privacyObj.AttributeTypes(),
+		},
+		"save": types.ObjectType{
+			AttrTypes: saveObj.AttributeTypes(),
+		},
+		"tasks":    types.StringType,
+		"validate": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit_for_other_admins": types.StringType,
+		"device":                  types.StringType,
+		"object_level_changes":    types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateManagementObj *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject
+
+	var localUserDatabaseObj *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject
+
+	var logSettingsObj *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject
+
+	var policyRecommendationsObj *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject
+
+	var serverProfileObj *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject
+
+	var setupObj *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject
+
+	return map[string]attr.Type{
+		"access_domain":           types.StringType,
+		"admin_roles":             types.StringType,
+		"administrators":          types.StringType,
+		"authentication_profile":  types.StringType,
+		"authentication_sequence": types.StringType,
+		"block_pages":             types.StringType,
+		"certificate_management": types.ObjectType{
+			AttrTypes: certificateManagementObj.AttributeTypes(),
+		},
+		"config_audit":          types.StringType,
+		"data_redistribution":   types.StringType,
+		"device_quarantine":     types.StringType,
+		"dynamic_updates":       types.StringType,
+		"global_protect_client": types.StringType,
+		"high_availability":     types.StringType,
+		"licenses":              types.StringType,
+		"local_user_database": types.ObjectType{
+			AttrTypes: localUserDatabaseObj.AttributeTypes(),
+		},
+		"log_fwd_card": types.StringType,
+		"log_settings": types.ObjectType{
+			AttrTypes: logSettingsObj.AttributeTypes(),
+		},
+		"master_key": types.StringType,
+		"plugins":    types.StringType,
+		"policy_recommendations": types.ObjectType{
+			AttrTypes: policyRecommendationsObj.AttributeTypes(),
+		},
+		"scheduled_log_export": types.StringType,
+		"server_profile": types.ObjectType{
+			AttrTypes: serverProfileObj.AttributeTypes(),
+		},
+		"setup": types.ObjectType{
+			AttrTypes: setupObj.AttributeTypes(),
+		},
+		"shared_gateways":     types.StringType,
+		"software":            types.StringType,
+		"support":             types.StringType,
+		"troubleshooting":     types.StringType,
+		"user_identification": types.StringType,
+		"virtual_systems":     types.StringType,
+		"vm_info_source":      types.StringType,
+		"dhcp_syslog_server":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile":      types.StringType,
+		"certificates":             types.StringType,
+		"ocsp_responder":           types.StringType,
+		"scep":                     types.StringType,
+		"ssh_service_profile":      types.StringType,
+		"ssl_decryption_exclusion": types.StringType,
+		"ssl_tls_service_profile":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"user_groups": types.StringType,
+		"users":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"cc_alarm":      types.StringType,
+		"config":        types.StringType,
+		"correlation":   types.StringType,
+		"globalprotect": types.StringType,
+		"hipmatch":      types.StringType,
+		"iptag":         types.StringType,
+		"manage_log":    types.StringType,
+		"system":        types.StringType,
+		"user_id":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"iot":  types.StringType,
+		"saas": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"dns":       types.StringType,
+		"email":     types.StringType,
+		"http":      types.StringType,
+		"kerberos":  types.StringType,
+		"ldap":      types.StringType,
+		"mfa":       types.StringType,
+		"netflow":   types.StringType,
+		"radius":    types.StringType,
+		"saml_idp":  types.StringType,
+		"scp":       types.StringType,
+		"snmp_trap": types.StringType,
+		"syslog":    types.StringType,
+		"tacplus":   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"content_id": types.StringType,
+		"hsm":        types.StringType,
+		"interfaces": types.StringType,
+		"management": types.StringType,
+		"operations": types.StringType,
+		"services":   types.StringType,
+		"session":    types.StringType,
+		"telemetry":  types.StringType,
+		"wildfire":   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"system_alarms": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	var automatedCorrelationEngineObj *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
+
+	var customReportsObj *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject
+
+	var logsObj *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject
+
+	var pdfReportsObj *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject
+
+	return map[string]attr.Type{
+		"app_scope":           types.StringType,
+		"application_reports": types.StringType,
+		"automated_correlation_engine": types.ObjectType{
+			AttrTypes: automatedCorrelationEngineObj.AttributeTypes(),
+		},
+		"block_ip_list": types.StringType,
+		"botnet":        types.StringType,
+		"custom_reports": types.ObjectType{
+			AttrTypes: customReportsObj.AttributeTypes(),
+		},
+		"external_logs": types.StringType,
+		"gtp_reports":   types.StringType,
+		"logs": types.ObjectType{
+			AttrTypes: logsObj.AttributeTypes(),
+		},
+		"packet_capture": types.StringType,
+		"pdf_reports": types.ObjectType{
+			AttrTypes: pdfReportsObj.AttributeTypes(),
+		},
+		"sctp_reports":          types.StringType,
+		"session_browser":       types.StringType,
+		"threat_reports":        types.StringType,
+		"traffic_reports":       types.StringType,
+		"url_filtering_reports": types.StringType,
+		"view_custom_reports":   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"correlated_events":   types.StringType,
+		"correlation_objects": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_statistics": types.StringType,
+		"auth":                   types.StringType,
+		"data_filtering_log":     types.StringType,
+		"decryption_log":         types.StringType,
+		"decryption_summary":     types.StringType,
+		"globalprotect":          types.StringType,
+		"gtp_log":                types.StringType,
+		"gtp_summary":            types.StringType,
+		"hipmatch":               types.StringType,
+		"iptag":                  types.StringType,
+		"sctp_log":               types.StringType,
+		"sctp_summary":           types.StringType,
+		"threat_log":             types.StringType,
+		"threat_summary":         types.StringType,
+		"traffic_log":            types.StringType,
+		"traffic_summary":        types.StringType,
+		"tunnel_log":             types.StringType,
+		"tunnel_summary":         types.StringType,
+		"url_log":                types.StringType,
+		"url_summary":            types.StringType,
+		"userid":                 types.StringType,
+		"wildfire_log":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"alarm":          types.StringType,
+		"authentication": types.StringType,
+		"configuration":  types.StringType,
+		"data_filtering": types.StringType,
+		"decryption":     types.StringType,
+		"globalprotect":  types.StringType,
+		"gtp":            types.StringType,
+		"hipmatch":       types.StringType,
+		"iptag":          types.StringType,
+		"sctp":           types.StringType,
+		"system":         types.StringType,
+		"threat":         types.StringType,
+		"traffic":        types.StringType,
+		"tunnel":         types.StringType,
+		"url":            types.StringType,
+		"userid":         types.StringType,
+		"wildfire":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_scheduler":               types.StringType,
+		"manage_pdf_summary":            types.StringType,
+		"pdf_summary_reports":           types.StringType,
+		"report_groups":                 types.StringType,
+		"saas_application_usage_report": types.StringType,
+		"user_activity_report":          types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var globalProtectObj *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject
+
+	var networkProfilesObj *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject
+
+	var routingObj *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject
+
+	return map[string]attr.Type{
+		"dhcp":      types.StringType,
+		"dns_proxy": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"gre_tunnels":   types.StringType,
+		"interfaces":    types.StringType,
+		"ipsec_tunnels": types.StringType,
+		"lldp":          types.StringType,
+		"network_profiles": types.ObjectType{
+			AttrTypes: networkProfilesObj.AttributeTypes(),
+		},
+		"qos": types.StringType,
+		"routing": types.ObjectType{
+			AttrTypes: routingObj.AttributeTypes(),
+		},
+		"sdwan_interface_profile": types.StringType,
+		"virtual_routers":         types.StringType,
+		"virtual_wires":           types.StringType,
+		"vlans":                   types.StringType,
+		"zones":                   types.StringType,
+		"secure_web_gateway":      types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"clientless_app_groups": types.StringType,
+		"clientless_apps":       types.StringType,
+		"gateways":              types.StringType,
+		"mdm":                   types.StringType,
+		"portals":               types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bfd_profile":         types.StringType,
+		"gp_app_ipsec_crypto": types.StringType,
+		"ike_crypto":          types.StringType,
+		"ike_gateways":        types.StringType,
+		"interface_mgmt":      types.StringType,
+		"ipsec_crypto":        types.StringType,
+		"lldp_profile":        types.StringType,
+		"qos_profile":         types.StringType,
+		"tunnel_monitor":      types.StringType,
+		"zone_protection":     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes() map[string]attr.Type {
+
+	var routingProfilesObj *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
+	return map[string]attr.Type{
+		"logical_routers": types.StringType,
+		"routing_profiles": types.ObjectType{
+			AttrTypes: routingProfilesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bfd":       types.StringType,
+		"bgp":       types.StringType,
+		"filters":   types.StringType,
+		"multicast": types.StringType,
+		"ospf":      types.StringType,
+		"ospfv3":    types.StringType,
+		"ripv2":     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	var customObjectsObj *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject
+
+	var decryptionObj *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject
+
+	var globalProtectObj *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject
+
+	var sdwanObj *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject
+
+	var securityProfilesObj *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject
+
+	return map[string]attr.Type{
+		"address_groups":      types.StringType,
+		"addresses":           types.StringType,
+		"application_filters": types.StringType,
+		"application_groups":  types.StringType,
+		"applications":        types.StringType,
+		"authentication":      types.StringType,
+		"custom_objects": types.ObjectType{
+			AttrTypes: customObjectsObj.AttributeTypes(),
+		},
+		"decryption": types.ObjectType{
+			AttrTypes: decryptionObj.AttributeTypes(),
+		},
+		"devices":             types.StringType,
+		"dynamic_block_lists": types.StringType,
+		"dynamic_user_groups": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"log_forwarding":        types.StringType,
+		"packet_broker_profile": types.StringType,
+		"regions":               types.StringType,
+		"schedules":             types.StringType,
+		"sdwan": types.ObjectType{
+			AttrTypes: sdwanObj.AttributeTypes(),
+		},
+		"security_profile_groups": types.StringType,
+		"security_profiles": types.ObjectType{
+			AttrTypes: securityProfilesObj.AttributeTypes(),
+		},
+		"service_groups": types.StringType,
+		"services":       types.StringType,
+		"tags":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_patterns": types.StringType,
+		"spyware":       types.StringType,
+		"url_category":  types.StringType,
+		"vulnerability": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"decryption_profile": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hip_objects":  types.StringType,
+		"hip_profiles": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"sdwan_dist_profile":             types.StringType,
+		"sdwan_error_correction_profile": types.StringType,
+		"sdwan_profile":                  types.StringType,
+		"sdwan_saas_quality_profile":     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"anti_spyware":             types.StringType,
+		"antivirus":                types.StringType,
+		"data_filtering":           types.StringType,
+		"dos_protection":           types.StringType,
+		"file_blocking":            types.StringType,
+		"gtp_protection":           types.StringType,
+		"sctp_protection":          types.StringType,
+		"url_filtering":            types.StringType,
+		"vulnerability_protection": types.StringType,
+		"wildfire_analysis":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"download_core_files":        types.StringType,
+		"download_pcap_files":        types.StringType,
+		"generate_stats_dump_file":   types.StringType,
+		"generate_tech_support_file": types.StringType,
+		"reboot":                     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rulebase":  types.StringType,
+		"authentication_rulebase":        types.StringType,
+		"dos_rulebase":                   types.StringType,
+		"nat_rulebase":                   types.StringType,
+		"network_packet_broker_rulebase": types.StringType,
+		"pbf_rulebase":                   types.StringType,
+		"qos_rulebase":                   types.StringType,
+		"rule_hit_count_reset":           types.StringType,
+		"sdwan_rulebase":                 types.StringType,
+		"security_rulebase":              types.StringType,
+		"ssl_decryption_rulebase":        types.StringType,
+		"tunnel_inspect_rulebase":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"show_full_ip_addresses":              types.StringType,
+		"show_user_names_in_logs_and_reports": types.StringType,
+		"view_pcap_files":                     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"partial_save":          types.StringType,
+		"save_for_other_admins": types.StringType,
+		"object_level_changes":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleDeviceXmlapiObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit":  types.StringType,
+		"config":  types.StringType,
+		"export":  types.StringType,
+		"import":  types.StringType,
+		"iot":     types.StringType,
+		"log":     types.StringType,
+		"op":      types.StringType,
+		"report":  types.StringType,
+		"user_id": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysObject) AttributeTypes() map[string]attr.Type {
+
+	var restapiObj *AdminRoleResourceRoleVsysRestapiObject
+
+	var webuiObj *AdminRoleResourceRoleVsysWebuiObject
+
+	var xmlapiObj *AdminRoleResourceRoleVsysXmlapiObject
+	return map[string]attr.Type{
+		"cli": types.StringType,
+		"restapi": types.ObjectType{
+			AttrTypes: restapiObj.AttributeTypes(),
+		},
+		"webui": types.ObjectType{
+			AttrTypes: webuiObj.AttributeTypes(),
+		},
+		"xmlapi": types.ObjectType{
+			AttrTypes: xmlapiObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiObject) AttributeTypes() map[string]attr.Type {
+
+	var deviceObj *AdminRoleResourceRoleVsysRestapiDeviceObject
+
+	var networkObj *AdminRoleResourceRoleVsysRestapiNetworkObject
+
+	var objectsObj *AdminRoleResourceRoleVsysRestapiObjectsObject
+
+	var policiesObj *AdminRoleResourceRoleVsysRestapiPoliciesObject
+
+	var systemObj *AdminRoleResourceRoleVsysRestapiSystemObject
+	return map[string]attr.Type{
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_server_profiles":     types.StringType,
+		"http_server_profiles":      types.StringType,
+		"ldap_server_profiles":      types.StringType,
+		"log_interface_setting":     types.StringType,
+		"snmp_trap_server_profiles": types.StringType,
+		"syslog_server_profiles":    types.StringType,
+		"virtual_systems":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"globalprotect_clientless_app_groups": types.StringType,
+		"globalprotect_clientless_apps":       types.StringType,
+		"globalprotect_gateways":              types.StringType,
+		"globalprotect_mdm_servers":           types.StringType,
+		"globalprotect_portals":               types.StringType,
+		"zones":                               types.StringType,
+		"sdwan_interface_profiles":            types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address_groups":                             types.StringType,
+		"addresses":                                  types.StringType,
+		"anti_spyware_security_profiles":             types.StringType,
+		"antivirus_security_profiles":                types.StringType,
+		"application_filters":                        types.StringType,
+		"application_groups":                         types.StringType,
+		"applications":                               types.StringType,
+		"authentication_enforcements":                types.StringType,
+		"custom_data_patterns":                       types.StringType,
+		"custom_spyware_signatures":                  types.StringType,
+		"custom_url_categories":                      types.StringType,
+		"custom_vulnerability_signatures":            types.StringType,
+		"data_filtering_security_profiles":           types.StringType,
+		"decryption_profiles":                        types.StringType,
+		"devices":                                    types.StringType,
+		"dos_protection_security_profiles":           types.StringType,
+		"dynamic_user_groups":                        types.StringType,
+		"external_dynamic_lists":                     types.StringType,
+		"file_blocking_security_profiles":            types.StringType,
+		"globalprotect_hip_objects":                  types.StringType,
+		"globalprotect_hip_profiles":                 types.StringType,
+		"gtp_protection_security_profiles":           types.StringType,
+		"log_forwarding_profiles":                    types.StringType,
+		"packet_broker_profiles":                     types.StringType,
+		"regions":                                    types.StringType,
+		"schedules":                                  types.StringType,
+		"sctp_protection_security_profiles":          types.StringType,
+		"sdwan_error_correction_profiles":            types.StringType,
+		"sdwan_path_quality_profiles":                types.StringType,
+		"sdwan_saas_quality_profiles":                types.StringType,
+		"sdwan_traffic_distribution_profiles":        types.StringType,
+		"security_profile_groups":                    types.StringType,
+		"service_groups":                             types.StringType,
+		"services":                                   types.StringType,
+		"tags":                                       types.StringType,
+		"url_filtering_security_profiles":            types.StringType,
+		"vulnerability_protection_security_profiles": types.StringType,
+		"wildfire_analysis_security_profiles":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rules":    types.StringType,
+		"authentication_rules":          types.StringType,
+		"decryption_rules":              types.StringType,
+		"dos_rules":                     types.StringType,
+		"nat_rules":                     types.StringType,
+		"network_packet_broker_rules":   types.StringType,
+		"policy_based_forwarding_rules": types.StringType,
+		"qos_rules":                     types.StringType,
+		"sdwan_rules":                   types.StringType,
+		"security_rules":                types.StringType,
+		"tunnel_inspection_rules":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysRestapiSystemObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"configuration": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObject) AttributeTypes() map[string]attr.Type {
+
+	var commitObj *AdminRoleResourceRoleVsysWebuiCommitObject
+
+	var deviceObj *AdminRoleResourceRoleVsysWebuiDeviceObject
+
+	var monitorObj *AdminRoleResourceRoleVsysWebuiMonitorObject
+
+	var networkObj *AdminRoleResourceRoleVsysWebuiNetworkObject
+
+	var objectsObj *AdminRoleResourceRoleVsysWebuiObjectsObject
+
+	var operationsObj *AdminRoleResourceRoleVsysWebuiOperationsObject
+
+	var policiesObj *AdminRoleResourceRoleVsysWebuiPoliciesObject
+
+	var privacyObj *AdminRoleResourceRoleVsysWebuiPrivacyObject
+
+	var saveObj *AdminRoleResourceRoleVsysWebuiSaveObject
+
+	return map[string]attr.Type{
+		"acc": types.StringType,
+		"commit": types.ObjectType{
+			AttrTypes: commitObj.AttributeTypes(),
+		},
+		"dashboard": types.StringType,
+		"device": types.ObjectType{
+			AttrTypes: deviceObj.AttributeTypes(),
+		},
+		"monitor": types.ObjectType{
+			AttrTypes: monitorObj.AttributeTypes(),
+		},
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"objects": types.ObjectType{
+			AttrTypes: objectsObj.AttributeTypes(),
+		},
+		"operations": types.ObjectType{
+			AttrTypes: operationsObj.AttributeTypes(),
+		},
+		"policies": types.ObjectType{
+			AttrTypes: policiesObj.AttributeTypes(),
+		},
+		"privacy": types.ObjectType{
+			AttrTypes: privacyObj.AttributeTypes(),
+		},
+		"save": types.ObjectType{
+			AttrTypes: saveObj.AttributeTypes(),
+		},
+		"tasks":    types.StringType,
+		"validate": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiCommitObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit_for_other_admins": types.StringType,
+		"virtual_systems":         types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
+
+	var certificateManagementObj *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject
+
+	var localUserDatabaseObj *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject
+
+	var logSettingsObj *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject
+
+	var policyRecommendationsObj *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject
+
+	var serverProfileObj *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject
+
+	var setupObj *AdminRoleResourceRoleVsysWebuiDeviceSetupObject
+
+	return map[string]attr.Type{
+		"administrators":          types.StringType,
+		"authentication_profile":  types.StringType,
+		"authentication_sequence": types.StringType,
+		"block_pages":             types.StringType,
+		"certificate_management": types.ObjectType{
+			AttrTypes: certificateManagementObj.AttributeTypes(),
+		},
+		"data_redistribution": types.StringType,
+		"device_quarantine":   types.StringType,
+		"local_user_database": types.ObjectType{
+			AttrTypes: localUserDatabaseObj.AttributeTypes(),
+		},
+		"log_settings": types.ObjectType{
+			AttrTypes: logSettingsObj.AttributeTypes(),
+		},
+		"policy_recommendations": types.ObjectType{
+			AttrTypes: policyRecommendationsObj.AttributeTypes(),
+		},
+		"server_profile": types.ObjectType{
+			AttrTypes: serverProfileObj.AttributeTypes(),
+		},
+		"setup": types.ObjectType{
+			AttrTypes: setupObj.AttributeTypes(),
+		},
+		"troubleshooting":     types.StringType,
+		"user_identification": types.StringType,
+		"vm_info_source":      types.StringType,
+		"dhcp_syslog_server":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile":      types.StringType,
+		"certificates":             types.StringType,
+		"ocsp_responder":           types.StringType,
+		"scep":                     types.StringType,
+		"ssh_service_profile":      types.StringType,
+		"ssl_decryption_exclusion": types.StringType,
+		"ssl_tls_service_profile":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"user_groups": types.StringType,
+		"users":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"config":        types.StringType,
+		"correlation":   types.StringType,
+		"globalprotect": types.StringType,
+		"hipmatch":      types.StringType,
+		"iptag":         types.StringType,
+		"system":        types.StringType,
+		"user_id":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"iot":  types.StringType,
+		"saas": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"dns":       types.StringType,
+		"email":     types.StringType,
+		"http":      types.StringType,
+		"kerberos":  types.StringType,
+		"ldap":      types.StringType,
+		"mfa":       types.StringType,
+		"netflow":   types.StringType,
+		"radius":    types.StringType,
+		"saml_idp":  types.StringType,
+		"scp":       types.StringType,
+		"snmp_trap": types.StringType,
+		"syslog":    types.StringType,
+		"tacplus":   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"content_id": types.StringType,
+		"hsm":        types.StringType,
+		"interfaces": types.StringType,
+		"management": types.StringType,
+		"operations": types.StringType,
+		"services":   types.StringType,
+		"session":    types.StringType,
+		"telemetry":  types.StringType,
+		"wildfire":   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	var automatedCorrelationEngineObj *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
+
+	var customReportsObj *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject
+
+	var logsObj *AdminRoleResourceRoleVsysWebuiMonitorLogsObject
+
+	var pdfReportsObj *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject
+
+	return map[string]attr.Type{
+		"app_scope": types.StringType,
+		"automated_correlation_engine": types.ObjectType{
+			AttrTypes: automatedCorrelationEngineObj.AttributeTypes(),
+		},
+		"block_ip_list": types.StringType,
+		"custom_reports": types.ObjectType{
+			AttrTypes: customReportsObj.AttributeTypes(),
+		},
+		"external_logs": types.StringType,
+		"logs": types.ObjectType{
+			AttrTypes: logsObj.AttributeTypes(),
+		},
+		"pdf_reports": types.ObjectType{
+			AttrTypes: pdfReportsObj.AttributeTypes(),
+		},
+		"session_browser":     types.StringType,
+		"view_custom_reports": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"correlated_events":   types.StringType,
+		"correlation_objects": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_statistics": types.StringType,
+		"auth":                   types.StringType,
+		"data_filtering_log":     types.StringType,
+		"decryption_log":         types.StringType,
+		"decryption_summary":     types.StringType,
+		"globalprotect":          types.StringType,
+		"gtp_log":                types.StringType,
+		"gtp_summary":            types.StringType,
+		"hipmatch":               types.StringType,
+		"iptag":                  types.StringType,
+		"sctp_log":               types.StringType,
+		"sctp_summary":           types.StringType,
+		"threat_log":             types.StringType,
+		"threat_summary":         types.StringType,
+		"traffic_log":            types.StringType,
+		"traffic_summary":        types.StringType,
+		"tunnel_log":             types.StringType,
+		"tunnel_summary":         types.StringType,
+		"url_log":                types.StringType,
+		"url_summary":            types.StringType,
+		"userid":                 types.StringType,
+		"wildfire_log":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication": types.StringType,
+		"data_filtering": types.StringType,
+		"decryption":     types.StringType,
+		"globalprotect":  types.StringType,
+		"gtp":            types.StringType,
+		"hipmatch":       types.StringType,
+		"iptag":          types.StringType,
+		"sctp":           types.StringType,
+		"threat":         types.StringType,
+		"traffic":        types.StringType,
+		"tunnel":         types.StringType,
+		"url":            types.StringType,
+		"userid":         types.StringType,
+		"wildfire":       types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"email_scheduler":               types.StringType,
+		"manage_pdf_summary":            types.StringType,
+		"pdf_summary_reports":           types.StringType,
+		"report_groups":                 types.StringType,
+		"saas_application_usage_report": types.StringType,
+		"user_activity_report":          types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var globalProtectObj *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject
+
+	return map[string]attr.Type{
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"sdwan_interface_profile": types.StringType,
+		"zones":                   types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"clientless_app_groups": types.StringType,
+		"clientless_apps":       types.StringType,
+		"gateways":              types.StringType,
+		"mdm":                   types.StringType,
+		"portals":               types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	var customObjectsObj *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject
+
+	var decryptionObj *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject
+
+	var globalProtectObj *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject
+
+	var sdwanObj *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject
+
+	var securityProfilesObj *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject
+
+	return map[string]attr.Type{
+		"address_groups":      types.StringType,
+		"addresses":           types.StringType,
+		"application_filters": types.StringType,
+		"application_groups":  types.StringType,
+		"applications":        types.StringType,
+		"authentication":      types.StringType,
+		"custom_objects": types.ObjectType{
+			AttrTypes: customObjectsObj.AttributeTypes(),
+		},
+		"decryption": types.ObjectType{
+			AttrTypes: decryptionObj.AttributeTypes(),
+		},
+		"devices":             types.StringType,
+		"dynamic_block_lists": types.StringType,
+		"dynamic_user_groups": types.StringType,
+		"global_protect": types.ObjectType{
+			AttrTypes: globalProtectObj.AttributeTypes(),
+		},
+		"log_forwarding":        types.StringType,
+		"packet_broker_profile": types.StringType,
+		"regions":               types.StringType,
+		"schedules":             types.StringType,
+		"sdwan": types.ObjectType{
+			AttrTypes: sdwanObj.AttributeTypes(),
+		},
+		"security_profile_groups": types.StringType,
+		"security_profiles": types.ObjectType{
+			AttrTypes: securityProfilesObj.AttributeTypes(),
+		},
+		"service_groups": types.StringType,
+		"services":       types.StringType,
+		"tags":           types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_patterns": types.StringType,
+		"spyware":       types.StringType,
+		"url_category":  types.StringType,
+		"vulnerability": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"decryption_profile": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hip_objects":  types.StringType,
+		"hip_profiles": types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"sdwan_dist_profile":             types.StringType,
+		"sdwan_error_correction_profile": types.StringType,
+		"sdwan_profile":                  types.StringType,
+		"sdwan_saas_quality_profile":     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"anti_spyware":             types.StringType,
+		"antivirus":                types.StringType,
+		"data_filtering":           types.StringType,
+		"dos_protection":           types.StringType,
+		"file_blocking":            types.StringType,
+		"gtp_protection":           types.StringType,
+		"sctp_protection":          types.StringType,
+		"url_filtering":            types.StringType,
+		"vulnerability_protection": types.StringType,
+		"wildfire_analysis":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"download_core_files":        types.StringType,
+		"download_pcap_files":        types.StringType,
+		"generate_stats_dump_file":   types.StringType,
+		"generate_tech_support_file": types.StringType,
+		"reboot":                     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"application_override_rulebase":  types.StringType,
+		"authentication_rulebase":        types.StringType,
+		"dos_rulebase":                   types.StringType,
+		"nat_rulebase":                   types.StringType,
+		"network_packet_broker_rulebase": types.StringType,
+		"pbf_rulebase":                   types.StringType,
+		"qos_rulebase":                   types.StringType,
+		"rule_hit_count_reset":           types.StringType,
+		"sdwan_rulebase":                 types.StringType,
+		"security_rulebase":              types.StringType,
+		"ssl_decryption_rulebase":        types.StringType,
+		"tunnel_inspect_rulebase":        types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"show_full_ip_addresses":              types.StringType,
+		"show_user_names_in_logs_and_reports": types.StringType,
+		"view_pcap_files":                     types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysWebuiSaveObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"partial_save":          types.StringType,
+		"save_for_other_admins": types.StringType,
+		"object_level_changes":  types.StringType,
+	}
+}
+func (o *AdminRoleResourceRoleVsysXmlapiObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"commit":  types.StringType,
+		"config":  types.StringType,
+		"export":  types.StringType,
+		"import":  types.StringType,
+		"iot":     types.StringType,
+		"log":     types.StringType,
+		"op":      types.StringType,
+		"report":  types.StringType,
+		"user_id": types.StringType,
+	}
+}
+
 func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, obj **adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -29935,11 +32580,22 @@ func (r *AdminRoleResource) Create(ctx context.Context, req resource.CreateReque
 
 	var location adminrole.Location
 
-	if state.Location.Template != nil {
-		location.Template = &adminrole.TemplateLocation{
+	{
+		var terraformLocation AdminRoleLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &adminrole.TemplateLocation{}
+			var innerLocation AdminRoleTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -29988,11 +32644,22 @@ func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	var location adminrole.Location
 
-	if savestate.Location.Template != nil {
-		location.Template = &adminrole.TemplateLocation{
+	{
+		var terraformLocation AdminRoleLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &adminrole.TemplateLocation{}
+			var innerLocation AdminRoleTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -30040,11 +32707,22 @@ func (r *AdminRoleResource) Update(ctx context.Context, req resource.UpdateReque
 
 	var location adminrole.Location
 
-	if state.Location.Template != nil {
-		location.Template = &adminrole.TemplateLocation{
+	{
+		var terraformLocation AdminRoleLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &adminrole.TemplateLocation{}
+			var innerLocation AdminRoleTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -30118,11 +32796,22 @@ func (r *AdminRoleResource) Delete(ctx context.Context, req resource.DeleteReque
 
 	var location adminrole.Location
 
-	if state.Location.Template != nil {
-		location.Template = &adminrole.TemplateLocation{
+	{
+		var terraformLocation AdminRoleLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &adminrole.TemplateLocation{}
+			var innerLocation AdminRoleTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -30134,8 +32823,53 @@ func (r *AdminRoleResource) Delete(ctx context.Context, req resource.DeleteReque
 }
 
 type AdminRoleImportState struct {
-	Location AdminRoleLocation `json:"location"`
-	Name     string            `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o AdminRoleImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *AdminRoleLocation `json:"location"`
+		Name     *string            `json:"name"`
+	}
+	var location_object *AdminRoleLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AdminRoleImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *AdminRoleLocation `json:"location"`
+		Name     *string            `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func AdminRoleImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -30149,10 +32883,10 @@ func AdminRoleImportStateCreator(ctx context.Context, resource types.Object) ([]
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location AdminRoleLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -30161,10 +32895,10 @@ func AdminRoleImportStateCreator(ctx context.Context, resource types.Object) ([]
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -30188,7 +32922,12 @@ func (r *AdminRoleResource) ImportState(ctx context.Context, req resource.Import
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -30204,7 +32943,7 @@ type AdminRoleTemplateLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type AdminRoleLocation struct {
-	Template *AdminRoleTemplateLocation `tfsdk:"template"`
+	Template types.Object `tfsdk:"template"`
 }
 
 func AdminRoleLocationSchema() rsschema.Attribute {
@@ -30244,10 +32983,12 @@ func AdminRoleLocationSchema() rsschema.Attribute {
 }
 
 func (o AdminRoleTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -30257,8 +32998,8 @@ func (o AdminRoleTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AdminRoleTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -30271,10 +33012,19 @@ func (o *AdminRoleTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AdminRoleLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Template *AdminRoleTemplateLocation `json:"template"`
-	}{
-		Template: o.Template,
+	type shadow struct {
+		Template *AdminRoleTemplateLocation `json:"template,omitempty"`
+	}
+	var template_object *AdminRoleTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Template: template_object,
 	}
 
 	return json.Marshal(obj)
@@ -30282,14 +33032,37 @@ func (o AdminRoleLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AdminRoleLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Template *AdminRoleTemplateLocation `json:"template"`
+		Template *AdminRoleTemplateLocation `json:"template,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Template = shadow.Template
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	o.Template = template_object
 
 	return nil
+}
+
+func (o *AdminRoleTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *AdminRoleLocation) AttributeTypes() map[string]attr.Type {
+	var templateObj AdminRoleTemplateLocation
+	return map[string]attr.Type{
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+	}
 }

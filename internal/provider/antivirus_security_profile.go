@@ -54,17 +54,17 @@ type AntivirusSecurityProfileDataSourceFilter struct {
 }
 
 type AntivirusSecurityProfileDataSourceModel struct {
-	Location                  AntivirusSecurityProfileLocation `tfsdk:"location"`
-	Name                      types.String                     `tfsdk:"name"`
-	ApplicationExceptions     types.List                       `tfsdk:"application_exceptions"`
-	Decoders                  types.List                       `tfsdk:"decoders"`
-	Description               types.String                     `tfsdk:"description"`
-	DisableOverride           types.String                     `tfsdk:"disable_override"`
-	MachineLearningModels     types.List                       `tfsdk:"machine_learning_models"`
-	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
-	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
-	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
-	WfrtHoldMode              types.Bool                       `tfsdk:"wfrt_hold_mode"`
+	Location                  types.Object `tfsdk:"location"`
+	Name                      types.String `tfsdk:"name"`
+	ApplicationExceptions     types.List   `tfsdk:"application_exceptions"`
+	Decoders                  types.List   `tfsdk:"decoders"`
+	Description               types.String `tfsdk:"description"`
+	DisableOverride           types.String `tfsdk:"disable_override"`
+	MachineLearningModels     types.List   `tfsdk:"machine_learning_models"`
+	MachineLearningExceptions types.List   `tfsdk:"machine_learning_exceptions"`
+	PacketCapture             types.Bool   `tfsdk:"packet_capture"`
+	ThreatExceptions          types.List   `tfsdk:"threat_exceptions"`
+	WfrtHoldMode              types.Bool   `tfsdk:"wfrt_hold_mode"`
 }
 type AntivirusSecurityProfileDataSourceApplicationExceptionsObject struct {
 	Name   types.String `tfsdk:"name"`
@@ -87,6 +87,64 @@ type AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject struct {
 }
 type AntivirusSecurityProfileDataSourceThreatExceptionsObject struct {
 	Name types.String `tfsdk:"name"`
+}
+
+func (o *AntivirusSecurityProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AntivirusSecurityProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                        types.StringType,
+		"application_exceptions":      types.ListType{},
+		"decoders":                    types.ListType{},
+		"description":                 types.StringType,
+		"disable_override":            types.StringType,
+		"machine_learning_models":     types.ListType{},
+		"machine_learning_exceptions": types.ListType{},
+		"packet_capture":              types.BoolType,
+		"threat_exceptions":           types.ListType{},
+		"wfrt_hold_mode":              types.BoolType,
+	}
+}
+func (o *AntivirusSecurityProfileDataSourceApplicationExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"action": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileDataSourceDecodersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":            types.StringType,
+		"action":          types.StringType,
+		"wildfire_action": types.StringType,
+		"ml_action":       types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileDataSourceMachineLearningModelsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"action": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileDataSourceMachineLearningExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"filename":    types.StringType,
+		"description": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileDataSourceThreatExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
 }
 
 func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -812,21 +870,42 @@ func (o *AntivirusSecurityProfileDataSource) Read(ctx context.Context, req datas
 
 	var location antivirus.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &antivirus.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &antivirus.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+	{
+		var terraformLocation AntivirusSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &antivirus.SharedLocation{}
+			var innerLocation AntivirusSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &antivirus.DeviceGroupLocation{}
+			var innerLocation AntivirusSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &antivirus.VsysLocation{}
+			var innerLocation AntivirusSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -890,17 +969,17 @@ func AntivirusSecurityProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type AntivirusSecurityProfileResourceModel struct {
-	Location                  AntivirusSecurityProfileLocation `tfsdk:"location"`
-	Name                      types.String                     `tfsdk:"name"`
-	ApplicationExceptions     types.List                       `tfsdk:"application_exceptions"`
-	Decoders                  types.List                       `tfsdk:"decoders"`
-	Description               types.String                     `tfsdk:"description"`
-	DisableOverride           types.String                     `tfsdk:"disable_override"`
-	MachineLearningModels     types.List                       `tfsdk:"machine_learning_models"`
-	MachineLearningExceptions types.List                       `tfsdk:"machine_learning_exceptions"`
-	PacketCapture             types.Bool                       `tfsdk:"packet_capture"`
-	ThreatExceptions          types.List                       `tfsdk:"threat_exceptions"`
-	WfrtHoldMode              types.Bool                       `tfsdk:"wfrt_hold_mode"`
+	Location                  types.Object `tfsdk:"location"`
+	Name                      types.String `tfsdk:"name"`
+	ApplicationExceptions     types.List   `tfsdk:"application_exceptions"`
+	Decoders                  types.List   `tfsdk:"decoders"`
+	Description               types.String `tfsdk:"description"`
+	DisableOverride           types.String `tfsdk:"disable_override"`
+	MachineLearningModels     types.List   `tfsdk:"machine_learning_models"`
+	MachineLearningExceptions types.List   `tfsdk:"machine_learning_exceptions"`
+	PacketCapture             types.Bool   `tfsdk:"packet_capture"`
+	ThreatExceptions          types.List   `tfsdk:"threat_exceptions"`
+	WfrtHoldMode              types.Bool   `tfsdk:"wfrt_hold_mode"`
 }
 type AntivirusSecurityProfileResourceApplicationExceptionsObject struct {
 	Name   types.String `tfsdk:"name"`
@@ -1301,6 +1380,64 @@ func (r *AntivirusSecurityProfileResource) Configure(ctx context.Context, req re
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, antivirus.NewService(r.client), batchSize, specifier, antivirus.SpecMatches)
 }
 
+func (o *AntivirusSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AntivirusSecurityProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                        types.StringType,
+		"application_exceptions":      types.ListType{},
+		"decoders":                    types.ListType{},
+		"description":                 types.StringType,
+		"disable_override":            types.StringType,
+		"machine_learning_models":     types.ListType{},
+		"machine_learning_exceptions": types.ListType{},
+		"packet_capture":              types.BoolType,
+		"threat_exceptions":           types.ListType{},
+		"wfrt_hold_mode":              types.BoolType,
+	}
+}
+func (o *AntivirusSecurityProfileResourceApplicationExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"action": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileResourceDecodersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":            types.StringType,
+		"action":          types.StringType,
+		"wildfire_action": types.StringType,
+		"ml_action":       types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileResourceMachineLearningModelsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"action": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileResourceMachineLearningExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"filename":    types.StringType,
+		"description": types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileResourceThreatExceptionsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
 func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **antivirus.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var applicationExceptions_tf_entries []AntivirusSecurityProfileResourceApplicationExceptionsObject
@@ -1675,21 +1812,42 @@ func (r *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &antivirus.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &antivirus.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+	{
+		var terraformLocation AntivirusSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &antivirus.SharedLocation{}
+			var innerLocation AntivirusSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &antivirus.DeviceGroupLocation{}
+			var innerLocation AntivirusSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &antivirus.VsysLocation{}
+			var innerLocation AntivirusSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1738,21 +1896,42 @@ func (o *AntivirusSecurityProfileResource) Read(ctx context.Context, req resourc
 
 	var location antivirus.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &antivirus.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &antivirus.DeviceGroupLocation{
-
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+	{
+		var terraformLocation AntivirusSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
 
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &antivirus.SharedLocation{}
+			var innerLocation AntivirusSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &antivirus.DeviceGroupLocation{}
+			var innerLocation AntivirusSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &antivirus.VsysLocation{}
+			var innerLocation AntivirusSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1800,21 +1979,42 @@ func (r *AntivirusSecurityProfileResource) Update(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &antivirus.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &antivirus.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+	{
+		var terraformLocation AntivirusSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &antivirus.SharedLocation{}
+			var innerLocation AntivirusSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &antivirus.DeviceGroupLocation{}
+			var innerLocation AntivirusSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &antivirus.VsysLocation{}
+			var innerLocation AntivirusSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1888,21 +2088,42 @@ func (r *AntivirusSecurityProfileResource) Delete(ctx context.Context, req resou
 
 	var location antivirus.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &antivirus.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &antivirus.DeviceGroupLocation{
-
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+	{
+		var terraformLocation AntivirusSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &antivirus.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &antivirus.SharedLocation{}
+			var innerLocation AntivirusSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &antivirus.DeviceGroupLocation{}
+			var innerLocation AntivirusSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &antivirus.VsysLocation{}
+			var innerLocation AntivirusSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1914,8 +2135,53 @@ func (r *AntivirusSecurityProfileResource) Delete(ctx context.Context, req resou
 }
 
 type AntivirusSecurityProfileImportState struct {
-	Location AntivirusSecurityProfileLocation `json:"location"`
-	Name     string                           `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o AntivirusSecurityProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *AntivirusSecurityProfileLocation `json:"location"`
+		Name     *string                           `json:"name"`
+	}
+	var location_object *AntivirusSecurityProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AntivirusSecurityProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *AntivirusSecurityProfileLocation `json:"location"`
+		Name     *string                           `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func AntivirusSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1929,10 +2195,10 @@ func AntivirusSecurityProfileImportStateCreator(ctx context.Context, resource ty
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location AntivirusSecurityProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1941,10 +2207,10 @@ func AntivirusSecurityProfileImportStateCreator(ctx context.Context, resource ty
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1968,7 +2234,12 @@ func (r *AntivirusSecurityProfileResource) ImportState(ctx context.Context, req 
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1990,9 +2261,9 @@ type AntivirusSecurityProfileVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type AntivirusSecurityProfileLocation struct {
-	Shared      *AntivirusSecurityProfileSharedLocation      `tfsdk:"shared"`
-	DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
-	Vsys        *AntivirusSecurityProfileVsysLocation        `tfsdk:"vsys"`
+	Shared      types.Object `tfsdk:"shared"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
+	Vsys        types.Object `tfsdk:"vsys"`
 }
 
 func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
@@ -2074,8 +2345,10 @@ func AntivirusSecurityProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o AntivirusSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -2092,10 +2365,12 @@ func (o *AntivirusSecurityProfileSharedLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o AntivirusSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -2105,8 +2380,8 @@ func (o AntivirusSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, erro
 
 func (o *AntivirusSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2119,10 +2394,12 @@ func (o *AntivirusSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte)
 	return nil
 }
 func (o AntivirusSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -2132,8 +2409,8 @@ func (o AntivirusSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntivirusSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2146,14 +2423,37 @@ func (o *AntivirusSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error 
 	return nil
 }
 func (o AntivirusSecurityProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group"`
-		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys"`
-	}{
-		Shared:      o.Shared,
-		DeviceGroup: o.DeviceGroup,
-		Vsys:        o.Vsys,
+	type shadow struct {
+		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
+		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys,omitempty"`
+	}
+	var shared_object *AntivirusSecurityProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *AntivirusSecurityProfileDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *AntivirusSecurityProfileVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		DeviceGroup: deviceGroup_object,
+		Vsys:        vsys_object,
 	}
 
 	return json.Marshal(obj)
@@ -2161,18 +2461,74 @@ func (o AntivirusSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntivirusSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group"`
-		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys"`
+		Shared      *AntivirusSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *AntivirusSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
+		Vsys        *AntivirusSecurityProfileVsysLocation        `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.DeviceGroup = shadow.DeviceGroup
-	o.Vsys = shadow.Vsys
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.DeviceGroup = deviceGroup_object
+	o.Vsys = vsys_object
 
 	return nil
+}
+
+func (o *AntivirusSecurityProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntivirusSecurityProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *AntivirusSecurityProfileLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj AntivirusSecurityProfileSharedLocation
+	var deviceGroupObj AntivirusSecurityProfileDeviceGroupLocation
+	var vsysObj AntivirusSecurityProfileVsysLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+	}
 }

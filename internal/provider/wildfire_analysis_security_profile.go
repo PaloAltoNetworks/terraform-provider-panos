@@ -54,11 +54,11 @@ type WildfireAnalysisSecurityProfileDataSourceFilter struct {
 }
 
 type WildfireAnalysisSecurityProfileDataSourceModel struct {
-	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
-	Name            types.String                            `tfsdk:"name"`
-	Description     types.String                            `tfsdk:"description"`
-	DisableOverride types.String                            `tfsdk:"disable_override"`
-	Rules           types.List                              `tfsdk:"rules"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	DisableOverride types.String `tfsdk:"disable_override"`
+	Rules           types.List   `tfsdk:"rules"`
 }
 type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -66,6 +66,31 @@ type WildfireAnalysisSecurityProfileDataSourceRulesObject struct {
 	FileType    types.List   `tfsdk:"file_type"`
 	Direction   types.String `tfsdk:"direction"`
 	Analysis    types.String `tfsdk:"analysis"`
+}
+
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj WildfireAnalysisSecurityProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"rules":            types.ListType{},
+	}
+}
+func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"application": types.ListType{},
+		"file_type":   types.ListType{},
+		"direction":   types.StringType,
+		"analysis":    types.StringType,
+	}
 }
 
 func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -359,14 +384,31 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &wildfireanalysis.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+	{
+		var terraformLocation WildfireAnalysisSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &wildfireanalysis.SharedLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -430,11 +472,11 @@ func WildfireAnalysisSecurityProfileResourceLocationSchema() rsschema.Attribute 
 }
 
 type WildfireAnalysisSecurityProfileResourceModel struct {
-	Location        WildfireAnalysisSecurityProfileLocation `tfsdk:"location"`
-	Name            types.String                            `tfsdk:"name"`
-	Description     types.String                            `tfsdk:"description"`
-	DisableOverride types.String                            `tfsdk:"disable_override"`
-	Rules           types.List                              `tfsdk:"rules"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	DisableOverride types.String `tfsdk:"disable_override"`
+	Rules           types.List   `tfsdk:"rules"`
 }
 type WildfireAnalysisSecurityProfileResourceRulesObject struct {
 	Name        types.String `tfsdk:"name"`
@@ -611,6 +653,31 @@ func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context,
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, wildfireanalysis.NewService(r.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 
+func (o *WildfireAnalysisSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj WildfireAnalysisSecurityProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"rules":            types.ListType{},
+	}
+}
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"application": types.ListType{},
+		"file_type":   types.ListType{},
+		"direction":   types.StringType,
+		"analysis":    types.StringType,
+	}
+}
+
 func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -759,14 +826,31 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &wildfireanalysis.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+	{
+		var terraformLocation WildfireAnalysisSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &wildfireanalysis.SharedLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -815,14 +899,31 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 
 	var location wildfireanalysis.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &wildfireanalysis.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+	{
+		var terraformLocation WildfireAnalysisSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &wildfireanalysis.SharedLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -870,14 +971,31 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &wildfireanalysis.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+	{
+		var terraformLocation WildfireAnalysisSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &wildfireanalysis.SharedLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -951,14 +1069,31 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 
 	var location wildfireanalysis.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &wildfireanalysis.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{
+	{
+		var terraformLocation WildfireAnalysisSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &wildfireanalysis.SharedLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &wildfireanalysis.DeviceGroupLocation{}
+			var innerLocation WildfireAnalysisSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -970,8 +1105,53 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 }
 
 type WildfireAnalysisSecurityProfileImportState struct {
-	Location WildfireAnalysisSecurityProfileLocation `json:"location"`
-	Name     string                                  `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o WildfireAnalysisSecurityProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *WildfireAnalysisSecurityProfileLocation `json:"location"`
+		Name     *string                                  `json:"name"`
+	}
+	var location_object *WildfireAnalysisSecurityProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *WildfireAnalysisSecurityProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *WildfireAnalysisSecurityProfileLocation `json:"location"`
+		Name     *string                                  `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -985,10 +1165,10 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location WildfireAnalysisSecurityProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -997,10 +1177,10 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1024,7 +1204,12 @@ func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Contex
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1042,8 +1227,8 @@ type WildfireAnalysisSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type WildfireAnalysisSecurityProfileLocation struct {
-	Shared      *WildfireAnalysisSecurityProfileSharedLocation      `tfsdk:"shared"`
-	DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
@@ -1097,8 +1282,10 @@ func WildfireAnalysisSecurityProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o WildfireAnalysisSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -1115,10 +1302,12 @@ func (o *WildfireAnalysisSecurityProfileSharedLocation) UnmarshalJSON(data []byt
 	return nil
 }
 func (o WildfireAnalysisSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -1128,8 +1317,8 @@ func (o WildfireAnalysisSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byt
 
 func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1142,12 +1331,28 @@ func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) UnmarshalJSON(data 
 	return nil
 }
 func (o WildfireAnalysisSecurityProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *WildfireAnalysisSecurityProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *WildfireAnalysisSecurityProfileDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -1155,16 +1360,54 @@ func (o WildfireAnalysisSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *WildfireAnalysisSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Shared      *WildfireAnalysisSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *WildfireAnalysisSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *WildfireAnalysisSecurityProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *WildfireAnalysisSecurityProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *WildfireAnalysisSecurityProfileLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj WildfireAnalysisSecurityProfileSharedLocation
+	var deviceGroupObj WildfireAnalysisSecurityProfileDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

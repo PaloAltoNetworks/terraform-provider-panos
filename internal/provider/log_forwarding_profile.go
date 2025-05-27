@@ -55,12 +55,12 @@ type LogForwardingProfileDataSourceFilter struct {
 }
 
 type LogForwardingProfileDataSourceModel struct {
-	Location                   LogForwardingProfileLocation `tfsdk:"location"`
-	Name                       types.String                 `tfsdk:"name"`
-	Description                types.String                 `tfsdk:"description"`
-	DisableOverride            types.String                 `tfsdk:"disable_override"`
-	EnhancedApplicationLogging types.Bool                   `tfsdk:"enhanced_application_logging"`
-	MatchList                  types.List                   `tfsdk:"match_list"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Description                types.String `tfsdk:"description"`
+	DisableOverride            types.String `tfsdk:"disable_override"`
+	EnhancedApplicationLogging types.Bool   `tfsdk:"enhanced_application_logging"`
+	MatchList                  types.List   `tfsdk:"match_list"`
 }
 type LogForwardingProfileDataSourceMatchListObject struct {
 	Name           types.String `tfsdk:"name"`
@@ -104,6 +104,113 @@ type LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanora
 }
 type LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject struct {
 	HttpProfile types.String `tfsdk:"http_profile"`
+}
+
+func (o *LogForwardingProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj LogForwardingProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                         types.StringType,
+		"description":                  types.StringType,
+		"disable_override":             types.StringType,
+		"enhanced_application_logging": types.BoolType,
+		"match_list":                   types.ListType{},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":             types.StringType,
+		"action_desc":      types.StringType,
+		"log_type":         types.StringType,
+		"filter":           types.StringType,
+		"send_to_panorama": types.BoolType,
+		"quarantine":       types.BoolType,
+		"send_snmptrap":    types.ListType{},
+		"send_email":       types.ListType{},
+		"send_syslog":      types.ListType{},
+		"send_http":        types.ListType{},
+		"actions":          types.ListType{},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *LogForwardingProfileDataSourceMatchListActionsTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var integrationObj *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject
+
+	var taggingObj *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject
+	return map[string]attr.Type{
+		"integration": types.ObjectType{
+			AttrTypes: integrationObj.AttributeTypes(),
+		},
+		"tagging": types.ObjectType{
+			AttrTypes: taggingObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) AttributeTypes() map[string]attr.Type {
+
+	var registrationObj *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject
+
+	return map[string]attr.Type{
+		"target":  types.StringType,
+		"action":  types.StringType,
+		"timeout": types.Int64Type,
+		"registration": types.ObjectType{
+			AttrTypes: registrationObj.AttributeTypes(),
+		},
+		"tags": types.ListType{},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) AttributeTypes() map[string]attr.Type {
+
+	var localhostObj *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject
+
+	var panoramaObj *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject
+
+	var remoteObj *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject
+	return map[string]attr.Type{
+		"localhost": types.ObjectType{
+			AttrTypes: localhostObj.AttributeTypes(),
+		},
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+		"remote": types.ObjectType{
+			AttrTypes: remoteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"http_profile": types.StringType,
+	}
 }
 
 func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, obj **logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1229,14 +1336,31 @@ func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasourc
 
 	var location logforwarding.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &logforwarding.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
+	{
+		var terraformLocation LogForwardingProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &logforwarding.SharedLocation{}
+			var innerLocation LogForwardingProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &logforwarding.DeviceGroupLocation{}
+			var innerLocation LogForwardingProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1300,12 +1424,12 @@ func LogForwardingProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type LogForwardingProfileResourceModel struct {
-	Location                   LogForwardingProfileLocation `tfsdk:"location"`
-	Name                       types.String                 `tfsdk:"name"`
-	Description                types.String                 `tfsdk:"description"`
-	DisableOverride            types.String                 `tfsdk:"disable_override"`
-	EnhancedApplicationLogging types.Bool                   `tfsdk:"enhanced_application_logging"`
-	MatchList                  types.List                   `tfsdk:"match_list"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Description                types.String `tfsdk:"description"`
+	DisableOverride            types.String `tfsdk:"disable_override"`
+	EnhancedApplicationLogging types.Bool   `tfsdk:"enhanced_application_logging"`
+	MatchList                  types.List   `tfsdk:"match_list"`
 }
 type LogForwardingProfileResourceMatchListObject struct {
 	Name           types.String `tfsdk:"name"`
@@ -1923,6 +2047,113 @@ func (r *LogForwardingProfileResource) Configure(ctx context.Context, req resour
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, logforwarding.NewService(r.client), batchSize, specifier, logforwarding.SpecMatches)
 }
 
+func (o *LogForwardingProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj LogForwardingProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                         types.StringType,
+		"description":                  types.StringType,
+		"disable_override":             types.StringType,
+		"enhanced_application_logging": types.BoolType,
+		"match_list":                   types.ListType{},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":             types.StringType,
+		"action_desc":      types.StringType,
+		"log_type":         types.StringType,
+		"filter":           types.StringType,
+		"send_to_panorama": types.BoolType,
+		"quarantine":       types.BoolType,
+		"send_snmptrap":    types.ListType{},
+		"send_email":       types.ListType{},
+		"send_syslog":      types.ListType{},
+		"send_http":        types.ListType{},
+		"actions":          types.ListType{},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *LogForwardingProfileResourceMatchListActionsTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var integrationObj *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject
+
+	var taggingObj *LogForwardingProfileResourceMatchListActionsTypeTaggingObject
+	return map[string]attr.Type{
+		"integration": types.ObjectType{
+			AttrTypes: integrationObj.AttributeTypes(),
+		},
+		"tagging": types.ObjectType{
+			AttrTypes: taggingObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"action": types.StringType,
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) AttributeTypes() map[string]attr.Type {
+
+	var registrationObj *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject
+
+	return map[string]attr.Type{
+		"target":  types.StringType,
+		"action":  types.StringType,
+		"timeout": types.Int64Type,
+		"registration": types.ObjectType{
+			AttrTypes: registrationObj.AttributeTypes(),
+		},
+		"tags": types.ListType{},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) AttributeTypes() map[string]attr.Type {
+
+	var localhostObj *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject
+
+	var panoramaObj *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject
+
+	var remoteObj *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject
+	return map[string]attr.Type{
+		"localhost": types.ObjectType{
+			AttrTypes: localhostObj.AttributeTypes(),
+		},
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+		"remote": types.ObjectType{
+			AttrTypes: remoteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"http_profile": types.StringType,
+	}
+}
+
 func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj **logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -2502,14 +2733,31 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &logforwarding.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
+	{
+		var terraformLocation LogForwardingProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &logforwarding.SharedLocation{}
+			var innerLocation LogForwardingProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &logforwarding.DeviceGroupLocation{}
+			var innerLocation LogForwardingProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2558,14 +2806,31 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 
 	var location logforwarding.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &logforwarding.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
+	{
+		var terraformLocation LogForwardingProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &logforwarding.SharedLocation{}
+			var innerLocation LogForwardingProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &logforwarding.DeviceGroupLocation{}
+			var innerLocation LogForwardingProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2613,14 +2878,31 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &logforwarding.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
+	{
+		var terraformLocation LogForwardingProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &logforwarding.SharedLocation{}
+			var innerLocation LogForwardingProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &logforwarding.DeviceGroupLocation{}
+			var innerLocation LogForwardingProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2694,14 +2976,31 @@ func (r *LogForwardingProfileResource) Delete(ctx context.Context, req resource.
 
 	var location logforwarding.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &logforwarding.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &logforwarding.DeviceGroupLocation{
+	{
+		var terraformLocation LogForwardingProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &logforwarding.SharedLocation{}
+			var innerLocation LogForwardingProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &logforwarding.DeviceGroupLocation{}
+			var innerLocation LogForwardingProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2713,8 +3012,53 @@ func (r *LogForwardingProfileResource) Delete(ctx context.Context, req resource.
 }
 
 type LogForwardingProfileImportState struct {
-	Location LogForwardingProfileLocation `json:"location"`
-	Name     string                       `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o LogForwardingProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *LogForwardingProfileLocation `json:"location"`
+		Name     *string                       `json:"name"`
+	}
+	var location_object *LogForwardingProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *LogForwardingProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *LogForwardingProfileLocation `json:"location"`
+		Name     *string                       `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func LogForwardingProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -2728,10 +3072,10 @@ func LogForwardingProfileImportStateCreator(ctx context.Context, resource types.
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location LogForwardingProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -2740,10 +3084,10 @@ func LogForwardingProfileImportStateCreator(ctx context.Context, resource types.
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -2767,7 +3111,12 @@ func (r *LogForwardingProfileResource) ImportState(ctx context.Context, req reso
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -2785,8 +3134,8 @@ type LogForwardingProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type LogForwardingProfileLocation struct {
-	Shared      *LogForwardingProfileSharedLocation      `tfsdk:"shared"`
-	DeviceGroup *LogForwardingProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func LogForwardingProfileLocationSchema() rsschema.Attribute {
@@ -2840,8 +3189,10 @@ func LogForwardingProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o LogForwardingProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -2858,10 +3209,12 @@ func (o *LogForwardingProfileSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o LogForwardingProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -2871,8 +3224,8 @@ func (o LogForwardingProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LogForwardingProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2885,12 +3238,28 @@ func (o *LogForwardingProfileDeviceGroupLocation) UnmarshalJSON(data []byte) err
 	return nil
 }
 func (o LogForwardingProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *LogForwardingProfileSharedLocation      `json:"shared"`
-		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *LogForwardingProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *LogForwardingProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *LogForwardingProfileDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -2898,16 +3267,54 @@ func (o LogForwardingProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *LogForwardingProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *LogForwardingProfileSharedLocation      `json:"shared"`
-		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group"`
+		Shared      *LogForwardingProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *LogForwardingProfileDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *LogForwardingProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *LogForwardingProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *LogForwardingProfileLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj LogForwardingProfileSharedLocation
+	var deviceGroupObj LogForwardingProfileDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

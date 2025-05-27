@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/policies/rules/nat"
@@ -54,9 +55,9 @@ type NatPolicyRulesDataSourceFilter struct {
 }
 
 type NatPolicyRulesDataSourceModel struct {
-	Location NatPolicyRulesLocation  `tfsdk:"location"`
-	Position TerraformPositionObject `tfsdk:"position"`
-	Rules    types.List              `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type NatPolicyRulesDataSourceRulesObject struct {
 	Name                          types.String                                                      `tfsdk:"name"`
@@ -132,6 +133,181 @@ type NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject struct {
 	Distribution      types.String `tfsdk:"distribution"`
 	TranslatedAddress types.String `tfsdk:"translated_address"`
 	TranslatedPort    types.Int64  `tfsdk:"translated_port"`
+}
+
+func (o *NatPolicyRulesDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj NatPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceTranslationObj *NatPolicyRulesDataSourceRulesSourceTranslationObject
+
+	var targetObj *NatPolicyRulesDataSourceRulesTargetObject
+
+	var destinationTranslationObj *NatPolicyRulesDataSourceRulesDestinationTranslationObject
+
+	var dynamicDestinationTranslationObj *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject
+	return map[string]attr.Type{
+		"name":                         types.StringType,
+		"active_active_device_binding": types.StringType,
+		"description":                  types.StringType,
+		"destination_addresses":        types.ListType{},
+		"disabled":                     types.BoolType,
+		"source_zones":                 types.ListType{},
+		"group_tag":                    types.StringType,
+		"nat_type":                     types.StringType,
+		"service":                      types.StringType,
+		"source_addresses":             types.ListType{},
+		"source_translation": types.ObjectType{
+			AttrTypes: sourceTranslationObj.AttributeTypes(),
+		},
+		"tag": types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zone": types.ListType{},
+		"to_interface":     types.StringType,
+		"destination_translation": types.ObjectType{
+			AttrTypes: destinationTranslationObj.AttributeTypes(),
+		},
+		"dynamic_destination_translation": types.ObjectType{
+			AttrTypes: dynamicDestinationTranslationObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicIpObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject
+
+	var dynamicIpAndPortObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject
+
+	var staticIpObj *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject
+	return map[string]attr.Type{
+		"dynamic_ip": types.ObjectType{
+			AttrTypes: dynamicIpObj.AttributeTypes(),
+		},
+		"dynamic_ip_and_port": types.ObjectType{
+			AttrTypes: dynamicIpAndPortObj.AttributeTypes(),
+		},
+		"static_ip": types.ObjectType{
+			AttrTypes: staticIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) AttributeTypes() map[string]attr.Type {
+
+	var fallbackObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject
+
+	return map[string]attr.Type{
+		"fallback": types.ObjectType{
+			AttrTypes: fallbackObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) AttributeTypes() map[string]attr.Type {
+
+	var interfaceAddressObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject
+
+	return map[string]attr.Type{
+		"interface_address": types.ObjectType{
+			AttrTypes: interfaceAddressObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) AttributeTypes() map[string]attr.Type {
+
+	var interfaceAddressObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
+
+	return map[string]attr.Type{
+		"interface_address": types.ObjectType{
+			AttrTypes: interfaceAddressObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bi_directional":     types.StringType,
+		"translated_address": types.StringType,
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsRewriteObj *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject
+	return map[string]attr.Type{
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
+		"dns_rewrite": types.ObjectType{
+			AttrTypes: dnsRewriteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"direction": types.StringType,
+	}
+}
+func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"distribution":       types.StringType,
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
+	}
 }
 
 func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1814,25 +1990,44 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 
 	var location nat.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &nat.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation NatPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &nat.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &nat.SharedLocation{}
+			var innerLocation NatPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &nat.VsysLocation{}
+			var innerLocation NatPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &nat.DeviceGroupLocation{}
+			var innerLocation NatPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -1852,7 +2047,14 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1871,6 +2073,9 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -1910,9 +2115,9 @@ func NatPolicyRulesResourceLocationSchema() rsschema.Attribute {
 }
 
 type NatPolicyRulesResourceModel struct {
-	Location NatPolicyRulesLocation  `tfsdk:"location"`
-	Position TerraformPositionObject `tfsdk:"position"`
-	Rules    types.List              `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type NatPolicyRulesResourceRulesObject struct {
 	Name                          types.String                                                    `tfsdk:"name"`
@@ -1992,12 +2197,22 @@ type NatPolicyRulesResourceRulesDynamicDestinationTranslationObject struct {
 
 func (r *NatPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	{
+
 		var resource NatPolicyRulesResourceModel
 		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		resource.Position.ValidateConfig(resp)
+
+		if !resource.Position.IsUnknown() {
+			var positionAttribute TerraformPositionObject
+			resp.Diagnostics.Append(resource.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			positionAttribute.ValidateConfig(resp)
+		}
+
 	}
 	{
 		var resource NatPolicyRulesResourceModel
@@ -2007,17 +2222,43 @@ func (r *NatPolicyRulesResource) ValidateConfig(ctx context.Context, req resourc
 		}
 
 		entries := make(map[string]struct{})
-		var elements []NatPolicyRulesResourceRulesObject
-		resource.Rules.ElementsAs(ctx, &elements, false)
+		duplicated := make(map[string]struct{})
+
+		var elements []types.Object
+		resp.Diagnostics.Append(resource.Rules.ElementsAs(ctx, &elements, true)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		for _, elt := range elements {
-			entry := elt.Name.ValueString()
-			if _, found := entries[entry]; found {
-				resp.Diagnostics.AddError("Failed to validate resource", "List entries must have unique names")
+			var typedElt NatPolicyRulesResourceRulesObject
+			resp.Diagnostics.Append(elt.As(ctx, &typedElt, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
 				return
+			}
+
+			if typedElt.Name.IsUnknown() {
+				continue
+			}
+
+			entry := typedElt.Name.ValueString()
+			if _, found := entries[entry]; found {
+				duplicated[entry] = struct{}{}
 			}
 			entries[entry] = struct{}{}
 		}
+
+		var _ = strings.Join([]string{"a", "b"}, ",")
+
+		if len(duplicated) > 0 {
+			var entries []string
+			for elt := range duplicated {
+				entries = append(entries, fmt.Sprintf("'%s'", elt))
+			}
+			resp.Diagnostics.AddError("Failed to validate resource", fmt.Sprintf("Non-unique entry names in the list: %s", strings.Join(entries, ",")))
+			return
+		}
+
 	}
 }
 
@@ -2896,6 +3137,181 @@ func (r *NatPolicyRulesResource) Configure(ctx context.Context, req resource.Con
 	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), batchSize, specifier, nat.SpecMatches)
 }
 
+func (o *NatPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj NatPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceTranslationObj *NatPolicyRulesResourceRulesSourceTranslationObject
+
+	var targetObj *NatPolicyRulesResourceRulesTargetObject
+
+	var destinationTranslationObj *NatPolicyRulesResourceRulesDestinationTranslationObject
+
+	var dynamicDestinationTranslationObj *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject
+	return map[string]attr.Type{
+		"name":                         types.StringType,
+		"active_active_device_binding": types.StringType,
+		"description":                  types.StringType,
+		"destination_addresses":        types.ListType{},
+		"disabled":                     types.BoolType,
+		"source_zones":                 types.ListType{},
+		"group_tag":                    types.StringType,
+		"nat_type":                     types.StringType,
+		"service":                      types.StringType,
+		"source_addresses":             types.ListType{},
+		"source_translation": types.ObjectType{
+			AttrTypes: sourceTranslationObj.AttributeTypes(),
+		},
+		"tag": types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zone": types.ListType{},
+		"to_interface":     types.StringType,
+		"destination_translation": types.ObjectType{
+			AttrTypes: destinationTranslationObj.AttributeTypes(),
+		},
+		"dynamic_destination_translation": types.ObjectType{
+			AttrTypes: dynamicDestinationTranslationObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicIpObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject
+
+	var dynamicIpAndPortObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject
+
+	var staticIpObj *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject
+	return map[string]attr.Type{
+		"dynamic_ip": types.ObjectType{
+			AttrTypes: dynamicIpObj.AttributeTypes(),
+		},
+		"dynamic_ip_and_port": types.ObjectType{
+			AttrTypes: dynamicIpAndPortObj.AttributeTypes(),
+		},
+		"static_ip": types.ObjectType{
+			AttrTypes: staticIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) AttributeTypes() map[string]attr.Type {
+
+	var fallbackObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject
+
+	return map[string]attr.Type{
+		"fallback": types.ObjectType{
+			AttrTypes: fallbackObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) AttributeTypes() map[string]attr.Type {
+
+	var interfaceAddressObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject
+
+	return map[string]attr.Type{
+		"interface_address": types.ObjectType{
+			AttrTypes: interfaceAddressObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) AttributeTypes() map[string]attr.Type {
+
+	var interfaceAddressObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
+
+	return map[string]attr.Type{
+		"interface_address": types.ObjectType{
+			AttrTypes: interfaceAddressObj.AttributeTypes(),
+		},
+		"translated_address": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"bi_directional":     types.StringType,
+		"translated_address": types.StringType,
+	}
+}
+func (o *NatPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsRewriteObj *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject
+	return map[string]attr.Type{
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
+		"dns_rewrite": types.ObjectType{
+			AttrTypes: dnsRewriteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"direction": types.StringType,
+	}
+}
+func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"distribution":       types.StringType,
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
+	}
+}
+
 func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
@@ -3743,25 +4159,44 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 
 	var location nat.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &nat.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation NatPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &nat.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &nat.SharedLocation{}
+			var innerLocation NatPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &nat.VsysLocation{}
+			var innerLocation NatPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &nat.DeviceGroupLocation{}
+			var innerLocation NatPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3780,7 +4215,12 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 		}
 		entries[idx] = entry
 	}
-	position := state.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
@@ -3824,25 +4264,44 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 
 	var location nat.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &nat.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation NatPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &nat.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &nat.SharedLocation{}
+			var innerLocation NatPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &nat.VsysLocation{}
+			var innerLocation NatPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &nat.DeviceGroupLocation{}
+			var innerLocation NatPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3862,7 +4321,14 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -3881,6 +4347,9 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -3910,25 +4379,44 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 
 	var location nat.Location
 
-	if plan.Location.Shared != nil {
-		location.Shared = &nat.SharedLocation{
-
-			Rulebase: plan.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation NatPolicyRulesLocation
+		resp.Diagnostics.Append(plan.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if plan.Location.Vsys != nil {
-		location.Vsys = &nat.VsysLocation{
 
-			NgfwDevice: plan.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       plan.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &nat.SharedLocation{}
+			var innerLocation NatPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if plan.Location.DeviceGroup != nil {
-		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &nat.VsysLocation{}
+			var innerLocation NatPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &nat.DeviceGroupLocation{}
+			var innerLocation NatPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3947,9 +4435,14 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 		stateEntries[idx] = entry
 	}
 
-	position := plan.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(plan.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 
-	existing, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive)
+	existing, _, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive, position)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
@@ -4022,25 +4515,44 @@ func (r *NatPolicyRulesResource) Delete(ctx context.Context, req resource.Delete
 
 	var location nat.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &nat.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation NatPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &nat.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &nat.SharedLocation{}
+			var innerLocation NatPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &nat.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &nat.VsysLocation{}
+			var innerLocation NatPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &nat.DeviceGroupLocation{}
+			var innerLocation NatPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -4057,9 +4569,88 @@ func (r *NatPolicyRulesResource) Delete(ctx context.Context, req resource.Delete
 }
 
 type NatPolicyRulesImportState struct {
-	Location NatPolicyRulesLocation  `json:"location"`
-	Names    []string                `json:"names"`
-	Position TerraformPositionObject `json:"position"`
+	Location types.Object `json:"location"`
+	Names    types.List   `json:"names"`
+	Position types.Object `json:"position"`
+}
+
+func (o NatPolicyRulesImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *NatPolicyRulesLocation  `json:"location"`
+		Names    []string                 `json:"names"`
+		Position *TerraformPositionObject `json:"position"`
+	}
+	var location_object *NatPolicyRulesLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+	var names_list []string
+	{
+		diags := o.Names.ElementsAs(context.TODO(), &names_list, false)
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal names into JSON document", diags.Errors())
+		}
+	}
+	var position_object *TerraformPositionObject
+	{
+		diags := o.Position.As(context.TODO(), &position_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal position into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Names:    names_list,
+		Position: position_object,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *NatPolicyRulesImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *NatPolicyRulesLocation  `json:"location"`
+		Names    []string                 `json:"names"`
+		Position *TerraformPositionObject `json:"position"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	var names_list types.List
+	{
+		var diags_tmp diag.Diagnostics
+		names_list, diags_tmp = types.ListValueFrom(context.TODO(), types.StringType, shadow.Names)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into names", diags_tmp.Errors())
+		}
+	}
+	var position_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		position_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Position.AttributeTypes(), shadow.Position)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into position", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Names = names_list
+	o.Position = position_object
+
+	return nil
 }
 
 func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -4073,10 +4664,10 @@ func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location NatPolicyRulesLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -4085,10 +4676,10 @@ func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object
 		return nil, fmt.Errorf("position attribute missing")
 	}
 
-	var position TerraformPositionObject
+	var position types.Object
 	switch value := positionAttr.(type) {
 	case types.Object:
-		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+		position = value
 	default:
 		return nil, fmt.Errorf("position attribute expected to be an object")
 	}
@@ -4114,10 +4705,16 @@ func NatPolicyRulesImportStateCreator(ctx context.Context, resource types.Object
 		names = append(names, elt.Name.ValueString())
 	}
 
+	var namesObject types.List
+	namesObject, diags_tmp := types.ListValueFrom(ctx, types.StringType, names)
+	if diags_tmp.HasError() {
+		return nil, NewDiagnosticsError("Failed to generate import ID", diags_tmp.Errors())
+	}
+
 	importStruct := NatPolicyRulesImportState{
 		Location: location,
 		Position: position,
-		Names:    names,
+		Names:    namesObject,
 	}
 
 	return json.Marshal(importStruct)
@@ -4134,7 +4731,12 @@ func (r *NatPolicyRulesResource) ImportState(ctx context.Context, req resource.I
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -4148,7 +4750,12 @@ func (r *NatPolicyRulesResource) ImportState(ctx context.Context, req resource.I
 	}
 
 	var names []*NatPolicyRulesResourceRulesObject
-	for _, elt := range obj.Names {
+	var objectNames []string
+	resp.Diagnostics.Append(obj.Names.ElementsAs(ctx, &objectNames, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	for _, elt := range objectNames {
 		object := &NatPolicyRulesResourceRulesObject{}
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, &nat.Entry{}, nil)...)
 		if resp.Diagnostics.HasError() {
@@ -4173,9 +4780,9 @@ type NatPolicyRulesDeviceGroupLocation struct {
 	Rulebase       types.String `tfsdk:"rulebase"`
 }
 type NatPolicyRulesLocation struct {
-	Shared      *NatPolicyRulesSharedLocation      `tfsdk:"shared"`
-	Vsys        *NatPolicyRulesVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *NatPolicyRulesDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func NatPolicyRulesLocationSchema() rsschema.Attribute {
@@ -4277,9 +4884,11 @@ func NatPolicyRulesLocationSchema() rsschema.Attribute {
 }
 
 func (o NatPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Rulebase *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		Rulebase *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		Rulebase: o.Rulebase.ValueStringPointer(),
 	}
 
@@ -4288,7 +4897,7 @@ func (o NatPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NatPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Rulebase *string `json:"rulebase"`
+		Rulebase *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4300,10 +4909,12 @@ func (o *NatPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NatPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -4313,8 +4924,8 @@ func (o NatPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NatPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4327,11 +4938,13 @@ func (o *NatPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NatPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		Rulebase:       o.Rulebase.ValueStringPointer(),
@@ -4342,9 +4955,9 @@ func (o NatPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NatPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4358,14 +4971,37 @@ func (o *NatPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NatPolicyRulesLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *NatPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *NatPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *NatPolicyRulesDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *NatPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *NatPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *NatPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *NatPolicyRulesSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *NatPolicyRulesVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *NatPolicyRulesDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -4373,18 +5009,77 @@ func (o NatPolicyRulesLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NatPolicyRulesLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *NatPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *NatPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *NatPolicyRulesDeviceGroupLocation `json:"device_group"`
+		Shared      *NatPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *NatPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *NatPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *NatPolicyRulesSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"rulebase": types.StringType,
+	}
+}
+func (o *NatPolicyRulesVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *NatPolicyRulesDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"rulebase":        types.StringType,
+	}
+}
+func (o *NatPolicyRulesLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj NatPolicyRulesSharedLocation
+	var vsysObj NatPolicyRulesVsysLocation
+	var deviceGroupObj NatPolicyRulesDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

@@ -11,9 +11,10 @@ import (
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
-	"github.com/PaloAltoNetworks/pango/device/profile/ssltls"
+	"github.com/PaloAltoNetworks/pango/device/profiles/ldap"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -21,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -35,251 +37,249 @@ import (
 
 // Generate Terraform Data Source object.
 var (
-	_ datasource.DataSource              = &SslTlsServiceProfileDataSource{}
-	_ datasource.DataSourceWithConfigure = &SslTlsServiceProfileDataSource{}
+	_ datasource.DataSource              = &LdapProfileDataSource{}
+	_ datasource.DataSourceWithConfigure = &LdapProfileDataSource{}
 )
 
-func NewSslTlsServiceProfileDataSource() datasource.DataSource {
-	return &SslTlsServiceProfileDataSource{}
+func NewLdapProfileDataSource() datasource.DataSource {
+	return &LdapProfileDataSource{}
 }
 
-type SslTlsServiceProfileDataSource struct {
+type LdapProfileDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*ssltls.Entry, ssltls.Location, *ssltls.Service]
+	manager *sdkmanager.EntryObjectManager[*ldap.Entry, ldap.Location, *ldap.Service]
 }
 
-type SslTlsServiceProfileDataSourceFilter struct {
+type LdapProfileDataSourceFilter struct {
 	// TODO: Generate Data Source filter via function
 }
 
-type SslTlsServiceProfileDataSourceModel struct {
-	Location         types.Object                                          `tfsdk:"location"`
-	Name             types.String                                          `tfsdk:"name"`
-	Certificate      types.String                                          `tfsdk:"certificate"`
-	ProtocolSettings *SslTlsServiceProfileDataSourceProtocolSettingsObject `tfsdk:"protocol_settings"`
+type LdapProfileDataSourceModel struct {
+	Location                types.Object `tfsdk:"location"`
+	Name                    types.String `tfsdk:"name"`
+	Base                    types.String `tfsdk:"base"`
+	BindDn                  types.String `tfsdk:"bind_dn"`
+	BindPassword            types.String `tfsdk:"bind_password"`
+	BindTimelimit           types.Int64  `tfsdk:"bind_timelimit"`
+	Disabled                types.Bool   `tfsdk:"disabled"`
+	LdapType                types.String `tfsdk:"ldap_type"`
+	RetryInterval           types.Int64  `tfsdk:"retry_interval"`
+	Servers                 types.List   `tfsdk:"servers"`
+	Ssl                     types.Bool   `tfsdk:"ssl"`
+	Timelimit               types.Int64  `tfsdk:"timelimit"`
+	VerifyServerCertificate types.Bool   `tfsdk:"verify_server_certificate"`
+	EncryptedValues         types.Map    `tfsdk:"encrypted_values"`
 }
-type SslTlsServiceProfileDataSourceProtocolSettingsObject struct {
-	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
-	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
-	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
-	AllowAlgorithm3des        types.Bool   `tfsdk:"allow_algorithm_3des"`
-	AllowAlgorithmAes128Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_128_cbc"`
-	AllowAlgorithmAes128Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_128_gcm"`
-	AllowAlgorithmAes256Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_256_cbc"`
-	AllowAlgorithmAes256Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_256_gcm"`
-	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
-	AllowAlgorithmDhe         types.Bool   `tfsdk:"allow_algorithm_dhe"`
-	AllowAlgorithmEcdhe       types.Bool   `tfsdk:"allow_algorithm_ecdhe"`
-	AllowAlgorithmRsa         types.Bool   `tfsdk:"allow_algorithm_rsa"`
-	MaxVersion                types.String `tfsdk:"max_version"`
-	MinVersion                types.String `tfsdk:"min_version"`
+type LdapProfileDataSourceServersObject struct {
+	Name    types.String `tfsdk:"name"`
+	Address types.String `tfsdk:"address"`
+	Port    types.Int64  `tfsdk:"port"`
 }
 
-func (o *SslTlsServiceProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
 
-	var locationObj SslTlsServiceProfileLocation
+	var locationObj LdapProfileLocation
 
-	var protocolSettingsObj *SslTlsServiceProfileDataSourceProtocolSettingsObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":        types.StringType,
-		"certificate": types.StringType,
-		"protocol_settings": types.ObjectType{
-			AttrTypes: protocolSettingsObj.AttributeTypes(),
-		},
+		"name":                      types.StringType,
+		"base":                      types.StringType,
+		"bind_dn":                   types.StringType,
+		"bind_password":             types.StringType,
+		"bind_timelimit":            types.Int64Type,
+		"disabled":                  types.BoolType,
+		"ldap_type":                 types.StringType,
+		"retry_interval":            types.Int64Type,
+		"servers":                   types.ListType{},
+		"ssl":                       types.BoolType,
+		"timelimit":                 types.Int64Type,
+		"verify_server_certificate": types.BoolType,
+		"encrypted_values":          types.MapType{},
 	}
 }
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileDataSourceServersObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"allow_authentication_sha1":   types.BoolType,
-		"allow_authentication_sha256": types.BoolType,
-		"allow_authentication_sha384": types.BoolType,
-		"allow_algorithm_3des":        types.BoolType,
-		"allow_algorithm_aes_128_cbc": types.BoolType,
-		"allow_algorithm_aes_128_gcm": types.BoolType,
-		"allow_algorithm_aes_256_cbc": types.BoolType,
-		"allow_algorithm_aes_256_gcm": types.BoolType,
-		"allow_algorithm_rc4":         types.BoolType,
-		"allow_algorithm_dhe":         types.BoolType,
-		"allow_algorithm_ecdhe":       types.BoolType,
-		"allow_algorithm_rsa":         types.BoolType,
-		"max_version":                 types.StringType,
-		"min_version":                 types.StringType,
+		"name":    types.StringType,
+		"address": types.StringType,
+		"port":    types.Int64Type,
 	}
 }
 
-func (o *SslTlsServiceProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ldap.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	certificate_value := o.Certificate.ValueStringPointer()
-	var protocolSettings_entry *ssltls.ProtocolSettings
-	if o.ProtocolSettings != nil {
-		if *obj != nil && (*obj).ProtocolSettings != nil {
-			protocolSettings_entry = (*obj).ProtocolSettings
-		} else {
-			protocolSettings_entry = new(ssltls.ProtocolSettings)
-		}
-
-		diags.Append(o.ProtocolSettings.CopyToPango(ctx, &protocolSettings_entry, encrypted)...)
+	base_value := o.Base.ValueStringPointer()
+	bindDn_value := o.BindDn.ValueStringPointer()
+	(*encrypted)["solo | plaintext |  | bind_password"] = o.BindPassword
+	bindPassword_value := o.BindPassword.ValueStringPointer()
+	bindTimelimit_value := o.BindTimelimit.ValueInt64Pointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ldapType_value := o.LdapType.ValueStringPointer()
+	retryInterval_value := o.RetryInterval.ValueInt64Pointer()
+	var servers_tf_entries []LdapProfileDataSourceServersObject
+	var servers_pango_entries []ldap.Server
+	{
+		d := o.Servers.ElementsAs(ctx, &servers_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
 			return diags
 		}
+		for _, elt := range servers_tf_entries {
+			var entry *ldap.Server
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			servers_pango_entries = append(servers_pango_entries, *entry)
+		}
 	}
+	ssl_value := o.Ssl.ValueBoolPointer()
+	timelimit_value := o.Timelimit.ValueInt64Pointer()
+	verifyServerCertificate_value := o.VerifyServerCertificate.ValueBoolPointer()
 
 	if (*obj) == nil {
-		*obj = new(ssltls.Entry)
+		*obj = new(ldap.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Certificate = certificate_value
-	(*obj).ProtocolSettings = protocolSettings_entry
+	(*obj).Base = base_value
+	(*obj).BindDn = bindDn_value
+	(*obj).BindPassword = bindPassword_value
+	(*obj).BindTimelimit = bindTimelimit_value
+	(*obj).Disabled = disabled_value
+	(*obj).LdapType = ldapType_value
+	(*obj).RetryInterval = retryInterval_value
+	(*obj).Server = servers_pango_entries
+	(*obj).Ssl = ssl_value
+	(*obj).Timelimit = timelimit_value
+	(*obj).VerifyServerCertificate = verifyServerCertificate_value
 
 	return diags
 }
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyToPango(ctx context.Context, obj **ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileDataSourceServersObject) CopyToPango(ctx context.Context, obj **ldap.Server, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
-	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
-	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
-	allowAlgorithm3des_value := o.AllowAlgorithm3des.ValueBoolPointer()
-	allowAlgorithmAes128Cbc_value := o.AllowAlgorithmAes128Cbc.ValueBoolPointer()
-	allowAlgorithmAes128Gcm_value := o.AllowAlgorithmAes128Gcm.ValueBoolPointer()
-	allowAlgorithmAes256Cbc_value := o.AllowAlgorithmAes256Cbc.ValueBoolPointer()
-	allowAlgorithmAes256Gcm_value := o.AllowAlgorithmAes256Gcm.ValueBoolPointer()
-	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
-	allowAlgorithmDhe_value := o.AllowAlgorithmDhe.ValueBoolPointer()
-	allowAlgorithmEcdhe_value := o.AllowAlgorithmEcdhe.ValueBoolPointer()
-	allowAlgorithmRsa_value := o.AllowAlgorithmRsa.ValueBoolPointer()
-	maxVersion_value := o.MaxVersion.ValueStringPointer()
-	minVersion_value := o.MinVersion.ValueStringPointer()
+	address_value := o.Address.ValueStringPointer()
+	port_value := o.Port.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(ssltls.ProtocolSettings)
+		*obj = new(ldap.Server)
 	}
-	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
-	(*obj).AllowAlgorithm3des = allowAlgorithm3des_value
-	(*obj).AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
-	(*obj).AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
-	(*obj).AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
-	(*obj).AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
-	(*obj).AllowAlgorithmDhe = allowAlgorithmDhe_value
-	(*obj).AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
-	(*obj).AllowAlgorithmRsa = allowAlgorithmRsa_value
-	(*obj).MaxVersion = maxVersion_value
-	(*obj).MinVersion = minVersion_value
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Address = address_value
+	(*obj).Port = port_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *ldap.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var protocolSettings_object *SslTlsServiceProfileDataSourceProtocolSettingsObject
-	if obj.ProtocolSettings != nil {
-		protocolSettings_object = new(SslTlsServiceProfileDataSourceProtocolSettingsObject)
+	var servers_list types.List
+	{
+		var servers_tf_entries []LdapProfileDataSourceServersObject
+		for _, elt := range obj.Server {
+			var entry LdapProfileDataSourceServersObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			servers_tf_entries = append(servers_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("servers")
+		servers_list, list_diags = types.ListValueFrom(ctx, schemaType, servers_tf_entries)
+		diags.Append(list_diags...)
+	}
 
-		diags.Append(protocolSettings_object.CopyFromPango(ctx, obj.ProtocolSettings, encrypted)...)
-		if diags.HasError() {
-			return diags
+	var base_value types.String
+	if obj.Base != nil {
+		base_value = types.StringValue(*obj.Base)
+	}
+	var bindDn_value types.String
+	if obj.BindDn != nil {
+		bindDn_value = types.StringValue(*obj.BindDn)
+	}
+	var bindPassword_value types.String
+	if obj.BindPassword != nil {
+		(*encrypted)["solo | encrypted |  | bind_password"] = types.StringValue(*obj.BindPassword)
+		if value, ok := (*encrypted)["solo | plaintext |  | bind_password"]; ok {
+			bindPassword_value = value
 		}
 	}
-
-	var certificate_value types.String
-	if obj.Certificate != nil {
-		certificate_value = types.StringValue(*obj.Certificate)
+	var bindTimelimit_value types.Int64
+	if obj.BindTimelimit != nil {
+		bindTimelimit_value = types.Int64Value(*obj.BindTimelimit)
+	}
+	var disabled_value types.Bool
+	if obj.Disabled != nil {
+		disabled_value = types.BoolValue(*obj.Disabled)
+	}
+	var ldapType_value types.String
+	if obj.LdapType != nil {
+		ldapType_value = types.StringValue(*obj.LdapType)
+	}
+	var retryInterval_value types.Int64
+	if obj.RetryInterval != nil {
+		retryInterval_value = types.Int64Value(*obj.RetryInterval)
+	}
+	var ssl_value types.Bool
+	if obj.Ssl != nil {
+		ssl_value = types.BoolValue(*obj.Ssl)
+	}
+	var timelimit_value types.Int64
+	if obj.Timelimit != nil {
+		timelimit_value = types.Int64Value(*obj.Timelimit)
+	}
+	var verifyServerCertificate_value types.Bool
+	if obj.VerifyServerCertificate != nil {
+		verifyServerCertificate_value = types.BoolValue(*obj.VerifyServerCertificate)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Certificate = certificate_value
-	o.ProtocolSettings = protocolSettings_object
+	o.Base = base_value
+	o.BindDn = bindDn_value
+	o.BindPassword = bindPassword_value
+	o.BindTimelimit = bindTimelimit_value
+	o.Disabled = disabled_value
+	o.LdapType = ldapType_value
+	o.RetryInterval = retryInterval_value
+	o.Servers = servers_list
+	o.Ssl = ssl_value
+	o.Timelimit = timelimit_value
+	o.VerifyServerCertificate = verifyServerCertificate_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx context.Context, obj *ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileDataSourceServersObject) CopyFromPango(ctx context.Context, obj *ldap.Server, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var allowAuthenticationSha1_value types.Bool
-	if obj.AllowAuthenticationSha1 != nil {
-		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
 	}
-	var allowAuthenticationSha256_value types.Bool
-	if obj.AllowAuthenticationSha256 != nil {
-		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
+	var port_value types.Int64
+	if obj.Port != nil {
+		port_value = types.Int64Value(*obj.Port)
 	}
-	var allowAuthenticationSha384_value types.Bool
-	if obj.AllowAuthenticationSha384 != nil {
-		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
-	}
-	var allowAlgorithm3des_value types.Bool
-	if obj.AllowAlgorithm3des != nil {
-		allowAlgorithm3des_value = types.BoolValue(*obj.AllowAlgorithm3des)
-	}
-	var allowAlgorithmAes128Cbc_value types.Bool
-	if obj.AllowAlgorithmAes128Cbc != nil {
-		allowAlgorithmAes128Cbc_value = types.BoolValue(*obj.AllowAlgorithmAes128Cbc)
-	}
-	var allowAlgorithmAes128Gcm_value types.Bool
-	if obj.AllowAlgorithmAes128Gcm != nil {
-		allowAlgorithmAes128Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes128Gcm)
-	}
-	var allowAlgorithmAes256Cbc_value types.Bool
-	if obj.AllowAlgorithmAes256Cbc != nil {
-		allowAlgorithmAes256Cbc_value = types.BoolValue(*obj.AllowAlgorithmAes256Cbc)
-	}
-	var allowAlgorithmAes256Gcm_value types.Bool
-	if obj.AllowAlgorithmAes256Gcm != nil {
-		allowAlgorithmAes256Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes256Gcm)
-	}
-	var allowAlgorithmRc4_value types.Bool
-	if obj.AllowAlgorithmRc4 != nil {
-		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
-	}
-	var allowAlgorithmDhe_value types.Bool
-	if obj.AllowAlgorithmDhe != nil {
-		allowAlgorithmDhe_value = types.BoolValue(*obj.AllowAlgorithmDhe)
-	}
-	var allowAlgorithmEcdhe_value types.Bool
-	if obj.AllowAlgorithmEcdhe != nil {
-		allowAlgorithmEcdhe_value = types.BoolValue(*obj.AllowAlgorithmEcdhe)
-	}
-	var allowAlgorithmRsa_value types.Bool
-	if obj.AllowAlgorithmRsa != nil {
-		allowAlgorithmRsa_value = types.BoolValue(*obj.AllowAlgorithmRsa)
-	}
-	var maxVersion_value types.String
-	if obj.MaxVersion != nil {
-		maxVersion_value = types.StringValue(*obj.MaxVersion)
-	}
-	var minVersion_value types.String
-	if obj.MinVersion != nil {
-		minVersion_value = types.StringValue(*obj.MinVersion)
-	}
-	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
-	o.AllowAlgorithm3des = allowAlgorithm3des_value
-	o.AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
-	o.AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
-	o.AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
-	o.AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
-	o.AllowAlgorithmDhe = allowAlgorithmDhe_value
-	o.AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
-	o.AllowAlgorithmRsa = allowAlgorithmRsa_value
-	o.MaxVersion = maxVersion_value
-	o.MinVersion = minVersion_value
+	o.Name = types.StringValue(obj.Name)
+	o.Address = address_value
+	o.Port = port_value
 
 	return diags
 }
 
-func SslTlsServiceProfileDataSourceSchema() dsschema.Schema {
+func LdapProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
 
-			"location": SslTlsServiceProfileDataSourceLocationSchema(),
+			"location": LdapProfileDataSourceLocationSchema(),
+
+			"encrypted_values": dsschema.MapAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    false,
+				Computed:    true,
+				Sensitive:   true,
+				ElementType: types.StringType,
+			},
 
 			"name": dsschema.StringAttribute{
 				Description: "",
@@ -289,163 +289,100 @@ func SslTlsServiceProfileDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"certificate": dsschema.StringAttribute{
-				Description: "SSL certificate file name",
+			"base": dsschema.StringAttribute{
+				Description: "Default base distinguished name (DN) to use for searches",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"protocol_settings": SslTlsServiceProfileDataSourceProtocolSettingsSchema(),
-		},
-	}
-}
-
-func (o *SslTlsServiceProfileDataSourceModel) getTypeFor(name string) attr.Type {
-	schema := SslTlsServiceProfileDataSourceSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func SslTlsServiceProfileDataSourceProtocolSettingsSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"allow_authentication_sha1": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA1",
+			"bind_dn": dsschema.StringAttribute{
+				Description: "bind distinguished name",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"allow_authentication_sha256": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA256",
+			"bind_password": dsschema.StringAttribute{
+				Description: "bind password",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   true,
+			},
+
+			"bind_timelimit": dsschema.Int64Attribute{
+				Description: "number of seconds to use for connecting to servers",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"allow_authentication_sha384": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA384",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_3des": dsschema.BoolAttribute{
-				Description: "Allow algorithm 3DES",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_128_cbc": dsschema.BoolAttribute{
-				Description: "Allow algorithm AES-128-CBC",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_128_gcm": dsschema.BoolAttribute{
-				Description: "Allow algorithm AES-128-GCM",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_256_cbc": dsschema.BoolAttribute{
-				Description: "Allow algorithm AES-256-CBC",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_256_gcm": dsschema.BoolAttribute{
-				Description: "Allow algorithm AES-256-GCM",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_rc4": dsschema.BoolAttribute{
-				Description: "Allow algorithm RC4",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_dhe": dsschema.BoolAttribute{
-				Description: "Allow algorithm DHE",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_ecdhe": dsschema.BoolAttribute{
-				Description: "Allow algorithm ECDHE",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_rsa": dsschema.BoolAttribute{
-				Description: "Allow algorithm RSA",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_version": dsschema.StringAttribute{
-				Description: "Maximum TLS protocol version. Valid values are 'tls1-0', 'tls1-1', 'tls1-2', and max (default).",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"min_version": dsschema.StringAttribute{
+			"disabled": dsschema.BoolAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"ldap_type": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"retry_interval": dsschema.Int64Attribute{
+				Description: "Interval (seconds) for reconnecting LDAP server",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"servers": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: LdapProfileDataSourceServersSchema(),
+			},
+
+			"ssl": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"timelimit": dsschema.Int64Attribute{
+				Description: "number of seconds to wait for performing searches",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"verify_server_certificate": dsschema.BoolAttribute{
+				Description: "Verify server certificate for SSL sessions",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
 		},
 	}
 }
 
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) getTypeFor(name string) attr.Type {
-	schema := SslTlsServiceProfileDataSourceProtocolSettingsSchema()
+func (o *LdapProfileDataSourceModel) getTypeFor(name string) attr.Type {
+	schema := LdapProfileDataSourceSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -462,74 +399,134 @@ func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func SslTlsServiceProfileDataSourceLocationSchema() rsschema.Attribute {
-	return SslTlsServiceProfileLocationSchema()
+func LdapProfileDataSourceServersSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"address": dsschema.StringAttribute{
+				Description: "ldap server ip or host name.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"port": dsschema.Int64Attribute{
+				Description: "default 389 for LDAP, 636 for LDAPS",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *LdapProfileDataSourceServersObject) getTypeFor(name string) attr.Type {
+	schema := LdapProfileDataSourceServersSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func LdapProfileDataSourceLocationSchema() rsschema.Attribute {
+	return LdapProfileLocationSchema()
 }
 
 // Metadata returns the data source type name.
-func (d *SslTlsServiceProfileDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_ssl_tls_service_profile"
+func (d *LdapProfileDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_ldap_profile"
 }
 
 // Schema defines the schema for this data source.
-func (d *SslTlsServiceProfileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = SslTlsServiceProfileDataSourceSchema()
+func (d *LdapProfileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = LdapProfileDataSourceSchema()
 }
 
 // Configure prepares the struct.
-func (d *SslTlsServiceProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *LdapProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
 	d.client = providerData.Client
-	specifier, _, err := ssltls.Versioning(d.client.Versioning())
+	specifier, _, err := ldap.Versioning(d.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ssltls.NewService(d.client), batchSize, specifier, ssltls.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager(d.client, ldap.NewService(d.client), batchSize, specifier, ldap.SpecMatches)
 }
-func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (o *LdapProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state SslTlsServiceProfileDataSourceModel
+	var savestate, state LdapProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	var location ssltls.Location
+	var location ldap.Location
 
 	{
-		var terraformLocation SslTlsServiceProfileLocation
+		var terraformLocation LdapProfileLocation
 		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &ssltls.SharedLocation{}
-			var innerLocation SslTlsServiceProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Panorama.IsNull() {
-			location.Panorama = &ssltls.PanoramaLocation{}
-			var innerLocation SslTlsServiceProfilePanoramaLocation
+			location.Panorama = &ldap.PanoramaLocation{}
+			var innerLocation LdapProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &ldap.SharedLocation{}
+			var innerLocation LdapProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &ldap.VsysLocation{}
+			var innerLocation LdapProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
-			location.Template = &ssltls.TemplateLocation{}
-			var innerLocation SslTlsServiceProfileTemplateLocation
+			location.Template = &ldap.TemplateLocation{}
+			var innerLocation LdapProfileTemplateLocation
 			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -539,8 +536,8 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
-			location.TemplateVsys = &ssltls.TemplateVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateVsysLocation
+			location.TemplateVsys = &ldap.TemplateVsysLocation{}
+			var innerLocation LdapProfileTemplateVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -552,8 +549,8 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		}
 
 		if !terraformLocation.TemplateStack.IsNull() {
-			location.TemplateStack = &ssltls.TemplateStackLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackLocation
+			location.TemplateStack = &ldap.TemplateStackLocation{}
+			var innerLocation LdapProfileTemplateStackLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -563,8 +560,8 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
-			location.TemplateStackVsys = &ssltls.TemplateStackVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackVsysLocation
+			location.TemplateStackVsys = &ldap.TemplateStackVsysLocation{}
+			var innerLocation LdapProfileTemplateStackVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -576,9 +573,15 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		}
 	}
 
+	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
+	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
-		"resource_name": "panos_ssl_tls_service_profile_resource",
+		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Read",
 		"name":          savestate.Name.ValueString(),
 	})
@@ -594,7 +597,7 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, object, &ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -604,6 +607,9 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 	*/
 
 	state.Location = savestate.Location
+	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
+	state.EncryptedValues = ev_map
+	resp.Diagnostics.Append(ev_diags...)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -612,62 +618,70 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 
 // Generate Terraform Resource object
 var (
-	_ resource.Resource                = &SslTlsServiceProfileResource{}
-	_ resource.ResourceWithConfigure   = &SslTlsServiceProfileResource{}
-	_ resource.ResourceWithImportState = &SslTlsServiceProfileResource{}
+	_ resource.Resource                = &LdapProfileResource{}
+	_ resource.ResourceWithConfigure   = &LdapProfileResource{}
+	_ resource.ResourceWithImportState = &LdapProfileResource{}
 )
 
-func NewSslTlsServiceProfileResource() resource.Resource {
-	if _, found := resourceFuncMap["panos_ssl_tls_service_profile"]; !found {
-		resourceFuncMap["panos_ssl_tls_service_profile"] = resourceFuncs{
-			CreateImportId: SslTlsServiceProfileImportStateCreator,
+func NewLdapProfileResource() resource.Resource {
+	if _, found := resourceFuncMap["panos_ldap_profile"]; !found {
+		resourceFuncMap["panos_ldap_profile"] = resourceFuncs{
+			CreateImportId: LdapProfileImportStateCreator,
 		}
 	}
-	return &SslTlsServiceProfileResource{}
+	return &LdapProfileResource{}
 }
 
-type SslTlsServiceProfileResource struct {
+type LdapProfileResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*ssltls.Entry, ssltls.Location, *ssltls.Service]
+	manager *sdkmanager.EntryObjectManager[*ldap.Entry, ldap.Location, *ldap.Service]
 }
 
-func SslTlsServiceProfileResourceLocationSchema() rsschema.Attribute {
-	return SslTlsServiceProfileLocationSchema()
+func LdapProfileResourceLocationSchema() rsschema.Attribute {
+	return LdapProfileLocationSchema()
 }
 
-type SslTlsServiceProfileResourceModel struct {
-	Location         types.Object                                        `tfsdk:"location"`
-	Name             types.String                                        `tfsdk:"name"`
-	Certificate      types.String                                        `tfsdk:"certificate"`
-	ProtocolSettings *SslTlsServiceProfileResourceProtocolSettingsObject `tfsdk:"protocol_settings"`
+type LdapProfileResourceModel struct {
+	Location                types.Object `tfsdk:"location"`
+	Name                    types.String `tfsdk:"name"`
+	Base                    types.String `tfsdk:"base"`
+	BindDn                  types.String `tfsdk:"bind_dn"`
+	BindPassword            types.String `tfsdk:"bind_password"`
+	BindTimelimit           types.Int64  `tfsdk:"bind_timelimit"`
+	Disabled                types.Bool   `tfsdk:"disabled"`
+	LdapType                types.String `tfsdk:"ldap_type"`
+	RetryInterval           types.Int64  `tfsdk:"retry_interval"`
+	Servers                 types.List   `tfsdk:"servers"`
+	Ssl                     types.Bool   `tfsdk:"ssl"`
+	Timelimit               types.Int64  `tfsdk:"timelimit"`
+	VerifyServerCertificate types.Bool   `tfsdk:"verify_server_certificate"`
+	EncryptedValues         types.Map    `tfsdk:"encrypted_values"`
 }
-type SslTlsServiceProfileResourceProtocolSettingsObject struct {
-	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
-	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
-	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
-	AllowAlgorithm3des        types.Bool   `tfsdk:"allow_algorithm_3des"`
-	AllowAlgorithmAes128Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_128_cbc"`
-	AllowAlgorithmAes128Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_128_gcm"`
-	AllowAlgorithmAes256Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_256_cbc"`
-	AllowAlgorithmAes256Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_256_gcm"`
-	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
-	AllowAlgorithmDhe         types.Bool   `tfsdk:"allow_algorithm_dhe"`
-	AllowAlgorithmEcdhe       types.Bool   `tfsdk:"allow_algorithm_ecdhe"`
-	AllowAlgorithmRsa         types.Bool   `tfsdk:"allow_algorithm_rsa"`
-	MaxVersion                types.String `tfsdk:"max_version"`
-	MinVersion                types.String `tfsdk:"min_version"`
+type LdapProfileResourceServersObject struct {
+	Name    types.String `tfsdk:"name"`
+	Address types.String `tfsdk:"address"`
+	Port    types.Int64  `tfsdk:"port"`
 }
 
-func (r *SslTlsServiceProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (r *LdapProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
 
-func SslTlsServiceProfileResourceSchema() rsschema.Schema {
+func LdapProfileResourceSchema() rsschema.Schema {
 	return rsschema.Schema{
 		Attributes: map[string]rsschema.Attribute{
 
-			"location": SslTlsServiceProfileResourceLocationSchema(),
+			"location": LdapProfileResourceLocationSchema(),
+
+			"encrypted_values": rsschema.MapAttribute{
+				Description: "",
+				Required:    false,
+				Optional:    false,
+				Computed:    true,
+				Sensitive:   true,
+				ElementType: types.StringType,
+			},
 
 			"name": rsschema.StringAttribute{
 				Description: "",
@@ -677,21 +691,163 @@ func SslTlsServiceProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"certificate": rsschema.StringAttribute{
-				Description: "SSL certificate file name",
+			"base": rsschema.StringAttribute{
+				Description: "Default base distinguished name (DN) to use for searches",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"bind_dn": rsschema.StringAttribute{
+				Description: "bind distinguished name",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"bind_password": rsschema.StringAttribute{
+				Description: "bind password",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   true,
+			},
+
+			"bind_timelimit": rsschema.Int64Attribute{
+				Description: "number of seconds to use for connecting to servers",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(30),
+			},
+
+			"disabled": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"ldap_type": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("other"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"active-directory",
+						"e-directory",
+						"sun",
+						"other",
+					}...),
+				},
+			},
+
+			"retry_interval": rsschema.Int64Attribute{
+				Description: "Interval (seconds) for reconnecting LDAP server",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(60),
+			},
+
+			"servers": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: LdapProfileResourceServersSchema(),
+			},
+
+			"ssl": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"timelimit": rsschema.Int64Attribute{
+				Description: "number of seconds to wait for performing searches",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(30),
+			},
+
+			"verify_server_certificate": rsschema.BoolAttribute{
+				Description: "Verify server certificate for SSL sessions",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *LdapProfileResourceModel) getTypeFor(name string) attr.Type {
+	schema := LdapProfileResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func LdapProfileResourceServersSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
 			},
 
-			"protocol_settings": SslTlsServiceProfileResourceProtocolSettingsSchema(),
+			"address": rsschema.StringAttribute{
+				Description: "ldap server ip or host name.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"port": rsschema.Int64Attribute{
+				Description: "default 389 for LDAP, 636 for LDAPS",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(389),
+			},
 		},
 	}
 }
 
-func (o *SslTlsServiceProfileResourceModel) getTypeFor(name string) attr.Type {
-	schema := SslTlsServiceProfileResourceSchema()
+func (o *LdapProfileResourceServersObject) getTypeFor(name string) attr.Type {
+	schema := LdapProfileResourceServersSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -708,161 +864,17 @@ func (o *SslTlsServiceProfileResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func SslTlsServiceProfileResourceProtocolSettingsSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"allow_authentication_sha1": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA1",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha256": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA256",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha384": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA384",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_3des": rsschema.BoolAttribute{
-				Description: "Allow algorithm 3DES",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_128_cbc": rsschema.BoolAttribute{
-				Description: "Allow algorithm AES-128-CBC",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_128_gcm": rsschema.BoolAttribute{
-				Description: "Allow algorithm AES-128-GCM",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_256_cbc": rsschema.BoolAttribute{
-				Description: "Allow algorithm AES-256-CBC",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_aes_256_gcm": rsschema.BoolAttribute{
-				Description: "Allow algorithm AES-256-GCM",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_rc4": rsschema.BoolAttribute{
-				Description: "Allow algorithm RC4",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_dhe": rsschema.BoolAttribute{
-				Description: "Allow algorithm DHE",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_ecdhe": rsschema.BoolAttribute{
-				Description: "Allow algorithm ECDHE",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_algorithm_rsa": rsschema.BoolAttribute{
-				Description: "Allow algorithm RSA",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_version": rsschema.StringAttribute{
-				Description: "Maximum TLS protocol version. Valid values are 'tls1-0', 'tls1-1', 'tls1-2', and max (default).",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("max"),
-			},
-
-			"min_version": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("tls1-0"),
-			},
-		},
-	}
+func (r *LdapProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_ldap_profile"
 }
 
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) getTypeFor(name string) attr.Type {
-	schema := SslTlsServiceProfileResourceProtocolSettingsSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func (r *SslTlsServiceProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_ssl_tls_service_profile"
-}
-
-func (r *SslTlsServiceProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = SslTlsServiceProfileResourceSchema()
+func (r *LdapProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = LdapProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *SslTlsServiceProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *LdapProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
@@ -870,217 +882,207 @@ func (r *SslTlsServiceProfileResource) Configure(ctx context.Context, req resour
 
 	providerData := req.ProviderData.(*ProviderData)
 	r.client = providerData.Client
-	specifier, _, err := ssltls.Versioning(r.client.Versioning())
+	specifier, _, err := ldap.Versioning(r.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ssltls.NewService(r.client), batchSize, specifier, ssltls.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager(r.client, ldap.NewService(r.client), batchSize, specifier, ldap.SpecMatches)
 }
 
-func (o *SslTlsServiceProfileResourceModel) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileResourceModel) AttributeTypes() map[string]attr.Type {
 
-	var locationObj SslTlsServiceProfileLocation
+	var locationObj LdapProfileLocation
 
-	var protocolSettingsObj *SslTlsServiceProfileResourceProtocolSettingsObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":        types.StringType,
-		"certificate": types.StringType,
-		"protocol_settings": types.ObjectType{
-			AttrTypes: protocolSettingsObj.AttributeTypes(),
-		},
+		"name":                      types.StringType,
+		"base":                      types.StringType,
+		"bind_dn":                   types.StringType,
+		"bind_password":             types.StringType,
+		"bind_timelimit":            types.Int64Type,
+		"disabled":                  types.BoolType,
+		"ldap_type":                 types.StringType,
+		"retry_interval":            types.Int64Type,
+		"servers":                   types.ListType{},
+		"ssl":                       types.BoolType,
+		"timelimit":                 types.Int64Type,
+		"verify_server_certificate": types.BoolType,
+		"encrypted_values":          types.MapType{},
 	}
 }
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileResourceServersObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"allow_authentication_sha1":   types.BoolType,
-		"allow_authentication_sha256": types.BoolType,
-		"allow_authentication_sha384": types.BoolType,
-		"allow_algorithm_3des":        types.BoolType,
-		"allow_algorithm_aes_128_cbc": types.BoolType,
-		"allow_algorithm_aes_128_gcm": types.BoolType,
-		"allow_algorithm_aes_256_cbc": types.BoolType,
-		"allow_algorithm_aes_256_gcm": types.BoolType,
-		"allow_algorithm_rc4":         types.BoolType,
-		"allow_algorithm_dhe":         types.BoolType,
-		"allow_algorithm_ecdhe":       types.BoolType,
-		"allow_algorithm_rsa":         types.BoolType,
-		"max_version":                 types.StringType,
-		"min_version":                 types.StringType,
+		"name":    types.StringType,
+		"address": types.StringType,
+		"port":    types.Int64Type,
 	}
 }
 
-func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, obj **ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileResourceModel) CopyToPango(ctx context.Context, obj **ldap.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	certificate_value := o.Certificate.ValueStringPointer()
-	var protocolSettings_entry *ssltls.ProtocolSettings
-	if o.ProtocolSettings != nil {
-		if *obj != nil && (*obj).ProtocolSettings != nil {
-			protocolSettings_entry = (*obj).ProtocolSettings
-		} else {
-			protocolSettings_entry = new(ssltls.ProtocolSettings)
-		}
-
-		diags.Append(o.ProtocolSettings.CopyToPango(ctx, &protocolSettings_entry, encrypted)...)
+	base_value := o.Base.ValueStringPointer()
+	bindDn_value := o.BindDn.ValueStringPointer()
+	(*encrypted)["solo | plaintext |  | bind_password"] = o.BindPassword
+	bindPassword_value := o.BindPassword.ValueStringPointer()
+	bindTimelimit_value := o.BindTimelimit.ValueInt64Pointer()
+	disabled_value := o.Disabled.ValueBoolPointer()
+	ldapType_value := o.LdapType.ValueStringPointer()
+	retryInterval_value := o.RetryInterval.ValueInt64Pointer()
+	var servers_tf_entries []LdapProfileResourceServersObject
+	var servers_pango_entries []ldap.Server
+	{
+		d := o.Servers.ElementsAs(ctx, &servers_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
 			return diags
 		}
+		for _, elt := range servers_tf_entries {
+			var entry *ldap.Server
+			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			if diags.HasError() {
+				return diags
+			}
+			servers_pango_entries = append(servers_pango_entries, *entry)
+		}
 	}
+	ssl_value := o.Ssl.ValueBoolPointer()
+	timelimit_value := o.Timelimit.ValueInt64Pointer()
+	verifyServerCertificate_value := o.VerifyServerCertificate.ValueBoolPointer()
 
 	if (*obj) == nil {
-		*obj = new(ssltls.Entry)
+		*obj = new(ldap.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Certificate = certificate_value
-	(*obj).ProtocolSettings = protocolSettings_entry
+	(*obj).Base = base_value
+	(*obj).BindDn = bindDn_value
+	(*obj).BindPassword = bindPassword_value
+	(*obj).BindTimelimit = bindTimelimit_value
+	(*obj).Disabled = disabled_value
+	(*obj).LdapType = ldapType_value
+	(*obj).RetryInterval = retryInterval_value
+	(*obj).Server = servers_pango_entries
+	(*obj).Ssl = ssl_value
+	(*obj).Timelimit = timelimit_value
+	(*obj).VerifyServerCertificate = verifyServerCertificate_value
 
 	return diags
 }
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyToPango(ctx context.Context, obj **ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileResourceServersObject) CopyToPango(ctx context.Context, obj **ldap.Server, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
-	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
-	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
-	allowAlgorithm3des_value := o.AllowAlgorithm3des.ValueBoolPointer()
-	allowAlgorithmAes128Cbc_value := o.AllowAlgorithmAes128Cbc.ValueBoolPointer()
-	allowAlgorithmAes128Gcm_value := o.AllowAlgorithmAes128Gcm.ValueBoolPointer()
-	allowAlgorithmAes256Cbc_value := o.AllowAlgorithmAes256Cbc.ValueBoolPointer()
-	allowAlgorithmAes256Gcm_value := o.AllowAlgorithmAes256Gcm.ValueBoolPointer()
-	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
-	allowAlgorithmDhe_value := o.AllowAlgorithmDhe.ValueBoolPointer()
-	allowAlgorithmEcdhe_value := o.AllowAlgorithmEcdhe.ValueBoolPointer()
-	allowAlgorithmRsa_value := o.AllowAlgorithmRsa.ValueBoolPointer()
-	maxVersion_value := o.MaxVersion.ValueStringPointer()
-	minVersion_value := o.MinVersion.ValueStringPointer()
+	address_value := o.Address.ValueStringPointer()
+	port_value := o.Port.ValueInt64Pointer()
 
 	if (*obj) == nil {
-		*obj = new(ssltls.ProtocolSettings)
+		*obj = new(ldap.Server)
 	}
-	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
-	(*obj).AllowAlgorithm3des = allowAlgorithm3des_value
-	(*obj).AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
-	(*obj).AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
-	(*obj).AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
-	(*obj).AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
-	(*obj).AllowAlgorithmDhe = allowAlgorithmDhe_value
-	(*obj).AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
-	(*obj).AllowAlgorithmRsa = allowAlgorithmRsa_value
-	(*obj).MaxVersion = maxVersion_value
-	(*obj).MinVersion = minVersion_value
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Address = address_value
+	(*obj).Port = port_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileResourceModel) CopyFromPango(ctx context.Context, obj *ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileResourceModel) CopyFromPango(ctx context.Context, obj *ldap.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var protocolSettings_object *SslTlsServiceProfileResourceProtocolSettingsObject
-	if obj.ProtocolSettings != nil {
-		protocolSettings_object = new(SslTlsServiceProfileResourceProtocolSettingsObject)
+	var servers_list types.List
+	{
+		var servers_tf_entries []LdapProfileResourceServersObject
+		for _, elt := range obj.Server {
+			var entry LdapProfileResourceServersObject
+			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
+			diags.Append(entry_diags...)
+			servers_tf_entries = append(servers_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("servers")
+		servers_list, list_diags = types.ListValueFrom(ctx, schemaType, servers_tf_entries)
+		diags.Append(list_diags...)
+	}
 
-		diags.Append(protocolSettings_object.CopyFromPango(ctx, obj.ProtocolSettings, encrypted)...)
-		if diags.HasError() {
-			return diags
+	var base_value types.String
+	if obj.Base != nil {
+		base_value = types.StringValue(*obj.Base)
+	}
+	var bindDn_value types.String
+	if obj.BindDn != nil {
+		bindDn_value = types.StringValue(*obj.BindDn)
+	}
+	var bindPassword_value types.String
+	if obj.BindPassword != nil {
+		(*encrypted)["solo | encrypted |  | bind_password"] = types.StringValue(*obj.BindPassword)
+		if value, ok := (*encrypted)["solo | plaintext |  | bind_password"]; ok {
+			bindPassword_value = value
 		}
 	}
-
-	var certificate_value types.String
-	if obj.Certificate != nil {
-		certificate_value = types.StringValue(*obj.Certificate)
+	var bindTimelimit_value types.Int64
+	if obj.BindTimelimit != nil {
+		bindTimelimit_value = types.Int64Value(*obj.BindTimelimit)
+	}
+	var disabled_value types.Bool
+	if obj.Disabled != nil {
+		disabled_value = types.BoolValue(*obj.Disabled)
+	}
+	var ldapType_value types.String
+	if obj.LdapType != nil {
+		ldapType_value = types.StringValue(*obj.LdapType)
+	}
+	var retryInterval_value types.Int64
+	if obj.RetryInterval != nil {
+		retryInterval_value = types.Int64Value(*obj.RetryInterval)
+	}
+	var ssl_value types.Bool
+	if obj.Ssl != nil {
+		ssl_value = types.BoolValue(*obj.Ssl)
+	}
+	var timelimit_value types.Int64
+	if obj.Timelimit != nil {
+		timelimit_value = types.Int64Value(*obj.Timelimit)
+	}
+	var verifyServerCertificate_value types.Bool
+	if obj.VerifyServerCertificate != nil {
+		verifyServerCertificate_value = types.BoolValue(*obj.VerifyServerCertificate)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Certificate = certificate_value
-	o.ProtocolSettings = protocolSettings_object
+	o.Base = base_value
+	o.BindDn = bindDn_value
+	o.BindPassword = bindPassword_value
+	o.BindTimelimit = bindTimelimit_value
+	o.Disabled = disabled_value
+	o.LdapType = ldapType_value
+	o.RetryInterval = retryInterval_value
+	o.Servers = servers_list
+	o.Ssl = ssl_value
+	o.Timelimit = timelimit_value
+	o.VerifyServerCertificate = verifyServerCertificate_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx context.Context, obj *ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LdapProfileResourceServersObject) CopyFromPango(ctx context.Context, obj *ldap.Server, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var allowAuthenticationSha1_value types.Bool
-	if obj.AllowAuthenticationSha1 != nil {
-		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
 	}
-	var allowAuthenticationSha256_value types.Bool
-	if obj.AllowAuthenticationSha256 != nil {
-		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
+	var port_value types.Int64
+	if obj.Port != nil {
+		port_value = types.Int64Value(*obj.Port)
 	}
-	var allowAuthenticationSha384_value types.Bool
-	if obj.AllowAuthenticationSha384 != nil {
-		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
-	}
-	var allowAlgorithm3des_value types.Bool
-	if obj.AllowAlgorithm3des != nil {
-		allowAlgorithm3des_value = types.BoolValue(*obj.AllowAlgorithm3des)
-	}
-	var allowAlgorithmAes128Cbc_value types.Bool
-	if obj.AllowAlgorithmAes128Cbc != nil {
-		allowAlgorithmAes128Cbc_value = types.BoolValue(*obj.AllowAlgorithmAes128Cbc)
-	}
-	var allowAlgorithmAes128Gcm_value types.Bool
-	if obj.AllowAlgorithmAes128Gcm != nil {
-		allowAlgorithmAes128Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes128Gcm)
-	}
-	var allowAlgorithmAes256Cbc_value types.Bool
-	if obj.AllowAlgorithmAes256Cbc != nil {
-		allowAlgorithmAes256Cbc_value = types.BoolValue(*obj.AllowAlgorithmAes256Cbc)
-	}
-	var allowAlgorithmAes256Gcm_value types.Bool
-	if obj.AllowAlgorithmAes256Gcm != nil {
-		allowAlgorithmAes256Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes256Gcm)
-	}
-	var allowAlgorithmRc4_value types.Bool
-	if obj.AllowAlgorithmRc4 != nil {
-		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
-	}
-	var allowAlgorithmDhe_value types.Bool
-	if obj.AllowAlgorithmDhe != nil {
-		allowAlgorithmDhe_value = types.BoolValue(*obj.AllowAlgorithmDhe)
-	}
-	var allowAlgorithmEcdhe_value types.Bool
-	if obj.AllowAlgorithmEcdhe != nil {
-		allowAlgorithmEcdhe_value = types.BoolValue(*obj.AllowAlgorithmEcdhe)
-	}
-	var allowAlgorithmRsa_value types.Bool
-	if obj.AllowAlgorithmRsa != nil {
-		allowAlgorithmRsa_value = types.BoolValue(*obj.AllowAlgorithmRsa)
-	}
-	var maxVersion_value types.String
-	if obj.MaxVersion != nil {
-		maxVersion_value = types.StringValue(*obj.MaxVersion)
-	}
-	var minVersion_value types.String
-	if obj.MinVersion != nil {
-		minVersion_value = types.StringValue(*obj.MinVersion)
-	}
-	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
-	o.AllowAlgorithm3des = allowAlgorithm3des_value
-	o.AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
-	o.AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
-	o.AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
-	o.AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
-	o.AllowAlgorithmDhe = allowAlgorithmDhe_value
-	o.AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
-	o.AllowAlgorithmRsa = allowAlgorithmRsa_value
-	o.MaxVersion = maxVersion_value
-	o.MinVersion = minVersion_value
+	o.Name = types.StringValue(obj.Name)
+	o.Address = address_value
+	o.Port = port_value
 
 	return diags
 }
 
-func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var state SslTlsServiceProfileResourceModel
+func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1088,7 +1090,7 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource create", map[string]any{
-		"resource_name": "panos_ssl_tls_service_profile_resource",
+		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Create",
 		"name":          state.Name.ValueString(),
 	})
@@ -1101,36 +1103,47 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 
 	// Determine the location.
 
-	var location ssltls.Location
+	var location ldap.Location
 
 	{
-		var terraformLocation SslTlsServiceProfileLocation
+		var terraformLocation LdapProfileLocation
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &ssltls.SharedLocation{}
-			var innerLocation SslTlsServiceProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Panorama.IsNull() {
-			location.Panorama = &ssltls.PanoramaLocation{}
-			var innerLocation SslTlsServiceProfilePanoramaLocation
+			location.Panorama = &ldap.PanoramaLocation{}
+			var innerLocation LdapProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &ldap.SharedLocation{}
+			var innerLocation LdapProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &ldap.VsysLocation{}
+			var innerLocation LdapProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
-			location.Template = &ssltls.TemplateLocation{}
-			var innerLocation SslTlsServiceProfileTemplateLocation
+			location.Template = &ldap.TemplateLocation{}
+			var innerLocation LdapProfileTemplateLocation
 			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1140,8 +1153,8 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
-			location.TemplateVsys = &ssltls.TemplateVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateVsysLocation
+			location.TemplateVsys = &ldap.TemplateVsysLocation{}
+			var innerLocation LdapProfileTemplateVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1153,8 +1166,8 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStack.IsNull() {
-			location.TemplateStack = &ssltls.TemplateStackLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackLocation
+			location.TemplateStack = &ldap.TemplateStackLocation{}
+			var innerLocation LdapProfileTemplateStackLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1164,8 +1177,8 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
-			location.TemplateStackVsys = &ssltls.TemplateStackVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackVsysLocation
+			location.TemplateStackVsys = &ldap.TemplateStackVsysLocation{}
+			var innerLocation LdapProfileTemplateStackVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1183,9 +1196,10 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	// Load the desired config.
-	var obj *ssltls.Entry
+	var obj *ldap.Entry
 
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	ev := make(map[string]types.String)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, &ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1203,7 +1217,13 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, &ev)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
+	state.EncryptedValues = ev_map
+	resp.Diagnostics.Append(ev_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1212,44 +1232,55 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
-func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state SslTlsServiceProfileResourceModel
+	var savestate, state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	var location ssltls.Location
+	var location ldap.Location
 
 	{
-		var terraformLocation SslTlsServiceProfileLocation
+		var terraformLocation LdapProfileLocation
 		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &ssltls.SharedLocation{}
-			var innerLocation SslTlsServiceProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Panorama.IsNull() {
-			location.Panorama = &ssltls.PanoramaLocation{}
-			var innerLocation SslTlsServiceProfilePanoramaLocation
+			location.Panorama = &ldap.PanoramaLocation{}
+			var innerLocation LdapProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &ldap.SharedLocation{}
+			var innerLocation LdapProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &ldap.VsysLocation{}
+			var innerLocation LdapProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
-			location.Template = &ssltls.TemplateLocation{}
-			var innerLocation SslTlsServiceProfileTemplateLocation
+			location.Template = &ldap.TemplateLocation{}
+			var innerLocation LdapProfileTemplateLocation
 			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1259,8 +1290,8 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
-			location.TemplateVsys = &ssltls.TemplateVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateVsysLocation
+			location.TemplateVsys = &ldap.TemplateVsysLocation{}
+			var innerLocation LdapProfileTemplateVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1272,8 +1303,8 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		}
 
 		if !terraformLocation.TemplateStack.IsNull() {
-			location.TemplateStack = &ssltls.TemplateStackLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackLocation
+			location.TemplateStack = &ldap.TemplateStackLocation{}
+			var innerLocation LdapProfileTemplateStackLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1283,8 +1314,8 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
-			location.TemplateStackVsys = &ssltls.TemplateStackVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackVsysLocation
+			location.TemplateStackVsys = &ldap.TemplateStackVsysLocation{}
+			var innerLocation LdapProfileTemplateStackVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1296,9 +1327,15 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		}
 	}
 
+	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
+	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
-		"resource_name": "panos_ssl_tls_service_profile_resource",
+		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Read",
 		"name":          savestate.Name.ValueString(),
 	})
@@ -1314,7 +1351,7 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, object, &ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1324,50 +1361,69 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 	*/
 
 	state.Location = savestate.Location
+	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
+	state.EncryptedValues = ev_map
+	resp.Diagnostics.Append(ev_diags...)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
-	var plan, state SslTlsServiceProfileResourceModel
+	var plan, state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
+	resp.Diagnostics.Append(state.EncryptedValues.ElementsAs(ctx, &ev, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
-	var location ssltls.Location
+	var location ldap.Location
 
 	{
-		var terraformLocation SslTlsServiceProfileLocation
+		var terraformLocation LdapProfileLocation
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &ssltls.SharedLocation{}
-			var innerLocation SslTlsServiceProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Panorama.IsNull() {
-			location.Panorama = &ssltls.PanoramaLocation{}
-			var innerLocation SslTlsServiceProfilePanoramaLocation
+			location.Panorama = &ldap.PanoramaLocation{}
+			var innerLocation LdapProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &ldap.SharedLocation{}
+			var innerLocation LdapProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &ldap.VsysLocation{}
+			var innerLocation LdapProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
-			location.Template = &ssltls.TemplateLocation{}
-			var innerLocation SslTlsServiceProfileTemplateLocation
+			location.Template = &ldap.TemplateLocation{}
+			var innerLocation LdapProfileTemplateLocation
 			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1377,8 +1433,8 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
-			location.TemplateVsys = &ssltls.TemplateVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateVsysLocation
+			location.TemplateVsys = &ldap.TemplateVsysLocation{}
+			var innerLocation LdapProfileTemplateVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1390,8 +1446,8 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStack.IsNull() {
-			location.TemplateStack = &ssltls.TemplateStackLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackLocation
+			location.TemplateStack = &ldap.TemplateStackLocation{}
+			var innerLocation LdapProfileTemplateStackLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1401,8 +1457,8 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
-			location.TemplateStackVsys = &ssltls.TemplateStackVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackVsysLocation
+			location.TemplateStackVsys = &ldap.TemplateStackVsysLocation{}
+			var innerLocation LdapProfileTemplateStackVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1416,7 +1472,7 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource update", map[string]any{
-		"resource_name": "panos_ssl_tls_service_profile_resource",
+		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Update",
 	})
 
@@ -1431,7 +1487,7 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, &ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1451,7 +1507,10 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, updated, &ev)
+	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
+	state.EncryptedValues = ev_map
+	resp.Diagnostics.Append(ev_diags...)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1461,9 +1520,9 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *LdapProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
-	var state SslTlsServiceProfileResourceModel
+	var state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1471,7 +1530,7 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 
 	// Basic logging.
 	tflog.Info(ctx, "performing resource delete", map[string]any{
-		"resource_name": "panos_ssl_tls_service_profile_resource",
+		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Delete",
 		"name":          state.Name.ValueString(),
 	})
@@ -1482,36 +1541,47 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 		return
 	}
 
-	var location ssltls.Location
+	var location ldap.Location
 
 	{
-		var terraformLocation SslTlsServiceProfileLocation
+		var terraformLocation LdapProfileLocation
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &ssltls.SharedLocation{}
-			var innerLocation SslTlsServiceProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Panorama.IsNull() {
-			location.Panorama = &ssltls.PanoramaLocation{}
-			var innerLocation SslTlsServiceProfilePanoramaLocation
+			location.Panorama = &ldap.PanoramaLocation{}
+			var innerLocation LdapProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &ldap.SharedLocation{}
+			var innerLocation LdapProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &ldap.VsysLocation{}
+			var innerLocation LdapProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
-			location.Template = &ssltls.TemplateLocation{}
-			var innerLocation SslTlsServiceProfileTemplateLocation
+			location.Template = &ldap.TemplateLocation{}
+			var innerLocation LdapProfileTemplateLocation
 			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1521,8 +1591,8 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
-			location.TemplateVsys = &ssltls.TemplateVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateVsysLocation
+			location.TemplateVsys = &ldap.TemplateVsysLocation{}
+			var innerLocation LdapProfileTemplateVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1534,8 +1604,8 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStack.IsNull() {
-			location.TemplateStack = &ssltls.TemplateStackLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackLocation
+			location.TemplateStack = &ldap.TemplateStackLocation{}
+			var innerLocation LdapProfileTemplateStackLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1545,8 +1615,8 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
-			location.TemplateStackVsys = &ssltls.TemplateStackVsysLocation{}
-			var innerLocation SslTlsServiceProfileTemplateStackVsysLocation
+			location.TemplateStackVsys = &ldap.TemplateStackVsysLocation{}
+			var innerLocation LdapProfileTemplateStackVsysLocation
 			resp.Diagnostics.Append(terraformLocation.TemplateStackVsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -1565,17 +1635,17 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 
 }
 
-type SslTlsServiceProfileImportState struct {
+type LdapProfileImportState struct {
 	Location types.Object `json:"location"`
 	Name     types.String `json:"name"`
 }
 
-func (o SslTlsServiceProfileImportState) MarshalJSON() ([]byte, error) {
+func (o LdapProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *SslTlsServiceProfileLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location *LdapProfileLocation `json:"location"`
+		Name     *string              `json:"name"`
 	}
-	var location_object *SslTlsServiceProfileLocation
+	var location_object *LdapProfileLocation
 	{
 		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
@@ -1591,10 +1661,10 @@ func (o SslTlsServiceProfileImportState) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileImportState) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *SslTlsServiceProfileLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location *LdapProfileLocation `json:"location"`
+		Name     *string              `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1615,7 +1685,7 @@ func (o *SslTlsServiceProfileImportState) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func SslTlsServiceProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+func LdapProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
 	attrs := resource.Attributes()
 	if attrs == nil {
 		return nil, fmt.Errorf("Object has no attributes")
@@ -1646,7 +1716,7 @@ func SslTlsServiceProfileImportStateCreator(ctx context.Context, resource types.
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
 
-	importStruct := SslTlsServiceProfileImportState{
+	importStruct := LdapProfileImportState{
 		Location: location,
 		Name:     name,
 	}
@@ -1654,9 +1724,9 @@ func SslTlsServiceProfileImportStateCreator(ctx context.Context, resource types.
 	return json.Marshal(importStruct)
 }
 
-func (r *SslTlsServiceProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *LdapProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
-	var obj SslTlsServiceProfileImportState
+	var obj LdapProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
@@ -1681,46 +1751,51 @@ func (r *SslTlsServiceProfileResource) ImportState(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
-type SslTlsServiceProfileSharedLocation struct {
+type LdapProfilePanoramaLocation struct {
 }
-type SslTlsServiceProfilePanoramaLocation struct {
+type LdapProfileSharedLocation struct {
 }
-type SslTlsServiceProfileTemplateLocation struct {
+type LdapProfileVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
+type LdapProfileTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
-type SslTlsServiceProfileTemplateVsysLocation struct {
+type LdapProfileTemplateVsysLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Template       types.String `tfsdk:"template"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	Vsys           types.String `tfsdk:"vsys"`
 }
-type SslTlsServiceProfileTemplateStackLocation struct {
+type LdapProfileTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
-type SslTlsServiceProfileTemplateStackVsysLocation struct {
+type LdapProfileTemplateStackVsysLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	TemplateStack  types.String `tfsdk:"template_stack"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	Vsys           types.String `tfsdk:"vsys"`
 }
-type SslTlsServiceProfileLocation struct {
-	Shared            types.Object `tfsdk:"shared"`
+type LdapProfileLocation struct {
 	Panorama          types.Object `tfsdk:"panorama"`
+	Shared            types.Object `tfsdk:"shared"`
+	Vsys              types.Object `tfsdk:"vsys"`
 	Template          types.Object `tfsdk:"template"`
 	TemplateVsys      types.Object `tfsdk:"template_vsys"`
 	TemplateStack     types.Object `tfsdk:"template_stack"`
 	TemplateStackVsys types.Object `tfsdk:"template_stack_vsys"`
 }
 
-func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
+func LdapProfileLocationSchema() rsschema.Attribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.SingleNestedAttribute{
-				Description: "Panorama shared object",
+			"panorama": rsschema.SingleNestedAttribute{
+				Description: "Located in a panorama.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
@@ -1728,8 +1803,9 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("panorama"),
+						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
@@ -1737,9 +1813,36 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 					}...),
 				},
 			},
-			"panorama": rsschema.SingleNestedAttribute{
-				Description: "Located in a panorama.",
+			"shared": rsschema.SingleNestedAttribute{
+				Description: "Panorama shared object",
 				Optional:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
@@ -1892,7 +1995,7 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o SslTlsServiceProfileSharedLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 	}
 
@@ -1901,7 +2004,7 @@ func (o SslTlsServiceProfileSharedLocation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileSharedLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 	}
 
@@ -1912,7 +2015,7 @@ func (o *SslTlsServiceProfileSharedLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
-func (o SslTlsServiceProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileSharedLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 	}
 
@@ -1921,7 +2024,7 @@ func (o SslTlsServiceProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileSharedLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 	}
 
@@ -1932,7 +2035,36 @@ func (o *SslTlsServiceProfilePanoramaLocation) UnmarshalJSON(data []byte) error 
 
 	return nil
 }
-func (o SslTlsServiceProfileTemplateLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileVsysLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *LdapProfileVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
+func (o LdapProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
@@ -1946,7 +2078,7 @@ func (o SslTlsServiceProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileTemplateLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
@@ -1961,7 +2093,7 @@ func (o *SslTlsServiceProfileTemplateLocation) UnmarshalJSON(data []byte) error 
 
 	return nil
 }
-func (o SslTlsServiceProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Template       *string `json:"template,omitempty"`
@@ -1979,7 +2111,7 @@ func (o SslTlsServiceProfileTemplateVsysLocation) MarshalJSON() ([]byte, error) 
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileTemplateVsysLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileTemplateVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Template       *string `json:"template,omitempty"`
@@ -1998,7 +2130,7 @@ func (o *SslTlsServiceProfileTemplateVsysLocation) UnmarshalJSON(data []byte) er
 
 	return nil
 }
-func (o SslTlsServiceProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
@@ -2012,7 +2144,7 @@ func (o SslTlsServiceProfileTemplateStackLocation) MarshalJSON() ([]byte, error)
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
@@ -2027,7 +2159,7 @@ func (o *SslTlsServiceProfileTemplateStackLocation) UnmarshalJSON(data []byte) e
 
 	return nil
 }
-func (o SslTlsServiceProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		TemplateStack  *string `json:"template_stack,omitempty"`
@@ -2045,7 +2177,7 @@ func (o SslTlsServiceProfileTemplateStackVsysLocation) MarshalJSON() ([]byte, er
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		TemplateStack  *string `json:"template_stack,omitempty"`
@@ -2064,51 +2196,59 @@ func (o *SslTlsServiceProfileTemplateStackVsysLocation) UnmarshalJSON(data []byt
 
 	return nil
 }
-func (o SslTlsServiceProfileLocation) MarshalJSON() ([]byte, error) {
+func (o LdapProfileLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Shared            *SslTlsServiceProfileSharedLocation            `json:"shared,omitempty"`
-		Panorama          *SslTlsServiceProfilePanoramaLocation          `json:"panorama,omitempty"`
-		Template          *SslTlsServiceProfileTemplateLocation          `json:"template,omitempty"`
-		TemplateVsys      *SslTlsServiceProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
-		TemplateStack     *SslTlsServiceProfileTemplateStackLocation     `json:"template_stack,omitempty"`
-		TemplateStackVsys *SslTlsServiceProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
+		Panorama          *LdapProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *LdapProfileSharedLocation            `json:"shared,omitempty"`
+		Vsys              *LdapProfileVsysLocation              `json:"vsys,omitempty"`
+		Template          *LdapProfileTemplateLocation          `json:"template,omitempty"`
+		TemplateVsys      *LdapProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
+		TemplateStack     *LdapProfileTemplateStackLocation     `json:"template_stack,omitempty"`
+		TemplateStackVsys *LdapProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
 	}
-	var shared_object *SslTlsServiceProfileSharedLocation
-	{
-		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
-		}
-	}
-	var panorama_object *SslTlsServiceProfilePanoramaLocation
+	var panorama_object *LdapProfilePanoramaLocation
 	{
 		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
 		}
 	}
-	var template_object *SslTlsServiceProfileTemplateLocation
+	var shared_object *LdapProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *LdapProfileVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var template_object *LdapProfileTemplateLocation
 	{
 		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
 		}
 	}
-	var templateVsys_object *SslTlsServiceProfileTemplateVsysLocation
+	var templateVsys_object *LdapProfileTemplateVsysLocation
 	{
 		diags := o.TemplateVsys.As(context.TODO(), &templateVsys_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal template_vsys into JSON document", diags.Errors())
 		}
 	}
-	var templateStack_object *SslTlsServiceProfileTemplateStackLocation
+	var templateStack_object *LdapProfileTemplateStackLocation
 	{
 		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
 		}
 	}
-	var templateStackVsys_object *SslTlsServiceProfileTemplateStackVsysLocation
+	var templateStackVsys_object *LdapProfileTemplateStackVsysLocation
 	{
 		diags := o.TemplateStackVsys.As(context.TODO(), &templateStackVsys_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
@@ -2117,8 +2257,9 @@ func (o SslTlsServiceProfileLocation) MarshalJSON() ([]byte, error) {
 	}
 
 	obj := shadow{
-		Shared:            shared_object,
 		Panorama:          panorama_object,
+		Shared:            shared_object,
+		Vsys:              vsys_object,
 		Template:          template_object,
 		TemplateVsys:      templateVsys_object,
 		TemplateStack:     templateStack_object,
@@ -2128,19 +2269,28 @@ func (o SslTlsServiceProfileLocation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
+func (o *LdapProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared            *SslTlsServiceProfileSharedLocation            `json:"shared,omitempty"`
-		Panorama          *SslTlsServiceProfilePanoramaLocation          `json:"panorama,omitempty"`
-		Template          *SslTlsServiceProfileTemplateLocation          `json:"template,omitempty"`
-		TemplateVsys      *SslTlsServiceProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
-		TemplateStack     *SslTlsServiceProfileTemplateStackLocation     `json:"template_stack,omitempty"`
-		TemplateStackVsys *SslTlsServiceProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
+		Panorama          *LdapProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *LdapProfileSharedLocation            `json:"shared,omitempty"`
+		Vsys              *LdapProfileVsysLocation              `json:"vsys,omitempty"`
+		Template          *LdapProfileTemplateLocation          `json:"template,omitempty"`
+		TemplateVsys      *LdapProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
+		TemplateStack     *LdapProfileTemplateStackLocation     `json:"template_stack,omitempty"`
+		TemplateStackVsys *LdapProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
+	}
+	var panorama_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
 	}
 	var shared_object types.Object
 	{
@@ -2150,12 +2300,12 @@ func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
 		}
 	}
-	var panorama_object types.Object
+	var vsys_object types.Object
 	{
 		var diags_tmp diag.Diagnostics
-		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
 		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
 		}
 	}
 	var template_object types.Object
@@ -2190,8 +2340,9 @@ func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack_vsys", diags_tmp.Errors())
 		}
 	}
-	o.Shared = shared_object
 	o.Panorama = panorama_object
+	o.Shared = shared_object
+	o.Vsys = vsys_object
 	o.Template = template_object
 	o.TemplateVsys = templateVsys_object
 	o.TemplateStack = templateStack_object
@@ -2200,19 +2351,25 @@ func (o *SslTlsServiceProfileLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *SslTlsServiceProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfilePanoramaLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
-func (o *SslTlsServiceProfilePanoramaLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileSharedLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
-func (o *SslTlsServiceProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *LdapProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 	}
 }
-func (o *SslTlsServiceProfileTemplateVsysLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileTemplateVsysLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"template":        types.StringType,
@@ -2220,13 +2377,13 @@ func (o *SslTlsServiceProfileTemplateVsysLocation) AttributeTypes() map[string]a
 		"vsys":            types.StringType,
 	}
 }
-func (o *SslTlsServiceProfileTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileTemplateStackLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 	}
 }
-func (o *SslTlsServiceProfileTemplateStackVsysLocation) AttributeTypes() map[string]attr.Type {
+func (o *LdapProfileTemplateStackVsysLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"template_stack":  types.StringType,
@@ -2234,19 +2391,23 @@ func (o *SslTlsServiceProfileTemplateStackVsysLocation) AttributeTypes() map[str
 		"vsys":            types.StringType,
 	}
 }
-func (o *SslTlsServiceProfileLocation) AttributeTypes() map[string]attr.Type {
-	var sharedObj SslTlsServiceProfileSharedLocation
-	var panoramaObj SslTlsServiceProfilePanoramaLocation
-	var templateObj SslTlsServiceProfileTemplateLocation
-	var templateVsysObj SslTlsServiceProfileTemplateVsysLocation
-	var templateStackObj SslTlsServiceProfileTemplateStackLocation
-	var templateStackVsysObj SslTlsServiceProfileTemplateStackVsysLocation
+func (o *LdapProfileLocation) AttributeTypes() map[string]attr.Type {
+	var panoramaObj LdapProfilePanoramaLocation
+	var sharedObj LdapProfileSharedLocation
+	var vsysObj LdapProfileVsysLocation
+	var templateObj LdapProfileTemplateLocation
+	var templateVsysObj LdapProfileTemplateVsysLocation
+	var templateStackObj LdapProfileTemplateStackLocation
+	var templateStackVsysObj LdapProfileTemplateStackVsysLocation
 	return map[string]attr.Type{
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
 		"shared": types.ObjectType{
 			AttrTypes: sharedObj.AttributeTypes(),
 		},
-		"panorama": types.ObjectType{
-			AttrTypes: panoramaObj.AttributeTypes(),
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
 		},
 		"template": types.ObjectType{
 			AttrTypes: templateObj.AttributeTypes(),

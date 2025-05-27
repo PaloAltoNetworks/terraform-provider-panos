@@ -55,7 +55,7 @@ type IkeCryptoProfileDataSourceFilter struct {
 }
 
 type IkeCryptoProfileDataSourceModel struct {
-	Location               IkeCryptoProfileLocation                  `tfsdk:"location"`
+	Location               types.Object                              `tfsdk:"location"`
 	Name                   types.String                              `tfsdk:"name"`
 	AuthenticationMultiple types.Int64                               `tfsdk:"authentication_multiple"`
 	DhGroup                types.List                                `tfsdk:"dh_group"`
@@ -68,6 +68,35 @@ type IkeCryptoProfileDataSourceLifetimeObject struct {
 	Hours   types.Int64 `tfsdk:"hours"`
 	Minutes types.Int64 `tfsdk:"minutes"`
 	Seconds types.Int64 `tfsdk:"seconds"`
+}
+
+func (o *IkeCryptoProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IkeCryptoProfileLocation
+
+	var lifetimeObj *IkeCryptoProfileDataSourceLifetimeObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                    types.StringType,
+		"authentication_multiple": types.Int64Type,
+		"dh_group":                types.ListType{},
+		"encryption":              types.ListType{},
+		"hash":                    types.ListType{},
+		"lifetime": types.ObjectType{
+			AttrTypes: lifetimeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeCryptoProfileDataSourceLifetimeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"days":    types.Int64Type,
+		"hours":   types.Int64Type,
+		"minutes": types.Int64Type,
+		"seconds": types.Int64Type,
+	}
 }
 
 func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -377,26 +406,45 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 
 	var location ikecrypto.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeCryptoProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ikecrypto.NgfwLocation{}
+			var innerLocation IkeCryptoProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ikecrypto.TemplateLocation{}
+			var innerLocation IkeCryptoProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ikecrypto.TemplateStackLocation{}
+			var innerLocation IkeCryptoProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -460,7 +508,7 @@ func IkeCryptoProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type IkeCryptoProfileResourceModel struct {
-	Location               IkeCryptoProfileLocation                `tfsdk:"location"`
+	Location               types.Object                            `tfsdk:"location"`
 	Name                   types.String                            `tfsdk:"name"`
 	AuthenticationMultiple types.Int64                             `tfsdk:"authentication_multiple"`
 	DhGroup                types.List                              `tfsdk:"dh_group"`
@@ -651,6 +699,35 @@ func (r *IkeCryptoProfileResource) Configure(ctx context.Context, req resource.C
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, ikecrypto.NewService(r.client), batchSize, specifier, ikecrypto.SpecMatches)
 }
 
+func (o *IkeCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IkeCryptoProfileLocation
+
+	var lifetimeObj *IkeCryptoProfileResourceLifetimeObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                    types.StringType,
+		"authentication_multiple": types.Int64Type,
+		"dh_group":                types.ListType{},
+		"encryption":              types.ListType{},
+		"hash":                    types.ListType{},
+		"lifetime": types.ObjectType{
+			AttrTypes: lifetimeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IkeCryptoProfileResourceLifetimeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"days":    types.Int64Type,
+		"hours":   types.Int64Type,
+		"minutes": types.Int64Type,
+		"seconds": types.Int64Type,
+	}
+}
+
 func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
@@ -808,26 +885,45 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 
 	var location ikecrypto.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeCryptoProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ikecrypto.NgfwLocation{}
+			var innerLocation IkeCryptoProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ikecrypto.TemplateLocation{}
+			var innerLocation IkeCryptoProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ikecrypto.TemplateStackLocation{}
+			var innerLocation IkeCryptoProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -876,26 +972,45 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 
 	var location ikecrypto.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeCryptoProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ikecrypto.NgfwLocation{}
+			var innerLocation IkeCryptoProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ikecrypto.TemplateLocation{}
+			var innerLocation IkeCryptoProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ikecrypto.TemplateStackLocation{}
+			var innerLocation IkeCryptoProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -943,26 +1058,45 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 
 	var location ikecrypto.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeCryptoProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ikecrypto.NgfwLocation{}
+			var innerLocation IkeCryptoProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ikecrypto.TemplateLocation{}
+			var innerLocation IkeCryptoProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ikecrypto.TemplateStackLocation{}
+			var innerLocation IkeCryptoProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1036,26 +1170,45 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 
 	var location ikecrypto.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &ikecrypto.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IkeCryptoProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ikecrypto.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ikecrypto.NgfwLocation{}
+			var innerLocation IkeCryptoProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ikecrypto.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ikecrypto.TemplateLocation{}
+			var innerLocation IkeCryptoProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ikecrypto.TemplateStackLocation{}
+			var innerLocation IkeCryptoProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1067,8 +1220,53 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 }
 
 type IkeCryptoProfileImportState struct {
-	Location IkeCryptoProfileLocation `json:"location"`
-	Name     string                   `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o IkeCryptoProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *IkeCryptoProfileLocation `json:"location"`
+		Name     *string                   `json:"name"`
+	}
+	var location_object *IkeCryptoProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *IkeCryptoProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *IkeCryptoProfileLocation `json:"location"`
+		Name     *string                   `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func IkeCryptoProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1082,10 +1280,10 @@ func IkeCryptoProfileImportStateCreator(ctx context.Context, resource types.Obje
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location IkeCryptoProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1094,10 +1292,10 @@ func IkeCryptoProfileImportStateCreator(ctx context.Context, resource types.Obje
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1121,7 +1319,12 @@ func (r *IkeCryptoProfileResource) ImportState(ctx context.Context, req resource
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1146,9 +1349,9 @@ type IkeCryptoProfileTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IkeCryptoProfileLocation struct {
-	Ngfw          *IkeCryptoProfileNgfwLocation          `tfsdk:"ngfw"`
-	Template      *IkeCryptoProfileTemplateLocation      `tfsdk:"template"`
-	TemplateStack *IkeCryptoProfileTemplateStackLocation `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func IkeCryptoProfileLocationSchema() rsschema.Attribute {
@@ -1259,9 +1462,11 @@ func IkeCryptoProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o IkeCryptoProfileNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -1270,7 +1475,7 @@ func (o IkeCryptoProfileNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeCryptoProfileNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1282,11 +1487,13 @@ func (o *IkeCryptoProfileNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IkeCryptoProfileTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1297,9 +1504,9 @@ func (o IkeCryptoProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeCryptoProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1313,11 +1520,13 @@ func (o *IkeCryptoProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IkeCryptoProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1328,9 +1537,9 @@ func (o IkeCryptoProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeCryptoProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1344,14 +1553,37 @@ func (o *IkeCryptoProfileTemplateStackLocation) UnmarshalJSON(data []byte) error
 	return nil
 }
 func (o IkeCryptoProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Ngfw          *IkeCryptoProfileNgfwLocation          `json:"ngfw"`
-		Template      *IkeCryptoProfileTemplateLocation      `json:"template"`
-		TemplateStack *IkeCryptoProfileTemplateStackLocation `json:"template_stack"`
-	}{
-		Ngfw:          o.Ngfw,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Ngfw          *IkeCryptoProfileNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *IkeCryptoProfileTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IkeCryptoProfileTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *IkeCryptoProfileNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+	var template_object *IkeCryptoProfileTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *IkeCryptoProfileTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Ngfw:          ngfw_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -1359,18 +1591,78 @@ func (o IkeCryptoProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IkeCryptoProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Ngfw          *IkeCryptoProfileNgfwLocation          `json:"ngfw"`
-		Template      *IkeCryptoProfileTemplateLocation      `json:"template"`
-		TemplateStack *IkeCryptoProfileTemplateStackLocation `json:"template_stack"`
+		Ngfw          *IkeCryptoProfileNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *IkeCryptoProfileTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IkeCryptoProfileTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Ngfw = shadow.Ngfw
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Ngfw = ngfw_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *IkeCryptoProfileNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *IkeCryptoProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IkeCryptoProfileTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IkeCryptoProfileLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj IkeCryptoProfileNgfwLocation
+	var templateObj IkeCryptoProfileTemplateLocation
+	var templateStackObj IkeCryptoProfileTemplateStackLocation
+	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

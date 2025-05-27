@@ -56,7 +56,7 @@ type IpsecTunnelDataSourceFilter struct {
 }
 
 type IpsecTunnelDataSourceModel struct {
-	Location               IpsecTunnelLocation                                `tfsdk:"location"`
+	Location               types.Object                                       `tfsdk:"location"`
 	Name                   types.String                                       `tfsdk:"name"`
 	AntiReplay             types.Bool                                         `tfsdk:"anti_replay"`
 	AntiReplayWindow       types.String                                       `tfsdk:"anti_replay_window"`
@@ -230,6 +230,421 @@ type IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object struct {
 type IpsecTunnelDataSourceManualKeyEspEncryptionObject struct {
 	Algorithm types.String `tfsdk:"algorithm"`
 	Key       types.String `tfsdk:"key"`
+}
+
+func (o *IpsecTunnelDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IpsecTunnelLocation
+
+	var tunnelMonitorObj *IpsecTunnelDataSourceTunnelMonitorObject
+
+	var autoKeyObj *IpsecTunnelDataSourceAutoKeyObject
+
+	var globalProtectSatelliteObj *IpsecTunnelDataSourceGlobalProtectSatelliteObject
+
+	var manualKeyObj *IpsecTunnelDataSourceManualKeyObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                     types.StringType,
+		"anti_replay":              types.BoolType,
+		"anti_replay_window":       types.StringType,
+		"comment":                  types.StringType,
+		"copy_flow_label":          types.BoolType,
+		"copy_tos":                 types.BoolType,
+		"disabled":                 types.BoolType,
+		"enable_gre_encapsulation": types.BoolType,
+		"ipv6":                     types.BoolType,
+		"tunnel_interface":         types.StringType,
+		"tunnel_monitor": types.ObjectType{
+			AttrTypes: tunnelMonitorObj.AttributeTypes(),
+		},
+		"ipsec_mode": types.StringType,
+		"auto_key": types.ObjectType{
+			AttrTypes: autoKeyObj.AttributeTypes(),
+		},
+		"global_protect_satellite": types.ObjectType{
+			AttrTypes: globalProtectSatelliteObj.AttributeTypes(),
+		},
+		"manual_key": types.ObjectType{
+			AttrTypes: manualKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceTunnelMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"destination_ip":         types.StringType,
+		"enable":                 types.BoolType,
+		"proxy_id":               types.StringType,
+		"tunnel_monitor_profile": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ike_gateway":          types.ListType{},
+		"ipsec_crypto_profile": types.StringType,
+		"proxy_id":             types.ListType{},
+		"proxy_id_v6":          types.ListType{},
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) AttributeTypes() map[string]attr.Type {
+
+	var protocolObj *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"local":  types.StringType,
+		"remote": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var anyObj *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject
+
+	var tcpObj *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject
+
+	var udpObj *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject
+	return map[string]attr.Type{
+		"number": types.Int64Type,
+		"any": types.ObjectType{
+			AttrTypes: anyObj.AttributeTypes(),
+		},
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) AttributeTypes() map[string]attr.Type {
+
+	var protocolObj *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"local":  types.StringType,
+		"remote": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var anyObj *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject
+
+	var tcpObj *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject
+
+	var udpObj *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject
+	return map[string]attr.Type{
+		"number": types.Int64Type,
+		"any": types.ObjectType{
+			AttrTypes: anyObj.AttributeTypes(),
+		},
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) AttributeTypes() map[string]attr.Type {
+
+	var externalCaObj *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject
+
+	var localAddressObj *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject
+
+	var publishConnectedRoutesObj *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
+
+	return map[string]attr.Type{
+		"external_ca": types.ObjectType{
+			AttrTypes: externalCaObj.AttributeTypes(),
+		},
+		"ipv6_preferred": types.BoolType,
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"portal_address": types.StringType,
+		"publish_connected_routes": types.ObjectType{
+			AttrTypes: publishConnectedRoutesObj.AttributeTypes(),
+		},
+		"publish_routes": types.ListType{},
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile": types.StringType,
+		"local_certificate":   types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var floatingIpObj *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
+
+	var ipObj *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject
+	return map[string]attr.Type{
+		"interface": types.StringType,
+		"floating_ip": types.ObjectType{
+			AttrTypes: floatingIpObj.AttributeTypes(),
+		},
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4": types.StringType,
+		"ipv6": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4": types.StringType,
+		"ipv6": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var localAddressObj *IpsecTunnelDataSourceManualKeyLocalAddressObject
+
+	var peerAddressObj *IpsecTunnelDataSourceManualKeyPeerAddressObject
+
+	var ahObj *IpsecTunnelDataSourceManualKeyAhObject
+
+	var espObj *IpsecTunnelDataSourceManualKeyEspObject
+	return map[string]attr.Type{
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"local_spi": types.StringType,
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"remote_spi": types.StringType,
+		"ah": types.ObjectType{
+			AttrTypes: ahObj.AttributeTypes(),
+		},
+		"esp": types.ObjectType{
+			AttrTypes: espObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ip": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *IpsecTunnelDataSourceManualKeyAhMd5Object
+
+	var sha1Obj *IpsecTunnelDataSourceManualKeyAhSha1Object
+
+	var sha256Obj *IpsecTunnelDataSourceManualKeyAhSha256Object
+
+	var sha384Obj *IpsecTunnelDataSourceManualKeyAhSha384Object
+
+	var sha512Obj *IpsecTunnelDataSourceManualKeyAhSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationObj *IpsecTunnelDataSourceManualKeyEspAuthenticationObject
+
+	var encryptionObj *IpsecTunnelDataSourceManualKeyEspEncryptionObject
+	return map[string]attr.Type{
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"encryption": types.ObjectType{
+			AttrTypes: encryptionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object
+
+	var noneObj *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject
+
+	var sha1Obj *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object
+
+	var sha256Obj *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object
+
+	var sha384Obj *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object
+
+	var sha512Obj *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"algorithm": types.StringType,
+		"key":       types.StringType,
+	}
 }
 
 func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4121,20 +4536,35 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location ipsec.Location
 
-	if savestate.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IpsecTunnelLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ipsec.TemplateLocation{}
+			var innerLocation IpsecTunnelTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ipsec.TemplateStackLocation{}
+			var innerLocation IpsecTunnelTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -4198,7 +4628,7 @@ func IpsecTunnelResourceLocationSchema() rsschema.Attribute {
 }
 
 type IpsecTunnelResourceModel struct {
-	Location               IpsecTunnelLocation                              `tfsdk:"location"`
+	Location               types.Object                                     `tfsdk:"location"`
 	Name                   types.String                                     `tfsdk:"name"`
 	AntiReplay             types.Bool                                       `tfsdk:"anti_replay"`
 	AntiReplayWindow       types.String                                     `tfsdk:"anti_replay_window"`
@@ -6379,6 +6809,421 @@ func (r *IpsecTunnelResource) Configure(ctx context.Context, req resource.Config
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipsec.NewService(r.client), batchSize, specifier, ipsec.SpecMatches)
 }
 
+func (o *IpsecTunnelResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj IpsecTunnelLocation
+
+	var tunnelMonitorObj *IpsecTunnelResourceTunnelMonitorObject
+
+	var autoKeyObj *IpsecTunnelResourceAutoKeyObject
+
+	var globalProtectSatelliteObj *IpsecTunnelResourceGlobalProtectSatelliteObject
+
+	var manualKeyObj *IpsecTunnelResourceManualKeyObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                     types.StringType,
+		"anti_replay":              types.BoolType,
+		"anti_replay_window":       types.StringType,
+		"comment":                  types.StringType,
+		"copy_flow_label":          types.BoolType,
+		"copy_tos":                 types.BoolType,
+		"disabled":                 types.BoolType,
+		"enable_gre_encapsulation": types.BoolType,
+		"ipv6":                     types.BoolType,
+		"tunnel_interface":         types.StringType,
+		"tunnel_monitor": types.ObjectType{
+			AttrTypes: tunnelMonitorObj.AttributeTypes(),
+		},
+		"ipsec_mode": types.StringType,
+		"auto_key": types.ObjectType{
+			AttrTypes: autoKeyObj.AttributeTypes(),
+		},
+		"global_protect_satellite": types.ObjectType{
+			AttrTypes: globalProtectSatelliteObj.AttributeTypes(),
+		},
+		"manual_key": types.ObjectType{
+			AttrTypes: manualKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceTunnelMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"destination_ip":         types.StringType,
+		"enable":                 types.BoolType,
+		"proxy_id":               types.StringType,
+		"tunnel_monitor_profile": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ike_gateway":          types.ListType{},
+		"ipsec_crypto_profile": types.StringType,
+		"proxy_id":             types.ListType{},
+		"proxy_id_v6":          types.ListType{},
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) AttributeTypes() map[string]attr.Type {
+
+	var protocolObj *IpsecTunnelResourceAutoKeyProxyIdProtocolObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"local":  types.StringType,
+		"remote": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var anyObj *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject
+
+	var tcpObj *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject
+
+	var udpObj *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject
+	return map[string]attr.Type{
+		"number": types.Int64Type,
+		"any": types.ObjectType{
+			AttrTypes: anyObj.AttributeTypes(),
+		},
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) AttributeTypes() map[string]attr.Type {
+
+	var protocolObj *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"local":  types.StringType,
+		"remote": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var anyObj *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject
+
+	var tcpObj *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject
+
+	var udpObj *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject
+	return map[string]attr.Type{
+		"number": types.Int64Type,
+		"any": types.ObjectType{
+			AttrTypes: anyObj.AttributeTypes(),
+		},
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port":  types.Int64Type,
+		"remote_port": types.Int64Type,
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) AttributeTypes() map[string]attr.Type {
+
+	var externalCaObj *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject
+
+	var localAddressObj *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject
+
+	var publishConnectedRoutesObj *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject
+
+	return map[string]attr.Type{
+		"external_ca": types.ObjectType{
+			AttrTypes: externalCaObj.AttributeTypes(),
+		},
+		"ipv6_preferred": types.BoolType,
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"portal_address": types.StringType,
+		"publish_connected_routes": types.ObjectType{
+			AttrTypes: publishConnectedRoutesObj.AttributeTypes(),
+		},
+		"publish_routes": types.ListType{},
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificate_profile": types.StringType,
+		"local_certificate":   types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var floatingIpObj *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject
+
+	var ipObj *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject
+	return map[string]attr.Type{
+		"interface": types.StringType,
+		"floating_ip": types.ObjectType{
+			AttrTypes: floatingIpObj.AttributeTypes(),
+		},
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4": types.StringType,
+		"ipv6": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4": types.StringType,
+		"ipv6": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var localAddressObj *IpsecTunnelResourceManualKeyLocalAddressObject
+
+	var peerAddressObj *IpsecTunnelResourceManualKeyPeerAddressObject
+
+	var ahObj *IpsecTunnelResourceManualKeyAhObject
+
+	var espObj *IpsecTunnelResourceManualKeyEspObject
+	return map[string]attr.Type{
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"local_spi": types.StringType,
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"remote_spi": types.StringType,
+		"ah": types.ObjectType{
+			AttrTypes: ahObj.AttributeTypes(),
+		},
+		"esp": types.ObjectType{
+			AttrTypes: espObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceManualKeyLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface":   types.StringType,
+		"floating_ip": types.StringType,
+		"ip":          types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ip": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *IpsecTunnelResourceManualKeyAhMd5Object
+
+	var sha1Obj *IpsecTunnelResourceManualKeyAhSha1Object
+
+	var sha256Obj *IpsecTunnelResourceManualKeyAhSha256Object
+
+	var sha384Obj *IpsecTunnelResourceManualKeyAhSha384Object
+
+	var sha512Obj *IpsecTunnelResourceManualKeyAhSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationObj *IpsecTunnelResourceManualKeyEspAuthenticationObject
+
+	var encryptionObj *IpsecTunnelResourceManualKeyEspEncryptionObject
+	return map[string]attr.Type{
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"encryption": types.ObjectType{
+			AttrTypes: encryptionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object
+
+	var noneObj *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject
+
+	var sha1Obj *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object
+
+	var sha256Obj *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object
+
+	var sha384Obj *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object
+
+	var sha512Obj *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"algorithm": types.StringType,
+		"key":       types.StringType,
+	}
+}
+
 func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiReplay_value := o.AntiReplay.ValueBoolPointer()
@@ -8343,20 +9188,35 @@ func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location ipsec.Location
 
-	if state.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IpsecTunnelLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ipsec.TemplateLocation{}
+			var innerLocation IpsecTunnelTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ipsec.TemplateStackLocation{}
+			var innerLocation IpsecTunnelTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -8405,20 +9265,35 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location ipsec.Location
 
-	if savestate.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IpsecTunnelLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ipsec.TemplateLocation{}
+			var innerLocation IpsecTunnelTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ipsec.TemplateStackLocation{}
+			var innerLocation IpsecTunnelTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -8466,20 +9341,35 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location ipsec.Location
 
-	if state.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IpsecTunnelLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ipsec.TemplateLocation{}
+			var innerLocation IpsecTunnelTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ipsec.TemplateStackLocation{}
+			var innerLocation IpsecTunnelTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -8553,20 +9443,35 @@ func (r *IpsecTunnelResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location ipsec.Location
 
-	if state.Location.Template != nil {
-		location.Template = &ipsec.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation IpsecTunnelLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ipsec.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ipsec.TemplateLocation{}
+			var innerLocation IpsecTunnelTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ipsec.TemplateStackLocation{}
+			var innerLocation IpsecTunnelTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -8578,8 +9483,53 @@ func (r *IpsecTunnelResource) Delete(ctx context.Context, req resource.DeleteReq
 }
 
 type IpsecTunnelImportState struct {
-	Location IpsecTunnelLocation `json:"location"`
-	Name     string              `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o IpsecTunnelImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *IpsecTunnelLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+	var location_object *IpsecTunnelLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *IpsecTunnelImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *IpsecTunnelLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func IpsecTunnelImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -8593,10 +9543,10 @@ func IpsecTunnelImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location IpsecTunnelLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -8605,10 +9555,10 @@ func IpsecTunnelImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -8632,7 +9582,12 @@ func (r *IpsecTunnelResource) ImportState(ctx context.Context, req resource.Impo
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -8654,8 +9609,8 @@ type IpsecTunnelTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IpsecTunnelLocation struct {
-	Template      *IpsecTunnelTemplateLocation      `tfsdk:"template"`
-	TemplateStack *IpsecTunnelTemplateStackLocation `tfsdk:"template_stack"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func IpsecTunnelLocationSchema() rsschema.Attribute {
@@ -8747,11 +9702,13 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 }
 
 func (o IpsecTunnelTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -8762,9 +9719,9 @@ func (o IpsecTunnelTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -8778,11 +9735,13 @@ func (o *IpsecTunnelTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IpsecTunnelTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -8793,9 +9752,9 @@ func (o IpsecTunnelTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -8809,12 +9768,28 @@ func (o *IpsecTunnelTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o IpsecTunnelLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Template      *IpsecTunnelTemplateLocation      `json:"template"`
-		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack"`
-	}{
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Template      *IpsecTunnelTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var template_object *IpsecTunnelTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *IpsecTunnelTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -8822,16 +9797,59 @@ func (o IpsecTunnelLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Template      *IpsecTunnelTemplateLocation      `json:"template"`
-		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack"`
+		Template      *IpsecTunnelTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *IpsecTunnelTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IpsecTunnelTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *IpsecTunnelLocation) AttributeTypes() map[string]attr.Type {
+	var templateObj IpsecTunnelTemplateLocation
+	var templateStackObj IpsecTunnelTemplateStackLocation
+	return map[string]attr.Type{
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

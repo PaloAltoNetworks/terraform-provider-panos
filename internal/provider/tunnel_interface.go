@@ -46,7 +46,7 @@ func NewTunnelInterfaceDataSource() datasource.DataSource {
 
 type TunnelInterfaceDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*tunnel.Entry, tunnel.Location, *tunnel.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*tunnel.Entry, tunnel.Location, tunnel.ImportLocation, *tunnel.Service]
 }
 
 type TunnelInterfaceDataSourceFilter struct {
@@ -54,7 +54,7 @@ type TunnelInterfaceDataSourceFilter struct {
 }
 
 type TunnelInterfaceDataSourceModel struct {
-	Location                   TunnelInterfaceLocation                 `tfsdk:"location"`
+	Location                   types.Object                            `tfsdk:"location"`
 	Name                       types.String                            `tfsdk:"name"`
 	Bonjour                    *TunnelInterfaceDataSourceBonjourObject `tfsdk:"bonjour"`
 	Comment                    types.String                            `tfsdk:"comment"`
@@ -88,6 +88,79 @@ type TunnelInterfaceDataSourceIpv6AddressObject struct {
 type TunnelInterfaceDataSourceIpv6AddressPrefixObject struct {
 }
 type TunnelInterfaceDataSourceIpv6AddressAnycastObject struct {
+}
+
+func (o *TunnelInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj TunnelInterfaceLocation
+
+	var bonjourObj *TunnelInterfaceDataSourceBonjourObject
+
+	var ipv6Obj *TunnelInterfaceDataSourceIpv6Object
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"comment":                      types.StringType,
+		"df_ignore":                    types.BoolType,
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"link_tag":        types.StringType,
+		"mtu":             types.Int64Type,
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *TunnelInterfaceDataSourceBonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *TunnelInterfaceDataSourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *TunnelInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+	}
+}
+func (o *TunnelInterfaceDataSourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *TunnelInterfaceDataSourceIpv6AddressPrefixObject
+
+	var anycastObj *TunnelInterfaceDataSourceIpv6AddressAnycastObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+	}
+}
+func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
 }
 
 func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **tunnel.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -820,8 +893,7 @@ func (d *TunnelInterfaceDataSource) Configure(_ context.Context, req datasource.
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, tunnel.NewService(d.client), batchSize, specifier, tunnel.SpecMatches)
+	d.manager = sdkmanager.NewImportableEntryObjectManager(d.client, tunnel.NewService(d.client), specifier, tunnel.SpecMatches)
 }
 func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -833,29 +905,54 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 
 	var location tunnel.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &tunnel.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &tunnel.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &tunnel.SharedLocation{}
+			var innerLocation TunnelInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &tunnel.TemplateLocation{}
+			var innerLocation TunnelInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &tunnel.TemplateStackLocation{}
+			var innerLocation TunnelInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &tunnel.NgfwLocation{}
+			var innerLocation TunnelInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -911,7 +1008,7 @@ func NewTunnelInterfaceResource() resource.Resource {
 
 type TunnelInterfaceResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*tunnel.Entry, tunnel.Location, *tunnel.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*tunnel.Entry, tunnel.Location, tunnel.ImportLocation, *tunnel.Service]
 }
 
 func TunnelInterfaceResourceLocationSchema() rsschema.Attribute {
@@ -919,7 +1016,7 @@ func TunnelInterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type TunnelInterfaceResourceModel struct {
-	Location                   TunnelInterfaceLocation               `tfsdk:"location"`
+	Location                   types.Object                          `tfsdk:"location"`
 	Name                       types.String                          `tfsdk:"name"`
 	Bonjour                    *TunnelInterfaceResourceBonjourObject `tfsdk:"bonjour"`
 	Comment                    types.String                          `tfsdk:"comment"`
@@ -1326,8 +1423,80 @@ func (r *TunnelInterfaceResource) Configure(ctx context.Context, req resource.Co
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, tunnel.NewService(r.client), batchSize, specifier, tunnel.SpecMatches)
+	r.manager = sdkmanager.NewImportableEntryObjectManager(r.client, tunnel.NewService(r.client), specifier, tunnel.SpecMatches)
+}
+
+func (o *TunnelInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj TunnelInterfaceLocation
+
+	var bonjourObj *TunnelInterfaceResourceBonjourObject
+
+	var ipv6Obj *TunnelInterfaceResourceIpv6Object
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"comment":                      types.StringType,
+		"df_ignore":                    types.BoolType,
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"link_tag":        types.StringType,
+		"mtu":             types.Int64Type,
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *TunnelInterfaceResourceBonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *TunnelInterfaceResourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *TunnelInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+	}
+}
+func (o *TunnelInterfaceResourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *TunnelInterfaceResourceIpv6AddressPrefixObject
+
+	var anycastObj *TunnelInterfaceResourceIpv6AddressAnycastObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+	}
+}
+func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
 }
 
 func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, obj **tunnel.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1716,29 +1885,54 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 
 	var location tunnel.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &tunnel.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &tunnel.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &tunnel.SharedLocation{}
+			var innerLocation TunnelInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &tunnel.TemplateLocation{}
+			var innerLocation TunnelInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &tunnel.TemplateStackLocation{}
+			var innerLocation TunnelInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &tunnel.NgfwLocation{}
+			var innerLocation TunnelInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1762,7 +1956,30 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+	var importLocation tunnel.ImportLocation
+
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if location.Template != nil {
+			{
+				var terraformInnerLocation TunnelInterfaceTemplateLocation
+				resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				importLocation = tunnel.NewLayer3TemplateVsysImportLocation(tunnel.Layer3TemplateVsysImportLocationSpec{
+					Vsys: terraformInnerLocation.Vsys.ValueString(),
+				})
+			}
+		}
+	}
+
+	created, err := r.manager.Create(ctx, location, []tunnel.ImportLocation{importLocation}, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
@@ -1787,29 +2004,54 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 
 	var location tunnel.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &tunnel.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &tunnel.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &tunnel.SharedLocation{}
+			var innerLocation TunnelInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &tunnel.TemplateLocation{}
+			var innerLocation TunnelInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &tunnel.TemplateStackLocation{}
+			var innerLocation TunnelInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &tunnel.NgfwLocation{}
+			var innerLocation TunnelInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1857,29 +2099,54 @@ func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.Updat
 
 	var location tunnel.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &tunnel.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &tunnel.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &tunnel.SharedLocation{}
+			var innerLocation TunnelInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &tunnel.TemplateLocation{}
+			var innerLocation TunnelInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &tunnel.TemplateStackLocation{}
+			var innerLocation TunnelInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &tunnel.NgfwLocation{}
+			var innerLocation TunnelInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1953,33 +2220,81 @@ func (r *TunnelInterfaceResource) Delete(ctx context.Context, req resource.Delet
 
 	var location tunnel.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &tunnel.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &tunnel.TemplateLocation{
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &tunnel.SharedLocation{}
+			var innerLocation TunnelInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &tunnel.TemplateLocation{}
+			var innerLocation TunnelInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &tunnel.TemplateStackLocation{}
+			var innerLocation TunnelInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &tunnel.NgfwLocation{}
+			var innerLocation TunnelInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &tunnel.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+	var importLocation tunnel.ImportLocation
+
+	{
+		var terraformLocation TunnelInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if location.Template != nil {
+			{
+				var terraformInnerLocation TunnelInterfaceTemplateLocation
+				resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				importLocation = tunnel.NewLayer3TemplateVsysImportLocation(tunnel.Layer3TemplateVsysImportLocationSpec{
+					Vsys: terraformInnerLocation.Vsys.ValueString(),
+				})
+			}
 		}
 	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &tunnel.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
-		}
-	}
-
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	err := r.manager.Delete(ctx, location, []tunnel.ImportLocation{importLocation}, []string{state.Name.ValueString()}, sdkmanager.NonExhaustive)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 	}
@@ -1987,8 +2302,53 @@ func (r *TunnelInterfaceResource) Delete(ctx context.Context, req resource.Delet
 }
 
 type TunnelInterfaceImportState struct {
-	Location TunnelInterfaceLocation `json:"location"`
-	Name     string                  `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o TunnelInterfaceImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *TunnelInterfaceLocation `json:"location"`
+		Name     *string                  `json:"name"`
+	}
+	var location_object *TunnelInterfaceLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TunnelInterfaceImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *TunnelInterfaceLocation `json:"location"`
+		Name     *string                  `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func TunnelInterfaceImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -2002,10 +2362,10 @@ func TunnelInterfaceImportStateCreator(ctx context.Context, resource types.Objec
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location TunnelInterfaceLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -2014,10 +2374,10 @@ func TunnelInterfaceImportStateCreator(ctx context.Context, resource types.Objec
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -2041,7 +2401,12 @@ func (r *TunnelInterfaceResource) ImportState(ctx context.Context, req resource.
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -2055,6 +2420,7 @@ func (r *TunnelInterfaceResource) ImportState(ctx context.Context, req resource.
 type TunnelInterfaceSharedLocation struct {
 }
 type TunnelInterfaceTemplateLocation struct {
+	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
@@ -2068,10 +2434,10 @@ type TunnelInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type TunnelInterfaceLocation struct {
-	Shared        *TunnelInterfaceSharedLocation        `tfsdk:"shared"`
-	Template      *TunnelInterfaceTemplateLocation      `tfsdk:"template"`
-	TemplateStack *TunnelInterfaceTemplateStackLocation `tfsdk:"template_stack"`
-	Ngfw          *TunnelInterfaceNgfwLocation          `tfsdk:"ngfw"`
+	Shared        types.Object `tfsdk:"shared"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
 }
 
 func TunnelInterfaceLocationSchema() rsschema.Attribute {
@@ -2099,6 +2465,15 @@ func TunnelInterfaceLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"vsys": rsschema.StringAttribute{
+						Description: "",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -2190,8 +2565,10 @@ func TunnelInterfaceLocationSchema() rsschema.Attribute {
 }
 
 func (o TunnelInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -2208,14 +2585,18 @@ func (o *TunnelInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o TunnelInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -2223,9 +2604,10 @@ func (o TunnelInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TunnelInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2235,15 +2617,18 @@ func (o *TunnelInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
 func (o TunnelInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -2254,9 +2639,9 @@ func (o TunnelInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TunnelInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2270,9 +2655,11 @@ func (o *TunnelInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error 
 	return nil
 }
 func (o TunnelInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -2281,7 +2668,7 @@ func (o TunnelInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TunnelInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2293,16 +2680,46 @@ func (o *TunnelInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o TunnelInterfaceLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared        *TunnelInterfaceSharedLocation        `json:"shared"`
-		Template      *TunnelInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *TunnelInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *TunnelInterfaceNgfwLocation          `json:"ngfw"`
-	}{
-		Shared:        o.Shared,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
-		Ngfw:          o.Ngfw,
+	type shadow struct {
+		Shared        *TunnelInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *TunnelInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *TunnelInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *TunnelInterfaceNgfwLocation          `json:"ngfw,omitempty"`
+	}
+	var shared_object *TunnelInterfaceSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var template_object *TunnelInterfaceTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *TunnelInterfaceTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+	var ngfw_object *TunnelInterfaceNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:        shared_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
+		Ngfw:          ngfw_object,
 	}
 
 	return json.Marshal(obj)
@@ -2310,20 +2727,96 @@ func (o TunnelInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TunnelInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *TunnelInterfaceSharedLocation        `json:"shared"`
-		Template      *TunnelInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *TunnelInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *TunnelInterfaceNgfwLocation          `json:"ngfw"`
+		Shared        *TunnelInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *TunnelInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *TunnelInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *TunnelInterfaceNgfwLocation          `json:"ngfw,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
-	o.Ngfw = shadow.Ngfw
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
+	o.Ngfw = ngfw_object
 
 	return nil
+}
+
+func (o *TunnelInterfaceSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *TunnelInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"vsys":            types.StringType,
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *TunnelInterfaceTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *TunnelInterfaceNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *TunnelInterfaceLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj TunnelInterfaceSharedLocation
+	var templateObj TunnelInterfaceTemplateLocation
+	var templateStackObj TunnelInterfaceTemplateStackLocation
+	var ngfwObj TunnelInterfaceNgfwLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+	}
 }

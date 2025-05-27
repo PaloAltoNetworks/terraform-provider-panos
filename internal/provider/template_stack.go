@@ -51,7 +51,7 @@ type TemplateStackDataSourceFilter struct {
 }
 
 type TemplateStackDataSourceModel struct {
-	Location        TemplateStackLocation                         `tfsdk:"location"`
+	Location        types.Object                                  `tfsdk:"location"`
 	Name            types.String                                  `tfsdk:"name"`
 	Description     types.String                                  `tfsdk:"description"`
 	Templates       types.List                                    `tfsdk:"templates"`
@@ -61,6 +61,32 @@ type TemplateStackDataSourceModel struct {
 }
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
+}
+
+func (o *TemplateStackDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj TemplateStackLocation
+
+	var userGroupSourceObj *TemplateStackDataSourceUserGroupSourceObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":         types.StringType,
+		"description":  types.StringType,
+		"templates":    types.ListType{},
+		"devices":      types.ListType{},
+		"default_vsys": types.StringType,
+		"user_group_source": types.ObjectType{
+			AttrTypes: userGroupSourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *TemplateStackDataSourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"master_device": types.StringType,
+	}
 }
 
 func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -318,10 +344,21 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	var location template_stack.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &template_stack.PanoramaLocation{
+	{
+		var terraformLocation TemplateStackLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &template_stack.PanoramaLocation{}
+			var innerLocation TemplateStackPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -385,7 +422,7 @@ func TemplateStackResourceLocationSchema() rsschema.Attribute {
 }
 
 type TemplateStackResourceModel struct {
-	Location        TemplateStackLocation                       `tfsdk:"location"`
+	Location        types.Object                                `tfsdk:"location"`
 	Name            types.String                                `tfsdk:"name"`
 	Description     types.String                                `tfsdk:"description"`
 	Templates       types.List                                  `tfsdk:"templates"`
@@ -538,6 +575,32 @@ func (r *TemplateStackResource) Configure(ctx context.Context, req resource.Conf
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, template_stack.NewService(r.client), batchSize, specifier, template_stack.SpecMatches)
 }
 
+func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj TemplateStackLocation
+
+	var userGroupSourceObj *TemplateStackResourceUserGroupSourceObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":         types.StringType,
+		"description":  types.StringType,
+		"templates":    types.ListType{},
+		"devices":      types.ListType{},
+		"default_vsys": types.StringType,
+		"user_group_source": types.ObjectType{
+			AttrTypes: userGroupSourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *TemplateStackResourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"master_device": types.StringType,
+	}
+}
+
 func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -668,10 +731,21 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 
 	var location template_stack.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &template_stack.PanoramaLocation{
+	{
+		var terraformLocation TemplateStackLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &template_stack.PanoramaLocation{}
+			var innerLocation TemplateStackPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -720,10 +794,21 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 
 	var location template_stack.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &template_stack.PanoramaLocation{
+	{
+		var terraformLocation TemplateStackLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &template_stack.PanoramaLocation{}
+			var innerLocation TemplateStackPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -771,10 +856,21 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 
 	var location template_stack.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &template_stack.PanoramaLocation{
+	{
+		var terraformLocation TemplateStackLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &template_stack.PanoramaLocation{}
+			var innerLocation TemplateStackPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -848,10 +944,21 @@ func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteR
 
 	var location template_stack.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &template_stack.PanoramaLocation{
+	{
+		var terraformLocation TemplateStackLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &template_stack.PanoramaLocation{}
+			var innerLocation TemplateStackPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -863,8 +970,53 @@ func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 type TemplateStackImportState struct {
-	Location TemplateStackLocation `json:"location"`
-	Name     string                `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o TemplateStackImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *TemplateStackLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+	var location_object *TemplateStackLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplateStackImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *TemplateStackLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func TemplateStackImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -878,10 +1030,10 @@ func TemplateStackImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location TemplateStackLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -890,10 +1042,10 @@ func TemplateStackImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -917,7 +1069,12 @@ func (r *TemplateStackResource) ImportState(ctx context.Context, req resource.Im
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -932,7 +1089,7 @@ type TemplateStackPanoramaLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type TemplateStackLocation struct {
-	Panorama *TemplateStackPanoramaLocation `tfsdk:"panorama"`
+	Panorama types.Object `tfsdk:"panorama"`
 }
 
 func TemplateStackLocationSchema() rsschema.Attribute {
@@ -963,9 +1120,11 @@ func TemplateStackLocationSchema() rsschema.Attribute {
 }
 
 func (o TemplateStackPanoramaLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
@@ -974,7 +1133,7 @@ func (o TemplateStackPanoramaLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TemplateStackPanoramaLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -986,10 +1145,19 @@ func (o *TemplateStackPanoramaLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o TemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Panorama *TemplateStackPanoramaLocation `json:"panorama"`
-	}{
-		Panorama: o.Panorama,
+	type shadow struct {
+		Panorama *TemplateStackPanoramaLocation `json:"panorama,omitempty"`
+	}
+	var panorama_object *TemplateStackPanoramaLocation
+	{
+		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Panorama: panorama_object,
 	}
 
 	return json.Marshal(obj)
@@ -997,14 +1165,36 @@ func (o TemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama *TemplateStackPanoramaLocation `json:"panorama"`
+		Panorama *TemplateStackPanoramaLocation `json:"panorama,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = shadow.Panorama
+	var panorama_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	o.Panorama = panorama_object
 
 	return nil
+}
+
+func (o *TemplateStackPanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+	}
+}
+func (o *TemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	var panoramaObj TemplateStackPanoramaLocation
+	return map[string]attr.Type{
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+	}
 }

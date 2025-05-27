@@ -48,15 +48,18 @@ func (o *expectServerSecurityRulesOrder) CheckState(ctx context.Context, req sta
 	}
 
 	type ruleWithState struct {
-		Idx   int
-		State int
+		Name        string
+		ExpectedIdx int
+		ActualIdx   int
 	}
 
 	rulesWithIdx := make(map[string]ruleWithState)
 	for idx, elt := range o.RuleNames {
-		rulesWithIdx[fmt.Sprintf("%s-%s", o.Prefix, elt)] = ruleWithState{
-			Idx:   idx,
-			State: 0,
+		name := fmt.Sprintf("%s-%s", o.Prefix, elt)
+		rulesWithIdx[name] = ruleWithState{
+			Name:        name,
+			ExpectedIdx: idx,
+			ActualIdx:   -1,
 		}
 	}
 
@@ -65,37 +68,49 @@ func (o *expectServerSecurityRulesOrder) CheckState(ctx context.Context, req sta
 		serverRules = append(serverRules, elt.EntryName())
 	}
 
-	var prevActualIdx = -1
 	for actualIdx, elt := range objects {
 		if state, ok := rulesWithIdx[elt.Name]; !ok {
-			continue
-		} else {
-			state.State = 1
-			rulesWithIdx[elt.Name] = state
-
-			if state.Idx == 0 {
-				prevActualIdx = actualIdx
-				continue
-			} else if prevActualIdx == -1 {
-				resp.Error = fmt.Errorf("rules missing from the server: %s", strings.Join(serverRules, ", "))
-				return
-			} else if actualIdx-prevActualIdx > 1 {
-				resp.Error = fmt.Errorf("invalid rules order on the server: %s", strings.Join(serverRules, ", "))
-				return
+			rulesWithIdx[elt.Name] = ruleWithState{
+				Name:        elt.Name,
+				ExpectedIdx: -1,
+				ActualIdx:   actualIdx,
 			}
-			prevActualIdx = actualIdx
+		} else {
+			state.ActualIdx = actualIdx
+			rulesWithIdx[elt.Name] = state
 		}
 	}
 
-	var missing []string
-	for name, elt := range rulesWithIdx {
-		if elt.State != 1 {
-			missing = append(missing, name)
+	var missing []ruleWithState
+	final := make([]*ruleWithState, len(rulesWithIdx))
+	var rulesError bool
+	for _, state := range rulesWithIdx {
+		if state.ActualIdx == -1 || state.ActualIdx != state.ExpectedIdx {
+			rulesError = true
+		}
+
+		if state.ActualIdx >= 0 {
+			final[state.ActualIdx] = &state
+		} else {
+			missing = append(missing, state)
 		}
 	}
 
-	if len(missing) > 0 {
-		resp.Error = fmt.Errorf("not all rules are present on the server: %s", strings.Join(missing, ", "))
+	for idx, elt := range final {
+		if elt == nil {
+			final[idx] = &missing[0]
+			missing = missing[1:]
+		}
+	}
+
+	if rulesError {
+		var rulesView []string
+		for _, elt := range final {
+			finalElt := fmt.Sprintf("{%s: %d->%d}", elt.Name, elt.ExpectedIdx, elt.ActualIdx)
+			rulesView = append(rulesView, finalElt)
+		}
+
+		resp.Error = fmt.Errorf("Unexpected server state: %s", strings.Join(rulesView, " "))
 		return
 	}
 }
@@ -259,7 +274,7 @@ func TestAccSecurityPolicyDuplicatedPlan(t *testing.T) {
 				ConfigVariables: map[string]config.Variable{
 					"prefix": config.StringVariable(prefix),
 				},
-				ExpectError: regexp.MustCompile("List entries must have unique names"),
+				ExpectError: regexp.MustCompile("Non-unique entry names in the list"),
 			},
 		},
 	})

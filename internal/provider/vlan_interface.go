@@ -54,7 +54,7 @@ type VlanInterfaceDataSourceFilter struct {
 }
 
 type VlanInterfaceDataSourceModel struct {
-	Location                   VlanInterfaceLocation                      `tfsdk:"location"`
+	Location                   types.Object                               `tfsdk:"location"`
 	Name                       types.String                               `tfsdk:"name"`
 	AdjustTcpMss               *VlanInterfaceDataSourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
 	Arp                        types.List                                 `tfsdk:"arp"`
@@ -385,6 +385,705 @@ type VlanInterfaceDataSourceNdpProxyObject struct {
 type VlanInterfaceDataSourceNdpProxyAddressObject struct {
 	Name   types.String `tfsdk:"name"`
 	Negate types.Bool   `tfsdk:"negate"`
+}
+
+func (o *VlanInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj VlanInterfaceLocation
+
+	var adjustTcpMssObj *VlanInterfaceDataSourceAdjustTcpMssObject
+
+	var bonjourObj *VlanInterfaceDataSourceBonjourObject
+
+	var ddnsConfigObj *VlanInterfaceDataSourceDdnsConfigObject
+
+	var dhcpClientObj *VlanInterfaceDataSourceDhcpClientObject
+
+	var ipv6Obj *VlanInterfaceDataSourceIpv6Object
+
+	var ndpProxyObj *VlanInterfaceDataSourceNdpProxyObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"arp": types.ListType{},
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"comment": types.StringType,
+		"ddns_config": types.ObjectType{
+			AttrTypes: ddnsConfigObj.AttributeTypes(),
+		},
+		"df_ignore": types.BoolType,
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"mtu": types.Int64Type,
+		"ndp_proxy": types.ObjectType{
+			AttrTypes: ndpProxyObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceArpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+		"interface":  types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceBonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceDdnsConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ddns_cert_profile":    types.StringType,
+		"ddns_enabled":         types.BoolType,
+		"ddns_hostname":        types.StringType,
+		"ddns_ip":              types.ListType{},
+		"ddns_ipv6":            types.ListType{},
+		"ddns_update_interval": types.Int64Type,
+		"ddns_vendor":          types.StringType,
+		"ddns_vendor_config":   types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceDhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var sendHostnameObj *VlanInterfaceDataSourceDhcpClientSendHostnameObject
+	return map[string]attr.Type{
+		"create_default_route": types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"send_hostname": types.ObjectType{
+			AttrTypes: sendHostnameObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceDhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"hostname": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject
+
+	var dhcpClientObj *VlanInterfaceDataSourceIpv6DhcpClientObject
+
+	var inheritedObj *VlanInterfaceDataSourceIpv6InheritedObject
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *VlanInterfaceDataSourceIpv6AddressPrefixObject
+
+	var anycastObj *VlanInterfaceDataSourceIpv6AddressAnycastObject
+
+	var advertiseObj *VlanInterfaceDataSourceIpv6AddressAdvertiseObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
+
+	var prefixDelegationObj *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject
+
+	var v6OptionsObj *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject
+	return map[string]attr.Type{
+		"accept_ra_route":      types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"preference": types.StringType,
+		"prefix_delegation": types.ObjectType{
+			AttrTypes: prefixDelegationObj.AttributeTypes(),
+		},
+		"v6_options": types.ObjectType{
+			AttrTypes: v6OptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject
+	return map[string]attr.Type{
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject
+
+	var yesObj *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"pfx_pool_name":   types.StringType,
+		"prefix_len":      types.Int64Type,
+		"prefix_len_hint": types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
+
+	return map[string]attr.Type{
+		"duid_type": types.StringType,
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+		"rapid_commit":          types.BoolType,
+		"support_srvr_reconfig": types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject
+
+	var yesObj *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"non_temp_addr": types.BoolType,
+		"temp_addr":     types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
+	return map[string]attr.Type{
+		"assign_addr": types.ListType{},
+		"enable":      types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var guaObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
+
+	var ulaObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
+	return map[string]attr.Type{
+		"gua": types.ObjectType{
+			AttrTypes: guaObj.AttributeTypes(),
+		},
+		"ula": types.ObjectType{
+			AttrTypes: ulaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
+
+	var poolTypeObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+
+	var advertiseObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"prefix_pool":         types.StringType,
+		"pool_type": types.ObjectType{
+			AttrTypes: poolTypeObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+
+	var dynamicIdObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"dynamic_id": types.ObjectType{
+			AttrTypes: dynamicIdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"identifier": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":           types.BoolType,
+		"onlink_flag":      types.BoolType,
+		"auto_config_flag": types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"address":             types.StringType,
+		"prefix":              types.BoolType,
+		"anycast":             types.BoolType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var routerAdvertisementObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *VlanInterfaceDataSourceNdpProxyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+		"enabled": types.BoolType,
+	}
+}
+func (o *VlanInterfaceDataSourceNdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"negate": types.BoolType,
+	}
 }
 
 func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **vlan.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -7372,29 +8071,54 @@ func (o *VlanInterfaceDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	var location vlan.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &vlan.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VlanInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &vlan.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &vlan.SharedLocation{}
+			var innerLocation VlanInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &vlan.TemplateLocation{}
+			var innerLocation VlanInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &vlan.TemplateStackLocation{}
+			var innerLocation VlanInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &vlan.NgfwLocation{}
+			var innerLocation VlanInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -7458,7 +8182,7 @@ func VlanInterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type VlanInterfaceResourceModel struct {
-	Location                   VlanInterfaceLocation                    `tfsdk:"location"`
+	Location                   types.Object                             `tfsdk:"location"`
 	Name                       types.String                             `tfsdk:"name"`
 	AdjustTcpMss               *VlanInterfaceResourceAdjustTcpMssObject `tfsdk:"adjust_tcp_mss"`
 	Arp                        types.List                               `tfsdk:"arp"`
@@ -11193,6 +11917,705 @@ func (r *VlanInterfaceResource) Configure(ctx context.Context, req resource.Conf
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, vlan.NewService(r.client), batchSize, specifier, vlan.SpecMatches)
 }
 
+func (o *VlanInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj VlanInterfaceLocation
+
+	var adjustTcpMssObj *VlanInterfaceResourceAdjustTcpMssObject
+
+	var bonjourObj *VlanInterfaceResourceBonjourObject
+
+	var ddnsConfigObj *VlanInterfaceResourceDdnsConfigObject
+
+	var dhcpClientObj *VlanInterfaceResourceDhcpClientObject
+
+	var ipv6Obj *VlanInterfaceResourceIpv6Object
+
+	var ndpProxyObj *VlanInterfaceResourceNdpProxyObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"adjust_tcp_mss": types.ObjectType{
+			AttrTypes: adjustTcpMssObj.AttributeTypes(),
+		},
+		"arp": types.ListType{},
+		"bonjour": types.ObjectType{
+			AttrTypes: bonjourObj.AttributeTypes(),
+		},
+		"comment": types.StringType,
+		"ddns_config": types.ObjectType{
+			AttrTypes: ddnsConfigObj.AttributeTypes(),
+		},
+		"df_ignore": types.BoolType,
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"interface_management_profile": types.StringType,
+		"ip":                           types.ListType{},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+		"mtu": types.Int64Type,
+		"ndp_proxy": types.ObjectType{
+			AttrTypes: ndpProxyObj.AttributeTypes(),
+		},
+		"netflow_profile": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"ipv4_mss_adjustment": types.Int64Type,
+		"ipv6_mss_adjustment": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceArpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+		"interface":  types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceBonjourObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":    types.BoolType,
+		"group_id":  types.Int64Type,
+		"ttl_check": types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceDdnsConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ddns_cert_profile":    types.StringType,
+		"ddns_enabled":         types.BoolType,
+		"ddns_hostname":        types.StringType,
+		"ddns_ip":              types.ListType{},
+		"ddns_ipv6":            types.ListType{},
+		"ddns_update_interval": types.Int64Type,
+		"ddns_vendor":          types.StringType,
+		"ddns_vendor_config":   types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"value": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceDhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var sendHostnameObj *VlanInterfaceResourceDhcpClientSendHostnameObject
+	return map[string]attr.Type{
+		"create_default_route": types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"send_hostname": types.ObjectType{
+			AttrTypes: sendHostnameObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":   types.BoolType,
+		"hostname": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceResourceIpv6NeighborDiscoveryObject
+
+	var dhcpClientObj *VlanInterfaceResourceIpv6DhcpClientObject
+
+	var inheritedObj *VlanInterfaceResourceIpv6InheritedObject
+	return map[string]attr.Type{
+		"address":      types.ListType{},
+		"enabled":      types.BoolType,
+		"interface_id": types.StringType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
+
+	var prefixObj *VlanInterfaceResourceIpv6AddressPrefixObject
+
+	var anycastObj *VlanInterfaceResourceIpv6AddressAnycastObject
+
+	var advertiseObj *VlanInterfaceResourceIpv6AddressAdvertiseObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable_on_interface": types.BoolType,
+		"prefix": types.ObjectType{
+			AttrTypes: prefixObj.AttributeTypes(),
+		},
+		"anycast": types.ObjectType{
+			AttrTypes: anycastObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+
+	var prefixDelegationObj *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject
+
+	var v6OptionsObj *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject
+	return map[string]attr.Type{
+		"accept_ra_route":      types.BoolType,
+		"default_route_metric": types.Int64Type,
+		"enable":               types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+		"preference": types.StringType,
+		"prefix_delegation": types.ObjectType{
+			AttrTypes: prefixDelegationObj.AttributeTypes(),
+		},
+		"v6_options": types.ObjectType{
+			AttrTypes: v6OptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+	return map[string]attr.Type{
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
+
+	var yesObj *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"pfx_pool_name":   types.StringType,
+		"prefix_len":      types.Int64Type,
+		"prefix_len_hint": types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var enableObj *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+
+	return map[string]attr.Type{
+		"duid_type": types.StringType,
+		"enable": types.ObjectType{
+			AttrTypes: enableObj.AttributeTypes(),
+		},
+		"rapid_commit":          types.BoolType,
+		"support_srvr_reconfig": types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
+
+	var noObj *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
+
+	var yesObj *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+	return map[string]attr.Type{
+		"no": types.ObjectType{
+			AttrTypes: noObj.AttributeTypes(),
+		},
+		"yes": types.ObjectType{
+			AttrTypes: yesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"non_temp_addr": types.BoolType,
+		"temp_addr":     types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedObject) AttributeTypes() map[string]attr.Type {
+
+	var neighborDiscoveryObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject
+	return map[string]attr.Type{
+		"assign_addr": types.ListType{},
+		"enable":      types.BoolType,
+		"neighbor_discovery": types.ObjectType{
+			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var guaObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
+
+	var ulaObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+	return map[string]attr.Type{
+		"gua": types.ObjectType{
+			AttrTypes: guaObj.AttributeTypes(),
+		},
+		"ula": types.ObjectType{
+			AttrTypes: ulaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
+
+	var poolTypeObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+
+	var advertiseObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"prefix_pool":         types.StringType,
+		"pool_type": types.ObjectType{
+			AttrTypes: poolTypeObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var dynamicObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+
+	var dynamicIdObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	return map[string]attr.Type{
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"dynamic_id": types.ObjectType{
+			AttrTypes: dynamicIdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"identifier": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":           types.BoolType,
+		"onlink_flag":      types.BoolType,
+		"auto_config_flag": types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+	return map[string]attr.Type{
+		"enable_on_interface": types.BoolType,
+		"address":             types.StringType,
+		"prefix":              types.BoolType,
+		"anycast":             types.BoolType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":             types.BoolType,
+		"valid_lifetime":     types.StringType,
+		"preferred_lifetime": types.StringType,
+		"onlink_flag":        types.BoolType,
+		"auto_config_flag":   types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsServerObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsSuffixObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var routerAdvertisementObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts": types.Int64Type,
+		"dns_server": types.ObjectType{
+			AttrTypes: dnsServerObj.AttributeTypes(),
+		},
+		"dns_suffix": types.ObjectType{
+			AttrTypes: dnsSuffixObj.AttributeTypes(),
+		},
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"server": types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	var sourceObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"source": types.ObjectType{
+			AttrTypes: sourceObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
+
+	var dhcpv6Obj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+
+	var manualObj *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	return map[string]attr.Type{
+		"dhcpv6": types.ObjectType{
+			AttrTypes: dhcpv6Obj.AttributeTypes(),
+		},
+		"manual": types.ObjectType{
+			AttrTypes: manualObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"prefix_pool": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"suffix": types.ListType{},
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+func (o *VlanInterfaceResourceNdpProxyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+		"enabled": types.BoolType,
+	}
+}
+func (o *VlanInterfaceResourceNdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"negate": types.BoolType,
+	}
+}
+
 func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, obj **vlan.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *vlan.AdjustTcpMss
@@ -14838,29 +16261,54 @@ func (r *VlanInterfaceResource) Create(ctx context.Context, req resource.CreateR
 
 	var location vlan.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &vlan.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VlanInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &vlan.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &vlan.SharedLocation{}
+			var innerLocation VlanInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &vlan.TemplateLocation{}
+			var innerLocation VlanInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &vlan.TemplateStackLocation{}
+			var innerLocation VlanInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &vlan.NgfwLocation{}
+			var innerLocation VlanInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -14909,29 +16357,54 @@ func (o *VlanInterfaceResource) Read(ctx context.Context, req resource.ReadReque
 
 	var location vlan.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &vlan.SharedLocation{}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VlanInterfaceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &vlan.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &vlan.SharedLocation{}
+			var innerLocation VlanInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
 
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &vlan.TemplateLocation{}
+			var innerLocation VlanInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &vlan.TemplateStackLocation{}
+			var innerLocation VlanInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &vlan.NgfwLocation{}
+			var innerLocation VlanInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -14979,29 +16452,54 @@ func (r *VlanInterfaceResource) Update(ctx context.Context, req resource.UpdateR
 
 	var location vlan.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &vlan.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VlanInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &vlan.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &vlan.SharedLocation{}
+			var innerLocation VlanInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &vlan.TemplateLocation{}
+			var innerLocation VlanInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &vlan.TemplateStackLocation{}
+			var innerLocation VlanInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &vlan.NgfwLocation{}
+			var innerLocation VlanInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -15075,29 +16573,54 @@ func (r *VlanInterfaceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	var location vlan.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &vlan.SharedLocation{}
-	}
-	if state.Location.Template != nil {
-		location.Template = &vlan.TemplateLocation{
-
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VlanInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &vlan.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &vlan.SharedLocation{}
+			var innerLocation VlanInterfaceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 		}
-	}
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &vlan.NgfwLocation{
 
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &vlan.TemplateLocation{}
+			var innerLocation VlanInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &vlan.TemplateStackLocation{}
+			var innerLocation VlanInterfaceTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &vlan.NgfwLocation{}
+			var innerLocation VlanInterfaceNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -15109,8 +16632,53 @@ func (r *VlanInterfaceResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 type VlanInterfaceImportState struct {
-	Location VlanInterfaceLocation `json:"location"`
-	Name     string                `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o VlanInterfaceImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *VlanInterfaceLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+	var location_object *VlanInterfaceLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *VlanInterfaceImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *VlanInterfaceLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func VlanInterfaceImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -15124,10 +16692,10 @@ func VlanInterfaceImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location VlanInterfaceLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -15136,10 +16704,10 @@ func VlanInterfaceImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -15163,7 +16731,12 @@ func (r *VlanInterfaceResource) ImportState(ctx context.Context, req resource.Im
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -15190,10 +16763,10 @@ type VlanInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type VlanInterfaceLocation struct {
-	Shared        *VlanInterfaceSharedLocation        `tfsdk:"shared"`
-	Template      *VlanInterfaceTemplateLocation      `tfsdk:"template"`
-	TemplateStack *VlanInterfaceTemplateStackLocation `tfsdk:"template_stack"`
-	Ngfw          *VlanInterfaceNgfwLocation          `tfsdk:"ngfw"`
+	Shared        types.Object `tfsdk:"shared"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
 }
 
 func VlanInterfaceLocationSchema() rsschema.Attribute {
@@ -15312,8 +16885,10 @@ func VlanInterfaceLocationSchema() rsschema.Attribute {
 }
 
 func (o VlanInterfaceSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -15330,11 +16905,13 @@ func (o *VlanInterfaceSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VlanInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -15345,9 +16922,9 @@ func (o VlanInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -15361,11 +16938,13 @@ func (o *VlanInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VlanInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -15376,9 +16955,9 @@ func (o VlanInterfaceTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -15392,9 +16971,11 @@ func (o *VlanInterfaceTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VlanInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -15403,7 +16984,7 @@ func (o VlanInterfaceNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -15415,16 +16996,46 @@ func (o *VlanInterfaceNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared        *VlanInterfaceSharedLocation        `json:"shared"`
-		Template      *VlanInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
-	}{
-		Shared:        o.Shared,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
-		Ngfw:          o.Ngfw,
+	type shadow struct {
+		Shared        *VlanInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *VlanInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw,omitempty"`
+	}
+	var shared_object *VlanInterfaceSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var template_object *VlanInterfaceTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *VlanInterfaceTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+	var ngfw_object *VlanInterfaceNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:        shared_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
+		Ngfw:          ngfw_object,
 	}
 
 	return json.Marshal(obj)
@@ -15432,20 +17043,95 @@ func (o VlanInterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *VlanInterfaceSharedLocation        `json:"shared"`
-		Template      *VlanInterfaceTemplateLocation      `json:"template"`
-		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack"`
-		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw"`
+		Shared        *VlanInterfaceSharedLocation        `json:"shared,omitempty"`
+		Template      *VlanInterfaceTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *VlanInterfaceTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *VlanInterfaceNgfwLocation          `json:"ngfw,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
-	o.Ngfw = shadow.Ngfw
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
+	o.Ngfw = ngfw_object
 
 	return nil
+}
+
+func (o *VlanInterfaceSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VlanInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *VlanInterfaceTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *VlanInterfaceNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *VlanInterfaceLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj VlanInterfaceSharedLocation
+	var templateObj VlanInterfaceTemplateLocation
+	var templateStackObj VlanInterfaceTemplateStackLocation
+	var ngfwObj VlanInterfaceNgfwLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+	}
 }

@@ -55,7 +55,7 @@ type ServiceDataSourceFilter struct {
 }
 
 type ServiceDataSourceModel struct {
-	Location        ServiceLocation                  `tfsdk:"location"`
+	Location        types.Object                     `tfsdk:"location"`
 	Name            types.String                     `tfsdk:"name"`
 	Description     types.String                     `tfsdk:"description"`
 	DisableOverride types.String                     `tfsdk:"disable_override"`
@@ -83,6 +83,76 @@ type ServiceDataSourceProtocolUdpObject struct {
 }
 type ServiceDataSourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
+}
+
+func (o *ServiceDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ServiceLocation
+
+	var protocolObj *ServiceDataSourceProtocolObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"tags": types.ListType{},
+	}
+}
+func (o *ServiceDataSourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var tcpObj *ServiceDataSourceProtocolTcpObject
+
+	var udpObj *ServiceDataSourceProtocolUdpObject
+	return map[string]attr.Type{
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceDataSourceProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	var overrideObj *ServiceDataSourceProtocolTcpOverrideObject
+	return map[string]attr.Type{
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
+		"override": types.ObjectType{
+			AttrTypes: overrideObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceDataSourceProtocolTcpOverrideObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"halfclose_timeout": types.Int64Type,
+		"timeout":           types.Int64Type,
+		"timewait_timeout":  types.Int64Type,
+	}
+}
+func (o *ServiceDataSourceProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	var overrideObj *ServiceDataSourceProtocolUdpOverrideObject
+	return map[string]attr.Type{
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
+		"override": types.ObjectType{
+			AttrTypes: overrideObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceDataSourceProtocolUdpOverrideObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"timeout": types.Int64Type,
+	}
 }
 
 func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -725,21 +795,42 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	var location service.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &service.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ServiceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &service.SharedLocation{}
+			var innerLocation ServiceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &service.VsysLocation{}
+			var innerLocation ServiceVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &service.DeviceGroupLocation{}
+			var innerLocation ServiceDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -803,7 +894,7 @@ func ServiceResourceLocationSchema() rsschema.Attribute {
 }
 
 type ServiceResourceModel struct {
-	Location        ServiceLocation                `tfsdk:"location"`
+	Location        types.Object                   `tfsdk:"location"`
 	Name            types.String                   `tfsdk:"name"`
 	Description     types.String                   `tfsdk:"description"`
 	DisableOverride types.String                   `tfsdk:"disable_override"`
@@ -1170,6 +1261,76 @@ func (r *ServiceResource) Configure(ctx context.Context, req resource.ConfigureR
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, service.NewService(r.client), batchSize, specifier, service.SpecMatches)
 }
 
+func (o *ServiceResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ServiceLocation
+
+	var protocolObj *ServiceResourceProtocolObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"tags": types.ListType{},
+	}
+}
+func (o *ServiceResourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var tcpObj *ServiceResourceProtocolTcpObject
+
+	var udpObj *ServiceResourceProtocolUdpObject
+	return map[string]attr.Type{
+		"tcp": types.ObjectType{
+			AttrTypes: tcpObj.AttributeTypes(),
+		},
+		"udp": types.ObjectType{
+			AttrTypes: udpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceResourceProtocolTcpObject) AttributeTypes() map[string]attr.Type {
+
+	var overrideObj *ServiceResourceProtocolTcpOverrideObject
+	return map[string]attr.Type{
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
+		"override": types.ObjectType{
+			AttrTypes: overrideObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceResourceProtocolTcpOverrideObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"halfclose_timeout": types.Int64Type,
+		"timeout":           types.Int64Type,
+		"timewait_timeout":  types.Int64Type,
+	}
+}
+func (o *ServiceResourceProtocolUdpObject) AttributeTypes() map[string]attr.Type {
+
+	var overrideObj *ServiceResourceProtocolUdpOverrideObject
+	return map[string]attr.Type{
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
+		"override": types.ObjectType{
+			AttrTypes: overrideObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ServiceResourceProtocolUdpOverrideObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"timeout": types.Int64Type,
+	}
+}
+
 func (o *ServiceResourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -1496,21 +1657,42 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 
 	var location service.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &service.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ServiceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &service.SharedLocation{}
+			var innerLocation ServiceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &service.VsysLocation{}
+			var innerLocation ServiceVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &service.DeviceGroupLocation{}
+			var innerLocation ServiceDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1559,21 +1741,42 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	var location service.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &service.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ServiceLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &service.SharedLocation{}
+			var innerLocation ServiceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &service.VsysLocation{}
+			var innerLocation ServiceVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &service.DeviceGroupLocation{}
+			var innerLocation ServiceDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1621,21 +1824,42 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	var location service.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &service.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ServiceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &service.SharedLocation{}
+			var innerLocation ServiceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &service.VsysLocation{}
+			var innerLocation ServiceVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &service.DeviceGroupLocation{}
+			var innerLocation ServiceDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1709,21 +1933,42 @@ func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	var location service.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &service.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &service.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ServiceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &service.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &service.SharedLocation{}
+			var innerLocation ServiceSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &service.VsysLocation{}
+			var innerLocation ServiceVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &service.DeviceGroupLocation{}
+			var innerLocation ServiceDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1735,8 +1980,53 @@ func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest
 }
 
 type ServiceImportState struct {
-	Location ServiceLocation `json:"location"`
-	Name     string          `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o ServiceImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *ServiceLocation `json:"location"`
+		Name     *string          `json:"name"`
+	}
+	var location_object *ServiceLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ServiceImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *ServiceLocation `json:"location"`
+		Name     *string          `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func ServiceImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1750,10 +2040,10 @@ func ServiceImportStateCreator(ctx context.Context, resource types.Object) ([]by
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location ServiceLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1762,10 +2052,10 @@ func ServiceImportStateCreator(ctx context.Context, resource types.Object) ([]by
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1789,7 +2079,12 @@ func (r *ServiceResource) ImportState(ctx context.Context, req resource.ImportSt
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1811,9 +2106,9 @@ type ServiceDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type ServiceLocation struct {
-	Shared      *ServiceSharedLocation      `tfsdk:"shared"`
-	Vsys        *ServiceVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *ServiceDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func ServiceLocationSchema() rsschema.Attribute {
@@ -1895,8 +2190,10 @@ func ServiceLocationSchema() rsschema.Attribute {
 }
 
 func (o ServiceSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -1913,10 +2210,12 @@ func (o *ServiceSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ServiceVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -1926,8 +2225,8 @@ func (o ServiceVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1940,10 +2239,12 @@ func (o *ServiceVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ServiceDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -1953,8 +2254,8 @@ func (o ServiceDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1967,14 +2268,37 @@ func (o *ServiceDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ServiceLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *ServiceSharedLocation      `json:"shared"`
-		Vsys        *ServiceVsysLocation        `json:"vsys"`
-		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *ServiceSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ServiceVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *ServiceSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *ServiceVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *ServiceDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -1982,18 +2306,74 @@ func (o ServiceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *ServiceSharedLocation      `json:"shared"`
-		Vsys        *ServiceVsysLocation        `json:"vsys"`
-		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group"`
+		Shared      *ServiceSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ServiceVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *ServiceDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *ServiceSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ServiceVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *ServiceDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *ServiceLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj ServiceSharedLocation
+	var vsysObj ServiceVsysLocation
+	var deviceGroupObj ServiceDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

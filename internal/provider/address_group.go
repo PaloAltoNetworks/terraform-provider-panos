@@ -54,7 +54,7 @@ type AddressGroupDataSourceFilter struct {
 }
 
 type AddressGroupDataSourceModel struct {
-	Location        AddressGroupLocation                 `tfsdk:"location"`
+	Location        types.Object                         `tfsdk:"location"`
 	Name            types.String                         `tfsdk:"name"`
 	Description     types.String                         `tfsdk:"description"`
 	DisableOverride types.String                         `tfsdk:"disable_override"`
@@ -64,6 +64,33 @@ type AddressGroupDataSourceModel struct {
 }
 type AddressGroupDataSourceDynamicObject struct {
 	Filter types.String `tfsdk:"filter"`
+}
+
+func (o *AddressGroupDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AddressGroupLocation
+
+	var dynamicObj *AddressGroupDataSourceDynamicObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"tag":              types.ListType{},
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"static": types.ListType{},
+	}
+}
+func (o *AddressGroupDataSourceDynamicObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"filter": types.StringType,
+	}
 }
 
 func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -321,21 +348,42 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 
 	var location group.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &group.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AddressGroupLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &group.SharedLocation{}
+			var innerLocation AddressGroupSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &group.VsysLocation{}
+			var innerLocation AddressGroupVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &group.DeviceGroupLocation{}
+			var innerLocation AddressGroupDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -399,7 +447,7 @@ func AddressGroupResourceLocationSchema() rsschema.Attribute {
 }
 
 type AddressGroupResourceModel struct {
-	Location        AddressGroupLocation               `tfsdk:"location"`
+	Location        types.Object                       `tfsdk:"location"`
 	Name            types.String                       `tfsdk:"name"`
 	Description     types.String                       `tfsdk:"description"`
 	DisableOverride types.String                       `tfsdk:"disable_override"`
@@ -565,6 +613,33 @@ func (r *AddressGroupResource) Configure(ctx context.Context, req resource.Confi
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, group.NewService(r.client), batchSize, specifier, group.SpecMatches)
 }
 
+func (o *AddressGroupResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AddressGroupLocation
+
+	var dynamicObj *AddressGroupResourceDynamicObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"description":      types.StringType,
+		"disable_override": types.StringType,
+		"tag":              types.ListType{},
+		"dynamic": types.ObjectType{
+			AttrTypes: dynamicObj.AttributeTypes(),
+		},
+		"static": types.ListType{},
+	}
+}
+func (o *AddressGroupResourceDynamicObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"filter": types.StringType,
+	}
+}
+
 func (o *AddressGroupResourceModel) CopyToPango(ctx context.Context, obj **group.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -695,21 +770,42 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 
 	var location group.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &group.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AddressGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &group.SharedLocation{}
+			var innerLocation AddressGroupSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &group.VsysLocation{}
+			var innerLocation AddressGroupVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &group.DeviceGroupLocation{}
+			var innerLocation AddressGroupDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -758,21 +854,42 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	var location group.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &group.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AddressGroupLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &group.SharedLocation{}
+			var innerLocation AddressGroupSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &group.VsysLocation{}
+			var innerLocation AddressGroupVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &group.DeviceGroupLocation{}
+			var innerLocation AddressGroupDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -820,21 +937,42 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 
 	var location group.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &group.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AddressGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &group.SharedLocation{}
+			var innerLocation AddressGroupSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &group.VsysLocation{}
+			var innerLocation AddressGroupVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &group.DeviceGroupLocation{}
+			var innerLocation AddressGroupDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -908,21 +1046,42 @@ func (r *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	var location group.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &group.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &group.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AddressGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &group.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &group.SharedLocation{}
+			var innerLocation AddressGroupSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &group.VsysLocation{}
+			var innerLocation AddressGroupVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &group.DeviceGroupLocation{}
+			var innerLocation AddressGroupDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -934,8 +1093,53 @@ func (r *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 }
 
 type AddressGroupImportState struct {
-	Location AddressGroupLocation `json:"location"`
-	Name     string               `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o AddressGroupImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *AddressGroupLocation `json:"location"`
+		Name     *string               `json:"name"`
+	}
+	var location_object *AddressGroupLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AddressGroupImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *AddressGroupLocation `json:"location"`
+		Name     *string               `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func AddressGroupImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -949,10 +1153,10 @@ func AddressGroupImportStateCreator(ctx context.Context, resource types.Object) 
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location AddressGroupLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -961,10 +1165,10 @@ func AddressGroupImportStateCreator(ctx context.Context, resource types.Object) 
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -988,7 +1192,12 @@ func (r *AddressGroupResource) ImportState(ctx context.Context, req resource.Imp
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1010,9 +1219,9 @@ type AddressGroupDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type AddressGroupLocation struct {
-	Shared      *AddressGroupSharedLocation      `tfsdk:"shared"`
-	Vsys        *AddressGroupVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *AddressGroupDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func AddressGroupLocationSchema() rsschema.Attribute {
@@ -1094,8 +1303,10 @@ func AddressGroupLocationSchema() rsschema.Attribute {
 }
 
 func (o AddressGroupSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -1112,10 +1323,12 @@ func (o *AddressGroupSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AddressGroupVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -1125,8 +1338,8 @@ func (o AddressGroupVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressGroupVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1139,10 +1352,12 @@ func (o *AddressGroupVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AddressGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -1152,8 +1367,8 @@ func (o AddressGroupDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1166,14 +1381,37 @@ func (o *AddressGroupDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o AddressGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *AddressGroupSharedLocation      `json:"shared"`
-		Vsys        *AddressGroupVsysLocation        `json:"vsys"`
-		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *AddressGroupSharedLocation      `json:"shared,omitempty"`
+		Vsys        *AddressGroupVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *AddressGroupSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *AddressGroupVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *AddressGroupDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -1181,18 +1419,74 @@ func (o AddressGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AddressGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *AddressGroupSharedLocation      `json:"shared"`
-		Vsys        *AddressGroupVsysLocation        `json:"vsys"`
-		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group"`
+		Shared      *AddressGroupSharedLocation      `json:"shared,omitempty"`
+		Vsys        *AddressGroupVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *AddressGroupDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *AddressGroupSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AddressGroupVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *AddressGroupDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *AddressGroupLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj AddressGroupSharedLocation
+	var vsysObj AddressGroupVsysLocation
+	var deviceGroupObj AddressGroupDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

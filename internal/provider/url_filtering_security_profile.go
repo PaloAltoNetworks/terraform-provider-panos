@@ -54,7 +54,7 @@ type UrlFilteringSecurityProfileDataSourceFilter struct {
 }
 
 type UrlFilteringSecurityProfileDataSourceModel struct {
-	Location              UrlFilteringSecurityProfileLocation                               `tfsdk:"location"`
+	Location              types.Object                                                      `tfsdk:"location"`
 	Name                  types.String                                                      `tfsdk:"name"`
 	Alert                 types.List                                                        `tfsdk:"alert"`
 	Allow                 types.List                                                        `tfsdk:"allow"`
@@ -110,6 +110,108 @@ type UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObject s
 	Header types.String `tfsdk:"header"`
 	Value  types.String `tfsdk:"value"`
 	Log    types.Bool   `tfsdk:"log"`
+}
+
+func (o *UrlFilteringSecurityProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj UrlFilteringSecurityProfileLocation
+
+	var credentialEnforcementObj *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"alert":            types.ListType{},
+		"allow":            types.ListType{},
+		"block":            types.ListType{},
+		"cloud_inline_cat": types.BoolType,
+		"continue":         types.ListType{},
+		"credential_enforcement": types.ObjectType{
+			AttrTypes: credentialEnforcementObj.AttributeTypes(),
+		},
+		"description":             types.StringType,
+		"disable_override":        types.StringType,
+		"enable_container_page":   types.BoolType,
+		"http_header_insertion":   types.ListType{},
+		"local_inline_cat":        types.BoolType,
+		"log_container_page_only": types.BoolType,
+		"log_http_hdr_referer":    types.BoolType,
+		"log_http_hdr_user_agent": types.BoolType,
+		"log_http_hdr_xff":        types.BoolType,
+		"mlav_category_exception": types.ListType{},
+		"override":                types.ListType{},
+		"safe_search_enforcement": types.BoolType,
+	}
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) AttributeTypes() map[string]attr.Type {
+
+	var modeObj *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject
+	return map[string]attr.Type{
+		"alert":        types.ListType{},
+		"allow":        types.ListType{},
+		"block":        types.ListType{},
+		"continue":     types.ListType{},
+		"log_severity": types.StringType,
+		"mode": types.ObjectType{
+			AttrTypes: modeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) AttributeTypes() map[string]attr.Type {
+
+	var disabledObj *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject
+
+	var domainCredentialsObj *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject
+
+	var ipUserObj *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject
+	return map[string]attr.Type{
+		"disabled": types.ObjectType{
+			AttrTypes: disabledObj.AttributeTypes(),
+		},
+		"domain_credentials": types.ObjectType{
+			AttrTypes: domainCredentialsObj.AttributeTypes(),
+		},
+		"group_mapping": types.StringType,
+		"ip_user": types.ObjectType{
+			AttrTypes: ipUserObj.AttributeTypes(),
+		},
+	}
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":             types.StringType,
+		"disable_override": types.StringType,
+		"type":             types.ListType{},
+	}
+}
+func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"headers": types.ListType{},
+		"domains": types.ListType{},
+	}
+}
+func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"header": types.StringType,
+		"value":  types.StringType,
+		"log":    types.BoolType,
+	}
 }
 
 func (o *UrlFilteringSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1348,14 +1450,31 @@ func (o *UrlFilteringSecurityProfileDataSource) Read(ctx context.Context, req da
 
 	var location urlfiltering.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &urlfiltering.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &urlfiltering.DeviceGroupLocation{
+	{
+		var terraformLocation UrlFilteringSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &urlfiltering.SharedLocation{}
+			var innerLocation UrlFilteringSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &urlfiltering.DeviceGroupLocation{}
+			var innerLocation UrlFilteringSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1419,7 +1538,7 @@ func UrlFilteringSecurityProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type UrlFilteringSecurityProfileResourceModel struct {
-	Location              UrlFilteringSecurityProfileLocation                             `tfsdk:"location"`
+	Location              types.Object                                                    `tfsdk:"location"`
 	Name                  types.String                                                    `tfsdk:"name"`
 	Alert                 types.List                                                      `tfsdk:"alert"`
 	Allow                 types.List                                                      `tfsdk:"allow"`
@@ -2089,6 +2208,108 @@ func (r *UrlFilteringSecurityProfileResource) Configure(ctx context.Context, req
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, urlfiltering.NewService(r.client), batchSize, specifier, urlfiltering.SpecMatches)
 }
 
+func (o *UrlFilteringSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj UrlFilteringSecurityProfileLocation
+
+	var credentialEnforcementObj *UrlFilteringSecurityProfileResourceCredentialEnforcementObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"alert":            types.ListType{},
+		"allow":            types.ListType{},
+		"block":            types.ListType{},
+		"cloud_inline_cat": types.BoolType,
+		"continue":         types.ListType{},
+		"credential_enforcement": types.ObjectType{
+			AttrTypes: credentialEnforcementObj.AttributeTypes(),
+		},
+		"description":             types.StringType,
+		"disable_override":        types.StringType,
+		"enable_container_page":   types.BoolType,
+		"http_header_insertion":   types.ListType{},
+		"local_inline_cat":        types.BoolType,
+		"log_container_page_only": types.BoolType,
+		"log_http_hdr_referer":    types.BoolType,
+		"log_http_hdr_user_agent": types.BoolType,
+		"log_http_hdr_xff":        types.BoolType,
+		"mlav_category_exception": types.ListType{},
+		"override":                types.ListType{},
+		"safe_search_enforcement": types.BoolType,
+	}
+}
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) AttributeTypes() map[string]attr.Type {
+
+	var modeObj *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject
+	return map[string]attr.Type{
+		"alert":        types.ListType{},
+		"allow":        types.ListType{},
+		"block":        types.ListType{},
+		"continue":     types.ListType{},
+		"log_severity": types.StringType,
+		"mode": types.ObjectType{
+			AttrTypes: modeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject) AttributeTypes() map[string]attr.Type {
+
+	var disabledObj *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject
+
+	var domainCredentialsObj *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject
+
+	var ipUserObj *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject
+	return map[string]attr.Type{
+		"disabled": types.ObjectType{
+			AttrTypes: disabledObj.AttributeTypes(),
+		},
+		"domain_credentials": types.ObjectType{
+			AttrTypes: domainCredentialsObj.AttributeTypes(),
+		},
+		"group_mapping": types.StringType,
+		"ip_user": types.ObjectType{
+			AttrTypes: ipUserObj.AttributeTypes(),
+		},
+	}
+}
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":             types.StringType,
+		"disable_override": types.StringType,
+		"type":             types.ListType{},
+	}
+}
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"headers": types.ListType{},
+		"domains": types.ListType{},
+	}
+}
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"header": types.StringType,
+		"value":  types.StringType,
+		"log":    types.BoolType,
+	}
+}
+
 func (o *UrlFilteringSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **urlfiltering.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	alert_pango_entries := make([]string, 0)
@@ -2737,14 +2958,31 @@ func (r *UrlFilteringSecurityProfileResource) Create(ctx context.Context, req re
 
 	var location urlfiltering.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &urlfiltering.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &urlfiltering.DeviceGroupLocation{
+	{
+		var terraformLocation UrlFilteringSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &urlfiltering.SharedLocation{}
+			var innerLocation UrlFilteringSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &urlfiltering.DeviceGroupLocation{}
+			var innerLocation UrlFilteringSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2793,14 +3031,31 @@ func (o *UrlFilteringSecurityProfileResource) Read(ctx context.Context, req reso
 
 	var location urlfiltering.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &urlfiltering.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &urlfiltering.DeviceGroupLocation{
+	{
+		var terraformLocation UrlFilteringSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &urlfiltering.SharedLocation{}
+			var innerLocation UrlFilteringSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &urlfiltering.DeviceGroupLocation{}
+			var innerLocation UrlFilteringSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2848,14 +3103,31 @@ func (r *UrlFilteringSecurityProfileResource) Update(ctx context.Context, req re
 
 	var location urlfiltering.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &urlfiltering.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &urlfiltering.DeviceGroupLocation{
+	{
+		var terraformLocation UrlFilteringSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &urlfiltering.SharedLocation{}
+			var innerLocation UrlFilteringSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &urlfiltering.DeviceGroupLocation{}
+			var innerLocation UrlFilteringSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2929,14 +3201,31 @@ func (r *UrlFilteringSecurityProfileResource) Delete(ctx context.Context, req re
 
 	var location urlfiltering.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &urlfiltering.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &urlfiltering.DeviceGroupLocation{
+	{
+		var terraformLocation UrlFilteringSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &urlfiltering.SharedLocation{}
+			var innerLocation UrlFilteringSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &urlfiltering.DeviceGroupLocation{}
+			var innerLocation UrlFilteringSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2948,8 +3237,53 @@ func (r *UrlFilteringSecurityProfileResource) Delete(ctx context.Context, req re
 }
 
 type UrlFilteringSecurityProfileImportState struct {
-	Location UrlFilteringSecurityProfileLocation `json:"location"`
-	Name     string                              `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o UrlFilteringSecurityProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *UrlFilteringSecurityProfileLocation `json:"location"`
+		Name     *string                              `json:"name"`
+	}
+	var location_object *UrlFilteringSecurityProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *UrlFilteringSecurityProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *UrlFilteringSecurityProfileLocation `json:"location"`
+		Name     *string                              `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func UrlFilteringSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -2963,10 +3297,10 @@ func UrlFilteringSecurityProfileImportStateCreator(ctx context.Context, resource
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location UrlFilteringSecurityProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -2975,10 +3309,10 @@ func UrlFilteringSecurityProfileImportStateCreator(ctx context.Context, resource
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -3002,7 +3336,12 @@ func (r *UrlFilteringSecurityProfileResource) ImportState(ctx context.Context, r
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -3020,8 +3359,8 @@ type UrlFilteringSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type UrlFilteringSecurityProfileLocation struct {
-	Shared      *UrlFilteringSecurityProfileSharedLocation      `tfsdk:"shared"`
-	DeviceGroup *UrlFilteringSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func UrlFilteringSecurityProfileLocationSchema() rsschema.Attribute {
@@ -3075,8 +3414,10 @@ func UrlFilteringSecurityProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o UrlFilteringSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -3093,10 +3434,12 @@ func (o *UrlFilteringSecurityProfileSharedLocation) UnmarshalJSON(data []byte) e
 	return nil
 }
 func (o UrlFilteringSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -3106,8 +3449,8 @@ func (o UrlFilteringSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, e
 
 func (o *UrlFilteringSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3120,12 +3463,28 @@ func (o *UrlFilteringSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []by
 	return nil
 }
 func (o UrlFilteringSecurityProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *UrlFilteringSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *UrlFilteringSecurityProfileDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *UrlFilteringSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *UrlFilteringSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *UrlFilteringSecurityProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *UrlFilteringSecurityProfileDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -3133,16 +3492,54 @@ func (o UrlFilteringSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *UrlFilteringSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *UrlFilteringSecurityProfileSharedLocation      `json:"shared"`
-		DeviceGroup *UrlFilteringSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Shared      *UrlFilteringSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *UrlFilteringSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *UrlFilteringSecurityProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *UrlFilteringSecurityProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *UrlFilteringSecurityProfileLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj UrlFilteringSecurityProfileSharedLocation
+	var deviceGroupObj UrlFilteringSecurityProfileDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

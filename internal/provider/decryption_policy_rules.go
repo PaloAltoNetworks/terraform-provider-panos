@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/policies/rules/decryption"
@@ -54,9 +55,9 @@ type DecryptionPolicyRulesDataSourceFilter struct {
 }
 
 type DecryptionPolicyRulesDataSourceModel struct {
-	Location DecryptionPolicyRulesLocation `tfsdk:"location"`
-	Position TerraformPositionObject       `tfsdk:"position"`
-	Rules    types.List                    `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type DecryptionPolicyRulesDataSourceRulesObject struct {
 	Name                 types.String                                      `tfsdk:"name"`
@@ -107,6 +108,111 @@ type DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject struct {
 }
 type DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject struct {
 	Certificates types.List `tfsdk:"certificates"`
+}
+
+func (o *DecryptionPolicyRulesDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DecryptionPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var targetObj *DecryptionPolicyRulesDataSourceRulesTargetObject
+
+	var typeObj *DecryptionPolicyRulesDataSourceRulesTypeObject
+	return map[string]attr.Type{
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"category":              types.ListType{},
+		"description":           types.StringType,
+		"destination_addresses": types.ListType{},
+		"destination_hip":       types.ListType{},
+		"disabled":              types.BoolType,
+		"source_zones":          types.ListType{},
+		"group_tag":             types.StringType,
+		"log_fail":              types.BoolType,
+		"log_setting":           types.StringType,
+		"log_success":           types.BoolType,
+		"negate_destination":    types.BoolType,
+		"negate_source":         types.BoolType,
+		"packet_broker_profile": types.StringType,
+		"profile":               types.StringType,
+		"services":              types.ListType{},
+		"source_addresses":      types.ListType{},
+		"source_hip":            types.ListType{},
+		"source_user":           types.ListType{},
+		"tag":                   types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zones": types.ListType{},
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var sshProxyObj *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject
+
+	var sslForwardProxyObj *DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject
+
+	var sslInboundInspectionObj *DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject
+	return map[string]attr.Type{
+		"ssh_proxy": types.ObjectType{
+			AttrTypes: sshProxyObj.AttributeTypes(),
+		},
+		"ssl_forward_proxy": types.ObjectType{
+			AttrTypes: sslForwardProxyObj.AttributeTypes(),
+		},
+		"ssl_inbound_inspection": types.ObjectType{
+			AttrTypes: sslInboundInspectionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificates": types.ListType{},
+	}
 }
 
 func (o *DecryptionPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1255,25 +1361,44 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 
 	var location decryption.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &decryption.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation DecryptionPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &decryption.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &decryption.SharedLocation{}
+			var innerLocation DecryptionPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &decryption.DeviceGroupLocation{}
+			var innerLocation DecryptionPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -1293,7 +1418,14 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1312,6 +1444,9 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -1351,9 +1486,9 @@ func DecryptionPolicyRulesResourceLocationSchema() rsschema.Attribute {
 }
 
 type DecryptionPolicyRulesResourceModel struct {
-	Location DecryptionPolicyRulesLocation `tfsdk:"location"`
-	Position TerraformPositionObject       `tfsdk:"position"`
-	Rules    types.List                    `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type DecryptionPolicyRulesResourceRulesObject struct {
 	Name                 types.String                                    `tfsdk:"name"`
@@ -1408,12 +1543,22 @@ type DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject struct {
 
 func (r *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	{
+
 		var resource DecryptionPolicyRulesResourceModel
 		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		resource.Position.ValidateConfig(resp)
+
+		if !resource.Position.IsUnknown() {
+			var positionAttribute TerraformPositionObject
+			resp.Diagnostics.Append(resource.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			positionAttribute.ValidateConfig(resp)
+		}
+
 	}
 	{
 		var resource DecryptionPolicyRulesResourceModel
@@ -1423,17 +1568,43 @@ func (r *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req 
 		}
 
 		entries := make(map[string]struct{})
-		var elements []DecryptionPolicyRulesResourceRulesObject
-		resource.Rules.ElementsAs(ctx, &elements, false)
+		duplicated := make(map[string]struct{})
+
+		var elements []types.Object
+		resp.Diagnostics.Append(resource.Rules.ElementsAs(ctx, &elements, true)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		for _, elt := range elements {
-			entry := elt.Name.ValueString()
-			if _, found := entries[entry]; found {
-				resp.Diagnostics.AddError("Failed to validate resource", "List entries must have unique names")
+			var typedElt DecryptionPolicyRulesResourceRulesObject
+			resp.Diagnostics.Append(elt.As(ctx, &typedElt, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
 				return
+			}
+
+			if typedElt.Name.IsUnknown() {
+				continue
+			}
+
+			entry := typedElt.Name.ValueString()
+			if _, found := entries[entry]; found {
+				duplicated[entry] = struct{}{}
 			}
 			entries[entry] = struct{}{}
 		}
+
+		var _ = strings.Join([]string{"a", "b"}, ",")
+
+		if len(duplicated) > 0 {
+			var entries []string
+			for elt := range duplicated {
+				entries = append(entries, fmt.Sprintf("'%s'", elt))
+			}
+			resp.Diagnostics.AddError("Failed to validate resource", fmt.Sprintf("Non-unique entry names in the list: %s", strings.Join(entries, ",")))
+			return
+		}
+
 	}
 }
 
@@ -2016,6 +2187,111 @@ func (r *DecryptionPolicyRulesResource) Configure(ctx context.Context, req resou
 	r.manager = sdkmanager.NewUuidObjectManager(r.client, decryption.NewService(r.client), batchSize, specifier, decryption.SpecMatches)
 }
 
+func (o *DecryptionPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DecryptionPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var targetObj *DecryptionPolicyRulesResourceRulesTargetObject
+
+	var typeObj *DecryptionPolicyRulesResourceRulesTypeObject
+	return map[string]attr.Type{
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"category":              types.ListType{},
+		"description":           types.StringType,
+		"destination_addresses": types.ListType{},
+		"destination_hip":       types.ListType{},
+		"disabled":              types.BoolType,
+		"source_zones":          types.ListType{},
+		"group_tag":             types.StringType,
+		"log_fail":              types.BoolType,
+		"log_setting":           types.StringType,
+		"log_success":           types.BoolType,
+		"negate_destination":    types.BoolType,
+		"negate_source":         types.BoolType,
+		"packet_broker_profile": types.StringType,
+		"profile":               types.StringType,
+		"services":              types.ListType{},
+		"source_addresses":      types.ListType{},
+		"source_hip":            types.ListType{},
+		"source_user":           types.ListType{},
+		"tag":                   types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zones": types.ListType{},
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var sshProxyObj *DecryptionPolicyRulesResourceRulesTypeSshProxyObject
+
+	var sslForwardProxyObj *DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject
+
+	var sslInboundInspectionObj *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject
+	return map[string]attr.Type{
+		"ssh_proxy": types.ObjectType{
+			AttrTypes: sshProxyObj.AttributeTypes(),
+		},
+		"ssl_forward_proxy": types.ObjectType{
+			AttrTypes: sslForwardProxyObj.AttributeTypes(),
+		},
+		"ssl_inbound_inspection": types.ObjectType{
+			AttrTypes: sslInboundInspectionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *DecryptionPolicyRulesResourceRulesTypeSshProxyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"certificates": types.ListType{},
+	}
+}
+
 func (o *DecryptionPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **decryption.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
@@ -2590,25 +2866,44 @@ func (r *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource
 
 	var location decryption.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &decryption.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation DecryptionPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &decryption.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &decryption.SharedLocation{}
+			var innerLocation DecryptionPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &decryption.DeviceGroupLocation{}
+			var innerLocation DecryptionPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -2627,7 +2922,12 @@ func (r *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource
 		}
 		entries[idx] = entry
 	}
-	position := state.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
@@ -2671,25 +2971,44 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 
 	var location decryption.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &decryption.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation DecryptionPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &decryption.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &decryption.SharedLocation{}
+			var innerLocation DecryptionPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &decryption.DeviceGroupLocation{}
+			var innerLocation DecryptionPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -2709,7 +3028,14 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -2728,6 +3054,9 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -2757,25 +3086,44 @@ func (r *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 
 	var location decryption.Location
 
-	if plan.Location.Shared != nil {
-		location.Shared = &decryption.SharedLocation{
-
-			Rulebase: plan.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation DecryptionPolicyRulesLocation
+		resp.Diagnostics.Append(plan.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if plan.Location.Vsys != nil {
-		location.Vsys = &decryption.VsysLocation{
 
-			NgfwDevice: plan.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       plan.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &decryption.SharedLocation{}
+			var innerLocation DecryptionPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if plan.Location.DeviceGroup != nil {
-		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
-			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &decryption.DeviceGroupLocation{}
+			var innerLocation DecryptionPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -2794,9 +3142,14 @@ func (r *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 		stateEntries[idx] = entry
 	}
 
-	position := plan.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(plan.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 
-	existing, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive)
+	existing, _, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive, position)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
@@ -2869,25 +3222,44 @@ func (r *DecryptionPolicyRulesResource) Delete(ctx context.Context, req resource
 
 	var location decryption.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &decryption.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation DecryptionPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &decryption.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &decryption.SharedLocation{}
+			var innerLocation DecryptionPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &decryption.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &decryption.DeviceGroupLocation{}
+			var innerLocation DecryptionPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -2904,9 +3276,88 @@ func (r *DecryptionPolicyRulesResource) Delete(ctx context.Context, req resource
 }
 
 type DecryptionPolicyRulesImportState struct {
-	Location DecryptionPolicyRulesLocation `json:"location"`
-	Names    []string                      `json:"names"`
-	Position TerraformPositionObject       `json:"position"`
+	Location types.Object `json:"location"`
+	Names    types.List   `json:"names"`
+	Position types.Object `json:"position"`
+}
+
+func (o DecryptionPolicyRulesImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *DecryptionPolicyRulesLocation `json:"location"`
+		Names    []string                       `json:"names"`
+		Position *TerraformPositionObject       `json:"position"`
+	}
+	var location_object *DecryptionPolicyRulesLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+	var names_list []string
+	{
+		diags := o.Names.ElementsAs(context.TODO(), &names_list, false)
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal names into JSON document", diags.Errors())
+		}
+	}
+	var position_object *TerraformPositionObject
+	{
+		diags := o.Position.As(context.TODO(), &position_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal position into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Names:    names_list,
+		Position: position_object,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DecryptionPolicyRulesImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *DecryptionPolicyRulesLocation `json:"location"`
+		Names    []string                       `json:"names"`
+		Position *TerraformPositionObject       `json:"position"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	var names_list types.List
+	{
+		var diags_tmp diag.Diagnostics
+		names_list, diags_tmp = types.ListValueFrom(context.TODO(), types.StringType, shadow.Names)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into names", diags_tmp.Errors())
+		}
+	}
+	var position_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		position_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Position.AttributeTypes(), shadow.Position)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into position", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Names = names_list
+	o.Position = position_object
+
+	return nil
 }
 
 func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -2920,10 +3371,10 @@ func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location DecryptionPolicyRulesLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -2932,10 +3383,10 @@ func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types
 		return nil, fmt.Errorf("position attribute missing")
 	}
 
-	var position TerraformPositionObject
+	var position types.Object
 	switch value := positionAttr.(type) {
 	case types.Object:
-		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+		position = value
 	default:
 		return nil, fmt.Errorf("position attribute expected to be an object")
 	}
@@ -2961,10 +3412,16 @@ func DecryptionPolicyRulesImportStateCreator(ctx context.Context, resource types
 		names = append(names, elt.Name.ValueString())
 	}
 
+	var namesObject types.List
+	namesObject, diags_tmp := types.ListValueFrom(ctx, types.StringType, names)
+	if diags_tmp.HasError() {
+		return nil, NewDiagnosticsError("Failed to generate import ID", diags_tmp.Errors())
+	}
+
 	importStruct := DecryptionPolicyRulesImportState{
 		Location: location,
 		Position: position,
-		Names:    names,
+		Names:    namesObject,
 	}
 
 	return json.Marshal(importStruct)
@@ -2981,7 +3438,12 @@ func (r *DecryptionPolicyRulesResource) ImportState(ctx context.Context, req res
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -2995,7 +3457,12 @@ func (r *DecryptionPolicyRulesResource) ImportState(ctx context.Context, req res
 	}
 
 	var names []*DecryptionPolicyRulesResourceRulesObject
-	for _, elt := range obj.Names {
+	var objectNames []string
+	resp.Diagnostics.Append(obj.Names.ElementsAs(ctx, &objectNames, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	for _, elt := range objectNames {
 		object := &DecryptionPolicyRulesResourceRulesObject{}
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, &decryption.Entry{}, nil)...)
 		if resp.Diagnostics.HasError() {
@@ -3020,9 +3487,9 @@ type DecryptionPolicyRulesDeviceGroupLocation struct {
 	Rulebase       types.String `tfsdk:"rulebase"`
 }
 type DecryptionPolicyRulesLocation struct {
-	Shared      *DecryptionPolicyRulesSharedLocation      `tfsdk:"shared"`
-	Vsys        *DecryptionPolicyRulesVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *DecryptionPolicyRulesDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func DecryptionPolicyRulesLocationSchema() rsschema.Attribute {
@@ -3124,9 +3591,11 @@ func DecryptionPolicyRulesLocationSchema() rsschema.Attribute {
 }
 
 func (o DecryptionPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Rulebase *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		Rulebase *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		Rulebase: o.Rulebase.ValueStringPointer(),
 	}
 
@@ -3135,7 +3604,7 @@ func (o DecryptionPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DecryptionPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Rulebase *string `json:"rulebase"`
+		Rulebase *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3147,10 +3616,12 @@ func (o *DecryptionPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DecryptionPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -3160,8 +3631,8 @@ func (o DecryptionPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DecryptionPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3174,11 +3645,13 @@ func (o *DecryptionPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DecryptionPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		Rulebase:       o.Rulebase.ValueStringPointer(),
@@ -3189,9 +3662,9 @@ func (o DecryptionPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) 
 
 func (o *DecryptionPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3205,14 +3678,37 @@ func (o *DecryptionPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) er
 	return nil
 }
 func (o DecryptionPolicyRulesLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *DecryptionPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *DecryptionPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *DecryptionPolicyRulesDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *DecryptionPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *DecryptionPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *DecryptionPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *DecryptionPolicyRulesSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *DecryptionPolicyRulesVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *DecryptionPolicyRulesDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -3220,18 +3716,77 @@ func (o DecryptionPolicyRulesLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DecryptionPolicyRulesLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *DecryptionPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *DecryptionPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *DecryptionPolicyRulesDeviceGroupLocation `json:"device_group"`
+		Shared      *DecryptionPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *DecryptionPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *DecryptionPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *DecryptionPolicyRulesSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"rulebase": types.StringType,
+	}
+}
+func (o *DecryptionPolicyRulesVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *DecryptionPolicyRulesDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"rulebase":        types.StringType,
+	}
+}
+func (o *DecryptionPolicyRulesLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj DecryptionPolicyRulesSharedLocation
+	var vsysObj DecryptionPolicyRulesVsysLocation
+	var deviceGroupObj DecryptionPolicyRulesDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

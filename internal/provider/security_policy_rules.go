@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/policies/rules/security"
@@ -55,9 +56,9 @@ type SecurityPolicyRulesDataSourceFilter struct {
 }
 
 type SecurityPolicyRulesDataSourceModel struct {
-	Location SecurityPolicyRulesLocation `tfsdk:"location"`
-	Position TerraformPositionObject     `tfsdk:"position"`
-	Rules    types.List                  `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type SecurityPolicyRulesDataSourceRulesObject struct {
 	Name                            types.String                                            `tfsdk:"name"`
@@ -129,6 +130,141 @@ type SecurityPolicyRulesDataSourceRulesTargetDevicesObject struct {
 }
 type SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
+}
+
+func (o *SecurityPolicyRulesDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj SecurityPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var profileSettingObj *SecurityPolicyRulesDataSourceRulesProfileSettingObject
+
+	var qosObj *SecurityPolicyRulesDataSourceRulesQosObject
+
+	var targetObj *SecurityPolicyRulesDataSourceRulesTargetObject
+
+	return map[string]attr.Type{
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"applications":          types.SetType{},
+		"category":              types.ListType{},
+		"description":           types.StringType,
+		"destination_addresses": types.SetType{},
+		"destination_hip":       types.ListType{},
+		"disable_inspect":       types.BoolType,
+		"disabled":              types.BoolType,
+		"source_zones":          types.SetType{},
+		"group_tag":             types.StringType,
+		"icmp_unreachable":      types.BoolType,
+		"log_end":               types.BoolType,
+		"log_setting":           types.StringType,
+		"log_start":             types.BoolType,
+		"negate_destination":    types.BoolType,
+		"negate_source":         types.BoolType,
+		"profile_setting": types.ObjectType{
+			AttrTypes: profileSettingObj.AttributeTypes(),
+		},
+		"qos": types.ObjectType{
+			AttrTypes: qosObj.AttributeTypes(),
+		},
+		"rule_type":        types.StringType,
+		"schedule":         types.StringType,
+		"services":         types.SetType{},
+		"source_addresses": types.SetType{},
+		"source_hip":       types.ListType{},
+		"source_imei":      types.ListType{},
+		"source_imsi":      types.ListType{},
+		"source_nw_slice":  types.ListType{},
+		"source_users":     types.SetType{},
+		"tag":              types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zones":                  types.SetType{},
+		"disable_server_response_inspection": types.BoolType,
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) AttributeTypes() map[string]attr.Type {
+
+	var profilesObj *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject
+	return map[string]attr.Type{
+		"group": types.ListType{},
+		"profiles": types.ObjectType{
+			AttrTypes: profilesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_filtering":    types.ListType{},
+		"file_blocking":     types.ListType{},
+		"gtp":               types.ListType{},
+		"sctp":              types.ListType{},
+		"spyware":           types.ListType{},
+		"url_filtering":     types.ListType{},
+		"virus":             types.ListType{},
+		"vulnerability":     types.ListType{},
+		"wildfire_analysis": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesQosObject) AttributeTypes() map[string]attr.Type {
+
+	var markingObj *SecurityPolicyRulesDataSourceRulesQosMarkingObject
+	return map[string]attr.Type{
+		"marking": types.ObjectType{
+			AttrTypes: markingObj.AttributeTypes(),
+		},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) AttributeTypes() map[string]attr.Type {
+
+	var followC2sFlowObj *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject
+
+	return map[string]attr.Type{
+		"follow_c2s_flow": types.ObjectType{
+			AttrTypes: followC2sFlowObj.AttributeTypes(),
+		},
+		"ip_dscp":       types.StringType,
+		"ip_precedence": types.StringType,
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *SecurityPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
 }
 
 func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1703,25 +1839,44 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 
 	var location security.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation SecurityPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &security.SharedLocation{}
+			var innerLocation SecurityPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &security.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &security.VsysLocation{}
+			var innerLocation SecurityPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &security.DeviceGroupLocation{}
+			var innerLocation SecurityPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -1741,7 +1896,14 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1760,6 +1922,9 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -1799,9 +1964,9 @@ func SecurityPolicyRulesResourceLocationSchema() rsschema.Attribute {
 }
 
 type SecurityPolicyRulesResourceModel struct {
-	Location SecurityPolicyRulesLocation `tfsdk:"location"`
-	Position TerraformPositionObject     `tfsdk:"position"`
-	Rules    types.List                  `tfsdk:"rules"`
+	Location types.Object `tfsdk:"location"`
+	Position types.Object `tfsdk:"position"`
+	Rules    types.List   `tfsdk:"rules"`
 }
 type SecurityPolicyRulesResourceRulesObject struct {
 	Name                            types.String                                          `tfsdk:"name"`
@@ -1877,12 +2042,22 @@ type SecurityPolicyRulesResourceRulesTargetDevicesVsysObject struct {
 
 func (r *SecurityPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	{
+
 		var resource SecurityPolicyRulesResourceModel
 		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		resource.Position.ValidateConfig(resp)
+
+		if !resource.Position.IsUnknown() {
+			var positionAttribute TerraformPositionObject
+			resp.Diagnostics.Append(resource.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			positionAttribute.ValidateConfig(resp)
+		}
+
 	}
 	{
 		var resource SecurityPolicyRulesResourceModel
@@ -1892,17 +2067,43 @@ func (r *SecurityPolicyRulesResource) ValidateConfig(ctx context.Context, req re
 		}
 
 		entries := make(map[string]struct{})
-		var elements []SecurityPolicyRulesResourceRulesObject
-		resource.Rules.ElementsAs(ctx, &elements, false)
+		duplicated := make(map[string]struct{})
+
+		var elements []types.Object
+		resp.Diagnostics.Append(resource.Rules.ElementsAs(ctx, &elements, true)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		for _, elt := range elements {
-			entry := elt.Name.ValueString()
-			if _, found := entries[entry]; found {
-				resp.Diagnostics.AddError("Failed to validate resource", "List entries must have unique names")
+			var typedElt SecurityPolicyRulesResourceRulesObject
+			resp.Diagnostics.Append(elt.As(ctx, &typedElt, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
 				return
+			}
+
+			if typedElt.Name.IsUnknown() {
+				continue
+			}
+
+			entry := typedElt.Name.ValueString()
+			if _, found := entries[entry]; found {
+				duplicated[entry] = struct{}{}
 			}
 			entries[entry] = struct{}{}
 		}
+
+		var _ = strings.Join([]string{"a", "b"}, ",")
+
+		if len(duplicated) > 0 {
+			var entries []string
+			for elt := range duplicated {
+				entries = append(entries, fmt.Sprintf("'%s'", elt))
+			}
+			resp.Diagnostics.AddError("Failed to validate resource", fmt.Sprintf("Non-unique entry names in the list: %s", strings.Join(entries, ",")))
+			return
+		}
+
 	}
 }
 
@@ -2683,6 +2884,141 @@ func (r *SecurityPolicyRulesResource) Configure(ctx context.Context, req resourc
 	}
 	batchSize := providerData.MultiConfigBatchSize
 	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), batchSize, specifier, security.SpecMatches)
+}
+
+func (o *SecurityPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj SecurityPolicyRulesLocation
+
+	var positionObj TerraformPositionObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"position": types.ObjectType{
+			AttrTypes: positionObj.AttributeTypes(),
+		},
+		"rules": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var profileSettingObj *SecurityPolicyRulesResourceRulesProfileSettingObject
+
+	var qosObj *SecurityPolicyRulesResourceRulesQosObject
+
+	var targetObj *SecurityPolicyRulesResourceRulesTargetObject
+
+	return map[string]attr.Type{
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"applications":          types.SetType{},
+		"category":              types.ListType{},
+		"description":           types.StringType,
+		"destination_addresses": types.SetType{},
+		"destination_hip":       types.ListType{},
+		"disable_inspect":       types.BoolType,
+		"disabled":              types.BoolType,
+		"source_zones":          types.SetType{},
+		"group_tag":             types.StringType,
+		"icmp_unreachable":      types.BoolType,
+		"log_end":               types.BoolType,
+		"log_setting":           types.StringType,
+		"log_start":             types.BoolType,
+		"negate_destination":    types.BoolType,
+		"negate_source":         types.BoolType,
+		"profile_setting": types.ObjectType{
+			AttrTypes: profileSettingObj.AttributeTypes(),
+		},
+		"qos": types.ObjectType{
+			AttrTypes: qosObj.AttributeTypes(),
+		},
+		"rule_type":        types.StringType,
+		"schedule":         types.StringType,
+		"services":         types.SetType{},
+		"source_addresses": types.SetType{},
+		"source_hip":       types.ListType{},
+		"source_imei":      types.ListType{},
+		"source_imsi":      types.ListType{},
+		"source_nw_slice":  types.ListType{},
+		"source_users":     types.SetType{},
+		"tag":              types.ListType{},
+		"target": types.ObjectType{
+			AttrTypes: targetObj.AttributeTypes(),
+		},
+		"destination_zones":                  types.SetType{},
+		"disable_server_response_inspection": types.BoolType,
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) AttributeTypes() map[string]attr.Type {
+
+	var profilesObj *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject
+	return map[string]attr.Type{
+		"group": types.ListType{},
+		"profiles": types.ObjectType{
+			AttrTypes: profilesObj.AttributeTypes(),
+		},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"data_filtering":    types.ListType{},
+		"file_blocking":     types.ListType{},
+		"gtp":               types.ListType{},
+		"sctp":              types.ListType{},
+		"spyware":           types.ListType{},
+		"url_filtering":     types.ListType{},
+		"virus":             types.ListType{},
+		"vulnerability":     types.ListType{},
+		"wildfire_analysis": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesQosObject) AttributeTypes() map[string]attr.Type {
+
+	var markingObj *SecurityPolicyRulesResourceRulesQosMarkingObject
+	return map[string]attr.Type{
+		"marking": types.ObjectType{
+			AttrTypes: markingObj.AttributeTypes(),
+		},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) AttributeTypes() map[string]attr.Type {
+
+	var followC2sFlowObj *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject
+
+	return map[string]attr.Type{
+		"follow_c2s_flow": types.ObjectType{
+			AttrTypes: followC2sFlowObj.AttributeTypes(),
+		},
+		"ip_dscp":       types.StringType,
+		"ip_precedence": types.StringType,
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *SecurityPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"devices": types.ListType{},
+		"negate":  types.BoolType,
+		"tags":    types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
 }
 
 func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -3504,25 +3840,44 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 
 	var location security.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation SecurityPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &security.SharedLocation{}
+			var innerLocation SecurityPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &security.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &security.VsysLocation{}
+			var innerLocation SecurityPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &security.DeviceGroupLocation{}
+			var innerLocation SecurityPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3541,7 +3896,12 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 		}
 		entries[idx] = entry
 	}
-	position := state.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
@@ -3585,25 +3945,44 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 
 	var location security.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation SecurityPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &security.SharedLocation{}
+			var innerLocation SecurityPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &security.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &security.VsysLocation{}
+			var innerLocation SecurityPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &security.DeviceGroupLocation{}
+			var innerLocation SecurityPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3623,7 +4002,14 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive)
+	// false
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
+	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -3642,6 +4028,9 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 			return
 		}
 		objects = append(objects, object)
+	}
+	if movementRequired {
+		state.Position = types.ObjectNull(positionAttribute.AttributeTypes())
 	}
 
 	var list_diags diag.Diagnostics
@@ -3671,25 +4060,44 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 
 	var location security.Location
 
-	if plan.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: plan.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation SecurityPolicyRulesLocation
+		resp.Diagnostics.Append(plan.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if plan.Location.Vsys != nil {
-		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: plan.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       plan.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &security.SharedLocation{}
+			var innerLocation SecurityPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if plan.Location.DeviceGroup != nil {
-		location.DeviceGroup = &security.DeviceGroupLocation{
 
-			PanoramaDevice: plan.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    plan.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       plan.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &security.VsysLocation{}
+			var innerLocation SecurityPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &security.DeviceGroupLocation{}
+			var innerLocation SecurityPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3708,9 +4116,14 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 		stateEntries[idx] = entry
 	}
 
-	position := plan.Position.CopyToPango()
+	var positionAttribute TerraformPositionObject
+	resp.Diagnostics.Append(plan.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	position := positionAttribute.CopyToPango()
 
-	existing, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive)
+	existing, _, err := r.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive, position)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
@@ -3783,25 +4196,44 @@ func (r *SecurityPolicyRulesResource) Delete(ctx context.Context, req resource.D
 
 	var location security.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &security.SharedLocation{
-
-			Rulebase: state.Location.Shared.Rulebase.ValueString(),
+	{
+		var terraformLocation SecurityPolicyRulesLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &security.VsysLocation{
 
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &security.SharedLocation{}
+			var innerLocation SecurityPolicyRulesSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Shared.Rulebase = innerLocation.Rulebase.ValueString()
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &security.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
-			Rulebase:       state.Location.DeviceGroup.Rulebase.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &security.VsysLocation{}
+			var innerLocation SecurityPolicyRulesVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &security.DeviceGroupLocation{}
+			var innerLocation SecurityPolicyRulesDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+			location.DeviceGroup.Rulebase = innerLocation.Rulebase.ValueString()
 		}
 	}
 
@@ -3818,9 +4250,88 @@ func (r *SecurityPolicyRulesResource) Delete(ctx context.Context, req resource.D
 }
 
 type SecurityPolicyRulesImportState struct {
-	Location SecurityPolicyRulesLocation `json:"location"`
-	Names    []string                    `json:"names"`
-	Position TerraformPositionObject     `json:"position"`
+	Location types.Object `json:"location"`
+	Names    types.List   `json:"names"`
+	Position types.Object `json:"position"`
+}
+
+func (o SecurityPolicyRulesImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *SecurityPolicyRulesLocation `json:"location"`
+		Names    []string                     `json:"names"`
+		Position *TerraformPositionObject     `json:"position"`
+	}
+	var location_object *SecurityPolicyRulesLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+	var names_list []string
+	{
+		diags := o.Names.ElementsAs(context.TODO(), &names_list, false)
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal names into JSON document", diags.Errors())
+		}
+	}
+	var position_object *TerraformPositionObject
+	{
+		diags := o.Position.As(context.TODO(), &position_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal position into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Names:    names_list,
+		Position: position_object,
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *SecurityPolicyRulesImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *SecurityPolicyRulesLocation `json:"location"`
+		Names    []string                     `json:"names"`
+		Position *TerraformPositionObject     `json:"position"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	var names_list types.List
+	{
+		var diags_tmp diag.Diagnostics
+		names_list, diags_tmp = types.ListValueFrom(context.TODO(), types.StringType, shadow.Names)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into names", diags_tmp.Errors())
+		}
+	}
+	var position_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		position_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Position.AttributeTypes(), shadow.Position)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into position", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Names = names_list
+	o.Position = position_object
+
+	return nil
 }
 
 func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -3834,10 +4345,10 @@ func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.O
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location SecurityPolicyRulesLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -3846,10 +4357,10 @@ func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.O
 		return nil, fmt.Errorf("position attribute missing")
 	}
 
-	var position TerraformPositionObject
+	var position types.Object
 	switch value := positionAttr.(type) {
 	case types.Object:
-		value.As(ctx, &position, basetypes.ObjectAsOptions{})
+		position = value
 	default:
 		return nil, fmt.Errorf("position attribute expected to be an object")
 	}
@@ -3875,10 +4386,16 @@ func SecurityPolicyRulesImportStateCreator(ctx context.Context, resource types.O
 		names = append(names, elt.Name.ValueString())
 	}
 
+	var namesObject types.List
+	namesObject, diags_tmp := types.ListValueFrom(ctx, types.StringType, names)
+	if diags_tmp.HasError() {
+		return nil, NewDiagnosticsError("Failed to generate import ID", diags_tmp.Errors())
+	}
+
 	importStruct := SecurityPolicyRulesImportState{
 		Location: location,
 		Position: position,
-		Names:    names,
+		Names:    namesObject,
 	}
 
 	return json.Marshal(importStruct)
@@ -3895,7 +4412,12 @@ func (r *SecurityPolicyRulesResource) ImportState(ctx context.Context, req resou
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -3909,7 +4431,12 @@ func (r *SecurityPolicyRulesResource) ImportState(ctx context.Context, req resou
 	}
 
 	var names []*SecurityPolicyRulesResourceRulesObject
-	for _, elt := range obj.Names {
+	var objectNames []string
+	resp.Diagnostics.Append(obj.Names.ElementsAs(ctx, &objectNames, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	for _, elt := range objectNames {
 		object := &SecurityPolicyRulesResourceRulesObject{}
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, &security.Entry{}, nil)...)
 		if resp.Diagnostics.HasError() {
@@ -3934,9 +4461,9 @@ type SecurityPolicyRulesDeviceGroupLocation struct {
 	Rulebase       types.String `tfsdk:"rulebase"`
 }
 type SecurityPolicyRulesLocation struct {
-	Shared      *SecurityPolicyRulesSharedLocation      `tfsdk:"shared"`
-	Vsys        *SecurityPolicyRulesVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *SecurityPolicyRulesDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
@@ -4038,9 +4565,11 @@ func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
 }
 
 func (o SecurityPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Rulebase *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		Rulebase *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		Rulebase: o.Rulebase.ValueStringPointer(),
 	}
 
@@ -4049,7 +4578,7 @@ func (o SecurityPolicyRulesSharedLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Rulebase *string `json:"rulebase"`
+		Rulebase *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4061,10 +4590,12 @@ func (o *SecurityPolicyRulesSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o SecurityPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -4074,8 +4605,8 @@ func (o SecurityPolicyRulesVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4088,11 +4619,13 @@ func (o *SecurityPolicyRulesVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o SecurityPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		Rulebase:       o.Rulebase.ValueStringPointer(),
@@ -4103,9 +4636,9 @@ func (o SecurityPolicyRulesDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		Rulebase       *string `json:"rulebase"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		Rulebase       *string `json:"rulebase,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4119,14 +4652,37 @@ func (o *SecurityPolicyRulesDeviceGroupLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o SecurityPolicyRulesLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *SecurityPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *SecurityPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *SecurityPolicyRulesDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *SecurityPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *SecurityPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *SecurityPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *SecurityPolicyRulesSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *SecurityPolicyRulesVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *SecurityPolicyRulesDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -4134,18 +4690,77 @@ func (o SecurityPolicyRulesLocation) MarshalJSON() ([]byte, error) {
 
 func (o *SecurityPolicyRulesLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *SecurityPolicyRulesSharedLocation      `json:"shared"`
-		Vsys        *SecurityPolicyRulesVsysLocation        `json:"vsys"`
-		DeviceGroup *SecurityPolicyRulesDeviceGroupLocation `json:"device_group"`
+		Shared      *SecurityPolicyRulesSharedLocation      `json:"shared,omitempty"`
+		Vsys        *SecurityPolicyRulesVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *SecurityPolicyRulesDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *SecurityPolicyRulesSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"rulebase": types.StringType,
+	}
+}
+func (o *SecurityPolicyRulesVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *SecurityPolicyRulesDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"rulebase":        types.StringType,
+	}
+}
+func (o *SecurityPolicyRulesLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj SecurityPolicyRulesSharedLocation
+	var vsysObj SecurityPolicyRulesVsysLocation
+	var deviceGroupObj SecurityPolicyRulesDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

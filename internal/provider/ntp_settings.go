@@ -26,6 +26,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
@@ -51,7 +52,7 @@ type NtpSettingsDataSourceFilter struct {
 }
 
 type NtpSettingsDataSourceModel struct {
-	Location        NtpSettingsLocation                    `tfsdk:"location"`
+	Location        types.Object                           `tfsdk:"location"`
 	NtpServers      *NtpSettingsDataSourceNtpServersObject `tfsdk:"ntp_servers"`
 	EncryptedValues types.Map                              `tfsdk:"encrypted_values"`
 }
@@ -112,6 +113,183 @@ type NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetri
 }
 type NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object struct {
 	AuthenticationKey types.String `tfsdk:"authentication_key"`
+}
+
+func (o *NtpSettingsDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj NtpSettingsLocation
+
+	var ntpServersObj *NtpSettingsDataSourceNtpServersObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"ntp_servers": types.ObjectType{
+			AttrTypes: ntpServersObj.AttributeTypes(),
+		},
+		"encrypted_values": types.MapType{},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersObject) AttributeTypes() map[string]attr.Type {
+
+	var primaryNtpServerObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject
+
+	var secondaryNtpServerObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject
+	return map[string]attr.Type{
+		"primary_ntp_server": types.ObjectType{
+			AttrTypes: primaryNtpServerObj.AttributeTypes(),
+		},
+		"secondary_ntp_server": types.ObjectType{
+			AttrTypes: secondaryNtpServerObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationTypeObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
+
+	return map[string]attr.Type{
+		"authentication_type": types.ObjectType{
+			AttrTypes: authenticationTypeObj.AttributeTypes(),
+		},
+		"ntp_server_address": types.StringType,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var autokeyObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject
+
+	var noneObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject
+
+	var symmetricKeyObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject
+	return map[string]attr.Type{
+		"autokey": types.ObjectType{
+			AttrTypes: autokeyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"symmetric_key": types.ObjectType{
+			AttrTypes: symmetricKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"key_id": types.Int64Type,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+
+	var sha1Obj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationTypeObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject
+
+	return map[string]attr.Type{
+		"authentication_type": types.ObjectType{
+			AttrTypes: authenticationTypeObj.AttributeTypes(),
+		},
+		"ntp_server_address": types.StringType,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var autokeyObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject
+
+	var noneObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject
+
+	var symmetricKeyObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject
+	return map[string]attr.Type{
+		"autokey": types.ObjectType{
+			AttrTypes: autokeyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"symmetric_key": types.ObjectType{
+			AttrTypes: symmetricKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"key_id": types.Int64Type,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+
+	var sha1Obj *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
 }
 
 func (o *NtpSettingsDataSourceModel) CopyToPango(ctx context.Context, obj **ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
@@ -1634,26 +1812,45 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location ntp.Location
 
-	if savestate.Location.System != nil {
-		location.System = &ntp.SystemLocation{
-
-			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation NtpSettingsLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &ntp.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &ntp.SystemLocation{}
+			var innerLocation NtpSettingsSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ntp.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ntp.TemplateLocation{}
+			var innerLocation NtpSettingsTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ntp.TemplateStackLocation{}
+			var innerLocation NtpSettingsTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1720,7 +1917,7 @@ func NtpSettingsResourceLocationSchema() rsschema.Attribute {
 }
 
 type NtpSettingsResourceModel struct {
-	Location        NtpSettingsLocation                  `tfsdk:"location"`
+	Location        types.Object                         `tfsdk:"location"`
 	NtpServers      *NtpSettingsResourceNtpServersObject `tfsdk:"ntp_servers"`
 	EncryptedValues types.Map                            `tfsdk:"encrypted_values"`
 }
@@ -2530,6 +2727,183 @@ func (r *NtpSettingsResource) Configure(ctx context.Context, req resource.Config
 	r.manager = sdkmanager.NewConfigObjectManager(r.client, ntp.NewService(r.client), specifier)
 }
 
+func (o *NtpSettingsResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj NtpSettingsLocation
+
+	var ntpServersObj *NtpSettingsResourceNtpServersObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"ntp_servers": types.ObjectType{
+			AttrTypes: ntpServersObj.AttributeTypes(),
+		},
+		"encrypted_values": types.MapType{},
+	}
+}
+func (o *NtpSettingsResourceNtpServersObject) AttributeTypes() map[string]attr.Type {
+
+	var primaryNtpServerObj *NtpSettingsResourceNtpServersPrimaryNtpServerObject
+
+	var secondaryNtpServerObj *NtpSettingsResourceNtpServersSecondaryNtpServerObject
+	return map[string]attr.Type{
+		"primary_ntp_server": types.ObjectType{
+			AttrTypes: primaryNtpServerObj.AttributeTypes(),
+		},
+		"secondary_ntp_server": types.ObjectType{
+			AttrTypes: secondaryNtpServerObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationTypeObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject
+
+	return map[string]attr.Type{
+		"authentication_type": types.ObjectType{
+			AttrTypes: authenticationTypeObj.AttributeTypes(),
+		},
+		"ntp_server_address": types.StringType,
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var autokeyObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject
+
+	var noneObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject
+
+	var symmetricKeyObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject
+	return map[string]attr.Type{
+		"autokey": types.ObjectType{
+			AttrTypes: autokeyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"symmetric_key": types.ObjectType{
+			AttrTypes: symmetricKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"key_id": types.Int64Type,
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+
+	var sha1Obj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationTypeObj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
+
+	return map[string]attr.Type{
+		"authentication_type": types.ObjectType{
+			AttrTypes: authenticationTypeObj.AttributeTypes(),
+		},
+		"ntp_server_address": types.StringType,
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var autokeyObj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject
+
+	var noneObj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject
+
+	var symmetricKeyObj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject
+	return map[string]attr.Type{
+		"autokey": types.ObjectType{
+			AttrTypes: autokeyObj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"symmetric_key": types.ObjectType{
+			AttrTypes: symmetricKeyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"key_id": types.Int64Type,
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+
+	var sha1Obj *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"authentication_key": types.StringType,
+	}
+}
+
 func (o *NtpSettingsResourceModel) CopyToPango(ctx context.Context, obj **ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ntpServers_entry *ntp.NtpServers
@@ -3318,26 +3692,45 @@ func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location ntp.Location
 
-	if state.Location.System != nil {
-		location.System = &ntp.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation NtpSettingsLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ntp.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &ntp.SystemLocation{}
+			var innerLocation NtpSettingsSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ntp.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ntp.TemplateLocation{}
+			var innerLocation NtpSettingsTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ntp.TemplateStackLocation{}
+			var innerLocation NtpSettingsTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -3392,26 +3785,45 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location ntp.Location
 
-	if savestate.Location.System != nil {
-		location.System = &ntp.SystemLocation{
-
-			NgfwDevice: savestate.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation NtpSettingsLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &ntp.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &ntp.SystemLocation{}
+			var innerLocation NtpSettingsSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &ntp.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ntp.TemplateLocation{}
+			var innerLocation NtpSettingsTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ntp.TemplateStackLocation{}
+			var innerLocation NtpSettingsTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -3472,26 +3884,45 @@ func (r *NtpSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location ntp.Location
 
-	if state.Location.System != nil {
-		location.System = &ntp.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation NtpSettingsLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ntp.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &ntp.SystemLocation{}
+			var innerLocation NtpSettingsSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ntp.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ntp.TemplateLocation{}
+			var innerLocation NtpSettingsTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ntp.TemplateStackLocation{}
+			var innerLocation NtpSettingsTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -3567,26 +3998,45 @@ func (r *NtpSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location ntp.Location
 
-	if state.Location.System != nil {
-		location.System = &ntp.SystemLocation{
-
-			NgfwDevice: state.Location.System.NgfwDevice.ValueString(),
+	{
+		var terraformLocation NtpSettingsLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &ntp.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.System.IsNull() {
+			location.System = &ntp.SystemLocation{}
+			var innerLocation NtpSettingsSystemLocation
+			resp.Diagnostics.Append(terraformLocation.System.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &ntp.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &ntp.TemplateLocation{}
+			var innerLocation NtpSettingsTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &ntp.TemplateStackLocation{}
+			var innerLocation NtpSettingsTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -3622,9 +4072,9 @@ type NtpSettingsTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type NtpSettingsLocation struct {
-	System        *NtpSettingsSystemLocation        `tfsdk:"system"`
-	Template      *NtpSettingsTemplateLocation      `tfsdk:"template"`
-	TemplateStack *NtpSettingsTemplateStackLocation `tfsdk:"template_stack"`
+	System        types.Object `tfsdk:"system"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func NtpSettingsLocationSchema() rsschema.Attribute {
@@ -3735,9 +4185,11 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 }
 
 func (o NtpSettingsSystemLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -3746,7 +4198,7 @@ func (o NtpSettingsSystemLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NtpSettingsSystemLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3758,11 +4210,13 @@ func (o *NtpSettingsSystemLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NtpSettingsTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -3773,9 +4227,9 @@ func (o NtpSettingsTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NtpSettingsTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3789,11 +4243,13 @@ func (o *NtpSettingsTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NtpSettingsTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -3804,9 +4260,9 @@ func (o NtpSettingsTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NtpSettingsTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3820,14 +4276,37 @@ func (o *NtpSettingsTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o NtpSettingsLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		System        *NtpSettingsSystemLocation        `json:"system"`
-		Template      *NtpSettingsTemplateLocation      `json:"template"`
-		TemplateStack *NtpSettingsTemplateStackLocation `json:"template_stack"`
-	}{
-		System:        o.System,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		System        *NtpSettingsSystemLocation        `json:"system,omitempty"`
+		Template      *NtpSettingsTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *NtpSettingsTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var system_object *NtpSettingsSystemLocation
+	{
+		diags := o.System.As(context.TODO(), &system_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal system into JSON document", diags.Errors())
+		}
+	}
+	var template_object *NtpSettingsTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *NtpSettingsTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		System:        system_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -3835,18 +4314,78 @@ func (o NtpSettingsLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NtpSettingsLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		System        *NtpSettingsSystemLocation        `json:"system"`
-		Template      *NtpSettingsTemplateLocation      `json:"template"`
-		TemplateStack *NtpSettingsTemplateStackLocation `json:"template_stack"`
+		System        *NtpSettingsSystemLocation        `json:"system,omitempty"`
+		Template      *NtpSettingsTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *NtpSettingsTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.System = shadow.System
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var system_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		system_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.System.AttributeTypes(), shadow.System)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into system", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.System = system_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *NtpSettingsSystemLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *NtpSettingsTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *NtpSettingsTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *NtpSettingsLocation) AttributeTypes() map[string]attr.Type {
+	var systemObj NtpSettingsSystemLocation
+	var templateObj NtpSettingsTemplateLocation
+	var templateStackObj NtpSettingsTemplateStackLocation
+	return map[string]attr.Type{
+		"system": types.ObjectType{
+			AttrTypes: systemObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

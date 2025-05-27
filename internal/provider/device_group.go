@@ -51,16 +51,39 @@ type DeviceGroupDataSourceFilter struct {
 }
 
 type DeviceGroupDataSourceModel struct {
-	Location          DeviceGroupLocation `tfsdk:"location"`
-	Name              types.String        `tfsdk:"name"`
-	Description       types.String        `tfsdk:"description"`
-	Templates         types.List          `tfsdk:"templates"`
-	Devices           types.List          `tfsdk:"devices"`
-	AuthorizationCode types.String        `tfsdk:"authorization_code"`
+	Location          types.Object `tfsdk:"location"`
+	Name              types.String `tfsdk:"name"`
+	Description       types.String `tfsdk:"description"`
+	Templates         types.List   `tfsdk:"templates"`
+	Devices           types.List   `tfsdk:"devices"`
+	AuthorizationCode types.String `tfsdk:"authorization_code"`
 }
 type DeviceGroupDataSourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
 	Vsys types.List   `tfsdk:"vsys"`
+}
+
+func (o *DeviceGroupDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DeviceGroupLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":               types.StringType,
+		"description":        types.StringType,
+		"templates":          types.ListType{},
+		"devices":            types.ListType{},
+		"authorization_code": types.StringType,
+	}
+}
+func (o *DeviceGroupDataSourceDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
 }
 
 func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -324,10 +347,21 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	var location devicegroup.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &devicegroup.PanoramaLocation{
+	{
+		var terraformLocation DeviceGroupLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &devicegroup.PanoramaLocation{}
+			var innerLocation DeviceGroupPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -391,12 +425,12 @@ func DeviceGroupResourceLocationSchema() rsschema.Attribute {
 }
 
 type DeviceGroupResourceModel struct {
-	Location          DeviceGroupLocation `tfsdk:"location"`
-	Name              types.String        `tfsdk:"name"`
-	Description       types.String        `tfsdk:"description"`
-	Templates         types.List          `tfsdk:"templates"`
-	Devices           types.List          `tfsdk:"devices"`
-	AuthorizationCode types.String        `tfsdk:"authorization_code"`
+	Location          types.Object `tfsdk:"location"`
+	Name              types.String `tfsdk:"name"`
+	Description       types.String `tfsdk:"description"`
+	Templates         types.List   `tfsdk:"templates"`
+	Devices           types.List   `tfsdk:"devices"`
+	AuthorizationCode types.String `tfsdk:"authorization_code"`
 }
 type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
@@ -546,6 +580,29 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, devicegroup.NewService(r.client), batchSize, specifier, devicegroup.SpecMatches)
 }
 
+func (o *DeviceGroupResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj DeviceGroupLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":               types.StringType,
+		"description":        types.StringType,
+		"templates":          types.ListType{},
+		"devices":            types.ListType{},
+		"authorization_code": types.StringType,
+	}
+}
+func (o *DeviceGroupResourceDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"vsys": types.ListType{},
+	}
+}
+
 func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
@@ -680,10 +737,21 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 
 	var location devicegroup.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &devicegroup.PanoramaLocation{
+	{
+		var terraformLocation DeviceGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &devicegroup.PanoramaLocation{}
+			var innerLocation DeviceGroupPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -732,10 +800,21 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 
 	var location devicegroup.Location
 
-	if savestate.Location.Panorama != nil {
-		location.Panorama = &devicegroup.PanoramaLocation{
+	{
+		var terraformLocation DeviceGroupLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &devicegroup.PanoramaLocation{}
+			var innerLocation DeviceGroupPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -783,10 +862,21 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var location devicegroup.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &devicegroup.PanoramaLocation{
+	{
+		var terraformLocation DeviceGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &devicegroup.PanoramaLocation{}
+			var innerLocation DeviceGroupPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -860,10 +950,21 @@ func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	var location devicegroup.Location
 
-	if state.Location.Panorama != nil {
-		location.Panorama = &devicegroup.PanoramaLocation{
+	{
+		var terraformLocation DeviceGroupLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.Panorama.PanoramaDevice.ValueString(),
+		if !terraformLocation.Panorama.IsNull() {
+			location.Panorama = &devicegroup.PanoramaLocation{}
+			var innerLocation DeviceGroupPanoramaLocation
+			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Panorama.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 		}
 	}
 
@@ -875,8 +976,53 @@ func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteReq
 }
 
 type DeviceGroupImportState struct {
-	Location DeviceGroupLocation `json:"location"`
-	Name     string              `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o DeviceGroupImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *DeviceGroupLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+	var location_object *DeviceGroupLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DeviceGroupImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *DeviceGroupLocation `json:"location"`
+		Name     *string              `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func DeviceGroupImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -890,10 +1036,10 @@ func DeviceGroupImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location DeviceGroupLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -902,10 +1048,10 @@ func DeviceGroupImportStateCreator(ctx context.Context, resource types.Object) (
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -929,7 +1075,12 @@ func (r *DeviceGroupResource) ImportState(ctx context.Context, req resource.Impo
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -944,7 +1095,7 @@ type DeviceGroupPanoramaLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 }
 type DeviceGroupLocation struct {
-	Panorama *DeviceGroupPanoramaLocation `tfsdk:"panorama"`
+	Panorama types.Object `tfsdk:"panorama"`
 }
 
 func DeviceGroupLocationSchema() rsschema.Attribute {
@@ -975,9 +1126,11 @@ func DeviceGroupLocationSchema() rsschema.Attribute {
 }
 
 func (o DeviceGroupPanoramaLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 	}
 
@@ -986,7 +1139,7 @@ func (o DeviceGroupPanoramaLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DeviceGroupPanoramaLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -998,10 +1151,19 @@ func (o *DeviceGroupPanoramaLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o DeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Panorama *DeviceGroupPanoramaLocation `json:"panorama"`
-	}{
-		Panorama: o.Panorama,
+	type shadow struct {
+		Panorama *DeviceGroupPanoramaLocation `json:"panorama,omitempty"`
+	}
+	var panorama_object *DeviceGroupPanoramaLocation
+	{
+		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Panorama: panorama_object,
 	}
 
 	return json.Marshal(obj)
@@ -1009,14 +1171,36 @@ func (o DeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *DeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Panorama *DeviceGroupPanoramaLocation `json:"panorama"`
+		Panorama *DeviceGroupPanoramaLocation `json:"panorama,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Panorama = shadow.Panorama
+	var panorama_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	o.Panorama = panorama_object
 
 	return nil
+}
+
+func (o *DeviceGroupPanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+	}
+}
+func (o *DeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	var panoramaObj DeviceGroupPanoramaLocation
+	return map[string]attr.Type{
+		"panorama": types.ObjectType{
+			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+	}
 }

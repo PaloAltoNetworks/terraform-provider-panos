@@ -580,19 +580,19 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	return entries, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, stateEntries []E, exhaustive ExhaustiveType) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, stateEntries []E, exhaustive ExhaustiveType, position movement.Position) ([]E, bool, error) {
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil {
 		if sdkerrors.IsObjectNotFound(err) {
-			return nil, ErrObjectNotFound
+			return nil, false, ErrObjectNotFound
 		}
-		return nil, &Error{err: err, message: "failed to list remote entries"}
+		return nil, false, &Error{err: err, message: "failed to list remote entries"}
 	}
 
 	if exhaustive == Exhaustive {
 		// For resources that take sole ownership of a given list, Read()
 		// will return all existing entries from the server.
-		return existing, nil
+		return existing, false, nil
 	}
 
 	// For resources that only manage a subset of items, Read() must
@@ -624,7 +624,19 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 		}
 	}
 
-	return common, nil
+	actions, err := movement.MoveGroup(position, stateEntries, existing)
+	if err != nil {
+		if errors.Is(err, movement.ErrSlicesNotEqualLength) {
+			return nil, false, fmt.Errorf("Not all entries found on the server: %w", err)
+		}
+		return nil, false, err
+	}
+
+	if len(actions) > 0 {
+		return common, true, nil
+	}
+
+	return common, false, nil
 }
 
 func (o *UuidObjectManager[E, L, S]) Delete(ctx context.Context, location L, entryNames []string, exhaustive ExhaustiveType) error {

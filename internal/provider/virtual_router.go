@@ -55,7 +55,7 @@ type VirtualRouterDataSourceFilter struct {
 }
 
 type VirtualRouterDataSourceModel struct {
-	Location                VirtualRouterLocation                                 `tfsdk:"location"`
+	Location                types.Object                                          `tfsdk:"location"`
 	Name                    types.String                                          `tfsdk:"name"`
 	AdministrativeDistances *VirtualRouterDataSourceAdministrativeDistancesObject `tfsdk:"administrative_distances"`
 	Ecmp                    *VirtualRouterDataSourceEcmpObject                    `tfsdk:"ecmp"`
@@ -1273,6 +1273,2620 @@ type VirtualRouterDataSourceRoutingTableIpv6StaticRoutePathMonitorMonitorDestina
 	Destination types.String `tfsdk:"destination"`
 	Interval    types.Int64  `tfsdk:"interval"`
 	Count       types.Int64  `tfsdk:"count"`
+}
+
+func (o *VirtualRouterDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj VirtualRouterLocation
+
+	var administrativeDistancesObj *VirtualRouterDataSourceAdministrativeDistancesObject
+
+	var ecmpObj *VirtualRouterDataSourceEcmpObject
+
+	var multicastObj *VirtualRouterDataSourceMulticastObject
+
+	var protocolObj *VirtualRouterDataSourceProtocolObject
+
+	var routingTableObj *VirtualRouterDataSourceRoutingTableObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"administrative_distances": types.ObjectType{
+			AttrTypes: administrativeDistancesObj.AttributeTypes(),
+		},
+		"ecmp": types.ObjectType{
+			AttrTypes: ecmpObj.AttributeTypes(),
+		},
+		"interfaces": types.ListType{},
+		"multicast": types.ObjectType{
+			AttrTypes: multicastObj.AttributeTypes(),
+		},
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"routing_table": types.ObjectType{
+			AttrTypes: routingTableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceAdministrativeDistancesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ebgp":        types.Int64Type,
+		"ibgp":        types.Int64Type,
+		"ospf_ext":    types.Int64Type,
+		"ospf_int":    types.Int64Type,
+		"ospfv3_ext":  types.Int64Type,
+		"ospfv3_int":  types.Int64Type,
+		"rip":         types.Int64Type,
+		"static":      types.Int64Type,
+		"static_ipv6": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceEcmpObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *VirtualRouterDataSourceEcmpAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"enable":             types.BoolType,
+		"max_paths":          types.Int64Type,
+		"strict_source_path": types.BoolType,
+		"symmetric_return":   types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var balancedRoundRobinObj *VirtualRouterDataSourceEcmpAlgorithmBalancedRoundRobinObject
+
+	var ipHashObj *VirtualRouterDataSourceEcmpAlgorithmIpHashObject
+
+	var ipModuloObj *VirtualRouterDataSourceEcmpAlgorithmIpModuloObject
+
+	var weightedRoundRobinObj *VirtualRouterDataSourceEcmpAlgorithmWeightedRoundRobinObject
+	return map[string]attr.Type{
+		"balanced_round_robin": types.ObjectType{
+			AttrTypes: balancedRoundRobinObj.AttributeTypes(),
+		},
+		"ip_hash": types.ObjectType{
+			AttrTypes: ipHashObj.AttributeTypes(),
+		},
+		"ip_modulo": types.ObjectType{
+			AttrTypes: ipModuloObj.AttributeTypes(),
+		},
+		"weighted_round_robin": types.ObjectType{
+			AttrTypes: weightedRoundRobinObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmBalancedRoundRobinObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmIpHashObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hash_seed": types.Int64Type,
+		"src_only":  types.BoolType,
+		"use_port":  types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmIpModuloObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmWeightedRoundRobinObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceEcmpAlgorithmWeightedRoundRobinInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"weight": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	var rpObj *VirtualRouterDataSourceMulticastRpObject
+
+	return map[string]attr.Type{
+		"enable":            types.BoolType,
+		"interface_group":   types.ListType{},
+		"route_ageout_time": types.Int64Type,
+		"rp": types.ObjectType{
+			AttrTypes: rpObj.AttributeTypes(),
+		},
+		"spt_threshold":     types.ListType{},
+		"ssm_address_space": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupObject) AttributeTypes() map[string]attr.Type {
+
+	var groupPermissionObj *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionObject
+
+	var igmpObj *VirtualRouterDataSourceMulticastInterfaceGroupIgmpObject
+
+	var pimObj *VirtualRouterDataSourceMulticastInterfaceGroupPimObject
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"description": types.StringType,
+		"interface":   types.ListType{},
+		"group_permission": types.ObjectType{
+			AttrTypes: groupPermissionObj.AttributeTypes(),
+		},
+		"igmp": types.ObjectType{
+			AttrTypes: igmpObj.AttributeTypes(),
+		},
+		"pim": types.ObjectType{
+			AttrTypes: pimObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"any_source_multicast":      types.ListType{},
+		"source_specific_multicast": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionAnySourceMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"group_address": types.StringType,
+		"included":      types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionSourceSpecificMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"group_address":  types.StringType,
+		"source_address": types.StringType,
+		"included":       types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupIgmpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                     types.BoolType,
+		"version":                    types.StringType,
+		"max_query_response_time":    types.Float64Type,
+		"query_interval":             types.Int64Type,
+		"last_member_query_interval": types.Float64Type,
+		"immediate_leave":            types.BoolType,
+		"robustness":                 types.StringType,
+		"max_groups":                 types.StringType,
+		"max_sources":                types.StringType,
+		"router_alert_policing":      types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupPimObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"assert_interval":     types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"join_prune_interval": types.Int64Type,
+		"dr_priority":         types.Int64Type,
+		"bsr_border":          types.BoolType,
+		"allowed_neighbors":   types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastInterfaceGroupPimAllowedNeighborsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastRpObject) AttributeTypes() map[string]attr.Type {
+
+	var localRpObj *VirtualRouterDataSourceMulticastRpLocalRpObject
+	return map[string]attr.Type{
+		"external_rp": types.ListType{},
+		"local_rp": types.ObjectType{
+			AttrTypes: localRpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastRpExternalRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":            types.StringType,
+		"group_addresses": types.ListType{},
+		"override":        types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastRpLocalRpObject) AttributeTypes() map[string]attr.Type {
+
+	var candidateRpObj *VirtualRouterDataSourceMulticastRpLocalRpCandidateRpObject
+
+	var staticRpObj *VirtualRouterDataSourceMulticastRpLocalRpStaticRpObject
+	return map[string]attr.Type{
+		"candidate_rp": types.ObjectType{
+			AttrTypes: candidateRpObj.AttributeTypes(),
+		},
+		"static_rp": types.ObjectType{
+			AttrTypes: staticRpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceMulticastRpLocalRpCandidateRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":                types.StringType,
+		"advertisement_interval": types.Int64Type,
+		"group_addresses":        types.ListType{},
+		"interface":              types.StringType,
+		"priority":               types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastRpLocalRpStaticRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":         types.StringType,
+		"group_addresses": types.ListType{},
+		"interface":       types.StringType,
+		"override":        types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastSptThresholdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"threshold": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceMulticastSsmAddressSpaceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"group_address": types.StringType,
+		"included":      types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var bgpObj *VirtualRouterDataSourceProtocolBgpObject
+
+	var ospfObj *VirtualRouterDataSourceProtocolOspfObject
+
+	var ospfv3Obj *VirtualRouterDataSourceProtocolOspfv3Object
+
+	var ripObj *VirtualRouterDataSourceProtocolRipObject
+	return map[string]attr.Type{
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+		"ospf": types.ObjectType{
+			AttrTypes: ospfObj.AttributeTypes(),
+		},
+		"ospfv3": types.ObjectType{
+			AttrTypes: ospfv3Obj.AttributeTypes(),
+		},
+		"redist_profile":      types.ListType{},
+		"redist_profile_ipv6": types.ListType{},
+		"rip": types.ObjectType{
+			AttrTypes: ripObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterDataSourceProtocolBgpGlobalBfdObject
+
+	var policyObj *VirtualRouterDataSourceProtocolBgpPolicyObject
+
+	var routingOptionsObj *VirtualRouterDataSourceProtocolBgpRoutingOptionsObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"auth_profile":               types.ListType{},
+		"dampening_profile":          types.ListType{},
+		"ecmp_multi_as":              types.BoolType,
+		"enable":                     types.BoolType,
+		"enforce_first_as":           types.BoolType,
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"install_route": types.BoolType,
+		"local_as":      types.StringType,
+		"peer_group":    types.ListType{},
+		"policy": types.ObjectType{
+			AttrTypes: policyObj.AttributeTypes(),
+		},
+		"redist_rules":         types.ListType{},
+		"reject_default_route": types.BoolType,
+		"router_id":            types.StringType,
+		"routing_options": types.ObjectType{
+			AttrTypes: routingOptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"secret": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpDampeningProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                        types.StringType,
+		"enable":                      types.BoolType,
+		"cutoff":                      types.Float64Type,
+		"reuse":                       types.Float64Type,
+		"max_hold_time":               types.Int64Type,
+		"decay_half_life_reachable":   types.Int64Type,
+		"decay_half_life_unreachable": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterDataSourceProtocolBgpPeerGroupTypeObject
+
+	return map[string]attr.Type{
+		"name":                        types.StringType,
+		"enable":                      types.BoolType,
+		"aggregated_confed_as_path":   types.BoolType,
+		"soft_reset_with_stored_info": types.BoolType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"peer": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var ibgpObj *VirtualRouterDataSourceProtocolBgpPeerGroupTypeIbgpObject
+
+	var ebgpConfedObj *VirtualRouterDataSourceProtocolBgpPeerGroupTypeEbgpConfedObject
+
+	var ibgpConfedObj *VirtualRouterDataSourceProtocolBgpPeerGroupTypeIbgpConfedObject
+
+	var ebgpObj *VirtualRouterDataSourceProtocolBgpPeerGroupTypeEbgpObject
+	return map[string]attr.Type{
+		"ibgp": types.ObjectType{
+			AttrTypes: ibgpObj.AttributeTypes(),
+		},
+		"ebgp_confed": types.ObjectType{
+			AttrTypes: ebgpConfedObj.AttributeTypes(),
+		},
+		"ibgp_confed": types.ObjectType{
+			AttrTypes: ibgpConfedObj.AttributeTypes(),
+		},
+		"ebgp": types.ObjectType{
+			AttrTypes: ebgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupTypeIbgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupTypeEbgpConfedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupTypeIbgpConfedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupTypeEbgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"import_nexthop":    types.StringType,
+		"export_nexthop":    types.StringType,
+		"remove_private_as": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerObject) AttributeTypes() map[string]attr.Type {
+
+	var subsequentAddressFamilyIdentifierObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerSubsequentAddressFamilyIdentifierObject
+
+	var localAddressObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerLocalAddressObject
+
+	var peerAddressObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerPeerAddressObject
+
+	var connectionOptionsObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsObject
+
+	var bfdObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerBfdObject
+	return map[string]attr.Type{
+		"name":                              types.StringType,
+		"enable":                            types.BoolType,
+		"peer_as":                           types.StringType,
+		"enable_mp_bgp":                     types.BoolType,
+		"address_family_identifier":         types.StringType,
+		"enable_sender_side_loop_detection": types.BoolType,
+		"reflector_client":                  types.StringType,
+		"peering_type":                      types.StringType,
+		"max_prefixes":                      types.StringType,
+		"subsequent_address_family_identifier": types.ObjectType{
+			AttrTypes: subsequentAddressFamilyIdentifierObj.AttributeTypes(),
+		},
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"connection_options": types.ObjectType{
+			AttrTypes: connectionOptionsObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerSubsequentAddressFamilyIdentifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"unicast":   types.BoolType,
+		"multicast": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface": types.StringType,
+		"ip":        types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ip":   types.StringType,
+		"fqdn": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var incomingBgpConnectionObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsIncomingBgpConnectionObject
+
+	var outgoingBgpConnectionObj *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsOutgoingBgpConnectionObject
+	return map[string]attr.Type{
+		"authentication":         types.StringType,
+		"keep_alive_interval":    types.StringType,
+		"min_route_adv_interval": types.Int64Type,
+		"multihop":               types.Int64Type,
+		"open_delay_time":        types.Int64Type,
+		"hold_time":              types.StringType,
+		"idle_hold_time":         types.Int64Type,
+		"incoming_bgp_connection": types.ObjectType{
+			AttrTypes: incomingBgpConnectionObj.AttributeTypes(),
+		},
+		"outgoing_bgp_connection": types.ObjectType{
+			AttrTypes: outgoingBgpConnectionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsIncomingBgpConnectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"remote_port": types.Int64Type,
+		"allow":       types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerConnectionOptionsOutgoingBgpConnectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port": types.Int64Type,
+		"allow":      types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPeerGroupPeerBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregationObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationObject
+
+	var conditionalAdvertisementObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementObject
+
+	var exportObj *VirtualRouterDataSourceProtocolBgpPolicyExportObject
+
+	var importObj *VirtualRouterDataSourceProtocolBgpPolicyImportObject
+	return map[string]attr.Type{
+		"aggregation": types.ObjectType{
+			AttrTypes: aggregationObj.AttributeTypes(),
+		},
+		"conditional_advertisement": types.ObjectType{
+			AttrTypes: conditionalAdvertisementObj.AttributeTypes(),
+		},
+		"export": types.ObjectType{
+			AttrTypes: exportObj.AttributeTypes(),
+		},
+		"import": types.ObjectType{
+			AttrTypes: importObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregateRouteAttributesObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesObject
+
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"prefix":  types.StringType,
+		"enable":  types.BoolType,
+		"summary": types.BoolType,
+		"as_set":  types.BoolType,
+		"aggregate_route_attributes": types.ObjectType{
+			AttrTypes: aggregateRouteAttributesObj.AttributeTypes(),
+		},
+		"suppress_filters":  types.ListType{},
+		"advertise_filters": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"weight":           types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathNoneObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"prepend": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"policy": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":              types.StringType,
+		"enable":            types.BoolType,
+		"used_by":           types.ListType{},
+		"non_exist_filters": types.ListType{},
+		"advertise_filters": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"rules": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchObject
+
+	var actionObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionObject
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"enable":  types.BoolType,
+		"used_by": types.ListType{},
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var denyObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionDenyObject
+
+	var allowObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowObject
+	return map[string]attr.Type{
+		"deny": types.ObjectType{
+			AttrTypes: denyObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionDenyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+
+	var updateObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateObject
+	return map[string]attr.Type{
+		"update": types.ObjectType{
+			AttrTypes: updateObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathNoneObject
+
+	var removeObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathRemoveObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove": types.ObjectType{
+			AttrTypes: removeObj.AttributeTypes(),
+		},
+		"prepend":            types.Int64Type,
+		"remove_and_prepend": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathRemoveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"rules": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchObject
+
+	var actionObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionObject
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"enable":  types.BoolType,
+		"used_by": types.ListType{},
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var denyObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionDenyObject
+
+	var allowObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowObject
+	return map[string]attr.Type{
+		"deny": types.ObjectType{
+			AttrTypes: denyObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionDenyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+
+	var updateObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateObject
+	return map[string]attr.Type{
+		"dampening": types.StringType,
+		"update": types.ObjectType{
+			AttrTypes: updateObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathObject
+
+	var communityObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityObject
+
+	var extendedCommunityObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"weight":           types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathNoneObject
+
+	var removeObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathRemoveObject
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove": types.ObjectType{
+			AttrTypes: removeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathRemoveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolBgpRedistRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                      types.StringType,
+		"address_family_identifier": types.StringType,
+		"route_table":               types.StringType,
+		"enable":                    types.BoolType,
+		"set_origin":                types.StringType,
+		"set_med":                   types.Int64Type,
+		"set_local_preference":      types.Int64Type,
+		"set_as_path_limit":         types.Int64Type,
+		"metric":                    types.Int64Type,
+		"set_community":             types.ListType{},
+		"set_extended_community":    types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpRoutingOptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregateObj *VirtualRouterDataSourceProtocolBgpRoutingOptionsAggregateObject
+
+	var gracefulRestartObj *VirtualRouterDataSourceProtocolBgpRoutingOptionsGracefulRestartObject
+
+	var medObj *VirtualRouterDataSourceProtocolBgpRoutingOptionsMedObject
+
+	return map[string]attr.Type{
+		"aggregate": types.ObjectType{
+			AttrTypes: aggregateObj.AttributeTypes(),
+		},
+		"as_format":                types.StringType,
+		"confederation_member_as":  types.StringType,
+		"default_local_preference": types.Int64Type,
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"med": types.ObjectType{
+			AttrTypes: medObj.AttributeTypes(),
+		},
+		"reflector_cluster_id": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpRoutingOptionsAggregateObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"aggregate_med": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpRoutingOptionsGracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                types.BoolType,
+		"local_restart_time":    types.Int64Type,
+		"max_peer_restart_time": types.Int64Type,
+		"stale_route_time":      types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolBgpRoutingOptionsMedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"always_compare_med":           types.BoolType,
+		"deterministic_med_comparison": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterDataSourceProtocolOspfGlobalBfdObject
+
+	var gracefulRestartObj *VirtualRouterDataSourceProtocolOspfGracefulRestartObject
+
+	var timersObj *VirtualRouterDataSourceProtocolOspfTimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"area":                       types.ListType{},
+		"auth_profile":               types.ListType{},
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"reject_default_route": types.BoolType,
+		"rfc1583":              types.BoolType,
+		"router_id":            types.StringType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterDataSourceProtocolOspfAreaTypeObject
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"range":        types.ListType{},
+		"interface":    types.ListType{},
+		"virtual_link": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var normalObj *VirtualRouterDataSourceProtocolOspfAreaTypeNormalObject
+
+	var stubObj *VirtualRouterDataSourceProtocolOspfAreaTypeStubObject
+
+	var nssaObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaObject
+	return map[string]attr.Type{
+		"normal": types.ObjectType{
+			AttrTypes: normalObj.AttributeTypes(),
+		},
+		"stub": types.ObjectType{
+			AttrTypes: stubObj.AttributeTypes(),
+		},
+		"nssa": types.ObjectType{
+			AttrTypes: nssaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeStubObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteObject
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeStubDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteObject
+
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"nssa_ext_range": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+		"type":   types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaNssaExtRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterDataSourceProtocolOspfAreaTypeNssaNssaExtRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaNssaExtRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaNssaExtRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfAreaRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterDataSourceProtocolOspfAreaRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	var linkTypeObj *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeObject
+
+	var bfdObj *VirtualRouterDataSourceProtocolOspfAreaInterfaceBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable":              types.BoolType,
+		"passive":             types.BoolType,
+		"metric":              types.Int64Type,
+		"priority":            types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"gr_delay":            types.Int64Type,
+		"link_type": types.ObjectType{
+			AttrTypes: linkTypeObj.AttributeTypes(),
+		},
+		"neighbor": types.ListType{},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var broadcastObj *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeBroadcastObject
+
+	var p2pObj *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeP2pObject
+
+	var p2mpObj *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeP2mpObject
+	return map[string]attr.Type{
+		"broadcast": types.ObjectType{
+			AttrTypes: broadcastObj.AttributeTypes(),
+		},
+		"p2p": types.ObjectType{
+			AttrTypes: p2pObj.AttributeTypes(),
+		},
+		"p2mp": types.ObjectType{
+			AttrTypes: p2mpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
+
+	var bfdObj *VirtualRouterDataSourceProtocolOspfAreaVirtualLinkBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"neighbor_id":         types.StringType,
+		"transit_area_id":     types.StringType,
+		"enable":              types.BoolType,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"password": types.StringType,
+		"md5":      types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfAuthProfileMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"key":       types.StringType,
+		"preferred": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"new_path_type": types.StringType,
+		"new_tag":       types.StringType,
+		"metric":        types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfGracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                    types.BoolType,
+		"grace_period":              types.Int64Type,
+		"helper_enable":             types.BoolType,
+		"max_neighbor_restart_time": types.Int64Type,
+		"strict_l_s_a_checking":     types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfTimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"lsa_interval":          types.Float64Type,
+		"spf_calculation_delay": types.Float64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3Object) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterDataSourceProtocolOspfv3GlobalBfdObject
+
+	var gracefulRestartObj *VirtualRouterDataSourceProtocolOspfv3GracefulRestartObject
+
+	var timersObj *VirtualRouterDataSourceProtocolOspfv3TimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"area":                       types.ListType{},
+		"auth_profile":               types.ListType{},
+		"disable_transit_traffic":    types.BoolType,
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"reject_default_route": types.BoolType,
+		"router_id":            types.StringType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeObject
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"authentication": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"range":        types.ListType{},
+		"interface":    types.ListType{},
+		"virtual_link": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var normalObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNormalObject
+
+	var stubObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubObject
+
+	var nssaObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaObject
+	return map[string]attr.Type{
+		"normal": types.ObjectType{
+			AttrTypes: normalObj.AttributeTypes(),
+		},
+		"stub": types.ObjectType{
+			AttrTypes: stubObj.AttributeTypes(),
+		},
+		"nssa": types.ObjectType{
+			AttrTypes: nssaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteObject
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeStubDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteObject
+
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"nssa_ext_range": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+		"type":   types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaNssaExtRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaNssaExtRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaNssaExtRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaNssaExtRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterDataSourceProtocolOspfv3AreaRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterDataSourceProtocolOspfv3AreaRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	var linkTypeObj *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeObject
+
+	var bfdObj *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable":              types.BoolType,
+		"instance_id":         types.Int64Type,
+		"passive":             types.BoolType,
+		"metric":              types.Int64Type,
+		"priority":            types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"gr_delay":            types.Int64Type,
+		"link_type": types.ObjectType{
+			AttrTypes: linkTypeObj.AttributeTypes(),
+		},
+		"neighbor": types.ListType{},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var broadcastObj *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeBroadcastObject
+
+	var p2pObj *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeP2pObject
+
+	var p2mpObj *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeP2mpObject
+	return map[string]attr.Type{
+		"broadcast": types.ObjectType{
+			AttrTypes: broadcastObj.AttributeTypes(),
+		},
+		"p2p": types.ObjectType{
+			AttrTypes: p2pObj.AttributeTypes(),
+		},
+		"p2mp": types.ObjectType{
+			AttrTypes: p2mpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
+
+	var bfdObj *VirtualRouterDataSourceProtocolOspfv3AreaVirtualLinkBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"neighbor_id":         types.StringType,
+		"transit_area_id":     types.StringType,
+		"enable":              types.BoolType,
+		"instance_id":         types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var espObj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspObject
+
+	var ahObj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"spi":  types.StringType,
+		"esp": types.ObjectType{
+			AttrTypes: espObj.AttributeTypes(),
+		},
+		"ah": types.ObjectType{
+			AttrTypes: ahObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationObj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationObject
+
+	var encryptionObj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspEncryptionObject
+	return map[string]attr.Type{
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"encryption": types.ObjectType{
+			AttrTypes: encryptionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object
+
+	var sha1Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object
+
+	var sha256Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object
+
+	var sha384Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object
+
+	var sha512Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object
+
+	var noneObj *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationNoneObject
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspEncryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"algorithm": types.StringType,
+		"key":       types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Object
+
+	var sha1Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Object
+
+	var sha256Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Object
+
+	var sha384Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Object
+
+	var sha512Obj *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3ExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"new_path_type": types.StringType,
+		"new_tag":       types.StringType,
+		"metric":        types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3GlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3GracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                    types.BoolType,
+		"grace_period":              types.Int64Type,
+		"helper_enable":             types.BoolType,
+		"max_neighbor_restart_time": types.Int64Type,
+		"strict_l_s_a_checking":     types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolOspfv3TimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"lsa_interval":          types.Float64Type,
+		"spf_calculation_delay": types.Float64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var filterObj *VirtualRouterDataSourceProtocolRedistProfileFilterObject
+
+	var actionObj *VirtualRouterDataSourceProtocolRedistProfileActionObject
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"priority": types.Int64Type,
+		"filter": types.ObjectType{
+			AttrTypes: filterObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileFilterObject) AttributeTypes() map[string]attr.Type {
+
+	var ospfObj *VirtualRouterDataSourceProtocolRedistProfileFilterOspfObject
+
+	var bgpObj *VirtualRouterDataSourceProtocolRedistProfileFilterBgpObject
+	return map[string]attr.Type{
+		"type":        types.ListType{},
+		"interface":   types.ListType{},
+		"destination": types.ListType{},
+		"nexthop":     types.ListType{},
+		"ospf": types.ObjectType{
+			AttrTypes: ospfObj.AttributeTypes(),
+		},
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileFilterOspfObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"path_type": types.ListType{},
+		"area":      types.ListType{},
+		"tag":       types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileFilterBgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"community":          types.ListType{},
+		"extended_community": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileActionObject) AttributeTypes() map[string]attr.Type {
+
+	var noRedistObj *VirtualRouterDataSourceProtocolRedistProfileActionNoRedistObject
+
+	var redistObj *VirtualRouterDataSourceProtocolRedistProfileActionRedistObject
+	return map[string]attr.Type{
+		"no_redist": types.ObjectType{
+			AttrTypes: noRedistObj.AttributeTypes(),
+		},
+		"redist": types.ObjectType{
+			AttrTypes: redistObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileActionNoRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileActionRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	var filterObj *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterObject
+
+	var actionObj *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionObject
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"priority": types.Int64Type,
+		"filter": types.ObjectType{
+			AttrTypes: filterObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterObject) AttributeTypes() map[string]attr.Type {
+
+	var ospfv3Obj *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterOspfv3Object
+
+	var bgpObj *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterBgpObject
+	return map[string]attr.Type{
+		"type":        types.ListType{},
+		"interface":   types.ListType{},
+		"destination": types.ListType{},
+		"nexthop":     types.ListType{},
+		"ospfv3": types.ObjectType{
+			AttrTypes: ospfv3Obj.AttributeTypes(),
+		},
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterOspfv3Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"path_type": types.ListType{},
+		"area":      types.ListType{},
+		"tag":       types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6FilterBgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"community":          types.ListType{},
+		"extended_community": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionObject) AttributeTypes() map[string]attr.Type {
+
+	var noRedistObj *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionNoRedistObject
+
+	var redistObj *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionRedistObject
+	return map[string]attr.Type{
+		"no_redist": types.ObjectType{
+			AttrTypes: noRedistObj.AttributeTypes(),
+		},
+		"redist": types.ObjectType{
+			AttrTypes: redistObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionNoRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolRedistProfileIpv6ActionRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolRipObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterDataSourceProtocolRipGlobalBfdObject
+
+	var timersObj *VirtualRouterDataSourceProtocolRipTimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"auth_profile":               types.ListType{},
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"interfaces":           types.ListType{},
+		"reject_default_route": types.BoolType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"password": types.StringType,
+		"md5":      types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipAuthProfileMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"key":       types.StringType,
+		"preferred": types.BoolType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipInterfacesObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteObject
+
+	var bfdObj *VirtualRouterDataSourceProtocolRipInterfacesBfdObject
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"enable":         types.BoolType,
+		"authentication": types.StringType,
+		"mode":           types.StringType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceProtocolRipInterfacesDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipInterfacesBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceProtocolRipTimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"delete_intervals": types.Int64Type,
+		"expire_intervals": types.Int64Type,
+		"interval_seconds": types.Int64Type,
+		"update_intervals": types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableObject) AttributeTypes() map[string]attr.Type {
+
+	var ipObj *VirtualRouterDataSourceRoutingTableIpObject
+
+	var ipv6Obj *VirtualRouterDataSourceRoutingTableIpv6Object
+	return map[string]attr.Type{
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"static_route": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var nexthopObj *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopObject
+
+	var routeTableObj *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableObject
+
+	var bfdObj *VirtualRouterDataSourceRoutingTableIpStaticRouteBfdObject
+
+	var pathMonitorObj *VirtualRouterDataSourceRoutingTableIpStaticRoutePathMonitorObject
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"destination":             types.StringType,
+		"interface":               types.StringType,
+		"administrative_distance": types.Int64Type,
+		"metric":                  types.Int64Type,
+		"nexthop": types.ObjectType{
+			AttrTypes: nexthopObj.AttributeTypes(),
+		},
+		"route_table": types.ObjectType{
+			AttrTypes: routeTableObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+		"path_monitor": types.ObjectType{
+			AttrTypes: pathMonitorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
+
+	var receiveObj *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopReceiveObject
+
+	var discardObj *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopDiscardObject
+
+	return map[string]attr.Type{
+		"receive": types.ObjectType{
+			AttrTypes: receiveObj.AttributeTypes(),
+		},
+		"discard": types.ObjectType{
+			AttrTypes: discardObj.AttributeTypes(),
+		},
+		"ip_address": types.StringType,
+		"fqdn":       types.StringType,
+		"next_vr":    types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopReceiveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableObject) AttributeTypes() map[string]attr.Type {
+
+	var unicastObj *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableUnicastObject
+
+	var multicastObj *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableMulticastObject
+
+	var bothObj *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableBothObject
+
+	var noInstallObj *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableNoInstallObject
+	return map[string]attr.Type{
+		"unicast": types.ObjectType{
+			AttrTypes: unicastObj.AttributeTypes(),
+		},
+		"multicast": types.ObjectType{
+			AttrTypes: multicastObj.AttributeTypes(),
+		},
+		"both": types.ObjectType{
+			AttrTypes: bothObj.AttributeTypes(),
+		},
+		"no_install": types.ObjectType{
+			AttrTypes: noInstallObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableUnicastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableMulticastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteRouteTableNoInstallObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":               types.BoolType,
+		"failure_condition":    types.StringType,
+		"hold_time":            types.Int64Type,
+		"monitor_destinations": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"enable":      types.BoolType,
+		"source":      types.StringType,
+		"destination": types.StringType,
+		"interval":    types.Int64Type,
+		"count":       types.Int64Type,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"static_route": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var nexthopObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopObject
+
+	var routeTableObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableObject
+
+	var bfdObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteBfdObject
+
+	var pathMonitorObj *VirtualRouterDataSourceRoutingTableIpv6StaticRoutePathMonitorObject
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"destination":             types.StringType,
+		"interface":               types.StringType,
+		"administrative_distance": types.Int64Type,
+		"metric":                  types.Int64Type,
+		"nexthop": types.ObjectType{
+			AttrTypes: nexthopObj.AttributeTypes(),
+		},
+		"route_table": types.ObjectType{
+			AttrTypes: routeTableObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+		"path_monitor": types.ObjectType{
+			AttrTypes: pathMonitorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
+
+	var receiveObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopReceiveObject
+
+	var discardObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopDiscardObject
+
+	return map[string]attr.Type{
+		"receive": types.ObjectType{
+			AttrTypes: receiveObj.AttributeTypes(),
+		},
+		"discard": types.ObjectType{
+			AttrTypes: discardObj.AttributeTypes(),
+		},
+		"ipv6_address": types.StringType,
+		"next_vr":      types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopReceiveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableObject) AttributeTypes() map[string]attr.Type {
+
+	var unicastObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableUnicastObject
+
+	var noInstallObj *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableNoInstallObject
+	return map[string]attr.Type{
+		"unicast": types.ObjectType{
+			AttrTypes: unicastObj.AttributeTypes(),
+		},
+		"no_install": types.ObjectType{
+			AttrTypes: noInstallObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableUnicastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteRouteTableNoInstallObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":               types.BoolType,
+		"failure_condition":    types.StringType,
+		"hold_time":            types.Int64Type,
+		"monitor_destinations": types.ListType{},
+	}
+}
+func (o *VirtualRouterDataSourceRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"enable":      types.BoolType,
+		"source":      types.StringType,
+		"destination": types.StringType,
+		"interval":    types.Int64Type,
+		"count":       types.Int64Type,
+	}
 }
 
 func (o *VirtualRouterDataSourceModel) CopyToPango(ctx context.Context, obj **virtual_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -27818,26 +30432,45 @@ func (o *VirtualRouterDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	var location virtual_router.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &virtual_router.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VirtualRouterLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &virtual_router.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &virtual_router.NgfwLocation{}
+			var innerLocation VirtualRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &virtual_router.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &virtual_router.TemplateLocation{}
+			var innerLocation VirtualRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &virtual_router.TemplateStackLocation{}
+			var innerLocation VirtualRouterTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -27901,7 +30534,7 @@ func VirtualRouterResourceLocationSchema() rsschema.Attribute {
 }
 
 type VirtualRouterResourceModel struct {
-	Location                VirtualRouterLocation                               `tfsdk:"location"`
+	Location                types.Object                                        `tfsdk:"location"`
 	Name                    types.String                                        `tfsdk:"name"`
 	AdministrativeDistances *VirtualRouterResourceAdministrativeDistancesObject `tfsdk:"administrative_distances"`
 	Ecmp                    *VirtualRouterResourceEcmpObject                    `tfsdk:"ecmp"`
@@ -42069,6 +44702,2620 @@ func (r *VirtualRouterResource) Configure(ctx context.Context, req resource.Conf
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, virtual_router.NewService(r.client), batchSize, specifier, virtual_router.SpecMatches)
 }
 
+func (o *VirtualRouterResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj VirtualRouterLocation
+
+	var administrativeDistancesObj *VirtualRouterResourceAdministrativeDistancesObject
+
+	var ecmpObj *VirtualRouterResourceEcmpObject
+
+	var multicastObj *VirtualRouterResourceMulticastObject
+
+	var protocolObj *VirtualRouterResourceProtocolObject
+
+	var routingTableObj *VirtualRouterResourceRoutingTableObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"administrative_distances": types.ObjectType{
+			AttrTypes: administrativeDistancesObj.AttributeTypes(),
+		},
+		"ecmp": types.ObjectType{
+			AttrTypes: ecmpObj.AttributeTypes(),
+		},
+		"interfaces": types.ListType{},
+		"multicast": types.ObjectType{
+			AttrTypes: multicastObj.AttributeTypes(),
+		},
+		"protocol": types.ObjectType{
+			AttrTypes: protocolObj.AttributeTypes(),
+		},
+		"routing_table": types.ObjectType{
+			AttrTypes: routingTableObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceAdministrativeDistancesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ebgp":        types.Int64Type,
+		"ibgp":        types.Int64Type,
+		"ospf_ext":    types.Int64Type,
+		"ospf_int":    types.Int64Type,
+		"ospfv3_ext":  types.Int64Type,
+		"ospfv3_int":  types.Int64Type,
+		"rip":         types.Int64Type,
+		"static":      types.Int64Type,
+		"static_ipv6": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceEcmpObject) AttributeTypes() map[string]attr.Type {
+
+	var algorithmObj *VirtualRouterResourceEcmpAlgorithmObject
+
+	return map[string]attr.Type{
+		"algorithm": types.ObjectType{
+			AttrTypes: algorithmObj.AttributeTypes(),
+		},
+		"enable":             types.BoolType,
+		"max_paths":          types.Int64Type,
+		"strict_source_path": types.BoolType,
+		"symmetric_return":   types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmObject) AttributeTypes() map[string]attr.Type {
+
+	var balancedRoundRobinObj *VirtualRouterResourceEcmpAlgorithmBalancedRoundRobinObject
+
+	var ipHashObj *VirtualRouterResourceEcmpAlgorithmIpHashObject
+
+	var ipModuloObj *VirtualRouterResourceEcmpAlgorithmIpModuloObject
+
+	var weightedRoundRobinObj *VirtualRouterResourceEcmpAlgorithmWeightedRoundRobinObject
+	return map[string]attr.Type{
+		"balanced_round_robin": types.ObjectType{
+			AttrTypes: balancedRoundRobinObj.AttributeTypes(),
+		},
+		"ip_hash": types.ObjectType{
+			AttrTypes: ipHashObj.AttributeTypes(),
+		},
+		"ip_modulo": types.ObjectType{
+			AttrTypes: ipModuloObj.AttributeTypes(),
+		},
+		"weighted_round_robin": types.ObjectType{
+			AttrTypes: weightedRoundRobinObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmBalancedRoundRobinObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmIpHashObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"hash_seed": types.Int64Type,
+		"src_only":  types.BoolType,
+		"use_port":  types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmIpModuloObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmWeightedRoundRobinObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceEcmpAlgorithmWeightedRoundRobinInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"weight": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	var rpObj *VirtualRouterResourceMulticastRpObject
+
+	return map[string]attr.Type{
+		"enable":            types.BoolType,
+		"interface_group":   types.ListType{},
+		"route_ageout_time": types.Int64Type,
+		"rp": types.ObjectType{
+			AttrTypes: rpObj.AttributeTypes(),
+		},
+		"spt_threshold":     types.ListType{},
+		"ssm_address_space": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupObject) AttributeTypes() map[string]attr.Type {
+
+	var groupPermissionObj *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionObject
+
+	var igmpObj *VirtualRouterResourceMulticastInterfaceGroupIgmpObject
+
+	var pimObj *VirtualRouterResourceMulticastInterfaceGroupPimObject
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"description": types.StringType,
+		"interface":   types.ListType{},
+		"group_permission": types.ObjectType{
+			AttrTypes: groupPermissionObj.AttributeTypes(),
+		},
+		"igmp": types.ObjectType{
+			AttrTypes: igmpObj.AttributeTypes(),
+		},
+		"pim": types.ObjectType{
+			AttrTypes: pimObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"any_source_multicast":      types.ListType{},
+		"source_specific_multicast": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionAnySourceMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"group_address": types.StringType,
+		"included":      types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionSourceSpecificMulticastObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"group_address":  types.StringType,
+		"source_address": types.StringType,
+		"included":       types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupIgmpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                     types.BoolType,
+		"version":                    types.StringType,
+		"max_query_response_time":    types.Float64Type,
+		"query_interval":             types.Int64Type,
+		"last_member_query_interval": types.Float64Type,
+		"immediate_leave":            types.BoolType,
+		"robustness":                 types.StringType,
+		"max_groups":                 types.StringType,
+		"max_sources":                types.StringType,
+		"router_alert_policing":      types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupPimObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":              types.BoolType,
+		"assert_interval":     types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"join_prune_interval": types.Int64Type,
+		"dr_priority":         types.Int64Type,
+		"bsr_border":          types.BoolType,
+		"allowed_neighbors":   types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceMulticastInterfaceGroupPimAllowedNeighborsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceMulticastRpObject) AttributeTypes() map[string]attr.Type {
+
+	var localRpObj *VirtualRouterResourceMulticastRpLocalRpObject
+	return map[string]attr.Type{
+		"external_rp": types.ListType{},
+		"local_rp": types.ObjectType{
+			AttrTypes: localRpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceMulticastRpExternalRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":            types.StringType,
+		"group_addresses": types.ListType{},
+		"override":        types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceMulticastRpLocalRpObject) AttributeTypes() map[string]attr.Type {
+
+	var candidateRpObj *VirtualRouterResourceMulticastRpLocalRpCandidateRpObject
+
+	var staticRpObj *VirtualRouterResourceMulticastRpLocalRpStaticRpObject
+	return map[string]attr.Type{
+		"candidate_rp": types.ObjectType{
+			AttrTypes: candidateRpObj.AttributeTypes(),
+		},
+		"static_rp": types.ObjectType{
+			AttrTypes: staticRpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceMulticastRpLocalRpCandidateRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":                types.StringType,
+		"advertisement_interval": types.Int64Type,
+		"group_addresses":        types.ListType{},
+		"interface":              types.StringType,
+		"priority":               types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceMulticastRpLocalRpStaticRpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address":         types.StringType,
+		"group_addresses": types.ListType{},
+		"interface":       types.StringType,
+		"override":        types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceMulticastSptThresholdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"threshold": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceMulticastSsmAddressSpaceObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"group_address": types.StringType,
+		"included":      types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolObject) AttributeTypes() map[string]attr.Type {
+
+	var bgpObj *VirtualRouterResourceProtocolBgpObject
+
+	var ospfObj *VirtualRouterResourceProtocolOspfObject
+
+	var ospfv3Obj *VirtualRouterResourceProtocolOspfv3Object
+
+	var ripObj *VirtualRouterResourceProtocolRipObject
+	return map[string]attr.Type{
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+		"ospf": types.ObjectType{
+			AttrTypes: ospfObj.AttributeTypes(),
+		},
+		"ospfv3": types.ObjectType{
+			AttrTypes: ospfv3Obj.AttributeTypes(),
+		},
+		"redist_profile":      types.ListType{},
+		"redist_profile_ipv6": types.ListType{},
+		"rip": types.ObjectType{
+			AttrTypes: ripObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterResourceProtocolBgpGlobalBfdObject
+
+	var policyObj *VirtualRouterResourceProtocolBgpPolicyObject
+
+	var routingOptionsObj *VirtualRouterResourceProtocolBgpRoutingOptionsObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"auth_profile":               types.ListType{},
+		"dampening_profile":          types.ListType{},
+		"ecmp_multi_as":              types.BoolType,
+		"enable":                     types.BoolType,
+		"enforce_first_as":           types.BoolType,
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"install_route": types.BoolType,
+		"local_as":      types.StringType,
+		"peer_group":    types.ListType{},
+		"policy": types.ObjectType{
+			AttrTypes: policyObj.AttributeTypes(),
+		},
+		"redist_rules":         types.ListType{},
+		"reject_default_route": types.BoolType,
+		"router_id":            types.StringType,
+		"routing_options": types.ObjectType{
+			AttrTypes: routingOptionsObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"secret": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpDampeningProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                        types.StringType,
+		"enable":                      types.BoolType,
+		"cutoff":                      types.Float64Type,
+		"reuse":                       types.Float64Type,
+		"max_hold_time":               types.Int64Type,
+		"decay_half_life_reachable":   types.Int64Type,
+		"decay_half_life_unreachable": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterResourceProtocolBgpPeerGroupTypeObject
+
+	return map[string]attr.Type{
+		"name":                        types.StringType,
+		"enable":                      types.BoolType,
+		"aggregated_confed_as_path":   types.BoolType,
+		"soft_reset_with_stored_info": types.BoolType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"peer": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var ibgpObj *VirtualRouterResourceProtocolBgpPeerGroupTypeIbgpObject
+
+	var ebgpConfedObj *VirtualRouterResourceProtocolBgpPeerGroupTypeEbgpConfedObject
+
+	var ibgpConfedObj *VirtualRouterResourceProtocolBgpPeerGroupTypeIbgpConfedObject
+
+	var ebgpObj *VirtualRouterResourceProtocolBgpPeerGroupTypeEbgpObject
+	return map[string]attr.Type{
+		"ibgp": types.ObjectType{
+			AttrTypes: ibgpObj.AttributeTypes(),
+		},
+		"ebgp_confed": types.ObjectType{
+			AttrTypes: ebgpConfedObj.AttributeTypes(),
+		},
+		"ibgp_confed": types.ObjectType{
+			AttrTypes: ibgpConfedObj.AttributeTypes(),
+		},
+		"ebgp": types.ObjectType{
+			AttrTypes: ebgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupTypeIbgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupTypeEbgpConfedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupTypeIbgpConfedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"export_nexthop": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupTypeEbgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"import_nexthop":    types.StringType,
+		"export_nexthop":    types.StringType,
+		"remove_private_as": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerObject) AttributeTypes() map[string]attr.Type {
+
+	var subsequentAddressFamilyIdentifierObj *VirtualRouterResourceProtocolBgpPeerGroupPeerSubsequentAddressFamilyIdentifierObject
+
+	var localAddressObj *VirtualRouterResourceProtocolBgpPeerGroupPeerLocalAddressObject
+
+	var peerAddressObj *VirtualRouterResourceProtocolBgpPeerGroupPeerPeerAddressObject
+
+	var connectionOptionsObj *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsObject
+
+	var bfdObj *VirtualRouterResourceProtocolBgpPeerGroupPeerBfdObject
+	return map[string]attr.Type{
+		"name":                              types.StringType,
+		"enable":                            types.BoolType,
+		"peer_as":                           types.StringType,
+		"enable_mp_bgp":                     types.BoolType,
+		"address_family_identifier":         types.StringType,
+		"enable_sender_side_loop_detection": types.BoolType,
+		"reflector_client":                  types.StringType,
+		"peering_type":                      types.StringType,
+		"max_prefixes":                      types.StringType,
+		"subsequent_address_family_identifier": types.ObjectType{
+			AttrTypes: subsequentAddressFamilyIdentifierObj.AttributeTypes(),
+		},
+		"local_address": types.ObjectType{
+			AttrTypes: localAddressObj.AttributeTypes(),
+		},
+		"peer_address": types.ObjectType{
+			AttrTypes: peerAddressObj.AttributeTypes(),
+		},
+		"connection_options": types.ObjectType{
+			AttrTypes: connectionOptionsObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerSubsequentAddressFamilyIdentifierObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"unicast":   types.BoolType,
+		"multicast": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"interface": types.StringType,
+		"ip":        types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ip":   types.StringType,
+		"fqdn": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var incomingBgpConnectionObj *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsIncomingBgpConnectionObject
+
+	var outgoingBgpConnectionObj *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsOutgoingBgpConnectionObject
+	return map[string]attr.Type{
+		"authentication":         types.StringType,
+		"keep_alive_interval":    types.StringType,
+		"min_route_adv_interval": types.Int64Type,
+		"multihop":               types.Int64Type,
+		"open_delay_time":        types.Int64Type,
+		"hold_time":              types.StringType,
+		"idle_hold_time":         types.Int64Type,
+		"incoming_bgp_connection": types.ObjectType{
+			AttrTypes: incomingBgpConnectionObj.AttributeTypes(),
+		},
+		"outgoing_bgp_connection": types.ObjectType{
+			AttrTypes: outgoingBgpConnectionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsIncomingBgpConnectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"remote_port": types.Int64Type,
+		"allow":       types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerConnectionOptionsOutgoingBgpConnectionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"local_port": types.Int64Type,
+		"allow":      types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPeerGroupPeerBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregationObj *VirtualRouterResourceProtocolBgpPolicyAggregationObject
+
+	var conditionalAdvertisementObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementObject
+
+	var exportObj *VirtualRouterResourceProtocolBgpPolicyExportObject
+
+	var importObj *VirtualRouterResourceProtocolBgpPolicyImportObject
+	return map[string]attr.Type{
+		"aggregation": types.ObjectType{
+			AttrTypes: aggregationObj.AttributeTypes(),
+		},
+		"conditional_advertisement": types.ObjectType{
+			AttrTypes: conditionalAdvertisementObj.AttributeTypes(),
+		},
+		"export": types.ObjectType{
+			AttrTypes: exportObj.AttributeTypes(),
+		},
+		"import": types.ObjectType{
+			AttrTypes: importObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"address": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregateRouteAttributesObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesObject
+
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"prefix":  types.StringType,
+		"enable":  types.BoolType,
+		"summary": types.BoolType,
+		"as_set":  types.BoolType,
+		"aggregate_route_attributes": types.ObjectType{
+			AttrTypes: aggregateRouteAttributesObj.AttributeTypes(),
+		},
+		"suppress_filters":  types.ListType{},
+		"advertise_filters": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"weight":           types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathNoneObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"prepend": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAggregateRouteAttributesExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"policy": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":              types.StringType,
+		"enable":            types.BoolType,
+		"used_by":           types.ListType{},
+		"non_exist_filters": types.ListType{},
+		"advertise_filters": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchObject
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"enable": types.BoolType,
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"rules": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchObject
+
+	var actionObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionObject
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"enable":  types.BoolType,
+		"used_by": types.ListType{},
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var denyObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionDenyObject
+
+	var allowObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowObject
+	return map[string]attr.Type{
+		"deny": types.ObjectType{
+			AttrTypes: denyObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionDenyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+
+	var updateObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateObject
+	return map[string]attr.Type{
+		"update": types.ObjectType{
+			AttrTypes: updateObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathNoneObject
+
+	var removeObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathRemoveObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove": types.ObjectType{
+			AttrTypes: removeObj.AttributeTypes(),
+		},
+		"prepend":            types.Int64Type,
+		"remove_and_prepend": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateAsPathRemoveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesActionAllowUpdateExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"rules": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var matchObj *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchObject
+
+	var actionObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionObject
+	return map[string]attr.Type{
+		"name":    types.StringType,
+		"enable":  types.BoolType,
+		"used_by": types.ListType{},
+		"match": types.ObjectType{
+			AttrTypes: matchObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchExtendedCommunityObject
+	return map[string]attr.Type{
+		"route_table":    types.StringType,
+		"med":            types.Int64Type,
+		"address_prefix": types.ListType{},
+		"nexthop":        types.ListType{},
+		"from_peer":      types.ListType{},
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchAddressPrefixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":  types.StringType,
+		"exact": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"regex": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var denyObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionDenyObject
+
+	var allowObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowObject
+	return map[string]attr.Type{
+		"deny": types.ObjectType{
+			AttrTypes: denyObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionDenyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+
+	var updateObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateObject
+	return map[string]attr.Type{
+		"dampening": types.StringType,
+		"update": types.ObjectType{
+			AttrTypes: updateObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateObject) AttributeTypes() map[string]attr.Type {
+
+	var asPathObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathObject
+
+	var communityObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityObject
+
+	var extendedCommunityObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityObject
+	return map[string]attr.Type{
+		"local_preference": types.Int64Type,
+		"med":              types.Int64Type,
+		"weight":           types.Int64Type,
+		"nexthop":          types.StringType,
+		"origin":           types.StringType,
+		"as_path_limit":    types.Int64Type,
+		"as_path": types.ObjectType{
+			AttrTypes: asPathObj.AttributeTypes(),
+		},
+		"community": types.ObjectType{
+			AttrTypes: communityObj.AttributeTypes(),
+		},
+		"extended_community": types.ObjectType{
+			AttrTypes: extendedCommunityObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathNoneObject
+
+	var removeObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathRemoveObject
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove": types.ObjectType{
+			AttrTypes: removeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateAsPathRemoveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityObject) AttributeTypes() map[string]attr.Type {
+
+	var noneObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityNoneObject
+
+	var removeAllObj *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityRemoveAllObject
+
+	return map[string]attr.Type{
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+		"remove_all": types.ObjectType{
+			AttrTypes: removeAllObj.AttributeTypes(),
+		},
+		"remove_regex": types.StringType,
+		"append":       types.ListType{},
+		"overwrite":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesActionAllowUpdateExtendedCommunityRemoveAllObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolBgpRedistRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                      types.StringType,
+		"address_family_identifier": types.StringType,
+		"route_table":               types.StringType,
+		"enable":                    types.BoolType,
+		"set_origin":                types.StringType,
+		"set_med":                   types.Int64Type,
+		"set_local_preference":      types.Int64Type,
+		"set_as_path_limit":         types.Int64Type,
+		"metric":                    types.Int64Type,
+		"set_community":             types.ListType{},
+		"set_extended_community":    types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpRoutingOptionsObject) AttributeTypes() map[string]attr.Type {
+
+	var aggregateObj *VirtualRouterResourceProtocolBgpRoutingOptionsAggregateObject
+
+	var gracefulRestartObj *VirtualRouterResourceProtocolBgpRoutingOptionsGracefulRestartObject
+
+	var medObj *VirtualRouterResourceProtocolBgpRoutingOptionsMedObject
+
+	return map[string]attr.Type{
+		"aggregate": types.ObjectType{
+			AttrTypes: aggregateObj.AttributeTypes(),
+		},
+		"as_format":                types.StringType,
+		"confederation_member_as":  types.StringType,
+		"default_local_preference": types.Int64Type,
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"med": types.ObjectType{
+			AttrTypes: medObj.AttributeTypes(),
+		},
+		"reflector_cluster_id": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpRoutingOptionsAggregateObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"aggregate_med": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpRoutingOptionsGracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                types.BoolType,
+		"local_restart_time":    types.Int64Type,
+		"max_peer_restart_time": types.Int64Type,
+		"stale_route_time":      types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolBgpRoutingOptionsMedObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"always_compare_med":           types.BoolType,
+		"deterministic_med_comparison": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterResourceProtocolOspfGlobalBfdObject
+
+	var gracefulRestartObj *VirtualRouterResourceProtocolOspfGracefulRestartObject
+
+	var timersObj *VirtualRouterResourceProtocolOspfTimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"area":                       types.ListType{},
+		"auth_profile":               types.ListType{},
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"reject_default_route": types.BoolType,
+		"rfc1583":              types.BoolType,
+		"router_id":            types.StringType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterResourceProtocolOspfAreaTypeObject
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"range":        types.ListType{},
+		"interface":    types.ListType{},
+		"virtual_link": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var normalObj *VirtualRouterResourceProtocolOspfAreaTypeNormalObject
+
+	var stubObj *VirtualRouterResourceProtocolOspfAreaTypeStubObject
+
+	var nssaObj *VirtualRouterResourceProtocolOspfAreaTypeNssaObject
+	return map[string]attr.Type{
+		"normal": types.ObjectType{
+			AttrTypes: normalObj.AttributeTypes(),
+		},
+		"stub": types.ObjectType{
+			AttrTypes: stubObj.AttributeTypes(),
+		},
+		"nssa": types.ObjectType{
+			AttrTypes: nssaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeStubObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteObject
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeStubDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteObject
+
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"nssa_ext_range": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+		"type":   types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfAreaTypeNssaNssaExtRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterResourceProtocolOspfAreaTypeNssaNssaExtRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaNssaExtRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaNssaExtRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfAreaRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterResourceProtocolOspfAreaRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	var linkTypeObj *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeObject
+
+	var bfdObj *VirtualRouterResourceProtocolOspfAreaInterfaceBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable":              types.BoolType,
+		"passive":             types.BoolType,
+		"metric":              types.Int64Type,
+		"priority":            types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"gr_delay":            types.Int64Type,
+		"link_type": types.ObjectType{
+			AttrTypes: linkTypeObj.AttributeTypes(),
+		},
+		"neighbor": types.ListType{},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var broadcastObj *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeBroadcastObject
+
+	var p2pObj *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeP2pObject
+
+	var p2mpObj *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeP2mpObject
+	return map[string]attr.Type{
+		"broadcast": types.ObjectType{
+			AttrTypes: broadcastObj.AttributeTypes(),
+		},
+		"p2p": types.ObjectType{
+			AttrTypes: p2pObj.AttributeTypes(),
+		},
+		"p2mp": types.ObjectType{
+			AttrTypes: p2mpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
+
+	var bfdObj *VirtualRouterResourceProtocolOspfAreaVirtualLinkBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"neighbor_id":         types.StringType,
+		"transit_area_id":     types.StringType,
+		"enable":              types.BoolType,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"password": types.StringType,
+		"md5":      types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfAuthProfileMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"key":       types.StringType,
+		"preferred": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"new_path_type": types.StringType,
+		"new_tag":       types.StringType,
+		"metric":        types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfGracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                    types.BoolType,
+		"grace_period":              types.Int64Type,
+		"helper_enable":             types.BoolType,
+		"max_neighbor_restart_time": types.Int64Type,
+		"strict_l_s_a_checking":     types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfTimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"lsa_interval":          types.Float64Type,
+		"spf_calculation_delay": types.Float64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3Object) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterResourceProtocolOspfv3GlobalBfdObject
+
+	var gracefulRestartObj *VirtualRouterResourceProtocolOspfv3GracefulRestartObject
+
+	var timersObj *VirtualRouterResourceProtocolOspfv3TimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"area":                       types.ListType{},
+		"auth_profile":               types.ListType{},
+		"disable_transit_traffic":    types.BoolType,
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"graceful_restart": types.ObjectType{
+			AttrTypes: gracefulRestartObj.AttributeTypes(),
+		},
+		"reject_default_route": types.BoolType,
+		"router_id":            types.StringType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaObject) AttributeTypes() map[string]attr.Type {
+
+	var typeObj *VirtualRouterResourceProtocolOspfv3AreaTypeObject
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"authentication": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"range":        types.ListType{},
+		"interface":    types.ListType{},
+		"virtual_link": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var normalObj *VirtualRouterResourceProtocolOspfv3AreaTypeNormalObject
+
+	var stubObj *VirtualRouterResourceProtocolOspfv3AreaTypeStubObject
+
+	var nssaObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaObject
+	return map[string]attr.Type{
+		"normal": types.ObjectType{
+			AttrTypes: normalObj.AttributeTypes(),
+		},
+		"stub": types.ObjectType{
+			AttrTypes: stubObj.AttributeTypes(),
+		},
+		"nssa": types.ObjectType{
+			AttrTypes: nssaObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeStubObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteObject
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeStubDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteObject
+
+	return map[string]attr.Type{
+		"accept_summary": types.BoolType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"nssa_ext_range": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+		"type":   types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaNssaExtRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterResourceProtocolOspfv3AreaTypeNssaNssaExtRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaNssaExtRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaNssaExtRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaRangeObject) AttributeTypes() map[string]attr.Type {
+
+	var advertiseObj *VirtualRouterResourceProtocolOspfv3AreaRangeAdvertiseObject
+
+	var suppressObj *VirtualRouterResourceProtocolOspfv3AreaRangeSuppressObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+		"suppress": types.ObjectType{
+			AttrTypes: suppressObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaRangeAdvertiseObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaRangeSuppressObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceObject) AttributeTypes() map[string]attr.Type {
+
+	var linkTypeObj *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeObject
+
+	var bfdObj *VirtualRouterResourceProtocolOspfv3AreaInterfaceBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"enable":              types.BoolType,
+		"instance_id":         types.Int64Type,
+		"passive":             types.BoolType,
+		"metric":              types.Int64Type,
+		"priority":            types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"gr_delay":            types.Int64Type,
+		"link_type": types.ObjectType{
+			AttrTypes: linkTypeObj.AttributeTypes(),
+		},
+		"neighbor": types.ListType{},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var broadcastObj *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeBroadcastObject
+
+	var p2pObj *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeP2pObject
+
+	var p2mpObj *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeP2mpObject
+	return map[string]attr.Type{
+		"broadcast": types.ObjectType{
+			AttrTypes: broadcastObj.AttributeTypes(),
+		},
+		"p2p": types.ObjectType{
+			AttrTypes: p2pObj.AttributeTypes(),
+		},
+		"p2mp": types.ObjectType{
+			AttrTypes: p2mpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
+
+	var bfdObj *VirtualRouterResourceProtocolOspfv3AreaVirtualLinkBfdObject
+	return map[string]attr.Type{
+		"name":                types.StringType,
+		"neighbor_id":         types.StringType,
+		"transit_area_id":     types.StringType,
+		"enable":              types.BoolType,
+		"instance_id":         types.Int64Type,
+		"hello_interval":      types.Int64Type,
+		"dead_counts":         types.Int64Type,
+		"retransmit_interval": types.Int64Type,
+		"transit_delay":       types.Int64Type,
+		"authentication":      types.StringType,
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var espObj *VirtualRouterResourceProtocolOspfv3AuthProfileEspObject
+
+	var ahObj *VirtualRouterResourceProtocolOspfv3AuthProfileAhObject
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"spi":  types.StringType,
+		"esp": types.ObjectType{
+			AttrTypes: espObj.AttributeTypes(),
+		},
+		"ah": types.ObjectType{
+			AttrTypes: ahObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspObject) AttributeTypes() map[string]attr.Type {
+
+	var authenticationObj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationObject
+
+	var encryptionObj *VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionObject
+	return map[string]attr.Type{
+		"authentication": types.ObjectType{
+			AttrTypes: authenticationObj.AttributeTypes(),
+		},
+		"encryption": types.ObjectType{
+			AttrTypes: encryptionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object
+
+	var sha1Obj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object
+
+	var sha256Obj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object
+
+	var sha384Obj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object
+
+	var sha512Obj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object
+
+	var noneObj *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationNoneObject
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+		"none": types.ObjectType{
+			AttrTypes: noneObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"algorithm": types.StringType,
+		"key":       types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhObject) AttributeTypes() map[string]attr.Type {
+
+	var md5Obj *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object
+
+	var sha1Obj *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object
+
+	var sha256Obj *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object
+
+	var sha384Obj *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object
+
+	var sha512Obj *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Object
+	return map[string]attr.Type{
+		"md5": types.ObjectType{
+			AttrTypes: md5Obj.AttributeTypes(),
+		},
+		"sha1": types.ObjectType{
+			AttrTypes: sha1Obj.AttributeTypes(),
+		},
+		"sha256": types.ObjectType{
+			AttrTypes: sha256Obj.AttributeTypes(),
+		},
+		"sha384": types.ObjectType{
+			AttrTypes: sha384Obj.AttributeTypes(),
+		},
+		"sha512": types.ObjectType{
+			AttrTypes: sha512Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"key": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3ExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"new_path_type": types.StringType,
+		"new_tag":       types.StringType,
+		"metric":        types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3GlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3GracefulRestartObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":                    types.BoolType,
+		"grace_period":              types.Int64Type,
+		"helper_enable":             types.BoolType,
+		"max_neighbor_restart_time": types.Int64Type,
+		"strict_l_s_a_checking":     types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolOspfv3TimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"lsa_interval":          types.Float64Type,
+		"spf_calculation_delay": types.Float64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileObject) AttributeTypes() map[string]attr.Type {
+
+	var filterObj *VirtualRouterResourceProtocolRedistProfileFilterObject
+
+	var actionObj *VirtualRouterResourceProtocolRedistProfileActionObject
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"priority": types.Int64Type,
+		"filter": types.ObjectType{
+			AttrTypes: filterObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileFilterObject) AttributeTypes() map[string]attr.Type {
+
+	var ospfObj *VirtualRouterResourceProtocolRedistProfileFilterOspfObject
+
+	var bgpObj *VirtualRouterResourceProtocolRedistProfileFilterBgpObject
+	return map[string]attr.Type{
+		"type":        types.ListType{},
+		"interface":   types.ListType{},
+		"destination": types.ListType{},
+		"nexthop":     types.ListType{},
+		"ospf": types.ObjectType{
+			AttrTypes: ospfObj.AttributeTypes(),
+		},
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileFilterOspfObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"path_type": types.ListType{},
+		"area":      types.ListType{},
+		"tag":       types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileFilterBgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"community":          types.ListType{},
+		"extended_community": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileActionObject) AttributeTypes() map[string]attr.Type {
+
+	var noRedistObj *VirtualRouterResourceProtocolRedistProfileActionNoRedistObject
+
+	var redistObj *VirtualRouterResourceProtocolRedistProfileActionRedistObject
+	return map[string]attr.Type{
+		"no_redist": types.ObjectType{
+			AttrTypes: noRedistObj.AttributeTypes(),
+		},
+		"redist": types.ObjectType{
+			AttrTypes: redistObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileActionNoRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileActionRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	var filterObj *VirtualRouterResourceProtocolRedistProfileIpv6FilterObject
+
+	var actionObj *VirtualRouterResourceProtocolRedistProfileIpv6ActionObject
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"priority": types.Int64Type,
+		"filter": types.ObjectType{
+			AttrTypes: filterObj.AttributeTypes(),
+		},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6FilterObject) AttributeTypes() map[string]attr.Type {
+
+	var ospfv3Obj *VirtualRouterResourceProtocolRedistProfileIpv6FilterOspfv3Object
+
+	var bgpObj *VirtualRouterResourceProtocolRedistProfileIpv6FilterBgpObject
+	return map[string]attr.Type{
+		"type":        types.ListType{},
+		"interface":   types.ListType{},
+		"destination": types.ListType{},
+		"nexthop":     types.ListType{},
+		"ospfv3": types.ObjectType{
+			AttrTypes: ospfv3Obj.AttributeTypes(),
+		},
+		"bgp": types.ObjectType{
+			AttrTypes: bgpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6FilterOspfv3Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"path_type": types.ListType{},
+		"area":      types.ListType{},
+		"tag":       types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6FilterBgpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"community":          types.ListType{},
+		"extended_community": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6ActionObject) AttributeTypes() map[string]attr.Type {
+
+	var noRedistObj *VirtualRouterResourceProtocolRedistProfileIpv6ActionNoRedistObject
+
+	var redistObj *VirtualRouterResourceProtocolRedistProfileIpv6ActionRedistObject
+	return map[string]attr.Type{
+		"no_redist": types.ObjectType{
+			AttrTypes: noRedistObj.AttributeTypes(),
+		},
+		"redist": types.ObjectType{
+			AttrTypes: redistObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6ActionNoRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolRedistProfileIpv6ActionRedistObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolRipObject) AttributeTypes() map[string]attr.Type {
+
+	var globalBfdObj *VirtualRouterResourceProtocolRipGlobalBfdObject
+
+	var timersObj *VirtualRouterResourceProtocolRipTimersObject
+	return map[string]attr.Type{
+		"allow_redist_default_route": types.BoolType,
+		"auth_profile":               types.ListType{},
+		"enable":                     types.BoolType,
+		"export_rules":               types.ListType{},
+		"global_bfd": types.ObjectType{
+			AttrTypes: globalBfdObj.AttributeTypes(),
+		},
+		"interfaces":           types.ListType{},
+		"reject_default_route": types.BoolType,
+		"timers": types.ObjectType{
+			AttrTypes: timersObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRipAuthProfileObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"password": types.StringType,
+		"md5":      types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceProtocolRipAuthProfileMd5Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"key":       types.StringType,
+		"preferred": types.BoolType,
+	}
+}
+func (o *VirtualRouterResourceProtocolRipExportRulesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":   types.StringType,
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolRipGlobalBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolRipInterfacesObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultRouteObj *VirtualRouterResourceProtocolRipInterfacesDefaultRouteObject
+
+	var bfdObj *VirtualRouterResourceProtocolRipInterfacesBfdObject
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"enable":         types.BoolType,
+		"authentication": types.StringType,
+		"mode":           types.StringType,
+		"default_route": types.ObjectType{
+			AttrTypes: defaultRouteObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRipInterfacesDefaultRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var disableObj *VirtualRouterResourceProtocolRipInterfacesDefaultRouteDisableObject
+
+	var advertiseObj *VirtualRouterResourceProtocolRipInterfacesDefaultRouteAdvertiseObject
+	return map[string]attr.Type{
+		"disable": types.ObjectType{
+			AttrTypes: disableObj.AttributeTypes(),
+		},
+		"advertise": types.ObjectType{
+			AttrTypes: advertiseObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceProtocolRipInterfacesDefaultRouteDisableObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceProtocolRipInterfacesDefaultRouteAdvertiseObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"metric": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceProtocolRipInterfacesBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceProtocolRipTimersObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"delete_intervals": types.Int64Type,
+		"expire_intervals": types.Int64Type,
+		"interval_seconds": types.Int64Type,
+		"update_intervals": types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableObject) AttributeTypes() map[string]attr.Type {
+
+	var ipObj *VirtualRouterResourceRoutingTableIpObject
+
+	var ipv6Obj *VirtualRouterResourceRoutingTableIpv6Object
+	return map[string]attr.Type{
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+		"ipv6": types.ObjectType{
+			AttrTypes: ipv6Obj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"static_route": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var nexthopObj *VirtualRouterResourceRoutingTableIpStaticRouteNexthopObject
+
+	var routeTableObj *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableObject
+
+	var bfdObj *VirtualRouterResourceRoutingTableIpStaticRouteBfdObject
+
+	var pathMonitorObj *VirtualRouterResourceRoutingTableIpStaticRoutePathMonitorObject
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"destination":             types.StringType,
+		"interface":               types.StringType,
+		"administrative_distance": types.Int64Type,
+		"metric":                  types.Int64Type,
+		"nexthop": types.ObjectType{
+			AttrTypes: nexthopObj.AttributeTypes(),
+		},
+		"route_table": types.ObjectType{
+			AttrTypes: routeTableObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+		"path_monitor": types.ObjectType{
+			AttrTypes: pathMonitorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
+
+	var receiveObj *VirtualRouterResourceRoutingTableIpStaticRouteNexthopReceiveObject
+
+	var discardObj *VirtualRouterResourceRoutingTableIpStaticRouteNexthopDiscardObject
+
+	return map[string]attr.Type{
+		"receive": types.ObjectType{
+			AttrTypes: receiveObj.AttributeTypes(),
+		},
+		"discard": types.ObjectType{
+			AttrTypes: discardObj.AttributeTypes(),
+		},
+		"ip_address": types.StringType,
+		"fqdn":       types.StringType,
+		"next_vr":    types.StringType,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteNexthopReceiveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableObject) AttributeTypes() map[string]attr.Type {
+
+	var unicastObj *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableUnicastObject
+
+	var multicastObj *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableMulticastObject
+
+	var bothObj *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableBothObject
+
+	var noInstallObj *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableNoInstallObject
+	return map[string]attr.Type{
+		"unicast": types.ObjectType{
+			AttrTypes: unicastObj.AttributeTypes(),
+		},
+		"multicast": types.ObjectType{
+			AttrTypes: multicastObj.AttributeTypes(),
+		},
+		"both": types.ObjectType{
+			AttrTypes: bothObj.AttributeTypes(),
+		},
+		"no_install": types.ObjectType{
+			AttrTypes: noInstallObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableUnicastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableMulticastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteRouteTableNoInstallObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":               types.BoolType,
+		"failure_condition":    types.StringType,
+		"hold_time":            types.Int64Type,
+		"monitor_destinations": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"enable":      types.BoolType,
+		"source":      types.StringType,
+		"destination": types.StringType,
+		"interval":    types.Int64Type,
+		"count":       types.Int64Type,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6Object) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"static_route": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteObject) AttributeTypes() map[string]attr.Type {
+
+	var nexthopObj *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopObject
+
+	var routeTableObj *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableObject
+
+	var bfdObj *VirtualRouterResourceRoutingTableIpv6StaticRouteBfdObject
+
+	var pathMonitorObj *VirtualRouterResourceRoutingTableIpv6StaticRoutePathMonitorObject
+	return map[string]attr.Type{
+		"name":                    types.StringType,
+		"destination":             types.StringType,
+		"interface":               types.StringType,
+		"administrative_distance": types.Int64Type,
+		"metric":                  types.Int64Type,
+		"nexthop": types.ObjectType{
+			AttrTypes: nexthopObj.AttributeTypes(),
+		},
+		"route_table": types.ObjectType{
+			AttrTypes: routeTableObj.AttributeTypes(),
+		},
+		"bfd": types.ObjectType{
+			AttrTypes: bfdObj.AttributeTypes(),
+		},
+		"path_monitor": types.ObjectType{
+			AttrTypes: pathMonitorObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
+
+	var receiveObj *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopReceiveObject
+
+	var discardObj *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopDiscardObject
+
+	return map[string]attr.Type{
+		"receive": types.ObjectType{
+			AttrTypes: receiveObj.AttributeTypes(),
+		},
+		"discard": types.ObjectType{
+			AttrTypes: discardObj.AttributeTypes(),
+		},
+		"ipv6_address": types.StringType,
+		"next_vr":      types.StringType,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopReceiveObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableObject) AttributeTypes() map[string]attr.Type {
+
+	var unicastObj *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableUnicastObject
+
+	var noInstallObj *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableNoInstallObject
+	return map[string]attr.Type{
+		"unicast": types.ObjectType{
+			AttrTypes: unicastObj.AttributeTypes(),
+		},
+		"no_install": types.ObjectType{
+			AttrTypes: noInstallObj.AttributeTypes(),
+		},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableUnicastObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteRouteTableNoInstallObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"profile": types.StringType,
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable":               types.BoolType,
+		"failure_condition":    types.StringType,
+		"hold_time":            types.Int64Type,
+		"monitor_destinations": types.ListType{},
+	}
+}
+func (o *VirtualRouterResourceRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"enable":      types.BoolType,
+		"source":      types.StringType,
+		"destination": types.StringType,
+		"interval":    types.Int64Type,
+		"count":       types.Int64Type,
+	}
+}
+
 func (o *VirtualRouterResourceModel) CopyToPango(ctx context.Context, obj **virtual_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var administrativeDistances_entry *virtual_router.AdminDists
@@ -55935,26 +61182,45 @@ func (r *VirtualRouterResource) Create(ctx context.Context, req resource.CreateR
 
 	var location virtual_router.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &virtual_router.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VirtualRouterLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &virtual_router.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &virtual_router.NgfwLocation{}
+			var innerLocation VirtualRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &virtual_router.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &virtual_router.TemplateLocation{}
+			var innerLocation VirtualRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &virtual_router.TemplateStackLocation{}
+			var innerLocation VirtualRouterTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -56003,26 +61269,45 @@ func (o *VirtualRouterResource) Read(ctx context.Context, req resource.ReadReque
 
 	var location virtual_router.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &virtual_router.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VirtualRouterLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &virtual_router.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &virtual_router.NgfwLocation{}
+			var innerLocation VirtualRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &virtual_router.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &virtual_router.TemplateLocation{}
+			var innerLocation VirtualRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &virtual_router.TemplateStackLocation{}
+			var innerLocation VirtualRouterTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -56070,26 +61355,45 @@ func (r *VirtualRouterResource) Update(ctx context.Context, req resource.UpdateR
 
 	var location virtual_router.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &virtual_router.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VirtualRouterLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &virtual_router.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &virtual_router.NgfwLocation{}
+			var innerLocation VirtualRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &virtual_router.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &virtual_router.TemplateLocation{}
+			var innerLocation VirtualRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &virtual_router.TemplateStackLocation{}
+			var innerLocation VirtualRouterTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -56163,26 +61467,45 @@ func (r *VirtualRouterResource) Delete(ctx context.Context, req resource.DeleteR
 
 	var location virtual_router.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &virtual_router.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation VirtualRouterLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &virtual_router.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &virtual_router.NgfwLocation{}
+			var innerLocation VirtualRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &virtual_router.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &virtual_router.TemplateLocation{}
+			var innerLocation VirtualRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &virtual_router.TemplateStackLocation{}
+			var innerLocation VirtualRouterTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -56194,8 +61517,53 @@ func (r *VirtualRouterResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 type VirtualRouterImportState struct {
-	Location VirtualRouterLocation `json:"location"`
-	Name     string                `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o VirtualRouterImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *VirtualRouterLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+	var location_object *VirtualRouterLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *VirtualRouterImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *VirtualRouterLocation `json:"location"`
+		Name     *string                `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func VirtualRouterImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -56209,10 +61577,10 @@ func VirtualRouterImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location VirtualRouterLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -56221,10 +61589,10 @@ func VirtualRouterImportStateCreator(ctx context.Context, resource types.Object)
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -56248,7 +61616,12 @@ func (r *VirtualRouterResource) ImportState(ctx context.Context, req resource.Im
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -56273,9 +61646,9 @@ type VirtualRouterTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type VirtualRouterLocation struct {
-	Ngfw          *VirtualRouterNgfwLocation          `tfsdk:"ngfw"`
-	Template      *VirtualRouterTemplateLocation      `tfsdk:"template"`
-	TemplateStack *VirtualRouterTemplateStackLocation `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func VirtualRouterLocationSchema() rsschema.Attribute {
@@ -56386,9 +61759,11 @@ func VirtualRouterLocationSchema() rsschema.Attribute {
 }
 
 func (o VirtualRouterNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -56397,7 +61772,7 @@ func (o VirtualRouterNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VirtualRouterNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -56409,11 +61784,13 @@ func (o *VirtualRouterNgfwLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VirtualRouterTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -56424,9 +61801,9 @@ func (o VirtualRouterTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VirtualRouterTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -56440,11 +61817,13 @@ func (o *VirtualRouterTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VirtualRouterTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -56455,9 +61834,9 @@ func (o VirtualRouterTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VirtualRouterTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -56471,14 +61850,37 @@ func (o *VirtualRouterTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o VirtualRouterLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Ngfw          *VirtualRouterNgfwLocation          `json:"ngfw"`
-		Template      *VirtualRouterTemplateLocation      `json:"template"`
-		TemplateStack *VirtualRouterTemplateStackLocation `json:"template_stack"`
-	}{
-		Ngfw:          o.Ngfw,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Ngfw          *VirtualRouterNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *VirtualRouterTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *VirtualRouterTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *VirtualRouterNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+	var template_object *VirtualRouterTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *VirtualRouterTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Ngfw:          ngfw_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -56486,18 +61888,78 @@ func (o VirtualRouterLocation) MarshalJSON() ([]byte, error) {
 
 func (o *VirtualRouterLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Ngfw          *VirtualRouterNgfwLocation          `json:"ngfw"`
-		Template      *VirtualRouterTemplateLocation      `json:"template"`
-		TemplateStack *VirtualRouterTemplateStackLocation `json:"template_stack"`
+		Ngfw          *VirtualRouterNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *VirtualRouterTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *VirtualRouterTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Ngfw = shadow.Ngfw
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Ngfw = ngfw_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *VirtualRouterNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *VirtualRouterTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *VirtualRouterTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *VirtualRouterLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj VirtualRouterNgfwLocation
+	var templateObj VirtualRouterTemplateLocation
+	var templateStackObj VirtualRouterTemplateStackLocation
+	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

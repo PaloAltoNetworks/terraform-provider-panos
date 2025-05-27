@@ -51,12 +51,33 @@ const (
 	MultiConfigOperModify MultiConfigOperType = "modify"
 	MultiConfigOperDelete MultiConfigOperType = "delete"
 	MultiConfigOperRename MultiConfigOperType = "rename"
+	MultiConfigOperMove   MultiConfigOperType = "move"
 )
 
 type MultiConfigOper struct {
 	Operation MultiConfigOperType
 	EntryName string
 	EntryUuid *string
+}
+
+func entryNameFromXpath(xpath string) string {
+	xpathPrefix := "/some/location/"
+
+	return xpath[len(xpathPrefix):]
+}
+
+func findElementByXpath[E sdkmanager.EntryObject](existing *list.List, xpath string) *list.Element {
+	needleEntryName := entryNameFromXpath(xpath)
+	var next *list.Element
+	for e := existing.Front(); e != nil; e = next {
+		next = e.Next()
+		entry := e.Value.(E)
+		if entry.EntryName() == needleEntryName {
+			return e
+		}
+	}
+
+	return nil
 }
 
 func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingPtr **list.List, objectType multiConfigType, uuid int) ([]MultiConfigOper, int) {
@@ -80,6 +101,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 		}
 		idx += 1
 	}
+	existingLen := idx
 
 	fixIndices := func(pivot int) {
 		for name, elt := range entriesByName {
@@ -90,6 +112,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 		}
 	}
 
+	entries := make([]*entryWithIdx, len(updates.Operations)+existing.Len())
 	for _, oper := range updates.Operations {
 		xpathParts := strings.Split(oper.Xpath, "/")
 		entryName := xpathParts[len(xpathParts)-1]
@@ -127,24 +150,129 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 			fixIndices(entriesByName[entryName].Idx)
 			delete(entriesByName, entryName)
 			idx -= 1
+		case MultiConfigOperMove:
+			pivot, found := entriesByName[oper.Destination]
+			if !found && oper.Destination != "top" && oper.Destination != "bottom" {
+				panic(fmt.Sprintf("could not find pivot element for move action: xpath: %s, where: %s, destination: %s", oper.Xpath, oper.Where, oper.Destination))
+			}
+
+			moved, found := entriesByName[entryNameFromXpath(oper.Xpath)]
+			if !found {
+				panic(fmt.Sprintf("could not find moved element for move action: xpath: %s, where: %s, destination: %s", oper.Xpath, oper.Where, oper.Destination))
+			}
+
+			switch oper.Where {
+			case "after":
+				movedOldIdx := moved.Idx
+				moved.Idx = pivot.Idx + 1
+				if movedOldIdx < pivot.Idx {
+					for _, elt := range entriesByName {
+						if elt.Idx > movedOldIdx && elt.Idx < pivot.Idx {
+							elt.Idx -= 1
+						}
+						entriesByName[elt.Entry.EntryName()] = elt
+					}
+				} else if movedOldIdx > pivot.Idx {
+					for _, elt := range entriesByName {
+						if elt.Idx >= moved.Idx {
+							elt.Idx += 1
+						}
+						entriesByName[elt.Entry.EntryName()] = elt
+					}
+				}
+
+				entriesByName[moved.Entry.EntryName()] = moved
+			case "before":
+				movedOldIdx := moved.Idx
+				moved.Idx = pivot.Idx
+				if movedOldIdx < pivot.Idx {
+					for _, elt := range entriesByName {
+						if elt.Idx < movedOldIdx && elt.Idx > pivot.Idx {
+							elt.Idx -= 1
+						}
+						entriesByName[elt.Entry.EntryName()] = elt
+					}
+				} else if movedOldIdx > pivot.Idx {
+					for _, elt := range entriesByName {
+						if elt.Idx >= moved.Idx {
+							elt.Idx += 1
+						}
+						entriesByName[elt.Entry.EntryName()] = elt
+					}
+				}
+
+				entriesByName[moved.Entry.EntryName()] = moved
+			case "bottom":
+				movedOldIdx := moved.Idx
+				moved.Idx = existingLen - 1
+				for _, elt := range entriesByName {
+					if elt.Idx > movedOldIdx {
+						elt.Idx -= 1
+					}
+					entriesByName[elt.Entry.EntryName()] = elt
+				}
+			case "top":
+				movedOldIdx := moved.Idx
+				moved.Idx = 0
+				for _, elt := range entriesByName {
+					if elt.Idx < movedOldIdx && elt.Entry.EntryName() != moved.Entry.EntryName() {
+						elt.Idx += 1
+					}
+					entriesByName[elt.Entry.EntryName()] = elt
+				}
+
+				entriesByName[moved.Entry.EntryName()] = moved
+			default:
+				panic(fmt.Sprintf("Unknown move where: %s", oper.Where))
+			}
 		default:
 			panic(fmt.Sprintf("UNKNOWN OPERATION: %s", op))
 		}
 
-		opers = append(opers, operEntry)
-
-	}
-
-	entries := make([]entryWithIdx, len(updates.Operations)+existing.Len())
-	for _, elt := range entriesByName {
-		if elt.State == entryOk {
-			entries[elt.Idx] = elt
+		for idx := range entries {
+			entries[idx] = nil
 		}
+
+		for _, elt := range entriesByName {
+			if elt.State == entryOk {
+				if entries[elt.Idx] != nil {
+					var formattedEntries []string
+					idx := 1
+					for _, elt := range entriesByName {
+						formattedEntries = append(
+							formattedEntries,
+							fmt.Sprintf("%d:{Entry:%s State:%s Idx:%d}", idx, elt.Entry.EntryName(), elt.State, elt.Idx),
+						)
+						idx += 1
+					}
+					formattedString := fmt.Sprintf("map[%s]", strings.Join(formattedEntries, " "))
+					slog.Debug("Seen elements with duplicated indices", "entries", formattedString)
+					panic(fmt.Sprintf("element with idx %d already seen, problem with movement logic", elt.Idx))
+				}
+				entries[elt.Idx] = &elt
+			}
+		}
+
+		var orderedEntryNames []string
+		transformed := list.New()
+		for _, elt := range entries {
+			if elt == nil {
+				continue
+			}
+
+			orderedEntryNames = append(orderedEntryNames, elt.Entry.EntryName())
+			transformed.PushBack(elt.Entry)
+
+		}
+
+		slog.Debug("MultiConfig", "orderedEntryNames", orderedEntryNames)
+
+		opers = append(opers, operEntry)
 	}
 
 	transformed := list.New()
 	for _, elt := range entries {
-		if elt.State == entryOk {
+		if elt != nil && elt.State == entryOk {
 			transformed.PushBack(elt.Entry)
 		}
 	}

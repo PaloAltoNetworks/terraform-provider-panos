@@ -1,20 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/network/interface/tunnel"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,9 +22,6 @@ func TestAccTunnelInterface(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosTunnelInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: tunnelInterfaceResource1,
@@ -90,6 +81,12 @@ func TestAccTunnelInterface(t *testing.T) {
 					),
 				},
 			},
+			{
+				Config: tunnelInterfaceCleanupTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
 		},
 	})
 }
@@ -146,28 +143,15 @@ resource "panos_tunnel_interface" "iface" {
 }
 `
 
-func testAccCheckPanosTunnelInterfaceDestroy(prefix string, entry string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := tunnel.NewService(sdkClient)
-		ctx := context.TODO()
+const tunnelInterfaceCleanupTmpl = `
+variable "prefix" { type = string }
 
-		location := tunnel.NewTemplateLocation()
-		location.Template.Template = fmt.Sprintf("%s-tmpl", prefix)
-
-		reply, err := api.Read(ctx, *location, entry, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading ethernet entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			err := fmt.Errorf("terraform didn't delete the server entry properly")
-			delErr := api.Delete(ctx, *location, entry)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-			return err
-		}
-
-		return nil
-	}
+locals {
+  template_name = format("%s-tmpl", var.prefix)
 }
+
+resource "panos_template" "template" {
+  location = { panorama = {} }
+  name = local.template_name
+}
+`

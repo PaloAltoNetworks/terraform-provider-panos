@@ -54,7 +54,7 @@ type AntiSpywareSecurityProfileDataSourceFilter struct {
 }
 
 type AntiSpywareSecurityProfileDataSourceModel struct {
-	Location                 AntiSpywareSecurityProfileLocation                       `tfsdk:"location"`
+	Location                 types.Object                                             `tfsdk:"location"`
 	Name                     types.String                                             `tfsdk:"name"`
 	BotnetDomains            *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject `tfsdk:"botnet_domains"`
 	CloudInlineAnalysis      types.Bool                                               `tfsdk:"cloud_inline_analysis"`
@@ -191,6 +191,318 @@ type AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject stru
 }
 type AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject struct {
 	Name types.String `tfsdk:"name"`
+}
+
+func (o *AntiSpywareSecurityProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AntiSpywareSecurityProfileLocation
+
+	var botnetDomainsObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"botnet_domains": types.ObjectType{
+			AttrTypes: botnetDomainsObj.AttributeTypes(),
+		},
+		"cloud_inline_analysis":       types.BoolType,
+		"description":                 types.StringType,
+		"disable_override":            types.StringType,
+		"inline_exception_edl_url":    types.ListType{},
+		"inline_exception_ip_address": types.ListType{},
+		"mica_engine_spyware_enabled": types.ListType{},
+		"rules":                       types.ListType{},
+		"threat_exception":            types.ListType{},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) AttributeTypes() map[string]attr.Type {
+
+	var sinkholeObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
+
+	var rtypeActionObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
+	return map[string]attr.Type{
+		"dns_security_categories": types.ListType{},
+		"lists":                   types.ListType{},
+		"sinkhole": types.ObjectType{
+			AttrTypes: sinkholeObj.AttributeTypes(),
+		},
+		"threat_exception": types.ListType{},
+		"whitelist":        types.ListType{},
+		"rtype_action": types.ObjectType{
+			AttrTypes: rtypeActionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"action":         types.StringType,
+		"log_level":      types.StringType,
+		"packet_capture": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+		"packet_capture": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) AttributeTypes() map[string]attr.Type {
+
+	var alertObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
+
+	var allowObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
+
+	var blockObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
+
+	var sinkholeObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject
+	return map[string]attr.Type{
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"block": types.ObjectType{
+			AttrTypes: blockObj.AttributeTypes(),
+		},
+		"sinkhole": types.ObjectType{
+			AttrTypes: sinkholeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4_address": types.StringType,
+		"ipv6_address": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"description": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"any":   types.StringType,
+		"https": types.StringType,
+		"svcb":  types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                 types.StringType,
+		"inline_policy_action": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileDataSourceRulesActionObject
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"threat_name":    types.StringType,
+		"category":       types.StringType,
+		"packet_capture": types.StringType,
+		"severity":       types.ListType{},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultObj *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
+
+	var allowObj *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
+
+	var alertObj *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
+
+	var dropObj *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
+
+	var resetClientObj *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
+
+	var resetServerObj *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
+
+	var resetBothObj *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
+
+	var blockIpObj *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
+	return map[string]attr.Type{
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"drop": types.ObjectType{
+			AttrTypes: dropObj.AttributeTypes(),
+		},
+		"reset_client": types.ObjectType{
+			AttrTypes: resetClientObj.AttributeTypes(),
+		},
+		"reset_server": types.ObjectType{
+			AttrTypes: resetServerObj.AttributeTypes(),
+		},
+		"reset_both": types.ObjectType{
+			AttrTypes: resetBothObj.AttributeTypes(),
+		},
+		"block_ip": types.ObjectType{
+			AttrTypes: blockIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"track_by": types.StringType,
+		"duration": types.Int64Type,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"packet_capture": types.StringType,
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+		"exempt_ip": types.ListType{},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject
+
+	var allowObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject
+
+	var alertObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject
+
+	var dropObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject
+
+	var resetBothObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject
+
+	var resetClientObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
+
+	var resetServerObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
+
+	var blockIpObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
+	return map[string]attr.Type{
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"drop": types.ObjectType{
+			AttrTypes: dropObj.AttributeTypes(),
+		},
+		"reset_both": types.ObjectType{
+			AttrTypes: resetBothObj.AttributeTypes(),
+		},
+		"reset_client": types.ObjectType{
+			AttrTypes: resetClientObj.AttributeTypes(),
+		},
+		"reset_server": types.ObjectType{
+			AttrTypes: resetServerObj.AttributeTypes(),
+		},
+		"block_ip": types.ObjectType{
+			AttrTypes: blockIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"track_by": types.StringType,
+		"duration": types.Int64Type,
+	}
+}
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
 }
 
 func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -3505,21 +3817,42 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 
 	var location spyware.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &spyware.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &spyware.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AntiSpywareSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &spyware.SharedLocation{}
+			var innerLocation AntiSpywareSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &spyware.VsysLocation{}
+			var innerLocation AntiSpywareSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &spyware.DeviceGroupLocation{}
+			var innerLocation AntiSpywareSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -3583,7 +3916,7 @@ func AntiSpywareSecurityProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type AntiSpywareSecurityProfileResourceModel struct {
-	Location                 AntiSpywareSecurityProfileLocation                     `tfsdk:"location"`
+	Location                 types.Object                                           `tfsdk:"location"`
 	Name                     types.String                                           `tfsdk:"name"`
 	BotnetDomains            *AntiSpywareSecurityProfileResourceBotnetDomainsObject `tfsdk:"botnet_domains"`
 	CloudInlineAnalysis      types.Bool                                             `tfsdk:"cloud_inline_analysis"`
@@ -5407,6 +5740,318 @@ func (r *AntiSpywareSecurityProfileResource) Configure(ctx context.Context, req 
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, spyware.NewService(r.client), batchSize, specifier, spyware.SpecMatches)
 }
 
+func (o *AntiSpywareSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj AntiSpywareSecurityProfileLocation
+
+	var botnetDomainsObj *AntiSpywareSecurityProfileResourceBotnetDomainsObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"botnet_domains": types.ObjectType{
+			AttrTypes: botnetDomainsObj.AttributeTypes(),
+		},
+		"cloud_inline_analysis":       types.BoolType,
+		"description":                 types.StringType,
+		"disable_override":            types.StringType,
+		"inline_exception_edl_url":    types.ListType{},
+		"inline_exception_ip_address": types.ListType{},
+		"mica_engine_spyware_enabled": types.ListType{},
+		"rules":                       types.ListType{},
+		"threat_exception":            types.ListType{},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) AttributeTypes() map[string]attr.Type {
+
+	var sinkholeObj *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+
+	var rtypeActionObj *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
+	return map[string]attr.Type{
+		"dns_security_categories": types.ListType{},
+		"lists":                   types.ListType{},
+		"sinkhole": types.ObjectType{
+			AttrTypes: sinkholeObj.AttributeTypes(),
+		},
+		"threat_exception": types.ListType{},
+		"whitelist":        types.ListType{},
+		"rtype_action": types.ObjectType{
+			AttrTypes: rtypeActionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"action":         types.StringType,
+		"log_level":      types.StringType,
+		"packet_capture": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+		"packet_capture": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) AttributeTypes() map[string]attr.Type {
+
+	var alertObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+
+	var allowObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+
+	var blockObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+
+	var sinkholeObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+	return map[string]attr.Type{
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"block": types.ObjectType{
+			AttrTypes: blockObj.AttributeTypes(),
+		},
+		"sinkhole": types.ObjectType{
+			AttrTypes: sinkholeObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"ipv4_address": types.StringType,
+		"ipv6_address": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":        types.StringType,
+		"description": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"any":   types.StringType,
+		"https": types.StringType,
+		"svcb":  types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":                 types.StringType,
+		"inline_policy_action": types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileResourceRulesActionObject
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"threat_name":    types.StringType,
+		"category":       types.StringType,
+		"packet_capture": types.StringType,
+		"severity":       types.ListType{},
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultObj *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+
+	var allowObj *AntiSpywareSecurityProfileResourceRulesActionAllowObject
+
+	var alertObj *AntiSpywareSecurityProfileResourceRulesActionAlertObject
+
+	var dropObj *AntiSpywareSecurityProfileResourceRulesActionDropObject
+
+	var resetClientObj *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+
+	var resetServerObj *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+
+	var resetBothObj *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+
+	var blockIpObj *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+	return map[string]attr.Type{
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"drop": types.ObjectType{
+			AttrTypes: dropObj.AttributeTypes(),
+		},
+		"reset_client": types.ObjectType{
+			AttrTypes: resetClientObj.AttributeTypes(),
+		},
+		"reset_server": types.ObjectType{
+			AttrTypes: resetServerObj.AttributeTypes(),
+		},
+		"reset_both": types.ObjectType{
+			AttrTypes: resetBothObj.AttributeTypes(),
+		},
+		"block_ip": types.ObjectType{
+			AttrTypes: blockIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"track_by": types.StringType,
+		"duration": types.Int64Type,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) AttributeTypes() map[string]attr.Type {
+
+	var actionObj *AntiSpywareSecurityProfileResourceThreatExceptionActionObject
+
+	return map[string]attr.Type{
+		"name":           types.StringType,
+		"packet_capture": types.StringType,
+		"action": types.ObjectType{
+			AttrTypes: actionObj.AttributeTypes(),
+		},
+		"exempt_ip": types.ListType{},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) AttributeTypes() map[string]attr.Type {
+
+	var defaultObj *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject
+
+	var allowObj *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject
+
+	var alertObj *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject
+
+	var dropObj *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject
+
+	var resetBothObj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject
+
+	var resetClientObj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject
+
+	var resetServerObj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject
+
+	var blockIpObj *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject
+	return map[string]attr.Type{
+		"default": types.ObjectType{
+			AttrTypes: defaultObj.AttributeTypes(),
+		},
+		"allow": types.ObjectType{
+			AttrTypes: allowObj.AttributeTypes(),
+		},
+		"alert": types.ObjectType{
+			AttrTypes: alertObj.AttributeTypes(),
+		},
+		"drop": types.ObjectType{
+			AttrTypes: dropObj.AttributeTypes(),
+		},
+		"reset_both": types.ObjectType{
+			AttrTypes: resetBothObj.AttributeTypes(),
+		},
+		"reset_client": types.ObjectType{
+			AttrTypes: resetClientObj.AttributeTypes(),
+		},
+		"reset_server": types.ObjectType{
+			AttrTypes: resetServerObj.AttributeTypes(),
+		},
+		"block_ip": types.ObjectType{
+			AttrTypes: blockIpObj.AttributeTypes(),
+		},
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"track_by": types.StringType,
+		"duration": types.Int64Type,
+	}
+}
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
 func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **spyware.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var botnetDomains_entry *spyware.BotnetDomains
@@ -7071,21 +7716,42 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &spyware.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &spyware.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AntiSpywareSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &spyware.SharedLocation{}
+			var innerLocation AntiSpywareSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &spyware.VsysLocation{}
+			var innerLocation AntiSpywareSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &spyware.DeviceGroupLocation{}
+			var innerLocation AntiSpywareSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -7134,21 +7800,42 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 
 	var location spyware.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &spyware.SharedLocation{}
-	}
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &spyware.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AntiSpywareSecurityProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &spyware.SharedLocation{}
+			var innerLocation AntiSpywareSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &spyware.VsysLocation{}
+			var innerLocation AntiSpywareSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &spyware.DeviceGroupLocation{}
+			var innerLocation AntiSpywareSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -7196,21 +7883,42 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &spyware.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &spyware.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AntiSpywareSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &spyware.SharedLocation{}
+			var innerLocation AntiSpywareSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &spyware.VsysLocation{}
+			var innerLocation AntiSpywareSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &spyware.DeviceGroupLocation{}
+			var innerLocation AntiSpywareSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -7284,21 +7992,42 @@ func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req res
 
 	var location spyware.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &spyware.SharedLocation{}
-	}
-	if state.Location.Vsys != nil {
-		location.Vsys = &spyware.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation AntiSpywareSecurityProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &spyware.DeviceGroupLocation{
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &spyware.SharedLocation{}
+			var innerLocation AntiSpywareSecurityProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &spyware.VsysLocation{}
+			var innerLocation AntiSpywareSecurityProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &spyware.DeviceGroupLocation{}
+			var innerLocation AntiSpywareSecurityProfileDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -7310,8 +8039,53 @@ func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req res
 }
 
 type AntiSpywareSecurityProfileImportState struct {
-	Location AntiSpywareSecurityProfileLocation `json:"location"`
-	Name     string                             `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o AntiSpywareSecurityProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *AntiSpywareSecurityProfileLocation `json:"location"`
+		Name     *string                             `json:"name"`
+	}
+	var location_object *AntiSpywareSecurityProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *AntiSpywareSecurityProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *AntiSpywareSecurityProfileLocation `json:"location"`
+		Name     *string                             `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func AntiSpywareSecurityProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -7325,10 +8099,10 @@ func AntiSpywareSecurityProfileImportStateCreator(ctx context.Context, resource 
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location AntiSpywareSecurityProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -7337,10 +8111,10 @@ func AntiSpywareSecurityProfileImportStateCreator(ctx context.Context, resource 
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -7364,7 +8138,12 @@ func (r *AntiSpywareSecurityProfileResource) ImportState(ctx context.Context, re
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -7386,9 +8165,9 @@ type AntiSpywareSecurityProfileDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type AntiSpywareSecurityProfileLocation struct {
-	Shared      *AntiSpywareSecurityProfileSharedLocation      `tfsdk:"shared"`
-	Vsys        *AntiSpywareSecurityProfileVsysLocation        `tfsdk:"vsys"`
-	DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
@@ -7470,8 +8249,10 @@ func AntiSpywareSecurityProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o AntiSpywareSecurityProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -7488,10 +8269,12 @@ func (o *AntiSpywareSecurityProfileSharedLocation) UnmarshalJSON(data []byte) er
 	return nil
 }
 func (o AntiSpywareSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -7501,8 +8284,8 @@ func (o AntiSpywareSecurityProfileVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntiSpywareSecurityProfileVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -7515,10 +8298,12 @@ func (o *AntiSpywareSecurityProfileVsysLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o AntiSpywareSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -7528,8 +8313,8 @@ func (o AntiSpywareSecurityProfileDeviceGroupLocation) MarshalJSON() ([]byte, er
 
 func (o *AntiSpywareSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -7542,14 +8327,37 @@ func (o *AntiSpywareSecurityProfileDeviceGroupLocation) UnmarshalJSON(data []byt
 	return nil
 }
 func (o AntiSpywareSecurityProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared"`
-		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys"`
-		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		Vsys:        o.Vsys,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *AntiSpywareSecurityProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *AntiSpywareSecurityProfileVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *AntiSpywareSecurityProfileDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		Vsys:        vsys_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -7557,18 +8365,74 @@ func (o AntiSpywareSecurityProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AntiSpywareSecurityProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared"`
-		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys"`
-		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group"`
+		Shared      *AntiSpywareSecurityProfileSharedLocation      `json:"shared,omitempty"`
+		Vsys        *AntiSpywareSecurityProfileVsysLocation        `json:"vsys,omitempty"`
+		DeviceGroup *AntiSpywareSecurityProfileDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.Vsys = shadow.Vsys
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.Vsys = vsys_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *AntiSpywareSecurityProfileSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *AntiSpywareSecurityProfileVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *AntiSpywareSecurityProfileLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj AntiSpywareSecurityProfileSharedLocation
+	var vsysObj AntiSpywareSecurityProfileVsysLocation
+	var deviceGroupObj AntiSpywareSecurityProfileDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

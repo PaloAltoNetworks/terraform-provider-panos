@@ -54,7 +54,7 @@ type ExternalDynamicListDataSourceFilter struct {
 }
 
 type ExternalDynamicListDataSourceModel struct {
-	Location        ExternalDynamicListLocation              `tfsdk:"location"`
+	Location        types.Object                             `tfsdk:"location"`
 	Name            types.String                             `tfsdk:"name"`
 	DisableOverride types.String                             `tfsdk:"disable_override"`
 	Type            *ExternalDynamicListDataSourceTypeObject `tfsdk:"type"`
@@ -249,6 +249,486 @@ type ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject struct {
 type ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject struct {
 	At        types.String `tfsdk:"at"`
 	DayOfWeek types.String `tfsdk:"day_of_week"`
+}
+
+func (o *ExternalDynamicListDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ExternalDynamicListLocation
+
+	var typeObj *ExternalDynamicListDataSourceTypeObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"disable_override": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"encrypted_values": types.MapType{},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var domainObj *ExternalDynamicListDataSourceTypeDomainObject
+
+	var imeiObj *ExternalDynamicListDataSourceTypeImeiObject
+
+	var imsiObj *ExternalDynamicListDataSourceTypeImsiObject
+
+	var ipObj *ExternalDynamicListDataSourceTypeIpObject
+
+	var predefinedIpObj *ExternalDynamicListDataSourceTypePredefinedIpObject
+
+	var predefinedUrlObj *ExternalDynamicListDataSourceTypePredefinedUrlObject
+
+	var urlObj *ExternalDynamicListDataSourceTypeUrlObject
+	return map[string]attr.Type{
+		"domain": types.ObjectType{
+			AttrTypes: domainObj.AttributeTypes(),
+		},
+		"imei": types.ObjectType{
+			AttrTypes: imeiObj.AttributeTypes(),
+		},
+		"imsi": types.ObjectType{
+			AttrTypes: imsiObj.AttributeTypes(),
+		},
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+		"predefined_ip": types.ObjectType{
+			AttrTypes: predefinedIpObj.AttributeTypes(),
+		},
+		"predefined_url": types.ObjectType{
+			AttrTypes: predefinedUrlObj.AttributeTypes(),
+		},
+		"url": types.ObjectType{
+			AttrTypes: urlObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListDataSourceTypeDomainAuthObject
+
+	var recurringObj *ExternalDynamicListDataSourceTypeDomainRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"expand_domain":       types.BoolType,
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListDataSourceTypeImeiAuthObject
+
+	var recurringObj *ExternalDynamicListDataSourceTypeImeiRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListDataSourceTypeImsiAuthObject
+
+	var recurringObj *ExternalDynamicListDataSourceTypeImsiRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListDataSourceTypeIpAuthObject
+
+	var recurringObj *ExternalDynamicListDataSourceTypeIpRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListDataSourceTypeIpRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"description":    types.StringType,
+		"exception_list": types.ListType{},
+		"url":            types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"description":    types.StringType,
+		"exception_list": types.ListType{},
+		"url":            types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListDataSourceTypeUrlAuthObject
+
+	var recurringObj *ExternalDynamicListDataSourceTypeUrlRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
 }
 
 func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -4778,14 +5258,31 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 
 	var location extdynlist.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &extdynlist.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
+	{
+		var terraformLocation ExternalDynamicListLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &extdynlist.SharedLocation{}
+			var innerLocation ExternalDynamicListSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
+			var innerLocation ExternalDynamicListDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -4858,7 +5355,7 @@ func ExternalDynamicListResourceLocationSchema() rsschema.Attribute {
 }
 
 type ExternalDynamicListResourceModel struct {
-	Location        ExternalDynamicListLocation            `tfsdk:"location"`
+	Location        types.Object                           `tfsdk:"location"`
 	Name            types.String                           `tfsdk:"name"`
 	DisableOverride types.String                           `tfsdk:"disable_override"`
 	Type            *ExternalDynamicListResourceTypeObject `tfsdk:"type"`
@@ -7374,6 +7871,486 @@ func (r *ExternalDynamicListResource) Configure(ctx context.Context, req resourc
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, extdynlist.NewService(r.client), batchSize, specifier, extdynlist.SpecMatches)
 }
 
+func (o *ExternalDynamicListResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ExternalDynamicListLocation
+
+	var typeObj *ExternalDynamicListResourceTypeObject
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":             types.StringType,
+		"disable_override": types.StringType,
+		"type": types.ObjectType{
+			AttrTypes: typeObj.AttributeTypes(),
+		},
+		"encrypted_values": types.MapType{},
+	}
+}
+func (o *ExternalDynamicListResourceTypeObject) AttributeTypes() map[string]attr.Type {
+
+	var domainObj *ExternalDynamicListResourceTypeDomainObject
+
+	var imeiObj *ExternalDynamicListResourceTypeImeiObject
+
+	var imsiObj *ExternalDynamicListResourceTypeImsiObject
+
+	var ipObj *ExternalDynamicListResourceTypeIpObject
+
+	var predefinedIpObj *ExternalDynamicListResourceTypePredefinedIpObject
+
+	var predefinedUrlObj *ExternalDynamicListResourceTypePredefinedUrlObject
+
+	var urlObj *ExternalDynamicListResourceTypeUrlObject
+	return map[string]attr.Type{
+		"domain": types.ObjectType{
+			AttrTypes: domainObj.AttributeTypes(),
+		},
+		"imei": types.ObjectType{
+			AttrTypes: imeiObj.AttributeTypes(),
+		},
+		"imsi": types.ObjectType{
+			AttrTypes: imsiObj.AttributeTypes(),
+		},
+		"ip": types.ObjectType{
+			AttrTypes: ipObj.AttributeTypes(),
+		},
+		"predefined_ip": types.ObjectType{
+			AttrTypes: predefinedIpObj.AttributeTypes(),
+		},
+		"predefined_url": types.ObjectType{
+			AttrTypes: predefinedUrlObj.AttributeTypes(),
+		},
+		"url": types.ObjectType{
+			AttrTypes: urlObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListResourceTypeDomainAuthObject
+
+	var recurringObj *ExternalDynamicListResourceTypeDomainRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"expand_domain":       types.BoolType,
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListResourceTypeDomainRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListResourceTypeDomainRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListResourceTypeImeiAuthObject
+
+	var recurringObj *ExternalDynamicListResourceTypeImeiRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListResourceTypeImeiRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListResourceTypeImeiRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListResourceTypeImsiAuthObject
+
+	var recurringObj *ExternalDynamicListResourceTypeImsiRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListResourceTypeImsiRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListResourceTypeImsiRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListResourceTypeIpAuthObject
+
+	var recurringObj *ExternalDynamicListResourceTypeIpRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListResourceTypeIpRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListResourceTypeIpRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListResourceTypeIpRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListResourceTypeIpRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"description":    types.StringType,
+		"exception_list": types.ListType{},
+		"url":            types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"description":    types.StringType,
+		"exception_list": types.ListType{},
+		"url":            types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlObject) AttributeTypes() map[string]attr.Type {
+
+	var authObj *ExternalDynamicListResourceTypeUrlAuthObject
+
+	var recurringObj *ExternalDynamicListResourceTypeUrlRecurringObject
+
+	return map[string]attr.Type{
+		"auth": types.ObjectType{
+			AttrTypes: authObj.AttributeTypes(),
+		},
+		"certificate_profile": types.StringType,
+		"description":         types.StringType,
+		"exception_list":      types.ListType{},
+		"recurring": types.ObjectType{
+			AttrTypes: recurringObj.AttributeTypes(),
+		},
+		"url": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"password": types.StringType,
+		"username": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringObject) AttributeTypes() map[string]attr.Type {
+
+	var dailyObj *ExternalDynamicListResourceTypeUrlRecurringDailyObject
+
+	var fiveMinuteObj *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject
+
+	var hourlyObj *ExternalDynamicListResourceTypeUrlRecurringHourlyObject
+
+	var monthlyObj *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject
+
+	var weeklyObj *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject
+	return map[string]attr.Type{
+		"daily": types.ObjectType{
+			AttrTypes: dailyObj.AttributeTypes(),
+		},
+		"five_minute": types.ObjectType{
+			AttrTypes: fiveMinuteObj.AttributeTypes(),
+		},
+		"hourly": types.ObjectType{
+			AttrTypes: hourlyObj.AttributeTypes(),
+		},
+		"monthly": types.ObjectType{
+			AttrTypes: monthlyObj.AttributeTypes(),
+		},
+		"weekly": types.ObjectType{
+			AttrTypes: weeklyObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at": types.StringType,
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":           types.StringType,
+		"day_of_month": types.Int64Type,
+	}
+}
+func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"at":          types.StringType,
+		"day_of_week": types.StringType,
+	}
+}
+
 func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -9630,14 +10607,31 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 
 	var location extdynlist.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &extdynlist.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
+	{
+		var terraformLocation ExternalDynamicListLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &extdynlist.SharedLocation{}
+			var innerLocation ExternalDynamicListSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
+			var innerLocation ExternalDynamicListDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -9693,14 +10687,31 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 
 	var location extdynlist.Location
 
-	if savestate.Location.Shared != nil {
-		location.Shared = &extdynlist.SharedLocation{}
-	}
-	if savestate.Location.DeviceGroup != nil {
-		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
+	{
+		var terraformLocation ExternalDynamicListLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: savestate.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    savestate.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &extdynlist.SharedLocation{}
+			var innerLocation ExternalDynamicListSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
+			var innerLocation ExternalDynamicListDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -9762,14 +10773,31 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 
 	var location extdynlist.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &extdynlist.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
+	{
+		var terraformLocation ExternalDynamicListLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &extdynlist.SharedLocation{}
+			var innerLocation ExternalDynamicListSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
+			var innerLocation ExternalDynamicListDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -9846,14 +10874,31 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 
 	var location extdynlist.Location
 
-	if state.Location.Shared != nil {
-		location.Shared = &extdynlist.SharedLocation{}
-	}
-	if state.Location.DeviceGroup != nil {
-		location.DeviceGroup = &extdynlist.DeviceGroupLocation{
+	{
+		var terraformLocation ExternalDynamicListLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
-			PanoramaDevice: state.Location.DeviceGroup.PanoramaDevice.ValueString(),
-			DeviceGroup:    state.Location.DeviceGroup.Name.ValueString(),
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &extdynlist.SharedLocation{}
+			var innerLocation ExternalDynamicListSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.DeviceGroup.IsNull() {
+			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
+			var innerLocation ExternalDynamicListDeviceGroupLocation
+			resp.Diagnostics.Append(terraformLocation.DeviceGroup.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -9865,8 +10910,53 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 }
 
 type ExternalDynamicListImportState struct {
-	Location ExternalDynamicListLocation `json:"location"`
-	Name     string                      `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o ExternalDynamicListImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *ExternalDynamicListLocation `json:"location"`
+		Name     *string                      `json:"name"`
+	}
+	var location_object *ExternalDynamicListLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ExternalDynamicListImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *ExternalDynamicListLocation `json:"location"`
+		Name     *string                      `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func ExternalDynamicListImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -9880,10 +10970,10 @@ func ExternalDynamicListImportStateCreator(ctx context.Context, resource types.O
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location ExternalDynamicListLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -9892,10 +10982,10 @@ func ExternalDynamicListImportStateCreator(ctx context.Context, resource types.O
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -9919,7 +11009,12 @@ func (r *ExternalDynamicListResource) ImportState(ctx context.Context, req resou
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -9937,8 +11032,8 @@ type ExternalDynamicListDeviceGroupLocation struct {
 	Name           types.String `tfsdk:"name"`
 }
 type ExternalDynamicListLocation struct {
-	Shared      *ExternalDynamicListSharedLocation      `tfsdk:"shared"`
-	DeviceGroup *ExternalDynamicListDeviceGroupLocation `tfsdk:"device_group"`
+	Shared      types.Object `tfsdk:"shared"`
+	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
 func ExternalDynamicListLocationSchema() rsschema.Attribute {
@@ -9992,8 +11087,10 @@ func ExternalDynamicListLocationSchema() rsschema.Attribute {
 }
 
 func (o ExternalDynamicListSharedLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-	}{}
+	type shadow struct {
+	}
+
+	obj := shadow{}
 
 	return json.Marshal(obj)
 }
@@ -10010,10 +11107,12 @@ func (o *ExternalDynamicListSharedLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ExternalDynamicListDeviceGroupLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 	}
@@ -10023,8 +11122,8 @@ func (o ExternalDynamicListDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ExternalDynamicListDeviceGroupLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -10037,12 +11136,28 @@ func (o *ExternalDynamicListDeviceGroupLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Shared      *ExternalDynamicListSharedLocation      `json:"shared"`
-		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group"`
-	}{
-		Shared:      o.Shared,
-		DeviceGroup: o.DeviceGroup,
+	type shadow struct {
+		Shared      *ExternalDynamicListSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group,omitempty"`
+	}
+	var shared_object *ExternalDynamicListSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var deviceGroup_object *ExternalDynamicListDeviceGroupLocation
+	{
+		diags := o.DeviceGroup.As(context.TODO(), &deviceGroup_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Shared:      shared_object,
+		DeviceGroup: deviceGroup_object,
 	}
 
 	return json.Marshal(obj)
@@ -10050,16 +11165,54 @@ func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared      *ExternalDynamicListSharedLocation      `json:"shared"`
-		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group"`
+		Shared      *ExternalDynamicListSharedLocation      `json:"shared,omitempty"`
+		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Shared = shadow.Shared
-	o.DeviceGroup = shadow.DeviceGroup
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
+		}
+	}
+	var deviceGroup_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		deviceGroup_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.DeviceGroup.AttributeTypes(), shadow.DeviceGroup)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
+		}
+	}
+	o.Shared = shared_object
+	o.DeviceGroup = deviceGroup_object
 
 	return nil
+}
+
+func (o *ExternalDynamicListSharedLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
+func (o *ExternalDynamicListLocation) AttributeTypes() map[string]attr.Type {
+	var sharedObj ExternalDynamicListSharedLocation
+	var deviceGroupObj ExternalDynamicListDeviceGroupLocation
+	return map[string]attr.Type{
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"device_group": types.ObjectType{
+			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+	}
 }

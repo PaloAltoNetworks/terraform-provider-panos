@@ -54,7 +54,7 @@ type ZoneDataSourceFilter struct {
 }
 
 type ZoneDataSourceModel struct {
-	Location                   ZoneLocation                   `tfsdk:"location"`
+	Location                   types.Object                   `tfsdk:"location"`
 	Name                       types.String                   `tfsdk:"name"`
 	DeviceAcl                  *ZoneDataSourceDeviceAclObject `tfsdk:"device_acl"`
 	EnableDeviceIdentification types.Bool                     `tfsdk:"enable_device_identification"`
@@ -83,6 +83,70 @@ type ZoneDataSourceNetworkTunnelObject struct {
 type ZoneDataSourceUserAclObject struct {
 	ExcludeList types.List `tfsdk:"exclude_list"`
 	IncludeList types.List `tfsdk:"include_list"`
+}
+
+func (o *ZoneDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ZoneLocation
+
+	var deviceAclObj *ZoneDataSourceDeviceAclObject
+
+	var networkObj *ZoneDataSourceNetworkObject
+
+	var userAclObj *ZoneDataSourceUserAclObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"device_acl": types.ObjectType{
+			AttrTypes: deviceAclObj.AttributeTypes(),
+		},
+		"enable_device_identification": types.BoolType,
+		"enable_user_identification":   types.BoolType,
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"user_acl": types.ObjectType{
+			AttrTypes: userAclObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ZoneDataSourceDeviceAclObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"exclude_list": types.ListType{},
+		"include_list": types.ListType{},
+	}
+}
+func (o *ZoneDataSourceNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var tunnelObj *ZoneDataSourceNetworkTunnelObject
+
+	return map[string]attr.Type{
+		"enable_packet_buffer_protection": types.BoolType,
+		"log_setting":                     types.StringType,
+		"zone_protection_profile":         types.StringType,
+		"net_inspection":                  types.BoolType,
+		"external":                        types.ListType{},
+		"layer2":                          types.ListType{},
+		"layer3":                          types.ListType{},
+		"tap":                             types.ListType{},
+		"tunnel": types.ObjectType{
+			AttrTypes: tunnelObj.AttributeTypes(),
+		},
+		"virtual_wire": types.ListType{},
+	}
+}
+func (o *ZoneDataSourceNetworkTunnelObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ZoneDataSourceUserAclObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"exclude_list": types.ListType{},
+		"include_list": types.ListType{},
+	}
 }
 
 func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -764,28 +828,47 @@ func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	var location zone.Location
 
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &zone.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ZoneLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &zone.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.Template.Vsys.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &zone.VsysLocation{}
+			var innerLocation ZoneVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &zone.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &zone.TemplateLocation{}
+			var innerLocation ZoneTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Template.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &zone.TemplateStackLocation{}
+			var innerLocation ZoneTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -849,7 +932,7 @@ func ZoneResourceLocationSchema() rsschema.Attribute {
 }
 
 type ZoneResourceModel struct {
-	Location                   ZoneLocation                 `tfsdk:"location"`
+	Location                   types.Object                 `tfsdk:"location"`
 	Name                       types.String                 `tfsdk:"name"`
 	DeviceAcl                  *ZoneResourceDeviceAclObject `tfsdk:"device_acl"`
 	EnableDeviceIdentification types.Bool                   `tfsdk:"enable_device_identification"`
@@ -1225,6 +1308,70 @@ func (r *ZoneResource) Configure(ctx context.Context, req resource.ConfigureRequ
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, zone.NewService(r.client), batchSize, specifier, zone.SpecMatches)
 }
 
+func (o *ZoneResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj ZoneLocation
+
+	var deviceAclObj *ZoneResourceDeviceAclObject
+
+	var networkObj *ZoneResourceNetworkObject
+
+	var userAclObj *ZoneResourceUserAclObject
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name": types.StringType,
+		"device_acl": types.ObjectType{
+			AttrTypes: deviceAclObj.AttributeTypes(),
+		},
+		"enable_device_identification": types.BoolType,
+		"enable_user_identification":   types.BoolType,
+		"network": types.ObjectType{
+			AttrTypes: networkObj.AttributeTypes(),
+		},
+		"user_acl": types.ObjectType{
+			AttrTypes: userAclObj.AttributeTypes(),
+		},
+	}
+}
+func (o *ZoneResourceDeviceAclObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"exclude_list": types.ListType{},
+		"include_list": types.ListType{},
+	}
+}
+func (o *ZoneResourceNetworkObject) AttributeTypes() map[string]attr.Type {
+
+	var tunnelObj *ZoneResourceNetworkTunnelObject
+
+	return map[string]attr.Type{
+		"enable_packet_buffer_protection": types.BoolType,
+		"log_setting":                     types.StringType,
+		"zone_protection_profile":         types.StringType,
+		"net_inspection":                  types.BoolType,
+		"external":                        types.ListType{},
+		"layer2":                          types.ListType{},
+		"layer3":                          types.ListType{},
+		"tap":                             types.ListType{},
+		"tunnel": types.ObjectType{
+			AttrTypes: tunnelObj.AttributeTypes(),
+		},
+		"virtual_wire": types.ListType{},
+	}
+}
+func (o *ZoneResourceNetworkTunnelObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *ZoneResourceUserAclObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"exclude_list": types.ListType{},
+		"include_list": types.ListType{},
+	}
+}
+
 func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var deviceAcl_entry *zone.DeviceAcl
@@ -1586,28 +1733,47 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	var location zone.Location
 
-	if state.Location.Vsys != nil {
-		location.Vsys = &zone.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ZoneLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &zone.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			Vsys:           state.Location.Template.Vsys.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &zone.VsysLocation{}
+			var innerLocation ZoneVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &zone.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &zone.TemplateLocation{}
+			var innerLocation ZoneTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Template.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &zone.TemplateStackLocation{}
+			var innerLocation ZoneTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1656,28 +1822,47 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	var location zone.Location
 
-	if savestate.Location.Vsys != nil {
-		location.Vsys = &zone.VsysLocation{
-
-			NgfwDevice: savestate.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       savestate.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ZoneLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &zone.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
-			Vsys:           savestate.Location.Template.Vsys.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &zone.VsysLocation{}
+			var innerLocation ZoneVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &zone.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &zone.TemplateLocation{}
+			var innerLocation ZoneTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Template.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &zone.TemplateStackLocation{}
+			var innerLocation ZoneTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1725,28 +1910,47 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	var location zone.Location
 
-	if state.Location.Vsys != nil {
-		location.Vsys = &zone.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ZoneLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &zone.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			Vsys:           state.Location.Template.Vsys.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &zone.VsysLocation{}
+			var innerLocation ZoneVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &zone.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &zone.TemplateLocation{}
+			var innerLocation ZoneTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Template.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &zone.TemplateStackLocation{}
+			var innerLocation ZoneTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1820,28 +2024,47 @@ func (r *ZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 
 	var location zone.Location
 
-	if state.Location.Vsys != nil {
-		location.Vsys = &zone.VsysLocation{
-
-			NgfwDevice: state.Location.Vsys.NgfwDevice.ValueString(),
-			Vsys:       state.Location.Vsys.Name.ValueString(),
+	{
+		var terraformLocation ZoneLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &zone.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
-			Vsys:           state.Location.Template.Vsys.ValueString(),
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &zone.VsysLocation{}
+			var innerLocation ZoneVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &zone.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &zone.TemplateLocation{}
+			var innerLocation ZoneTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Template.Vsys = innerLocation.Vsys.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &zone.TemplateStackLocation{}
+			var innerLocation ZoneTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1853,8 +2076,53 @@ func (r *ZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 }
 
 type ZoneImportState struct {
-	Location ZoneLocation `json:"location"`
-	Name     string       `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o ZoneImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *ZoneLocation `json:"location"`
+		Name     *string       `json:"name"`
+	}
+	var location_object *ZoneLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ZoneImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *ZoneLocation `json:"location"`
+		Name     *string       `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func ZoneImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1868,10 +2136,10 @@ func ZoneImportStateCreator(ctx context.Context, resource types.Object) ([]byte,
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location ZoneLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1880,10 +2148,10 @@ func ZoneImportStateCreator(ctx context.Context, resource types.Object) ([]byte,
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1907,7 +2175,12 @@ func (r *ZoneResource) ImportState(ctx context.Context, req resource.ImportState
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1934,9 +2207,9 @@ type ZoneTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type ZoneLocation struct {
-	Vsys          *ZoneVsysLocation          `tfsdk:"vsys"`
-	Template      *ZoneTemplateLocation      `tfsdk:"template"`
-	TemplateStack *ZoneTemplateStackLocation `tfsdk:"template_stack"`
+	Vsys          types.Object `tfsdk:"vsys"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func ZoneLocationSchema() rsschema.Attribute {
@@ -2065,10 +2338,12 @@ func ZoneLocationSchema() rsschema.Attribute {
 }
 
 func (o ZoneVsysLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 		Name:       o.Name.ValueStringPointer(),
 	}
@@ -2078,8 +2353,8 @@ func (o ZoneVsysLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneVsysLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
-		Name       *string `json:"name"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2092,12 +2367,14 @@ func (o *ZoneVsysLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ZoneTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -2109,10 +2386,10 @@ func (o ZoneTemplateLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-		Vsys           *string `json:"vsys"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2127,11 +2404,13 @@ func (o *ZoneTemplateLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ZoneTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -2142,9 +2421,9 @@ func (o ZoneTemplateStackLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2158,14 +2437,37 @@ func (o *ZoneTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (o ZoneLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Vsys          *ZoneVsysLocation          `json:"vsys"`
-		Template      *ZoneTemplateLocation      `json:"template"`
-		TemplateStack *ZoneTemplateStackLocation `json:"template_stack"`
-	}{
-		Vsys:          o.Vsys,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Vsys          *ZoneVsysLocation          `json:"vsys,omitempty"`
+		Template      *ZoneTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *ZoneTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var vsys_object *ZoneVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
+	var template_object *ZoneTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *ZoneTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Vsys:          vsys_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -2173,18 +2475,80 @@ func (o ZoneLocation) MarshalJSON() ([]byte, error) {
 
 func (o *ZoneLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Vsys          *ZoneVsysLocation          `json:"vsys"`
-		Template      *ZoneTemplateLocation      `json:"template"`
-		TemplateStack *ZoneTemplateStackLocation `json:"template_stack"`
+		Vsys          *ZoneVsysLocation          `json:"vsys,omitempty"`
+		Template      *ZoneTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *ZoneTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Vsys = shadow.Vsys
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Vsys = vsys_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *ZoneVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
+func (o *ZoneTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+		"vsys":            types.StringType,
+	}
+}
+func (o *ZoneTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *ZoneLocation) AttributeTypes() map[string]attr.Type {
+	var vsysObj ZoneVsysLocation
+	var templateObj ZoneTemplateLocation
+	var templateStackObj ZoneTemplateStackLocation
+	return map[string]attr.Type{
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

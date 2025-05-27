@@ -53,23 +53,53 @@ type InterfaceManagementProfileDataSourceFilter struct {
 }
 
 type InterfaceManagementProfileDataSourceModel struct {
-	Location                InterfaceManagementProfileLocation `tfsdk:"location"`
-	Name                    types.String                       `tfsdk:"name"`
-	Http                    types.Bool                         `tfsdk:"http"`
-	HttpOcsp                types.Bool                         `tfsdk:"http_ocsp"`
-	Https                   types.Bool                         `tfsdk:"https"`
-	PermittedIps            types.List                         `tfsdk:"permitted_ips"`
-	Ping                    types.Bool                         `tfsdk:"ping"`
-	ResponsePages           types.Bool                         `tfsdk:"response_pages"`
-	Snmp                    types.Bool                         `tfsdk:"snmp"`
-	Ssh                     types.Bool                         `tfsdk:"ssh"`
-	Telnet                  types.Bool                         `tfsdk:"telnet"`
-	UseridService           types.Bool                         `tfsdk:"userid_service"`
-	UseridSyslogListenerSsl types.Bool                         `tfsdk:"userid_syslog_listener_ssl"`
-	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
+	Location                types.Object `tfsdk:"location"`
+	Name                    types.String `tfsdk:"name"`
+	Http                    types.Bool   `tfsdk:"http"`
+	HttpOcsp                types.Bool   `tfsdk:"http_ocsp"`
+	Https                   types.Bool   `tfsdk:"https"`
+	PermittedIps            types.List   `tfsdk:"permitted_ips"`
+	Ping                    types.Bool   `tfsdk:"ping"`
+	ResponsePages           types.Bool   `tfsdk:"response_pages"`
+	Snmp                    types.Bool   `tfsdk:"snmp"`
+	Ssh                     types.Bool   `tfsdk:"ssh"`
+	Telnet                  types.Bool   `tfsdk:"telnet"`
+	UseridService           types.Bool   `tfsdk:"userid_service"`
+	UseridSyslogListenerSsl types.Bool   `tfsdk:"userid_syslog_listener_ssl"`
+	UseridSyslogListenerUdp types.Bool   `tfsdk:"userid_syslog_listener_udp"`
 }
 type InterfaceManagementProfileDataSourcePermittedIpsObject struct {
 	Name types.String `tfsdk:"name"`
+}
+
+func (o *InterfaceManagementProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj InterfaceManagementProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                       types.StringType,
+		"http":                       types.BoolType,
+		"http_ocsp":                  types.BoolType,
+		"https":                      types.BoolType,
+		"permitted_ips":              types.ListType{},
+		"ping":                       types.BoolType,
+		"response_pages":             types.BoolType,
+		"snmp":                       types.BoolType,
+		"ssh":                        types.BoolType,
+		"telnet":                     types.BoolType,
+		"userid_service":             types.BoolType,
+		"userid_syslog_listener_ssl": types.BoolType,
+		"userid_syslog_listener_udp": types.BoolType,
+	}
+}
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
 }
 
 func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
@@ -423,26 +453,45 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 
 	var location interface_management.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &interface_management.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation InterfaceManagementProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &interface_management.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &interface_management.NgfwLocation{}
+			var innerLocation InterfaceManagementProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &interface_management.TemplateLocation{}
+			var innerLocation InterfaceManagementProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &interface_management.TemplateStackLocation{}
+			var innerLocation InterfaceManagementProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -506,20 +555,20 @@ func InterfaceManagementProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type InterfaceManagementProfileResourceModel struct {
-	Location                InterfaceManagementProfileLocation `tfsdk:"location"`
-	Name                    types.String                       `tfsdk:"name"`
-	Http                    types.Bool                         `tfsdk:"http"`
-	HttpOcsp                types.Bool                         `tfsdk:"http_ocsp"`
-	Https                   types.Bool                         `tfsdk:"https"`
-	PermittedIps            types.List                         `tfsdk:"permitted_ips"`
-	Ping                    types.Bool                         `tfsdk:"ping"`
-	ResponsePages           types.Bool                         `tfsdk:"response_pages"`
-	Snmp                    types.Bool                         `tfsdk:"snmp"`
-	Ssh                     types.Bool                         `tfsdk:"ssh"`
-	Telnet                  types.Bool                         `tfsdk:"telnet"`
-	UseridService           types.Bool                         `tfsdk:"userid_service"`
-	UseridSyslogListenerSsl types.Bool                         `tfsdk:"userid_syslog_listener_ssl"`
-	UseridSyslogListenerUdp types.Bool                         `tfsdk:"userid_syslog_listener_udp"`
+	Location                types.Object `tfsdk:"location"`
+	Name                    types.String `tfsdk:"name"`
+	Http                    types.Bool   `tfsdk:"http"`
+	HttpOcsp                types.Bool   `tfsdk:"http_ocsp"`
+	Https                   types.Bool   `tfsdk:"https"`
+	PermittedIps            types.List   `tfsdk:"permitted_ips"`
+	Ping                    types.Bool   `tfsdk:"ping"`
+	ResponsePages           types.Bool   `tfsdk:"response_pages"`
+	Snmp                    types.Bool   `tfsdk:"snmp"`
+	Ssh                     types.Bool   `tfsdk:"ssh"`
+	Telnet                  types.Bool   `tfsdk:"telnet"`
+	UseridService           types.Bool   `tfsdk:"userid_service"`
+	UseridSyslogListenerSsl types.Bool   `tfsdk:"userid_syslog_listener_ssl"`
+	UseridSyslogListenerUdp types.Bool   `tfsdk:"userid_syslog_listener_udp"`
 }
 type InterfaceManagementProfileResourcePermittedIpsObject struct {
 	Name types.String `tfsdk:"name"`
@@ -722,6 +771,36 @@ func (r *InterfaceManagementProfileResource) Configure(ctx context.Context, req 
 	r.manager = sdkmanager.NewEntryObjectManager(r.client, interface_management.NewService(r.client), batchSize, specifier, interface_management.SpecMatches)
 }
 
+func (o *InterfaceManagementProfileResourceModel) AttributeTypes() map[string]attr.Type {
+
+	var locationObj InterfaceManagementProfileLocation
+
+	return map[string]attr.Type{
+		"location": types.ObjectType{
+			AttrTypes: locationObj.AttributeTypes(),
+		},
+		"name":                       types.StringType,
+		"http":                       types.BoolType,
+		"http_ocsp":                  types.BoolType,
+		"https":                      types.BoolType,
+		"permitted_ips":              types.ListType{},
+		"ping":                       types.BoolType,
+		"response_pages":             types.BoolType,
+		"snmp":                       types.BoolType,
+		"ssh":                        types.BoolType,
+		"telnet":                     types.BoolType,
+		"userid_service":             types.BoolType,
+		"userid_syslog_listener_ssl": types.BoolType,
+		"userid_syslog_listener_udp": types.BoolType,
+	}
+}
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
 func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
 	var diags diag.Diagnostics
 	http_value := o.Http.ValueBoolPointer()
@@ -892,26 +971,45 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 
 	var location interface_management.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &interface_management.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation InterfaceManagementProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &interface_management.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &interface_management.NgfwLocation{}
+			var innerLocation InterfaceManagementProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &interface_management.TemplateLocation{}
+			var innerLocation InterfaceManagementProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &interface_management.TemplateStackLocation{}
+			var innerLocation InterfaceManagementProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -960,26 +1058,45 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 
 	var location interface_management.Location
 
-	if savestate.Location.Ngfw != nil {
-		location.Ngfw = &interface_management.NgfwLocation{
-
-			NgfwDevice: savestate.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation InterfaceManagementProfileLocation
+		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if savestate.Location.Template != nil {
-		location.Template = &interface_management.TemplateLocation{
 
-			PanoramaDevice: savestate.Location.Template.PanoramaDevice.ValueString(),
-			Template:       savestate.Location.Template.Name.ValueString(),
-			NgfwDevice:     savestate.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &interface_management.NgfwLocation{}
+			var innerLocation InterfaceManagementProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if savestate.Location.TemplateStack != nil {
-		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			PanoramaDevice: savestate.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  savestate.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     savestate.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &interface_management.TemplateLocation{}
+			var innerLocation InterfaceManagementProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &interface_management.TemplateStackLocation{}
+			var innerLocation InterfaceManagementProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1027,26 +1144,45 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 
 	var location interface_management.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &interface_management.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation InterfaceManagementProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &interface_management.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &interface_management.NgfwLocation{}
+			var innerLocation InterfaceManagementProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &interface_management.TemplateLocation{}
+			var innerLocation InterfaceManagementProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &interface_management.TemplateStackLocation{}
+			var innerLocation InterfaceManagementProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1120,26 +1256,45 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 
 	var location interface_management.Location
 
-	if state.Location.Ngfw != nil {
-		location.Ngfw = &interface_management.NgfwLocation{
-
-			NgfwDevice: state.Location.Ngfw.NgfwDevice.ValueString(),
+	{
+		var terraformLocation InterfaceManagementProfileLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
 		}
-	}
-	if state.Location.Template != nil {
-		location.Template = &interface_management.TemplateLocation{
 
-			PanoramaDevice: state.Location.Template.PanoramaDevice.ValueString(),
-			Template:       state.Location.Template.Name.ValueString(),
-			NgfwDevice:     state.Location.Template.NgfwDevice.ValueString(),
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &interface_management.NgfwLocation{}
+			var innerLocation InterfaceManagementProfileNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
-	}
-	if state.Location.TemplateStack != nil {
-		location.TemplateStack = &interface_management.TemplateStackLocation{
 
-			PanoramaDevice: state.Location.TemplateStack.PanoramaDevice.ValueString(),
-			TemplateStack:  state.Location.TemplateStack.Name.ValueString(),
-			NgfwDevice:     state.Location.TemplateStack.NgfwDevice.ValueString(),
+		if !terraformLocation.Template.IsNull() {
+			location.Template = &interface_management.TemplateLocation{}
+			var innerLocation InterfaceManagementProfileTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &interface_management.TemplateStackLocation{}
+			var innerLocation InterfaceManagementProfileTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -1151,8 +1306,53 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 }
 
 type InterfaceManagementProfileImportState struct {
-	Location InterfaceManagementProfileLocation `json:"location"`
-	Name     string                             `json:"name"`
+	Location types.Object `json:"location"`
+	Name     types.String `json:"name"`
+}
+
+func (o InterfaceManagementProfileImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location *InterfaceManagementProfileLocation `json:"location"`
+		Name     *string                             `json:"name"`
+	}
+	var location_object *InterfaceManagementProfileLocation
+	{
+		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Location: location_object,
+		Name:     o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *InterfaceManagementProfileImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location *InterfaceManagementProfileLocation `json:"location"`
+		Name     *string                             `json:"name"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	var location_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		}
+	}
+	o.Location = location_object
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
 }
 
 func InterfaceManagementProfileImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
@@ -1166,10 +1366,10 @@ func InterfaceManagementProfileImportStateCreator(ctx context.Context, resource 
 		return nil, fmt.Errorf("location attribute missing")
 	}
 
-	var location InterfaceManagementProfileLocation
+	var location types.Object
 	switch value := locationAttr.(type) {
 	case types.Object:
-		value.As(ctx, &location, basetypes.ObjectAsOptions{})
+		location = value
 	default:
 		return nil, fmt.Errorf("location attribute expected to be an object")
 	}
@@ -1178,10 +1378,10 @@ func InterfaceManagementProfileImportStateCreator(ctx context.Context, resource 
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	var name string
+	var name types.String
 	switch value := nameAttr.(type) {
 	case types.String:
-		name = value.ValueString()
+		name = value
 	default:
 		return nil, fmt.Errorf("name attribute expected to be a string")
 	}
@@ -1205,7 +1405,12 @@ func (r *InterfaceManagementProfileResource) ImportState(ctx context.Context, re
 
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
 		return
 	}
 
@@ -1230,9 +1435,9 @@ type InterfaceManagementProfileTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type InterfaceManagementProfileLocation struct {
-	Ngfw          *InterfaceManagementProfileNgfwLocation          `tfsdk:"ngfw"`
-	Template      *InterfaceManagementProfileTemplateLocation      `tfsdk:"template"`
-	TemplateStack *InterfaceManagementProfileTemplateStackLocation `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
@@ -1343,9 +1548,11 @@ func InterfaceManagementProfileLocationSchema() rsschema.Attribute {
 }
 
 func (o InterfaceManagementProfileNgfwLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		NgfwDevice *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
 	}
 
@@ -1354,7 +1561,7 @@ func (o InterfaceManagementProfileNgfwLocation) MarshalJSON() ([]byte, error) {
 
 func (o *InterfaceManagementProfileNgfwLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device"`
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1366,11 +1573,13 @@ func (o *InterfaceManagementProfileNgfwLocation) UnmarshalJSON(data []byte) erro
 	return nil
 }
 func (o InterfaceManagementProfileTemplateLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1381,9 +1590,9 @@ func (o InterfaceManagementProfileTemplateLocation) MarshalJSON() ([]byte, error
 
 func (o *InterfaceManagementProfileTemplateLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1397,11 +1606,13 @@ func (o *InterfaceManagementProfileTemplateLocation) UnmarshalJSON(data []byte) 
 	return nil
 }
 func (o InterfaceManagementProfileTemplateStackLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
-	}{
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
@@ -1412,9 +1623,9 @@ func (o InterfaceManagementProfileTemplateStackLocation) MarshalJSON() ([]byte, 
 
 func (o *InterfaceManagementProfileTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		PanoramaDevice *string `json:"panorama_device"`
-		Name           *string `json:"name"`
-		NgfwDevice     *string `json:"ngfw_device"`
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1428,14 +1639,37 @@ func (o *InterfaceManagementProfileTemplateStackLocation) UnmarshalJSON(data []b
 	return nil
 }
 func (o InterfaceManagementProfileLocation) MarshalJSON() ([]byte, error) {
-	obj := struct {
-		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw"`
-		Template      *InterfaceManagementProfileTemplateLocation      `json:"template"`
-		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack"`
-	}{
-		Ngfw:          o.Ngfw,
-		Template:      o.Template,
-		TemplateStack: o.TemplateStack,
+	type shadow struct {
+		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *InterfaceManagementProfileTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *InterfaceManagementProfileNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
+	var template_object *InterfaceManagementProfileTemplateLocation
+	{
+		diags := o.Template.As(context.TODO(), &template_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
+		}
+	}
+	var templateStack_object *InterfaceManagementProfileTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
+
+	obj := shadow{
+		Ngfw:          ngfw_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -1443,18 +1677,78 @@ func (o InterfaceManagementProfileLocation) MarshalJSON() ([]byte, error) {
 
 func (o *InterfaceManagementProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw"`
-		Template      *InterfaceManagementProfileTemplateLocation      `json:"template"`
-		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack"`
+		Ngfw          *InterfaceManagementProfileNgfwLocation          `json:"ngfw,omitempty"`
+		Template      *InterfaceManagementProfileTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *InterfaceManagementProfileTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.Ngfw = shadow.Ngfw
-	o.Template = shadow.Template
-	o.TemplateStack = shadow.TemplateStack
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
+	var template_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		template_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Template.AttributeTypes(), shadow.Template)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
+		}
+	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
+	o.Ngfw = ngfw_object
+	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
+}
+
+func (o *InterfaceManagementProfileNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
+func (o *InterfaceManagementProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *InterfaceManagementProfileTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
+	}
+}
+func (o *InterfaceManagementProfileLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj InterfaceManagementProfileNgfwLocation
+	var templateObj InterfaceManagementProfileTemplateLocation
+	var templateStackObj InterfaceManagementProfileTemplateStackLocation
+	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
+		"template": types.ObjectType{
+			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+	}
 }

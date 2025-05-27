@@ -9,6 +9,7 @@ import (
 	"net/url"
 
 	"github.com/PaloAltoNetworks/pango/movement"
+	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/version"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 
@@ -192,111 +193,55 @@ func (o *MockUuidService[E, L]) removeEntriesFromCurrent(entries []*MockUuidObje
 func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLocation, position movement.Position, entries []*MockUuidObject, batchSize int) error {
 	o.moveGroupEntries = entries
 
-	firstIdx := o.removeEntriesFromCurrent(entries)
-
-	entriesList := list.New()
-	for _, elt := range entries {
-		entriesList.PushBack(elt)
-	}
-
-	switch position.(type) {
-	case movement.PositionFirst:
-		o.client.Current.PushFrontList(entriesList)
-		return nil
-	case movement.PositionLast:
-		o.client.Current.PushBackList(entriesList)
-		return nil
-	case movement.PositionBefore, movement.PositionAfter:
-	}
-
-	var pivotEntry string
-	var after bool
-	var directly bool
-
-	switch typed := position.(type) {
-	case movement.PositionBefore:
-		after = false
-		directly = typed.Directly
-		pivotEntry = typed.Pivot
-	case movement.PositionAfter:
-		after = true
-		directly = typed.Directly
-		pivotEntry = typed.Pivot
-	case movement.PositionFirst, movement.PositionLast:
-	}
-
-	var pivotElt *list.Element
-	for e := o.client.Current.Front(); e != nil; e = e.Next() {
-		entry := e.Value.(E)
-		if entry.EntryName() == pivotEntry {
-			pivotElt = e
-		}
-	}
-
-	if pivotElt == nil {
-		return manager.ErrMissingPivotPoint
-	}
-
-	slog.Warn("MoveGroup()", "pivotElt", pivotEntry, "after", after, "directly", directly)
-
-	if after == true && directly == true {
-		previousElt := pivotElt
-		for _, elt := range entries {
-			previousElt = o.client.Current.InsertAfter(elt, previousElt)
-		}
-
+	if len(entries) == 0 {
 		return nil
 	}
 
-	if after == true && directly == false {
-		var previousElt *list.Element
-		if firstIdx == 0 {
-			o.client.Current.PushFront(entries[0])
-			previousElt = o.client.Current.Front()
-		} else {
-			var idx int
-			for e := o.client.Current.Front(); e != nil; e = e.Next() {
-				if idx == firstIdx {
-					previousElt = o.client.Current.InsertAfter(entries[0], e)
-					break
-				}
-			}
-		}
-
-		for _, elt := range entries[1:] {
-			previousElt = o.client.Current.InsertAfter(elt, previousElt)
-		}
-
-		return nil
+	var existing []*MockUuidObject
+	var next *list.Element
+	for e := o.client.Current.Front(); e != nil; e = next {
+		next = e.Next()
+		entry := e.Value.(*MockUuidObject)
+		existing = append(existing, entry)
 	}
 
-	if after == false && directly == true {
-		previousElt := o.client.Current.InsertBefore(entries[0], pivotElt)
-		for _, elt := range entries[1:] {
-			previousElt = o.client.Current.InsertAfter(elt, previousElt)
+	movements, err := movement.MoveGroup(position, entries, existing)
+	if err != nil {
+		return err
+	}
+
+	updates := xmlapi.NewMultiConfig(len(movements))
+	for _, elt := range movements {
+		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.Movable.EntryName())
+		if err != nil {
+			return err
+		}
+
+		switch elt.Where {
+		case movement.ActionWhereFirst, movement.ActionWhereLast:
+			updates.Add(&xmlapi.Config{
+				Action:      "move",
+				Xpath:       util.AsXpath(path),
+				Where:       string(elt.Where),
+				Destination: string(elt.Where),
+				Target:      o.client.GetTarget(),
+			})
+		case movement.ActionWhereBefore, movement.ActionWhereAfter:
+			updates.Add(&xmlapi.Config{
+				Action:      "move",
+				Xpath:       util.AsXpath(path),
+				Where:       string(elt.Where),
+				Destination: elt.Destination.EntryName(),
+				Target:      o.client.GetTarget(),
+			})
 		}
 	}
 
-	if after == true && directly == false {
-		var previousElt *list.Element
-		if firstIdx == 0 {
-			o.client.Current.PushFront(entries[0])
-			previousElt = o.client.Current.Front()
-		} else {
-			var idx int
-			for e := o.client.Current.Front(); e != nil; e = e.Next() {
-				if idx == firstIdx {
-					previousElt = o.client.Current.InsertBefore(entries[0], e)
-					break
-				}
-			}
+	if len(updates.Operations) > 0 {
+		_, _, _, err = o.client.MultiConfig(ctx, updates, false, nil)
+		if err != nil {
+			return err
 		}
-
-		for _, elt := range entries[1:] {
-			previousElt = o.client.Current.InsertAfter(elt, previousElt)
-		}
-
-		return nil
 	}
 
 	return nil
